@@ -1,14 +1,13 @@
-From: Mail Delivery Subsystem <MAILER-DAEMON@ylpvm48.prodigy.net>
-Subject: Returned mail: see transcript for details
-Date: Thu, 9 Dec 2004 14:50:16 -0500
-Message-ID: <200412091950.iB9Jnvu1023972@ylpvm48.prodigy.net>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: RE: New azx driver: Problems in snd_mixer_load
+Date: Thu, 9 Dec 2004 12:44:39 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE11F@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="iB9Jnvu1023972.1102621816/ylpvm48.prodigy.net"
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ylpvm48.prodigy.net (ylpvm48-ext.prodigy.net [207.115.57.79])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7A833333
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 20:50:13 +0100 (MET)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +17,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
+> From: Takashi Iwai [mailto:tiwai@suse.de]=20
+>=20
+> At Thu, 9 Dec 2004 10:20:04 -0800,
+> Stephen Warren wrote:
+> >=20
+> > ...
+> > On top of this, I added the latest CVS version of the azx=20
+> > driver into the kernel.
+> >=20
+> > Now, when I run alsamixer, I get the following error=20
+> > message right at startup:
+> >=20
+> > =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+> > root@localhost# alsamixer
+> > ALSA lib simple.c:950:(simple_add1) helem (MIXER,'Capture=20
+> Source',0,0,0)
+> > appears twice or more
+> > alsamixer: function snd_mixer_load failed: Invalid argument
+> > =
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+>=20
+> Could you show the content of /etc/asound.state after "alscatl store"?
+> Also, try to build with --with-debug=3Ddetect
+> (i.e. CONFIG_SND_DEBUG_DETECT=3Dy).  This will give some more=20
+> verbose info.
 
---iB9Jnvu1023972.1102621816/ylpvm48.prodigy.net
+The content of asound.state is below. I'll rebuild the kernel without
+any of the ALSA drivers, and build everything from CVS to see if it's
+any better...
 
-The original message was received at Thu, 9 Dec 2004 14:50:05 -0500
-from CM600-lflo3-25-22.cm.vtr.net [200.104.25.22] (may be forged)
+state.HDA {
+	control.1 {
+		comment.access 'read write'
+		comment.type BOOLEAN
+		iface MIXER
+		name 'Capture Switch'
+		value.0 false
+		value.1 false
+	}
+	control.2 {
+		comment.access 'read write'
+		comment.type INTEGER
+		comment.range '0 - 30'
+		iface MIXER
+		name 'Capture Volume'
+		value.0 0
+		value.1 0
+	}
+	control.3 {
+		comment.access 'read write'
+		comment.type ENUMERATED
+		comment.item.0 'Input 0'
+		comment.item.1 Line
+		comment.item.2 Mic
+		comment.item.3 'Input 3'
+		comment.item.4 'Input 4'
+		comment.item.5 Mic
+		comment.item.6 CD
+		comment.item.7 'Input 7'
+		comment.item.8 'Input 8'
+		iface MIXER
+		name 'Capture Source'
+		value 'Input 0'
+	}
+}
 
-   ----- The following addresses had permanent fatal errors -----
-<lerah@flash.net>
-    (reason: 554 delivery error: dd This user doesn't have a flash.net account (lerah@flash.net) [0] - mta811.mail.scd.yahoo.com)
-
-   ----- Transcript of session follows -----
-... while talking to mx1.sbc.mail.yahoo.com.:
->>> DATA
-<<< 554 delivery error: dd This user doesn't have a flash.net account (lerah@flash.net) [0] - mta811.mail.scd.yahoo.com
-554 5.0.0 Service unavailable
-
---iB9Jnvu1023972.1102621816/ylpvm48.prodigy.net
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; ylpvm48.prodigy.net
-Received-From-MTA: DNS; CM600-lflo3-25-22.cm.vtr.net
-Arrival-Date: Thu, 9 Dec 2004 14:50:05 -0500
-
-Final-Recipient: RFC822; lerah@flash.net
-Action: failed
-Status: 5.0.0
-Remote-MTA: DNS; mx1.sbc.mail.yahoo.com
-Diagnostic-Code: SMTP; 554 delivery error: dd This user doesn't have a flash.net account (lerah@flash.net) [0] - mta811.mail.scd.yahoo.com
-Last-Attempt-Date: Thu, 9 Dec 2004 14:50:13 -0500
-
---iB9Jnvu1023972.1102621816/ylpvm48.prodigy.net
-Content-Type: message/rfc822
-
-X-Header-Overseas: Mail.from.Overseas.source.200.104.25.22
-X-Originating-IP: [200.104.25.22]
-Received: from compuserve.com (CM600-lflo3-25-22.cm.vtr.net [200.104.25.22] (may be forged))
-	by ylpvm48.prodigy.net (8.12.10 083104/8.12.10) with SMTP id iB9Jnvu0023972
-	for <lerah@flash.net>; Thu, 9 Dec 2004 14:50:05 -0500
-Date: Thu, 09 Dec 2004 03:01:47 +0000
-From: Alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re:
-To: Lerah <lerah@flash.net>
-References: <6LBII4713GAK871J@flash.net>
-In-Reply-To: <6LBII4713GAK871J@flash.net>
-Message-ID: <9908JFF8426FHHB1@alsa-project.org>
-Reply-To: Amulok <amulok@hotmail.com>
-MIME-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: quoted-printable
-
-<body><html>
-NASPTER is back !!<BR>
-And it is even better than before!<BR>
-Download ALL the newest:<BR>
-- videos<BR><a href=3D"http://www.downloadlifestyle.com/ref62.html">
-<img src=3D"http://www.downloadlifestyle.com/images/index_40.jpg" border=3D=
-0></a>
-<BR><BR>
-- games<BR>
-<a href=3D"http://www.downloadlifestyle.com/ref62.html ">
-<img src=3D"http://www.downloadlifestyle.com/images/index_56.jpg" border=3D=
-0></a>
-<BR><BR>
-- music<BR>
-... and MUCH MORE!
-<BR><BR>
-<a href=3D"http://www.downloadlifestyle.com/ref62.html">Enter And Get The=
- Full Membership With <BR>
-Unlimited Access To All The Stuff...</a>
-</body></html>
-
-
-
---iB9Jnvu1023972.1102621816/ylpvm48.prodigy.net--
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
+=20
 
 
 
