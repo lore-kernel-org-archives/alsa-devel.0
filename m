@@ -1,17 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Kernel crash
-Date: Wed, 22 Sep 2004 10:08:14 +0200 (CEST)
+From: "rte news" <rteemag@hotmail.com>
+Subject: (no subject)
+Date: Tue, 21 Sep 2004 09:57:53 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409221000340.166@pnote.perex-int.cz>
-References: <s5h7jr7whqj.wl@alsa2.suse.de> <XFMail.20040907095502.pochini@shiny.it>
- <20040911210212.317d930b.pochini@shiny.it> <s5hekl6tdru.wl@alsa2.suse.de>
- <20040913220729.466531ce.pochini@shiny.it> <s5h4qlzx22k.wl@alsa2.suse.de>
- <20040915195008.33713acb.pochini@shiny.it> <Pine.LNX.4.58.0409170847400.1774@pnote.perex-int.cz>
- <s5hvfed19gw.wl@alsa2.suse.de> <s5hu0tx18z7.wl@alsa2.suse.de>
+Message-ID: <BAY16-F39wAFssFLnHR000097cf@hotmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0tx18z7.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,56 +14,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 17 Sep 2004, Takashi Iwai wrote:
 
-> At Fri, 17 Sep 2004 12:22:07 +0200,
-> I wrote:
-> > 
-> > > The linking makes sense for hardware that support that. Otherwise, we can 
-> > > start streams in most close time, but draining and dropping doesn't make 
-> > > much sense, because different clocking sources for different cards will 
-> > > produce jitter, thus there is no real sync and application must care.
-> > 
-> > Agreed.  I've assumed that drain/drop are supposed to be synchronous,
-> > but they should not.
-> 
-> I just noticed that pcm_multi.c _assumes_ indeed that linked
-> draining/dropping works as synchronized.  So, the current semantics is
-> correct.
 
-Yes, sorry - my fault. I had vacation and I read e-mails only quickly.
+_________________________________________________________________
+Express yourself instantly with MSN Messenger! Download today - it's FREE! 
+http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
 
-> If snd_pcm_drain() affects only the given stream, then it's difficult
-> to get sync among all streams, because basically draining consists of
-> two phases:
-> 
->  - trigger DRAIN state to all streams
->  - wait until all streams get drained
-> 
-> We cannot do the procedure above in the serialized manner.
-
-Application might care independently for all streams. But on other side, 
-it's too late to change midlevel behaviour, so we should only correct the 
-problems.
-
-> Also, another question is how to handle XRUN state.
-> When one of the linked streams gets XRUN, should all streams be
-> stopped and marked as XRUN?  I think yes.
-
-Probably yes. In all cases, the application (or pcm_multi plugin) must 
-take care about correcting jitter, otherwise the streams will go out of 
-sync after awhile - resulting in xrun.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
