@@ -1,15 +1,9 @@
-From: Paul Davis <pbd@op.net>
-Subject: ioremap{_nocache}
-Date: Mon, 29 Apr 2002 09:17:24 -0400
+From: Linux Mailing lists account <linux@darykon.cet.com>
+Subject: Re: es1869 as sb?
+Date: Mon, 29 Apr 2002 07:04:41 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204291317.g3TDHOb23957@op.net>
+Message-ID: <200204291404.g3TE4fD08745@dakkon.darykon.cet.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA17773
-	for <alsa-devel@alsa-project.org>; Mon, 29 Apr 2002 15:16:52 +0200
-Received: from unknown (HELO op.net) ([209.92.231.215]) (envelope-sender <pbd@op.net>)
-          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
-          for <alsa-devel@alsa-project.org>; 29 Apr 2002 13:16:39 -0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,12 +12,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: kasper@303.nu
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-silly me.
+On Friday, Apr 26 Kasper Souren wrote:
+>
+> Hi. I'm trying to get my laptop soundchip, an ES1869 running under ALSA.
+> Under OSS it runs as an sb. With "modprobe sb io=0x220 irq=5 dma=1 dma16=5"
+> I get:
+> 
+> SB 3.01 detected OK (220)
+> ESS Chip ES1869 detected
+> <ESS ES1869 AudioDrive (rev 11) (3.01)> at 0x220 irq 5 dma 1,5
 
-a quick reading of the kernel source reveals all. don't bother to
-answer, and apologies for the silly question.
+I also have a laptop that has an ESS ES1879 AudioDrive, and could get ALSA to
+work. I posted a question/request to this list about 6 weeks ago as well, but
+never even got a response back.I gave up and went back to OSS.
 
---p
+I hope you have more luck! Maybe, if you get the ES1869 problem solved, it'll
+fix the ES1879 as well! :-)  I wouldn't think that the ALSA developement team
+would want to keep around a broken driver.
+
+Gerry Simmons
+linux@darykon.cet.com
