@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000559]: 64 Bit Drivers for Analog Devices SoundMax
-Date: Mon, 22 Nov 2004 14:48:38 +0100
-Message-ID: <6315abdf3ea0d3e7c6462ce768460b9f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000387]: No soundcard detected on Chaintech ZNF3-250
+Date: Mon, 22 Nov 2004 14:50:23 +0100
+Message-ID: <68cd6fd87af8e9b29d82fbc0410be688@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84A6D2B4
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:48:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A39B6187
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:50:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,59 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=559> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=387> 
 ======================================================================
-Reported By:                sandy bodell
+Reported By:                silent_runner
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   559
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   387
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Suse
-Kernel Version:             2.6.5-7.108
-Resolution:                 fixed
+Distribution:               Gentoo
+Kernel Version:             2.6.7 kernel.org stock
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-02-2004 13:46 CEST
-Last Modified:              11-22-2004 14:48 CET
+Date Submitted:             07-13-2004 21:48 CEST
+Last Modified:              11-22-2004 14:50 CET
 ======================================================================
-Summary:                    64 Bit Drivers for Analog Devices SoundMax
+Summary:                    No soundcard detected on Chaintech ZNF3-250
 Description: 
-Are there any 64 bit drivers available anywhere for this chipset?
-
-Thanks
+cat /proc/asound/cards gives --no souncards--
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 10-02-04 15:08 
+ perex - 10-22-04 17:02 
 ----------------------------------------------------------------------
-When compiled with a 64 bit kernel, the drivers are 64 bit, too.
-
-The driver for your device is snd-intel8x0 or snd-via82xx or snd-atiixp,
-depending on your chipset.
+No response from user.
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:55 
+ tiwai - 11-22-04 14:50 
 ----------------------------------------------------------------------
-Yes, there is no difference between source code for 32-bit and 64-bit
-drivers.
+Now closed.  Please reopen if you can try the patch.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-02-04 13:46 sandy bodell   New Issue                                    
-10-02-04 13:46 sandy bodell   Distribution              => Suse            
-10-02-04 13:46 sandy bodell   Kernel Version            => 2.6.5-7.108     
-10-02-04 15:08 Clemens LadischNote Added: 0002006                          
-10-22-04 16:55 perex          Status                   new => resolved     
-10-22-04 16:55 perex          Resolution               open => fixed       
-10-22-04 16:55 perex          Assigned To               => perex           
-10-22-04 16:55 perex          Note Added: 0002250                          
-11-22-04 14:48 tiwai          Status                   resolved => closed  
+07-13-04 21:48 silent_runner  New Issue                                    
+07-13-04 21:48 silent_runner  File Added: command-outputs.tar.bz2               
+    
+07-13-04 21:48 silent_runner  Distribution              => Gentoo          
+07-13-04 21:48 silent_runner  Kernel Version            => 2.6.7 kernel.org
+stock
+07-13-04 22:18 silent_runner  Issue Monitored: silent_runner                    
+07-27-04 13:50 silent_runner  Issue Monitored: perex                       
+07-27-04 13:50 silent_runner  Note Added: 0001476                          
+07-30-04 17:03 tiwai          Note Added: 0001494                          
+07-30-04 17:03 tiwai          File Added: chaintech.dif                    
+10-22-04 17:02 perex          Status                   new => resolved     
+10-22-04 17:02 perex          Resolution               open => suspended   
+10-22-04 17:02 perex          Assigned To               => perex           
+10-22-04 17:02 perex          Note Added: 0002251                          
+11-22-04 14:50 tiwai          Status                   resolved => closed  
+11-22-04 14:50 tiwai          Note Added: 0002505                          
 ======================================================================
 
 
