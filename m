@@ -1,14 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000655]: E-MU 1010 (1212m/1820m)
-Date: Fri, 19 Nov 2004 00:45:06 +0100
-Message-ID: <f64e594dd337572191bec0007e20c758@bugtrack.alsa-project.org>
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: [linux-audio-user] Re: [linux-audio-dev] Re: [Alsa-devel]
+ Firewire Audio Card Support
+Date: Fri, 19 Nov 2004 00:52:48 +0100
+Message-ID: <20041119005248.6127aacf@mango.fruits.de>
+References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net>
+	<419C9D47.4090606@x-i.net>
+	<200411181515.52218.olaf@solutionworks.de>
+	<20041118143205.GA21282@login.ecs.soton.ac.uk>
+	<419CB554.3080709@esitcom.org>
+	<Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
+	<1100809010.10150.5.camel@krustophenia.net>
+	<1100818169.3464.6.camel@eviltwin>
+	<5bdc1c8b04111814545ab84738@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2CD6258
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 00:45:06 +0100 (MET)
+In-Reply-To: <5bdc1c8b04111814545ab84738@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +26,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Cc: markknecht@gmail.com, A list for linux audio users <linux-audio-user@music.columbia.edu>, Amaury Jacquot <sxpert@esitcom.org>, alsa-devel <alsa-devel@lists.sourceforge.net>, Giuliano Pochini <pochini@denise.shiny.it>, The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>, Steve Harris <s.w.harris@ecs.soton.ac.uk>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 18 Nov 2004 14:54:27 -0800
+Mark Knecht <markknecht@gmail.com> wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=655> 
-======================================================================
-Reported By:                gaburici
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   655
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-19-2004 00:45 CET
-Last Modified:              11-19-2004 00:45 CET
-======================================================================
-Summary:                    E-MU 1010 (1212m/1820m)
-Description: 
-It would be nice if the E-MU systems based on the 1010 PCI card (1212m and
-1820m) could work with alsa. I have the 1212m, which is a 1010 with an
-add-on card (0202) for two analog stero channels. The add-on is not a real
-PCI card, it connects to the 1010 with a floppy cable.
+> I've had this sort of project on my mind for a year or two. (Since my
+> first run in with the HDSP 9652 under Linux in early 2003.) I am,
+> unlike I think many people here, a hardware designer by trade. Mostly
+> chips, but my engineers had done boards for our chips.
+> 
+> Coincedentally I was laid off yesterday and am sitting at home
+> thinking about what to do with myself during my current delimma...
 
-The 1010 card gets detected as the (older) E-MU APS, but no sound comes
-out of the 0202, even with the volume at max.
-I haven't tried the ADAT or SPDIF outputs of the 1010.
+Hi,
 
-======================================================================
+maybe you can tell us then how much the components for such a simple pcm
+only soundcard would cost? What's nessecary? And i mean really simple. Just
+a single full duplex stereo pcm device. No mixer (who needs a mixer? Real
+men have their mixer sitting in a rack :))
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-19-04 00:45 gaburici       New Issue                                    
-======================================================================
+- 2 AD's and 2 DA's 
+- a dsp (is it really nessecary?)
+- some memory for the buffers
+- a pci board
+- pci logic (raising irq's, doing the transfers)
+- some "glue"
 
+i may be naive though as i really have no idea about the hw side of things.
+Especially it gets tricky when allowing all kinds of different sample
+rates/buffer sizes, etc. And of course i suppose the price is heavily
+dependent on the quality of the components. But what would be lower and
+upper bounds for the components alone? And what kind of work is nessecary
+(how many manhours)
 
+- to design the thing
+
+- to build the thing
+
+?
+
+Florian Schmidt
 
 
 -------------------------------------------------------
