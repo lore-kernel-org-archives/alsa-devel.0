@@ -1,11 +1,16 @@
-From: Michael Iber <lists@iberspace.de>
-Subject: digital i/o tascam usb428
-Date: Tue, 27 Apr 2004 09:12:00 +0200
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: digital i/o tascam usb428
+Date: Tue, 27 Apr 2004 12:26:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.2.1.1.2.20040427090110.01f041a0@mail.chemie.fu-berlin.de>
+Message-ID: <200404271226.01428.annabellesgarden@yahoo.de>
+References: <5.2.1.1.2.20040427090110.01f041a0@mail.chemie.fu-berlin.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <5.2.1.1.2.20040427090110.01f041a0@mail.chemie.fu-berlin.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,15 +20,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Michael Iber <lists@iberspace.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-is this correct that there is no spdif-i/o-support for the tascam us428 in 
-current alsa-cvs, and never has been before?
-Thanks,
-Michael
+Am Dienstag 27 April 2004 09:12 schrieb Michael Iber:
+> Hello,
+> is this correct that there is no spdif-i/o-support for the tascam us428 in
+> current alsa-cvs, and never has been before?
+yes. as it looks, some serious usb-snooping on windows has to be done to get 
+it right.
 
-
+Regards,
+Karsten
 
 
 -------------------------------------------------------
