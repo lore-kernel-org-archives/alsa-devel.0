@@ -1,13 +1,10 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: cs46xx -> Terratec DMX XFire 1024 4channel output
- success
-Date: Mon, 07 Apr 2003 00:23:28 +0200
+From: Itay Ben-Yaacov <nib_maps@yahoo.com>
+Subject: apm corrupts intel8x0 on a dell inspiron 8200
+Date: Sun, 6 Apr 2003 16:28:07 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E90A8E0.6060507@cucumelo.org>
-References: <3E873CA2.2010607@cucumelo.org> <3E8B4877.4030306@gmx.de> <3E8F5C92.8080801@cucumelo.org> <3E901DC1.9090001@gmx.de>
+Message-ID: <20030406232807.57160.qmail@web21004.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,49 +14,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> sorry, I don't have the spec. And I think it would take some time for 
-> me to understand what's going on *exactly*.
-> So I just applied your last patch. But in the beginning it didn't 
-> change anything. I had a look on the code of your patch and saw this
-> snd_printdd("setting EAM bit on cs4294 CODEC\n");
-> line. Therefore I recompiled with --with-debug=detect, installed once 
-> again and switched on the syslogd on my system. I attached the cs46xx 
-> specific output as messages.gz to this mail. As you can see, the EAM 
-> message is not printed.
-> I commented out your check for the codec type:
->
->    if (1){   //(chip->nr_ac97_codecs == 1 &&
-> //       snd_cs46xx_codec_read(chip,AC97_VENDOR_ID2,
-> //                 CS46XX_PRIMARY_CODEC_INDEX) == 0x5d2d) {
->        /* set primary cs4294 codec into Extended Audio Mode */
->
-> recompiled, reinstalled and...
-> ... 4 channel output works!!!
-> It seems like I cannot change the output volume of the 
-> back('headphone') channels. The PCM slider only controls the 
-> first('front') output.
->
-> What information do you need to get the codec check working (alsamixer 
-> tells me 'Cirrus Logic CS4294 rev 5'). Just tell me what I should do :)
->
 
-The intention with that if(...) statment was to make sure that there was 
-only one codec available and that codec was a cs4294.
+Hi,
 
-Could you test it again chaning the "0x5d2d" to "0x592d" ? (my misstake ...)
-If that dont work could you send me a dump of /proc/asound/card0/ac97#0regs
+This is again concerning sound corruption after apm calls on a dell inspiron 8200 with an
+intel8x0.
+I thought at first that upgrading to bios A09 solved the problem, but it didn't, it just made it
+less frequent (instead of getting sound corrpution after every apm call, you get it after a
+few...)
+Still, playing long samples is impossible.
+When this happens, the corruption is not total: one can still identify what is being played, but
+it is distorted till the end of the sample.  I read somewhere a suggestion that this may be due to
+lost interrupts.
 
-I believe it should be possible to control the volume from the second 
-output, just need to find out how, so I'll try to find something in the 
-bloody cs4294 spec., well, and hopefully something will happen to the 
-code ;)
+On the other hand, some software plays music without getting it corrupted: maybe this depends on
+the precise encoding/rate/whatever of the sample in question, and the internal components involved
+in its processing?
 
-/Benny
+Unfortunately, I do not have much experience in debugging kernel (or modules), and don't know the
+first thing about sound drivers or alsa.  I got the sources, though, and would be glad to start
+playing with them if I knew where to start.
+For example, how can I find out the characteristics of the sample being played when a corruption
+occurs, how it is processed by the driver or the sound card, etc?  And what is this ac97 thing???
+(Yes, I know I must be sounding like a complete ignorant).
+Please, a few leads?
 
+Thanks,
+Itay.
+
+Just for the record, I am currently using linux 2.4.20 with alsa 0.9.2, but this happens with
+other kernel/alsa versions.  This does not happen though with the OSS driver.
+
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Tax Center - File online, calculators, forms, and more
+http://tax.yahoo.com
 
 
 -------------------------------------------------------
