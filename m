@@ -1,10 +1,11 @@
-From: Itay Ben-Yaacov <nib_maps@yahoo.com>
-Subject: intel8x0 resume problems --now  in 1.0.0pre2 and pre3
-Date: Sat, 29 Nov 2003 08:21:44 -0800 (PST)
+From: Vladimir Dergachev <volodya@mindspring.com>
+Subject: OSS broken in 1.0.0-pre3
+Date: Sat, 29 Nov 2003 12:07:53 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031129162144.61901.qmail@web21003.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.50.0311291204170.15624-100000@www.an-vo.com>
+Reply-To: Vladimir Dergachev <volodya@mindspring.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,20 +19,17 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi,
+ OSS emulation does not appear to work on my sytem :
+     Dual Athlon 1800, Linux kernel 2.4.23, ALSA 1.0.0-pre3.
 
-This may look like a deja vu, but it's a new problem. CVS snapshots up to nov 20 work fine, but
-from nov 21 my intel8x0 dies on resume (on a Dell I8200, ICH3).
+ Both artsd and quake are broken.
 
-Any ideas?
+ I have just recompiled 0.9.6 alsa driver (with trivial changes to support
+2.4.23) and it works fine.
 
-Thanks,
-Itay.
+                          best
 
-__________________________________
-Do you Yahoo!?
-Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+                            Vladimir Dergachev
 
 
 -------------------------------------------------------
