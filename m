@@ -1,14 +1,11 @@
-From: Glenn Maynard <g_sf@zewt.org>
+From: "Alex Lau" <lau2468@hotmail.com>
 Subject: Re: ALSA API
-Date: Sun, 4 Jan 2004 21:11:25 -0500
+Date: Sun, 04 Jan 2004 19:26:17 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040105021125.GC27227@zewt.org>
-References: <Law10-F99ez3M2L618r00071fef@hotmail.com>
+Message-ID: <Law10-F53kNUTvl7PDq000723ce@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Law10-F99ez3M2L618r00071fef@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,19 +14,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: g_sf@zewt.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 04, 2004 at 05:44:38PM -0800, Alex Lau wrote:
-> I try to pass the string "default" to the function, but still get an error 
-> -2 (No such file or directory)
 
-Are you sure you've tested an existing ALSA application, to make sure
-your installation even works?  (That tends to happen if /dev/snd/*
-doesn't exist.)
+>Are you sure you've tested an existing ALSA application, to make sure
+>your installation even works?  (That tends to happen if /dev/snd/*
+>doesn't exist.)
 
--- 
-Glenn Maynard
+Thanks for your help, I think I need to go back and check my alsa 
+installation. Strange enough though, my xine palyer works fine and I have 
+all the necessary alsa modules loaded.
+
+_________________________________________________________________
+The new MSN 8: advanced junk mail protection and 2 months FREE*  
+http://join.msn.com/?page=dept/bcomm&pgmarket=en-ca&RU=http%3a%2f%2fjoin.msn.com%2f%3fpage%3dmisc%2fspecialoffers%26pgmarket%3den-ca
+
 
 
 -------------------------------------------------------
