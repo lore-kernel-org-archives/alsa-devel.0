@@ -1,12 +1,12 @@
-From: =?iso-8859-1?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
-Subject: Opening a device 2 times, loopback interface, ...
-Date: Mon, 5 May 2003 10:19:56 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: To: ALSA Soundcard Matrix maintainer
+Date: Mon, 05 May 2003 17:31:00 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <CBEIKLKHDDAOGEKMPCGEMEABCAAA.stephane.boulanger@fh-bonn-rhein-sieg.de>
+Message-ID: <3EB62144.3090901@boosthardware.com>
+References: <XFMail.20030502103706.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,50 +16,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear List,
+Giuliano Pochini wrote:
+> On 02-May-2003 Eliot Blennerhassett wrote:
+> 
+>>Hello,
+>>
+>>according to the ALSA Soundcard Matrix page:
+>>"Corrections should be sent to the alsa-devel mailing
+>>list."
+> 
+> 
+> You just reminded me that perhaps the status of Echoaudio
+> cards has to be changed.
+> It's marked green. I'm writing the driver and it already works
+> well. It's still beta and only Gina20, Gina24 and Darla24 are
+> supported, but it should be trivial to support other cards, as
+> soon as I find someone to test them. The driver is based on the
+> generic driver by Echoaudio, which is released under a simple
+> free software licence (not GPL). Has the driver status to be
+> promoted to white rank ?
+> 
+> The driver can be downloaded here:
+> http://space.virgilio.it/g_pochini@virgilio.it/ea.html
+> 
 
-we=B4re currently developing an end-to-end delay measurement tool, that s=
-hould
-not only measure the network delay, but also the time the application
-(audiostreaming (rat, for example)) needs to calculate the used algorithm=
-s
-(GSM, PCM, whatever). To realize the choosen program design, we need to
-access the soundcard device form two different applications (streaming
-application and the measurement tool) at the same time. More exactly:
-
-- When audiodata is inputted, not only the streaming application should b=
-e
-able to access it, but also our measurement tool (at the same time
-obviously).
-
-- When audiodata is send to the sounddriver (repectively the soundcard), =
-the
-measurement tool, should be able to read it (maybe in the form of a copie=
-d
-datastream send to the measurement tool).
+Updated.
 
 
-While browing the ALSA documentation, I found some interesting parts abou=
-t
-the loopback interface, that might help us. But is it still contained in =
-the
-0.9 version of ALSA? Moreover, would the loopback interface satisfy our
-needs?
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-I also found some interesting information about JACK, but using JACK woul=
-d
-require to adopt the streaming application to the JACK interfaces.
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
-In your opinion, what would be the best way to realise the system?
-
-Thanks a lot!
-
-St=E9phane
-
-(Sorry, if you get this 2 times)
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
