@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: dsnoop
-Date: Sat, 17 May 2003 14:18:16 +0900
+From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk> (by way of =?iso-8859-15?q?Z=E9bulon?= <>)
+Subject: Re: Terratec Aureon Space
+Date: Sat, 17 May 2003 08:31:12 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EC5C618.9040800@boosthardware.com>
-References: <E19Gmd1-00018k-00@sc8-sf-list1.sourceforge.net> <Pine.LNX.4.53.0305162052380.26455@grue.tamos.net>
+Message-ID: <200305170831.13014.zeb@zebulon.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="big5"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +17,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "David E. Storey" <dave@tamos.net>
-Cc: alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David E. Storey wrote:
-> When I don't specify a duration, it writes a frame of audio and
-> terminates. Not terribly useful. Not sure if this is the normal mode of
-> operation, but it doesn't meet my criteria for sure. I need to be able to
-> record indefinitely. (which, of course, depends on storage capacity.)
-> 
+> only if we get enough technical information...
+>
+> at least we need to know the wire connection between codec and ice1724
+> chips, especially 61, 62 and 63 pins of Wolfson chip and GPIO pins of
+> ice1724 chip.
 
-Try timemachine. You can find the link on the jack apps page.
+Would it be possible to find it by analysing the circuits on the card itself
+ ?
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
+Eric
 
 
 
