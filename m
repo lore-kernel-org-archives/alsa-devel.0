@@ -1,18 +1,14 @@
-From: Florin Andrei <florin@andrei.myip.org>
-Subject: Re: HDSP 9632 driver and expansion cards
-Date: 22 Jan 2004 22:27:07 -0800
+From: "Stephen Cook" <siti_veni@lycos.com>
+Subject: Re: Patch to fix Pax/Grsecurity Problems
+Date: Fri, 23 Jan 2004 20:40:04 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074839227.3202.36.camel@rivendell.home.local>
-References: <1074650862.6893.10.camel@rivendell.home.local>
-	 <400E74F6.1040803@undata.org> <02f701c3e04e$1f39d2e0$5d40a8c0@FRiskMan.com>
-	 <1074711322.4129.4.camel@rivendell.home.local>
-	 <012301c3e0f9$42e41bf0$5d40a8c0@FRiskMan.com>
-Reply-To: alsa-devel@lists.sourceforge.net
+Message-ID: <OOLHNAMPFPKDIFAA@mailcity.com>
+Reply-To: siti_veni@lycos.com
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <012301c3e0f9$42e41bf0$5d40a8c0@FRiskMan.com>
+Content-Language: en
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,70 +20,123 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-01-22 at 07:06, Ed Wildgoose wrote:
-> > > > Florin Andrei wrote :
-> > > > > Anyone using the latest RME HDSP 9632 driver in ALSA, while also
-> using
-> > > > > the expansion cards? I mean, the newer AI4S-192 and/or AO4S-192
-> which
-> > > > > are required to get the 192kHz sampling on all analogs.
-> >
-> > > I have a 9632 now and also the 4 port analogue expansion card.
-> >
-> > The new, 192kHz ones?
-> 
-> Hi, tested this very briefly last night (I only have enough plugs to wire up
-> a single channel...), and got sound out of it!!  Wahey!
-> Yes, it is the new 192Khz one, and the card has balanced, large 1/4" phono
-> sockets out of the back (which is useful, yet inconvenient).
+I hope I don't sound to persistent but I am just wondering when this patch is going to be merged or if there is anything I can do to help speed it up.  Such as any changes to the patch etc.
 
-Balanced? Are you sure?
-Wow! That's not specified on their website.
-Very, very good news.
+Thanks
+Stephen
+--
 
-I was kinda feeling inclined to save a bucketful of bucks and get the
-M-Audio 1010LT instead, which is supposed to be pretty good as well, but
-now that you said the Hammerfall has balanced connectors... i don't care
-about money anymore. :-)
+--------- Original Message ---------
 
-> I would suggest that you could save money and stick with the 96khz 96/8PAD
-> card unless you need some of the 9632 features
+DATE: Mon, 12 Jan 2004 15:03:54
+From: Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@lists.sourceforge.net
+Cc: 
 
-(see below)
+>At Mon, 12 Jan 2004 12:27:23 +1100,
+>Stephen Cook wrote:
+>> 
+>> [1  <text/plain; us-ascii (7bit)>]
+>> As you may be currently aware alsa-lib (libasound) does not work very well when using it under a kernel that has the Pax (http://pax.grsecurity.net) or Grsecurity (http://www.grsecurity.net) Patch.
+>> 
+>> The problem is because there is a function in a function (trampoline) - So gcc generates code that conflicts with pax.  Also there is a text-relocation problem.
+>> 
+>> So I helped create patch that will fix these problems so alsa will be more usable on a Pax/Grsecurity machine (no chpax work arounds and more security).  Currently this patch is included in alsa-lib-1.0.1 in Gentoo so it is undergoing large scale testing.  For my part I have 2 machines running with Pax and this alsa-lib patch and I have had no problems :)
+>> 
+>> The code is a work around so if you know of a better way to do it please tell me.
+>
+>i think this funciton-in-function is too dependent on gcc, too, and
+>would like to get rid of it.  the patch looks fine for me.
+>or, we can add ifdef if someone still wants to keep the original
+>style.
+>
+>comments?
+>
+>
+>Takashi
+>
+>
+>> 
+>> 
+>> 
+>> 
+>> 
+>> ____________________________________________________________
+>> Get advanced SPAM filtering on Webmail or POP Mail ... Get Lycos Mail!
+>> http://login.mail.lycos.com/r/referral?aid=27005
+>> [2 alsa-lib-1.0.1-notextrel-notrampoline.patch <text/plain; us-ascii (7bit)>]
+>> diff -Nru alsa-lib-1.0.0rc2-original/src/control/hcontrol.c alsa-lib-1.0.0rc2/src/control/hcontrol.c
+>> --- alsa-lib-1.0.0rc2-original/src/control/hcontrol.c	Mon Oct 13 08:06:46 2003
+>> +++ alsa-lib-1.0.0rc2/src/control/hcontrol.c	Sat Dec 20 13:48:32 2003
+>> @@ -48,6 +48,7 @@
+>>  #include <string.h>
+>>  #include <fcntl.h>
+>>  #include <sys/ioctl.h>
+>> +#include <pthread.h>
+>>  #ifndef DOC_HIDDEN
+>>  #define __USE_GNU
+>>  #endif
+>> @@ -409,17 +410,26 @@
+>>  	return 0;
+>>  }
+>>  
+>> +static snd_hctl_t *compare_hctl;
+>> +static int hctl_compare(const void *a, const void *b) {
+>> +	return compare_hctl->compare(*(const snd_hctl_elem_t * const *) a,
+>> +			     *(const snd_hctl_elem_t * const *) b);
+>> +}
+>> +
+>>  static void snd_hctl_sort(snd_hctl_t *hctl)
+>>  {
+>>  	unsigned int k;
+>> -	int compar(const void *a, const void *b) {
+>> -		return hctl->compare(*(const snd_hctl_elem_t * const *) a,
+>> -				     *(const snd_hctl_elem_t * const *) b);
+>> -	}
+>> +	static pthread_mutex_t sync_lock = PTHREAD_MUTEX_INITIALIZER;
+>> +
+>>  	assert(hctl);
+>>  	assert(hctl->compare);
+>>  	INIT_LIST_HEAD(&hctl->elems);
+>> -	qsort(hctl->pelems, hctl->count, sizeof(*hctl->pelems), compar);
+>> +
+>> +	pthread_mutex_lock(&sync_lock);
+>> +	compare_hctl = hctl;
+>> +	qsort(hctl->pelems, hctl->count, sizeof(*hctl->pelems), hctl_compare);
+>> +	pthread_mutex_unlock(&sync_lock);
+>> +
+>>  	for (k = 0; k < hctl->count; k++)
+>>  		list_add_tail(&hctl->pelems[k]->list, &hctl->elems);
+>>  }
+>> diff -Nru alsa-lib-1.0.0rc2-original/src/pcm/pcm_direct.c alsa-lib-1.0.0rc2/src/pcm/pcm_direct.c
+>> --- alsa-lib-1.0.0rc2-original/src/pcm/pcm_direct.c	Fri Oct 17 09:53:06 2003
+>> +++ alsa-lib-1.0.0rc2/src/pcm/pcm_direct.c	Sat Dec 20 13:49:22 2003
+>> @@ -98,7 +98,6 @@
+>>  
+>>  int snd_pcm_direct_shm_create_or_connect(snd_pcm_direct_t *dmix)
+>>  {
+>> -	static int snd_pcm_direct_shm_discard(snd_pcm_direct_t *dmix);
+>>  	struct shmid_ds buf;
+>>  	int ret = 0;
+>>  	
+>
+>
+>-------------------------------------------------------
+>This SF.net email is sponsored by: Perforce Software.
+>Perforce is the Fast Software Configuration Management System offering
+>advanced branching capabilities and atomic changes on 50+ platforms.
+>Free Eval! http://www.perforce.com/perforce/loadprog.html
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
 
-> However, as a negative to the 9632 card, I find that I can't use it with
-> many apps such as Mythtv, mplayer, etc.  The sound just stutters.  I suspect
-> that the driver defaults to a short period size and some of these apps don't
-> request anything other than the default?
 
-Whoops, not good.
-Which application does work for you?
 
-The main reason why i'm planning to get the Hammerfall is to use it with
-JACK and music apps. But of course i'd like to use it with XMMS, Xine,
-etc as well.
-So that's why what you noticed is kinda scary to me.
-
-As for the 192-vs-96kHz thing...
-I want to use the RME in a small music studio (hence the JACK thing).
-Digital processing, if done entirely at 44.1 (for CD) or 48kHz (for DAT)
-has an ugly "lifeless" flavour that's disliked by most musicians. One
-way to work around it is to simply bump up the frequency of the entire
-digital chain, to 88.2 or 96kHz. But i've heard recently about some
-famous british composer who simply went all the way up to 176.4/192kHz,
-with results that amazed even the dyed-in-the-wool analogue fans.
-To get back to 44.1 before burning the master, you have to do an
-interpolating downsample (do NOT simply discard 3 samples out of 4!); it
-may seem counterintuitive, but apparently it sounds a lot better this
-way than if you process all along at 44.1
-
-So... balanced connectors + 192kHz = i want the RME
-
--- 
-Florin Andrei
-
-http://florin.myip.org/
-
+____________________________________________________________
+Get advanced SPAM filtering on Webmail or POP Mail ... Get Lycos Mail!
+http://login.mail.lycos.com/r/referral?aid=27005
 
 
 -------------------------------------------------------
