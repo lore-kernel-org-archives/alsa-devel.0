@@ -1,11 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Helping with documentation.
-Date: Mon, 11 Mar 2002 20:47:00 +0100 (CET)
+From: =?ks_c_5601-1987?B?vK2/77nMtfC+7g==?= <webmaster@mbcmovieenglish.co.kr>
+Subject: =?ks_c_5601-1987?B?W7GksO1dILmrt+G7+cfDY2QguKYgteW4s7TPtNkuIL3Fw7vHz7y8v+Q=?=
+Date: Tue, 12 Mar 2002 05:20:59 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203112044140.535-100000@pnote.perex-int.cz>
+Message-ID: <200203112020.VAA30071@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.GSO.3.96.1020311111503.27495A-100000@yin.interaccess.com>
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0057_01C0F20A.93A59C00"
+Received: from kjh ([211.41.8.107])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id VAA30071
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2002 21:20:30 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,62 +17,139 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "kevin@kevindumpscore.com" <kevin@kevindumpscore.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Mar 2002, Kevin Conder wrote:
+This is a multi-part message in MIME format.
 
-> On Sat, 9 Mar 2002, Jaroslav Kysela wrote:
-> 
-> > I don't know, if you are noticed, that some documentation already exist at
-> > http://www.alsa-project.org/alsa-doc/alsa-lib .
-> 
-> 	Could you generate a tar-ball of the HTML pages for off-line use?
-> A PDF would also be nice. 
+------=_NextPart_000_0057_01C0F20A.93A59C00
+Content-Type: text/plain;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-Can you work with doxygen (www.doxygen.org)? It would be easier to send 
-patches against sources, otherwise merging of changes is complicated for me.
+VW50aXRsZWQgRG9jdW1lbnQgICAgICAgICAgICC+yLPnx8+8vL/kLg0KICAgILmruvHA17Hb
+uK69rCDA1LTPtNkuDQogICC5q7rxwNex27iuvay0wiC8vLDowPvAziC/+cautfDB7rTPu+e/
+zSC75773wabI3rfOILjWxry5zLXwvu4gIMXrx9Wx4rz6wLsgwMy/68fRDQogICDD1sO3tNwg
+tfDB9sXQILGzwOe3ziC1pcDMxc0gvtDD4LnmvcTAziBNUEVHuKYgsbjH9sfPv6kgILi4tem+
++r3AtM+02S4gv6mx4r+htMIgxLi8x7HitMnAzCDDt7ChDQogILXHvu4ov7W5rsDauLcsIMfR
+sdjA2ri3LCC5q8DauLcpvLHFw7D6IERJQ1RBVElPTiCx4rTJwMwgIMO3sKG1x77uIMHvvK6/
+obytILXoseK0ybfCICDG8rChuKYNCiAgx9IgvPYgwNa1tbfPILHiyLm1x776vcC0z7TZLiAg
+DQogIL+pt6+60LKyIMDnuczA1rDUv7W+7rD4us64piDH0iC89iDA1rTCICCx4si4uKYgteW4
+s7TPtNkuDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgPMPivcPA2yC51yC787+1wNs+ICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgPMPivcPA2yC51yC787+1wNs+ICAgICAgICAgICAg
+ICAgICAgIDy9xcO7vK3A27y6PiAgICAgILmruvHA17HbuK69rCDBpsewwLsgucy4riC757/r
+x9gguri9x7z2ICDA1r3AtM+02S4gvcXDu8fYwda9w7jpILmrt+FjZLimILnfvNvH2LXluK6w
+2r3AtM+02S4NCsioxuTAzMH2IDogIHd3dy5tYmNtb3ZpZWVuZ2xpc2guY28ua3INCiAgICAg
+ICC6uyC43sDPwLogwaS6uMXrvcW6ziCxx7DtILvzx9e/oSDAx7DFICBbsaSw7V228yDHpb3D
+tcgguN7Az8DUtM+02S4NCrT1wMy78yC43sDPwLsgv/jEob7KwLi9w7jpILz2vcWwxbrOuKYg
+ILStt6/B1ry8v+QuDQogDQog
 
-> > The problem is, that I'm not English native writer and
-> > always busy with other maintaince things, so definitely, I can't create
-> > perfect English documentation.
-> > It would be
-> > really helpful from developers to give some feedback and/or rephase my
-> > texts.
-> 
-> 	I ran all of the pages through a spell checker. I noticed spelling
-> mistakes already in a few places...
-> 
-> * The word "constants" is misspelled in various ways.
-> * The word "highlevel" should be two words: "high level".
-> * The word "identificator" should probably be "identifier".
-> * Sometimes the word "obtain" is misspelled as "obatin".
-> * Sometimes the word "occurred" is misspelled as "occured".
-> * Sometimes the word "portamento" is misspelled as "pornamento" or 
-> "portnamento".
-> * Sometimes the word "sustenuto" is misspelled as "sostenuto".
-> 
-> 
-> 	Please note that "pornamento" and "portnamento" occur in constants
-> (in asoundef.h, IIRC). Correcting them could possibly have an adverse
-> effect on existing code. What should we do?
+------=_NextPart_000_0057_01C0F20A.93A59C00
+Content-Type: text/html;
+	charset="ks_c_5601-1987"
+Content-Transfer-Encoding: base64
 
-I changed it immediately.
+PCFET0NUWVBFIEhUTUwgUFVCTElDICItLy9XM0MvL0RURCBIVE1MIDQuMCBUcmFuc2l0aW9u
+YWwvL0VOIj4NCjxIVE1MPjxIRUFEPjxUSVRMRT5VbnRpdGxlZCBEb2N1bWVudDwvVElUTEU+
+DQo8TUVUQSBodHRwLWVxdWl2PUNvbnRlbnQtVHlwZSBjb250ZW50PSJ0ZXh0L2h0bWw7IGNo
+YXJzZXQ9a3NfY181NjAxLTE5ODciPg0KPE1FVEEgY29udGVudD0iTVNIVE1MIDYuMDAuMjYw
+MC4wIiBuYW1lPUdFTkVSQVRPUj48L0hFQUQ+DQo8Qk9EWSB0ZXh0PSMwMDAwMDAgYmdDb2xv
+cj0jZmZmZmZmPg0KPFRBQkxFIHdpZHRoPTYwMCBhbGlnbj1jZW50ZXIgYmdDb2xvcj0jZThl
+OGU4IGJvcmRlcj0wPg0KICA8VEJPRFk+DQogIDxUUj4NCiAgICA8VEQgd2lkdGg9NjAwIGhl
+aWdodD0xNDI+PEEgaHJlZj0iaHR0cDovL3d3dy5tYmNtb3ZpZWVuZ2xpc2guY28ua3IvIj48
+SU1HIA0KICAgICAgc3JjPSJodHRwOi8vd3d3Lm1iY21vdmllZW5nbGlzaC5jby5rci9jZF9j
+dXN0dW0vY3VzL2N1c3RvbWVyLmZpbGVzL2dpZi9maWxtLmdpZiIgYWxpZ249bWlkZGxlIGJv
+cmRlcj0wPjwvQT48L1REPg0KICA8L1RSPg0KICA8VFI+DQogICAgPFREIHdpZHRoPTYwMCBo
+ZWlnaHQ9MjM+PElNRyBzcmM9Imh0dHA6Ly93d3cubWJjbW92aWVlbmdsaXNoLmNvLmtyL2Nk
+X2N1c3R1bS9jdXMvY3VzdG9tZXIuZmlsZXMvZ2lmL2Jhci5naWYiPjwvVEQ+DQogIDwvVFI+
+DQogIDxUUj4NCiAgICA8VEQgd2lkdGg9NjAwPg0KICAgICAgPFAgYWxpZ249bGVmdD48Rk9O
+VCBzaXplPTI+Jm5ic3A7Jm5ic3A7PC9GT05UPjxGT05UIA0KICAgICAgc2l6ZT0tMj6+yLPn
+x8+8vL/kLjwvRk9OVD48Rk9OVCBzaXplPTI+PEJSPg0KICAgICAgICAmbmJzcDsmbmJzcDs8
+Rk9OVCANCiAgICAgIGNvbG9yPSNjYzMzMDA+Jm5ic3A7PC9GT05UPjwvRk9OVD48Rk9OVCBj
+b2xvcj0jY2MzMzAwIA0KICAgICAgc2l6ZT0yPrmruvHA17HbuK69rDwvRk9OVD48Rk9OVCBz
+aXplPTI+IMDUtM+02TwvRk9OVD48Rk9OVCBzaXplPS0yPi48L0ZPTlQ+PEZPTlQgDQogICAg
+ICBzaXplPTI+PEJSPg0KICAgICAgICAmbmJzcDsmbmJzcDu5q7rxwNex27iuvay0wiC8vLDo
+wPvAziA8Rk9OVCBjb2xvcj0jY2MzMzAwPr/5xq618MHutM+75zwvRk9OVD6/zSC75773wabI
+3rfOILjWxry5zLXwvu4gDQogICAgICAgIMXrx9Wx4rz6wLsgwMy/68fRPEJSPg0KICAgICAg
+ICAmbmJzcDsmbmJzcDvD1sO3tNwgtfDB9sXQILGzwOe3ziC1pcDMxc0gvtDD4LnmvcTAziBN
+UEVHuKYgsbjH9sfPv6kgDQogICAgICC4uLXpvvq9wLTPtNkuIL+pseK/obTCIMS4vMex4rTJ
+wMwgw7ewoTxCUj4mbmJzcDsmbmJzcDu1x77uKL+1ua7A2ri3LCDH0bHYwNq4tywguavA2ri3
+KbyxxcOw+iBESUNUQVRJT04gseK0ycDMIA0KICAgICAgw7ewobXHvu4gwe+8rr+hvK08Rk9O
+VCBjb2xvcj0jMDA5OTk5PiA8Rk9OVCBjb2xvcj0jY2MzMzAwPrXoseK0ybfCIA0KICAgICAg
+xvKwoTwvRk9OVD48L0ZPTlQ+uKY8QlI+Jm5ic3A7Jm5ic3A7x9IgvPYgwNa1tbfPILHiyLm1
+x776vcC0z7TZLiA8L0ZPTlQ+DQogICAgICA8UD48Qj48Rk9OVCBzaXplPTI+Jm5ic3A7Jm5i
+c3A7PC9GT05UPjxGT05UIHNpemU9LTE+v6m3r7rQsrIgwOe5zMDWsNS/tb7usPi6zrimIMfS
+ILz2IMDWtMIgDQogICAgICCx4si4uKYgteW4s7TPtNkuPC9GT05UPjwvQj48L1A+PC9URD48
+L1RSPg0KICA8VFI+DQogICAgPFREIHdpZHRoPTI3NSBoZWlnaHQ9MjA+PElNRyBzcmM9Imh0
+dHA6Ly93d3cubWJjbW92aWVlbmdsaXNoLmNvLmtyL2NkX2N1c3R1bS9jdXMvY3VzdG9tZXIu
+ZmlsZXMvZ2lmL2Jhci5naWYiPjwvVEQ+DQogIDwvVFI+DQogIDxUUj4NCiAgICA8VEQgd2lk
+dGg9NjAwIGhlaWdodD0yMD48QSANCiAgICAgIGhyZWY9Imh0dHA6Ly93d3cubWJjbW92aWVl
+bmdsaXNoLmNvLmtyL2NkX2N1c3R1bS9jdXMvY3VzdG9tZXIuaHRtIj48L0E+PC9URD48L1RS
+Pg0KICA8VFI+DQogICAgPFREIHdpZHRoPTYwMCBoZWlnaHQ9MzA+Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IDxJTUcgDQogICAgICBoZWlnaHQ9MjIgc3Jj
+PSJodHRwOi8vd3d3Lm1iY21vdmllZW5nbGlzaC5jby5rci9jZF9jdXN0dW0vY3VzL2N1c3Rv
+bWVyLmZpbGVzL2dpZi9NUy5naWYiIHdpZHRoPTEwMCBhbGlnbj0iYm90dG9tICI+IA0KICAg
+ICAgJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KICAgICAgJm5ic3A7Jm5ic3A7
+Jm5ic3A7IDxJTUcgaGVpZ2h0PTIyIHNyYz0iaHR0cDovL3d3dy5tYmNtb3ZpZWVuZ2xpc2gu
+Y28ua3IvY2RfY3VzdHVtL2N1cy9jdXN0b21lci5maWxlcy9naWYvTUsuZ2lmIiA/V0lEVEg9
+IjEwMCI+IA0KICAgICAgJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5i
+c3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7ICZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyANCiAgICAgIDxJTUcgaGVpZ2h0PTIyIHNyYz0iaHR0cDovL3d3dy5tYmNtb3ZpZWVu
+Z2xpc2guY28ua3IvY2RfY3VzdHVtL2N1cy9jdXN0b21lci5maWxlcy9naWYvY2QtMy5naWYi
+IA0KICAgICAgd2lkdGg9MTAwPjwvVEQ+DQogIDwvVFI+DQogIDxUUj4NCiAgICA8VEQgd2lk
+dGg9NjAwIGhlaWdodD01MD48QSANCiAgICAgIGhyZWY9Imh0dHA6Ly93d3cubWJjbW92aWVl
+bmdsaXNoLmNvLmtyL2NlbnRlciUyMGxpbmsvbWFpbi1zLmh0bWwiPiZuYnNwOyZuYnNwOzxJ
+TUcgDQogICAgICBoZWlnaHQ9MTIwIHNyYz0iaHR0cDovL3d3dy5tYmNtb3ZpZWVuZ2xpc2gu
+Y28ua3IvY2RfY3VzdHVtL2N1cy9jdXN0b21lci5maWxlcy9naWYvc2VuaW9yLmdpZiIgd2lk
+dGg9MTcwIGFsaWduPWJvdHRvbSANCiAgICAgIGJvcmRlcj0xPjwvQT4gJm5ic3A7Jm5ic3A7
+Jm5ic3A7IDxBIA0KICAgICAgaHJlZj0iaHR0cDovL3d3dy5tYmNtb3ZpZWVuZ2xpc2guY28u
+a3IvY2VudGVyJTIwbGluay9raWQuZmlsZXMvbWFpbi1rLmh0bWwiPjxJTUcgDQogICAgICBo
+ZWlnaHQ9MTIwIHNyYz0iaHR0cDovL3d3dy5tYmNtb3ZpZWVuZ2xpc2guY28ua3IvY2RfY3Vz
+dHVtL2N1cy9jdXN0b21lci5maWxlcy9naWYvS0lEUy5naWYiIHdpZHRoPTE3MCBhbGlnbj1i
+b3R0b20gYm9yZGVyPTE+IA0KICAgICAgJm5ic3A7Jm5ic3A7Jm5ic3A7PC9BPiA8QSANCiAg
+ICAgIGhyZWY9Imh0dHA6Ly93d3cubWJjbW92aWVlbmdsaXNoLmNvLmtyL2NkX2N1c3R1bS9j
+dXMvY3VzdG9tZXIuaHRtIj48SU1HIA0KICAgICAgaGVpZ2h0PTEyMCBzcmM9Imh0dHA6Ly93
+d3cubWJjbW92aWVlbmdsaXNoLmNvLmtyL2NkX2N1c3R1bS9jdXMvY3VzdG9tZXIuZmlsZXMv
+Z2lmL2ZyZWUtY2QuZ2lmIiB3aWR0aD0xNzAgYWxpZ249Ym90dG9tIA0KICAgICAgYm9yZGVy
+PTE+PC9BPiA8L1REPg0KICA8VFI+DQogICAgPFREIHdpZHRoPTYwMCBoZWlnaHQ9MjA+PEZP
+TlQgDQogICAgICBjb2xvcj0jY2M2NjAwPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OzxBIA0KICAgICAgaHJlZj0iaHR0cDovL3d3dy5tb3ZpZWVuZ2xpc2guY29tL2xpc3Qvc2Vu
+aW9yX2xpc3QuaHRtbCI+IDxGT05UIGZhY2U9sby4siANCiAgICAgIGNvbG9yPSMwMDAwMDAg
+c2l6ZT0yPiZsdDvD4r3DwNsgudcgu/O/tcDbJmd0OzwvRk9OVD48L0E+IDxGT05UIGZhY2U9
+sby4siANCiAgICAgIGNvbG9yPSMwMDAwMDAgDQogICAgICBzaXplPTI+Jm5ic3A7Jm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7
+IA0KICAgICAgJm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7IA0KICAgICAgJm5ic3A7
+Jm5ic3A7Jm5ic3A7Jm5ic3A7Jm5ic3A7PC9GT05UPjwvRk9OVD48Rk9OVCBmYWNlPbG8uLIg
+Y29sb3I9IzAwMDAwMCANCiAgICAgIHNpemU9Mj48QSBocmVmPSJodHRwOi8vd3d3Lm1vdmll
+ZW5nbGlzaC5jb20vbGlzdC9raWRzX2xpc3QuaHRtbCI+IDxGT05UIA0KICAgICAgY29sb3I9
+IzMzMzMzMz4mbHQ7w+K9w8DbILnXILvzv7XA2yZndDs8L0ZPTlQ+PC9BPjwvRk9OVD4gPEZP
+TlQgDQogICAgICBjb2xvcj0jMzMzMzMzPiZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZuYnNw
+OyZuYnNwOyZuYnNwOyZuYnNwOyANCiAgICAgICZuYnNwOyZuYnNwOyZuYnNwOyZuYnNwOyZu
+YnNwOyZuYnNwOyZuYnNwOyZuYnNwOzxGT05UIA0KICAgICAgc2l6ZT0yPiZsdDu9xcO7vK3A
+27y6Jmd0OzwvRk9OVD48L0ZPTlQ+PC9URD48L1RSPg0KICA8VFI+DQogICAgPFREIHdpZHRo
+PTYwMCAyMD8/Pg0KICA8VFI+DQogICAgPFREIHdpZHRoPTYwMCBoZWlnaHQ9MjU+PEEgDQog
+ICAgICBocmVmPSJodHRwOi8vd3d3Lm1iY21vdmllZW5nbGlzaC5jby5rci9jZF9jdXN0dW0v
+Y3VzL2N1c3RvbWVyLmh0bSI+PC9BPjwvVEQ+PC9UUj4NCiAgPFRSPg0KICAgIDxURCB3aWR0
+aD02MDAgaGVpZ2h0PTUwPjxGT05UIGNvbG9yPSMwMDAwMDAgc2l6ZT0yPrmruvHA17HbuK69
+rCDBpsewwLsgucy4riC757/rx9gguri9x7z2IA0KICAgICAgwNa9wLTPtNkuIL3Fw7vH2MHW
+vcO46SC5q7fhY2S4piC537zbx9i15biusNq9wLTPtNkuPEJSPsioxuTAzMH2IDogDQogICAg
+ICA8Qj53d3cubWJjbW92aWVlbmdsaXNoLmNvLmtyPEJSPjwvQj48L0ZPTlQ+DQogICAgICA8
+SFI+DQogICAgPC9URD48L1RSPg0KICA8VFI+DQogICAgPFREIHdpZHRoPTYwMCAzMD8+PC9U
+RD48L1RSPg0KICA8VFI+DQogICAgPFREIHdpZHRoPTYwMCBoZWlnaHQ9ODA+DQogICAgICA8
+RElWIGFsaWduPWNlbnRlcj48Rk9OVCBjb2xvcj0jMDAwMDAwIHNpemU9Mj66uyC43sDPwLog
+waS6uMXrvcW6ziCxx7DtILvzx9e/oSDAx7DFIA0KICAgICAgPEI+W7GksO1dPC9CPrbzIMel
+vcO1yCC43sDPwNS0z7TZLjxCUj609cDMu/MguN7Az8C7IL/4xKG+ysC4vcO46SA8Qj48QSAN
+CiAgICAgIGhyZWY9Im1haWx0bzp3ZWJtYXN0ZXJAbWJjbW92aWVlbmdsaXNoLmNvLmtyIj4g
+PEEgSFJFRj0iaHR0cDovL3d3dy5jcnVzYWRlLmNvLmtyL3JlamVjdC9yZWplY3QucGhwP2lk
+PTMxNDcmYXV0aD0zOGVkMTYyYTBkYmVmN2IzZmUwZjYyOGFhMDhiOTBlNyZtYWlsPWFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZyZtb2RlPXdyaXRlIj689r3FsMW6zjwvQT48L0I+uKYg
+DQogICAgICC0rbevwda8vL/kLjwvRk9OVD48Rk9OVCBjb2xvcj0jMDAwMDAwIHNpemU9MT48
+Qj48QlI+DQogICAgICAgIDwvQj48L0ZPTlQ+PC9ESVY+DQogICAgPC9URD48L1RSPjwvVEJP
+RFk+PC9UQUJMRT48L0JPRFk+PC9IVE1MPg0K
 
-> 	I don't know how to send in this feedback. Unless someone tells me
-> otherwise, I'll create patches and post them here. My next phase is to
-> check for grammar mistakes.
-
-Thank you.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+------=_NextPart_000_0057_01C0F20A.93A59C00--
 
 
 _______________________________________________
