@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 1.0.4rc1 release
-Date: Wed, 31 Mar 2004 10:50:52 +0200 (CEST)
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: buffer producer/consumer sync
+Date: Wed, 31 Mar 2004 09:53:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403311048270.1950@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0403310905140.20838-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040331095306.A32258@flint.arm.linux.org.uk>
+References: <F509E6111989D311B63700805FA761DA0D82DE6E@DBDE01> <20040331083114.C27804@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403310936170.1950@pnote.perex-int.cz> <20040331085330.A30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311004040.1950@pnote.perex-int.cz> <20040331091124.B30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311027290.1950@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0403310905140.20838-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0403311027290.1950@pnote.perex-int.cz>; from perex@suse.cz on Wed, Mar 31, 2004 at 10:29:06AM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,40 +17,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "Gupta, Kshitij" <kshitij@ti.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 31 Mar 2004, Clemens Ladisch wrote:
-
-> But now:
+On Wed, Mar 31, 2004 at 10:29:06AM +0200, Jaroslav Kysela wrote:
+> On Wed, 31 Mar 2004, Russell King wrote:
+> > Keeping the existing ->nopage will not work - there is no way to get to
+> > a struct page on ARM given the information available to the ALSA code.
 > 
-> # modprobe snd
-> modprobe: Too deep recursion in module dependencies!
-> modprobe: Circular dependency? snd-page-alloc snd
-> 
-> snd_pci_compat_get_pci_driver() is called from
-> pci_compat_pm_callback() in misc.c.  I think the 2.2.x CONFIG_APM
+> Looking to arch/arm/mm/consistent.c - vm_region_find / pfn_to_page?
 
-I don't see the circular dependency for this function. 
-snd_pci_compat_get_pci_driver() is defined in snd-page-alloc
-and pci_compat_pm_callback() does not define it. I'm missing
-something?
+No - we don't have a pfn to start with, and I'm not implementing an
+interface which returns a struct page because, as was agreed on
+linux-arch, such an interface is completely wrong.
 
-> stuff in misc.c could be moved into pci_compat_22.c, but OTOH it might
-> make more sense to move the PCI functions that don't do page
-> allocation from the snd-page-alloc module into snd.  What's your
-> opinion on this?
+The correct interface is dma_mmap_coherent().
 
-I don't mind so much. But having related compatibility stuff at one place 
-also makes sense.
+I'm actually tempted to provide dma_mmap_coherent() and just let
+everyone else whinge and moan that the API doesn't meet their
+expectations.
 
-						Jaroslav
+BTW, ARM also needs the mark_pages and unmark_pages functions commented
+out since they're also trying to use virt_to_page() on virtual addresses
+that this function is not supposed to - except for the ISA DMA case
+(and yes, we have ISA DMA-based sound cards as well.)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
 
 
 -------------------------------------------------------
