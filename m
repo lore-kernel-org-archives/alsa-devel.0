@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000722]: Please provide man page for aserver
-Date: Sun, 12 Dec 2004 15:38:21 +0100
-Message-ID: <8e11646ab485d575624e88cc24854e7e@bugtrack.alsa-project.org>
+From: =?Windows-1251?B?3eLl6+jt4CDB8O7t6PHr4OLu4u3g?= <luigi@panhandle.rr.com>
+Subject: Re:
+Date: Sun, 12 Dec 2004 14:27:49 +0000
+Message-ID: <E1CdVh5-0006m6-KD@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51B20294
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 15:38:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,38 +15,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Внимание акция!
+Закажите до 20 дekaбря Е-маil paccылкy и получи бoнyc(paccылкy no iсq)....
+ 
+ambling@3432.cjb.net 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=722> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   722
-Category:                   general
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-12-2004 15:38 CET
-Last Modified:              12-12-2004 15:38 CET
-======================================================================
-Summary:                    Please provide man page for aserver
-Description: 
-Please provide a man page for the aserver program.
-======================================================================
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-12-04 15:38 jdthood        New Issue                                    
-======================================================================
+
+
 
 
 
