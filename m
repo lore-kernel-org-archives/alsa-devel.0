@@ -1,73 +1,73 @@
-From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: [PATCH] make standard conversions work with compat_ioctl.
-Date: Thu, 6 Jan 2005 15:41:44 +0200
-Message-ID: <20050106134144.GA25629@mellanox.co.il>
-Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+From: "Don Gulotta" <DGULOTTA@alliance.csc.com>
+Subject: question about parameter settings.
+Date: Thu, 06 Jan 2005 07:40:11 -0600
+Message-ID: <s1dceb67.088@CSCOTM.rss.hyatt.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262820AbVAFNkR@vger.kernel.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from CSCOTM.rss.hyatt.com (alliance.csc.com [140.95.202.227])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53C6723E
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 14:39:31 +0100 (MET)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@osdl.org>
-Cc: hch@infradead.org, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
-Quoting r. Andrew Morton (akpm@osdl.org) "Re: [PATCH] deprecate (un)register_ioctl32_conversion":
-> "Michael S. Tsirkin" <mst@mellanox.co.il> wrote:
-> >  Christoph, I know you want to remove the inode parameter :)
-> > 
-> >  Otherwise I think -mm1 has the final version of the replacement.
-> 
-> I merged Christoph's verion of the patch into -mm.
+I have a question about the parameters that need to be passed to CS46xx.
+ I am running Suse Linux 9.2 and it automatically finds the CS46xx but I
+get no sound.  I have looked at the Alsa documentation and the parameter
+lists but don't know what the actual values should be.  I only see three
+to configure in Yast2 hardware config for the card yet I see 6 in the
+documentation.  I get the last three to configure.   
 
-Unfortunately, in -mm2 version, it seems that once a driver
-implements compat_ioctl, the standard ioctls like FIOQSIZE
-stop working for it, and so
-do standard commands implemented with COMPATIBLE_IOCTL.
+description: "Cirrus Logic Sound Fusion CS46XX" 
 
-The simplest solution is, I think, to do as Arnd Bergmann suggested,
-and go back to the hash lookup if compat_ioctl returns -ENOIOCTLCMD.
+author: "Jaroslav Kysela " 
 
-To make it easy to use the same function for unlocked_ioctl
-and for ioctl_compat, for unlocked_ioctl the code -ENOIOCTLCMD
-shall be translated to -EINVAL.
+license: "GPL" 
 
-Attached patch is for -mm2, applies over 2.6.10 as well with 
-ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.10/2.6.10-mm2/broken-out/ioctl-rework-2.patch
+parm: index int array (min = 1, max = 8), description "Index value for
+the CS46xx soundcard." 
 
-MST
+parm: id string array (min = 1, max = 8), description "ID string for
+the CS46xx soundcard." 
 
-Handle generic ioctl commands by falling back on static
-conversion functions in fs/compat_ioctl.c on -ENOIOCTLCMD code.
+parm: enable int array (min = 1, max = 8), description "Enable CS46xx
+soundcard." 
 
-Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
+parm: external_amp int array (min = 1, max = 8), description "Force to
+enable external amplifer." 
 
-diff -rup linux-2.6.10/fs/compat.c linux-2.6.10-ioctls/fs/compat.c
---- linux-2.6.10/fs/compat.c	2005-01-06 17:54:13.234156872 +0200
-+++ linux-2.6.10-ioctls/fs/compat.c	2005-01-06 17:37:38.110438672 +0200
-@@ -440,8 +440,10 @@ asmlinkage long compat_sys_ioctl(unsigne
- 		if (!filp->f_op->ioctl)
- 			goto do_ioctl;
- 	} else if (filp->f_op->compat_ioctl) {
-+		/* compat_ioctl returns -ENOIOCTLCMD on unhandled command. */
- 		error = filp->f_op->compat_ioctl(filp, cmd, arg);
--		goto out_fput;
-+		if (error != -ENOIOCTLCMD)
-+			goto out_fput;
- 	}
+parm: thinkpad int array (min = 1, max = 8), description "Force to
+enable Thinkpad's CLKRUN control." 
+
+parm: mmap_valid int array (min = 1, max = 8), description "Support OSS
+mmap." 
+
+
+Don Gulotta
+Member Technical Staff
+MCSE W2k,MCNE,CCNA,Unix Admin
+Computer Sciences Corporation
  
- 	down_read(&ioctl32_sem);
-diff -rup linux-2.6.10/fs/ioctl.c linux-2.6.10-ioctls/fs/ioctl.c
---- linux-2.6.10/fs/ioctl.c	2005-01-06 17:54:13.235156720 +0200
-+++ linux-2.6.10-ioctls/fs/ioctl.c	2005-01-06 18:00:10.463849704 +0200
-@@ -26,6 +26,9 @@ static long do_ioctl(struct file *filp, 
- 
- 	if (filp->f_op->unlocked_ioctl) {
- 		error = filp->f_op->unlocked_ioctl(filp, cmd, arg);
-+		if (error == -ENOIOCTLCMD)
-+			error = -EINVAL;
-+		goto out;
- 	} else if (filp->f_op->ioctl) {
- 		lock_kernel();
- 		error = filp->f_op->ioctl(filp->f_dentry->d_inode,
+1 Tower Lane, Suite 400
+Oakbrook Terrace, IL 60181 USA
+Direct: 630.990.4867
+Fax: 630.990.4832
+Email: dgulotta@alliance.csc.com 
+Aim: dlg2609
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
