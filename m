@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: programming with dmix ?
-Date: Thu, 19 Jun 2003 22:14:07 +0200 (CEST)
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: Re: ./snddevices
+Date: Thu, 19 Jun 2003 15:51:06 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306192213320.1930-100000@pnote.perex-int.cz>
-References: <20030619184036.62520.qmail@web40904.mail.yahoo.com>
+Message-ID: <20030619155107.13707.h003.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030619184036.62520.qmail@web40904.mail.yahoo.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alex Kuang <alex_sfu@yahoo.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: pshirkey@boosthardware.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Jun 2003, Alex Kuang wrote:
+> plugin "alsa". Trying defaults. snd_pcm_open: Permission denied (quattro1)
+> Failed to initialize plugin! -----
 
-> Hi there,
-> 
-> Just wondered how I can apply the cool feature - dmix
-> - to my own program to mix sounds? for example, after
-> I compile my small c++ program, I can run it one at a
-> time:
-> 
-> ./a.out TestMusic.wav
-> 
-> The thing's that how I can mix sounds when I run:
-> 
-> ./a.out TestMusic01.wav &
-> ./a.out TestMusic02.wav &
-> ./a.out TestMusic03.wav &
-> 
-> Thank you very much,
+I had similar problems. Sometimes i could access ALSA devices as a normal user,
+and sometimes only as root. It seemed to change (for the worse)if I unloaded all
+the sound modules and then reloaded.
 
-Simply use different pcm name as argument to snd_pcm_open().
-Replace 'default' with 'plug:dmix'.
+I went and chmod ug+rw /dev/snd/*, but this didn't always work
+(Hmmm maybe after I had to press the reset button...)
 
-						Jaroslav
+Removing /lib/dev-state/snd at the same time as doing the chmod seemed to do the
+trick...
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+I also had to add myself to the 'audio' group (or is that add "audio" to my
+groups list)
 
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
