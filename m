@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000789]: With AZX Sound card
-Date: Fri, 7 Jan 2005 00:42:13 +0100
-Message-ID: <979fadfab406790396f217f4c3b50f42@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Fri, 7 Jan 2005 00:44:35 +0100
+Message-ID: <eb69e1238e3f53a61837b9087649a4c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 347B72BD
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:42:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ED90A2BD
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:44:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,48 +22,112 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=789> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
 Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   789
-Category:                   CORE - pcm
+Issue ID:                   666
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.10
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             01-07-2005 00:42 CET
-Last Modified:              01-07-2005 00:42 CET
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              01-07-2005 00:44 CET
 ======================================================================
-Summary:                    With AZX Sound card
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-Since Alsa v1.0.8rc2 not in v1.0.7
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-Alsa Start but in my dmesg I get :
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
 
+
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
+======================================================================
+
+----------------------------------------------------------------------
+ footcow - 12-16-04 21:06 
+----------------------------------------------------------------------
+OK ... you can close this bug ...
+It's running with the last CVS version ! ;o)
+I'm so happy ... many thanks for your job !
+
+So strange that the hardware do not have any volume control !
+But it's running ... that's the best thing !
+
+----------------------------------------------------------------------
+ footcow - 01-07-05 00:44 
+----------------------------------------------------------------------
+Since v1.0.8rc2 I get now again no sound ...
+I get this message in my dmesg after KDE start (start of ARTS !?)
 ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1872: BUG? (err >=
 0) (called from f8b19f16)
 ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
 snd_pcm_hw_constraints_complete failed
 
-I think it's under KDE when the ARTS server start ... then I have no sound
-unsing ALSA sound server neighter and OSS (same message when I switch the
-sound server under KDE, each time my dmesg).
-======================================================================
+Each time I try to change ALSA to OSS or OSS to ALSA I get those line
+appearing in the dmesg.
+
+Alsamixer run, but ARTS do not want to start .. so no sound again !
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 00:42 footcow        New Issue                                    
-01-07-05 00:42 footcow        Distribution              => Debian          
-01-07-05 00:42 footcow        Kernel Version            => 2.6.10          
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+12-12-04 00:59 footcow        File Added: alsamix2.png                     
+12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-16-04 21:06 footcow        Note Added: 0002841                          
+01-07-05 00:44 footcow        Note Added: 0003099                          
 ======================================================================
 
 
