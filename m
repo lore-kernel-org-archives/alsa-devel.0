@@ -1,8 +1,8 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Audigy LS Midi support.
-Date: Mon, 21 Jun 2004 19:49:50 +0100
+Subject: Audigy LS SPDIF output.
+Date: Mon, 21 Jun 2004 19:53:51 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40D72DCE.3020803@superbug.demon.co.uk>
+Message-ID: <40D72EBF.80108@superbug.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -20,21 +20,17 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-I have been working on the Audigy LS driver for ALSA.
+I cannot test SPDIF output because I cannot find a suitable 4 pole mini 
+jack that has 3 phone plugs on the end of it, so that I can test spdif out.
 
-I don't use MIDI for anything, so adding support for it to the Audigy LS 
-driver is rather difficult.
+I have tried a few different cables, but none of them even work with the 
+4front drivers. Once I have a cable that works with the 4Front drivers, 
+I will then look into getting the ALSA driver working.
 
-Can anyone help me?
-I need a way for me to test that whatever I implement actually works.
-For this, I suppose I would need a sort of midi loopback, or an external 
-midi device.
+Can anybody help me here?
 
-Can someone who knows about midi help me set up some type of test 
-hardware, so that I can complete the Audigy LS driver.
-
-Cheers
 James
+
 
 
 -------------------------------------------------------
