@@ -1,11 +1,11 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: ALSA CVS (Linux 2.4) - suddenly silent
-Date: Tue, 14 Oct 2003 19:42:20 +0100 (BST)
+From: Apostolos Dimitromanolakis <apostolos@aei.ca>
+Subject: Prodigy 7.1 ?
+Date: Wed, 15 Oct 2003 00:02:26 +0000 (UTC)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031014184220.6913.qmail@web40603.mail.yahoo.com>
+Message-ID: <3FF3EBB8.6020503@aei.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,26 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Date: Thu, 01 Jan 2004 04:43:20 -0500
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+
 Hi,
+ I got today a Audiotrak Prodigy 7.1 soundcard which is based on the 
+ICE1724 chip. Since it's a lovely card (106db SNR, 106db DR codec), i'd 
+love to get it running under linux. I downloaded the latest alsa drivers 
+but there is no support for it. I'd volunteer to write some code to get 
+it working if there isn't anybody else doing the same.
 
-I have just installed ALSA CVS on my Linux 2.4.22 box,
-and suddenly the PCM playback has gone silent. I know
-my speakers are on because I can play CDs, and the OSS
-emu10k1 driver still works too so it can't be the
-hardware.
+For more information see: 
+http://www.digit-life.com/articles2/audiotrak-prodigy71/
+The card is based on the wonderful WM8770 codec (which alone costs 1/5 
+of the retail price of the card :)
+See: http://www.wolfsonmicro.com/products/digital_audio/codecs/WM8770/ 
+for the specs.
 
-Interestingly, the alsa-driver-0.9.7c.tar.bz2 package
-is also OK.
+Are there any plans on supporting this chip?
 
-Cheers,
-Chris
+Apostolos
 
-________________________________________________________________________
-Want to chat instantly with your online friends?  Get the FREE Yahoo!
-Messenger http://mail.messenger.yahoo.co.uk
+PS Since I'me not yet subscribed to alsa-devel please cc my personal email
+
+
 
 
 -------------------------------------------------------
