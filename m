@@ -1,14 +1,15 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: RPM Build problem
-Date: 30 Sep 2003 09:59:23 -0700
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [alsa-cvslog] CVS: alsa-lib/test iecbits.c,NONE,1.1 iecset.c,NONE,1.1
+ .cvsignore,1.11,1.12 Makefile.am,1.24,1.25
+Date: Tue, 30 Sep 2003 18:20:24 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1064941163.9000.1.camel@cmn37.stanford.edu>
-References: <1064903425.9677.9.camel@didjeridu>
+Message-ID: <3F79BB58.2080301@superbug.demon.co.uk>
+References: <E1A4NtA-0002Dv-00@sc8-pr-cvs1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1064903425.9677.9.camel@didjeridu>
+In-Reply-To: <E1A4NtA-0002Dv-00@sc8-pr-cvs1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alfp <alfp@adsmr.co.za>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@users.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> I'm trying to build RPMs from alsa-driver-0.9.7 (on Mandrake 9), and at
-> the end of the process, rpm reports 'installed but unpackaged' files:
-> Checking for unpackaged file(s): /usr/lib/rpm/check-files
-> /var/tmp/alsa-driver-0.9.7-root
-> error: Installed (but unpackaged) file(s) found:
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.dep
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.generic_string
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.ieee1394map
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.isapnpmap
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.parportmap
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.pcimap
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.pnpbiosmap
->    /lib/modules/2.4.21-0.13mdkenterprise/modules.usbmap
+Takashi Iwai wrote:
+> Update of /cvsroot/alsa/alsa-lib/test
+> In directory sc8-pr-cvs1:/tmp/cvs-serv8451
 > 
-> I see that the Makefile runs depmod -a, which creates these files, and
-> the alsa-driver.spec lists
-> /lib/modules/*/kernel/*
-> which does not include these files.
+> Modified Files:
+> 	.cvsignore Makefile.am 
+> Added Files:
+> 	iecbits.c iecset.c 
+> Log Message:
+> added iecset program (this could be to alsa-utils after more
+> enhancements).
 > 
-> The question is, should they be in the RPM or not? 
+This could be useful for a number of reasons.
+One reason it might help for is this.
+1) Application outputing to the "front" device outputs sound to the 
+spdif with PCM iec mode set.
+2) Application finishes, leaving PCM iec mode set.
+3) New application outputs AC3 stream with NON-AUDIO iec mode set.
+4) Application finishes, leaving PCM iec mode set.
+5) New application outputs AC3 stream with NON-AUDIO iec mode set.
+6) Application gets killed with "kill -9 PID" leaving NON-AUDIO iec mode 
+set.
+7) Application outputing to the "front" device outputs sound, but the 
+spdif is left in NON-AUDIO iec mode, so no sound comes out of the spdif.
+ From then onwards all application outputting sound will default to 
+NON-AUDIO bit being set, when the sensible assumption would be to set 
+PCM mode as default, and only set NON-AUDIO mode when using a device 
+name like "iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2"
 
-They should not be in the rpm. They will be created at boot time when
-the boot process runs depmod (I think). 
+So my question is, can iecbits.c code be used to set the default iec 
+mode back to PCM, if it has accidentally been fixed on NON-AUDIO due to 
+the kill -9 ?
 
-> My gutfeel is that
-> they are installation-specific and should not be in the RPM. In that
-> case, do I modify the Makefile or somehow tell the specfile to delete
-> the files before packaging?
-
-You can just delete them to make rpm happy. 
--- Fernando
-
+Cheers
+James
 
 
 
