@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000973]: Errors in headers
-Date: Thu, 10 Mar 2005 14:49:10 +0100
-Message-ID: <2f30b149343706186a9ff7013a74ddce@bugtrack.alsa-project.org>
+Date: Thu, 10 Mar 2005 14:52:45 +0100
+Message-ID: <9ebcf20d868f5d88f8639e801bfe23be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C7F51C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:49:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 093BD1C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 14:52:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Ubuntu Hoary
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             03-08-2005 03:08 CET
-Last Modified:              03-10-2005 14:49 CET
+Last Modified:              03-10-2005 14:52 CET
 ======================================================================
 Summary:                    Errors in headers
 Description: 
@@ -59,17 +59,17 @@ know
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:40 
-----------------------------------------------------------------------
-It's not reproducible here.  Is your kernel likely modified in the relevant
-part?
-
-----------------------------------------------------------------------
  subbia - 03-10-05 14:49 
 ----------------------------------------------------------------------
 No, my kernel is the 2.6.10, and i haven't modified it. I've installed
 kernel's sources directly from ubuntu mirrors, with synaptic, if this can
 be usefull......
+
+----------------------------------------------------------------------
+ tiwai - 03-10-05 14:52 
+----------------------------------------------------------------------
+How did you compile ALSA drivers?
+Did you pass proper configure options?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -79,6 +79,7 @@ Date Modified  Username       Field                    Change
 03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
 03-09-05 18:40 tiwai          Note Added: 0003833                          
 03-10-05 14:49 subbia         Note Added: 0003854                          
+03-10-05 14:52 tiwai          Note Added: 0003855                          
 ======================================================================
 
 
