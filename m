@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000892]: (snd_pcm_route_load_ttable) Invalid type for X - when using REAL numbers
-Date: Wed, 9 Feb 2005 12:09:46 +0100
-Message-ID: <3894f68aa753dd6c30db58221f7131d3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
+Date: Wed, 9 Feb 2005 12:23:36 +0100
+Message-ID: <468497d9c50ef4215e97a76ec22a77bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E40A228
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:09:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B2C425E
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:23:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,109 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=892> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
 ======================================================================
-Reported By:                slammer
-Assigned To:                
+Reported By:                hamishtpb
+Assigned To:                karsten
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   892
-Category:                   general
-Reproducibility:            have not tried
+Project:                    ALSA - driver
+Issue ID:                   885
+Category:                   USB - usb-usx2y
+Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo 2004.3
+Kernel Version:             2.4.28-Gentoo-r5
 ======================================================================
-Date Submitted:             02-08-2005 15:06 CET
-Last Modified:              02-09-2005 12:09 CET
+Date Submitted:             02-06-2005 05:57 CET
+Last Modified:              02-09-2005 12:23 CET
 ======================================================================
-Summary:                    (snd_pcm_route_load_ttable) Invalid type for X -
-when using REAL numbers
+Summary:                    usx2y is unsupported in v 1.08 builds
 Description: 
-According to the route plugin description at
-http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html 
-
-ttable {                schannels numbers)
-                CCHANNEL {
-                        SCHANNEL REAL   # route value (0.0 - 1.0)
-                }
-
-the ttable values can be REAL.
-Although when defining such a simple pcm as:
-
-pcm.ch51dup {
-    type route
-    ttable {
-        0 {
-            0 1
-            4 1
-            2 0.5
-            3 0.5
-        }
-        1 {
-            1 1
-            5 1
-            2 0.5
-            3 0.5
-        }
-    }
-    slave.pcm {
-        type hw
-        card 0
-        device 0
-    }
-    slave.channels 6
-}
-
-and trying to use the pcm, I get an error:
-(snd_pcm_route_load_ttable) Invalid type for 2.
-(snd_pcm_route_load_ttable) Invalid type for 3.
-
-This i tried to define the table values in different manners e.g.
-ttable.0.3 0.5  (even used the exact sample from
-http://alsa.opensrc.org/index.php?page=FAQ028) but the result is the
-same.
-
+Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
+when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
+compile went smoothly.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 11:52 
+ tiwai - 02-09-05 11:55 
 ----------------------------------------------------------------------
-Blame glibc :)
-alsa-lib uses only the standard strtod() function.
+Then I suspect it's gentoo specific.
+What happens if you compile all drivers without passing --with-cards=xxx?
 
 ----------------------------------------------------------------------
- slammer - 02-09-05 12:09 
+ hamishtpb - 02-09-05 12:23 
 ----------------------------------------------------------------------
-Allright got it. But I have to add a few words ;P
-I exported LC_NUMERIC=C and that was it. The pcm worked fine. But as far
-as I know in my country we use the character "," as a comma, therefore I
-have tried to use it in the value of ttable with my LC_NUMERIC set to
-pl_PL.
-        ttable.0.4 0,5
-        ttable.1.4 0,5
-        ttable.0.5 0,5
-        ttable.1.5 0,5
-
-And Bah! Alsa lib returned an error: (snd_config_load1) _toplevel_ :
-Unexpected char.
-So I think this is another reason why you shoud make config parsing locale
-independet.
-But if you want to leave (make?) it locale dependent you should make it
-work ;)
-
-P.S. Thanks for your work guys.
+Ah. I had tried using Gentoo's portage to install with no cards (it dies
+during compile in portage when no cards specified - probably due to
+another parameter in the portage script- possibly not important for now?)
+but I had not tried manually with no cards! I just tried and the compile
+was fine  BUT - the usx2y module does not appear to compile and I still
+cannot get 1.0.8 to work with Tascam :(
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 15:06 slammer        New Issue                                    
-02-08-05 15:06 slammer        Issue Monitored: slammer                     
-02-08-05 15:09 slammer        Note Added: 0003533                          
-02-09-05 11:29 tiwai          Note Added: 0003537                          
-02-09-05 11:47 slammer        Note Added: 0003542                          
-02-09-05 11:52 tiwai          Note Added: 0003543                          
-02-09-05 12:09 slammer        Note Added: 0003548                          
+02-06-05 05:57 hamishtpb      New Issue                                    
+02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
+02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
+02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
+02-06-05 15:53 hamishtpb      Note Added: 0003525                          
+02-09-05 11:55 tiwai          Note Added: 0003545                          
+02-09-05 12:23 hamishtpb      Note Added: 0003549                          
 ======================================================================
 
 
