@@ -1,22 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: intel 8x0 went silent in 2.6.11
-Date: Tue, 08 Mar 2005 22:02:52 -0500
-Message-ID: <1110337373.7123.4.camel@mindpipe>
-References: <4227085C.7060104@drzeus.cx>
-	 <29495f1d05030309455a990c5b@mail.gmail.com>
-	 <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
-	 <1109875926.2908.26.camel@mindpipe>
-	 <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>
-	 <1109876978.2908.31.camel@mindpipe>
-	 <Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com>
-	 <20050303154929.1abd0a62.akpm@osdl.org> <4227ADE7.3080100@drzeus.cx>
-	 <4228D013.8010307@drzeus.cx> <s5hmztfwon1.wl@alsa2.suse.de>
-	 <422CB68A.1050900@drzeus.cx> <s5hekerurz8.wl@alsa2.suse.de>
-	 <422CFB6E.1020002@drzeus.cx> <s5h1xaquzf0.wl@alsa2.suse.de>
-	 <Pine.LNX.4.62.0503082050270.3821@krusty.vfxcomputing.com>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] sound/pci/: make code static
+Date: Wed, 9 Mar 2005 04:20:40 +0100
+Message-ID: <20050309032040.GJ3146__29662.0016139515$1110338560$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-FJZigvHJNOcnzt2N+89+"
-In-Reply-To: <Pine.LNX.4.62.0503082050270.3821@krusty.vfxcomputing.com>
+Content-Type: text/plain; charset=us-ascii
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 1E2E019D
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 04:20:41 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,113 +17,111 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Canter <marcus@vfxcomputing.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Pierre Ossman <drzeus-list@drzeus.cx>, Andrew Morton <akpm@osdl.org>, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch makes needlessly global code static.
 
---=-FJZigvHJNOcnzt2N+89+
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-On Tue, 2005-03-08 at 20:53 -0500, Mark Canter wrote:
-> I think I've gone through every possible value here from asound.state to 
-> each setting in KDE itself.  Still, the only sound that works is the one 
-> coming from line-out, without the port replicator, no sound exists 
-> whatsoever.  Both of the below controls are set to false in asound.state 
-> and cooresponding KDE settings in kmix.
-> 
-> I think the concern becomes though, regardless of what kde was doing after 
-> the fact, this condition didn't exits in <= 2.6.10 when no other 
-> applications where changed around it.
+---
 
-If you revert both the attached patches, does it work?
+ sound/pci/ac97/ac97_codec.c    |    9 ++++++---
+ sound/pci/ac97/ac97_local.h    |    3 ---
+ sound/pci/ca0106/ca0106_proc.c |    2 +-
+ sound/pci/hda/hda_codec.c      |    6 ++++--
+ sound/pci/hda/patch_realtek.c  |    2 +-
+ 5 files changed, 12 insertions(+), 10 deletions(-)
 
-They are against alsa CVS, so to back these patches out from your 2.6.11
-tree do this:
-
-  cd linux-2.6.11/sound/pci/ac97
-  patch -p0 -R < ac97-2.patch
-  patch -p0 -R < ac97.patch
-
-Lee
-
-
-
-
-
---=-FJZigvHJNOcnzt2N+89+
-Content-Disposition: attachment; filename=ac97-2.patch
-Content-Type: text/x-patch; name=ac97-2.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: ac97_patch.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
-retrieving revision 1.69
-retrieving revision 1.70
-diff -u -r1.69 -r1.70
---- ac97_patch.c	17 Jan 2005 13:47:20 -0000	1.69
-+++ ac97_patch.c	20 Jan 2005 11:43:19 -0000	1.70
-@@ -1113,6 +1113,7 @@
- 	switch (subid) {
- 	case 0x103c0890: /* HP nc6000 */
- 	case 0x103c006d: /* HP nx9105 */
-+	case 0x17340088: /* FSC Scenic-W */
- 		/* enable headphone jack sense */
- 		snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11);
- 		break;
-
---=-FJZigvHJNOcnzt2N+89+
-Content-Disposition: attachment; filename=ac97.patch
-Content-Type: text/x-patch; name=ac97.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: ac97_patch.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
-retrieving revision 1.68
-retrieving revision 1.69
-diff -u -r1.68 -r1.69
---- ac97_patch.c	11 Jan 2005 15:57:20 -0000	1.68
-+++ ac97_patch.c	17 Jan 2005 13:47:20 -0000	1.69
-@@ -1107,13 +1107,25 @@
- #endif
+--- linux-2.6.11-mm2-full/sound/pci/ac97/ac97_local.h.old	2005-03-09 03:11:25.000000000 +0100
++++ linux-2.6.11-mm2-full/sound/pci/ac97/ac97_local.h	2005-03-09 03:12:41.000000000 +0100
+@@ -43,9 +43,6 @@
+ int snd_ac97_get_volsw(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol);
+ int snd_ac97_put_volsw(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol);
+ int snd_ac97_try_bit(ac97_t * ac97, int reg, int bit);
+-int snd_ac97_remove_ctl(ac97_t *ac97, const char *name, const char *suffix);
+-int snd_ac97_rename_ctl(ac97_t *ac97, const char *src, const char *dst, const char *suffix);
+-int snd_ac97_swap_ctl(ac97_t *ac97, const char *s1, const char *s2, const char *suffix);
+ void snd_ac97_rename_vol_ctl(ac97_t *ac97, const char *src, const char *dst);
+ void snd_ac97_restore_status(ac97_t *ac97);
+ void snd_ac97_restore_iec958(ac97_t *ac97);
+--- linux-2.6.11-mm2-full/sound/pci/ac97/ac97_codec.c.old	2005-03-09 03:11:47.000000000 +0100
++++ linux-2.6.11-mm2-full/sound/pci/ac97/ac97_codec.c	2005-03-09 03:12:55.000000000 +0100
+@@ -2280,7 +2280,8 @@
+ }	
+ 
+ /* remove the control with the given name and optional suffix */
+-int snd_ac97_remove_ctl(ac97_t *ac97, const char *name, const char *suffix)
++static int snd_ac97_remove_ctl(ac97_t *ac97, const char *name,
++			       const char *suffix)
+ {
+ 	snd_ctl_elem_id_t id;
+ 	memset(&id, 0, sizeof(id));
+@@ -2299,7 +2300,8 @@
+ }
+ 
+ /* rename the control with the given name and optional suffix */
+-int snd_ac97_rename_ctl(ac97_t *ac97, const char *src, const char *dst, const char *suffix)
++static int snd_ac97_rename_ctl(ac97_t *ac97, const char *src,
++			       const char *dst, const char *suffix)
+ {
+ 	snd_kcontrol_t *kctl = ctl_find(ac97, src, suffix);
+ 	if (kctl) {
+@@ -2317,7 +2319,8 @@
+ }
+ 
+ /* swap controls */
+-int snd_ac97_swap_ctl(ac97_t *ac97, const char *s1, const char *s2, const char *suffix)
++static int snd_ac97_swap_ctl(ac97_t *ac97, const char *s1,
++			     const char *s2, const char *suffix)
+ {
+ 	snd_kcontrol_t *kctl1, *kctl2;
+ 	kctl1 = ctl_find(ac97, s1, suffix);
+--- linux-2.6.11-mm2-full/sound/pci/ca0106/ca0106_proc.c.old	2005-03-09 03:13:05.000000000 +0100
++++ linux-2.6.11-mm2-full/sound/pci/ca0106/ca0106_proc.c	2005-03-09 03:13:15.000000000 +0100
+@@ -95,7 +95,7 @@
  };
  
-+static void check_ad1981_hp_jack_sense(ac97_t *ac97)
-+{
-+	u32 subid = ((u32)ac97->subsystem_vendor << 16) | ac97->subsystem_device;
-+	switch (subid) {
-+	case 0x103c0890: /* HP nc6000 */
-+	case 0x103c006d: /* HP nx9105 */
-+		/* enable headphone jack sense */
-+		snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11);
-+		break;
-+	}
-+}
-+
- int patch_ad1981a(ac97_t *ac97)
+ 
+-void snd_ca0106_proc_dump_iec958( snd_info_buffer_t *buffer, u32 value)
++static void snd_ca0106_proc_dump_iec958( snd_info_buffer_t *buffer, u32 value)
  {
- 	patch_ad1881(ac97);
- 	ac97->build_ops = &patch_ad1981a_build_ops;
- 	snd_ac97_update_bits(ac97, AC97_AD_MISC, AC97_AD198X_MSPLT, AC97_AD198X_MSPLT);
- 	ac97->flags |= AC97_STEREO_MUTES;
--	snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11); /* HP jack sense */
-+	check_ad1981_hp_jack_sense(ac97);
- 	return 0;
+ 	int i;
+ 	u32 status[4];
+--- linux-2.6.11-mm2-full/sound/pci/hda/hda_codec.c.old	2005-03-09 03:19:28.000000000 +0100
++++ linux-2.6.11-mm2-full/sound/pci/hda/hda_codec.c	2005-03-09 03:21:48.000000000 +0100
+@@ -655,7 +655,8 @@
+ /*
+  * read/write AMP value.  The volume is between 0 to 0x7f, 0x80 = mute bit.
+  */
+-int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid, int ch, int direction, int index)
++static int snd_hda_codec_amp_read(struct hda_codec *codec, hda_nid_t nid,
++				  int ch, int direction, int index)
+ {
+ 	struct hda_amp_info *info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, index));
+ 	if (! info)
+@@ -664,7 +665,8 @@
+ 	return info->vol[ch];
  }
  
-@@ -1144,7 +1156,7 @@
- 	ac97->build_ops = &patch_ad1981b_build_ops;
- 	snd_ac97_update_bits(ac97, AC97_AD_MISC, AC97_AD198X_MSPLT, AC97_AD198X_MSPLT);
- 	ac97->flags |= AC97_STEREO_MUTES;
--	snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11); /* HP jack sense */
-+	check_ad1981_hp_jack_sense(ac97);
- 	return 0;
- }
-
---=-FJZigvHJNOcnzt2N+89+--
+-int snd_hda_codec_amp_write(struct hda_codec *codec, hda_nid_t nid, int ch, int direction, int idx, int val)
++static int snd_hda_codec_amp_write(struct hda_codec *codec, hda_nid_t nid,
++				   int ch, int direction, int idx, int val)
+ {
+ 	struct hda_amp_info *info = get_alloc_amp_hash(codec, HDA_HASH_KEY(nid, direction, idx));
+ 	if (! info)
+--- linux-2.6.11-mm2-full/sound/pci/hda/patch_realtek.c.old	2005-03-09 03:22:02.000000000 +0100
++++ linux-2.6.11-mm2-full/sound/pci/hda/patch_realtek.c	2005-03-09 03:22:26.000000000 +0100
+@@ -1115,7 +1115,7 @@
+ 	{ 2, NULL },
+ };
+ 
+-snd_kcontrol_new_t alc260_base_mixer[] = {
++static snd_kcontrol_new_t alc260_base_mixer[] = {
+ 	HDA_CODEC_VOLUME("PCM Playback Volume", 0x08, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_MUTE("PCM Playback Switch", 0x0f, 0x0, HDA_OUTPUT),
+ 	HDA_CODEC_VOLUME("CD Playback Volume", 0x07, 0x04, HDA_INPUT),
 
 
 
