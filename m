@@ -1,18 +1,14 @@
-From: Richard Bown <bownie@bownie.com>
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
 Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Wed, 18 Sep 2002 11:25:44 +0100
+Date: Wed, 18 Sep 2002 13:02:35 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209181125.44990.bownie@bownie.com>
-References: <Pine.LNX.4.33.0209171436440.537-100000@pnote.perex-int.cz> <200209181046.42341.bownie@bownie.com> <s5hwupjr4rm.wl@alsa2.suse.de>
+Message-ID: <20020918120235.49273.qmail@web40601.mail.yahoo.com>
+References: <Pine.LNX.4.33.0209181054350.534-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from msgdirector2.onetel.net.uk (IDENT:mirapoint@msgdirector2.onetel.net.uk [212.67.96.149])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA18725
-	for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2002 12:24:35 +0200
-In-Reply-To: <s5hwupjr4rm.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.33.0209181054350.534-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,32 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 18 September 2002 11:06, Takashi Iwai wrote:
-> > Wake me up when it's all over.
->
-> please give comments before going to bed.
-> (otherwise you will lose the right to whinge ;)
-> the decision should not be done self-righteously.
+ --- Jaroslav Kysela <perex@perex.cz> wrote: > On Wed,
+18 Sep 2002, Chris Rankin wrote:
+> Note: If
+> SND_COMPATIBILITY_BUILD_RC3 is defined, 
+> then applications need to fall back to 0.9.0rc3 API
+> as well.
 
-I know that you and Jaroslav will come to a fair an equitable decision without me
-muddying the waters..
+So maybe we could have a --with-compat-rc3 option for
+alsa-utils as well? Regardless of which alsa-lib I
+build, I always need to be able to build alsa-utils.
+And I doubt that wine and xine will get updated before
+-rc4 is released. (Unless there's a document somewhere
+explaining the relationship between the old and new
+API functions, in which case I could submit patches
+myself.)
 
-..however, after thinking about it (and since you asked) I think it makes more sense to
-do what you're suggesting and keep the old API in addition to the new one and just mark
-the old one as deprecated for the next release or three.  Then you can phase out the old
-interface in (say) six months time or something.  The thing shouldn't just break though
-and I agree with what you're saying about #ifdefs - there are enough of those about as
-it stands without adding more to the pile.
+Chris
 
-Anyway, just my 2c.
- 
-And so to bed.
 
-B
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
