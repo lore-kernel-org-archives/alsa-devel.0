@@ -1,9 +1,9 @@
 From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Subject: Re: more sample formats?  too little place left.
-Date: Fri, 31 May 2002 19:36:54 +0100
+Date: Fri, 31 May 2002 19:52:31 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <007e01c208d2$31938120$0400a8c0@martijn>
-References: <s5h3cw8gzvo.wl@alsa2.suse.de>
+Message-ID: <009301c208d4$53b22cf0$0400a8c0@martijn>
+References: <s5h3cw8gzvo.wl@alsa2.suse.de> <007e01c208d2$31938120$0400a8c0@martijn>
 Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -18,25 +18,13 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Martijn Sipkema <msipkema@sipkema-digital.com>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> it seems that USB audio supports 24 bit sample in 3 bytes format.
-> and additionally i've found there are 20bit and 18bit sample formats.
-> the world is large...
-> 
-> an arising problem is that the number of formats is limited to 32.
-> already 26 format types are used.  the rest are only 6, and not enough
-> if we put BE/LE and signed/unsigned for new formats, too.
-> 
-> how can we solve this?  extend to 64bit?  no, it has too overhead.
-> add a new field for special formats?
-> 
-> perhaps we don't need all of them for such special formats.
-> there are no unsigned types for such formats.
-> but anyway the left resource is too small.
+> are formats currently a bit in a 'supported formats' flag?
 
-are formats currently a bit in a 'supported formats' flag?
+i meant mask instead of flag...
+
 
 --martijn
 
