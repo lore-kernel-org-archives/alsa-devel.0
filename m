@@ -1,15 +1,14 @@
-From: Steve deRosier <derosier@pianodisc.com>
-Subject: Re: No sound with ladspa plugin in newer alsa versions
-Date: Tue, 23 Sep 2003 17:44:23 -0700
+From: alsa-devel@robdye.net
+Subject: RE: MIDI getting killed by Jack?
+Date: Tue, 23 Sep 2003 18:00:38 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F70E8E7.7050708@pianodisc.com>
-References: <3F660300.3000901@pianodisc.com> <3F6F42E7.3060103@pianodisc.com> <Pine.LNX.4.53.0309222113360.7787@pnote.perex-int.cz> <3F6F5DF1.80904@pianodisc.com>
-Reply-To: derosier@pianodisc.com
+Message-ID: <1064365238.3f70ecb69eb71@scorpio.lunarpages.com>
+References: <NDBBLGIKBJENLAMOLFHGOENADDAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F6F5DF1.80904@pianodisc.com>
+In-Reply-To: <NDBBLGIKBJENLAMOLFHGOENADDAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,158 +17,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Mark Knecht <mknecht@controlnet.com>
+Cc: Alsa-Devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav,
 
-You've probably been distracted with more pressing matters, but are you 
-still looking at this issue?  I'd be happy to look into it or fix it 
-myself if you could give me some ideas of where/what/how to fix it.
+Hello,
 
-Thanks,
-- Steve
+Sorry I didn't follow-up on this sooner; I must have been
+distrcted by some shiny object.  I haven't had any problems
+with MIDI and Jack.  I've tested routing MIDI in the following
+ways:
+    HDSP port 0 loopback
+    HDSP port 1 -> port 0
+    HDSP port 0 -> aseqview -> HDSP port 0
+    HDSP port 1 -> aseqview -> HDSP port 0
+    All of the above plus playback on port 0 using pmidi
+I don't have another card with MIDI I/O. I tried starting Jack
+both before and after doing the MIDI routing (not for every
+possible combination).  I ran Jack overnight with the
+port 1 -> port 0 setup.  No problem.
 
-Steve deRosier wrote:
-> Jaroslav, thanks for replying.  I'm not 100% sure that my setup is right 
-> (it was quoted in the origional email), but since it used to work with 
-> these setings, but now doesn't...?...
+I am running Jack 0.80.0, compiled locally, kernel 2.4.21,
+unpatched, compiled locally, and ALSA as described below.  I
+wonder if the problem you found has something to do with
+low-latency or preemptibility patches.
+
+--Rob
+
+
+Quoting Mark Knecht <mknecht@controlnet.com>:
+
+> Rob,
+>    I wondered if you tried finding the MIDI/Jack problem? I actually
+> haven't
+> revisited the issue as I'm using a MidiSport to get around the
+> issue.
 > 
-> I've looked over both the setup in my asound.conf and the output from 
-> the verbose mode aplay and I have nearly the same stuff as you show.
+>    I just wanted to drop you a note before I lost your email. ;-)
 > 
-> Here's the setup out of my /etc/asound.conf file:
-> # cat /etc/asound.conf
-> pcm.pd
-> {
->    type ladspa
->    slave.pcm "plughw:0,0"
->    path "/lib/ladspa"
->    plugins
->    [
->       {
->          label amPitchshift
->          input
->          {
->             controls [ 0.890899 3 ]
->          }
->       }
->    ]
-> }
+> Cheers,
+> Mark
 > 
-> And the aplay output:
-> # aplay -v -D plug:pd alla_luce.wav
-> aplay: /lib/libasound.so.2: no version information available (required 
-> by aplay)
-> Playing WAVE 'alla_luce.wav' : Signed 16 bit Little Endian, Rate 44100 
-> Hz, Stereo
-> Plug PCM: Linear Integer <-> Linear Float conversion PCM (FLOAT_LE)
-> Its setup is:
-> stream       : PLAYBACK
-> access       : RW_INTERLEAVED
-> format       : S16_LE
-> subformat    : STD
-> channels     : 2
-> rate         : 44100
-> exact rate   : 44100 (44100/1)
-> msbits       : 16
-> buffer_size  : 16384
-> period_size  : 4096
-> period_time  : 92879
-> tick_time    : 10000
-> tstamp_mode  : NONE
-> period_step  : 1
-> sleep_min    : 0
-> avail_min    : 4096
-> xfer_align   : 4096
-> start_threshold  : 16384
-> stop_threshold   : 16384
-> silence_threshold: 0
-> silence_size : 0
-> boundary     : 1073741824
-> Slave: LADSPA PCM
-> Control input port initial values: 0 = 0.89089900 1 = 3.00000000
-> Its setup is:
-> stream       : PLAYBACK
-> access       : MMAP_NONINTERLEAVED
-> format       : FLOAT_LE
-> subformat    : STD
-> channels     : 2
-> rate         : 44100
-> exact rate   : 44100 (44100/1)
-> msbits       : 32
-> buffer_size  : 16384
-> period_size  : 4096
-> period_time  : 92879
-> tick_time    : 10000
-> tstamp_mode  : NONE
-> period_step  : 1
-> sleep_min    : 0
-> avail_min    : 4096
-> xfer_align   : 4096
-> start_threshold  : 16384
-> stop_threshold   : 16384
-> silence_threshold: 0
-> silence_size : 0
-> boundary     : 1073741824
-> Slave: Plug PCM: Linear Integer <-> Linear Float conversion PCM (S16_LE)
-> Its setup is:
-> stream       : PLAYBACK
-> access       : MMAP_NONINTERLEAVED
-> format       : FLOAT_LE
-> subformat    : STD
-> channels     : 2
-> rate         : 44100
-> exact rate   : 44100 (44100/1)
-> msbits       : 32
-> buffer_size  : 16384
-> period_size  : 4096
-> period_time  : 92879
-> tick_time    : 10000
-> tstamp_mode  : NONE
-> period_step  : 1
-> sleep_min    : 0
-> avail_min    : 4096
-> xfer_align   : 4096
-> start_threshold  : 16384
-> stop_threshold   : 16384
-> silence_threshold: 0
-> silence_size : 0
-> boundary     : 1073741824
-> Slave: Hardware PCM card 0 'VIA 82C686A/B rev50' device 0 subdevice 0
+> > -----Original Message-----
+> > From: alsa-devel@robdye.net [mailto:alsa-devel@robdye.net]
+> > Sent: Thursday, September 11, 2003 3:40 PM
+> > To: Mark Knecht
+> > Subject: RE: [Alsa-devel] MIDI getting killed by Jack?
+> >
+> >
+> > Quoting Mark Knecht <mknecht@controlnet.com>:
+> >
+> > > Hi,
+> > >    I wanted to remind people that the version of Alsa that I am
+> using is
+> > > 0.9.6, but the hdsp 9652 driver is not the one in CVS. It's the
+> > one Thomas
+> > > developed remotely at his place and has been tested on my machine
+> and
+> > > possibly a few others. I think a patch was supplied to
+> > asla-devel but I'm
+> > > not sure about that.
+> >
+> > Yes.  The patch was posted.  I applied it to what was mostly alsa
+> 0.9.5
+> > but with the latest CVS hdsp.c at the time.  There was one conflict
+> in the
+> > patch (an extra firmware version case that was already in there),
+> and the
+> > hdsp.h posted was missing a macro for one of the ioctls (I have a
+> very
+> > small patch sitting somewhere, but it is probably irrelevant by
+> > now anyway).
+> >
+> > The upshot is that audio I/O seems to be working great on my HDSP
+> 9652
+> > (Thanks!).  I haven't done any extensive multichannel testing;
+> maybe I'll
+> > get a chance this weekend.  However, hdspmixer still causes the
+> > same message
+> > from the driver via syslogd about hardware metering not supported.
+> >
+> > MIDI also works, at least on the first IN/OUT.  I haven't tried
+> using JACK
+> > and MIDI at the same time.  I'll give that a try tonight.
+> >
+> > --Rob Dye
+> >
+> >
+> >
 > 
-> Its setup is:
-> stream       : PLAYBACK
-> access       : MMAP_INTERLEAVED
-> format       : S16_LE
-> subformat    : STD
-> channels     : 2
-> rate         : 44100
-> exact rate   : 44100 (44100/1)
-> msbits       : 16
-> buffer_size  : 16384
-> period_size  : 4096
-> period_time  : 92879
-> tick_time    : 10000
-> tstamp_mode  : NONE
-> period_step  : 1
-> sleep_min    : 0
-> avail_min    : 4096
-> xfer_align   : 4096
-> start_threshold  : 16384
-> stop_threshold   : 16384
-> silence_threshold: 0
-> silence_size : 0
-> boundary     : 1073741824
-> Aborted by signal Interrupt...
-> #
 > 
-> Anymore ideas?
 > 
-> Thanks,
-> - Steve
-> 
+
+
 
 
 
