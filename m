@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Thu, 17 Mar 2005 21:00:25 +0100
-Message-ID: <bf9e6633b56d2050f767353d0d333015@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Thu, 17 Mar 2005 23:07:38 +0100
+Message-ID: <3f5779a4923cb69e202be4fd1c4649cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86E6C22D
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 21:00:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6889822D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 23:07:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,80 +23,94 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                1g0R
+Reported By:                jnilles
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
+Issue ID:                   963
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              03-17-2005 21:00 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-17-2005 23:07 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Summary:                    Sounc card is mute
 Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
-
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 03-17-05 19:31 
+ jdthood - 03-17-05 10:11 
 ----------------------------------------------------------------------
-another try:
+This doesn't look good:
 
-ac3dec -P _letoltesek/cmi9880/Surround-SDL-testfiles/dolby-enlighten.wav
-Using PCM device 'plug:iec958:{AES0 0x87 AES1 0x0 AES2 0x0 AES3 0x0}'
+    control.37 {
+        comment.access 'read write'
+        comment.type BOOLEAN
+        iface MIXER
+        name 'Master Playback Switch'
+        index 1
+        value false
+    }
+    control.38 {
+        comment.access 'read write'
+        comment.type INTEGER
+        comment.range '0 - 63'
+        iface MIXER
+        name 'Master Playback Volume'
+        index 1
+        value.0 0
+        value.1 0
+    }
 
-but no sound from speakers...
+
+As an experiment you can edit asound.state and run 'alsactl restore'
+to load the values into the hardware.  If you don't want to do that
+then I suggest you kill all mixer applications (except gamix) and
+try to raise the Master Playback levels using gamix.
 
 ----------------------------------------------------------------------
- pzad - 03-17-05 21:00 
+ jnilles - 03-17-05 23:07 
 ----------------------------------------------------------------------
-I think, I saw patch to enable spdif recently in alsa-devel maling list for
-cmi9880. It is not in cvs, but i think it will by soon there.
+OK, gamix solved it, at least for playing CDs and setting microphone
+volumes. The key was to enable the External Amplifier switch, which KAMix
+apparently ignored. So much for KAMix.
+The gamix controls to the right of the External Amplifier switch don't
+seem to affect anything; are they for a nonexistent second sound card or
+what?
+
+Thanks for the help; this was a major barrier to my switching a lot of my
+activities from Win XP to Linux.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-02-22-05 14:29 tiwai          Note Added: 0003699                          
-02-22-05 19:05 1g0R           Note Added: 0003709                          
-03-12-05 23:11 1g0R           Note Added: 0003900                          
-03-13-05 14:49 1g0R           Note Added: 0003902                          
-03-13-05 16:23 1g0R           Note Added: 0003903                          
-03-17-05 19:31 1g0R           Note Added: 0003984                          
-03-17-05 21:00 pzad           Note Added: 0003985                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
+03-10-05 15:01 jdthood        Note Added: 0003856                          
+03-10-05 20:29 jnilles        Note Added: 0003872                          
+03-10-05 22:04 jdthood        Note Added: 0003874                          
+03-16-05 01:33 jnilles        Note Added: 0003926                          
+03-16-05 12:31 tiwai          Note Added: 0003941                          
+03-16-05 22:52 jnilles        Note Added: 0003972                          
+03-17-05 10:11 jdthood        Note Added: 0003980                          
+03-17-05 23:07 jnilles        Note Added: 0003986                          
 ======================================================================
 
 
