@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000363]: USB webcam microphone recognized but not working
-Date: Wed, 7 Jul 2004 17:38:10 +0200
+Subject: [ALSA - driver 0000259]: Request additional features for ATIIXP
+Date: Wed, 7 Jul 2004 18:11:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <43ef990402c58f00eb3f7e6a5c1dde68@bugtrack.alsa-project.org>
+Message-ID: <4e669b46be4478a2ed49592168be65b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,135 +19,259 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been CLOSED
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0363
+0259
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                sehh
-Assigned To:                Clemens Ladisch
+Reported By:                netstar
+Assigned To:                tiwai
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     363
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
+Bug ID:                     259
+Category:                   PCI - atiixp
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.1
+Status:                     assigned
+Distribution:              =20
+Kernel Version:            =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-03-2004 18:44 CEST
-Last Modified:              07-07-2004 17:38 CEST
+Date Submitted:             05-07-2004 01:48 CEST
+Last Modified:              07-07-2004 18:11 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    USB webcam microphone recognized but not work=
-ing
+Summary:                    Request additional features for ATIIXP
 Description:=20
-Logitech QuickCam 3000 Pro (USB)
+Would it be possible to create an atiixpm driver similar to the intel mod=
+em
+driver?  I have an ATI Modem with device id 434d, which i assume is AC97.=
+=20
+I have spoken with the slmdm modem developer and he suggested I contacted
+you.
 
-This USB webcam has an internal microphone which is
-properly recognized by the USB stack as well as
-ALSA which loads the snd-usb-audio driver properly.
-
-Unfortunately the microphone doesn't seem to work though
-and there is no way to access it. The AlsaMixer only
-shows the microphone of the onboard sound card and has
-the option to change from Mic1 to Mic2, which has no
-effect.
-
-No ALSA compatible application can find the new microphone.
-
-The following are some messages produced in /var/log/messages:
-
-Jul  3 00:20:15 system kernel: pwc Philips PCA645/646 + PCVC675/680/690 +
-PCVC730/740/750 webcam module version 8.12 loaded.
-Jul  3 00:20:15 system kernel: pwc Also supports the Askey VC010, various
-Logitech QuickCams, Samsung MPC-C10 and MPC-C30,
-Jul  3 00:20:16 system kernel: pwc the Creative WebCam 5, SOTEC Afina Eye
-and Visionite VCS-UC300 and VCS-UM100.
-Jul  3 00:20:16 system kernel: pwc Logitech QuickCam Pro 3000 USB webcam
-detected.
-Jul  3 00:20:16 system kernel: pwc Registered as /dev/video0.
-Jul  3 00:20:16 system kernel: usbcore: registered new driver Philips
-webcam
-Jul  3 00:20:16 system kernel: usbaudio: device 2 audiocontrol interface =
-1
-has 1 input and 0 output AudioStreaming interfaces
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting =
-0
-FORMAT_TYPE descriptor not found
-Jul  3 00:20:16 system kernel: usbaudio: valid input sample rate 44100
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-1: format 0x00000010 sratelo 44100 sratehi 44100 attributes 0x00Jul  3
-00:20:16 system kernel: usbaudio: valid input sample rate 22050
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-2: format 0x00000010 sratelo 22050 sratehi 22050 attributes 0x00Jul  3
-00:20:16 system kernel: usbaudio: valid input sample rate 11025
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-3: format 0x00000010 sratelo 11025 sratehi 11025 attributes 0x00Jul  3
-00:20:16 system kernel: usbaudio: valid input sample rate 8000
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-4: format 0x00000010 sratelo 8000 sratehi 8000 attributes 0x00
-Jul  3 00:20:16 system kernel: usbaudio: registered dsp 14,19
-Jul  3 00:20:16 system kernel: usbaudio: warning: found 1 of 0 logical
-channels.
-Jul  3 00:20:16 system kernel: usbaudio: assuming the channel found is th=
-e
-master channel (got a Philips camera?). Should be fine.
-Jul  3 00:20:16 system kernel: usbaudio: registered mixer 14,16
-Jul  3 00:20:16 system kernel: usbcore: registered new driver audio
-Jul  3 00:20:16 system kernel: drivers/usb/class/audio.c: v1.0.0:USB Audi=
-o
-Class driver
-Jul  3 00:20:16 system kernel: usbcore: registered new driver
-snd-usb-audio
-
-My /etc/modprobe.conf contains the following:
-alias snd-card-0 snd-via82xx
-alias snd-card-1 snd-usb-audio
-
-install snd-via82xx /sbin/modprobe --ignore-install snd-via82xx &&
-/usr/sbin/alsactl restore >/dev/null 2>&1 || :
-remove snd-via82xx { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-via82xx
-
+My system is ATI infected, ATI controllers, sound card, video card and
+unsupported modem.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 07-06-2004 18:48 CEST=20
+ tiwai - 05-11-2004 18:29 CEST=20
 ----------------------------------------------------------------------
-> kernel: drivers/usb/class/audio.c: v1.0.0:USB Audio Class driver
+please try the attached patch.
+you'll get a driver snd-atiixp-modem.
 
-This is the kernel's OSS driver.  It got loaded automatically before the
-ALSA driver.  Complain to the FC2 guys, and put the line
-
-audio
-
-into your /etc/hotplug/blacklist file.
+note that it's to the latest cvs version.
 
 ----------------------------------------------------------------------
- sehh - 07-07-2004 13:11 CEST=20
+ netstar - 05-12-2004 01:19 CEST=20
 ----------------------------------------------------------------------
-THANK YOU!!!
+Just a few questions here, are you expecting to unleash this in the next
+stable release or do you want some test results?  Do you have an atiixp
+ac97 modem there?  Is the standard method to use slmdmd's modem daemon in
+alsa mode?  Any further information gratefully received, it seems that
+someone just unlocked the key to a loada Toshiba laptops :) magic.
 
-that did the trick!!
+----------------------------------------------------------------------
+ tiwai - 05-12-2004 11:29 CEST=20
+----------------------------------------------------------------------
+no, it's untested at all, and i have no ac97 modem.
+whether it comes into the main tree depends on your tests.
+
+it should work like intel8x0m, which talks ac97 modem codec.
+but remember that the driver is totally untested and
+might cause hang up.
 
 ----------------------------------------------------------------------
- sehh - 07-07-2004 13:12 CEST=20
+ netstar - 05-12-2004 16:46 CEST=20
 ----------------------------------------------------------------------
-(we may close this bug now, though i can't find a way to do it)
+Tiwai, that patch failed on CVS.  Also, alsa would not configure properly
+on 2.6 because of failed version.h.  Any ideas?  Perhaps I could modify
+1.0.4 source manually?  I will continue to investigate until I hear more
+from you.  Sorry about that.
+
+----------------------------------------------------------------------
+ tiwai - 05-12-2004 17:01 CEST=20
+----------------------------------------------------------------------
+no idea why you can't build alsa-driver with 2.6.  here works fine.
+
+the second patch is another version.  it creates a new file instead
+of patching the existing atiixp.c.  the patch should be applied to
+the latest alsa-driver CVS version.  reverse the last patch.
+
+after applying the patch, run ./cvscompile to regenerate configure
+and Makefiles and to compile.
+
+----------------------------------------------------------------------
+ netstar - 05-12-2004 18:56 CEST=20
+----------------------------------------------------------------------
+Tiwai,
+
+Sorted the kernel issue, the new patch worked fine on alsa-driver CVS.=20
+Problem however when attempting to load into the kernel.  ALSACONF did no=
+t
+detect the modem automatically so I loaded the module manually.  Here is
+my dmesg:
+
+ATI IXP MC97 controller: probe of 0000:00:14.6 failed with error -13
+
+----------------------------------------------------------------------
+ tiwai - 05-12-2004 19:17 CEST=20
+----------------------------------------------------------------------
+alsaconf probes only for audio chips.  not a bug.
+
+try the third attached patch (additional).
+with this patch, you'll likely get another error messages even
+if it still fails.
+
+----------------------------------------------------------------------
+ netstar - 05-13-2004 00:43 CEST=20
+----------------------------------------------------------------------
+The second patch was slightly broken but i adjusted it slightly to as
+below, i assume that it is ok:
+
+if (chip->codec_not_ready_bits){
+/* codec(s) was detected but not available.
+ * return the error
+ */
+ snd_printd("ac97_codec_new %d error %d\n", i,err);
+ continue;
+}
+else { // blah blah
+
+It compiled and the new error message is as follows.
+
+ALSA /home/netstar/alsa/alsa-driver/pci/atiixp_modem.c:1101:=20
+ac97_codec_new 0 error -13
+
+----------------------------------------------------------------------
+ netstar - 05-17-2004 04:22 CEST=20
+----------------------------------------------------------------------
+Gone quiet for a while.  The only debugging information  I could give is
+that I posted earlier.
+
+----------------------------------------------------------------------
+ tiwai - 05-18-2004 21:32 CEST=20
+----------------------------------------------------------------------
+if you loaded snd-atiixp, don't load it to avoid any possible
+conflictions.
+
+then try the attached patch and check the kernel messages.
+
+----------------------------------------------------------------------
+ netstar - 05-19-2004 02:01 CEST=20
+----------------------------------------------------------------------
+Conditions were set as specified, here is the debugging information:
+
+ALSA atiixp_modem.c:1086: codec_not_ready =3D 0x3000
+ALSA atiixp_modem.c:1089: checking 0 [bit 400]<7>
+ALSA atiixp_modem.c:1089: checking 1 [bit 800]<7>
+ALSA atiixp_modem.c:1089: checking 2 [bit 1000]
+
+----------------------------------------------------------------------
+ tiwai - 05-19-2004 12:36 CEST=20
+----------------------------------------------------------------------
+try to comment out the line 1090:
+
+	if (chip->codec_not_ready_bits & codec_skip[i])
+		continue;
+
+i guess the driver will be loaded without abort, but unlikely it will
+work.  if the driver is loaded well, attach the outputs of
+/proc/asound/card0/codec97#*/* files (they may be multiple
+matching directories.)
+
+----------------------------------------------------------------------
+ netstar - 05-19-2004 16:06 CEST=20
+----------------------------------------------------------------------
+Module loads but with multiple repeats of these errors:
+
+ALSA atiixp_modem.c:451: atiixp: codec read timeout (reg 1c)
+ALSA atiixp_modem.c:451: atiixp: codec read timeout (reg 0)
+ALSA atiixp_modem.c:451: atiixp: codec read timeout (reg 3c)
+
+Debugging info in codec-info.tar.gz.
+
+----------------------------------------------------------------------
+ tiwai - 05-19-2004 18:41 CEST=20
+----------------------------------------------------------------------
+the file is empty.  (tar doesn't work well with proc files.)
+
+----------------------------------------------------------------------
+ tiwai - 05-25-2004 12:57 CEST=20
+----------------------------------------------------------------------
+try ALSA 1.0.5-rc1.
+
+----------------------------------------------------------------------
+ netstar - 05-25-2004 17:51 CEST=20
+----------------------------------------------------------------------
+The new module loads fine with no errors, but when I attempt to DIAL I ge=
+t
+
+"NO DIALTONE".  I am testing from the UK if that helps at all.
+
+snd_atiixp_modem       16776  0
+snd_ac97_codec         67972  1 snd_atiixp_modem
+snd_pcm                86528  1 snd_atiixp_modem
+snd_page_alloc         10888  2 snd_atiixp_modem,snd_pcm
+snd_timer              23680  2 snd_seq,snd_pcm
+snd                    51460  6 =20
+snd_seq,snd_seq_device,snd_atiixp_modem,snd_ac97_codec,snd_pcm,snd_timer
+
+----------------------------------------------------------------------
+ netstar - 05-25-2004 23:56 CEST=20
+----------------------------------------------------------------------
+Additional info:
+
+It appears the modem INIT strings from the windows driver are as follows:
+
+AT
+AT &F S0=3D0 E0 V1 S95=3D0 &D2
+
+Receive an ERROR when attempting to use this and NO DIALTONE with other
+init combinations.
+
+----------------------------------------------------------------------
+ tiwai - 05-26-2004 14:44 CEST=20
+----------------------------------------------------------------------
+check /proc/asound/card0/codec97#0/* files whether the modem codec
+is chosen by snd-atiixp-modem driver.
+
+i have no big idea about the modem codec.  it'd be better to
+ask Sasha Khapyorsky <sashak@smlink.com> about the further
+debugging...
+
+----------------------------------------------------------------------
+ tiwai - 05-28-2004 16:59 CEST=20
+----------------------------------------------------------------------
+i fixed a bit.  could you try 1.0.5-final?
+
+----------------------------------------------------------------------
+ netstar - 05-28-2004 18:49 CEST=20
+----------------------------------------------------------------------
+Tried the new release, more modem commands are available but still no
+DIALTONE.
+I have been in contact with Sasha, as suggested, and sent him some more
+debugging information, he informed me that the modem driver still needs
+some work.  He will work on it next week with datasheet and possibly some
+hardware.  Getting there :)
+
+----------------------------------------------------------------------
+ sashak - 07-07-2004 18:11 CEST=20
+----------------------------------------------------------------------
+There is patch for atiixp_modem.c . The driver is able to setup HOOK OFF/=
+ON
+(GPIO is changed via ATI_REG_MODEM_OUT_GPIO) and line level.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -155,24 +279,71 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-03-04 18:44 sehh           New Bug                                    =
+05-07-04 01:48 netstar        New Bug                                    =
  =20
-07-03-04 18:44 sehh           Distribution              =3D> Fedora Core =
-2  =20
-07-03-04 18:44 sehh           Kernel Version            =3D> 2.6.6-1.435.=
-2.1=20
-07-06-04 18:48 Clemens LadischBugnote Added: 0001386                     =
+05-11-04 18:29 tiwai          Bugnote Added: 0001087                     =
  =20
-07-07-04 13:11 sehh           Bugnote Added: 0001391                     =
+05-11-04 18:30 tiwai          File Added: atiixp-modem.dif               =
+    =20
+05-12-04 01:19 netstar        Bugnote Added: 0001088                     =
  =20
-07-07-04 13:12 sehh           Bugnote Added: 0001392                     =
+05-12-04 11:29 tiwai          Bugnote Added: 0001090                     =
  =20
-07-07-04 17:37 Clemens LadischResolution               open =3D> fixed   =
+05-12-04 16:46 netstar        Bugnote Added: 0001092                     =
+ =20
+05-12-04 17:01 tiwai          Bugnote Added: 0001093                     =
+ =20
+05-12-04 17:01 tiwai          File Added: atiixp-modem2.dif              =
+     =20
+05-12-04 18:56 netstar        Bugnote Added: 0001094                     =
+ =20
+05-12-04 19:17 tiwai          Bugnote Added: 0001097                     =
+ =20
+05-12-04 19:17 tiwai          File Added: atiixp-modem-debug.dif         =
+      =20
+  =20
+05-13-04 00:43 netstar        Bugnote Added: 0001100                     =
+ =20
+05-17-04 04:22 netstar        Bugnote Added: 0001127                     =
+ =20
+05-18-04 21:32 tiwai          Bugnote Added: 0001148                     =
+ =20
+05-18-04 21:33 tiwai          File Added: atiixp-modem-debug2.dif        =
+      =20
    =20
-07-07-04 17:37 Clemens LadischStatus                   assigned =3D> reso=
-lved
-07-07-04 17:38 Clemens LadischStatus                   resolved =3D> clos=
-ed =20
+05-19-04 02:01 netstar        Bugnote Added: 0001149                     =
+ =20
+05-19-04 12:36 tiwai          Bugnote Added: 0001150                     =
+ =20
+05-19-04 16:06 netstar        Bugnote Added: 0001153                     =
+ =20
+05-19-04 16:07 netstar        File Added: codec-info.tar.gz              =
+     =20
+05-19-04 18:41 tiwai          Bugnote Added: 0001154                     =
+ =20
+05-19-04 22:13 netstar        File Added: proc_entries.txt               =
+    =20
+05-25-04 12:57 tiwai          Bugnote Added: 0001207                     =
+ =20
+05-25-04 17:51 netstar        Bugnote Added: 0001222                     =
+ =20
+05-25-04 23:56 netstar        Bugnote Added: 0001240                     =
+ =20
+05-26-04 14:44 tiwai          Bugnote Added: 0001259                     =
+ =20
+05-28-04 16:59 tiwai          Bugnote Added: 0001265                     =
+ =20
+05-28-04 18:49 netstar        Bugnote Added: 0001270                     =
+ =20
+06-15-04 05:25 mrjackbrooks   Bug Monitored: mrjackbrooks                =
+   =20
+07-07-04 18:06 sashak         Bug Monitored: sashak                      =
+ =20
+07-07-04 18:09 sashak         File Added: atiixp_modem.c.patch           =
+      =20
+=20
+07-07-04 18:11 sashak         Bugnote Added: 0001393                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
