@@ -1,13 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000533]: Cannot restore from file it created
-Date: Mon, 27 Sep 2004 09:56:59 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: [ALSA - driver 0000540]: alsa driver will no longer function
+Date: Mon, 27 Sep 2004 10:48:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040927075659.E271E15007@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <XFMail.20040927104808.pochini@shiny.it>
+References: <20040925130336.2AE072014E@server.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 253EA29A
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 09:57:00 +0200 (MEST)
+Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAF7222A
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 10:48:09 +0200 (MEST)
+Received: from agnus (agnus.shiny.it [194.20.232.6])
+	by denise.shiny.it (8.11.7/8.11.6) with ESMTP id i8R8m8605622
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 10:48:08 +0200
+In-Reply-To: <20040925130336.2AE072014E@server.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,54 +27,36 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000533
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     533
-Category:                   alsactl
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-24-2004 06:39 CEST
-Last Modified:              09-27-2004 09:56 CEST
-======================================================================
-Summary:                    Cannot restore from file it created
-Description: 
-Package: alsa-utils
-Version: 1.0.3-1
+On 25-Sep-2004 bugtrack@alsa-project.org wrote:
+>=20
+> The following bug has been SUBMITTED.
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D0=
+000540
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> [...]
+> How reproducible:
+> in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
+>=20
+> Please check that the sound card is configured properly and You have th=
+e
+> correct output plugin selected and no other program is blocking the
+> soundcard.
 
-fishbowl:~# alsactl store
-fishbowl:~# alsactl restore
-alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
-Switch:0' : Invalid argument
+The xmms plugin doesn't work well. I also am using
+version 1.2.9 with a patch that removes mixer support,
+because it is the source of the problem. 1.2.10 had
+another problem that I don't remember now, but I will
+try it again if you're interested.
 
-I got nothing more to add.
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:06 CEST 
-----------------------------------------------------------------------
-Which driver?  I guess it's nm256, which was already fixed.
 
-----------------------------------------------------------------------
- jdthood - 09-27-2004 09:56 CEST 
-----------------------------------------------------------------------
-OK, thanks.  Please close this report.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-04 06:39 jdthood        New Bug                                      
-09-24-04 12:06 tiwai          Bugnote Added: 0001870                       
-09-27-04 09:56 jdthood        Bugnote Added: 0001934                       
-======================================================================
+--
+Giuliano.
 
 
 -------------------------------------------------------
