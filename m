@@ -1,13 +1,14 @@
-From: Prince John <princejohnm@yahoo.com>
-Subject: Playback/Record speed mismatch
-Date: Wed, 17 Sep 2003 07:48:40 -0700 (PDT)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: PCM format restrict dilema
+Date: Wed, 17 Sep 2003 15:50:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030917144840.65581.qmail@web11701.mail.yahoo.com>
-References: <200309171422.h8HEMUVi016116@oud>
+Message-ID: <3F6874C8.9090103@superbug.demon.co.uk>
+References: <200309171422.h8HEMUVi016116@oud> <Pine.LNX.4.53.0309171615190.5983@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200309171422.h8HEMUVi016116@oud>
+In-Reply-To: <Pine.LNX.4.53.0309171615190.5983@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Takashi Iwai <tiwai@suse.de>, manuel.jander@mat.utfsm.cl, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I have a Hitachi SH4 based embedded system with AD1881
-codec. I have developed an ALSA driver for it and it
-is functional. Now there is a problem that, the .wav
-files when played back with 'aplay' are played back in
-twice the speed. i.e, a .wav file of 48000 sample rate
-and S16_LE format playsback in twice the speed than
-expected. But if I set the the AD1881 DAC rate to
-24000, the playback is fine. For recording also, I
-have noticed the same speed difference (2:1) when I
-play back the recorded file on a Windows PC. This
-speed mismatch is seen for all sample rates. I hope I
-have to set the playback/record rate as the DAC/ADC
-rate. If so, why is this mismatch in speed?
+Jaroslav Kysela wrote:
+> On Wed, 17 Sep 2003, Paul Davis wrote:
+> 
+> 
+>>>So, the application does the following: -
+>>>1) I want there to be 8 periods or less, with a minimum of 2.
+>>>2) I want the buffer to be about 500ms long or less, with a minimum or 100ms
+>>>3) I want the period size to have a min value of x, and a max value or y.
+>>>4) Now calculate the actual sizes based on all the above information.
+>>>(i.e. The buffer_size, and period_size values are not set until stage (4).
+>>>At this point, alsa-lib would use the contrains above, and calculate the
+>>>best values for buffer_size and period size based on the above, and also
+>>>what the hardware can do.
+>>>
+>>>The reason I think it might help this way, is because period_size and
+>>>buffer_size and number of periods are all closely linked, so we should
+>>>not have to set them one at a time, but set them as a group.
+>>
+>>given that buffer_size = period_size * nperiods, why try to set the
+>>buffer size at all? i've never set the buffer size in any ALSA app - i
+>>always set nperiods first, then the period size.
+> 
+> 
+> Good point. This algorithm sounds robust.
 
-Also, the I get 'unaligned access', or system hangs
-when I use rate 44100 for rec/playback with 'aplay'
-application.
+How would that algorithm handle the "dmix" case, when nperiods != integer?
 
-I use alsa release 0.9.1
-Please help me with your valuable suggestions.
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
+> 
+> 
 
-Thanks,
-Prince
 
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
