@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000865]: On this machine, sound only works if the modem driver is not loaded
-Date: Mon, 31 Jan 2005 02:46:07 +0100
-Message-ID: <3727e0b4482394b382ae9d63c7bb74c4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000866]: Can not install snd-intel8x0
+Date: Mon, 31 Jan 2005 05:30:14 +0100
+Message-ID: <bc3225e96478f445d349483806a4c306@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 611B31C5
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 02:46:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 194581DA
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 05:30:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,45 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=865> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=866> 
 ======================================================================
-Reported By:                hpa
-Assigned To:                sashak
+Reported By:                ghostdaemon
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   865
-Category:                   PCI - intel8x0m
+Issue ID:                   866
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.741_FC3
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-31-2005 02:46 CET
-Last Modified:              01-31-2005 02:46 CET
+Date Submitted:             01-31-2005 05:30 CET
+Last Modified:              01-31-2005 05:30 CET
 ======================================================================
-Summary:                    On this machine, sound only works if the modem
-driver is not loaded
+Summary:                    Can not install snd-intel8x0
 Description: 
-On this machine, if the intel8x0 driver is loaded alone, all is well; if
-the intel8x0m driver gets loaded, any attempt to use the sound card
-results in no output, and messages such as:
+I have to use Redhat Linux 7.3.I have  tried ALSA 1.0.8 and 0.9.6,but they
+all failed .when i extact driver package to ./config;make;make install
+,some errors infomation displayed.such as:
+ unresolved symbol fasync_helper_Rsmp_0f820065
+ unresolved symbol proc_symlink_Rsmp_515b8074
+ ...........
+ ...........
 
-codec_write 0: semaphore is not ready for register 0x2
-codec_write 0: semaphore is not ready for register 0x4
-codec_write 0: semaphore is not ready for register 0x26
-codec_write 0: semaphore is not ready for register 0x26
+when i use modpobe command:
+[root@localhost root]# modprobe snd-intel8x0
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+fasync_helper_Rsmp_0f820065
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+proc_symlink_Rsmp_515b8074
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+remove_proc_entry_Rsmp_18199406
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+kill_fasync_Rsmp_f866c12a
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+proc_root_Rsmp_c79b35f0
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+register_chrdev_Rsmp_10735b95
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+create_proc_entry_Rsmp_9cfe096c
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+register_sound_special_Rsmp_3a650025
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+remove_wait_queue_Rsmp_ca8842ea
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+add_wait_queue_Rsmp_2fd0ca84
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+__pollwait_Rsmp_4c541ea9
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o failed
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod snd-intel8x0
+failed
+[root@localhost root]#
 
-Furthermore 
+My Motherboard is ASUS P4P800, AD1985 integrated on it.
+
+Many thanks !
+
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 02:46 hpa            New Issue                                    
-01-31-05 02:46 hpa            Distribution              => Fedora Core 3   
-01-31-05 02:46 hpa            Kernel Version            => 2.6.10-1.741_FC3
+01-31-05 05:30 ghostdaemon    New Issue                                    
 ======================================================================
 
 
