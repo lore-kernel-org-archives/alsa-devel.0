@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000542]: custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
-Date: Sun, 26 Sep 2004 11:48:01 +0200 (CEST)
+Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
+Date: Sun, 26 Sep 2004 12:03:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926094801.DC3E9B09F@server.perex-int.cz>
+Message-ID: <20040926100335.77C23B09F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 268752D3
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 11:48:02 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id F193E262A3
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 11:48:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9CFF2B6
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 12:03:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,61 +22,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000542
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000544
 ======================================================================
-Reported By:                ahasver
-Assigned To:                perex
+Reported By:                sasa
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     542
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Bug ID:                     544
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               debian sid
-Kernel Version:             2.6.9rc1
+Status:                     new
 ======================================================================
-Date Submitted:             09-25-2004 19:31 CEST
-Last Modified:              09-26-2004 11:48 CEST
+Date Submitted:             09-26-2004 10:44 CEST
+Last Modified:              09-26-2004 12:03 CEST
 ======================================================================
-Summary:                    custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
+Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
 Description: 
-Compiling a custom kernel with latest alsa-source from cvs fails:
-
-[...]
-sound/built-in.o(.text+0x122c): In function `snd_card_new':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2b87): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2cb8): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x2d68): In function `snd_info_entry_open':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x343f): In function `snd_info_create_entry':
-: undefined reference to `kcalloc'
-sound/built-in.o(.text+0x38a9): more undefined references to `kcalloc'
-follow
-make[1]: *** [.tmp_vmlinux1] Fehler 1
-make[1]: Leaving directory `/usr/src/linux-2.6.9-rc1'
-make: *** [stamp-build] Fehler 2
-
+When doing an intensive task that locks the kernel (such as fixating
+CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
+stops moving for half a second or so, sound from xmms stops playing until
+I press stop and play again.
+Interesting thing is that this only happens when MMAP is on. When I turn
+it off, the sound freezes for a second and after that continues.
 ======================================================================
 
 ----------------------------------------------------------------------
- ahasver - 09-26-2004 11:48 CEST 
+ sasa - 09-26-2004 10:58 CEST 
 ----------------------------------------------------------------------
-Seems to be corrected with linux 2.6.9rc2
-(alsa-cvs 1.0.6 is merged there)
-please close
+Sorry, mistake - it occurs when MMAP is ON.
+Additional info:
+Also I should note that I am using NVidia NForce chipset (Asus A7N8X-E D.
+motherboard) and I am using
+acpi=noirq pci=noacpi
+in order to boot my system. And there is sometimes a lost interrupt 11
+(used by IDE and soundcard as well but the lost interrupt is thown during
+IDE initilization so it is probably caused by IDE).
+
+----------------------------------------------------------------------
+ lee - 09-26-2004 12:03 CEST 
+----------------------------------------------------------------------
+Sounds like an XMMS bug.  Does the same thing happen with aplay?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-25-04 19:31 ahasver        New Bug                                      
-09-25-04 19:31 ahasver        Distribution              => debian sid      
-09-25-04 19:31 ahasver        Kernel Version            => 2.6.9rc1        
-09-26-04 11:48 ahasver        Bugnote Added: 0001917                       
+09-26-04 10:44 sasa           New Bug                                      
+09-26-04 10:58 sasa           Bugnote Added: 0001916                       
+09-26-04 10:59 sasa           Bug Monitored: sasa                          
+09-26-04 12:03 lee            Bugnote Added: 0001918                       
 ======================================================================
 
 
