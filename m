@@ -1,9 +1,8 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: alsa "Soundcard" support page on alsa-project.org
-Date: Fri, 21 May 2004 09:42:19 +0900
+From: Don Mackie <rebirth@orcon.net.nz>
+Subject: Question - selecting soundfonts/banks
+Date: Fri, 21 May 2004 16:44:17 +1200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40AD506B.9020102@boosthardware.com>
-References: <40ABEC93.9080309@superbug.demon.co.uk>
+Message-ID: <40AD8921.8000503@orcon.net.nz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,51 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> Would it be a good idea to keep this page more up to date.
-> e.g.
-> SB Audigy 2, but mention that it only works in 16bit 48Khz mode.
-> Possible add the SB Audigy 2 ZS.
-> Dell SB Live! Value.
-> 
+Hi,
 
-Most people are kind enough to send a patch for newly supported cards.
+Can someone please explain to me the relationship between midi 
+bank_msb/bank_lsb_prognum, and soundfontnum/bank_lsb/prognum on fluidsynth?
 
-> I keep getting people asking me if the Audigy 2 is supported, because it 
-> is not on the list.
-> 
-> Also enter in the list a Red line for the SB Audigy LS. (Although that 
-> might change soon).
-> 
+I'm successfully sending prog change events, as well as LSB bank select 
+events.
 
-I'll look into it ASAP.
+However, I'm also trying to select banks within different soundfonts, by 
+sending BANK_SELECT_MSB events, but things are not working.
 
+My code presently sends BANK_SELECT_MSB controller event, then 
+BANK_SELECT_LSB controller event, then PBMCHANGE event, in that order.
+
+What do i need to do in my code, so I can reliably select different 
+sounds from different banks from different loaded soundfonts?
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
-========================================
 
+Kind regards
+David
 
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+--
 
 
 -------------------------------------------------------
