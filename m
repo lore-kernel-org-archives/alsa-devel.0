@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - utils 0000346]: no master volume set when maestro/alsa settings save & "restart"
-Date: Wed, 30 Jun 2004 19:26:07 +0200
+Date: Wed, 30 Jun 2004 19:40:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <acdc8f7a2eb58162e446f0166b6cdb95@bugtrack.alsa-project.org>
+Message-ID: <5d1d4135ee960986666ec31e67776ce3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -44,7 +44,7 @@ Status:                     new
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             06-26-2004 12:00 CEST
-Last Modified:              06-30-2004 19:26 CEST
+Last Modified:              06-30-2004 19:40 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -94,6 +94,20 @@ does not work, even though the changes are registered
 The Master Volume to be changed to a different number, as described
 before.
 
+----------------------------------------------------------------------
+ phoenixreads - 06-30-2004 19:40 CEST=20
+----------------------------------------------------------------------
+At the moment the board I am using has integrated audio and using the
+via82xx driver. I turn it on (was previously disabled) and reconfigured
+alsa to use it as the only audio source. Side note: alsactrl does not see=
+m
+to care if integrated audio is enabled or not and saves the setting
+regardless. The alsasound script works as expected. And just in case,
+remember I had the exactly same behavior on a Intel PII board. Who knows
+it could be this particular soundcard? Is there a way to do a black and
+white test on the "hardware" level? The software seems to be happy and
+reporting the change but is the hardware?
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -107,6 +121,8 @@ Date Modified  Username       Field                    Change            =
 06-30-04 16:43 tiwai          Bugnote Added: 0001360                     =
  =20
 06-30-04 19:26 phoenixreads   Bugnote Added: 0001363                     =
+ =20
+06-30-04 19:40 phoenixreads   Bugnote Added: 0001364                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
