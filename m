@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Thu, 10 Mar 2005 23:28:49 +0100
-Message-ID: <30a1001dc31cbc0f6d658f4c2499ed5c@bugtrack.alsa-project.org>
+Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
+Date: Fri, 11 Mar 2005 00:48:10 +0100
+Message-ID: <5e90355a8137d69cf81d585060c2a777@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F9FB1C4
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 23:28:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 983991C8
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 00:48:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,88 +23,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
 ======================================================================
-Reported By:                Envel
+Reported By:                Tom
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   846
-Category:                   PCI - intel8x0
+Issue ID:                   855
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
+Distribution:               Fedora Core 3 + Alsa 1.0.8
+Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
 ======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-10-2005 23:28 CET
+Date Submitted:             01-28-2005 13:21 CET
+Last Modified:              03-11-2005 00:48 CET
 ======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
+Summary:                    Analog Input doesn´t work
 Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000902 Some channels not working
+I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
+care with mixer settings are made, the is simply no sound input.
+
+Does the azx driver support line-in anyways?
 ======================================================================
 
 ----------------------------------------------------------------------
- stephenv - 03-10-05 18:03 
+ jdthood - 03-11-05 00:48 
 ----------------------------------------------------------------------
-I was reading the howto's off the main page, hadn't occured to me that the
-INSTALL would contain entirely different instructions. Anyhow, as you can
-see, I "did it right" according to the install instruction in INSTALL and
-still have the problem. I am running kernel-2.6.10-1.770 for fc3, looks
-like this may be the problem as those of you reporting it fixed are
-running 2.6.11 of some sort. FC3 hasn't released that yet. I could roll my
-own, I know it "shouldn't" break anything, might do that when I can find
-the time. I have a wife and family though, and they miss me since I
-started this linux thing.
-
-----------------------------------------------------------------------
- slammer - 03-10-05 23:28 
-----------------------------------------------------------------------
-Yeah. Me too should get life... such things just eat me and digest with
-bones. Anyhow I know it's none of my competence but, since this was fixed,
-people would really use at least rc version soon.
+See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=297624 .
+Any similarity to your problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
-01-29-05 17:13 ivantheviking  Note Added: 0003438                          
-03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
-03-01-05 00:06 stephenv       Note Added: 0003752                          
-03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
-03-04-05 22:53 slammer        Note Added: 0003802                          
-03-04-05 22:55 slammer        Issue Monitored: slammer                     
-03-07-05 00:12 stephenv       File Added: svs.tar                          
-03-08-05 18:43 jor            Issue Monitored: jor                         
-03-08-05 19:03 jor            Note Added: 0003816                          
-03-09-05 18:43 tiwai          Note Added: 0003834                          
-03-09-05 18:43 tiwai          Note Added: 0003835                          
-03-09-05 19:24 jor            Note Added: 0003845                          
-03-10-05 03:27 stephenv       Note Added: 0003847                          
-03-10-05 11:55 slammer        Note Added: 0003848                          
-03-10-05 13:17 slammer        Note Added: 0003850                          
-03-10-05 14:36 tiwai          Relationship added       has duplicate 0000902
-03-10-05 18:03 stephenv       Note Added: 0003869                          
-03-10-05 23:28 slammer        Note Added: 0003875                          
+01-28-05 13:21 Tom            New Issue                                    
+01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
+1.0.8
+01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
+(from Fedora)
+01-31-05 14:10 Tom            Issue Monitored: Tom                         
+01-31-05 14:10 Tom            Issue End Monitor: Tom                       
+03-11-05 00:48 jdthood        Note Added: 0003876                          
 ======================================================================
 
 
