@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Unresolved symbol in snd-cs4231-lib, CVS and Linux
- 2.4.29
-Date: Mon, 14 Mar 2005 10:31:31 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503141030530.2706@pnote.perex-int.cz>
-References: <20050314090649.67263.qmail@web52910.mail.yahoo.com>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: User-space ALSA driver?
+Date: Mon, 14 Mar 2005 11:31:47 +0100
+Message-ID: <1110796307.8158.61.camel@pegasus>
+References: <1110765624.5056.77.camel@pc7.dolda2000.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <20050314090649.67263.qmail@web52910.mail.yahoo.com>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <1110765624.5056.77.camel@pc7.dolda2000.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,23 +16,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
+To: Fredrik Tolf <fredrik@dolda2000.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Mar 2005, Chris Rankin wrote:
+Hi Fredrik,
 
-> Are you building "all" soundcards? I am only building snd-sscape and
-> snd-usb-audio.
+> I've been googling around a bit for a user-space ALSA driver (meaning an
+> ALSA driver that allows a user-space program to act as the "hardware"),
+> but I've been unable to find one.
+> 
+> It seems strange to me that no such driver would exist. Does anyone on
+> the list know of any such driver? I was just about to start writing one
+> myself, but I thought I'd better check with the list first, just in case
+> I missed it.
 
-Yep, that was the culprit. It should be fixed in CVS now. Thanks.
+you should search for the keywords ALSA SDK in the mailing list archive.
 
-						Jaroslav
+Regards
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Marcel
+
+
 
 
 -------------------------------------------------------
