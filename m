@@ -1,15 +1,15 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
-Date: Fri, 9 Jul 2004 21:37:10 +0200
+Date: Fri, 9 Jul 2004 21:46:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4394a7811a111de7410acfa95db9799e@bugtrack.alsa-project.org>
+Message-ID: <5c22d0030d27d489303619ef721ee776@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A279E21A
-	for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2004 21:37:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 355B11C2
+	for <alsa-devel@alsa-project.org>; Fri,  9 Jul 2004 21:46:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -49,7 +49,7 @@ Kernel Version:             2.6.5-7.95-default
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-09-2004 21:37 CEST
-Last Modified:              07-09-2004 21:37 CEST
+Last Modified:              07-09-2004 21:46 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -116,6 +116,20 @@ I don't know whether that has something to do with the problem.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
+----------------------------------------------------------------------
+ damage - 07-09-2004 21:46 CEST=20
+----------------------------------------------------------------------
+I did some minor corrections to the uploaded file and uploaded it a secon=
+d
+time, as the comments were wrong.
+
+This bug seems to be related to the following bugs which are filed for
+other sound cards:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0254
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0015
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -130,6 +144,10 @@ Date Modified  Username       Field                    Change            =
 .1 =20
 07-09-04 21:37 damage         Kernel Version            =3D> 2.6.5-7.95-d=
 efault
+07-09-04 21:41 damage         File Added: alsa_q3_debug.txt              =
+     =20
+07-09-04 21:46 damage         Bugnote Added: 0001396                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
