@@ -1,18 +1,11 @@
-From: Muli Ben-Yehuda <mulix@mulix.org>
-Subject: Re: kernel 2.6.0, wrong Kconfig directives
-Date: Thu, 25 Dec 2003 21:51:16 +0200
+From: Dominik 'Aeneas' Schnitzer <dominik@schnitzer.at>
+Subject: [PATCH] EMU10K1.conf
+Date: Sat, 27 Dec 2003 01:31:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031225195115.GQ31789@actcom.co.il>
-References: <20031222235622.GA17030@sole.infis.univ.trieste.it> <87smj8bt6y.fsf@devron.myhome.or.jp>
+Message-ID: <1072485112.2477.35.camel@blackhole>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="25rOlkxR6a4U87uN"
+Content-Type: multipart/mixed; boundary="=-oo1Hya4uJ8OfTneR8r4e"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp2.actcom.co.il (smtp2.actcom.co.il [192.114.47.15])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA11612
-	for <alsa-devel@alsa-project.org>; Thu, 25 Dec 2003 20:51:23 +0100
-Content-Disposition: inline
-In-Reply-To: <87smj8bt6y.fsf@devron.myhome.or.jp>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,84 +14,337 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-Cc: Andrea Barisani <lcars@infis.univ.trieste.it>, linux-kernel@vger.kernel.org, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---25rOlkxR6a4U87uN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--=-oo1Hya4uJ8OfTneR8r4e
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-On Fri, Dec 26, 2003 at 04:20:21AM +0900, OGAWA Hirofumi wrote:
->=20
-> > - SOUND_GAMEPORT option is always turned on
-> >=20
-> > ./drivers/input/gameport/Kconfig
-> >=20
-> > 22: config SOUND_GAMEPORT
-> > 23:         tristate
-> > 24:         default y if GAMEPORT!=3Dm
-> > 25:         default m if GAMEPORT=3Dm
-> >=20
-> > line 24 is definetly wrong, option is enabled if GAMEPORT=3Dn.
->=20
-> This patch uses "select" for the dependency of GAMEPORT.
+Hi,
 
-This is wrong. It forces the joystick (GAMEPORT) in even when it's not
-needed, whereas SOUND_GAMEPORT handles all cases fine. That way lies
-kernel bloat. Please apply this documentation patch instead:=20
+I finally got my emu10k1 soundcard working with full 5.1 surround :-)
 
-Index: drivers/input/gameport/Kconfig
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-RCS file: /home/muli/kernel/cvsroot/linux-2.5/drivers/input/gameport/Kconfi=
-g,v
-retrieving revision 1.4
-diff -u -u -r1.4 Kconfig
---- drivers/input/gameport/Kconfig	26 Sep 2003 00:23:18 -0000	1.4
-+++ drivers/input/gameport/Kconfig	25 Dec 2003 19:48:49 -0000
-@@ -19,6 +19,17 @@
- 	  To compile this driver as a module, choose M here: the
- 	  module will be called gameport.
-=20
-+
-+# Yes, this looks a bit odd. Yes, it ends up being turned on in lots
-+# of cases. Please don't touch it. It is here to handle the case where
-+# a sound driver can be either a module or compiled in if GAMEPORT is
-+# not selected, but must be a module if the joystick is selected as a=20
-+# module. The sound driver calls GAMEPORT functions. If GAMEPORT is
-+# not selected, stubs are provided. If GAMEPORT is built in,
-+# everything is fine. If GAMEPORT is a module, however, it would need
-+# to be loaded for the sound driver to be able to link
-+# properly. Therefore, the sound driver must be a module as well in
-+# that case (and the GAMEPORT module must be loaded first).=20
- config SOUND_GAMEPORT
- 	tristate
- 	default y if GAMEPORT!=3Dm
---=20
-Muli Ben-Yehuda
-http://www.mulix.org | http://mulix.livejournal.com/
+It took me 2 days, getting alsa to know and sound working properly. I
+finally found out that /usr/share/alsa/cards/EMU10K1.conf was b0rked and
+modified it so everything now works properly. Things which prevented it
+from working properly were:
 
-"the nucleus of linux oscillates my world" - gccbot@#offtopic
+ - Rear/Center&&LFE Volume Controls in the config file were set to 0 and
+locked!..
+
+ - surround51 was statically bound to the non-digital output and locked
+(to the analogue output), so there was no way to get surround sound on
+my digital-out.
+
+ - other volume controls were locked too, I had a look at Audigy.conf
+and reduced the locked controls to the minimum required.
 
 
---25rOlkxR6a4U87uN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+The patch attached for /usr/share/alsa/cards/EMU10K1.conf is actually
+very trivial and a cleanup of the old file, it would be cool if you'd
+apply the patch to the ALSA config file in CVS, I'm sure it would help a
+lot of people which have no rear sound with the emu10k1.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
 
-iD8DBQE/6z+zKRs727/VN8sRAm87AKCzhG+XkRPHC1TYoWrhdA68zuOv+wCgn5ig
-/wZMGZH7K9reZFA+CQoHSsg=
-=6Olt
------END PGP SIGNATURE-----
+/me now leans back and enjoys alsa and Lord Of The Rings II Extended
+Version in _FULL_ Digital Dolby 5.1 :))))
 
---25rOlkxR6a4U87uN--
+best wishes,
+dominik.
+-- 
+Dominik 'Aeneas' Schnitzer <dominik@schnitzer.at>
+http://www.schnitzer.at/dominik/ - Update 03/08/31: Birthday Party
+
+PGP Fingerprint: E839 B9EA F518 899D AA35  BB67 0DBF 7AB2 5FE6 525A
+PGP Public Key: http://www.schnitzer.at/dominik/public.key
+
+--=-oo1Hya4uJ8OfTneR8r4e
+Content-Disposition: attachment; filename=EMU10K1.conf
+Content-Type: text/plain; name=EMU10K1.conf; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+#
+# Configuration for the EMU10K1 chip
+#
+
+<confdir:pcm/front.conf>
+
+EMU10K1.pcm.front.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hw
+	card $CARD
+	device 0
+}
+
+<confdir:pcm/rear.conf>
+
+EMU10K1.pcm.rear.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hooks
+	slave.pcm {
+		type hw
+		card $CARD
+		device 0
+	}
+	hooks.0 {
+		type ctl_elems
+		hook_args [
+			{
+				name "EMU10K1 PCM Send Volume"
+				index { @func private_pcm_subdevice }
+				lock true
+				value [ 0 0 0 0 0 0 255 0 0 0 0 255 ]
+			}
+		]
+	}
+}	
+
+<confdir:pcm/center_lfe.conf>
+
+EMU10K1.pcm.center_lfe.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type hooks
+	slave.pcm {
+		type hw
+		card $CARD
+		device 0
+	}
+	hooks.0 {
+		type ctl_elems
+		hook_args [
+			{
+				name "EMU10K1 PCM Send Volume"
+				index { @func private_pcm_subdevice }
+				lock true
+				value [ 0 0 0 0 255 0 0 0 0 255 0 0 ]
+			}
+			{
+				name "EMU10K1 PCM Send Routing"
+				index { @func private_pcm_subdevice }
+				lock true
+				value [ 0 1 2 3 6 7 0 1 6 7 0 1 ]
+			}
+		]
+	}
+}	
+
+<confdir:pcm/surround40.conf>
+
+EMU10K1.pcm.surround40.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type multi
+	slaves [
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.EMU10K1.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.EMU10K1.pcm.rear.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+	]
+	bindings [
+		{ slave 0 channel 0 }
+		{ slave 0 channel 1 }
+		{ slave 1 channel 0 }
+		{ slave 1 channel 1 }
+	]
+}
+
+<confdir:pcm/surround41.conf>
+<confdir:pcm/surround50.conf>
+<confdir:pcm/surround51.conf>
+
+EMU10K1.pcm.surround51.0 {
+	@args [ CARD ]
+	@args.CARD {
+		type string
+	}
+	type multi
+	slaves [
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.EMU10K1.pcm.front.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.EMU10K1.pcm.rear.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+		{
+			pcm {
+				@func concat
+				strings [
+					"cards.EMU10K1.pcm.center_lfe.0:CARD=" $CARD
+				]
+			}
+			channels 2
+		}
+	]
+	bindings [
+		{ slave 0 channel 0 }
+		{ slave 0 channel 1 }
+		{ slave 1 channel 0 }
+		{ slave 1 channel 1 }
+		{ slave 2 channel 0 }
+		{ slave 2 channel 1 }
+	]
+}
+
+<confdir:pcm/iec958.conf>
+
+EMU10K1.pcm.iec958.0 {
+	@args [ CARD AES0 AES1 AES2 AES3 ]
+	@args.CARD {
+		type string
+	}
+	@args.AES0 {
+		type integer
+	}
+	@args.AES1 {
+		type integer
+	}
+	@args.AES2 {
+		type integer
+	}
+	@args.AES3 {
+		type integer
+	}
+	type hooks
+	slave.pcm {
+		type hw
+		card $CARD
+		device 3
+	}
+	hooks.0 {
+		type ctl_elems
+		hook_args [
+			{
+				name "IEC958 Playback Default"
+				lock true
+				preserve true
+				value [ $AES0 $AES1 $AES2 $AES3 ]
+			}
+			{
+				name "IEC958 Optical Raw Playback Switch"
+				lock true
+				preserve true
+				value [ 1 1 ]
+			}
+			{
+				name "SB Live Analog/Digital Output Jack"
+				lock true
+				preserve true
+				value 1
+			}
+		]
+	}
+}
+
+--=-oo1Hya4uJ8OfTneR8r4e
+Content-Disposition: attachment; filename=EMU10K1-conf.patch
+Content-Type: text/x-patch; name=EMU10K1-conf.patch; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+--- EMU10K1.conf.orig	2003-12-25 23:57:56.000000000 +0100
++++ EMU10K1.conf	2003-12-27 01:02:00.000000000 +0100
+@@ -12,7 +12,7 @@
+ 	type hw
+ 	card $CARD
+ 	device 0
+-}	
++}
+ 
+ <confdir:pcm/rear.conf>
+ 
+@@ -31,12 +31,6 @@
+ 		type ctl_elems
+ 		hook_args [
+ 			{
+-				name "Wave Surround Playback Volume"
+-				preserve true
+-				lock true
+-				value [ 0 0 ]
+-			}
+-			{
+ 				name "EMU10K1 PCM Send Volume"
+ 				index { @func private_pcm_subdevice }
+ 				lock true
+@@ -63,38 +57,6 @@
+ 		type ctl_elems
+ 		hook_args [
+ 			{
+-				name "Wave Center Playback Volume"
+-				preserve true
+-				lock true
+-				value 0
+-			}
+-			{
+-				name "Wave LFE Playback Volume"
+-				preserve true
+-				lock true
+-				value 0
+-			}
+-			{
+-				name "Headphone Center Playback Switch"
+-				index 1
+-				preserve true
+-				lock true
+-				value true
+-			}
+-			{
+-				name "Headphone LFE Playback Switch"
+-				index 1
+-				preserve true
+-				lock true
+-				value true
+-			}
+-			{
+-				name "SB Live Analog/Digital Output Jack"
+-				preserve true
+-				lock true
+-				value 0
+-			}
+-			{
+ 				name "EMU10K1 PCM Send Volume"
+ 				index { @func private_pcm_subdevice }
+ 				lock true
+
+--=-oo1Hya4uJ8OfTneR8r4e--
+
 
 
 -------------------------------------------------------
