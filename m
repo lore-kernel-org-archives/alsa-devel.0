@@ -1,9 +1,14 @@
-From: "thewade" <pdman@aproximation.org>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Alsa and hdspmixer segfault
-Date: Fri, 1 Oct 2004 12:14:30 -0600
+Date: Fri, 01 Oct 2004 14:16:07 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410011814.i91IEUmY001683@sanctuary.aproximation.org>
+Message-ID: <1096654567.24868.46.camel@krustophenia.net>
+References: <200410011808.i91I8cci001653@sanctuary.aproximation.org>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200410011808.i91I8cci001653@sanctuary.aproximation.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,29 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: thewade <pdman@aproximation.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Program received signal SIGSEGV, Segmentation fault.
-> [Switching to Thread 182894123680 (LWP 1231)]
-> 0x0000003092b6d075 in cb2 () from /usr/lib64/libfltk.so.1.1
+On Fri, 2004-10-01 at 14:08, thewade wrote:
+> > > p.s. I have 2.6.9-rc3 kernel. I get errors when I try to apply the
+> > > latest low latency patch:
+> > > 
+> > >http://people.redhat.com/mingo/voluntary-preempt/voluntary-preempt-full-2.6.9-rc2-mm4-S7
+> > > Any tips? (hdspmixer is more important than this)
+> > 
+> > Well, it\'s obvious why it doesn\'t work.  You say you have 2.6.9-rc3, but
+> > the S7 patch is against 2.6.9-rc2-mm4, as the name clearly indicates. 
+> > You need to get that kernel to apply S7.
 > 
-> Should I rebuild fltk?
+> Yes, I realize that I have 2.6.9-rc3 kernel and this is a 2.6.9-rc2 patch.
+> I was wondering if anybody had the patch files broken down into specific
+> changes or if there was some way of patching the new code without doing it
+> by hand.
 
-My fltk is:
-fltk-1.1.4-1.1.fc2.dag.x86_64.rpm
-fltk-devel-1.1.4-1.1.fc2.dag.x86_64.rpm
-(The best/only rpms I could find. Ive tried the source
-but I had problems I think, though Ive forgotten them now)
-fltk-1.1.5rc2
-fltk-1.2.x (CVS I think)
-fltk-2.0.x (CVS I think)
+Currently no.  You have to download and apply the patches in the order
+spacified in my other email.  In particular the -mm patch is very
+large.  The -mm kernel is basically filling the role of 2.7 for now.  It
+is an experimental, development kernel that should not really be used on
+production systems.
 
-And my arch is:
-AMD64 Fedora Core 3 test 1 2.6.9-rc3 standard kernel.
+> Alternitvely one could tell me how fast developement is going on that thread
+> of low-latenct patches and approximately how long it would be to wait to get
+> the proper patch.
 
-Thanks again!
--thewade
+Once all the major bugs are resolved, Ingo will generate a patch against
+the standard kernel.  For now you have to apply the -mm patch then the
+VP patch.
+
+> 
+> I had simply run the patch to see if the affected files had not been changed,
+> as I do not know how many or which files will be modified by the patch.
+> 
+> Lastly, what is the best way to determine the latency of my pesent kernel?
+
+What is the smallest period size you can use without xruns?  Same
+concept as ASIO, you set the latency (aka period size) to the lowest
+value that doesn't cause clicks and pops.
+
+Lee
+
 
 
 -------------------------------------------------------
