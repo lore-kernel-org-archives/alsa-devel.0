@@ -1,16 +1,14 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: Re: Tascam US-224/428 MMC?
-Date: Tue, 20 Jul 2004 20:01:43 +0100 (WEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: [ANN] Open Source US-X2Y firmware
+Date: Tue, 20 Jul 2004 23:15:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32928.192.168.1.5.1090350103.squirrel@192.168.1.5>
-References: <33466.195.245.190.93.1089901175.squirrel@195.245.190.93>   
-    <7444.195.245.190.93.1090312112.squirrel@195.245.190.93>   
-    <20040720180512.GA527@tuba.home>
+Message-ID: <20040720211538.GA521@tuba.home>
+References: <20040527192622.GA1966@tuba.home> <s5h3c5fsmd1.wl@alsa2.suse.de> <20040601175147.GA572@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040720180512.GA527@tuba.home>
+Content-Disposition: inline
+In-Reply-To: <20040601175147.GA572@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,41 +17,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net, annabellesgarden@yahoo.de, ws@seh.de
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Martin,
->
-> Well, my us122 has no controller stuff. I guess it's even impossible
-> to fix this with a more advanced firmware;-) But, go ahead and improve
-> things. Your code is always welcome, except Karsten has already solved
-> it;-)
+On Tue, Jun 01, 2004 at 07:51:48PM +0200, Martin Langer wrote:
+> On Tue, Jun 01, 2004 at 10:39:38AM +0200, Takashi Iwai wrote:
+> > At Thu, 27 May 2004 21:26:22 +0200,
+> > Martin Langer wrote:
+> > > 
+> > > if someone is interested in a free (I mean GPL) firmware for the Tascam
+> > > US-X2Y devices I can offer an open source replacement for the second stage 
+> > > loader alsa-firmware/usx2yloader/tascam_loader.ihx. All three US-X2Y devices
+> > > need this file. But I have only tried it out with an US-122 where it works.
+> > > 
+> > shall i include this into alsa-firmware?
+> 
+> In which way should it be included?
+> - replacing the vendor fw file
+> - as alternate fw, maybe with a configure option like 'prefer-free-fw' or so
+> 
+> Another point is that MidiSportLoader.ihx is 100% identical with
+> tascam_loader.ihx. Maybe midisport devices work with this loader too. But I
+> have no possibility to test it. Then it would be better to remove the ezusb
+> stuff from usx2yloader and create a new chip specific tree for all ez-usb
+> devices. Or not? 
+> 
+> > or should wait for a while until more debugging?
+> 
+> I guess some us224/midisport test would be nice. But on the other hand the
+> loader core is built into the chip and my code is not much more than a few
+> init lines.
 
-Have he?
+Ok, now we know that us122, us224 and us428 are working.
+So I vote for replacing tascam_loader.ihx :)
 
->
-> BTW: I'm still searching an us224 user who wants to try out a free
-> firmware file ( http://www.langerland.de/us122/usx2y-fw-0.1b.tar.bz2 ).
-> It works with us122/us428, but us224 is still untested.
->
+Apropos Midisport: What about a free midisport firmware package? A
+combination of the gpl firmware by Lars Doelle and this loader. But perhaps
+this loader fails for midisport devices --- it's still untested, it's just
+an idea. On the other hand it looks like everybody is happy with the
+alternate loader from http://usb-midi-fw.sf.net --- file it under $0.02 ;)
 
-It works on my us-224 too, just tested it with the bundled ld2-ezusb.hex
-file, as I don't have as31 as required to make it.
 
-At first glance, everything works (using alsa-driver/kernel as of cvs
-20040713, where Karten's recent snd-usb-usx2y 0.7.1 patch is included).
+martin
 
-Remember that you can always count on my for us-224 testing.
-
-Cheers,
 -- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
-
-
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
