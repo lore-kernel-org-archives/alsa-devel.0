@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [linux-audio-dev] why is no-one responding are you all just a bunch of &*^%&^%^& wits???
-Date: Wed, 12 Feb 2003 09:32:19 -0500
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: why is no-one responding are you all just a bunch
+	of &*^%&^%^& wits???
+Date: 13 Feb 2003 01:22:13 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18ixrk-0003X4-00@sc8-sf-list1.sourceforge.net>
-References: <20030212135025.GB18698@ns.mine.dnsalias.org>
+Message-ID: <1045059740.10267.109.camel@littlewolf2.littlewolf>
+References: <Pine.LNX.4.21.0302121506110.29243-100000@mailserver.intern.bfad.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 12 Feb 2003 14:50:26 +0100."
-             <20030212135025.GB18698@ns.mine.dnsalias.org>
+In-Reply-To: <Pine.LNX.4.21.0302121506110.29243-100000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,38 +18,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: vincent.touquet@pandora.be
-Cc: linux-audio-dev@music.columbia.edu, ardour-dev <ardour-dev@lists.sourceforge.net>, muse@seh.de, tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: tomasz motylewski <T.Motylewski@bfad.de>
+Cc: ardour-dev <ardour-dev@lists.sourceforge.net>, Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->I think if (if) the Ardour developers are _expecting_ quality feedback
->from normal users (not just programmers) at this stage, they should
->provide tarballs of the stable CVS snapshots they want to be tested.
->
->But maybe they want to wait for 1.0 before letting endusers test it?
->In that case, maybe you tried to use it too early in its development ?
->I think they honestly appreciate your effort to participate, there
->should be no doubt about that, but maybe Ardour is still changing too
->rapidly for you to be able to track it.
+Thanks for the support
 
-this is completely correct. 
+This has had more to do with the ardour-dev ML and specific questions
+there.
 
-there is nobody on the ardour-dev mailing list with the time to
-provide hand-holding for the compile process. i want everything about
-building ardour right now to shout at you "if you can't do this, give
-up!". 
+However it doesn't surprise me that the responses so far have all come
+from the alsa developers ML. The question was posed to the ardour
+developers maling list and cc'd in to other lists that have responded
+(or partially) responded to my messages. 
 
-nobody in their right minds expects endusers to use CVS, let alone
-have all the auto-tools installed on their systems with the precise
-mix of versions required for this crappy but irreplaceable set of
-tools to work right.
+As I mentioned I had responded to replies to some of my queries but for
+the last 1.5 to 2 weeks have been completely ignored even after I was
+requested to post more information which I did at first possible
+opportunity 
 
-when ardour is ready for end users, binaries will be available. until
-then, if you can't build it and nobody answers your questions quickly,
-take that as a sign that (1) you should wait and (2) people are busy
-working on cool new features.
 
---p
+
+
+
+On Thu, 2003-02-13 at 01:10, tomasz motylewski wrote:
+> 
+> Privately, from my experience on many such mailing lists - no response means
+> either a silly question with no details which proves you have not read the
+> documentation, OR just a really good, difficult question nobody has an answer
+> to. Your is the second case. And if it is not asked by more people and not
+> answered in 1-2 days then it is lost.
+> 
+> Best regards,
+> --
+> Tomek
+> 
+
+
 
 
 -------------------------------------------------------
