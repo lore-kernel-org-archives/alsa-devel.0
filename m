@@ -1,10 +1,10 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: STAC9758 datasheet now public.
-Date: Wed, 05 May 2004 16:14:05 +0000
+From: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
+Subject: Newbie help
+Date: Wed, 05 May 2004 19:28:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <409912CD.2070600@superbug.demon.co.uk>
+Message-ID: <40992430.A5495821@ma.tech.ascom.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,14 +18,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I just received an email from sigmatel.com, so I thought I would pass on 
-relevent information.
+Hi everyone,
 
-The STAC9758 datasheet has been made public and can be attained at:
-http://www.sigmatel.com/products/technical_docs.htm#9758
+I am new to ALSA and to sound world, but my new project needs me to
+start working on it. For the same, I installed ALSA on my DELL CPx
+notebook, which runs linux 2.4.21 and ran Paul Davis's sample code in "A
+Tutorial on Using the ALSA Audio API" for initial tests. 
 
-Cheers
-James
+The "Minimal Playback" and "Minimal Capture" programs work fine on their
+own. Yet, when I put them together (it is recommended to use interrupt
+driven approach, but this was just a trial, so I used the non-interrupt
+version) to implement the following functionality :
+
+- Capture for about 30 seconds and store in a buffer
+- Read from the buffer and playback
+
+.. all I listen is hissing sound. The code seems to work because I can
+listen to the modulations of some sort ... but normal voice is converted
+to incoherent (hissing) noise.
+
+Can someone suggest what might be going wrong, or do I need to tune some
+other parameters ? Any help is appreciated.
+
+Thanks in advance
+-Manu
 
 
 -------------------------------------------------------
