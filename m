@@ -1,8 +1,9 @@
-From: Gerald Grabner <gerald.grabner@tugraz.at>
-Subject: How to set ppq?
-Date: Mon, 23 Dec 2002 14:19:38 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Converted "Writing an ALSA Driver" to DocBook.
+Date: Mon, 23 Dec 2002 22:19:01 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E070D6A.8010503@tugraz.at>
+Message-ID: <3E070D45.9040103@boosthardware.com>
+References: <20021223042450.59477.qmail@web21003.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,26 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Kevin Conder <kwconder@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Kevin Conder wrote:
+> In case any one was curious, I converted Takashi's "Writing an ALSA
+> Driver" document to DocBook/SGML. It's available for download here:
+> 
+> http://www.kevindumpscore.com/download/writing-an-alsa-driver.sgml
+> 
+> 
 
-I'm trying to set PPQ for the alsa sequencer queue but it doesn't
-work. Here is the piece of code:
+I have downloaded it to add to the site. I will render it to html so we 
+can provide a nice way to browse it online.
 
-   snd_seq_queue_tempo_set_tempo (queue_tempo, tempo) ;
-   snd_seq_queue_tempo_set_ppq   (queue_tempo, ppq  ) ;
-   snd_seq_set_queue_tempo (seq_handle, queue_id, queue_tempo) ;
 
-It works for tempo, but not for ppq. Does anybody know how I could
-also set ppq?
 
-Thanks a lot!
-Gerald
 
-BTW: It's on a SuSE 8.1 box that comes with alsa-0.9.0rc3,
-cvs20020903.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
