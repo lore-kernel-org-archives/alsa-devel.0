@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Wed, 25 Aug 2004 23:47:33 +0200 (CEST)
+Subject: [ALSA - driver 0000452]: Rate control sticks in IEC958 value
+Date: Wed, 25 Aug 2004 23:56:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040825214733.8E91214026@server.perex-int.cz>
+Message-ID: <20040825215634.B59A914026@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03F33293
-	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 23:47:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CB3A297
+	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 23:56:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,58 +22,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000452
 ======================================================================
 Reported By:                Andrew
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     453
+Bug ID:                     452
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             08-18-2004 13:16 CEST
-Last Modified:              08-25-2004 23:47 CEST
+Date Submitted:             08-18-2004 12:51 CEST
+Last Modified:              08-25-2004 23:56 CEST
 ======================================================================
-Summary:                    it is impossible to select spdif as capture source
+Summary:                    Rate control sticks in IEC958 value
 Description: 
-There are no anything spdif-input-related among
-capture source enumeration.
+After setting Multi Track Internal Clock control
+to IEC958 value, this control sticks in this value.
+It is impossible to change the control value to any
+other of the enumerated values. Rebooting does not
+help here. All audio apps do not work now.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 19:55 CEST 
+ tiwai - 08-25-2004 17:02 CEST 
 ----------------------------------------------------------------------
-Did you use 'iec958' pcm?
-
-    % arecord -Diec958 -fdat foo.wav
+The attached patch should fix.
 
 ----------------------------------------------------------------------
- Andrew - 08-25-2004 23:47 CEST 
+ Andrew - 08-25-2004 23:56 CEST 
 ----------------------------------------------------------------------
-A dat fromat doesn't work: "Sample format non available"
-I have tried
-
-arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
-
-Format/rate are accepted, but the resulted file is empty.
-I use aureon 7.1.
-
-While filing the isuue, I have thought about capture selecting via
-mixer Capture Source control. Does this (others?) control influence
-to shown above command working?
+I have tried the driver from current CVS - the problem seem to be
+gone away without suggested patch. Is it still worth to try the patch?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 13:16 Andrew         New Bug                                      
-08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
-08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+08-18-04 12:51 Andrew         New Bug                                      
+08-25-04 17:02 tiwai          Bugnote Added: 0001623                       
+08-25-04 17:02 tiwai          File Added: ice1724-rate-lock.dif                    
+08-25-04 23:56 Andrew         Bugnote Added: 0001629                       
 ======================================================================
 
 
