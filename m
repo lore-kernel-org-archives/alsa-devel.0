@@ -1,15 +1,16 @@
-From: "Scott Parkerson" <Scott.Parkerson@ateb.com>
-Subject: FW: Oops? Linux 2.4.19 + snd-usb-audio (ALSA 0.9.0-rc5)
-Date: Fri, 22 Nov 2002 10:06:14 -0500
+From: Kevin Puetz <puetzk@iastate.edu>
+Subject: Re: Re: Phase Reversal on Santa Cruz (cs46xx)
+Date: Fri, 22 Nov 2002 09:35:55 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <64AE3D5B518E3648ACC823FBCB0B7375F550BD@sr002-2kexc.ateb.com>
+Message-ID: <200211220935.55174.puetzk@iastate.edu>
+References: <200211170056.11190.puetzk@iastate.edu> <200211172241.14373.puetzk@iastate.edu> <3DDD75AC.9030408@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary="----=_NextPart_000_0018_01C2920E.CA0926B0";
-	micalg=SHA1;
-	protocol="application/x-pkcs7-signature"
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+In-Reply-To: <3DDD75AC.9030408@cucumelo.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,128 +19,81 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Thursday 21 November 2002 18:09, Benny Sjostrand wrote:
+> Thanks, that explication makes sense.
+>
+> If it was that simple that Santa Cruz where the only card in the world with
+> this problem, but there's the same problem is reported for other cs46xx
+> based card's
+> too.
+>
+> >well, how did it work before (0.9.0rc1 worked for sure, I guess I should
+> > try to identify the specific version that developed this problem)? Were
+> > we using the DSP to invert it previosly, did we lose some Santa Cruz
+> > specific bittwiddling (the 'fix' consists of just negating all the levels
+> > for one stereo channel). Any guesses?
+>
+> I would like know why the problem does not apear with rc1,  but the
+> problem does not
+> apear  forme with any release, so I cant reproduce the problem with my
+> equipment, which
+> dont make things easy ...
 
-------=_NextPart_000_0018_01C2920E.CA0926B0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+no, that would be annoying indeed :-)
 
-> -----Original Message-----
-> From: James Courtier-Dutton [mailto:James@superbug.demon.co.uk]
-> Sent: Thursday, November 21, 2002 1:26 AM
-> To: Scott Parkerson
-> Cc: alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] Oops? Linux 2.4.19 + snd-usb-audio 
-> (ALSA 0.9.0-rc5)
-> 
-> I think that will happen with most PCMCIA and USB devices in
-> linux. 
+> The main diference between the old DSP code and the new is that the old DSP
+> is based on a static parameter setup. The new DSP code is  a attempt to
+> manage
+> tasks and resources in the DSP dynamically.
+>
+> I dont find any reason to why the DSP would invert one of the channels,
+> in theory
+> the parameter setup made when playing one PCM channel is the same as it is
+> in the old DSP code static loaded (discarding unknown bugs)
+>
+> Finally, the "volume" could be possible, speculating: if the output sample
+> is the product of volume * sample, and the volume is negative the sample
+> would
+> be negated. The "volume" in a DSP SCB for each channel is 16 bit value
+> where 0x8000 is the maximum volume and 0xffff is cero, and lower then
+> 0x8000 dont know. This part now actually differs a little bit from the old
+> static DSP setup.
+> Have you tested my latest patch ??
 
-That may be true. However, it does not happen with the stock 2.4.19 USB
-audio drivers. An unexpected hot removal does not cause an Oops to
-occur. The application will usually get a write() error, and that's it.
-This is much more desirable to have happen than an Oops, especially in a
-production environment where a user might "accidentally" pull the plug.
+no, I haven't, since the patch is quite mangled in the www archive and I 
+wasn't subscribed then, I didn't go through th trouble of fixing it up. Is it 
+merged into cvs now, and if not, could you send it my way? I'd be happy to 
+give it a shot.
 
-> I think people will have to wait until kernel 2.5.x or above
-> for better 
-> plug-n-unplug support.
+> >Just as another question, do anyone know if it's possible to use the
+> > internal SPDIF connector to feed CD audio into the card instead of the
+> > analog input? I can't find anything in the mixer that seems to recieve
+> > that input.
+>
+> The cs4630 chip got only one SDPIF input interface, you should see it
+> the mixer with
+> the new DSP code. And if that interface is wired to the internal SPDIF
+> conector without
+> any GPIO story it should just work (however the sounds gets
+> distorcionated (out-of-sync)
+> sometimes with the SPDIF input) ...
 
-I disagree. I think the device drivers can be made to handle a case
-where the device's mapped addresses have "disappeared" out from under
-them. This kind of stuff is not necessarily operating system dependent
-(although there may be some OS-dependent ways to check to see if the
-hardware is "OK" before attempting to post a write or read. You can
-cause the same crap to happen in Windows unless your driver is carefully
-written.
+Hmm, OK. Guess I'll reboot to windows and see if that connection even works 
+there :-P Maybe I just screwed it up.
 
-> Maybe I am wrong, and it is just a co-incidence that all the
-> devices I 
-> have had bugs in the drivers.
+> /Benny
 
-I don't believe you are wrong. I just don't believe that it's a priority
-for some developers to make sure that their drivers fail gracefully
-under this condition. I mean, it's Linux -- isn't the audience "people
-with a clue"? (sarcasm mine). Plus, most drivers are written for devices
-that can't be hot plugged under most conditions (i.e. PCI adapters).
+oh, for anybody using this
+ http://ophelia.student.iastate.edu/~puetzk/arts_phaseinvert-0.7.tgz
 
-As for how all this relates to ALSA -- I don't know if it's up to ALSA
-to check to see if a device is still there or not. It might be up to the
-individual driver to handle it. 
-
-Regards,
-Scott
-
-------=_NextPart_000_0018_01C2920E.CA0926B0
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIII+zCCAoow
-ggHzoAMCAQICAwilxDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdl
-c3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsT
-FENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAw
-MC44LjMwMB4XDTAyMTEwNjEzNDYyMFoXDTAzMTEwNjEzNDYyMFowSjEfMB0GA1UEAxMWVGhhd3Rl
-IEZyZWVtYWlsIE1lbWJlcjEnMCUGCSqGSIb3DQEJARYYU2NvdHQuUGFya2Vyc29uQGF0ZWIuY29t
-MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDebEziup36Mixrt42wFG+rrcqtHAUlfLayPOPO
-HT5j6uNYqwb3UdeSHxAlDoKoITnfGg39S779TlLUXVIIUt5f2G0X87+pFA6N7iQqWJsH5DfdchKz
-SRTcMlqxQOncolY5FCrKL/a9CUMNoeA9CbQWT0snYz613JjeOrJzuWdnqwIDAQABozUwMzAjBgNV
-HREEHDAagRhTY290dC5QYXJrZXJzb25AYXRlYi5jb20wDAYDVR0TAQH/BAIwADANBgkqhkiG9w0B
-AQQFAAOBgQBA8WlKAzMRpBM+Ux+Rvkt2Fx0GIPjdD4EYmfvCBrU3jxxif7zDhrG3v3qb4uoeRaE0
-608xuf4QCdH8EP57dO+pHIGAFhMy8Q3QBoa8408JJqjqslLKidbUFQHGPPMhi+7Ug8DIGdFcymM8
-St9zI7jHAYdPwxNkhZk69O6o4BBxpzCCAy0wggKWoAMCAQICAQAwDQYJKoZIhvcNAQEEBQAwgdEx
-CzAJBgNVBAYTAlpBMRUwEwYDVQQIEwxXZXN0ZXJuIENhcGUxEjAQBgNVBAcTCUNhcGUgVG93bjEa
-MBgGA1UEChMRVGhhd3RlIENvbnN1bHRpbmcxKDAmBgNVBAsTH0NlcnRpZmljYXRpb24gU2Vydmlj
-ZXMgRGl2aXNpb24xJDAiBgNVBAMTG1RoYXd0ZSBQZXJzb25hbCBGcmVlbWFpbCBDQTErMCkGCSqG
-SIb3DQEJARYccGVyc29uYWwtZnJlZW1haWxAdGhhd3RlLmNvbTAeFw05NjAxMDEwMDAwMDBaFw0y
-MDEyMzEyMzU5NTlaMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
-VQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0
-aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJl
-ZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wgZ8w
-DQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBANRp19SwlGRbcelH2AxRtupykbCEXn0tDY97Et+FJXUo
-dDpCLGMnn5V7S+9+GYcdhuqj3bnOlmQawhRuRKx85o/oTQ9xH0A4pgCjh3j2+ZSGXq3qwF5269kU
-o11uenwMpUtVfwYZKX+emibVars4JAhqmMex2qOYkf152+VaxBy5AgMBAAGjEzARMA8GA1UdEwEB
-/wQFMAMBAf8wDQYJKoZIhvcNAQEEBQADgYEAx+ySfk749ZalZ2IqpPBNEWDQb41gWGGsJrtSNVwI
-zzD7qEqWih9iQiOMFw/0umScF6xHKd+dmF7SbGBxXKKs3Hnj524ARx+1DSjoAp3kmv0T9KbZfLH4
-3F8jJgmRgHPQFBveQ6mDJfLmnC8Vyv6mq4oHdYsM3VGEa+T40c53ooEwggM4MIICoaADAgECAhBm
-RXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUAMIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMM
-V2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0
-aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtU
-aGF3dGUgUGVyc29uYWwgRnJlZW1haWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVt
-YWlsQHRoYXd0ZS5jb20wHhcNMDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UE
-BhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
-EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25h
-bCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKm
-Y8cJJUU+0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL
-8dbdYaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
-AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxhYmVs
-MS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEEBQADgYEA
-MbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0qOPdQVahs9w2t
-TBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C81rbyjz2ROomaYd/
-SJ7OpZ/nhNjJYmKtBcYxggNpMIIDZQIBATCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdl
-c3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsT
-FENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAw
-MC44LjMwAgMIpcQwCQYFKw4DAhoFAKCCAiQwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkq
-hkiG9w0BCQUxDxcNMDIxMTIyMTUwNjEzWjAjBgkqhkiG9w0BCQQxFgQU1PcTErPmAl46YIhooiw8
-0N2Pfv8wZwYJKoZIhvcNAQkPMVowWDAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZI
-hvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwBwYFKw4DAhowCgYIKoZIhvcNAgUwgasG
-CSsGAQQBgjcQBDGBnTCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTES
-MBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRl
-IFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIpcQw
-ga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBD
-YXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlm
-aWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAC
-AwilxDANBgkqhkiG9w0BAQEFAASBgGxVBsDMJQBl+UdclbZgi+ORH92sRRcHo7xQxGV1DIhAZy7x
-xLhJ3lkjsyXYANG1PUAOzmXgkarFRyI3W/SDRwjNYfGEXFx3zP5NRRh4+VCPrfzr7JTLXQL2vgBw
-HezvDUaO/3DgQUdYLD9qh6spQeKzH8GFoYjk10VekL8P3BRiAAAAAAAA
-
-------=_NextPart_000_0018_01C2920E.CA0926B0--
+fixing yet another silly glitch Weijia found. (This is an aRts effect filter 
+which introduces a phase inversion between the channels on purpose, which 
+either fixes or introduces the problem, depending on whether you had it 
+already).
 
 
 -------------------------------------------------------
