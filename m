@@ -1,11 +1,10 @@
-From: "Herminia Raines" <herminia_rainesmk@starbug.de>
-Subject: V1AGKRA 80% DISCOUNT
-Date: Wed, 22 Dec 2004 05:14:21 +0000
-Message-ID: <a64801c4e7e5$a6749660$7f98a199@mogens-data.se>
+From: Kaazaa Equivalent <tracer88@ksmail.seed.net.tw>
+Subject: Downl0ad Favorite Holiday Jingles
+Date: Wed, 22 Dec 2004 03:35:14 +0000 (UTC)
+Message-ID: <Pine.LNX.4.44.0978189673605.22345-100000@collegeclub.com>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,20 +15,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
+Date: Thu, 23 Dec 2004 09:07:18 +0200
+To: alsa-announce@alsa-project.org
+Cc: alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
-Simply disolve HALF A PlLL under your tongue 10min before action,<br>
-for results that last all weekend.<p>
-Normal retail is $19/PlLL<br>
-<a href=3D"http://wsjlppbejbendd.gto-go.com">0rder from us today at the p=
-rice of $3.72</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://zvndvzdogwvu.gto-go.com/rm.php">not interested(0pt-0ut)=
-</a>
-</html>
+Hello,
+
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
+
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
+
+http://www.downloadsupercenter.com/xmas.html
+
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
+
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.downloadsupercenter.com/xmas.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+Check out to Join Now and Start Downloading in Minutes
+
+http://www.downloadsupercenter.com/xmas.html
+
+
+thanks and regards
+Joel Shultz
+Affilate Manager
+Multimedia Download Center
 
 
 -------------------------------------------------------
