@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000519]: [PATCH] 90_debian_alsaconf_notouch
-Date: Fri, 24 Sep 2004 11:58:37 +0200 (CEST)
+Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
+Date: Fri, 24 Sep 2004 12:03:24 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924095837.2EECC2A003@server.perex-int.cz>
+Message-ID: <20040924100324.EF8EC2A001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6886A2AD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 11:58:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EF8A2AD
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:03:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,63 +20,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000519
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                pharm
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     519
-Category:                   alsaconf
+Project:                    ALSA - driver
+Bug ID:                     523
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
-Date Submitted:             09-21-2004 20:01 CEST
-Last Modified:              09-24-2004 11:58 CEST
+Date Submitted:             09-22-2004 22:48 CEST
+Last Modified:              09-24-2004 12:03 CEST
 ======================================================================
-Summary:                    [PATCH] 90_debian_alsaconf_notouch
+Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
-Patch for alsaconf which makes it refrain from creating
-/etc/modprobe.conf if the latter does not already exist.
+I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
+appears to work, at least stereo analog out does for certain) there are
+two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
+recognise these -- mplayer complains about the lack of IEC958 mixer
+entries if I try to use the hwac3 output, and if I point the 
+alsa output at any of the list of hardware outputs I get nothing from the
+digital amp -- it doesn't appear to get any signal.
 
-Creating an empty /etc/modprobe.conf is bad because if it
-exists then modprobe uses _only_ this file -- it does not
-use /etc/modprobe.d/.
-
-Additionally, this patch makes alsaconf set the cleanup
-trap before it creates temporary files rather than after.
-
-
+Assuming I'm not doing something dumb, is there anything else I should
+try? I've tried all the ac97_quirk options.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-2004 19:50 CEST 
+ tiwai - 09-23-2004 18:25 CEST 
 ----------------------------------------------------------------------
-Summary: Refrain from creating /etc/modprobe.conf if it does not already
-exist
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+Could you try the attached patch?
+(Note that it's totally untested.)
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 11:58 CEST 
+ pharm - 09-23-2004 22:09 CEST 
 ----------------------------------------------------------------------
-Applied.  Thanks.
+What am I looking for? It seems to detect OK:
+/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+
+but there's no sound output :( (unless I've fouled up the mixer -- will
+check again)
+
+Is there stuff I can twiddle to see what works? I'll have a spelunk
+through the patch, but I'm not familiar with the alsa internals
+unfortunately...
+
+----------------------------------------------------------------------
+ tiwai - 09-24-2004 12:03 CEST 
+----------------------------------------------------------------------
+What about th spdif output with the patch?
+(make sure to use 1.0.7rc, not 1.0.6a)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:01 jdthood        New Bug                                      
-09-21-04 20:01 jdthood        File Added: 90_debian_alsaconf_notouch.dpatch                    
-09-23-04 19:50 jdthood        Bugnote Added: 0001838                       
-09-24-04 11:58 tiwai          Bugnote Added: 0001867                       
-09-24-04 11:58 tiwai          Assigned To               => tiwai           
-09-24-04 11:58 tiwai          Resolution               open => fixed       
-09-24-04 11:58 tiwai          Status                   new => resolved     
+09-22-04 22:48 pharm          New Bug                                      
+09-22-04 22:48 pharm          Distribution              => Debian unstable 
+09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
+09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
+09-23-04 22:09 pharm          Bugnote Added: 0001851                       
+09-24-04 09:28 pharm          Bug Monitored: pharm                         
+09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
 ======================================================================
 
 
