@@ -1,13 +1,16 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: cs46xx sound quality and CD volume
-Date: Fri, 11 Oct 2002 22:01:03 +0200
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: PCM API update
+Date: Fri, 11 Oct 2002 22:13:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA72DFF.20302@cucumelo.org>
-References: <20021011032322.GC4014@draal.physics.wisc.edu>
+Message-ID: <3DA73101.7A53993D@libero.it>
+References: <Pine.LNX.4.33.0210112037220.1244-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp3.libero.it (smtp3.libero.it [193.70.192.127])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA18804
+	for <alsa-devel@alsa-project.org>; Fri, 11 Oct 2002 22:15:54 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Bob McElrath <bob+alsa-devel@mcelrath.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->
->
->However, one small buglet.  When recording from line1 (aux in the
->current driver), the sound sometimes sounds very tinny and scratchy.  I
->can fix this by muting/unmuting the CD and adjusting the CD volume.
->Yes, the CD slider in alsamixer.  Not the Aux one or the Capture one or
->the DAC one.  The CD one.  Weird, huh?  I've tried playing with all the
->other sliders and they do not affect the recording quality.
->  
->
-This is a known problem (at least forme). When you unmute the CD volume
-the soundcard amplifier is turned off, and at least for the Hercules 
-Game Theater XP card
-this makes no good.
-This thing could be easily fixed.
+Jaroslav Kysela wrote:
+> 
+> Hi all,
+> 
+>         these enhancements are in CVS for PCM API:
+> 
+> - added snd_pcm_avail() function - this function returns count of
+>   available frames for write or read operations, the position
+>   is read directly from hardware; the snd_pcm_avail_update() call
+>   is still mandatory before any I/O!!!
 
-Now, is there any other cs46xx based soundcard that for some reason relies
-on this behaviour ??
+I really don't understand why you've added another ioctl and another
+function to replicate in all PCM classes.
+snd_pcm_delay existence is enough to implement that.
+I'm missing something?
 
-/Benny
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
