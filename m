@@ -1,14 +1,14 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Regarding ALSA-LIBRARY
-Date: Wed, 11 Jun 2003 17:22:20 +0200 (CEST)
+Subject: Power saving mode
+Date: Wed, 11 Jun 2003 18:22:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030611172220.pochini@shiny.it>
-References: <3EE70B5D.6DF34@siptech.co.in>
+Message-ID: <XFMail.20030611182231.pochini@shiny.it>
+References: <1055274355.469.113.camel@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EE70B5D.6DF34@siptech.co.in>
+In-Reply-To: <1055274355.469.113.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,20 +17,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sundaranathan S <snathan@siptech.co.in>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-On 11-Jun-2003 Sundaranathan S wrote:
-> Hi All,
->
-> Can anyone tell me how to test alsa-lib APIs. If there is any
-> documentation available please let me know.
 
-Yes, the official documentation is here:
-
-http://www.alsa-project.org/documentation.php3
+My card which can enter a low power state. It turns
+off some components but it leaves the PCI bus interface
+active. To bring the card back to life it has to be
+reinitialized from scratch. What "D" state is it ?  PCI
+power management papers say that already in D1 state
+i/o space is disabled. I'm a bit confused... I can't
+find any doc about D0.5  :)
 
 
 Bye.
