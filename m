@@ -1,11 +1,15 @@
 From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: Status of ALSA documentation?
-Date: Wed, 27 Feb 2002 00:46:08 -0800 (PST)
-Message-ID: <20020227084608.350742757@sitemail.everyone.net>
+Subject: RE: question regarding latest CS4205 laptop
+    soundcard driver
+Date: Wed, 27 Feb 2002 00:48:30 -0800 (PST)
+Message-ID: <20020227084830.21B932760@sitemail.everyone.net>
 Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+Received: from omta01.mta.everyone.net (sitemail3.everyone.net [216.200.145.37])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA17293
+	for <alsa-devel@alsa-project.org>; Wed, 27 Feb 2002 09:48:41 +0100
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,93 +19,11 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@Op.Net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---- Paul Davis <pbd@Op.Net> wrote:
->>I disagree. I just went through the process of teaching a friend how to use li
->>nux and he needed every piece of information I could give him. It is my opinio
->>n that repetiton and hand holding is the key to success for all newbies. (Base
->>d on teaching ESL for the past two years and teaching myself how to use linux 
->>for the past 3). 
->
->well, then i'd use language like:
->
->      edit the file /foo/bar/baz. you can use any text editor for
->      this, including such programs as vi and emacs.
->
->you cannot usefully make a document on a specific audio interface into
->a tutorial on basic unix system skills. i think that someone who
->doesn't know how to use a text editor will *not* be able to follow
->your instructions without additional help from someone else.
->
-
-That's a good point. Someone else also mentioned why not have a more user friendly example. I will eventually. I think I will make a page with maybe 5 examples of how to edit a file to make a working modules.conf and provide it as a link in the doc. The info in the doc will be as above.
-
-If anybody wants to write a corresponding example for their favorite editor please send it to me. It should take about 1 minute. The text that needs changing is this:
-
----------
-To copy and paste the above to your /etc/modules.conf file follow these instructions.
-
-Using the vi text editor:
-
-Change to root.
-
-
-	su
-
-Open the file with your favorite text editor.
-
-	vi /etc/modules.conf
-
-Copy the above text to the bottom of the file by highlighting it with your mouse and paste it by clicking in the appropriate spot with your middle mouse button. If you don't have a middle mouse button then you can press the left and right button at the same time.
-If you use the above text editor you will need to put the cursor in the correct place and type: 
-
-	a
-
-Which allows you to write to the file. Then save the file. If you use the above text editor type:
-
-	ESC
-	q
-	then type:
-	wq!
-	and press enter.
-
-
----------
-
-
->>>The problem is that these documents will become reference sheets for
->>>each soundcard. Browsing through a couple of pages of install info for
->>>ALSA every time you want to check on that detail about the
->>>CmRMiceCreatEmu Y18kJA card is going to annoy most people. 
->>>
->>
->>Hence the hyperlinks in the contents of the page. Once I learn some more comma
->>nds for the wiki then having these shouldn't be a problem. Someone correct me 
->>if I'm wrong.
->
->I would just invert the order of the information. Put the card
->specific info at the top, and follow it with the generic information.
->
-
-That works too. But more experienced users can easily follow a link whereas the newbies will get very confused with lots of technical info at the top of the document. I think a linked TOC is a good compromise.
-
->>I'm attacking the install howto from the point of view of a "complete" newbie.
->> Someone who needs to be spoonfeed. 
->
->Thats a different goal than I was originally outlining. We get lots of
->mail on alsa-devel (and probably even more on alsa-user) asking "how
->do i use this card?" or "how do i get this card to do ...?". the mail
->isn't from complete newbies, who probably wouldn't even know that
->alsa-devel exists, but from people who know how to use a text editor
->yet have no clue how to get their audio interface working. Thats the
->audience I was aiming for.
->
-
-Sure, currently we do but in the not too distant future we may be overloaded with new users who don't know this information. Better to cover our bases now than field hundreds of the same questions later. We just need to organise the page in a layout that makes it as easy as possible for everyone.
-
+I have a notebook with an es1969 which can mix 4 streams in hardware.
 
 --
 Patrick Shirkey - Boost Hardware Ltd
@@ -109,6 +31,103 @@ For the discerning hardware connoisseur
 Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
+
+--- "Ivica Bukvic" <ico@fuse.net> wrote:
+>First off, thanks for your reply.
+>
+>I am, however, baffled by what you had to say. Crystal company claims
+>complete Linux "friendliness" and I've seen several sites which carry
+>detailed specs of the CS4205 chip in PDF file, so I am not sure what
+>aspect of the sound chip is missing for such information to be complete.
+>Could you please clarify your point?
+>
+>Also, is there a way to contact Crystal company and request additional
+>info?
+>
+>Finally, if this soundcard is not capable of hardware downmixing, is
+>there ANY laptop soundcard at all out there that IS capable of doing
+>that.
+>
+>P.S. What about Yamaha/Intel 753 chip that is found in the Toshiba
+>Satellite 5005's?
+>
+>Thanks for your assistance!
+>
+>Ico
+>
+>> -----Original Message-----
+>> From: Patrick Shirkey [mailto:kotau@firstlinux.net]
+>> Sent: Tuesday, February 26, 2002 2:25 AM
+>> To: Ivica Bukvic; alsa-user@alsa-project.org
+>> Subject: Re: [Alsa-devel] question regarding latest CS4205 laptop
+>> soundcard driver
+>> 
+>> --- "Ivica Bukvic" <ico@fuse.net> wrote:
+>> >Hi all!
+>> >
+>> >I have a quick question regarding the latest CrystalClear soundcard
+>that
+>> >is found in Dell Inspirons and other laptops (model name CS4205).
+>> >
+>> >My understanding is that the maker of this DSP chip is rather Linux
+>> >friendly, so my question is does the driver for this soundcard (which
+>I
+>> >believe is Intel810 and has been reported to be working in Linux)
+>> >supports hardware mixing (i.e. opening sound device multiple times as
+>is
+>> >the case with SBLive!), since this card also advertises having
+>hardware
+>> >mixer like SBLive! does. I=92ve also heard that most other modern
+>> >mainstream soundcards have that capability and some of them simply
+>> don=92t
+>> >do that due to lack of documentation (i.e. Ess maestro 3i). So what
+>is
+>> >then the case with this one and how does it stack-up against other
+>> >mobile built-in soundcards?
+>> >
+>> 
+>> IIRC The docs for this chip are not sufficient for the hardware mixing
+>to
+>> be used.
+>> 
+>> In regards to how well it works I have had ok sound from it and have
+>> recorded quite clean through it but it is nothing special IMO.
+>> 
+>> 
+>> --
+>> Patrick Shirkey - Boost Hardware Ltd
+>> For the discerning hardware connoisseur
+>> Http://www.boosthardware.com
+>> Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+>> 
+>> >Ivica Ico Bukvic, composer, multimedia sculptor,
+>> >programmer, webmaster & computer consultant
+>> >http://meowing.ccm.uc.edu/~ico/
+>> >ico@fuse.net
+>>
+>>=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3
+>D=
+>> 3D=
+>> >=3D=3D=3D
+>> >"To be is to do"=A0=A0 - Socrates
+>> >"To do is to be"=A0=A0 - Sartre
+>> >"Do be do be do"=A0=A0 - Sinatra
+>> >"I am"=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 - God
+>> >
+>> >
+>> >
+>> >
+>> >_______________________________________________
+>> >Alsa-devel mailing list
+>> >Alsa-devel@lists.sourceforge.net
+>> >https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>> 
+>> _____________________________________________________________
+>> Want a new web-based email account ? ---> http://www.firstlinux.net
+>> 
+>> _____________________________________________________________
+>> You deserve a better email address! Get personalized email @yourname
+>> or @yourcompany from Everyone.net --> http://www.everyone.net?tag
 
 _____________________________________________________________
 Want a new web-based email account ? ---> http://www.firstlinux.net
