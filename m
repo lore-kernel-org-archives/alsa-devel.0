@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Edirol DA-2496
-Date: Sat, 11 Oct 2003 10:08:14 +0200 (CEST)
+From: "Paul Berry" <pnberry@gustavus.ak.us>
+Subject: Re: configure error with alsa-driver-0.9.7a
+Date: Sat, 11 Oct 2003 01:30:09 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0310111005431.18818@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0310101826210.12877-100000@studcom.urz.uni-halle.de>
+Message-ID: <000701c38fda$67f5a460$fef8e589@farnorth>
+References: <000901c38e45$961d5c20$91f8e589@farnorth><s5hu16i90cg.wl@alsa2.suse.de><000501c38f14$beaafa60$7ff8e589@farnorth> <s5h3ce16rs3.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0310101826210.12877-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,108 +17,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Jonatan de la Torre <jonatandelatorre@ono.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Oct 2003, Clemens Ladisch wrote:
+Takashi:
+
+Thanks for the linux22-nopci.dif patch. When it was applied and make was
+re-run the alsa-drivers successfully compiled and installed.
+
+Thank you very much,
+Paul
+
+----- Original Message -----
+From: "Takashi Iwai" <tiwai@suse.de>
+To: "Paul Berry" <pnberry@gustavus.ak.us>
+Cc: <alsa-devel@lists.sourceforge.net>
+Sent: Friday, October 10, 2003 7:23 AM
+Subject: Re: [Alsa-devel] configure error with alsa-driver-0.9.7a
+
+
 
 >
-> Jaroslav, Takashi, any comments on this?
+> does the attached patch solve the problem?
 >
-> Jonatan de la Torre wrote:
-> > El vie, 19-09-2003 a las 10:27, Clemens Ladisch escribi=F3:
-> > > Jonatan de la Torre wrote:
-> > > > * One IC whose PCB tag is IC38
-> > > >
-> > > > CS8420-CS
-> > >
-> > > sample rate converter
-> > >
-> > > > * Four IC's whose PCB tags are IC17, IC22, IC27, IC32
-> > > >
-> > > > AK4524VF
-> > >
-> > > stereo 24bit 96kHz DAC/ADC
-> > >
-> > > These chips are used on M-Audio cards, too.
-> > >
-> > > > Anything else before I close the box?
-> > >
-> > > Please try to load the snd-ice1712 driver, and show the contents of
-> > > the /proc/asound/cardX/ice1712 file. The driver might actually work
-> > > with your card.
-> > >
-> > > If not, the EEPROM subvendor/device ID has to be added to the driver.
-> > > Your card looks as if it might be compatible to the Delta 1010LT; if
-> > > it isn't, we have to know to which pins of the ICE1712 the other chip=
-s
-> > > are connected.
-> > >
-> > Hi Clemens and people, here I am again, this is the contents of
-> > /proc/asound/card0/ice1712
-> > ICEnsemble ICE1712 at 0xd400, irq 15
-> >
-> > EEPROM:
-> >   Subvendor        : 0xce164010
 >
-> This isn't one of the known IDs.
+> Takashi
 >
-> >   Size             : 29 bytes
-> >   Version          : 1
-> >   Codec            : 0x1f
-> >   ACLink           : 0x80
-> >   I2S ID           : 0x71
-> >   S/PDIF           : 0x0
-> >   GPIO mask        : 0xfc
-> >   GPIO state       : 0x2
-> >   GPIO direction   : 0x3
-> >   AC'97 main       : 0x0
-> >   AC'97 pcm        : 0x0
-> >   AC'97 record     : 0x0
-> >   AC'97 record src : 0x44
-> >   DAC ID #0        : 0x7
-> >   DAC ID #1        : 0x7
-> >   DAC ID #2        : 0x7
-> >   DAC ID #3        : 0x7
-> >   ADC ID #0        : 0x7
-> >   ADC ID #1        : 0x7
-> >   ADC ID #2        : 0x7
-> >   ADC ID #3        : 0x7
-> >   Extra #28        : 0x0
-> >
-> > Registers:
-> >   PSDOUT03         : 0x0000
-> >   CAPTURE          : 0x00000000
-> >   SPDOUT           : 0x800f
-> >   RATE             : 0x08
-> >
-> > The driver almost works but how can I know wich one ? I think that only
-> > OSS driver works but ALSA not.
->
-> There is no OSS driver AFAIK, and the OSS emulation uses the ALSA
-> driver.
->
-> > Maybe the owner manual helps you. I can send the pdf file
->
-> It won't help unless it shows how the chips are wired.
->
-> > How do I do to know the conections? I follow the tracks on the board?
->
-> Yes, preferably with a multimeter. I think the interesting connections
-> are only those going though the connecting cable.
 
-Well, it does not help much. All outputs are separated from the digital
-I/O. You need a datasheet for Envy24 (ICE1712) and try to find connections
-of GPIO pins to AK4524 and CS8420 so that we can properly initialize these
-chips.
-
-=09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
