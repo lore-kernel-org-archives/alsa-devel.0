@@ -1,13 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA docs
-Date: Fri, 26 Jul 2002 02:03:57 +0900
+From: Joerg Mayer <jmayer@loplof.de>
+Subject: Re: DTMF recognition
+Date: Thu, 25 Jul 2002 19:31:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D402F7D.3010405@boosthardware.com>
-References: <E17XlTw-00041v-00@usw-sf-list1.sourceforge.net>
+Message-ID: <20020725193106.C7735@thot.informatik.uni-kl.de>
+References: <E17Xjod-0005Qf-00@usw-sf-list1.sourceforge.net>
+Reply-To: Joerg Mayer <jmayer@loplof.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <E17Xjod-0005Qf-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +20,26 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+On Thu, Jul 25, 2002 at 10:45:27AM -0400, Paul Davis wrote:
+> >who has already done DTMF recognition with ALSA ( OSS )?
+> >I searched for examples in google, but I have found that
+> >only in TODO lists ;-(.
+> >
+> >Is this so difficult or why doesn't exist anything about that?
 
-> there also needs to be a place for information about card-specific
-> control switches too.
-> 
+Please have a look at the isdn4linux code, either the kernel or
+one of the userland tools has very effective code to do that
+(no fft iirc).
 
-Are there many cards that have controls switches? If there are not then 
-I can see a reason to make that component optional to the template.
-
-How should I describe them? I have never used a card that has them before.
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+   Ciao
+        J=D6rg
+--
+Joerg Mayer                                          <jmayer@loplof.de>
+I found out that "pro" means "instead of" (as in proconsul). Now I know
+what proactive means.
 
 
 
