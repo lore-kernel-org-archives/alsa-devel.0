@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
-Date: Mon, 16 Aug 2004 06:01:35 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: bug_id=0000445
+Date: Mon, 16 Aug 2004 11:17:19 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040816040135.127D01102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200408161117.19988@goldspace.net>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7440C189
-	for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2004 06:02:28 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,71 +17,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000445
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
-======================================================================
-Reported By:                snaketails
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     435
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             08-12-2004 02:50 CEST
-Last Modified:              08-16-2004 06:01 CEST
-======================================================================
-Summary:                    No current support for the ICH6R & ALC880 devices
-Description: 
-As this is a new mobo, there is no driver configuration that supports this
-newer buss interface devices, so there is no sound from the mobo.
-The inability for the mobo to run SATA under Linux is not an issue here,
-as I am using the SiS SATA driver, only issue is sound
-======================================================================
+- just want to confirm the problem also exists for gentoo-dev-sources-2.6.8 +
+Alsa drivers 1.0.6 (was not able to signup to mantis).
 
-----------------------------------------------------------------------
- pzad - 08-12-2004 07:32 CEST 
-----------------------------------------------------------------------
-I think in ALSA 1.0.6rc2 is driver for HD audio (azx module). Try it.
-
-----------------------------------------------------------------------
- snaketails - 08-13-2004 02:03 CEST 
-----------------------------------------------------------------------
-Thank you, but I am currently using "Compiled-in" ALSA support.
-I guess I will have to remove the Alsa support from the Kernel to be able
-to compile? I may look at doing this, this weekend.
-
-----------------------------------------------------------------------
- snaketails - 08-16-2004 06:01 CEST 
-----------------------------------------------------------------------
-I recompiled the kernel to allow me to compile the azx module as
-suggested.
-I found I had to change the audio out plug to another location on the rear
-of my system, but the sound is crackly??
-But, at least I do have sound output, and the crackles are only a slight
-annoyance.
-I only have controls for "Master" and "Capture", nothing more.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-12-04 02:50 snaketails     New Bug                                      
-08-12-04 02:50 snaketails     Distribution              => Gentoo          
-08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
-08-12-04 07:32 pzad           Bugnote Added: 0001551                       
-08-13-04 02:03 snaketails     Bugnote Added: 0001560                       
-08-16-04 06:01 snaketails     Bugnote Added: 0001569                       
-======================================================================
+Andrew
 
 
 -------------------------------------------------------
