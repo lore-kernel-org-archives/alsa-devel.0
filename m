@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000318]: alsaconf: -bash: syntax error in conditional expression
-Date: Tue, 22 Feb 2005 18:05:03 +0100
-Message-ID: <b615007eaaf9a015617370e0c5b4e1dc@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000920]: 97_debian_alsaconf_cfgfile.dpatch: Change file used by Debian
+Date: Tue, 22 Feb 2005 18:07:00 +0100
+Message-ID: <9257978c043916fbfe7bf2ea64cdcd00@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 546F4165
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 18:05:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E26B192
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 18:07:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,13 +23,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=920> 
 ======================================================================
-Reported By:                Toralf Förster
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   318
+Issue ID:                   920
 Category:                   alsaconf
 Reproducibility:            always
 Severity:                   minor
@@ -38,46 +38,36 @@ Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-31-2004 12:25 CEST
-Last Modified:              02-22-2005 18:05 CET
+Date Submitted:             02-18-2005 22:08 CET
+Last Modified:              02-22-2005 18:06 CET
 ======================================================================
-Summary:                    alsaconf: -bash: syntax error in conditional
-expression
+Summary:                    97_debian_alsaconf_cfgfile.dpatch: Change file used
+by Debian
 Description: 
-The error above results from lines like:
-  
-elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
+    Summary: Change the Debian configuration file name
 
-instead it should be 
-elif [[ -f /etc/redhat-release && `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
+    The patch changes the file name to which alsaconf writes
+    if the system is Debian
 
-notice the doubled '[[' and ']]' and '&&' instead of '-a', isn't it ?
+    Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 02-18-05 22:04 
+ tiwai - 02-22-05 18:06 
 ----------------------------------------------------------------------
-This should be fixed.
-
-----------------------------------------------------------------------
- tiwai - 02-22-05 18:05 
-----------------------------------------------------------------------
-Fixed on CVS.
+Appled to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-31-04 12:25 Toralf Förster New Issue                                    
-01-19-05 15:36 jdthood        Note Added: 0003288                          
-01-19-05 16:44 tiwai          Note Added: 0003292                          
-01-19-05 17:00 Toralf Förster Note Added: 0003299                          
-02-18-05 22:04 jdthood        Note Added: 0003666                          
-02-22-05 18:05 tiwai          Status                   new => resolved     
-02-22-05 18:05 tiwai          Resolution               open => fixed       
-02-22-05 18:05 tiwai          Assigned To               => tiwai           
-02-22-05 18:05 tiwai          Note Added: 0003706                          
+02-18-05 22:08 jdthood        New Issue                                    
+02-18-05 22:08 jdthood        File Added: 97_debian_alsaconf_cfgfile.patch      
+             
+02-22-05 18:06 tiwai          Status                   new => resolved     
+02-22-05 18:06 tiwai          Resolution               open => fixed       
+02-22-05 18:06 tiwai          Assigned To               => tiwai           
+02-22-05 18:06 tiwai          Note Added: 0003707                          
 ======================================================================
 
 
