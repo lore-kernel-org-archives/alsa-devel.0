@@ -1,10 +1,10 @@
-From: Karsten Noe <kn@daimi.au.dk>
-Subject: sound input stops
-Date: Mon, 25 Oct 2004 16:57:06 +0200
+From: Michael Wagener <mike.wagener@web.de>
+Subject: via82xx on MSI K8T Neo2 FIR (simple patch included)
+Date: Mon, 25 Oct 2004 21:58:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1098716224.5089.2.camel@rip.daimi.au.dk>
+Message-ID: <417D5AE7.2000601@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,71 +18,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
+Hi,
 
-I have problems with a piece of software, that is supposed to read input
-from a microphone and analyze the data.
+via82xx works on MSI K8T Neo2 FIR with dxs_support=1:
 
-The problem is that sometimes it starts as it should, and other times it
-does not. Also I read a maximum of 2048 samples at the time, and if the
-number of samples returned by snd_pcm_avail_update gets larger than this
-value, the software also fails.
+Patch against alsa-1.6a is as follows:
 
-Stripped for error handling, the initialization looks like this:
+> --- via82xx.c-old       2004-08-02 16:24:38.000000000 +0200
+> +++ via82xx.c   2004-10-25 21:41:52.418241056 +0200
+> @@ -2101,6 +2101,7 @@
+>                 { .vendor = 0x1462, .device = 0x3800, .action = VIA_DXS_ENABLE }, /* MSI KT266 */
+>                 { .vendor = 0x1462, .device = 0x7120, .action = VIA_DXS_ENABLE }, /* MSI KT4V */
+>                 { .vendor = 0x1462, .device = 0x5901, .action = VIA_DXS_NO_VRA }, /* MSI KT6 Delta-SR */
+> +               { .vendor = 0x1462, .device = 0x7023, .action = VIA_DXS_ENABLE }, /* MSI K8T Neo2 FIR */
+>                 { .vendor = 0x1584, .device = 0x8120, .action = VIA_DXS_ENABLE }, /* Gericom/Targa/Vobis/Uniwill laptop */
+>                 { .vendor = 0x161f, .device = 0x202b, .action = VIA_DXS_NO_VRA }, /* Amira Note book */
+>                 { .vendor = 0x161f, .device = 0x2032, .action = VIA_DXS_48K }, /* m680x machines */
 
-snd_pcm_open(&capture_handle,"plughw:0,1",               
-SND_PCM_STREAM_CAPTURE, 0);
+ac97 is an ALC850 which works with the latest ac97_codec.c.
 
-snd_pcm_hw_params_malloc (&hw_params);
-
-snd_pcm_hw_params_any (capture_handle, hw_params);
-
-snd_pcm_hw_params_set_access (capture_handle, hw_params,
-SND_PCM_ACCESS_RW_INTERLEAVED);
-
-snd_pcm_hw_params_set_format (capture_handle, hw_params,   
-SND_PCM_FORMAT_FLOAT_LE);
-
-unsigned int val = sampleRate;
-
-snd_pcm_hw_params_set_rate_near  (capture_handle, hw_params, &val, 0);
-
-snd_pcm_hw_params_set_channels (capture_handle, hw_params, 1);
-
-snd_pcm_hw_params (capture_handle, hw_params);
-
-snd_pcm_hw_params_free (hw_params);
-
-snd_pcm_prepare (capture_handle);
-
-Now a thread is running that continuously does something like the
-following:
-
-while (true)
-{
-  count = snd_pcm_avail_update(capture_handle);
-  if (count<0) {count=0;}
-
-  if (count>2048) {count=2048;}
-
-  snd_pcm_readi (capture_handle, inputBuffer, count);
-
-  .... Analyze data in inputBuffer ....
-}
-
-The problem is that sometimes this loop stops updating the inputBuffer.
-In these cases, count stays the same  after wards for every iteration at
-a low value (count<50).
-
-As long as count is large, there is no problem, but when is goes low, I
-get no new input..
-
-Please tell me what I am doing wrong.
-
-Thanks 
-
-Karsten
-
+regards,
+Mike
 
 
 -------------------------------------------------------
