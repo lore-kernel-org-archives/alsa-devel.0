@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Wed, 19 Jan 2005 18:34:35 +0100
-Message-ID: <b53f643aa875211cb05e037775ff5f21@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Wed, 19 Jan 2005 18:44:19 +0100
+Message-ID: <dcded1531ca8e9802ceaa7c56c1819cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C961A24E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:34:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABF6524E
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:44:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
+Issue ID:                   822
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
 ======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              01-19-2005 18:34 CET
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-19-2005 18:44 CET
 ======================================================================
-Summary:                    Poor digital aidio quality
+Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
-
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
-
-The gnome volume control does not affect the output level when using
-libOSS.
-
-I have by now muted everything in the alsamixer except the Master volume.
-
-Playing a CD works fine.
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- ddemmer - 01-16-05 20:43 
+ 1g0R - 01-19-05 18:40 
 ----------------------------------------------------------------------
-Well, things have changed with 1.0.8!
-
-I tried installing rhythmbox and everything worked fine. 
-
-I then tried ALSA 1.0.8.rc2, and there was no change: rhythmbox works,
-xmms and realplay were "scratchy' with mp3, xmms was fine with libOSS.so
-as the output module. Gnome system sounds are enabled and seem fine. I
-tried the same with KDE and they are fine, too.
-
-I have just installed 1.0.8 and now:
-
-1. xmms and realplay both complain at startup that the audio device is
-busy and won't proceed any further
-2. rythmbox complains that the "default" device is busy and that it can't
-pause audio, but then after I click OK it goes on to work normally.
-3. Gnome soundcard detect works fine.
-4. Gstreamer prefs complains that it can't construct test pipeline, for
-any sound configuration.
-5. Both Gnome and KDE system sounds still work fine.
-
-Note: I have installed alsa-driver, alsa-libs, alsa-utils, alsa-oss, and
-alsa-firmware. I didn't really know what to do with alsa-tools and it
-doesn't seem to matter.
-
-BTW, I'm still running the  2.6.9-1.681_FC3.i686 kernel.
+Hi,
+I uploaded  /etc/asound.state and  /proc/asound/card0/codec*
 
 ----------------------------------------------------------------------
- ddemmer - 01-19-05 18:34 
+ tiwai - 01-19-05 18:44 
 ----------------------------------------------------------------------
-Some more info.
-
-Things are getting better. I dug a bit more into the xmms
-Options/Preferences. I noticed a "configure" button for the Alsa playback,
-and noted it was set to "default PCM" When I changed that to emu10k1x
-Front hw:0,0 playback was fine.
-
-So, I think the "default PCM" was reset to something strange when I had
-the SB16 installed. I'm sure that when I get the time to look into the
-alsa config I can fix that and everything else will be fine.
-
-However, perhaps you guys should look into how the configuration files are
-updated when installing/reinstalling cards.
+You configured the driver as the secondary card?
+Then "default" doesn't work.  Use "default:1" instead.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
-01-03-05 16:49 stransky       Issue Monitored: stransky                    
-01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
-01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
-01-16-05 14:57 fmoraes        Note Added: 0003217                          
-01-16-05 20:43 ddemmer        Note Added: 0003221                          
-01-19-05 18:34 ddemmer        Note Added: 0003310                          
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
+01-19-05 14:40 tiwai          Note Added: 0003275                          
+01-19-05 14:59 1g0R           Note Added: 0003280                          
+01-19-05 15:16 tiwai          Note Added: 0003281                          
+01-19-05 15:46 1g0R           Note Added: 0003289                          
+01-19-05 16:08 tiwai          Note Added: 0003290                          
+01-19-05 16:25 1g0R           Note Added: 0003291                          
+01-19-05 18:39 1g0R           File Added: asound.state                     
+01-19-05 18:39 1g0R           File Added: codec#0                          
+01-19-05 18:40 1g0R           Note Added: 0003315                          
+01-19-05 18:44 tiwai          Note Added: 0003316                          
 ======================================================================
 
 
