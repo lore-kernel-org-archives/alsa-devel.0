@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Tue, 23 Nov 2004 16:20:10 +0100
-Message-ID: <71ec90341f32854f3b4f0bbb443d2281@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
+Date: Tue, 23 Nov 2004 16:52:41 +0100
+Message-ID: <79c0f0c1ebe9b898ebc398472134c39a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E03B2D4
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:20:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 597022CB
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:52:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,114 +24,158 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
 ======================================================================
-Reported By:                bji
-Assigned To:                
+Reported By:                ronis
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
+Issue ID:                   665
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-23-2004 16:20 CET
+Date Submitted:             11-22-2004 19:31 CET
+Last Modified:              11-23-2004 16:52 CET
 ======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
+Summary:                    Build failure in
+/usr/src/alsa/alsa-driver/acore/init.c
 Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
+There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
+CONFIG_PCI).  Here's the log:
 
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
+  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
+/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
+make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.9'
+make: *** [compile] Error 2
 
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
+Adding an extra #endif at the end of the file fixes things, although, I'm
+not 100% sure that this is the right place  top put things.
 
-I have tried the following:
+(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
+profile)
 
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
-
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
-
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- bji - 11-21-04 03:19 
+ tiwai - 11-23-04 15:59 
 ----------------------------------------------------------------------
-Here are the modules that are installed after my system boots:
-
-Module                  Size  Used by
-snd_pcm_oss            55208  0 
-snd_mixer_oss          19712  1 snd_pcm_oss
-snd_intel8x0           36924  1 
-snd_ac97_codec         76896  1 snd_intel8x0
-snd_pcm               111240  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
-snd_timer              34948  1 snd_pcm
-snd                    61156  8
-snd_pcm_oss,snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
-soundcore              11360  1 snd
-snd_page_alloc         10504  2 snd_intel8x0,snd_pcm
-uhci_hcd               34960  0 
-ehci_hcd               37380  0 
-ipw2100               146372  0 
-ieee80211              35908  1 ipw2100
-i915                   86788  3 
-md5                     4608  1 
-ipv6                  272320  8 
-ds                     19204  2 
-ipt_REJECT              7296  1 
-ipt_state               2176  1 
-ip_conntrack           45876  1 ipt_state
-iptable_filter          3200  1 
-ip_tables              18048  3 ipt_REJECT,ipt_state,iptable_filter
-dm_mod                 62740  0 
-button                  6928  0 
-battery                 9220  0 
-ac                      5124  0 
-yenta_socket           20864  0 
-pcmcia_core            67396  2 ds,yenta_socket
-arc4                    2176  1 
-ieee80211_crypt_wep     5376  1 
-ieee80211_crypt         7684  2 ieee80211,ieee80211_crypt_wep
-8139too                30336  0 
-mii                     5504  1 8139too
-ext3                  121576  1 
-jbd                    90392  1 ext3
+Can't reproduce here.  Could you try it with the latest CVS?
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 16:20 
+ ronis - 11-23-04 16:52 
 ----------------------------------------------------------------------
-It's likely a mixer issue.  Could you attach /etc/asound.state?
+I just tried the latest CVS and got the same result.   I looked a little
+further and noticed that part of the build patches various files, and that
+some of these patches failed; specifically,
+
+./acore/seq/seq.c.rej
+./acore/info.c.rej
+./acore/pcm_native.c.rej
+./acore/init.c.rej
+./acore/sound.c.rej
+./pci/bt87x.c.rej
+./pcmcia/pdaudiocf/pdaudiocf.c.rej
+./pcmcia/vx/vxpocket.c.rej
+./usb/usbaudio.c.rej
+
+(others worked, albeit with various offets).  Here are the rejected
+patches from init.c:
+
+***************
+*** 791,797 ****
+  		return 0;
+  	/* FIXME: correct state value? */
+  	err = card->pm_suspend(card, 0);
+  	pci_save_state(dev);
+  	return err;
+  }
+  
+--- 825,835 ----
+  		return 0;
+  	/* FIXME: correct state value? */
+  	err = card->pm_suspend(card, 0);
++ #ifndef CONFIG_HAVE_PCI_SAVED_CONFIG
++ 	pci_save_state(dev, &pci_saved_config[card->number][0]);
++ #elif LINUX_VERSION_CODE >= KERNEL_VERSION(2, 6, 10)
+  	pci_save_state(dev);
++ #endif
+  	return err;
+  }
+  
+***************
+*** 803,812 ****
+  	if (card->power_state == SNDRV_CTL_POWER_D0)
+  		return 0;
+  	/* restore the PCI config space */
+  	pci_restore_state(dev);
+  	/* FIXME: correct state value? */
+  	return card->pm_resume(card, 0);
+  }
+- #endif
+  
+  #endif /* CONFIG_PM */
+--- 841,858 ----
+  	if (card->power_state == SNDRV_CTL_POWER_D0)
+  		return 0;
+  	/* restore the PCI config space */
++ #ifndef CONFIG_HAVE_PCI_SAVED_CONFIG
++ 	pci_restore_state(dev, &pci_saved_config[card->number][0]);
++ #elif defined(CONFIG_HAVE_NEW_PCI_SAVE_STATE)
+  	pci_restore_state(dev);
++ #else
++  	pci_restore_state(dev, dev->saved_config_space);
++ #endif
+  	/* FIXME: correct state value? */
+  	return card->pm_resume(card, 0);
+  }
++ 
++ #endif /* PCI_OLD_SUSPEND */
++ #endif /* CONFIG_PCI */
+  
+  #endif /* CONFIG_PM */
+
+I think my missing #endif is the /*CONFIG_PCI*/ one at the bottom, but
+clearly much more is broken.
+
+Something is wrong.  I've looked in acore/init.c for lines like
+
+***************pci_save_state(dev, &pci_saved_config[card->number][0]);
+}
+*** 791,797 ****
+  		return 0;
+  	/* FIXME: correct state value? */
+  	err = card->pm_suspend(card, 0);
+  	pci_save_state(dev);
+  	return err;
+ 
+They aren't there; moreover, pci_save_state now seems to take 2 arguments;
+e.g.,
+
+pci_save_state(dev, &pci_saved_config[card->number][0]);  
+
+As I mentioned in my first report, I'm running 2.6.9.  Is this an issue?
+
+David
+
+
+(from line  801)}
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
-11-21-04 02:56 bji            File Added: proc_asound.txt                    
-11-21-04 03:16 bji            Note Added: 0002483                          
-11-21-04 03:19 bji            Note Added: 0002484                          
-11-23-04 16:20 tiwai          Note Added: 0002522                          
+11-22-04 19:31 ronis          New Issue                                    
+11-23-04 15:59 tiwai          Note Added: 0002517                          
+11-23-04 16:52 ronis          Note Added: 0002523                          
 ======================================================================
 
 
