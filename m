@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
-Date: Wed, 8 Dec 2004 06:02:05 +0100
-Message-ID: <d88f7846c8fd2e23da46eacf8b40a1e0@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: "Bobbie Leach" <OVTPEKYTQQODEF@yahoo.com>
+Subject: SU-per Hu^ge 0ffers A-devel
+Date: Wed, 08 Dec 2004 03:45:09 -0200
+Message-ID: <21831129233551.K36467@miss.noc.ntua.gr>
+References: <24030224173406.A16319@hawthorn.doit.wisc.edu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9B6D33BD
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 06:02:05 +0100 (MET)
+In-Reply-To: <22131128143048.B6081@buxtehude.doit.wisc.edu>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +14,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: a-devel@alsa-project.org, abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-devel-request@alsa-project.org, alsa-doc@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
-======================================================================
-Reported By:                rafi
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   715
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9 (from source)
-======================================================================
-Date Submitted:             12-08-2004 06:02 CET
-Last Modified:              12-08-2004 06:02 CET
-======================================================================
-Summary:                    pc speaker always routed through laptop speakers
-Description: 
-When the pc speaker driver is loaded, it always beeps through the laptop's
-speakers, even when something is plugged into the headphone jack, or the
-headphone jack on the docking station.
+Our very besstt price of medss:
 
-Also, if audio is being played through the other devices, it also switches
-to the sspeakers for the duration of the beep.  And the beep is not
-affected by any of the volume controlls.
-======================================================================
+Viicodin 	- $90 (30 pi|ls)
+Hydr0c0done 	- $90 (30 pil|s)
+V1a'gra 	- $90 (30 pil|s)
+Va|ium 		- $90 (30 pil|s)
+Cia|is 		- $90 (30 pi||s)
+Xa'nax 		- $90 (30 pi|ls)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-08-04 06:02 rafi           New Issue                                    
-12-08-04 06:02 rafi           Distribution              => debian          
-12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
-======================================================================
+You Can't find this 0ffers available anywhere.
+Visit Us T0day!
+
+http://www.eoinf.com/_c33b87142ce3416662baa654773c6a8e/
 
 
+
+
+
+
+
+
+
+This is 1 -time mailing. N0-re m0val are re'qui-red
+gBY3n24qitRy9TmAxshceKEhv6xzMMjc
 
 
 -------------------------------------------------------
