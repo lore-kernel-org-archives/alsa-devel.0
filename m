@@ -1,14 +1,14 @@
-From: "Pavana Sharma" <pavans@india.ti.com>
-Subject: help needed-- providing control interface
-Date: Fri, 26 Mar 2004 16:23:09 +0530
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: Current Hardware Parameter Settings
+Date: Fri, 26 Mar 2004 12:39:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <015001c41320$878d92a0$f8b6a8c0@ent.ti.com>
-Reply-To: <pavans@india.ti.com>
+Message-ID: <XFMail.20040326123958.pochini@shiny.it>
+References: <20040325162009.54160.qmail@web25101.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040325162009.54160.qmail@web25101.mail.ukl.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-hello,
 
-I am providing control interface for my driver to access from user space
-with functions get & put .
- ( driver is for arm platform ) .
+On 25-Mar-2004 Brian Furey wrote:
+> Thanks Giuliano,
+>
+> How can I get a dump of the current hardware configuration space?
 
-I want to know
+Hmm, lspci ?  :)
+If you mean how to get the capabilities of the card, it's a bit
+tricky. The caps are not a static thing. Each setting may rure
+others. For example, a card has 8 channels and supports these
+formats: S32_LE and S16_LE. But all combinations may not be
+available. When the application sets format=S16_LE the driver
+may restrict the max number of channels to 2. And if it sets
+channels=4 the driver removes S16_LE from the list.
+I can't help you anyway because I know nearly nothing about the
+userspace API.
 
- * while creating new controls should I be allowed to create my hardware
-specific controls like gain, power, rate & other codec specific parameters.
-	or  should I take care of mapping OSS mixer controls to ALSA mixer.
- * How user comes to know what controls are available & the valid range of
-values for sliders & switches.
-As I'm new to ALSA, can anyone explain me in detail, in this ragard.
-Thanks & Regards
-Pavana S
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
