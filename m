@@ -1,14 +1,17 @@
-From: Russell King <rmk+alsa@arm.linux.org.uk>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: buffer producer/consumer sync
-Date: Wed, 31 Mar 2004 09:53:06 +0100
+Date: Wed, 31 Mar 2004 11:07:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040331095306.A32258@flint.arm.linux.org.uk>
-References: <F509E6111989D311B63700805FA761DA0D82DE6E@DBDE01> <20040331083114.C27804@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403310936170.1950@pnote.perex-int.cz> <20040331085330.A30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311004040.1950@pnote.perex-int.cz> <20040331091124.B30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311027290.1950@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0403311100510.1950@pnote.perex-int.cz>
+References: <F509E6111989D311B63700805FA761DA0D82DE6E@DBDE01>
+ <20040331083114.C27804@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403310936170.1950@pnote.perex-int.cz>
+ <20040331085330.A30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311004040.1950@pnote.perex-int.cz>
+ <20040331091124.B30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311027290.1950@pnote.perex-int.cz>
+ <20040331095306.A32258@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0403311027290.1950@pnote.perex-int.cz>; from perex@suse.cz on Wed, Mar 31, 2004 at 10:29:06AM +0200
+In-Reply-To: <20040331095306.A32258@flint.arm.linux.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,37 +20,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: Russell King <rmk+alsa@arm.linux.org.uk>
 Cc: "Gupta, Kshitij" <kshitij@ti.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 31, 2004 at 10:29:06AM +0200, Jaroslav Kysela wrote:
-> On Wed, 31 Mar 2004, Russell King wrote:
-> > Keeping the existing ->nopage will not work - there is no way to get to
-> > a struct page on ARM given the information available to the ALSA code.
+On Wed, 31 Mar 2004, Russell King wrote:
+
+> The correct interface is dma_mmap_coherent().
 > 
-> Looking to arch/arm/mm/consistent.c - vm_region_find / pfn_to_page?
+> I'm actually tempted to provide dma_mmap_coherent() and just let
+> everyone else whinge and moan that the API doesn't meet their
+> expectations.
 
-No - we don't have a pfn to start with, and I'm not implementing an
-interface which returns a struct page because, as was agreed on
-linux-arch, such an interface is completely wrong.
+Thanks. Evolution is the best way.
 
-The correct interface is dma_mmap_coherent().
+> BTW, ARM also needs the mark_pages and unmark_pages functions commented
+> out since they're also trying to use virt_to_page() on virtual addresses
+> that this function is not supposed to - except for the ISA DMA case
+> (and yes, we have ISA DMA-based sound cards as well.)
 
-I'm actually tempted to provide dma_mmap_coherent() and just let
-everyone else whinge and moan that the API doesn't meet their
-expectations.
+It's another inconsistency. We need to mark these pages for the x86 
+architecture, because dma_alloc_coherent does not do this for us.
 
-BTW, ARM also needs the mark_pages and unmark_pages functions commented
-out since they're also trying to use virt_to_page() on virtual addresses
-that this function is not supposed to - except for the ISA DMA case
-(and yes, we have ISA DMA-based sound cards as well.)
+Do you see any reason to ommit this settings for some cases (including 
+for ISA bus)? I think that dma_alloc_coherent should offer consistent
+API - thus mark all allocated pages as reserved for all cases.
 
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
-                 2.6 Serial core
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
