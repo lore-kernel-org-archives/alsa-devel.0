@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
-Date: Wed, 23 Mar 2005 17:21:42 +0100
-Message-ID: <c900f118ae84ce478bfc059540009e49@bugtrack.alsa-project.org>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: dmix oss
+Date: Wed, 23 Mar 2005 08:54:48 +0100
+Message-ID: <1111564488.424120c835bd6@www3.webhosting.cx>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9CB6289
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:21:42 +0100 (MET)
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,71 +14,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
-======================================================================
-Reported By:                Gregoire
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   668
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               gentoo amd64
-Kernel Version:             2.6.10-rc2
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-23-2004 16:04 CET
-Last Modified:              03-23-2005 17:21 CET
-======================================================================
-Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
-rc2
-Description: 
-I have checked the changelog but I don't know what exactly have changed to
-see which change breake the AC3 passtrough ?
-======================================================================
+I'm trying to figure out the dmixoss example in the plugin docs.
 
-----------------------------------------------------------------------
- Gregoire - 03-23-05 17:17 
-----------------------------------------------------------------------
-Sorry, as it worked since post 2.6.10-rc2 kernels, I thought you fixed this
-issue.
-I use now 2.6.12-rc1 and it works perfectly, would it help if I do what
-you want with older kernels ?
+It says to use this with oss emulation devices but afaict the plugin laye=
+r
+doesn't automatically pick up that dmixoss is being used.
 
-----------------------------------------------------------------------
- jdthood - 03-23-05 17:21 
-----------------------------------------------------------------------
-Just checking to make sure that the problem is indeed fixed.
+I tried setting it to default plugin but it doesn't want to do that eithe=
+r. I
+get this error message:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-04 16:04 Gregoire       New Issue                                    
-11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
-11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
-11-23-04 16:08 tiwai          Note Added: 0002518                          
-03-23-05 15:23 jdthood        Note Added: 0004158                          
-03-23-05 17:17 Gregoire       Note Added: 0004179                          
-03-23-05 17:21 jdthood        Note Added: 0004180                          
-03-23-05 17:21 jdthood        Status                   new => resolved     
-03-23-05 17:21 jdthood        Resolution               open => fixed       
-======================================================================
+ALSA lib conf.c:1165:(parse_def) default is not a compound
+ALSA lib conf.c:1578:(snd_config_load1) _toplevel_:1:13:Invalid argument
+ALSA lib conf.c:2821:(snd_config_hook_load) .asoundrc may be old or corru=
+pted:
+consider to remove or fix it
+ALSA lib conf.c:2684:(snd_config_hooks_call) function snd_config_hook_loa=
+d
+returned error: Invalid argument
+ALSA lib conf.c:3050:(snd_config_update_r) hooks failed, removing configu=
+ration
+snd_pcm_open: Invalid argument (default)
 
 
+Ideas for how to get around this if possible are greatly appreciated. The=
+ main
+point of this otherwise futile effort is to be able to use skype which on=
+ly has
+oss support for some bizarre reason.
+
+Rgds.
+
+ --
+ Patrick Shirkey - Boost Hardware Ltd.
+ Http://www.boosthardware.com
+ Http://www.djcj.org/ - The Linux Audio Users guide
+ Http://www.djcj.org/gigs - Gigs Guide Korea
+ =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+ Being on stage with the band in front of crowds shouting, "Get off! No!
+ We want normal music!", I think that was more like acting than anything
+ I've ever done.
+
+ Goldie, 8 Nov, 2002
+ The Scotsman
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by Microsoft Mobile & Embedded DevCon 2005
-Attend MEDC 2005 May 9-12 in Vegas. Learn more about the latest Windows
-Embedded(r) & Windows Mobile(tm) platforms, applications & content.  Register
-by 3/29 & save $300 http://ads.osdn.com/?ad_id=6883&alloc_id=15149&op=click
+This SF.net email is sponsored by: 2005 Windows Mobile Application Contes=
+t
+Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphone=
+s
+for the chance to win $25,000 and application distribution. Enter today a=
+t
+http://ads.osdn.com/?ad_id=3D6882&alloc_id=3D15148&op=3Dclick
