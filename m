@@ -1,10 +1,10 @@
-From: Jesper Lykke Petersen <lykkedk@web.de>
-Subject: M-Audio revolution 7.1 DAC,0 to DAC,1
-Date: Sun, 09 Nov 2003 10:19:00 +0000
+From: "Vladimir I. Umnov" <uvi@ezmail.ru>
+Subject: nforce2 (snd_intel8x0) channels scrolling
+Date: Sun, 9 Nov 2003 17:25:27 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1068373139.1820.7.camel@lykke>
+Message-ID: <20031109172527.3b9e0a07.uvi@ezmail.ru>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,29 +18,34 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi I was hoping someone could tell me howto change the ALSA 0.9.8 src,
-so that all changes to DAC,0 automatic will be mapped to DAC,1.
+Hw: a7n8x deluxe 2.0 (nforce2-c1 + MCP-T)
+Sw: 2.6.0-test8, alsa-lib from cvs
+lspci:
+00:05.0 Multimedia audio controller: nVidia Corporation: Unknown device
+006b (rev a2)        Subsystem: Asustek Computer, Inc.: Unknown device
+0c11        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 5
+        Memory at d7000000 (32-bit, non-prefetchable) [size=512K]
+        Capabilities: [44] Power Management version 2
 
-I'am using the snd-ice1724 
+00:06.0 Multimedia audio controller: nVidia Corporation: Unknown device
+006a (rev a1)        Subsystem: Asustek Computer, Inc.: Unknown device
+8095        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 11
+        I/O ports at e400 [size=256]
+        I/O ports at d000 [size=128]
+        Memory at d7087000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
-My problem is, that this card have no "Master", only theese DAC's to
-change volume.
+Mplayer and xine used for testing in 6channels mode.
+Channels mapping stays wrong after:
+1) snd_pcm_drop() called (seeking and quit);
+2) after long time of playing in 6channels mode, even without x-run.
 
-So i can only change eg. LEFT (DAC,0) in xmms at the time.
+p.s. My sblive works very well now, but my friends doesn't have sblive
+and they want working 6channels audio under linux on nforce2.
 
-I read this about the snd-ice1712 which is another envy-based card..
-
-http://opensrc.org/alsa/index.php?page=Mapping+oss+mixer+controls+to+alsa+mixer
-
-So i think it could be done on my ice-1724 too... just don't now howto 
-
-I'am no programmer, but i can sure change something in my ALSA-src and
-recompile it.
-
-Thanx in advance... Jesper
-
-
-
+p.p.s. I may help with testing or finding a bug, but I need help. I new
+to alsa-driver and can't understand how it works, and can't find how
+snd_pcm_drop() implemented in i810 module.
 
 
 -------------------------------------------------------
