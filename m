@@ -1,12 +1,15 @@
-From: "Yon Mercury" <swirlee@stickist.com>
-Subject: Re: Re: Echo CardBus driver
-Date: Tue, 30 Nov 2004 12:25:26 -0700
-Message-ID: <20041130192526.M36452@stickist.com>
-References: <20041130055303.M24889@stickist.com> <XFMail.20041130121951.pochini@shiny.it>
+From: "Lena M. Ochoa" <lochoaut@tvind.dk>
+Subject: (no subject)
+Date: Tue, 30 Nov 2004 22:49:24 +0000
+Message-ID: <d97b01c4d72e$e2c6d609$c71b1cbf@tv21.co.kr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20041130121951.pochini@shiny.it>
+Received: from tv21.co.kr (adsl-69-110-103-88.dsl.pltn13.pacbell.net [69.110.103.88])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id BFF4E27F
+	for <alsa-devel@alsa-project.org>; Tue, 30 Nov 2004 20:43:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +19,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>, Yon Mercury <swirlee@stickist.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 Nov 2004 12:19:51 +0100 (CET), Giuliano Pochini wrote
-> On 30-Nov-2004 Yon Mercury wrote:
-> 
-> > I'm going to have to return the Indigo IO to the store soon. Not a peep from
-> > the linux pcmcia people to my inquiry, and I feel stuck with it.
-> > 
-> > I'd love to have a working low cost, low latency laptop solution for linux
-> > audio, but it hasn't quite materialized yet! But.. who knows, maybe someone
-> > else will hit the magic button. I did my best.
-> 
-> I'm still investigating.  I don't know if and when I'll find
-> what's going wrong.  Sorry.
-
-That's OK, you've done a lot already. I can always buy the Indigo back if it
-becomes workable.
-
-Best,
--Mercury
-
-
+<html>
+Get new ClALlS softtabs for R0CKHARD lNSTANT ERECTl0NS<p>
+Simply place HALF A PlLL under your tongue 5min before action,<br>
+for results that last all day.<p>
+RRP retail is $19/PlLL<br>
+<a href=3D"http://wumtxkbvncxew.123-rx.com/cs/?gagabob">0rder from us tod=
+ay at the price of $3.50</a>
+<p><br><br><br><br><br><br><br><br><br>
+<a href=3D"http://ckondmbjas.123-rx.com/rm.php?gagabob">not thank you(ab0=
+rt)</a>
+</html>
 
 
 
