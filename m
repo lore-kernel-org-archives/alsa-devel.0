@@ -1,14 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Alsa sequencer port type flags
-Date: Thu, 11 Dec 2003 11:18:05 +0100 (MET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: One drop-out per xrun?
+Date: Thu, 11 Dec 2003 11:47:06 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0312101536120.776-100000@studcom.urz.uni-halle.de>
-References: <200312101335.39428.dgarcia@iua.upf.es>
+Message-ID: <Pine.LNX.4.58.0312111145000.20863@pnote.perex-int.cz>
+References: <200312110300.hBB300vq020366@oud.linuxaudiosystems.com>
+ <Pine.LNX.4.58.0312110915530.20863@pnote.perex-int.cz>
+ <20031211101422.GA28400@bth05w.ABSp.alcatel.be>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200312101335.39428.dgarcia@iua.upf.es>
+In-Reply-To: <20031211101422.GA28400@bth05w.ABSp.alcatel.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,77 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Garcia Garzon <dgarcia@iua.upf.es>
+To: Alfons Adriaensen <fons.adriaensen@alcatel.be>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David Garcia Garzon wrote:
-> SND_SEQ_PORT_TYPE_SPECIFIC Hardware specific port
+On Thu, 11 Dec 2003, Alfons Adriaensen wrote:
 
-something hardware-specific (obviously :-)
+> On Thu, Dec 11, 2003 at 09:21:01AM +0100, Jaroslav Kysela wrote:
+> 
+> > To be 100% correct, in the driver, there is very small window where the 
+> > hardware might be in xrun state, but we cannot detect this situation:
+> > 
+> > 	disable_interrupts();
+> > 	pos = get_current_position();
+> > 	<--- DMA transfer occured here and position (pos) was
+> > 	     on last valid sample -->
+> > 	if (xrun(pos))
+> > 		do_xrun_handling();
+> > 	enable_interrupts();
+> 
+> I'm involved in the development of an application (sonar) where the
+> continuity of the signal is essential, but a few corrupted samples
+> every now and then won't do any harm (the S/N ratio is -60 dB anyway). 
+> Is it possible in ALSA to make the driver just ignore short xruns,
+> and continue without the need to restart ?
 
-> SND_SEQ_PORT_TYPE_MIDI_GENERIC Generic MIDI device
+Yes, stop_threshold is what you want to set. If this value is equal to 
+boundary (sw_params) no xruns are detected. If this value is above ring 
+buffer size, then xruns will be detected later.
 
-Understands MIDI events/commands.
+						Jaroslav
 
-> SND_SEQ_PORT_TYPE_MIDI_GM General MIDI compatible device
-> SND_SEQ_PORT_TYPE_MIDI_GS GS compatible device
-> SND_SEQ_PORT_TYPE_MIDI_XG XG compatible device
-> SND_SEQ_PORT_TYPE_MIDI_MT32 MT-32 compatible device
-
-Support for these standards.  Not necessarily full support, and the
-availability of instruments may depend on loaded soundfonts, but basic
-things like bank selection and drum channel selection should work.
-
-This is not set for external ports like MPU-401 which may have a
-compatible device connected to them.
-
-> SND_SEQ_PORT_TYPE_SYNTH Synth device
-
-Device can playback sound via the SAMPLE_* events.  (The OPL3 driver
-sets this flag too, so either this driver or my description is wrong.)
-
-> SND_SEQ_PORT_TYPE_DIRECT_SAMPLE Sampling device (supporting download)
-
-Can download instrument samples (SND_SEQ_EVENT_INSTR_PUT etc.)
-
-> SND_SEQ_PORT_TYPE_SAMPLE Sampling device (sample can be downloaded at any time)
-
-No ALSA driver sets this.  I don't know what "at any time" means; the
-INSTR_* events _can_ be sent at any time.
-
-> SND_SEQ_PORT_TYPE_APPLICATION Application (sequencer/editor)
-
-This port is (usually) controlled by the user, and not by events sent
-to it.
-
-> But which are the implications of setting up a port with such flags?
-> - Are they merely informative?
-
-Yes.
-
-> - Will Alsa coerce or enhance the port usage depending on that type?
-
-No.  ALSA never looks at these flags, except when someone wants to
-read port information.
-
-> - Can the user see that information in any way?
-
-It isn't even shown in the proc files AFAIK.
-
-
-> What is the use, in a programmer view, of alsa sequencer port type
-> flags?
-
-Not much.  They're more or less useless for automatic selection/
-filtering of ports.  It may be possible to show them to the user, but
-they won't be accurate in every case.
-
-
-HTH
-Clemens
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
