@@ -1,14 +1,13 @@
-From: "Pavana Sharma" <pavans@india.ti.com>
-Subject: Question on ALSA driver  init
-Date: Thu, 1 Apr 2004 14:38:04 +0530
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: RE: Alsa-devel digest, Vol 1 #1786 - 3 msgs
+Date: Thu, 1 Apr 2004 11:11:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <01bf01c417c8$d7cc8760$f8b6a8c0@ent.ti.com>
-Reply-To: <pavans@india.ti.com>
+Message-ID: <Pine.LNX.4.58.0404011110570.1843@pnote.perex-int.cz>
+References: <01be01c417c8$babb6d80$f8b6a8c0@ent.ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <01be01c417c8$babb6d80$f8b6a8c0@ent.ti.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +16,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Pavana Sharma' <pavans@india.ti.com>, alsa-devel@lists.sourceforge.net
+To: Pavana Sharma <pavans@india.ti.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 1 Apr 2004, Pavana Sharma wrote:
 
+> Hi,
+> I am new to ALSA driver impementation. I am registering the  driver
+> interface functions like (probe,remove) using driver_register call. I expect
+> that the probe function will be called in which I am allocating sound card
+> and registering the card using snd_card_register. When I compile the sound
+> driver as a static module and boot my kernel I see that the init function in
+> which I am registering the device is getting called but the probe function
+> is not getting called.
+> We see a message from sound/last.c file asla_sound_last_init fucntion where
+> it searches snd_Cards array to find whether any sound cards are registered.
+> As our sound card card is not registered(because probe is not getting
+> called), we see a messaged "No Soundcards found".
+> 
+> Can someone give us some clues like why probe function is not getting
+> called??
 
+The probe function is not called from ALSA, but from the kernel subsystem 
+like PCI or ISA PnP etc. Check this code.
 
-Hi,
-I am new to ALSA driver impementation. I am registering the  driver
-interface functions like (probe,remove) using driver_register call. I expect
-that the probe function will be called in which I am allocating sound card
-and registering the card using snd_card_register. When I compile the sound
-driver as a static module and boot my kernel I see that the init function in
-which I am registering the device is getting called but the probe function
-is not getting called.
-We see a message from sound/last.c file asla_sound_last_init fucntion where
-it searches snd_Cards array to find whether any sound cards are registered.
-As our sound card card is not registered(because probe is not getting
-called), we see a messaged "No Soundcards found".
+						Jaroslav
 
-Can someone give us some clues like why probe function is not getting
-called??
-
-
-Regards,
-Pavana
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
