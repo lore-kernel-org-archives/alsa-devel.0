@@ -1,12 +1,13 @@
-From: Fruhwirth Clemens <clemens@endorphin.org>
-Subject: Re: SB Live 24 Ext (was: [ALSA - driver 0000955]:
-	CN-126 - USB 5.1 Audio adapter)
-Date: Fri, 04 Mar 2005 12:55:52 +0100
-Message-ID: <1109937352.16108.21.camel@ghanima>
-References: <Pine.HPX.4.33n.0503041206101.8579-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000951]: Fix bugs with early IRQs mishandling, missing silence fill, and wrong timing calculations
+Date: Thu, 3 Mar 2005 14:37:02 +0100
+Message-ID: <c288494d2bcf3a35b5c213ad3db40f34@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-T3nrDdH6OteWuABX3VVl"
-In-Reply-To: <Pine.HPX.4.33n.0503041206101.8579-100000@studcom.urz.uni-halle.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D4867201
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 14:37:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,61 +17,251 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-T3nrDdH6OteWuABX3VVl
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=951> 
+======================================================================
+Reported By:                charles_levert
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   951
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.22
+======================================================================
+Date Submitted:             02-28-2005 21:26 CET
+Last Modified:              03-03-2005 14:37 CET
+======================================================================
+Summary:                    Fix bugs with early IRQs mishandling, missing
+silence fill, and wrong timing calculations
+Description: 
+A patch is forthcoming.
 
-On Fri, 2005-03-04 at 12:09 +0100, Clemens Ladisch wrote:
-> Fruhwirth Clemens wrote:
+Here is the text from the patch preamble.
 
-> > I wonder, how the audio signal flow looks like..
->=20
-> The bTerminalID/bUnitID field identifies each unit.  Start at the
-> output terminals and go back through the bSourceID's.
+    This patch is against alsa-driver-1.0.8.
+    It covers:
+        alsa-kernel/core/pcm_lib.c
+        alsa-kernel/include/pcm.h
+        alsa-kernel/core/pcm_native.c
+        alsa-kernel/core/oss/pcm_oss.c
+    The main changes are in the first listed file.
 
-I really start to like USB.
+    An original bug description was filed
+    under "[ALSA - driver] PCI - cmipci":
+        <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=946>
+    since the problems were first observed on this hardware.
 
-That's how the Creative box should look internal.
+    The patch fixes the following problems:
 
-Host -> [IT1] -> [FU2] -> [OT3] -> Speaker
-Line-in -> [IT4] -> [FU5] -> [OT6] -> Host
+     -- Properly handle early IRQs in
+        snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c.
 
-That's _very_ minimal. It looks like there is no way to Route Line-In
-back to Speaker. Just digitally and sampled.. bad. Don't buy that box.
+        This does occur, at least with CMI8738MC6 hardware.
 
-The only thing nice is, that it's really 24-bit.
+        This bug had a major impact that caused the DMAs
+        to run for too long and irritating noise to be
+        heard at the end of playback.
 
-      AudioStreaming Interface Descriptor:
-        bLength                11
-        bDescriptorType        36
-        bDescriptorSubtype      2 (FORMAT_TYPE)
-        bFormatType             1 (FORMAT_TYPE_I)
-        bNrChannels             4
-        bSubframeSize           3
-        bBitResolution         24
-                               ^^
+     -- Properly compute estimated time of next interrupt
+        in snd_pcm_update_hw_ptr_interrupt() in pcm_lib.c;
+        this is no longer done with a
+        "... % runtime->period_size" kludge (which didn't
+        even attempt to round to nearest instead of merely
+        truncating).
 
---=20
-http://clemens.endorphin.org, for robots sp4mtrap@endorphin.org
+     -- Test whether hw_avail is big enough to handle
+        the next runtime->period_size in
+        snd_pcm_update_hw_ptr_post() in pcm_lib.c,
+        otherwise call snd_pcm_tick_prepare() to
+        tentatively set up a timer if needed (to be able
+        to take earlier action in that case).
 
---=-T3nrDdH6OteWuABX3VVl
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+     -- Centralize all folding of values with regard to
+        runtime->boundary in the new snd_pcm_next_buf()
+        function in pcm_lib.c.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
+        All relevant values are now systematically in
+        coherent synchronization without resorting to the
+        ugly and error-prone "value %= runtime->boundary"
+        kludge all over the place; unobvious wrapping
+        conditions testing is no longer needed in these
+        places.
 
-iD8DBQBCKEzIbjN8iSMYtrsRApckAKCHAheLwG46cFgsko4r3A1zujfZDACgl+bV
-C3ZGrhUaKp58IIBs9Iy6eSU=
-=ff7O
------END PGP SIGNATURE-----
+        A safe zone worth one runtime->buffer_size is now
+        kept on the left side of the operating interval,
+        just like it was the case for the right side;
+        this is necessary for proper simplified operation.
 
---=-T3nrDdH6OteWuABX3VVl--
+     -- Direct manipulations of values with respect to
+        runtime->boundary needed to be brought in line
+        with new proper practices (and thus simplified)
+        in pcm.h, pcm_lib.c, pcm_native.c, and pcm_oss.c.
+
+     -- Isolate the second part of
+        snd_pcm_playback_silence() in the new
+        snd_pcm_playback_silence_fill() function in
+        pcm_lib.c.
+
+        This makes the code more readable since the
+        task this performs should not be confused with
+        what is done in the remaining first part of
+        snd_pcm_playback_silence().
+
+        The isolated code is unchanged.
+
+     -- Rewrite the remaining first part of
+        snd_pcm_playback_silence() to properly handle all
+        situations, including computing minimum silence
+        insertion even when "runtime->silence_size == 0".
+
+        This is needed for proper operation of the aplay
+        program, for one, and is much more forgiving on the
+        user; insertion of silence samples in user space
+        was always useless and a wrong solution anyway (but
+        user space specification of kernel space silence
+        insertion is useful and still very much supported).
+
+        The code is now much more straightforward to read.
+
+        Updates of runtime->control->appl_ptr (due
+        to the user writing samples) and updates to
+        runtime->status->hw_ptr (due to the audio hardware
+        consuming samples) are now _both_ properly
+        accounted for in all cases; the new code makes
+        this much more obvious.
+
+     -- All calls to snd_pcm_playback_silence() in
+        pcm_lib.c and pcm_native.c must no longer be under
+        the "runtime->silence_size > 0" condition.
+
+     -- Properly perform rounded-up integer division in
+        snd_pcm_system_tick_set() in pcm_lib.c.
+
+        This only had a minor impact.
+
+     -- Properly compute distance to next interrupt in
+        snd_pcm_tick_prepare() in pcm_lib.c; again, avoid
+        using any "... % runtime->period_size" kludge.
+
+     -- The usage of runtime->rate in
+        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
+        regarless of other changes.
+
+        The impact was that the timer was systematically
+        set to 1 single tick when it needed to be set to
+        typically hundreds of ticks.
+
+     -- The usage of runtime->sleep_min in
+        snd_pcm_tick_prepare() in pcm_lib.c was incorrect,
+        regarless of other changes.
+
+        The impact was that the number of ticks for
+        the timer was not properly adjusted up to what
+        sleep_min is documented to mean, when needed.
+
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000946 Early playback DMA IRQ with CMI8738MC6 ...
+======================================================================
+
+----------------------------------------------------------------------
+ charles_levert - 03-02-05 14:53 
+----------------------------------------------------------------------
+> Please, don't take our comments as offensive to your work.
+
+It's OK.  Actually, I wanted the comments, even if summary,
+rather than just an evaluation based on apparent patch
+size and coverage.
+
+I have decided to go the with the existing boundary
+wrapping approach and just fix its bugs.
+
+So I will be able to send tiny patches for that.
+
+There was a problem with my patch and its removal of
+"Xrun debugging"; I confused buffer_size and period_size
+in one test, but never noticed it presumably because I
+never experienced lost IRQs in testing.
+
+So there might just be an acceptable generic midlevel
+solution that doesn't loose lost-IRQ detection.  If not,
+I'll just scrap that part.
+
+Doing something like "hw_ptr_interrupt % period_size"
+after boundary wrapping still appears incorrect (because
+of the non-multiple thing) and should be fixed.  The fix
+will initially use rounding-to-nearest, but would still
+remain relevant without it.
+
+There are issues in snd_pcm_playback_silence() that need
+to be addressed so I still think rewriting its first part
+is a good thing.
+
+----------------------------------------------------------------------
+ charles_levert - 03-03-05 14:37 
+----------------------------------------------------------------------
+Attached file "early-irqs.patch" is hereby obsoleted.
+
+It is replaced by the following four patches:
+
+  -- "hz-int-div.0b03.patch":
+       Fix rounded-up integer division bug.
+
+  -- "rate-sleep-ticks.0b03.patch":
+       Fix bugs with usage of runtime->tick_time.
+
+  -- "appl_ptr-boundary.0b03.patch":
+       Fix bugs with incorrectly wrapped appl_ptr.
+
+  -- "early-irqs.0b03.patch":
+       Fix bugs with early IRQs mishandling, missing
+       silence fill, and wrong timing calculations.
+
+The bulk of changes can be found in the last patch, but
+their number has been significantly reduced in some places.
+E.g., snd_pcm_update_hw_ptr() is no longer modified and
+snd_pcm_update_hw_ptr_interrupt() is much less modified.
+The existing boundary-rounding intervals are no longer
+changed so user space should not show the possibility of
+being adversely affected.
+The OSS changes are also no longer required.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-28-05 21:26 charles_levert New Issue                                    
+02-28-05 21:26 charles_levert Kernel Version            => 2.4.22          
+02-28-05 21:29 charles_levert File Added: early-irqs.patch                    
+03-01-05 09:36 perex          Relationship added       related to 0000946  
+03-01-05 09:40 perex          Note Added: 0003755                          
+03-01-05 11:15 charles_levert Note Added: 0003757                          
+03-02-05 09:22 Clemens LadischNote Added: 0003761                          
+03-02-05 13:01 charles_levert Note Added: 0003768                          
+03-02-05 13:39 perex          Note Added: 0003771                          
+03-02-05 14:53 charles_levert Note Added: 0003776                          
+03-03-05 14:21 charles_levert File Added: hz-int-div.0b03.patch                 
+  
+03-03-05 14:22 charles_levert File Added: rate-sleep-ticks.0b03.patch           
+        
+03-03-05 14:23 charles_levert File Added: appl_ptr-boundary.0b03.patch          
+         
+03-03-05 14:23 charles_levert File Added: early-irqs.0b03.patch                 
+  
+03-03-05 14:37 charles_levert Note Added: 0003786                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
