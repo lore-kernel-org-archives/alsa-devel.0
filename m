@@ -1,11 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 1.0.4rc1 release
-Date: Tue, 30 Mar 2004 16:23:41 +0200 (CEST)
+From: Tim Hollingsworth <tim@hollingsworth.com.au>
+Subject: period size
+Date: Tue, 30 Mar 2004 22:45:42 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403301603190.1835@pnote.perex-int.cz>
+Message-ID: <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au>
 References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Mime-Version: 1.0 (Apple Message framework v613)
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,44 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 30 Mar 2004, Clemens Ladisch wrote:
+Hi
 
-> Jaroslav Kysela wrote:
-> > 1.0.4rc1 packages are out. Please, report compilation problems.
-> 
-> On a 2.2.19 kernel:
-> 
-> depmod: *** Unresolved symbols in /lib/modules/2.2.19/misc/snd-*
-> depmod:         synchronize_irq
-> depmod:         tqueue_lock
-> depmod:         waitqueue_lock
+I am trying to write a pcm app which receives sound over the network 
+and outputs it through the speakers.  The network protocol is udp.  
+ From what I can tell, each packet is a single period with interleaved 
+channels.   My problem is that the period size appears to be below the 
+minimum that my hardware will go.  For example:
 
-Missing inclusion of some header files?
+rate: 			48000 Hz
+channels:		2
+packet size:	512 bytes
+sample size:	16 bit
 
-> depmod: *** Unresolved symbols in /lib/modules/2.2.19/misc/snd-au88?0.o
-> depmod:         snd_pci_compat_disable_device
+ok so far... (correct me if I'm wrong)
 
-Fixed.
+period size 	= (packet size * 8) / (channels * sample size)
+			=  (512 * 8) / (16 * 2)
+			= 128
 
-> depmod: *** Unresolved symbols in /lib/modules/2.2.19/misc/snd.o
-> depmod:         kernel_flag
+buffer size	= (whatever i like...? latency/network stability...?)
 
-What's this?
+When I try to set the period size exactly I get an error.  If I set the 
+period size near I get 192.  How do I make this work?  Should I 
+reconfigure the network sound source?  Do I put the packets together 
+into larger periods?  Can alsa do this for me?
 
-> How long do we want to support 2.2.x?
+cheers
+Tim
 
-At least for 1.0.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
