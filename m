@@ -1,12 +1,11 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
+From: "Peter Heatwole" <peter599@gotnet.net>
 Subject: Re: SPDIF and cs46xx ?
-Date: Mon, 17 Mar 2003 01:10:31 +0100
+Date: Sun, 16 Mar 2003 15:11:26 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E751277.9080701@cucumelo.org>
-References: <3c5cea10bbf24b49ad05e59b269b4d69.peter599@gotnet.net>
+Message-ID: <f04009ebae9c4ef4ab19b91249203258.peter599@gotnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,35 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Heatwole <peter599@gotnet.net>
+To: Benny Sjostrand <gorm@cucumelo.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->   If I may ask, what are the "magic status bits"?  Are they the same as the
->AES bits?  Speaking of which, what's the use of the AES# bits?  I looked on the
->internet but couldn't find what these bits mean.  
->  
->
-Sorry if I've made any confusion. What I meant was the IEC958 status 
-bits, (AES0-AES3)
-one posible reason why it dont works could be that code in the cs46xx 
-driver that update the
-status bits in not 100% correct.
+Peter Heatwole wrote:
+>    On a sidenote, ac3dec never makes the clicking noise; only xine does th=
+at=2E
+> But, I noticed that ac3dec always makes a click when I first start playing=2E=
 
->
->   On a sidenote, ac3dec never makes the clicking noise; only xine does that.
->But, I noticed that ac3dec always makes a click when I first start playing.
->Could this be a result of the different AES# configuration?
->  
->
-What I know about the AES# configuration is that the _bit_ that really 
-matters
-is the bit that says that the stream is digital data, and not audio.
+> Could this be a result of the different AES# configuration?
 
-/Benny
+   Never mind that question=2E  I just noticed that it's only during the DVD=
+ menu
+("Air Force One" DVD) that I hear the clicking=2E  Once I get into the movie=
+ only
+changing chapters clicks/hisses and is quiet=2E
 
+
+-- Peter Heatwole
+"Murphy was just a well known pessimist=2E"
 
 
 
