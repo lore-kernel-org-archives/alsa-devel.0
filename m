@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000462]: Sound OK but w/o mixer
-Date: Mon, 23 Aug 2004 02:13:19 +0200 (CEST)
+Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
+Date: Mon, 23 Aug 2004 06:33:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040823001319.795221102F@server.perex-int.cz>
+Message-ID: <20040823043347.634B41102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7D67261
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 02:13:19 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 88A47196D0
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 02:13:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8B972BB
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 06:33:47 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,151 +20,95 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000462
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
 ======================================================================
-Reported By:                equake
+Reported By:                snaketails
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     462
-Category:                   PCI - via82xx
+Bug ID:                     435
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Unstable
-Kernel Version:             2.6.8
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-23-2004 02:13 CEST
-Last Modified:              08-23-2004 02:13 CEST
+Date Submitted:             08-12-2004 02:50 CEST
+Last Modified:              08-23-2004 06:33 CEST
 ======================================================================
-Summary:                    Sound OK but w/o mixer
+Summary:                    No current support for the ICH6R & ALC880 devices
 Description: 
-I have a Soyo SY-KT600 Dragon Plus v2.0 mother board, w/ the VIA 8233
-chipset.
-When I load the drivers, I can hear sound but everything that I change on
-alsamixergui simply have no effect. I can set Master Volume to ZERO and I
-still have the sound, at the same volume.
-Any idea?
-I've tried ac97_quirk from -1 to 4 and nothing.
-
-# lspci -vv
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: Elitegroup Computer Systems: Unknown device a101
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 193
-        Region 0: I/O ports at c000 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: C-Media Electronics id 83
-
-Revision         : 0x01
-Compat. Class    : 0x03
-Subsys. Vendor ID: 0xffff
-Subsys. ID       : 0xffff
-
-Capabilities     :
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : No 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=2 AMAP LDAC SDAC CDAC DSA=0 DRA
-Extended status  : SPCV LDAC SDAC CDAC
-
-
-# cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-0:00 = 0000
-0:02 = 1a1a
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 801e
-0:0c = 0000
-0:0e = 801f
-0:10 = 9f1f
-0:12 = 9f1f
-0:14 = 0000
-0:16 = 9f1f
-0:18 = 0808
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 0bc2
-0:2a = 05f0
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 8080
-0:38 = 8080
-0:3a = 2000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0004
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 3038
-0:66 = 0016
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0030
-0:74 = c000
-0:76 = 393c
-0:78 = 0000
-0:7a = 0000
-0:7c = 434d
-0:7e = 4983
-
+As this is a new mobo, there is no driver configuration that supports this
+newer buss interface devices, so there is no sound from the mobo.
+The inability for the mobo to run SATA under Linux is not an issue here,
+as I am using the SiS SATA driver, only issue is sound
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 08-12-2004 07:32 CEST 
+----------------------------------------------------------------------
+I think in ALSA 1.0.6rc2 is driver for HD audio (azx module). Try it.
+
+----------------------------------------------------------------------
+ snaketails - 08-13-2004 02:03 CEST 
+----------------------------------------------------------------------
+Thank you, but I am currently using "Compiled-in" ALSA support.
+I guess I will have to remove the Alsa support from the Kernel to be able
+to compile? I may look at doing this, this weekend.
+
+----------------------------------------------------------------------
+ snaketails - 08-16-2004 06:01 CEST 
+----------------------------------------------------------------------
+I recompiled the kernel to allow me to compile the azx module as
+suggested.
+I found I had to change the audio out plug to another location on the rear
+of my system, but the sound is crackly??
+But, at least I do have sound output, and the crackles are only a slight
+annoyance.
+I only have controls for "Master" and "Capture", nothing more.
+
+----------------------------------------------------------------------
+ snaketails - 08-18-2004 04:28 CEST 
+----------------------------------------------------------------------
+Ok, I have the driver installed
+
+the sound is working, but I have crackles, whistles and pops only when
+there is talking or audio above a certain level, it seems there is some
+kind of feedback that is happening as when it does get louder I get more
+and more echo and reverberation in the soundstream, would this be related
+to the drived being in its infancy stages?
+
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 11:53 CEST 
+----------------------------------------------------------------------
+I guess yes, the driver is still in the test stage.
+The mixer code is pretty primitive yet.
+
+----------------------------------------------------------------------
+ snaketails - 08-23-2004 06:33 CEST 
+----------------------------------------------------------------------
+Is there any way I could help with this driver?
+
+I will test any mods that have been done, unfortunatly I guess I don't
+know enough about doing C programming (only what I did for school in the
+late '80s)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-23-04 02:13 equake         New Bug                                      
-08-23-04 02:13 equake         Distribution              => Debian Unstable 
-08-23-04 02:13 equake         Kernel Version            => 2.6.8           
+08-12-04 02:50 snaketails     New Bug                                      
+08-12-04 02:50 snaketails     Distribution              => Gentoo          
+08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
+08-12-04 07:32 pzad           Bugnote Added: 0001551                       
+08-13-04 02:03 snaketails     Bugnote Added: 0001560                       
+08-16-04 06:01 snaketails     Bugnote Added: 0001569                       
+08-18-04 04:28 snaketails     Bugnote Added: 0001575                       
+08-18-04 11:53 tiwai          Bugnote Added: 0001576                       
+08-23-04 06:33 snaketails     Bugnote Added: 0001610                       
 ======================================================================
 
 
