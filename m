@@ -1,15 +1,11 @@
-From: Miles Lane <miles.lane@attbi.com>
-Subject: Re: 2.5.70 + alsa-driver cvs -- ../alsa-kernel/core/pcm.c:320: structure
- has no member named `lock'
-Date: Wed, 28 May 2003 17:39:24 -0700
+From: "David E. Storey" <dave@tamos.net>
+Subject: Re: 24bit hdsp
+Date: 28 May 2003 21:03:06 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3ED556BC.5040606@attbi.com>
-References: <3ED4FBD5.3010208@attbi.com>
+Message-ID: <1054170186.424.71.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-3yHRUY7XGq+e/401qcbv"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ED4FBD5.3010208@attbi.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,14 +14,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I have seen no checkins going into the cvs tree.
-Am I accessing the correct tree?
-I am using the alsa-driver tree on 
-:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa
 
+--=-3yHRUY7XGq+e/401qcbv
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+I was reading
+
+http://petertodd.ca/hdsp.php
+
+and the only place it mentioned 24 bit was down toward the bottom,
+implying that it wasn't supported. But now that I know it is and looking
+through the source for jack, it would appear that by default, it will
+open the device in 24bit mode, that's good. It would appear that as
+opposed to most other drivers, I shouldn't be using dithering on this
+device as I'll loose my dynamic range, yes? (I noticed your name all
+over the code, so I'm betting your probably the best to ask this
+question...)
+
+d!
+
+
+On Wed, 2003-05-28 at 17:12, Paul Davis wrote:
+> >what would it take to support 24bit audio in the hdsp driver? Would it
+> >take away from the number of available channels? I'd like to use an
+> >Alesis AI-3 (mostly due to cost) with my multiface, but I'd like to be
+> >able to utilize all 18 channels the multiface provides. Is there any way
+> >I can help?
+>=20
+> the driver already supports 24 bit audio. if you use the hw layer, it
+> must match the hw's definition of 24 bit: 24 bits packed in the upper
+> bits of a 32 bit word. if you use the plughw layer, you can probably
+> get "true" 24 bit audio (i doubt if this code path has been explored
+> much).=20
+
+
+--=-3yHRUY7XGq+e/401qcbv
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+
+iD8DBQA+1VxK+5sC2muyxOMRAhT4AJ9TnIR7aNzR4oL7Upl5nLlPWucxlACfbNIG
+ME7SR5naho/ES2sUbAq25pU=
+=JQmb
+-----END PGP SIGNATURE-----
+
+--=-3yHRUY7XGq+e/401qcbv--
 
 
 
