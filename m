@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000500]: CS4236+ soundcard not found or device busy
-Date: Thu, 23 Sep 2004 19:16:20 +0200 (CEST)
+Date: Thu, 23 Sep 2004 19:19:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923171620.9F4A74500E@server.perex-int.cz>
+Message-ID: <20040923171941.BA1824500E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C42229A
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:16:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C105354
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:19:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             2.6.5-7.108
 ======================================================================
 Date Submitted:             09-14-2004 02:18 CEST
-Last Modified:              09-23-2004 19:16 CEST
+Last Modified:              09-23-2004 19:19 CEST
 ======================================================================
 Summary:                    CS4236+ soundcard not found or device busy
 Description: 
@@ -109,6 +109,15 @@ I just came back from Berlin (was fighting against software patents
 was not able to find where to download setpnp (neither source nor binary).
 Could you please provide a link?
 
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 19:19 CEST 
+----------------------------------------------------------------------
+Some info about TP:
+  http://tpctl.sourceforge.net/
+
+IIRC, setpnp is included in pcmcia-cs package.
+You can find it in pcmcia source rpm in SUSE distro.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -118,6 +127,7 @@ Date Modified  Username       Field                    Change
 09-14-04 22:28 nlmarco        Bugnote Added: 0001759                       
 09-21-04 11:59 tiwai          Bugnote Added: 0001798                       
 09-23-04 19:16 nlmarco        Bugnote Added: 0001833                       
+09-23-04 19:19 tiwai          Bugnote Added: 0001834                       
 ======================================================================
 
 
