@@ -1,11 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] MPU-401 fixes
-Date: Mon, 05 May 2003 08:33:25 +0200 (METDST)
+From: =?iso-8859-1?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
+Subject: Opening a device 2 times, loopback interface, ...
+Date: Mon, 5 May 2003 10:19:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0305050831420.4924-100000@studcom.urz.uni-halle.de>
+Message-ID: <CBEIKLKHDDAOGEKMPCGEMEABCAAA.stephane.boulanger@fh-bonn-rhein-sieg.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,54 +19,47 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Dear List,
 
-- fix deadlock: when snd_mpu401_uart_input_trigger() is interrupted
-  immediately after the call to spin_unlock_irqrestore(), the interrupt
-  handler won't clear the interrupt condition because the RX_LOOP bit is
-  still set
-- abort the tx loop when the FIFO is full; otherwise, the inner loop would
-  be executed 25600 times
-- clear the output trigger bit when output buffer is exhausted
+we=B4re currently developing an end-to-end delay measurement tool, that s=
+hould
+not only measure the network delay, but also the time the application
+(audiostreaming (rat, for example)) needs to calculate the used algorithm=
+s
+(GSM, PCM, whatever). To realize the choosen program design, we need to
+access the soundcard device form two different applications (streaming
+application and the measurement tool) at the same time. More exactly:
+
+- When audiodata is inputted, not only the streaming application should b=
+e
+able to access it, but also our measurement tool (at the same time
+obviously).
+
+- When audiodata is send to the sounddriver (repectively the soundcard), =
+the
+measurement tool, should be able to read it (maybe in the form of a copie=
+d
+datastream send to the measurement tool).
 
 
-Index: alsa-kernel/drivers/mpu401/mpu401_uart.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/drivers/mpu401/mpu401_uart.c,v
-retrieving revision 1.23
-diff -u -r1.23 mpu401_uart.c
---- alsa-kernel/drivers/mpu401/mpu401_uart.c	23 Apr 2003 10:01:28 -0000	1.23
-+++ alsa-kernel/drivers/mpu401/mpu401_uart.c	5 May 2003 06:28:02 -0000
-@@ -93,12 +93,9 @@
- static void _snd_mpu401_uart_interrupt(mpu401_t *mpu)
- {
- 	if (test_bit(MPU401_MODE_BIT_INPUT, &mpu->mode)) {
--		if (! test_and_set_bit(MPU401_MODE_BIT_RX_LOOP, &mpu->mode)) {
--			spin_lock(&mpu->input_lock);
--			snd_mpu401_uart_input_read(mpu);
--			spin_unlock(&mpu->input_lock);
--			clear_bit(MPU401_MODE_BIT_RX_LOOP, &mpu->mode);
--		}
-+		spin_lock(&mpu->input_lock);
-+		snd_mpu401_uart_input_read(mpu);
-+		spin_unlock(&mpu->input_lock);
- 	} else
- 		snd_mpu401_uart_clear_rx(mpu);
-  	/* ok. for better Tx performance try do some output when input is done */
-@@ -369,9 +366,12 @@
- 					break;
- 				}
- 			}
-+			if (timeout == 0)
-+				break; /* Tx FIFO full - try again later */
- 		} else {
- 			snd_mpu401_uart_remove_timer (mpu, 0);
--			max = 1; /* no other data - leave the tx loop */
-+			clear_bit(MPU401_MODE_BIT_OUTPUT_TRIGGER, &mpu->mode);
-+			break; /* no other data - leave the tx loop */
- 		}
- 	} while (--max > 0);
- }
+While browing the ALSA documentation, I found some interesting parts abou=
+t
+the loopback interface, that might help us. But is it still contained in =
+the
+0.9 version of ALSA? Moreover, would the loopback interface satisfy our
+needs?
 
+I also found some interesting information about JACK, but using JACK woul=
+d
+require to adopt the streaming application to the JACK interfaces.
+
+In your opinion, what would be the best way to realise the system?
+
+Thanks a lot!
+
+St=E9phane
+
+(Sorry, if you get this 2 times)
 
 
 
