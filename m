@@ -1,18 +1,14 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Re: The ALSA Situation
-Date: Thu, 11 Nov 2004 19:52:47 -0300
-Message-ID: <1100213567.2076.29.camel@localhost>
-References: <200411102113.iAALDLUN001061@localhost.localdomain>
-	 <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
-	 <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
-	 <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
-	 <s5his8cfiot.wl@alsa2.suse.de>
-Reply-To: mjander@users.sourceforge.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
+Date: Fri, 12 Nov 2004 00:09:59 +0100
+Message-ID: <0d3910e287c627392d2a3c797d233d4b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5his8cfiot.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0313B26B
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 00:09:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,66 +18,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On Thu, 2004-11-11 at 17:34 +0100, Takashi Iwai wrote:
-> At Wed, 10 Nov 2004 22:42:20 -0800 (PST),
-> Linus Torvalds wrote:
-> > 
-> > On Thu, 11 Nov 2004, Jaroslav Kysela wrote:
-> > > 
-> > > Unfortunately, the application will have to settle other real-time
-> > > parameters (including stream parameters, i/o chunk sizes etc.), so we must
-> > > drain on close() the complete stream and not allow intermixing requests
-> > > from applications.
-> > 
-> > That seems to be a misdesign of the interfaces, but whatever.
-> 
-> Well, the contiguous use of a stream isn't easy as it sounds.
-> Since each app wants different buffer size, period (fragment) size,
-> sample format, sample rate etc, the configuration must be reset
-> totally at each time.  This eventually requires to stop of the DMA.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
+======================================================================
+Reported By:                jborges
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   644
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
+3.2.3
+Kernel Version:             Kernel 2.4.25-klg
+======================================================================
+Date Submitted:             11-12-2004 00:09 CET
+Last Modified:              11-12-2004 00:09 CET
+======================================================================
+Summary:                    CMI8738 - Line-in as bass conflicts with line-as
+rear.
+Description: 
+I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
+CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
+Maxtor Ultra Dma Hard Disk.
 
-There 2 situations (AFAIK): 
+Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
 
-1) * Stinking intel8x0 or similar card with only one stereo stream:
-  - Device should be accessed as 48KHz 16 bit stereo (highest quality
-available), since it most probably does not even have a samplerate
-converter. There should be no concern about latency/buffer size, thats
-just silly in such a kind of device. Just use the most efficient DMA
-setup.
-  - All applications using the device should be softmixed. It does not
-make any sense to give direct access to applications.
+This Linux installation works in a dual-boot with windows xp.
 
-2) * Multichannel card:
-  - Use one channel for softmixing (reserved for ever for that purpose,
-at highest audio quality). Just the same as for the single channel card.
-  - Use a "Resource Manager" that assigns hardware channels as are
-available, and choose the softmixing engine coupled to the reserved
-channel when we get out of hardware channels.
-   - If we want to make this even nicer, and thinking in the future
-where hardware channels may have (they actually have, but are not
-supported) advanced processing features, the "Resource Manager" could
-assign hardware channels on behalf of the features the applications asks
-for. For example if a application does not ask for HRTF processing, give
-it a softmixing channel, or  a hardware channel lacking that feature.
+The sound works fine (all 6 channels respond very well)under windows xp or
+98.
 
-As you can see, both situations are in essence the same, as if there is
-only one hardware channel, after reserving the softmixing channel, you
-got out of hardware channels, falling into the same situation as of a
-multichannel device with all hardware channels being used.
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-That is my dream of a sound API behaviour. In 1996 they called that
-A3D... so this ideas aren't quite new :P
+Trying to configure my sound to work I noticed some problems with
+alsamixer:
 
-Best Regards
+1 - As I can see, there is a conflict for the output. I can't see Line-In
+been used to output as bass and the same Line-In used to output as rear
+(L/R).
 
--- 
-Manuel Jander
-Electronic Engineer
+2 - I think Line-In would be used to output as Rear (L/R) and Mic to
+output as Bass/Center.
+
+What is happening is that: when one uses a 6 channel system there is no
+sound in the conflicted Line-In as bass and Mic as center. The little
+sound that goes there is squeezed from Line-In as rear. The sound in bass
+and center is full of noise. Impossible to listen.
+
+I took some snapshots (2) to show you what I'm talking about. Please take
+a look on them in the attached files.
+
+Julio Borges
+Rio de Janeiro - Brazil
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-12-04 00:09 jborges        New Issue                                    
+11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
+          
+11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
+Brazilian flavor of Knoppix) with kde 3.2.3
+11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
+======================================================================
+
 
 
 
