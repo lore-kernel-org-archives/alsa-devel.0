@@ -1,13 +1,17 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: TRAM on Audigy - INFO
-Date: Tue, 8 Jul 2003 08:05:45 +0200
+From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
+Subject: Re: some more anon cvs funkiness...
+Date: Tue, 08 Jul 2003 10:25:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307080605.IAA27426@www7.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <3F0A7FFF.4060504@folkwang-hochschule.de>
+References: <Pine.LNX.4.44.0307071443500.9539-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from kuwiserv.folkwang-hochschule.de (kuwiserv.folkwang-hochschule.de [193.175.156.250])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA17512
+	for <alsa-devel@alsa-project.org>; Tue, 8 Jul 2003 10:26:03 +0200
+In-Reply-To: <Pine.LNX.4.44.0307071443500.9539-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +20,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Following information was obtained by trial-and-error.
-Use it at your own risk!
+Jaroslav Kysela wrote:
+> On Mon, 7 Jul 2003, Erik de Castro Lopo wrote:
+>=20
+>=20
+>>On Mon, 7 Jul 2003 13:58:45 +0200 (CEST)
+>>Jaroslav Kysela <perex@suse.cz> wrote:
+>>
+>>
+>>>On Mon, 7 Jul 2003, Erik de Castro Lopo wrote:
+>>>
+>>>
+>>>>On Mon, 07 Jul 2003 12:25:51 +0200
+>>>>Joern Nettingsmeier <nettings@folkwang-hochschule.de> wrote:
+>>>>
+>>>>
+>>>>>what's happening ?
+>>>>
+>>>>Not sure. I've been having the same issue since Saturday.=20
+>>>>
+>>>>I lodged a issue with the sf.net people, but it unlikely to be fixed
+>>>>until the US comes on line in a couple of hours.
+>>>
+>>>Please, guys, make a bug-report for the SF team. Hopefully, they will =
 
-TRAM setup:
+>>>react quickly.
+>>
+>>I did, over 24 hours ago.=20
+>>
+>>I think its already too lat to act quickly, maybe they can act soon=20
+>>intead ;-).
+>=20
+>=20
+> I am slowly thinking to switch back our CVS repository to our dedicated=
+=20
+> server. SF seems overloaded these days.
+>=20
+> 						Jaroslav
 
-TCBS (0x44) and TCB (0x41) has same meaning as on SB Live
+if you still have the machine in place, yes please !
+i'm not meaning to bash sf.net, they've done us all a great service, but =
 
-Internal TRAM size is 0x4000 (16 bits words)
-Max external TRAM size is 0x100000 (16 bits words) - as on SB Live
-
-Register description:
-
-0xdb - Internal TRAM Delay Base Address Counter - is in sync with=20
-0xde - but only 0x3fff wide
-0xde - External TRAM Delay Base Address Counter
-
-0x100 - 0x1ff - tram access control registers (?)
-=09- only 5 bit valid=20
-=09=09bits : 4 - 0 - use log. compresion on write and read
-=09=09           1 - use raw access - data from/to tram are=20
-read/wrote
-=09=09               as 16 bit samples
-=09=09bits : 3210 - ???
-=09=09       0010 - read from tram
-=09=09       0110 - write to tram
-=09=09       others - ?????
-0x200 - 0x2ff - tram access data registers
-=09- same as on SB Live
-0x300 - 0x3ff - tram access address registers
-=09- address format - host: 32 bit offset 20 bit integer part +=20
-12 bit fractional part
-=09  to set offset to 0x123(SB Live) - 0x123 << 11 (Audigy)
-=09- address format - DSP: same as SB Live ???
-
-internal TRAM has index 0x00 - 0xbf
-external TRAM has index 0xc0 - 0xff
+this cvs shortage shows very clearly what would happen if they went=20
+belly-up on short notice...
 
 
-Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ADig=
-italny fotoaparat Olympus =B5300 v cenach uz od 16.100,- Sk bez DPH=0ANavst=
-ivte nas na adrese http://www.somi.sk/akcie.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=0A
+--=20
+All Members shall refrain in their international relations from
+the threat or use of force against the territorial integrity or
+political independence of any state, or in any other manner
+inconsistent with the Purposes of the United Nations.
+	-- Charter of the United Nations, Article 2.4
+
+
+J=F6rn Nettingsmeier
+Kurf=FCrstenstr 49, 45138 Essen, Germany
+http://spunk.dnsalias.org (my server)
+http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
+
+
+
+
 
 
 -------------------------------------------------------
