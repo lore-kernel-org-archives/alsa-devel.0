@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Tue, 22 Mar 2005 22:56:19 +0100
-Message-ID: <c5eee034fa8e5b0184af3c1dbb07f9da@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000970]: No Sound
+Date: Wed, 23 Mar 2005 17:52:39 +0100
+Message-ID: <92319bce125b4999aaeb80efe1e3c5d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2DF0D293
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:56:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8243249
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:52:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,61 +23,67 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=970> 
 ======================================================================
-Reported By:                sHINOBI
-Assigned To:                jcdutton
+Reported By:                mailavj
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   907
-Category:                   PCI - ca0106
+Issue ID:                   970
+Category:                   CORE - rawmidi
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              03-22-2005 22:56 CET
+Date Submitted:             03-07-2005 20:33 CET
+Last Modified:              03-23-2005 17:52 CET
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                    No Sound
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+I'm using Soundmax Integrated audio... its giving no sound in my Debian
+sarge machine.. with AlSA 0.8.. i tried with a latest version.. but its
+also not workin.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000984 No Sound
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-22-05 22:14 
+ jdthood - 03-22-05 22:04 
 ----------------------------------------------------------------------
-Try 1.0.9rc1.  My last fix to ac97 might influence on this behavior.
+More information is needed in order to address this bug report.
 
 ----------------------------------------------------------------------
- sHINOBI - 03-22-05 22:56 
+ mailavj - 03-23-05 17:52 
 ----------------------------------------------------------------------
-I'm already using it without success. The problem can be, that this
-soundcard is without ac97 :-(. Any other ideas how to solve this? BTW I
-think I have those problems when I'm using OSS emulation.
+My kernel is 2.6.7-2 
+my audio chip is Analog devices AD1985 
+my current driver is ALSA 1.0.6-2a
+jack and other settings are correct
+mixer is okay
+but hardware is not detected
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
+03-07-05 20:33 mailavj        New Issue                                    
+03-09-05 18:45 tiwai          Note Added: 0003836                          
+03-09-05 18:56 mailavj        Note Added: 0003842                          
+03-09-05 19:02 tiwai          Note Added: 0003843                          
+03-16-05 14:56 tiwai          Relationship added       has duplicate 0000984
+03-22-05 22:04 jdthood        Note Added: 0004135                          
+03-23-05 17:52 mailavj        Note Added: 0004181                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+This SF.net email is sponsored by Microsoft Mobile & Embedded DevCon 2005
+Attend MEDC 2005 May 9-12 in Vegas. Learn more about the latest Windows
+Embedded(r) & Windows Mobile(tm) platforms, applications & content.  Register
+by 3/29 & save $300 http://ads.osdn.com/?ad_id=6883&alloc_id=15149&op=click
