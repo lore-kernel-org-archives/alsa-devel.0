@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: PCM Params
-Date: Thu, 27 May 2004 09:00:02 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: MAYA44 USB audio device doesn't work with  1.0.4.
+Date: Thu, 27 May 2004 15:14:13 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405271300.i4RD02UG014654@dhin.linuxaudiosystems.com>
-References: <20040527120720.6778.qmail@web25107.mail.ukl.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0405271511470.6236-100000@studcom.urz.uni-halle.de>
+References: <6.0.0.22.2.20040527223152.01f32510@mail.audioslack.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 27 May 2004 13:07:20 BST."
-             <20040527120720.6778.qmail@web25107.mail.ukl.yahoo.com>
+In-reply-to: <6.0.0.22.2.20040527223152.01f32510@mail.audioslack.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,35 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: Luke Yelavich <luke@audioslack.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->ok paul i had another look at the driver playback/capture tutorials. I have on
->e question.Do applications initialize and use a pcm_handle of the alsa driver 
->when they begin interaction with it?Surely not....
+Luke Yelavich wrote:
+> below is the information I get when attempting to use this soundcard under
+> a 2.6.6 kernel with alsa drivers 1.0.5rc1 and hotplug.
+>
+> dmes:
+> usbaudio: device 3 audiocontrol interface 0 has 1 input and 1 output AudioStreaming interfaces
 
-surely yes. 
+This is the OSS driver (audio).  Put the line
 
-ALSA isn't structured the way windows seems to concieve of audio. We
-don't have separate tools to configure the driver, and then have
-applications just use it. Each application configures the driver to
-the setup that it requires. It might leave many things to their
-default settings, but some basic configuration is nearly always done.
- 
->I thought that the driver would work totally independently of my VoIP and this
-> is why I asked the question is it possible to change driver parameters direct
->ly. 
+audio
 
-The application changes them. There are some h/w parameters that get
-changed by "utilities", but not the basic stuff like h/w buffer size,
-interrupt interval (period size), sample rates and so on.
+into the file /etc/hotplug/blacklist to prevent it from loading (or
+deactivate it in the kernel config).
 
-If you want a different model, in which no h/w configuration is done
-and you are presented with a highly abstract audio API, JACK is worth
-looking at.
 
---p
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
