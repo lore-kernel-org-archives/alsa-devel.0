@@ -1,12 +1,17 @@
-From: Josh Buhl <uzs33d@uni-bonn.de>
-Subject: intel8x0 driver motorboots (gets caught in loop) in Quake 3
-Date: Wed, 12 Feb 2003 18:54:01 +0100
+From: "M. Ritscher" <mr203010spam@gmx.net>
+Subject: Re: libasound dies on snd_pcm_open
+Date: Wed, 12 Feb 2003 18:48:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E4A8A39.9000608@uni-bonn.de>
+Message-ID: <200302121848.23717.mr203010spam@gmx.net>
+References: <200302112147.45539.mr203010spam@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200302112147.45539.mr203010spam@gmx.net>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,63 +23,63 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When running Quake 3 Arena the sound initializes
-properly and plays correctly during the game until the
-end of a match. At this point, the game abruptly enters
-a different mode (this is where the models of the
-players for the first, second, and third placements are
-shown on pedestals and a voice says "Grunt Wins!" or
-whatever) and the game locks up with a small segment of
-sound being repeated in a loop.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
+Hi again,
 
-This does not occur when sound is disabled in quake.
+On Tuesday 11 February 2003 21:47, M. Ritscher wrote:
+> Stopped due to shared library event.
+>
+I've now compiled a version of libasound with debug enabled and found out t=
+hat=20
+it dies on me on line 61 of dlmisc.c
+Stopped due to shared library event.
 
-This does not occur on the same machine while running
-quake 3 under Windows 2000 with sound.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D
+void *snd_dlopen(const char *name, int mode)
+{
+<cut>
+###>>>	return dlopen(name, mode);
+}
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D
 
-This also occurs using the linux kernel 2.4.18 oss
-kernel sound driver for intel8x0.
+name: "/usr/lib/libasound.so.2 (which correctly links to libasound.so.2.0.0)
+mode: 2
 
+I've played around with my code a bit and have tried to reduce it to a=20
+minimum, still, no luck.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+int KCorrView::openNewALSADev(){
+ snd_pcm_t *capture_hd;
+ int err =3D 0;
+=20
+ if ((err =3D snd_pcm_open(&capture_hd,=20
+         "hwplug:0,0", SND_PCM_STREAM_CAPTURE, 0)) < 0) {
+   return err;
+ }
+return err;
+}
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-I set up the quake mmap stuff for alsa like this:
+Am I missing the obvious?=20
 
-echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
+Any help really appreciated.
 
+Thanks,
 
-I'm using alsa-0.9rc7 on Debian 3.0r1 running kernel 2.4.20 on an AMD
-1800+ Elitegroup K7S5A with SIS 7012 sound on board (intel8x0 driver.)
+Meinhard
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.7 (GNU/Linux)
 
-
-This has happened on all the ALSA 0.9rcx drivers I have
-tried, including 0.9rc7.
-
-
-
--- 
-"When you wake up in the morning, Pooh," said Piglet at last,
-"what's the first thing you say to yourself?"
-
-"What's for breakfast?" said Pooh.  "What do you say, Piglet?"
-
-"I say, 'I wonder what's going to happen exciting today?'" said Piglet.
-
-Pooh nodded thoughtfully.  "It's the same thing," he said.
-
-	-- A.A. Milne
-
------------------------------------------------------
-http://www.nyfairuse.org/
-
-WTO + WIPO = DMCA http://www.anti-dmca.org
-
-Innovation vs Patent Inflation http://swpat.ffii.org/
-
-120000 voices and 400 Firms against logic patents
-http://www.noepatents.org/
------------------------------------------------------
-
-
+iD8DBQE+Sojjv2LRaMHePXMRAmGiAJ99ACyZBFcUXIJogUObV2ZxJkH2/gCeMqIu
+MuESBrYRINM20GAoMx2CMH0=3D
+=3DXHOX
+=2D----END PGP SIGNATURE-----
 
 
 
