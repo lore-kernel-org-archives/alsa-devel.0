@@ -1,14 +1,14 @@
-From: Russell King <rmk+alsa@arm.linux.org.uk>
-Subject: Re: buffer producer/consumer sync
-Date: Wed, 31 Mar 2004 10:27:10 +0100
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: Re: intel8x0.c
+Date: Wed, 31 Mar 2004 10:46:16 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040331102710.C32258@flint.arm.linux.org.uk>
-References: <20040331083114.C27804@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403310936170.1950@pnote.perex-int.cz> <20040331085330.A30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311004040.1950@pnote.perex-int.cz> <20040331091124.B30701@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311027290.1950@pnote.perex-int.cz> <20040331095306.A32258@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311100510.1950@pnote.perex-int.cz> <20040331101018.B32258@flint.arm.linux.org.uk> <Pine.LNX.4.58.0403311118140.1950@pnote.perex-int.cz>
+Message-ID: <20040331094616.201.qmail@web25107.mail.ukl.yahoo.com>
+References: <4069C791.2010503@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0403311118140.1950@pnote.perex-int.cz>; from perex@suse.cz on Wed, Mar 31, 2004 at 11:22:56AM +0200
+In-Reply-To: <4069C791.2010503@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,36 +17,104 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Mar 31, 2004 at 11:22:56AM +0200, Jaroslav Kysela wrote:
-> On Wed, 31 Mar 2004, Russell King wrote:
+Thanks James,
+   i'm using the GSM-06.10 codec with my VoIP
+application.The frame rate is 160 timestamp units or
+20 millisecond frames.4 frames are added to a packet
+and transmitted. Packets are transmitted at alternate
+intervals of 64 and 96 milliseconds. This is due to
+the soundcard driver and the period sizes being read
+into the buffer.Can the period size the driver is
+capturing from the soundcard and putting into the
+sending buffer change during execution of a VoIP
+session or is it fixed.Given that I have not changed
+it, what is the default period size for the ALSA
+driver?
+I'm basically trying to find out the reason packets
+are transmitted at alternate intervals of 64 and 96
+milliseconds....and the runtime period size is the key
+ 
+help appreciated,
+brian.
+--- James Courtier-Dutton <James@superbug.demon.co.uk>
+wrote: > Brian Furey wrote:
+> > Hi all,
+> >   I have an intel810 onboard soundcard.I am using
+> the
+> > alsa driver with a VoIP session.
+> >   The intel8x0.c file has a minimum period byte
+> size
+> > of 32 bytes with the minimum no. of periods being
+> > 1.The min and max rate is set to 48k. 
+> > 
+> > How can I find out what actual(runtime) size
+> period
+> > the alsa driver is dealing with? 
+> > 
+> > Does it use the minimum size as the period size?
+> > 
+> >  Brian.
+> > 
 > 
-> > I suggest we add a load of preprocessor junk into the ALSA core and
-> > comment exactly _why_ its needed, thereby laying the reason completely
-> > at the door of these ill-defined APIs where questions have been asked
-> > and responses not been received.
+> Brian, I am working on a VoIP setup. I am updating
+> the asterisk alsa 
+> console driver so that it actually works! The
+> current driver is stuck 
+> round about alsa api 0.5.x
+> The period size that the sound card is actually
+> using does not really 
+> matter, if just effects latency. The bigger the
+> period size, the higher 
+> the latency.
+> Just set the period size to the smallest the sound
+> card can do, and then 
+> just read and write to it.
+> I found that PLAYBACK and CAPTURE directions can
+> have different period 
+> sizes, so it is better to open separate handles for
+> playback and capture.
+> In the config setup, you set the buffer and period
+> sizes, and before you 
+> set them, you can retrieve the current min/max
+> period and buffer sizes.
+> For playback, it is best to have a certain minimum
+> buffer being full 
+> most of the time, due to network jitter, and this
+> buffer can act as the 
+> jitter buffer. The actual size of this is probably
+> best found out from 
+> trial and error (I have not finished testing this
+> bit yet).
+> For capture, just poll for input, and then read
+> whatever is in the 
+> capture buffer and transmit it. You can experiment
+> with different 
+> methods of early buffer reads, but again, I have not
+> finished testing 
+> with that, so I can't give you any definite answers.
 > 
-> I'm thinking to prepare more or less complete patch for all 
-> architectures and send it to LKML for a discussion.
+> Another thing to test with could be sampling and
+> playback at 48k.
+> Most sound cards work at 48k, and this would reduce
+> the period_time. 
+> (period_size stays the same, but as one is using a
+> higher rate, the 
+> period_time decreases, and thus latency.) The
+> problems with that is that 
+> most VoIP is at 8k, so some resampling is required.
+> 
+> Cheers
+> James 
 
-The problem is that not all architecture maintainers are on lkml.
 
-Besides, I've tried talking to the architecture maintainers - their
-complete silence since two weeks ago indicates that they just don't
-want to know about this issue.
-
-As I said on the architecture alias - I've put enough non-rewarding
-time into this issue.  I also have various commercial deadlines
-coming up, so I couldn't work on it even if I wanted to.
-
--- 
-Russell King
- Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
- maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
-                 2.6 Serial core
+	
+	
+		
+___________________________________________________________
+WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
 
 
 -------------------------------------------------------
