@@ -1,14 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
-Date: Fri, 12 Nov 2004 14:32:04 +0100
-Message-ID: <c367181a4dde5f2a5390ee53a10520db@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: xf5@eyou.com
+Subject: =?GB2312?B?w+K30bLp0a+3orK8vLzK9c/uxL8h?=
+Date: Fri, 12 Nov 2004 21:39:09 +0800
+Message-ID: <E1CSbfa-0000Sd-3M@sc8-sf-mx2.sourceforge.net>
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F43324B
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 14:32:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,83 +13,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+您好!欢迎光临雄风技术网(www.xfte.net)!
+为了感谢广大客户对我公司的支持和厚爱!今特推出VIP免费会员活动!
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
-======================================================================
-Reported By:                mtempels
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   623
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu Linux 4.10
-Kernel Version:             Linux bubbles 2.6.8.1-3-386
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
-2004 i686 GNU/Linux
-======================================================================
-Date Submitted:             11-02-2004 11:24 CET
-Last Modified:              11-12-2004 14:32 CET
-======================================================================
-Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
-Description: 
-There is no way to control the output volume on the SPDIF/out on my CMI8738
-soundcard. It can just be switched on or off..
-======================================================================
-
-----------------------------------------------------------------------
- cltien - 11-12-04 14:03 
-----------------------------------------------------------------------
-tiwai,
-
-May I know the reason  why doing PCM converting in kernel space is a bad
-idea? Windows driver does this heavily (it also do sample rate convert to
-48k), I am still learning using plugin.
-
-Sincerely,
-ChenLi Tien
-
-----------------------------------------------------------------------
- tiwai - 11-12-04 14:32 
-----------------------------------------------------------------------
-The kernel context is non-preemtive unless the preemptive option is used. 
-Also, no floating point calculation and no SIMD operations are allowed on
-the kernel space.  Thus this kind of job can be better done on the user
-space than on the kernel space.
-
-In addition, the handling of intermediate buffer (not necessarily
-physically linear) would be much easier on user space than on the kernel
-space in general, too.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-02-04 11:24 mtempels       New Issue                                    
-11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
-11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
-2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
-12 12:41:57 BST 2004 i686 GNU/Linux
-11-09-04 18:56 tiwai          Note Added: 0002337                          
-11-09-04 19:01 mtempels       Note Added: 0002340                          
-11-09-04 19:18 tiwai          Note Added: 0002342                          
-11-09-04 20:15 mtempels       Note Added: 0002352                          
-11-10-04 03:56 cltien         Note Added: 0002355                          
-11-10-04 03:59 cltien         Note Added: 0002356                          
-11-10-04 10:12 mtempels       Note Added: 0002359                          
-11-10-04 12:13 tiwai          Note Added: 0002366                          
-11-12-04 14:03 cltien         Note Added: 0002395                          
-11-12-04 14:32 tiwai          Note Added: 0002396                          
-======================================================================
+(该活动时间从2004年10月1日开始,结束时间听通知!)
 
 
+a、VIP免费会员的好处:可以查询本雄风技术网上17000多条技术项目发布者的联系方式,可以直接跟技术方谈
+合作的事宜!
+
+ 武汉雄风科技公司：肖先生  张小姐
+电话：027－83217718　　　　13995685046
+QQ：375229189　　　　　E-Mail:xf668@vip.sina.com
 
 
 -------------------------------------------------------
