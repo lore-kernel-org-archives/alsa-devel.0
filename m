@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
-Date: Mon, 28 Jun 2004 09:17:03 +0200
+Subject: [ALSA - driver 0000269]: Microphone muting and volume control does not work
+Date: Mon, 28 Jun 2004 09:26:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6e32f51626ccd28011d869a053ada575@bugtrack.alsa-project.org>
+Message-ID: <024c8989e2735a5c820e131186477a7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,56 +19,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been ASSIGNED.
+The following bug has been RESOLVED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000324
+_id=3D0000269
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                garden
+Reported By:                walrus121
 Assigned To:                pzad
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     324
+Bug ID:                     269
 Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Status:                     resolved
+Distribution:              =20
+Kernel Version:             2.4.26
+Resolution:                 not a bug
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              06-28-2004 09:17 CEST
+Date Submitted:             05-11-2004 05:27 CEST
+Last Modified:              06-28-2004 09:26 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Audigy2 Platinum: very low volume (both in an=
-d out)
+Summary:                    Microphone muting and volume control does not=
+ work
 Description:=20
-Both the input and output levels of my Audigy2 Platinum seem to be very l=
-ow
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input=
-.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge=
-.
+I cannot mute nor control the volume on the microphone using Alsamixer.=20
+The control is there and visually functions, but physically does not.  Th=
+e
+mic boost switch still works.  I don't really know where I should be
+reporting this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ walrus121 - 05-11-2004 06:11 CEST=20
+----------------------------------------------------------------------
+Restarting my computer seems to have fixed it.  Maybe I had some kind of
+version conflict going on.  Close this bug.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -76,15 +75,17 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-06-04 13:17 garden         New Bug                                    =
+05-11-04 05:27 walrus121      New Bug                                    =
  =20
-06-06-04 13:17 garden         Distribution              =3D> Debian sid  =
+05-11-04 05:27 walrus121      Kernel Version            =3D> 2.4.26      =
    =20
-06-06-04 13:17 garden         Kernel Version            =3D> 2.6.5       =
+05-11-04 06:11 walrus121      Bugnote Added: 0001080                     =
+ =20
+06-28-04 09:26 pzad           Assigned To               =3D> pzad        =
    =20
-06-28-04 09:17 pzad           Assigned To               =3D> pzad        =
-   =20
-06-28-04 09:17 pzad           Status                   new =3D> assigned =
+06-28-04 09:26 pzad           Resolution               open =3D> not a bu=
+g  =20
+06-28-04 09:26 pzad           Status                   new =3D> resolved =
    =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
