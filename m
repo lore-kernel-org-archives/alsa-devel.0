@@ -1,14 +1,15 @@
-From: =?iso-8859-1?q?Carlos=20Pita?= <cpitaar@yahoo.com.ar>
-Subject: Re: hw/plughw strange behaviour
-Date: Thu, 10 Jun 2004 14:16:35 -0300 (ART)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: possible fix for alsa-oss fopen() [Patch]
+Date: Fri, 11 Jun 2004 01:27:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040610171635.95104.qmail@web50406.mail.yahoo.com>
-References: <Pine.HPX.4.33n.0406101857110.3148-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040611012753.360c48ae@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="Multipart=_Fri__11_Jun_2004_01_27_53_+0200_yP.4+_/z2e_rwqSc"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0406101857110.3148-100000@studcom.urz.uni-halle.de>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id D3198245
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 01:23:05 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,40 +18,145 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-> >    snd_pcm_hw_params_set_access(handle, hwparams,
-> SND_PCM_ACCESS_RW_INTERLEAVED);
-> >    snd_pcm_hw_params_set_format(handle, hwparams,
-> SND_PCM_FORMAT_S16_LE);
-> >    snd_pcm_hw_params_set_rate_near(handle,
-> hwparams, &rate, &dir);
-> >    snd_pcm_hw_params_set_channels(handle,
-> hwparams, numchannels);
-> >    snd_pcm_hw_params_set_periods(handle, hwparams,
-> numperiods, 0);
-> >    snd_pcm_hw_params_set_buffer_size_near(handle,
-> hwparams, &buffersize);
-> 
-> Does any of these calls return an error?
-> 
+--Multipart=_Fri__11_Jun_2004_01_27_53_+0200_yP.4+_/z2e_rwqSc
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-No, I have stripped out error checking code for
-brevity purposes; but none of the
-snd_pc_hw_params_set_XXX invokations return an error,
-just snd_pc_hw_params do it, as I described in my
-previous post.
 
-Regards,
-Carlos
+Hi,
 
-------------
-Los mejores usados y las más tentadoras 
-ofertas de 0km están en Yahoo! Autos.
-Comprá o vendé tu auto en
-http://autos.yahoo.com.ar
+i attached to this email a patch which blatantly rips parts out of the  artsdsp program from the KDE artsd. Namely the file stdioemu.c which provides the mechanism to hook fopen and related functions. See the email by James Courtier-Dutton with subject "Possible solution for the alsa-oss fopen problem" for details. The changes to alsa-oss.c are minimal. See patch..
+
+I also uploaded a tarball to 
+
+http://www.affenbande.org/~tapas/alsa-oss-1.0.5-artsdsp-rip.tar.bz2
+
+The relevant parts of artsdsp.c and stdioemu.c are both LGPL. I copied the file stdioemu.c unchanged including the copyright notice.
+
+Please test it and tell me, if it works for you.. A test case is the following command:
+
+aoss sox ~/test.wav -t ossdsp -w -s /dev/dsp
+
+and define your pcm.dsp0 device in the .asoundrc to something which differs from normal output. I use a ladspa plugin for this:
+
+pcm.dsp0 {type plug slave.pcm "ladspa"}
+pcm.ladspa { 
+	type ladspa 
+	slave.pcm "plughw:0,0"  
+	path "/usr/lib/ladspa" 
+	plugins [ {label delay_5s  input { controls [0.8 0.3] } } ] 
+}
+
+you need the delay_5s plugin for this test, of course.. Now, with the attached patch i get a nice delay on my test.wav playback with sox.. With the original alsa-oss, sox is not interceptable and therefore does not play the delay. Teamspeak seems to work with aoss now, too...
+
+If your soundcard does not do hw mixing, a good test case is to use 
+
+pcm.dsp {type plug slave.pcm "dmix"} 
+
+and try two instances of the aoss sox command..
+
+Florian Schmidt
+
+-- 
+Palimm Palimm!
+
+
+--Multipart=_Fri__11_Jun_2004_01_27_53_+0200_yP.4+_/z2e_rwqSc
+Content-Type: application/octet-stream;
+ name="alsa-oss-fopen.patch"
+Content-Disposition: attachment;
+ filename="alsa-oss-fopen.patch"
+Content-Transfer-Encoding: base64
+
+ZGlmZiAtdU5yIGFsc2Etb3NzLTEuMC41L2Fsc2EvYWxzYS1vc3MuYyBhbHNhLW9zcy0xLjAuNS5u
+ZXcvYWxzYS9hbHNhLW9zcy5jCi0tLSBhbHNhLW9zcy0xLjAuNS9hbHNhL2Fsc2Etb3NzLmMJMjAw
+NC0wMi0yNiAxOTozNDo1OC4wMDAwMDAwMDAgKzAxMDAKKysrIGFsc2Etb3NzLTEuMC41Lm5ldy9h
+bHNhL2Fsc2Etb3NzLmMJMjAwNC0wNi0xMSAwMDoxNjozNi4wMDAwMDAwMDAgKzAyMDAKQEAgLTcz
+LDYgKzczLDggQEAKIHZvaWQgKigqX21tYXApKHZvaWQgKmFkZHIsIHNpemVfdCBsZW4sIGludCBw
+cm90LCBpbnQgZmxhZ3MsIGludCBmZCwgb2ZmX3Qgb2Zmc2V0KTsKIGludCAoKl9tdW5tYXApKHZv
+aWQqIGFkZHIsIHNpemVfdCBsZW4pOwogCitGSUxFICooKl9mb3BlbikoY29uc3QgY2hhciAqcGF0
+aCwgY29uc3QgY2hhciAqbW9kZSk7CisKIHR5cGVkZWYgc3RydWN0IG9wcyB7CiAJaW50ICgqY2xv
+c2UpKGludCBmZCk7CiAJc3NpemVfdCAoKndyaXRlKShpbnQgZmQsIGNvbnN0IHZvaWQgKmJ1Ziwg
+c2l6ZV90IG4pOwpAQCAtNjMwLDYgKzYzMiwyNCBAQAogCXJldHVybiBjb3VudDE7CiB9CiAKK3N0
+YXRpYyBpbnQgaXNfc291bmRfZGV2aWNlKGNvbnN0IGNoYXIgKnBhdGhuYW1lKQoreworCWlmKCFw
+YXRobmFtZSkgcmV0dXJuIDA7CisJaWYoc3RyY21wKHBhdGhuYW1lLCIvZGV2L2RzcCIpID09IDAp
+IHJldHVybiAxOworCWlmKHN0cmNtcChwYXRobmFtZSwiL2Rldi9zb3VuZC9kc3AiKSA9PSAwKSBy
+ZXR1cm4gMTsKKwlyZXR1cm4gMDsKK30KKworCisjaW5jbHVkZSAic3RkaW9lbXUuYyIKKworRklM
+RSAqZm9wZW4oY29uc3QgY2hhciogcGF0aCwgY29uc3QgY2hhciAqbW9kZSkgeworCWlmKCFpc19z
+b3VuZF9kZXZpY2UocGF0aCkpIAorCQlyZXR1cm4gX2ZvcGVuIChwYXRoLCBtb2RlKTsKKwkKKwly
+ZXR1cm4gZmFrZV9mb3BlbihwYXRoLCBtb2RlKTsKK30KKwogI2lmIDEKICMgZGVmaW5lIHN0cm9u
+Z19hbGlhcyhuYW1lLCBhbGlhc25hbWUpIFwKICAgZXh0ZXJuIF9fdHlwZW9mIChuYW1lKSBhbGlh
+c25hbWUgX19hdHRyaWJ1dGVfXyAoKGFsaWFzICgjbmFtZSkpKTsKQEAgLTY0Myw2ICs2NjMsNyBA
+QAogc3Ryb25nX2FsaWFzKG11bm1hcCwgX19tdW5tYXApOwogc3Ryb25nX2FsaWFzKHBvbGwsIF9f
+cG9sbCk7CiBzdHJvbmdfYWxpYXMoc2VsZWN0LCBfX3NlbGVjdCk7CitzdHJvbmdfYWxpYXMoZm9w
+ZW4sIF9fZm9wZW4pOwogI2Vsc2UKIGludCBkdXAoaW50IGZkKQogewpAQCAtNzEyLDQgKzczMyw1
+IEBACiAJX211bm1hcCA9IGRsc3ltKFJUTERfTkVYVCwgIm11bm1hcCIpOwogCV9zZWxlY3QgPSBk
+bHN5bShSVExEX05FWFQsICJzZWxlY3QiKTsKIAlfcG9sbCA9IGRsc3ltKFJUTERfTkVYVCwgInBv
+bGwiKTsKKwlfZm9wZW4gPSBkbHN5bShSVExEX05FWFQsICJmb3BlbiIpOwogfQpkaWZmIC11TnIg
+YWxzYS1vc3MtMS4wLjUvYWxzYS9zdGRpb2VtdS5jIGFsc2Etb3NzLTEuMC41Lm5ldy9hbHNhL3N0
+ZGlvZW11LmMKLS0tIGFsc2Etb3NzLTEuMC41L2Fsc2Evc3RkaW9lbXUuYwkxOTcwLTAxLTAxIDAx
+OjAwOjAwLjAwMDAwMDAwMCArMDEwMAorKysgYWxzYS1vc3MtMS4wLjUubmV3L2Fsc2Evc3RkaW9l
+bXUuYwkyMDA0LTA2LTEwIDIzOjU2OjQwLjAwMDAwMDAwMCArMDIwMApAQCAtMCwwICsxLDk2IEBA
+CisgICAgLyoKKworICAgIENvcHlyaWdodCAoQykgMjAwMCBTdGVmYW4gV2VzdGVyZmVsZAorICAg
+ICAgICAgICAgICAgICAgICAgICBzdGVmYW5Ac3BhY2UudHdjLmRlCisKKyAgICBUaGlzIGxpYnJh
+cnkgaXMgZnJlZSBzb2Z0d2FyZTsgeW91IGNhbiByZWRpc3RyaWJ1dGUgaXQgYW5kL29yCisgICAg
+bW9kaWZ5IGl0IHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgR05VIExpYnJhcnkgR2VuZXJhbCBQdWJs
+aWMKKyAgICBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieSB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0
+aW9uOyBlaXRoZXIKKyAgICB2ZXJzaW9uIDIgb2YgdGhlIExpY2Vuc2UsIG9yIChhdCB5b3VyIG9w
+dGlvbikgYW55IGxhdGVyIHZlcnNpb24uCisgIAorICAgIFRoaXMgbGlicmFyeSBpcyBkaXN0cmli
+dXRlZCBpbiB0aGUgaG9wZSB0aGF0IGl0IHdpbGwgYmUgdXNlZnVsLAorICAgIGJ1dCBXSVRIT1VU
+IEFOWSBXQVJSQU5UWTsgd2l0aG91dCBldmVuIHRoZSBpbXBsaWVkIHdhcnJhbnR5IG9mCisgICAg
+TUVSQ0hBTlRBQklMSVRZIG9yIEZJVE5FU1MgRk9SIEEgUEFSVElDVUxBUiBQVVJQT1NFLiAgU2Vl
+IHRoZSBHTlUKKyAgICBMaWJyYXJ5IEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0
+YWlscy4KKyAgIAorICAgIFlvdSBzaG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdO
+VSBMaWJyYXJ5IEdlbmVyYWwgUHVibGljIExpY2Vuc2UKKyAgICBhbG9uZyB3aXRoIHRoaXMgbGli
+cmFyeTsgc2VlIHRoZSBmaWxlIENPUFlJTkcuTElCLiAgSWYgbm90LCB3cml0ZSB0bworICAgIHRo
+ZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb24sIEluYy4sIDU5IFRlbXBsZSBQbGFjZSAtIFN1aXRl
+IDMzMCwKKyAgICBCb3N0b24sIE1BIDAyMTExLTEzMDcsIFVTQS4KKworICAgICovCisKKy8qCisg
+KiBUaGlzIHNvdXJjZSBvbmx5IGV4aXN0cyBiZWNhdXNlIHNvbWUgdmVyeSBzcGVjaWFsIHByb2dy
+YW1zIHRoaW5rIHRoYXQKKyAqIGl0IGlzIGEgdmVyeSBzcGVjaWFsIGlkZWEgdG8gYWNjZXNzIC9k
+ZXYvZHNwIGJ5IHRoZSBtZWFucyBvZiBzdGRpbywgc28KKyAqIHdlIG5lZWQgdG8gZmFrZSBGSUxF
+KiBhY2Nlc3MgZm9yIGFydHNkc3AgYXMgd2VsbC4KKyAqCisgKiBUbyBkbyBzbywgaXQgcmVsaWVz
+IG9uIGdsaWJjIGludGVybmFscywgc28gdGhhdCBpdCB3aWxsIHByb2JhYmx5IG5vdCB3b3JrCisg
+KiBvbiBvdGhlciBzeXN0ZW1zIC0gYnV0IHRoZW4gYWdhaW4sIGl0IG1pZ2h0IG5vdCBiZSBuZWNl
+c3Nhcnkgb24gb3RoZXIKKyAqIHN5c3RlbXMsIHdoZW4gZm9wZW4gcHJvcGVybHkgY2FsbHMgb3Bl
+biwgaXQgbWlnaHQgYXMgd2VsbCB3b3JrIHVuY2hhbmdlZC4KKyAqLworCisKKyNpZm5kZWYgX0dO
+VV9TT1VSQ0UKKyNkZWZpbmUgX0dOVV9TT1VSQ0UKKyNlbmRpZgorCisjaW5jbHVkZSA8c3RkaW8u
+aD4KKyNpbmNsdWRlIDxsaWJpby5oPgorCitzdHJ1Y3QgZmRfY29va2llIHsKKwlpbnQgZmQ7Cit9
+OworCitzdGF0aWMgc3NpemVfdCBmZGNfcmVhZCAodm9pZCAqY29va2llLCBjaGFyICpidWZmZXIs
+IHNpemVfdCBzaXplKQoreworCXN0cnVjdCBmZF9jb29raWUgKmZkYyA9IChzdHJ1Y3QgZmRfY29v
+a2llICopY29va2llOworCXJldHVybiByZWFkKGZkYy0+ZmQsIGJ1ZmZlciwgc2l6ZSk7Cit9CisK
+K3N0YXRpYyBzc2l6ZV90IGZkY193cml0ZSAodm9pZCAqY29va2llLCBjb25zdCBjaGFyICpidWZm
+ZXIsIHNpemVfdCBzaXplKQoreworCXN0cnVjdCBmZF9jb29raWUgKmZkYyA9IChzdHJ1Y3QgZmRf
+Y29va2llICopY29va2llOworCXJldHVybiB3cml0ZShmZGMtPmZkLCBidWZmZXIsIHNpemUpOwor
+fQorCitzdGF0aWMgaW50IGZkY19zZWVrICh2b2lkKiBjb29raWUsIG9mZjY0X3QqIHBvc2l0aW9u
+LCBpbnQgd2hlbmNlKQoreworCXJldHVybiAtMTsKK30KKworc3RhdGljIGludCBmZGNfY2xlYW4g
+KHZvaWQgKmNvb2tpZSkKK3sKKwlzdHJ1Y3QgZmRfY29va2llICpmZGMgPSAoc3RydWN0IGZkX2Nv
+b2tpZSAqKWNvb2tpZTsKKwlpbnQgcmVzdWx0ID0gY2xvc2UoZmRjLT5mZCk7CisJZnJlZShjb29r
+aWUpOworCXJldHVybiByZXN1bHQ7Cit9CisKK3N0YXRpYyBGSUxFICpmYWtlX2ZvcGVuKGNvbnN0
+IGNoYXIgKnBhdGgsIGNvbnN0IGNoYXIgKm1vZGUpCit7CisJY29va2llX2lvX2Z1bmN0aW9uc190
+IGZucyA9IHsgZmRjX3JlYWQsIGZkY193cml0ZSwgZmRjX3NlZWssIGZkY19jbGVhbiB9OworCXN0
+cnVjdCBmZF9jb29raWUgKmZkYyA9CisJCShzdHJ1Y3QgZmRfY29va2llICopbWFsbG9jKHNpemVv
+ZihzdHJ1Y3QgZmRfY29va2llKSk7CisJY29uc3QgY2hhciAqbXB0cjsKKwlpbnQgb3Blbl9tb2Rl
+ID0gMDsKKwlGSUxFICpyZXN1bHQgPSAwOworCisJZm9yKG1wdHIgPSBtb2RlOyAqbXB0cjsgbXB0
+cisrKQorCXsKKwkJaWYoKm1wdHIgPT0gJ3InKSBvcGVuX21vZGUgfD0gMTsgLyogMSA9IHJlYWQg
+Ki8KKwkJaWYoKm1wdHIgPT0gJ3cnKSBvcGVuX21vZGUgfD0gMjsgLyogMiA9IHdyaXRlICovCisJ
+CWlmKCptcHRyID09ICcrJykgb3Blbl9tb2RlIHw9IDM7IC8qIDMgPSByZWFkd3JpdGUgKi8KKwkJ
+aWYoKm1wdHIgPT0gJ2EnKSBvcGVuX21vZGUgfD0gMjsgLyogYXBwZW5kIC0+IHdyaXRlICovCisg
+IAl9CisgIAlpZihvcGVuX21vZGUgPT0gMSkgZmRjLT5mZCA9IG9wZW4ocGF0aCxPX1JET05MWSww
+NjY2KTsKKyAgCWlmKG9wZW5fbW9kZSA9PSAyKSBmZGMtPmZkID0gb3BlbihwYXRoLE9fV1JPTkxZ
+LDA2NjYpOworICAJaWYob3Blbl9tb2RlID09IDMpIGZkYy0+ZmQgPSBvcGVuKHBhdGgsT19SRFdS
+LDA2NjYpOworCisJaWYob3Blbl9tb2RlICYmIGZkYy0+ZmQgPiAwKQorCXsKKwkJcmVzdWx0ID0g
+Zm9wZW5jb29raWUgKGZkYywidyIsIGZucyk7CisJCXJlc3VsdC0+X2ZpbGVubyA9IGZkYy0+ZmQ7
+CQkvKiB1Z2x5IHBhdGNoeSBzbGlteSBrbHVkZ3kgaGFjayAqLworCX0KKwlyZXR1cm4gcmVzdWx0
+OworfQo=
+
+--Multipart=_Fri__11_Jun_2004_01_27_53_+0200_yP.4+_/z2e_rwqSc--
 
 
 -------------------------------------------------------
