@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000028]: ALSA OSS Sequencer is broken for recording from external MIDI devices
-Date: Fri, 27 Aug 2004 15:28:32 +0200 (CEST)
+Date: Fri, 27 Aug 2004 15:26:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827132832.B8E862C003@server.perex-int.cz>
+Message-ID: <20040827132646.2B9012C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 153D41F5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 15:28:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DA991F5
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 15:26:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+The following bug has been ASSIGNED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000028
 ======================================================================
@@ -33,13 +33,12 @@ Category:                   CORE - sequencer
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               any
 Kernel Version:             2.4.x and 2.6.x
-Resolution:                 not a bug
 ======================================================================
 Date Submitted:             02-02-2004 13:51 CET
-Last Modified:              08-27-2004 15:28 CEST
+Last Modified:              08-27-2004 15:26 CEST
 ======================================================================
 Summary:                    ALSA OSS Sequencer is broken for recording from external MIDI devices
 Description: 
@@ -69,11 +68,6 @@ I would like to stop using the old OSS sound driver but I cannot do that
 until ALSA's OSS emulation of /dev/sequencer is working correctly. Any
 help would be greatly appreciated.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 08-27-2004 15:28 CEST 
-----------------------------------------------------------------------
-This is a bug in Rosegarden 2.1pl4 which is fixed by the attached patch.
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -82,10 +76,6 @@ Date Modified  Username       Field                    Change
 02-02-04 13:58 Will           Bugnote Added: 0000104                       
 08-27-04 15:26 Clemens LadischAssigned To               => Clemens Ladisch 
 08-27-04 15:26 Clemens LadischStatus                   new => assigned     
-08-27-04 15:27 Clemens LadischFile Added: rosegarden-2.1pl4.patch                    
-08-27-04 15:28 Clemens LadischBugnote Added: 0001643                       
-08-27-04 15:28 Clemens LadischResolution               open => not a bug   
-08-27-04 15:28 Clemens LadischStatus                   assigned => resolved
 ======================================================================
 
 
