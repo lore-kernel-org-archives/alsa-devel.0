@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
-Date: Tue, 28 Sep 2004 23:42:06 +0200 (CEST)
+Subject: [ALSA - driver 0000145]: Nforce2 Audio - Bacon Fry ssZzZZZZzzle
+Date: Tue, 28 Sep 2004 02:57:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928214206.9F89746008@server.perex-int.cz>
+Message-ID: <20040928005708.7C0BB33018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 007C3320
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 23:42:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6BCD2EB
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 02:57:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,193 +22,166 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000145
 ======================================================================
-Reported By:                ramendik
+Reported By:                onemaN
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     505
+Bug ID:                     145
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               RH-based
-Kernel Version:             2.6.8.1
+Distribution:               slackware!
+Kernel Version:             2.6.4
 ======================================================================
-Date Submitted:             09-19-2004 10:03 CEST
-Last Modified:              09-28-2004 23:42 CEST
+Date Submitted:             03-18-2004 09:07 CET
+Last Modified:              09-28-2004 02:57 CEST
 ======================================================================
-Summary:                    SPDIF sound distorted on non-48000 rates
+Summary:                    Nforce2 Audio - Bacon Fry ssZzZZZZzzle
 Description: 
-I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
-P4P800). It has an analog output and an SPDIF output.When I play 48Khz
-files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
-sound on the SPDIF output is audibly distorted. The analog output is OK.
+Im using 2.6.4 with an abit nf7-s 2.0. Bacon fry is apparent on both analog
+and spdif output (exactly the same effect). When playing music the pitch
+is correct (with 2.6.2 everything was speeded up 20% it seemed) 
 
-I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
-and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
-2.6.7 kernels. So apparently it's present across several versons of ALSA.
+It does this every time when I play mp3 or flac files with xmms or any
+other player. 
 
+OK so when I got on this bug system I saw there was allready many bugs
+listed simaler to this. The reason im making effort here, is because Im
+willing to be contacted and work with you guys to get this one right, I
+want of course to use this linux box as a half terabyte flac jukebox, and
+I cant do that if the sound is anything less than perfect. ;P 
+
+Let me know! I will do what I can to help debug!
+
+-David 
+david@wdtp.com
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:37 CEST 
+ onemaN - 03-18-2004 09:11 CET 
 ----------------------------------------------------------------------
-Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
-Also, check the IEC958 status bits (run iecset) during playback of
-44.1kHz samples.
+also 'analog to spdif' doesnt seem to do a thing :[] ....
 
 ----------------------------------------------------------------------
- ramendik - 09-23-2004 19:50 CEST 
+ perex - 03-23-2004 16:20 CET 
 ----------------------------------------------------------------------
-Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
-apparently this is the bug. Here is the full result:
-
-# iecset
-Mode: consumer
-Data: audio
-Rate: 48000 Hz
-Copyright: protected
-Emphasis: none
-Category: PCM coder
-Original: original
-Clock: 1000 ppm
+Try to find 'IEC958 Input Monitor' control in alsamixer and turn it off (or
+use amixer).
 
 ----------------------------------------------------------------------
- ramendik - 09-23-2004 19:52 CEST 
+ onemaN - 03-23-2004 18:15 CET 
 ----------------------------------------------------------------------
-I have uploaded both files from /proc/asound/card0/codec97#0/ .
+Its allways been off..
 
 ----------------------------------------------------------------------
- ramendik - 09-23-2004 19:58 CEST 
+ perex - 03-23-2004 18:42 CET 
 ----------------------------------------------------------------------
-BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
-them on 48000.
+Could you try to test latest 2.6.5-rc kernel?
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 20:06 CEST 
+ onemaN - 03-23-2004 19:16 CET 
 ----------------------------------------------------------------------
-How about the attached patch (it's already applied to CVS).
+Im still on 2.6.4, when 2.6.5 comes I will be there. I installed all the
+103b componets (besides the driver witch is compiled into my kernel) 
+
+Then I set up a .asoundrc file, and now if i use alsaplayer or aplay I can
+get distortion free output from spdif!
+
+.asoundrc file: 
+
+cm.nforce-hw {
+type hw
+card 0
+}
+
+pcm.!default {
+type plug
+slave.pcm "nforce"
+}
+
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000,0 is analog out and 0,2 is spdif out.
+
+pcm.nforce {
+type dmix
+ipc_key 1234
+slave {
+pcm "hw:0,2"
+period_time 0
+period_size 1024
+buffer_size 4096
+rate 44100
+}
+}
+
+ctl.nforce-hw {
+type hw
+card 0
+}
+
+
+XMMS and everything else still frys etc from spdif... future looking good
+tho
 
 ----------------------------------------------------------------------
- ramendik - 09-23-2004 22:16 CEST 
+ onemaN - 03-23-2004 19:26 CET 
 ----------------------------------------------------------------------
-Unfortunately the patch did NOT help. The distortion is in place, and when
-a 44100 Hz file is played (using mplayer), iecset still shows a 48000 Hz
-sample rate.
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:14 CEST 
-----------------------------------------------------------------------
-What shows /proc/asound/cards entry?  If it's ICH4, ICH5 or ESB,
-try hw:0,2 PCM for SPDIF output.
+Still some crackling when i for example use the volume slider on
+alsaplayer, and once or twice its skipped for unknown reason..
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 12:16 CEST 
+ cosmix - 07-22-2004 05:44 CEST 
 ----------------------------------------------------------------------
-Oh, hw:0,2 might be incorrect.  Please check /proc/asound/pcm
-and choose the "IEC958" device.
+This persists with kernel 2.6.7 and ALSA versions 1.0.4 (incl. in 2.6.7),
+1.0.5, 1.0.5a and current CVS (at the time of writing). It practically
+renders the onboard audio on nforce2 motherboards useless with ALSA :(
 
-----------------------------------------------------------------------
- ramendik - 09-24-2004 23:42 CEST 
-----------------------------------------------------------------------
-/proc/asound/cards:
+Note that on a nforce2 equipped motherboard, disabling the 'Disconnect on
+STPGNT' bit on the board, the problem goes away almost completely. This
+may provide a clue as to why this happens.
 
-0 [ICH5           ]: ICH - Intel ICH5
-                     Intel ICH5 at 0xfebff400, irq 11
-
-/proc/asound/pcm:
-
-00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
-00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
-00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
-00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
-00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
-
-When I try alsaplayer -d hw:0,2 myfile.wav , it just says "no such
-device". The same with 0,1 and 0,3.
-
-But when I try with hw:0,4 , a strange thing happens. The file does not
-start to play, alsaplayer reacts to any button presses (with the mouse) by
-requesting a new filename. BUT, iecset shows 44100 Hz now - and this
-happens both when the played file is 44100 Hz and when it is 48000 Hz! I
-have tried setting the rate back to 48000 Hz with iecset, then running
-alsaplayer -d hw:0,4 myfile.wav again ; and iecset showed 44100 Hz again!
+Hope this helps.
 
 ----------------------------------------------------------------------
- ramendik - 09-27-2004 05:20 CEST 
+ mcbridematt - 07-31-2004 17:11 CEST 
 ----------------------------------------------------------------------
-The strange behaviour with hw:0,4 happens both with and without the patch
-that is attached here...
+Possible hardware bug relating to the fact that most nForce MCP/MCP-T
+southbridges aren't cooled adequately?
+
+I'm getting bacon fry in both Windows and Linux occasionally. (stick in a
+C-Media 8738 and it goes away..) One of my friends had the same problem
+but it stopped when he placed a heatsink on the southbridge. I'll test it
+out next time it starts frying. I haven't had the IEC input monitor on at
+all, ever either.
 
 ----------------------------------------------------------------------
- tiwai - 09-27-2004 15:14 CEST 
+ rotech - 09-28-2004 02:57 CEST 
 ----------------------------------------------------------------------
-Ok, could you try the new patch (ich4-spdif.dif) for ALSA driver
-and ich4-spdif-lib for alsa-lib?  They are to the lastet CVS version.
-Hopefully they can be applied to 1.0.7rc1, too.
+I have cured this problem with the following line.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 09-27-2004 18:22 CEST 
-----------------------------------------------------------------------
-I uploaded a new version of the patch.
+Does it work for others?
 
-"... & ICH_PCM_SPDIF_MASK" obviously should have been "... &
-~ICH_PCM_SPDIF_MASK".
-
-----------------------------------------------------------------------
- ramendik - 09-28-2004 23:37 CEST 
-----------------------------------------------------------------------
-Finally tested. Sorry for the delay.
-
-Well, with this new patch, when playing directly to hw:0,4 (and only in
-this case!), the spdif rate changes in teh right way. 
-
-But for some reason (this was there before, not in the patch) one has to
-be root to play to hw:0,4 . Otherwise "access denied"...
-
-And besides, one would expect the sound to work right even when playing to
-the default device. And, most important to me, even when using OSS
-emulation.
-
-----------------------------------------------------------------------
- ramendik - 09-28-2004 23:42 CEST 
-----------------------------------------------------------------------
-UPD: read the FAQ and fixed the root-needed problem.
-
-The questions of the default device and of OSS emulation still stand.
-After all, sometimes one can want to get output on both SPDIF and the
-line-out at the same time.
+amixer set "Surround Down Mix" off
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 10:03 ramendik       New Bug                                      
-09-19-04 10:03 ramendik       Distribution              => RH-based        
-09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
-09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
-09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
-09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
-09-23-04 19:51 ramendik       File Added: ac97#0-0                         
-09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
-09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
-09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
-09-23-04 20:06 tiwai          Bugnote Added: 0001846                       
-09-23-04 20:06 tiwai          File Added: intel-spdif-fix.dif                    
-09-23-04 22:16 ramendik       Bugnote Added: 0001852                       
-09-24-04 12:14 tiwai          Bugnote Added: 0001871                       
-09-24-04 12:16 tiwai          Bugnote Added: 0001872                       
-09-24-04 23:42 ramendik       Bugnote Added: 0001906                       
-09-27-04 05:20 ramendik       Bugnote Added: 0001931                       
-09-27-04 15:14 tiwai          Bugnote Added: 0001938                       
-09-27-04 15:14 tiwai          File Added: ich4-spdif.dif                    
-09-27-04 15:15 tiwai          File Added: ich4-spdif-lib.dif                    
-09-27-04 18:20 Clemens LadischFile Added: ich4-spdif.dif                    
-09-27-04 18:22 Clemens LadischBugnote Added: 0001941                       
-09-28-04 23:37 ramendik       Bugnote Added: 0001961                       
-09-28-04 23:42 ramendik       Bugnote Added: 0001962                       
+03-18-04 09:07 onemaN         New Bug                                      
+03-18-04 09:07 onemaN         Distribution              => slackware!      
+03-18-04 09:07 onemaN         Kernel Version            => 2.6.4           
+03-18-04 09:11 onemaN         Bugnote Added: 0000640                       
+03-18-04 09:36 onemaN         Bug Monitored: onemaN                        
+03-23-04 16:20 perex          Bugnote Added: 0000666                       
+03-23-04 18:15 onemaN         Bugnote Added: 0000674                       
+03-23-04 18:42 perex          Bugnote Added: 0000686                       
+03-23-04 19:16 onemaN         Bugnote Added: 0000691                       
+03-23-04 19:26 onemaN         Bugnote Added: 0000692                       
+07-22-04 05:44 cosmix         Bugnote Added: 0001466                       
+07-31-04 17:11 mcbridematt    Bugnote Added: 0001510                       
+09-28-04 02:57 rotech         Bugnote Added: 0001944                       
 ======================================================================
 
 
