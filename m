@@ -1,14 +1,14 @@
-From: =?iso-8859-15?q?Z=E9bulon?= <zeb@zebulon.org.uk>
-Subject: Some remarks/bugs/question about M-audio Revolution (ice1724)
-Date: Wed, 7 May 2003 21:54:27 +0200
+From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
+Subject: Re: ENS1373 and AC3/DTS SPDIF output
+Date: Wed, 7 May 2003 22:10:20 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305072154.27740.zeb@zebulon.org.uk>
+Message-ID: <20030507211020.GB22554@ecs.soton.ac.uk>
+References: <3EB94AC4.90503@student.kuleuven.ac.be>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
+In-Reply-To: <3EB94AC4.90503@student.kuleuven.ac.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I could make a Revolution card work under Mandrake 9.1, after recompiling the 
-alsa-drivers. Then loading snd-ice1724 did the job and sound is excellent, 
-compared to my old SB Live Value... Just a regret : no CD audio connector, so 
-I have to play CDs with digital extraction with cdda2wav, and it consumes 
-some CPU and blocks IDE port. Moreover, this is a pain with KDE which blocks 
-/dev/dsp with artsd. The problem is if I kill artsd, I cannot use some KDE 
-applications.
+On Wed, May 07, 2003 at 08:04:52 +0200, Pieter Palmers wrote:
+> The one thing the current ENS1371 driver seems to be lacking is support 
+> for AC3 passtrough SPDIF. At least, as far as I know. I never got it to 
+> work.
+> I currently use a "Soundblaster 4.1 digital" card based on an ENS1371 
+> variant (i assume the ENS1373) that, according to creative's specs, 
+> supports AC3 passtrough. But neither on windows (one seems to be needing 
+> XP for that) nor on linux I could get it to work. Plain SPDIF works 
+> fine, but raw-mode passtrough doesnt.
+> 
+> Anybody on the list that succeeded in testing this?
+> 
+> Should the card not support raw mode, is it possible to 'encode' the AC3 
+> stream in a digital 48kHz stereo stream? If I'm not mistaking, I've seen 
+> some ALSA drivers doing something like this... how does it work?
 
-Some remarks though :
+There is a bit in one of the subcode channels or similar that should be
+set for AC3, but many decoders will recognise the AC3 bit pattern and
+decode it anyway, this is how AC3 CDs work.
 
-- the sound sometimes cracks with some DVDs
-- xine-alsa crashes, I need to use oss driver in xine (probably through 
-snd-pcm-oss), but not directly the alsa drivers. Then no multichannel could 
-be used.
-- I had to use alsamixer to change the levels (normal). However, I use a TV 
-card, connected to line In. If I want to listen to oggvorbis file through 
-xmms alsa, I had to set H/W 1 and H/W 2 to PCM Out, however, to listen to tv 
-sound, it was H/W In 0
-- maybe a bug : If I set the Multi Track Internal Clock to IEC958, I cannot 
-change the setting anymore.
-
-So my question is : are those bugs, limitations of a young driver, or 
-limitations in the card architecture ? Should we expect a better support in 
-the future ? My old SBLive sounds crap compared to this, but I could play 
-CDs, watch TV, or play oggvorbis files without changing the settings IN/OUT 
-in alsamixer.
-
-Thanks
+- Steve
 
 
 -------------------------------------------------------
