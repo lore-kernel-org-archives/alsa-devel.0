@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000431]: Wrong driver & docs link for Terratec EWS88D
-Date: Wed, 20 Oct 2004 11:20:38 +0200
+Subject: [ALSA - driver 0000240]: Clean up the iPaq specific things (move them into another source code).
+Date: Wed, 20 Oct 2004 11:30:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <cdcb5197995b7f2492d649f35b9c103a@bugtrack.alsa-project.org>
+Message-ID: <b5fe6de5d798340e8bf6261f24253cb9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD2F7298
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 11:20:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7ACC345
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 11:30:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -26,59 +26,45 @@ A NOTE has been added to this issue.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D431>=20
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D240>=20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                ajw213
-Assigned To:               =20
+Reported By:                perex
+Assigned To:                perex
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - WWW server
-Issue ID:                   431
-Category:                   bad link
+Project:                    ALSA - driver
+Issue ID:                   240
+Category:                   ARM - sa11xx-uda1341
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:              =20
+Kernel Version:            =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             08-08-2004 14:14 CEST
-Last Modified:              10-20-2004 11:20 CEST
+Date Submitted:             04-27-2004 11:50 CEST
+Last Modified:              10-20-2004 11:30 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Wrong driver & docs link for Terratec EWS88D
+Summary:                    Clean up the iPaq specific things (move them =
+into
+another source code).
 Description:=20
-www.alsa-project.org/alsa-doc/
-
-'Details' link for Terratec EWS88D goes to page for
-chip=3DCS4624
-module=3Dcs46xx
-
-but card chipset is actually same as ESW88MT, ie.
-chip=3DEnvy24
-module=3Dice1712
-
-This may mean the 'Notes' section is also wrong - although I can only get
-[To] from the card, as the page says.
-The chipset should be capable of [Rio][Tio][Aio] but I don't think the
-driver can handle all of these for the EWS88D yet.
+See summary.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- perex - 10-20-04 11:16=20
+ perex - 10-20-04 11:30=20
 ----------------------------------------------------------------------
-Just test - please, ignore.
-
-----------------------------------------------------------------------
- perex - 10-20-04 11:20=20
-----------------------------------------------------------------------
-Just test https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2.
+Just test.
 
 Issue History
 Date Modified  Username       Field                    Change            =
@@ -86,11 +72,9 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-08-08-04 14:14 ajw213         New Issue                                  =
+04-27-04 11:50 perex          New Issue                                  =
  =20
-10-20-04 11:16 perex          Note Added: 0002211                        =
- =20
-10-20-04 11:20 perex          Note Added: 0002212                        =
+10-20-04 11:30 perex          Note Added: 0002214                        =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
