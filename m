@@ -1,16 +1,20 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: RE: writing user program for alsa under fedora core 1
-Date: Sun, 30 May 2004 13:49:13 +0200 (CEST)
+From: Jan Depner <eviltwin69@cableone.net>
+Subject: Re: Xruns with Audiophile 2496 M-audio
+Date: Sun, 30 May 2004 08:35:21 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405301347050.1777@pnote.perex-int.cz>
-References: <FDEHJOEHEEGCJHLBEHMFGEOBCAAA.fwmiller@cornfed.com>
+Message-ID: <1085924121.4235.21.camel@eviltwin>
+References: <20040529114908.2118135c@pentium233.krystal.net>
+	 <Pine.LNX.4.58.0405291234350.566@autumn>
+	 <20040529131601.641aa202@pentium233.krystal.net>
+	 <Pine.LNX.4.58.0405291329280.566@autumn>
+	 <20040529160048.27d74531@pentium233.krystal.net>
+	 <Pine.LNX.4.58.0405291631440.566@autumn>
+	 <20040530110923.5ce0172f@pentium233.krystal.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA04783
-	for <alsa-devel@alsa-project.org>; Sun, 30 May 2004 13:44:12 +0200
-In-Reply-To: <FDEHJOEHEEGCJHLBEHMFGEOBCAAA.fwmiller@cornfed.com>
+In-Reply-To: <20040530110923.5ce0172f@pentium233.krystal.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,33 +23,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Frank W. Miller" <fwmiller@cornfed.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Remi Bernhard <rgbmlist2@free.fr>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 29 May 2004, Frank W. Miller wrote:
+On Sun, 2004-05-30 at 04:09, Remi Bernhard wrote:
+> Hi Tim and all,
+> 
+> 
+> On Sat, 29 May 2004 16:34:49 +0200 (CEST)
+> Tim Goetze <tim@quitte.de> wrote:
+> 
+> > [Remi Bernhard]
+> > >I tried with kernel 2.4.25 + lowlatency patch.
+> > >I have the same xruns :-/
+> > >
+> > >Any other idea ?
+> > 
+> > checklist:
+> > 
+> > * running jackd as root? with -R option?
+> 
+> Tried -> failed.
 
-> using ALSA.  When I try to run my existing binary that makes OSS calls on
-> top of Fedora that is using an ALSA driver for my soundcard, I get some
-> strange behaviour, some of the calls don't work the same.  For example, the
-> card supports full-duplex but the ALSA driver seems to think it will only
-> support half-duplex.  When I try to set the sampling rate on the 16-bit
+	If this failed, you're not running real-time.  What error message did
+you get?
 
-Please, specify your hardware. We have probably available two indepedent 
-devices for your card, because ALSA supports full-duplex for capable 
-devices.
+Jan
 
-> interface, I get an error (cant remember which one right now).  So my
 
-Document this with a small test program. We'll try to fix your problem.
-Please, create a report in our bug-tracking-system.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
