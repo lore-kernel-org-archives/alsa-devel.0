@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: multiple devices per card?
-Date: Sat, 5 Oct 2002 09:14:47 +0200 (CEST)
+Date: Sat, 5 Oct 2002 09:16:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210050910140.504-100000@pnote.perex-int.cz>
-References: <3D9DF89B.8090604@boosthardware.com>
+Message-ID: <Pine.LNX.4.33.0210050916130.504-100000@pnote.perex-int.cz>
+References: <20021004213711.48471.qmail@web11503.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D9DF89B.8090604@boosthardware.com>
+In-Reply-To: <20021004213711.48471.qmail@web11503.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,49 +16,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Guilhem Tardy <guilhem_tardy@yahoo.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 5 Oct 2002, Patrick Shirkey wrote:
+On Fri, 4 Oct 2002, Guilhem Tardy wrote:
 
-> Guilhem Tardy wrote:
-> > Hi,
-> > 
-> > I am unsure what makes the most sense for multiple pcm channels on the same
-> > card:
-> >  a) N devices, 1 pcm channel each
-> >  b) 1 device, N pcm channels each
-> > 
-> > In the same vein, is the mixer always one per card?
-> > 
+> This card can open / close N audio streams independently. Each audio stream can
+> be matched to a different port (e.g. mike in, line in) or the same, with
+> different formats if necessary.
 > 
-> well if we have hw:0,0 hw:0,1 hw:0,2
+> Following your earlier message, I'd guess that a) is the solution. Then, only
+> one mixer is enough to handle all the devices.
 > 
-> Then it looks like option b to me. But Jaroslav confused me recently by 
-> saying something that sounded like a is the case.
+> Any other idea?
 
-Nope. If channels are linked together in hardware, they should be used as 
-one device. I think that our discussion was about subdevices. Here is the 
-hiearchy:
-
-card -+- device -+- subdevice
-      |          |
-      |          +- subdevice
-      |          |
-      |          ...
-      |
-      +- device -+- subdevice
-      |          |
-      |          ...
-      |
-      ...
-
-In PCM API, there might be several PCM devices and several subdevices per 
-a PCM device. The subdevices are used mostly for multi-open hardware, but 
-if hardware offers for example 512 independent stereo streams with 1024 
-discrete hardware outputs, it could use subdevices as well, because we 
-have limited count of devices.
+I agree, a) is the right choice if all streams are independant.
 
 						Jaroslav
 
