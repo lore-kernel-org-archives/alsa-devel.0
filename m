@@ -1,11 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Query devices in a non-blocking fashion
-Date: Mon, 15 Dec 2003 01:17:26 +0900
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: confirmed working EDIROL - PCR 30
+Date: 15 Dec 2003 03:40:05 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDC8D16.6070608@boosthardware.com>
-References: <oprztqwoi4q1sf88@mail.broadpark.no> <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com> <20031208161936.310df2cb.pochini@shiny.it> <oprzvc5mu3q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312081745340.20863@pnote.perex-int.cz> <oprzvh60rmq1sf88@mail.broadpark.no>
+Message-ID: <1071420005.11530.2.camel@littlewolf1.littlewolf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,44 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-If we have a DB of info how would we define the abilities of each device?
+Hi 
 
-I assume this info is available in the driver layer because there is a 
-point where ALSA will return false eg. if a card is not able to run at 
-48000Hz
+I know it's no big news for a USB Midi device to be working but I
+thought I may as well announce this anyway. 
 
-My opinion is that a simple function could be included in alsactl which 
-scans for available devices, makes a list of their abilities. Everyone 
-uses "post-insert alsactl restore" in the modules.conf file so it would 
-be essentially a non issue from a user perspective.
+The Edirol PCR-30 Midi Keyboard Controller (with sliders, knobs, buttons
+e.t.c..) works perfectly the USB audio module (snd-usb-audio). 
+This most likely means the PCR-50 and PCR-80 also work. 
 
-Couldn't this be saved in the config settings for alsactl?
+NOTE: The device must be set to use the Generic USB driver and not the
+"Original" driver (aka FPT) 
 
-
-
+cheers
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
+Allan Klinbail <allank@labyrinth.net.au>
 
 
 
