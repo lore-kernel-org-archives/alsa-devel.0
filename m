@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
-Date: Fri, 24 Sep 2004 12:01:27 +0200 (CEST)
+Subject: [ALSA - utils 0000533]: Cannot restore from file it created
+Date: Fri, 24 Sep 2004 12:06:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924100127.310822A003@server.perex-int.cz>
+Message-ID: <20040924100644.8AB7E2A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7AB4B2AD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:01:27 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9BF32AD
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:06:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,62 +20,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000511
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000533
 ======================================================================
 Reported By:                jdthood
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     511
-Category:                   alsamixer
+Bug ID:                     533
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   text
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
+Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 19:43 CEST
-Last Modified:              09-24-2004 12:01 CEST
+Date Submitted:             09-24-2004 06:39 CEST
+Last Modified:              09-24-2004 12:06 CEST
 ======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_keycase
+Summary:                    Cannot restore from file it created
 Description: 
-Patch for alsamixer.1 to make it mention that commands given in upper case
-can also be entered in lower case
+Package: alsa-utils
+Version: 1.0.3-1
+
+fishbowl:~# alsactl store
+fishbowl:~# alsactl restore
+alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
+Switch:0' : Invalid argument
+
+I got nothing more to add.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-22-2004 18:13 CEST 
+ tiwai - 09-24-2004 12:06 CEST 
 ----------------------------------------------------------------------
-Could you provide a summary line and a signed-off-by line for each patch?
-
-thanks.
-
-----------------------------------------------------------------------
- jdthood - 09-23-2004 19:49 CEST 
-----------------------------------------------------------------------
-Summary: mention that commands given to alsamixer in upper case can also be
-entered in lower case
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:01 CEST 
-----------------------------------------------------------------------
-Applied.  Thanks.
+Which driver?  I guess it's nm256, which was already fixed.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:43 jdthood        New Bug                                      
-09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch                    
-09-22-04 18:13 tiwai          Bugnote Added: 0001814                       
-09-23-04 19:49 jdthood        Bugnote Added: 0001837                       
-09-24-04 12:01 tiwai          Assigned To               => tiwai           
-09-24-04 12:01 tiwai          Resolution               open => fixed       
-09-24-04 12:01 tiwai          Status                   new => resolved     
-09-24-04 12:01 tiwai          Bugnote Added: 0001868                       
+09-24-04 06:39 jdthood        New Bug                                      
+09-24-04 12:06 tiwai          Bugnote Added: 0001870                       
 ======================================================================
 
 
