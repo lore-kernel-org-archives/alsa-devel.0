@@ -1,13 +1,15 @@
-From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Subject: Re: [Alsa-dev]detecing if a device is already used by an other app
-Date: Wed, 26 May 2004 09:46:15 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: weird xrun problem
+Date: Wed, 26 May 2004 09:52:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xbrkb8wc8.fsf@kth.se>
-References: <40B447C0.5020200@atr.jp>
+Message-ID: <Pine.LNX.4.58.0405260942320.1937@pnote.perex-int.cz>
+References: <20040522123855.12837e8d.pochini@shiny.it>
+ <Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
+ <20040525231642.4ae3c3a1.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040525231642.4ae3c3a1.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,39 +18,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Cournapeau David <cournape@atr.jp> writes:
+On Tue, 25 May 2004, Giuliano Pochini wrote:
 
-> Hi there,
->
->     I am currently using two computers which have a crappy intl8x0
->     audio chipset, and these chipset cannot be used by two different
->     apps in the same time. For example, if an audio app is using the
->     soundcard, trying to launch xmms ( with alsa output plugin) gives
->     an error message which says something like "check that no other
->     app is blocking the device". But if I launch alsaplayer (alsa
->     output plugin) instead of xmms, the app doesn't complain: it
->     'just' blocks on the snd_pcm_open call.
->     Basically, after having looked at the source, is seems like this
->     difference is coming from the flag in snd_pcm_open: if
->     SND_PCM_NONBLOCK  is used, opening an already opened device
->     failed, if SND_PCM_ASYNC is used, the app just blocks, until the
->     other app releases the device.
+> On Sun, 23 May 2004 11:21:41 +0200 (CEST)
+> Jaroslav Kysela <perex@suse.cz> wrote:
+> 
+> > On Sat, 22 May 2004, Giuliano Pochini wrote:
+> >
+> > > Period 0 is 6624 frames and Period 1 is 6592 frames long (32 frames
+> > > shorter). I put some debug code and this is the output for a the playback
+> > > test above:
+> >
+> > ALSA does not know about this. All period sizes must be equal.
+> 
+> I thought about this again. Are you sure all periods must be aqual ?  
+> When I record or play something using unequal periods, sound is perfect.
+> It means ALSA reads and writes the last (sometimes a lot) smaller period
+> as well.
 
-This is correct.
+The driver must not acknowledge the settled period with the midlevel and 
+application before the specified time. Of course, if you're running into
+a rounding problem, you can acknowledge more periods at one time.
+In other cases, it's not very practical to program hardware to use 
+different period sizes, because you need more interrupts for processing.
 
->     Is there a (simple) way to use the blocking call and detecting if
->     the device is already opened ?
+						Jaroslav
 
-You can open it in non-blocking mode and set it to blocking later, if
-you want that behavior when writing data.
-
--- 
-Måns Rullgård
-mru@kth.se
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
