@@ -1,11 +1,14 @@
-From: William <walsac2@liam2.demon.co.uk>
-Subject: Re: CVS ALSA failed upgrade in Linux 2.6.3
-Date: Wed, 3 Mar 2004 15:54:24 GMT
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: ALC650 GPIO bits
+Date: Wed, 03 Mar 2004 15:48:54 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403031554.PAA07108@liam2.demon.co.uk>
-References: <40452FE3.8080202@superbug.demon.co.uk>
+Message-ID: <4045FE66.1040701@superbug.demon.co.uk>
+References: <s5h7jy2lzic.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40452FE3.8080202@superbug.demon.co.uk>
+In-Reply-To: <s5h7jy2lzic.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,33 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
->
->The point of option 1 is to explain how to upgrade alsa if you need to. 
->Not everyone needs to upgrade.
+Takashi Iwai wrote:
+> Hi,
+> 
+> it seems that some mobo with ALC650 uses GPIO 0 as the mic bias +5V.
+> 
+> in ac97_patch.c, the GPIO 0 is turned on/off in conjunction with
+> the mic/center sharing switch, but this handling appears only for the
+> old ALC650 revision (D or older).
+> 
+> interestingly, there is a report that even a mobo with the newer
+> revision of ALC650 has this GPIO bit.
+> now, the question is why GPIO is not handled with the revision E and
+> F.  i can't remember the reason (google gives no good info) -- does
+> anyone still know?
+> 
+> is there any mobo with a side effect of this GPIO?
+> 
+> 
+> Takashi
+> 
 
-My point was that the explanation given in option is actually confusing.
-I guess it's the wiki problem of many different people collaboratively
-editing a wiki page, leading to incoherency.  That wiki page would probably
-benefit from having just one person rewrite it from scratch.
+The best source I found for ALC650 info is from the Realtek web site.
+http://www.realtek.com.tw/downloads/dlac97-1.aspx
+1) They have a datasheet for the ALC650, although the datasheets have 
+errors in them.
+http://www.realtek.com.tw/downloads/downloads1-3.aspx?lineid=5&famid=12&series=8&Spec=True&refdesign=True
 
->If you wish to use the cvs, you have to get alsa-driver and alsa-kernel, 
->because alsa-driver uses files from ../alsa-kernel
+2) They have their own version of the alsa-driver, which you can look at 
+to see what they do about things like this. Just download their linux 
+driver. It is alsa-driver source code.
+http://www.realtek.com.tw/downloads/dlac97-2.aspx?lineid=5&famid=12&series=8&Software=True#8Unix%20(Linux)
 
-Yes, I knew that already but what I didn't know was that it is best
-to install alsa-driver not alsa-kernel to get all the new/experimental drivers.
-
->So, if you follow the cvs command exactly it will work.
-
-It didn't work (Unknown symbols in snd*) but at least I know why (Takashi said
-the CVS alsa-driver is currently in the middle of a major rewrite).
-Thanks anyway.
-
-William
+Cheers
+James
 
 
 -------------------------------------------------------
