@@ -1,14 +1,12 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Muting at startup in ICE1724 based devices
-Date: Fri, 7 Nov 2003 16:32:09 -0800 (PST)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Occasional metallic sound when recording (cs46xx)
+Date: Fri, 07 Nov 2003 20:33:46 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031108003209.80199.qmail@web21501.mail.yahoo.com>
-References: <E1AIFvE-0005PO-00@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200311080133.hA81Xkkp030558@oud.linuxaudiosystems.com>
+References: <87d6c33gy0.fsf@canaima.chapus.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1AIFvE-0005PO-00@sc8-sf-list2.sourceforge.net>
+In-reply-to: Your message of "Fri, 07 Nov 2003 18:19:19 EST."
+             <87d6c33gy0.fsf@canaima.chapus.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,34 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Eloy A. Paris" <peloy@chapus.net>
+Cc: Takashi Iwai <tiwai@suse.de>, Benny Sjostrand <gorm@cucumelo.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-A while ago (about 1 week), there was a message noting that ICE1724
-based devices (I have a revolution 7.1) mute the left-front channel (or
-the first channel) on startup.  This happens even though you set the
-level to something and the startup routines seem to set it.  Any simple
-adjustment to the level (via alsamixer, or alsactl) will properly set
-the level.  This seems to happen ONLY on the first channel (LeftFront),
-and just for the first setting of the day (boot).
+>> anyway, it'd be helpful for debugging if someone can reproduce this
+>> certainly under a fixed condition...
+>
+>Well, about 3 times out of 7 I get the problem, so it's not hard to
+>reproduce at all. What I'd have to know is where to place the debugging
+>printk()'s or something like that :(
 
-I didn't see any modifications that address the problem (of course that
-doesn't mean they didn't exist), and was wondering if anything has been
-done to address this problem.
+just wanted to mention that i mis-remembered the situation under which
+this used to happen with the rme9652 driver. it was an error in the
+*driver*, not the application, and it was related to the logic for
+figuring out the hardware buffer pointer being incorrect. i forget the
+error, and its probably something a bit different anyway (because of
+the ASIO-style design of the rme9652), but i just wanted to mention it
+in case it provides any help.
 
-Thanks for the info.
+once i fixed the driver to get this right, i could never (and have
+never) heard the problem again.
 
-p.s.  At the moment I have a work around, but a fix would be nice!
+--p
 
-=====
--- 
-Tom Watson
-tsw@johana.com
-
-__________________________________
-Do you Yahoo!?
-Protect your identity with Yahoo! Mail AddressGuard
-http://antispam.yahoo.com/whatsnewfree
 
 
 -------------------------------------------------------
