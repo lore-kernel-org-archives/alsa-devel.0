@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000332]: Unable to enable 'Mic as Center/LFE'
-Date: Thu, 31 Mar 2005 20:23:44 +0200
-Message-ID: <b5c236e8609eebd4affd434f947804b7@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000527]: snd_pcm_set_rate_near used always
+Date: Thu, 31 Mar 2005 20:22:20 +0200
+Message-ID: <aba62dce0efad9b0dc5acc9f0ee15cba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA6A21D5
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:23:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3467F127
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:22:21 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=332> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=527> 
 ======================================================================
-Reported By:                Johan Gorter
+Reported By:                AKennedy
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   332
-Category:                   alsamixer
+Issue ID:                   527
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             06-11-2004 09:12 CEST
-Last Modified:              03-31-2005 20:23 CEST
+Date Submitted:             09-23-2004 21:43 CEST
+Last Modified:              03-31-2005 20:22 CEST
 ======================================================================
-Summary:                    Unable to enable 'Mic as Center/LFE'
+Summary:                    snd_pcm_set_rate_near used always
 Description: 
-In the alsa versions I have used thus far (1.0.3 and 1.0.5) I am unable to
-enable the 'Mic as Center/LFE' option of my onboard AC '97. Alsamixer
-cannot change its value from 0 and record / mute is also disabled. I
-tracked the problem by using alsactl to store the settings. This results
-in a file where this option (nr 47 on my system) is an Integer with the
-comment that the value may be from 0 to 0. On other systems I found out
-that this is supposed to be a Boolean which can be switched on and off.
+When selecting to record using a speific device, say hw1,0, this craps out.
+. . using plughw1,0 or default works, however.  Should this have an if
+statement to control if the device selected is hw/can you _near if the
+device is NOT default or plughw?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 15:45 
+ jdthood - 03-20-05 15:47 
 ----------------------------------------------------------------------
-Submitter: Please test the latest ALSA release and report whether or not
-this remains a problem.  If it is still a problem, please tell us what
-sound card you have and what ALSA modules you are using.  Also send your
-asound.state file.
+> When selecting to record using a speific device, say hw1,0, this
+> craps out. . . using plughw1,0 or default works, however. Should
+> this have an if statement to control if the device selected is
+> hw/can you _near if the device is NOT default or plughw?
+
+Can you please try to explain more clearly what you mean?
 
 ----------------------------------------------------------------------
- jdthood - 03-31-05 20:23 
+ tiwai - 03-23-05 12:51 
 ----------------------------------------------------------------------
-Submitter: Please test the latest ALSA release and report whether or not
-this remains a problem. If it is still a problem, please tell us what
-sound card you have and what ALSA modules you are using. Also send your
-asound.state file.
+You'll see a warning message if the given rate can't be used (at least with
+the latest version).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-11-04 09:12 Johan Gorter   New Issue                                    
-01-22-05 03:26 rhal           Issue Monitored: rhal                        
-03-20-05 15:45 jdthood        Note Added: 0004093                          
-03-31-05 20:23 jdthood        Note Added: 0004284                          
+09-23-04 21:43 AKennedy       New Issue                                    
+09-29-04 05:37 AKennedy       Issue Monitored: AKennedy                    
+09-29-04 05:37 AKennedy       Issue End Monitor: AKennedy                    
+03-20-05 15:47 jdthood        Note Added: 0004094                          
+03-23-05 12:51 tiwai          Note Added: 0004154                          
+03-31-05 20:22 jdthood        Status                   new => resolved     
+03-31-05 20:22 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
