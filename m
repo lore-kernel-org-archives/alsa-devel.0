@@ -1,15 +1,14 @@
 From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: Re: errors in symlinks in alsa-oss rc1 with mandrake
- 9.0
-Date: Mon, 16 Dec 2002 10:58:13 +0100
+Subject: Re: usb audio + mandrake 9.0 foobar :(
+Date: Mon, 16 Dec 2002 11:06:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m2of7ms2tm.fsf@vador.mandrakesoft.com>
-References: <3DFCBF9A.2090108@iriXx.org>
+Message-ID: <m2k7ias2gm.fsf@vador.mandrakesoft.com>
+References: <3DFA4539.7050207@iriXx.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DFCBF9A.2090108@iriXx.org> (iriXx's message of "Sun, 15 Dec
- 2002 17:44:58 +0000")
+In-Reply-To: <3DFA4539.7050207@iriXx.org> (iriXx's message of "Fri, 13 Dec
+ 2002 20:38:17 +0000")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,46 +18,58 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: m@iriXx.org
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, linux-audio-user@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
 iriXx <m@iriXx.org> writes:
 
-> just a note to say i had to modify the symlinks to 'missing',
-> 'mkinstalldirs' and 'install-sh' to get alsa-oss-0.9.0rc1 to install
-> under mandrake 9.0.
+> just upgraded mandrake from 8.2 to 9.0....
+> and found out that it seems to have made my alsa all foobar.... :(
+> 
+> i recompiled and reinstalled alsa 0.9.rc5 after upgrading... but i
+> dont seem to be able to get it working.
+> im running a quattro usb audio unit... modprobe snd-usb-audio,
+> snd-pcm-oss, snd-mixer-oss, snd-seq-oss all goes fine... but on
+> opening any sound or DVD apps i get error messages that there is no
+> sound support / no sound device found....
 
-alsa-oss just build fine, look at myt libalsa-oss0 package in mandrake
-contribs.
+note that usb audio devices default[1] to usb's audio.o module, as
+lspcidrake -v should reports you.
 
-> it seems that from 9.0 mandrake puts automake in
-> /usr/share/automake-1.4 rather than /usr/share/automake.
+classic bug sound tester (you need the ldetect, chkconfig, aumix and
+psmisc packages):
 
-mdk9.0 come with both automake-1.4 and automake-1.6 since some
-packages need the latter and some other the first one.
+"lspcidrake -v | fgrep AUDIO" will tell you which driver your card use
+by default
 
-there's nothing wrong in having versionnated directories such as
-/usr/share/automake.
+"grep snd-slot /etc/modules.conf" will tell you what driver it
+currently uses
 
-there's nothing enforcing having /usr/share/automake.
+"/sbin/lsmod" will enable you to check if its module (driver) is
+loaded or not
 
-only automake should access such files.
+"/sbin/chkconfig --list sound" and "/sbin/chkconfig --list alsa" will
+tell you if sound and alsa services're configured to be run on
+initlevel 3
 
-> i dont know if anyone wants to add a detection for this to the
-> config script?
+"aumix -q" will tell you if the sound volume is muted or not
 
-you should not have to rely on automake macros being in
-/usr/share/automake and i failled to see where such  assumption is
-made in alsa-oss build system in cvs.
+"/sbin/fuser -v /dev/dsp" will tell which program uses the sound card.
 
-so there's no point in such script.
+ 
+> anyone got any ideas what may have happened?... is there a problem with
+> the supplied kernel perhaps ? it appears to be 2.4.19-16mdk
 
-if some tarball of some with a pre build configure and the like, and
-if some links're broken, aclocal, libtoolize, automake and autoconf
-are your friends to fix them.
+mdk9.0 came with alsa-0.9.0-rc2.
+note than snd-usb-audio code did move a lot between the various alsa
+rc.
 
-anyway, generating them from cvs does works on any system having
-automake & autoconf.
+
+
+[1] device-module association[2] being made in
+    /usr/share/ldetect-lst/usbtable)
+
+[2] you can alter it through the draksound tool
 
 
 
