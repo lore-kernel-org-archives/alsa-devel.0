@@ -1,14 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Echoaudio driver hangs on Darla24
-Date: Wed, 14 May 2003 10:38:09 +0200 (CEST)
+From: Rene Rebe <rene.rebe@gmx.net>
+Subject: Re: powerpc and snd-powermac mixer
+Date: Wed, 14 May 2003 11:31:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030514103809.pochini@shiny.it>
-References: <200305132126.54463.highenergyparticle@attbi.com>
+Message-ID: <20030514.113127.135501265.rene.rebe@gmx.net>
+References: <20030511.124756.468706978.rene.rebe@gmx.net>
+	<s5hn0hsuxtu.wl@alsa2.suse.de>
+	<20030512.155840.719889309.rene.rebe@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: Text/Plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200305132126.54463.highenergyparticle@attbi.com>
+In-Reply-To: <20030512.155840.719889309.rene.rebe@gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +19,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: HighEnergyParticle <highenergyparticle@attbi.com>
+To: tiwai@suse.de
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-On 14-May-2003 HighEnergyParticle wrote:
-> I downloaded ALSA 0.9.3 and echo generic driver and 0.5.10.  Built with gcc
-> 3.2.2 on 2.4.20-gentoo kernel.
->
-> modprobe snd-echoaudio don't give out any error.
->
-> But after start the Emixer, the X-Window went blank. I can kill the X-Window
-> with Ctrl-Alt-BS. This is when the Echo Darla24 in a PCI slot that share IRQ
-> with Radeon AGP card.
->
-> Moved Darla24 to a slot that has it's own IRQ, now start the Emixer would
-> completely freeze up the whole system. I had to use the hardware reset button.
->
-> I tried with both APIC mode and convention IRQ, disabled ACPI, and PnP OS.
-> Still the same thing.
+On: Mon, 12 May 2003 15:58:40 +0200 (CEST),
+    Rene Rebe <rene.rebe@gmx.net> wrote:
 
-The card generates interrupts only during pcm or midi i/o. If the
-mixer makes it crash, the problem must be elsewhere. Try to use amixer
-instead of Emixer.  Can you send me related system logs and the output
-of "amixer controls" or "amixer contents" ?  Also try to play something
-with aplay even if you can't set the volume. I need to locate the broken
-code path a bit more precisely than the whole driver :)
+> Hm. The strange thing is that it works now ... But in the effort of
+> completing our PowerPC port I already updated to the -benh10 kernel
+> and from alsa-driver-0.9.2 to 0.9.3a ... so some change made it work
+> ...
 
+Hm. After a reboot into the same kernel it doesn't work anymore - so
+this seems to be quite random when the mixer is funtional :-(
 
-Bye.
+I'll try to find a reproduceable way for working sound ...
 
+> 0 [Snapper        ]: PMac Snapper - PowerMac Snapper
+>                      PowerMac Snapper (Dev 28) Sub-frame 0
+> =
+
+> When the mixer doesn't work again I'll contact you ...
+> =
+
+> Looking forward to meet you at the Linux Tag in Karlsruhe again ;-)
+
+Sincerely,
+  Ren=E9 Rebe
+    - ROCK Linux stable release maintainer
+
+--  =
+
+Ren=E9 Rebe - Europe/Germany/Berlin
+  rene@rocklinux.org rene.rebe@gmx.net
+http://www.rocklinux.org http://www.rocklinux.org/people/rene       =
+
+http://gsmp.tfh-berlin.de/gsmp http://gsmp.tfh-berlin.de/rene
 
 
 -------------------------------------------------------
