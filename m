@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: "Arve Knudsen" <aknuds-1@broadpark.no>
 Subject: Re: Problem writing to PCM plugin
-Date: Wed, 11 Aug 2004 15:45:29 +0200 (METDST)
+Date: Wed, 11 Aug 2004 16:00:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0408111544140.15385-100000@studcom.urz.uni-halle.de>
-References: <opscklaj0ufmr65f@mail.broadpark.no>
+Message-ID: <opsckmizg3fmr65f@mail.broadpark.no>
+References: <Pine.HPX.4.33n.0408111544140.15385-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; format=flowed; delsp=yes; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <opscklaj0ufmr65f@mail.broadpark.no>
+In-Reply-To: <Pine.HPX.4.33n.0408111544140.15385-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,24 +17,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Arve Knudsen wrote:
-> pcm_plug.c:363: snd_pcm_plug_change_channels: Assertion
-> `snd_pcm_format_linear(slv->format)' failed'
+Actually the plugin is of type "plug", and according to snd_pcm_dump it =20
+seems ALSA-lib takes care of converting the sample format. Only getting t=
+o =20
+know the plugin system here ...
+
+Regards
+
+Arve Knudsen
+
+On Wed, 11 Aug 2004 15:45:29 +0200 (METDST), Clemens Ladisch =20
+<clemens@ladisch.de> wrote:
+
+> Arve Knudsen wrote:
+>> pcm_plug.c:363: snd_pcm_plug_change_channels: Assertion
+>> `snd_pcm_format_linear(slv->format)' failed'
+>>
+>> The obvious difference to aplay I can think of is that we use floating
+>> point format in the PortAudio tests, so there is an intermediate
+>> conversion before the audio gets to the routing plugin.
 >
-> The obvious difference to aplay I can think of is that we use floating
-> point format in the PortAudio tests, so there is an intermediate
-> conversion before the audio gets to the routing plugin.
-
-The route plugin doesn't support floating point formats.  Try wrapping
-it into a lfloat (or plug) plugin.
-
-
-HTH
-Clemens
+> The route plugin doesn't support floating point formats.  Try wrapping
+> it into a lfloat (or plug) plugin.
+>
+>
+> HTH
+> Clemens
+>
+>
 
 
 
