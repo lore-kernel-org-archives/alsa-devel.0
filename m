@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000619]: load fx to the card don't run correctly.
-Date: Tue, 16 Nov 2004 16:44:05 +0100
-Message-ID: <af23c283f591c9c416d0a848f30d9c18@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000631]: card detected but no sound
+Date: Tue, 16 Nov 2004 17:00:48 +0100
+Message-ID: <6a0e973b21bc81ba3d5e610afda8816c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B8FC1C2
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2004 16:44:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F35F250
+	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2004 17:00:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=619> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=631> 
 ======================================================================
-Reported By:                hg
+Reported By:                poleta33
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   619
-Category:                   ISA - sb16/sbawe
+Issue ID:                   631
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Distribution:               gentoo
+Kernel Version:             2.4.26-gentoo
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-31-2004 12:17 CET
-Last Modified:              11-16-2004 16:44 CET
+Date Submitted:             11-05-2004 16:29 CET
+Last Modified:              11-16-2004 17:00 CET
 ======================================================================
-Summary:                    load fx to the card don't run correctly.
+Summary:                    card detected but no sound
 Description: 
-load fx to the card don't run correctly.
+I've installed alsa with alsaconf... everything runs perfectly but I've got
+no sound... (I've tried to unmute amixer with no success).. now i'm
+totally lost... I've got one error on dmesg dealing with JEDEC but cannot
+solve...
+
+gva1080 distfiles # amixer info
+Card default 'I82801BAICH2'/'Intel 82801BA-ICH2 at 0xdc00, irq 17'
+  Mixer name    : 'Analog Devices AD1885'
+  Components    : 'AC97a'
+  Controls      : 36
+  Simple ctrls  : 25
+
+gva1080 distfiles # ls -l /dev/dsp
+lr-xr-xr-x  1 root root 9 Nov  5 16:24 /dev/dsp -> sound/dsp
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 18:58 
+ poleta33 - 11-09-04 14:33 
 ----------------------------------------------------------------------
-Could you attach the patch file together with a nice summary and a
-signed-off-by lines to apply?  Please see the news in the title page.
+you can close it...
 
-Thanks.
+sorry...
 
 ----------------------------------------------------------------------
- tiwai - 11-16-04 16:44 
+ tiwai - 11-16-04 17:00 
 ----------------------------------------------------------------------
-Fixed on CVS now.
+Ok, closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 12:17 hg             New Issue                                    
-11-09-04 18:58 tiwai          Note Added: 0002338                          
-11-16-04 16:44 tiwai          Status                   new => resolved     
-11-16-04 16:44 tiwai          Resolution               open => fixed       
-11-16-04 16:44 tiwai          Assigned To               => tiwai           
-11-16-04 16:44 tiwai          Note Added: 0002428                          
+11-05-04 16:29 poleta33       New Issue                                    
+11-05-04 16:29 poleta33       Distribution              => gentoo          
+11-05-04 16:29 poleta33       Kernel Version            => 2.4.26-gentoo   
+11-09-04 14:30 poleta33       Note Added: 0002321                          
+11-09-04 14:33 poleta33       Note Added: 0002322                          
+11-16-04 17:00 tiwai          Status                   new => resolved     
+11-16-04 17:00 tiwai          Resolution               open => not an issue
+11-16-04 17:00 tiwai          Assigned To               => tiwai           
+11-16-04 17:00 tiwai          Note Added: 0002429                          
 ======================================================================
 
 
