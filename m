@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000300]: Lack of sound
-Date: Fri, 16 Jul 2004 12:43:42 +0200 (CEST)
+Subject: [ALSA - lib 0000117]: aplay segfaults when attemptingto use "dmix" plugin
+Date: Fri, 16 Jul 2004 12:44:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104342.EA25626008@server.perex-int.cz>
+Message-ID: <20040716104406.7ED3526008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E33425A
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:43:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF372255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:44:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,254 +22,268 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000300
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000117
 ======================================================================
-Reported By:                gandalf
-Assigned To:                tiwai
+Reported By:                dandruczyk
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     300
-Category:                   PCI - fm801
+Project:                    ALSA - lib
+Bug ID:                     117
+Category:                   general
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.6.6
 ======================================================================
-Date Submitted:             05-24-2004 09:42 CEST
-Last Modified:              07-16-2004 12:43 CEST
+Date Submitted:             03-04-2004 19:21 CET
+Last Modified:              07-16-2004 12:44 CEST
 ======================================================================
-Summary:                    Lack of sound
+Summary:                    aplay segfaults when attemptingto use "dmix" plugin
 Description: 
-I moved from 2.4 series to 2.6 kernel. I compiled alsa as a module in
-kernel, and then compiled alsa 1.04 from this site.
-I still doesn't hear any sound
+aplay segfautls when using dmix plugin. (Was following tutorial at
+http://www.alsa-project.org/alsa-doc/doc-php/asoundrc.php3?company=Generic&card=Generic&chip=Generic&module=Generic
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-25-2004 12:52 CEST 
+ Stephan Wurm - 03-06-2004 22:27 CET 
 ----------------------------------------------------------------------
-the major device 116 is already reserved by something.
-it's not a bug of ALSA.  check kernel configuration.
+I can confirm that problem!
 
-----------------------------------------------------------------------
- gandalf - 05-25-2004 18:26 CEST 
-----------------------------------------------------------------------
-I don't see anything which could conflict with FM801.
+Everything worked fine until I upgraded to version 1.0.3 (alsa-lib,
+alsa-oss, alsa-utils). I tried 1.0.3a (alsa-lib, alsa-oss), too, but it
+didn't change anything!
 
-I also found in slackware newsgroups notes that it is a alsa bug. Could
-You tell me how to check "kernel config" to find what does conflict with
-alsa?
+I use kernel 2.6.4-rc2 with alsa-patch 2004-03-01.
 
-Here goes lspci
+EDIT: I've added a file with the strace-output
 
-root@www:/etc/rc.d/init.d# lspci -v
-00:00.0 Host bridge: Silicon Integrated Systems [SiS] 745 Host (rev 01)
-        Subsystem: Asustek Computer, Inc.: Unknown device 8083
-        Flags: bus master, medium devsel, latency 32
-        Memory at e8000000 (32-bit, non-prefetchable) [size=64M]
-        Capabilities: [c0] AGP version 2.0
-
-00:01.0 PCI bridge: Silicon Integrated Systems [SiS] Virtual PCI-to-PCI
-bridge (AGP) (prog-if 00 [Normal decode])
-        Flags: bus master, fast devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        Memory behind bridge: e7000000-e7ffffff
-        Prefetchable memory behind bridge: eff00000-febfffff
-
-00:02.0 ISA bridge: Silicon Integrated Systems [SiS] SiS85C503/5513 (LPC
-Bridge)
-        Flags: bus master, medium devsel, latency 0
-
-00:02.1 SMBus: Silicon Integrated Systems [SiS]: Unknown device 0016
-        Flags: medium devsel, IRQ 11
-        I/O ports at e600 [size=32]
-
-00:02.2 USB Controller: Silicon Integrated Systems [SiS] USB 1.0
-Controller (rev 07) (prog-if 10 [OHCI])
-        Subsystem: Asustek Computer, Inc.: Unknown device 8083
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        Memory at e6800000 (32-bit, non-prefetchable) [size=4K]
-
-00:02.3 USB Controller: Silicon Integrated Systems [SiS] USB 1.0
-Controller (rev 07) (prog-if 10 [OHCI])
-        Subsystem: Asustek Computer, Inc.: Unknown device 8083
-        Flags: bus master, medium devsel, latency 32, IRQ 6
-        Memory at e6000000 (32-bit, non-prefetchable) [size=4K]
-
-00:02.5 IDE interface: Silicon Integrated Systems [SiS] 5513 [IDE] (rev
-d0) (prog-if 80 [Master])
-        Subsystem: Asustek Computer, Inc.: Unknown device 8083
-        Flags: bus master, fast devsel, latency 32
-        I/O ports at d800 [size=16]
-
-00:0a.0 Ethernet controller: 3Com Corporation 3c905B 100BaseTX [Cyclone]
-(rev 30)
-        Subsystem: 3Com Corporation 3C905B Fast Etherlink XL 10/100
-        Flags: bus master, medium devsel, latency 32, IRQ 10
-        I/O ports at b000 [size=128]
-        Memory at e5800000 (32-bit, non-prefetchable) [size=128]
-        Expansion ROM at <unassigned> [disabled] [size=128K]
-        Capabilities: [dc] Power Management version 1
-
-00:0b.0 Multimedia audio controller: Fortemedia, Inc Xwave QS3000A [FM801]
-(rev b2)
-        Subsystem: KYE Systems Corporation: Unknown device 7008
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        I/O ports at a800 [size=128]
-        Capabilities: [dc] Power Management version 1
-
-00:0b.1 Input device controller: Fortemedia, Inc Xwave QS3000A [FM801 game
-port] (rev b2)
-        Subsystem: KYE Systems Corporation: Unknown device 7009
-        Flags: bus master, medium devsel, latency 32
-        I/O ports at a400 [size=16]
-        Capabilities: [dc] Power Management version 1
-
-01:00.0 VGA compatible controller: nVidia Corporation NV18 [GeForce4 MX
-440 AGP 8x] (rev a2) (prog-if 00 [VGA])
-        Subsystem: Micro-Star International Co., Ltd. MS-StarForce
-GeForce4 MX 440 with AGP8X
-        Flags: bus master, 66Mhz, medium devsel, latency 248, IRQ 11
-        Memory at e7000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at f0000000 (32-bit, prefetchable) [size=128M]
-        Expansion ROM at effe0000 [disabled] [size=128K]
-        Capabilities: [60] Power Management version 2
-        Capabilities: [44] AGP version 3.0
+bearbeitet am: 03-06-04 22:27
 
 ----------------------------------------------------------------------
- tiwai - 05-25-2004 18:36 CEST 
+ Stephan Wurm - 03-07-2004 15:38 CET 
 ----------------------------------------------------------------------
-as i wrote, something already occupied the device 116 before ALSA
-is loaded.  so, first, check /proc/devices.
+I downgraded ALSA to 1.0.2 now. The dmix-plugin works fine again. 
+
+Is that problem related to the snd-intel8x0 driver? Can anybody else
+confirm that segfault with another chipset/driver?
 
 ----------------------------------------------------------------------
- gandalf - 05-25-2004 19:16 CEST 
+ Meeuw - 03-10-2004 21:40 CET 
 ----------------------------------------------------------------------
-I don't understand it :/ Is that possible that two alsa are loaded at the
-same time?
+Same problem here (same driver, same (SMP, hyperthreading?) kernel)
 
-cat /proc/deviced
+The testcase can be simplified to:
+$ aplay -D plug:dmix arrive.wav
 
-Character devices:
-  1 mem
-  2 pty
-  3 ttyp
-  4 /dev/vc/0
-  4 tty
-  4 ttyS
-  5 /dev/tty
-  5 /dev/console
-  5 /dev/ptmx
-  6 lp
-  7 vcs
- 10 misc
- 13 input
- 14 sound
-108 ppp
-116 alsa
-128 ptm
-136 pts
-171 ieee1394
-180 usb
-195 nvidia
+I've traced it down doing:
+$ gdb aplay
+(gdb) set args -D plug:dmix arrive.wav
+(gdb) run
+...
+Starting program: /usr/bin/aplay -D plug:dmix arrive.wav
+Detaching after fork from child process 10134.
+Playing WAVE 'arrive.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Mono
 
-Block devices:
-  3 ide0
- 22 ide1
+Program received signal SIGSEGV, Segmentation fault.
 
-----------------------------------------------------------------------
- tiwai - 05-25-2004 19:25 CEST 
-----------------------------------------------------------------------
-of course not.  this means that ALSA is running already on your system
-before you tried to load another ALSA modules.
-perhaps you built the ALSA into kernel?
+(gdb) disassemble
+Dump of assembler code for function mix_areas1_smp_mmx:
+0x40099acb <mix_areas1_smp_mmx+0>:      sub    $0x8,%esp
+0x40099ace <mix_areas1_smp_mmx+3>:      mov    %esi,(%esp,1)
+0x40099ad1 <mix_areas1_smp_mmx+6>:      mov    %edi,0x4(%esp,1)
+0x40099ad5 <mix_areas1_smp_mmx+10>:     push   %ebx
+0x40099ad6 <mix_areas1_smp_mmx+11>:     mov    0x10(%esp,1),%edi
+0x40099ada <mix_areas1_smp_mmx+15>:     mov    0x14(%esp,1),%esi
+0x40099ade <mix_areas1_smp_mmx+19>:     mov    0x18(%esp,1),%ebx
+0x40099ae2 <mix_areas1_smp_mmx+23>:     jmp    0x40099afc
+<mix_areas1_smp_mmx+49
+>
+0x40099ae4 <mix_areas1_smp_mmx+25>:     lea    0x0(%esi),%esi
+0x40099aea <mix_areas1_smp_mmx+31>:     lea    0x0(%edi),%edi
+0x40099af0 <mix_areas1_smp_mmx+37>:     add    0x1c(%esp,1),%edi
+0x40099af4 <mix_areas1_smp_mmx+41>:     add    0x20(%esp,1),%esi
+0x40099af8 <mix_areas1_smp_mmx+45>:     add    0x24(%esp,1),%ebx
+0x40099afc <mix_areas1_smp_mmx+49>:     xor    %ax,%ax
+0x40099aff <mix_areas1_smp_mmx+52>:     mov    %ax,%cx
+0x40099b02 <mix_areas1_smp_mmx+55>:     inc    %cx
+0x40099b04 <mix_areas1_smp_mmx+57>:     mov    (%ebx),%edx
+0x40099b06 <mix_areas1_smp_mmx+59>:     lock cmpxchg %cx,(%edi)
+0x40099b0b <mix_areas1_smp_mmx+64>:     movswl (%esi),%ecx
+0x40099b0e <mix_areas1_smp_mmx+67>:     jne    0x40099b12
+<mix_areas1_smp_mmx+71
 
-----------------------------------------------------------------------
- gandalf - 05-25-2004 19:29 CEST 
-----------------------------------------------------------------------
-yes, please read my description for this bug. I mentioned about it. Is it a
-problem? If I compiled alsa into kernel as a module i cannot upgrade it?
-I should remove it from kernel before upgrading?
-
-----------------------------------------------------------------------
- tiwai - 05-25-2004 19:49 CEST 
-----------------------------------------------------------------------
-huh?  you can either build the ALSA as modules, or built it into
-the kernel.  but not both.  what do you mean "a module in kernel"??
+edited on: 03-10-04 21:40
 
 ----------------------------------------------------------------------
- gandalf - 05-25-2004 20:01 CEST 
+ Meeuw - 03-10-2004 21:55 CET 
 ----------------------------------------------------------------------
-it means that I downloaded Kernel 2.6.6, configured it with Alsa as a
-module, compiled and installed.
-Sorry for my terminology, i'm not an expert.
+Reminder sent to perex
 
-So i had Alsa as a module, and then, i downloaded Alsa 1.0.4 and installed
-it from tar.gz.
+Hi Perex, if've done some additional debugging... I hope it's useful!
 
 ----------------------------------------------------------------------
- tiwai - 05-25-2004 20:08 CEST 
+ perex - 03-11-2004 12:07 CET 
 ----------------------------------------------------------------------
-ok, then there should be really two ALSA modules?
-hmm, it's also questionable...
-
-anyway, you don't have to build the ALSA modules in the kernel tree
-if you build ALSA externally from tarball.
-
-for 2.6.6 kernel, you should try the latest ALSA 1.0.5(-rc1).
-
-to be sure, attach your kernel config (/usr/src/linux/.config 
-or something like that) for checking.
+Please, try replace file alsa-lib/src/pcm/pcm_dmix_i386.h with the attached
+one
+and retry again (with recompiled alsa-lib).
 
 ----------------------------------------------------------------------
- gandalf - 05-26-2004 00:41 CEST 
+ Meeuw - 03-11-2004 14:47 CET 
 ----------------------------------------------------------------------
-uploading config.
-I'm trying to launch kernel without alsa and install 1.0.5-rc1
+Great, it works for me!
+
+I did a simple patch on the gentoo ebuild:
+27a28
+>       cp /tmp/pcm_dmix_i386.h src/pcm/
+
+and the segfault is replaced by a smooth wave sound ;)
+
+great work
+
+edited on: 03-11-04 14:47
 
 ----------------------------------------------------------------------
- gandalf - 05-26-2004 13:53 CEST 
+ perex - 03-11-2004 15:05 CET 
 ----------------------------------------------------------------------
-ok! i recompiled Kernel without Alsa, installed 1.0.5-rc1 and it works
-now!
-
-I don't know if this bug should be marked as INVALID for now or not. I
-think alsa should deal with anouther alsa installed as a module.
+Unfortunately, it's not a proper fix (it was old code).
+I'm trying to figure what's wrong now.
 
 ----------------------------------------------------------------------
- tiwai - 05-26-2004 14:29 CEST 
+ perex - 03-12-2004 13:48 CET 
 ----------------------------------------------------------------------
-it should work even if the ALSA was already installed as modules.
-(i do this indeed.)
-"make install" will remove the old module files.
-so i'm still wondering what was wrong.
+Can you try apply the attached dmix_asm_diff file to alsa-lib 1.0.3a?
+It's the first attempt to make an official fix.
 
-anyway, i close this bug for now.
+----------------------------------------------------------------------
+ Stephan Wurm - 03-12-2004 16:41 CET 
+----------------------------------------------------------------------
+I've tried your diff, but sadly it didn't change anything.
+
+I have attached another tarball with the ouput of two strace's.
+
+btw: the bug is discussed in gentoo's bugzilla, too.
+http://bugs.gentoo.org/show_bug.cgi?id=44055
+
+bearbeitet am: 03-12-04 16:41
+
+----------------------------------------------------------------------
+ Meeuw - 03-12-2004 18:43 CET 
+----------------------------------------------------------------------
+Starting program: /usr/bin/aplay -D plug:dmix arrive.wav
+Detaching after fork from child process 31316.
+Playing WAVE 'arrive.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Mono
+
+Program received signal SIGSEGV, Segmentation fault.
+0x40099b26 in mix_areas1_smp_mmx () from /usr/lib/libasound.so.2
+
+Dump of assembler code for function mix_areas1_smp_mmx:
+0x40099aeb <mix_areas1_smp_mmx+0>:      sub    $0x8,%esp
+0x40099aee <mix_areas1_smp_mmx+3>:      mov    %esi,(%esp,1)
+0x40099af1 <mix_areas1_smp_mmx+6>:      mov    %edi,0x4(%esp,1)
+0x40099af5 <mix_areas1_smp_mmx+10>:     push   %ebx
+0x40099af6 <mix_areas1_smp_mmx+11>:     mov    0x10(%esp,1),%edi
+0x40099afa <mix_areas1_smp_mmx+15>:     mov    0x14(%esp,1),%esi
+0x40099afe <mix_areas1_smp_mmx+19>:     mov    0x18(%esp,1),%ebx
+0x40099b02 <mix_areas1_smp_mmx+23>:     cmpl   $0x0,0xc(%esp,1)
+0x40099b07 <mix_areas1_smp_mmx+28>:     jne    0x40099b1c
+<mix_areas1_smp_mmx+49>
+0x40099b09 <mix_areas1_smp_mmx+30>:     jmp    0x40099b4f
+<mix_areas1_smp_mmx+100>
+0x40099b0b <mix_areas1_smp_mmx+32>:     nop
+0x40099b0c <mix_areas1_smp_mmx+33>:     lea    0x0(%esi,1),%esi
+0x40099b10 <mix_areas1_smp_mmx+37>:     add    0x1c(%esp,1),%edi
+0x40099b14 <mix_areas1_smp_mmx+41>:     add    0x20(%esp,1),%esi
+0x40099b18 <mix_areas1_smp_mmx+45>:     add    0x24(%esp,1),%ebx
+0x40099b1c <mix_areas1_smp_mmx+49>:     mov    $0x0,%ax
+0x40099b20 <mix_areas1_smp_mmx+53>:     mov    $0x1,%cx
+0x40099b24 <mix_areas1_smp_mmx+57>:     mov    (%ebx),%edx
+0x40099b26 <mix_areas1_smp_mmx+59>:     lock cmpxchg %cx,(%edi)
+0x40099b2b <mix_areas1_smp_mmx+64>:     movswl (%esi),%ecx
+
+It didn't seem to work :-(
+
+ebuild patch:
+27a28
+>       patch -d src/pcm < ${FILESDIR}/dmix_asm.diff
+
+----------------------------------------------------------------------
+ perex - 03-12-2004 20:39 CET 
+----------------------------------------------------------------------
+Please, try dmix_asm-2.diff . It seems that it might be GCC version related
+problem, because I cannot reproduce this bug here with GCC 3.3.1.
+
+----------------------------------------------------------------------
+ Meeuw - 03-12-2004 21:04 CET 
+----------------------------------------------------------------------
+Program exited normally.
+
+it seems to work!
+
+gentoo ebuild patch:
+--- /usr/portage/media-libs/alsa-lib/alsa-lib-1.0.3.ebuild      2004-03-01
+09:28:05.000000000 +0100
++++ media-libs/alsa-lib/alsa-lib-1.0.3.ebuild   2004-03-12
+21:00:14.413993432 +0100
+@@ -25,6 +25,7 @@
+ S=${WORKDIR}/${MY_P}
+
+ src_compile() {
++       patch -d src/pcm < ${FILESDIR}/dmix_asm-2.diff
+        elibtoolize
+        econf || die "./configure failed"
+        emake || die "make failed"
+
+----------------------------------------------------------------------
+ Stephan Wurm - 03-13-2004 02:31 CET 
+----------------------------------------------------------------------
+Okay, everything's fine over here again :-)
+
+----------------------------------------------------------------------
+ perex - 03-13-2004 16:02 CET 
+----------------------------------------------------------------------
+Fine. 1.0.3b alsa-lib package is out with this fix.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-24-04 09:42 gandalf        New Bug                                      
-05-24-04 09:42 gandalf        Distribution              => Slackware       
-05-24-04 09:42 gandalf        Kernel Version            => 2.6.6           
-05-25-04 12:52 tiwai          Bugnote Added: 0001205                       
-05-25-04 18:26 gandalf        Bugnote Added: 0001223                       
-05-25-04 18:36 tiwai          Bugnote Added: 0001224                       
-05-25-04 19:16 gandalf        Bugnote Added: 0001230                       
-05-25-04 19:25 tiwai          Bugnote Added: 0001231                       
-05-25-04 19:29 gandalf        Bugnote Added: 0001232                       
-05-25-04 19:49 tiwai          Bugnote Added: 0001235                       
-05-25-04 20:01 gandalf        Bugnote Added: 0001237                       
-05-25-04 20:08 tiwai          Bugnote Added: 0001238                       
-05-26-04 00:41 gandalf        Bugnote Added: 0001243                       
-05-26-04 13:53 gandalf        Bugnote Added: 0001253                       
-05-26-04 14:29 tiwai          Bugnote Added: 0001254                       
-05-26-04 14:29 tiwai          Assigned To               => tiwai           
-05-26-04 14:29 tiwai          Resolution               open => unable to duplicate
-05-26-04 14:29 tiwai          Status                   new => resolved     
-07-16-04 12:43 tiwai          Status                   resolved => closed  
+03-04-04 19:21 dandruczyk     New Bug                                      
+03-06-04 21:52 Stephan Wurm   Bug Monitored: Stephan Wurm                    
+03-06-04 21:56 Stephan Wurm   Bugnote Added: 0000521                       
+03-06-04 22:26 Stephan Wurm   File Added: dmix-error                       
+03-06-04 22:27 Stephan Wurm   Bugnote Edited: 0000521                      
+03-07-04 15:38 Stephan Wurm   Bugnote Added: 0000523                       
+03-09-04 18:42 perex          Assigned To               => perex           
+03-09-04 18:42 perex          Status                   new => assigned     
+03-10-04 20:31 Meeuw          Bugnote Added: 0000566                       
+03-10-04 21:29 Meeuw          Bug Monitored: Meeuw                         
+03-10-04 21:40 Meeuw          Bugnote Edited: 0000566                      
+03-10-04 21:55 Meeuw          Bugnote Added: 0000567                       
+03-11-04 12:06 perex          File Added: pcm_dmix_i386.h                    
+03-11-04 12:07 perex          Bugnote Added: 0000569                       
+03-11-04 14:47 Meeuw          Bugnote Added: 0000570                       
+03-11-04 14:47 Meeuw          Bugnote Edited: 0000570                      
+03-11-04 15:05 perex          Bugnote Added: 0000571                       
+03-12-04 13:47 perex          File Added: dmix_asm.diff                    
+03-12-04 13:48 perex          Bugnote Added: 0000577                       
+03-12-04 16:14 Stephan Wurm   Bugnote Added: 0000578                       
+03-12-04 16:21 Stephan Wurm   Bugnote Edited: 0000578                      
+03-12-04 16:39 Stephan Wurm   File Added: traces.tar.bz2                    
+03-12-04 16:40 Stephan Wurm   Bugnote Edited: 0000578                      
+03-12-04 16:41 Stephan Wurm   Bugnote Edited: 0000578                      
+03-12-04 18:43 Meeuw          Bugnote Added: 0000579                       
+03-12-04 20:37 perex          File Added: dmix_asm-2.diff                    
+03-12-04 20:39 perex          Bugnote Added: 0000583                       
+03-12-04 21:04 Meeuw          Bugnote Added: 0000585                       
+03-13-04 02:31 Stephan Wurm   Bugnote Added: 0000589                       
+03-13-04 16:02 perex          Bugnote Added: 0000592                       
+03-13-04 16:02 perex          Resolution               open => fixed       
+03-13-04 16:02 perex          Status                   assigned => resolved
+03-13-04 18:09 Stephan Wurm   Bug End Monitor: Stephan Wurm                    
+03-13-04 22:37 eradicator     Bug Monitored: eradicator                    
+07-16-04 12:44 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
