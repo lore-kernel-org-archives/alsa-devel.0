@@ -1,17 +1,16 @@
-From: "Todd F. Carlisle" <Todd74Carlisle@inbox.ru>
-Subject: Carlisles
-Date: Sun, 24 Oct 2004 08:42:55 -0800
+From: "Lizzie English" <l.englishvf@postaleplus.qc.ca>
+Subject: Order Rolex or other Swiss watches online
+Date: Sun, 24 Oct 2004 17:44:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410031452.i93AkgTw000824@www2.gmail.com>
+Message-ID: <94fc01c4b9e0$904a00c4$cfe44dc4@intellisoft.ch>
 Mime-Version: 1.0
-Content-Type: text/html; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 08F7926D
-	for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2004 17:42:50 +0200 (MEST)
-Received: from adsl-68-94-17-152.dsl.rcsntx.swbell.net (adsl-68-94-17-152.dsl.rcsntx.swbell.net [68.94.17.152])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 16E783533C
-	for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2004 17:42:48 +0200 (MEST)
+Received: from intellisoft.ch (65.106.217.203.tcol.com.tw [203.217.106.65])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7A38D26D
+	for <alsa-devel@alsa-project.org>; Sun, 24 Oct 2004 17:43:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,38 +22,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<HTML><TITLE>drip</TITLE>
-<BODY>
-<BODY bgColor=#ffffff>
-<DIV align=center><STRONG><FONT face="Arial Black">Discount direct prescription 
-medications</FONT></STRONG></DIV>
-<DIV align=center><STRONG><FONT face=Arial>Name Brands and 
-Generics</FONT></STRONG></DIV>
-<DIV align=center><FONT face=Arial></FONT>&nbsp;</DIV>
-<DIV align=center><FONT face="Arial Black">No Doctor's Appointment 
-Needed</FONT></DIV>
-<DIV align=center><STRONG>
-<P align=center><FONT face=Arial>Visit </FONT><A 
-href="http://czk.lifesaver5subitem.us/?d7E/Vtpc/f=0/qMKl" target=_blank><STRONG><FONT 
-face=Arial>Here</FONT></STRONG></A><FONT face=Arial> to see all wholesale-direct 
-drugs.</FONT></P>
-<P align=center></STRONG><STRONG><FONT face=Arial>Biggest Selection ......Lowest 
-Pricing ........ Fastest Delivery</STRONG></P></DIV></B></BIG></BIG><FONT 
-face=Arial></FONT>
-<P></P>
-<DIV align=center></TD></TR><TR><FONT face="Arial Black" color=#000000>Discount 
-Prices -- Next Day Delivery</FONT></DIV><STRONG><FONT 
-face=Arial></FONT></STRONG>
-<P align=center><FONT face="Arial Black">Here: </FONT><A 
-href="http://qsm.tradeoff2pastiches.us/?i5B/Vtpc/f=0/13L/ebdbl" target=_blank><STRONG><FONT 
-face="Arial Black">Click</FONT>
-<DIV></DIV></STRONG></A>
-<P></P>
-<DIV align=center></FONT>
-<P align=center><FONT face=Arial><STRONG></STRONG></FONT></P><FONT 
-face=Arial></FONT></DIV><BR><BR><BR><BR><BR><BR>
-<DIV><FONT size=2>To stop all future offers&nbsp;</FONT><A 
-href="http://dqa.rapporteur3slanderous.us/"><FONT size=2> here</A></FONT></DIV></BODY></HTML>
+Heya,
+
+Do you want a rolex watch?
+
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://www.toels.com/replica/rolex/
+
+Best regards,
+Hilton Jones
+
+
+No thanks: http://toels.com/z.php
+
 
 
 -------------------------------------------------------
