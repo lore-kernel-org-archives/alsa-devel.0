@@ -1,21 +1,13 @@
-From: Juergen Kreileder <jk@blackdown.de>
-Subject: Re: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
-Date: Fri, 14 Jan 2005 11:59:39 +0100
-Message-ID: <87hdlk9sys.fsf@blackdown.de>
-References: <20050106130649.GA253131@lion.gg3.net>
-	<s5h1xcxy0tj.wl@alsa2.suse.de> <20050108074026.GA8595@lion.gg3.net>
-	<s5h7jmlv82j.wl@alsa2.suse.de> <20050110123342.GA243173@lion.gg3.net>
-	<s5hwtultnc8.wl@alsa2.suse.de> <20050110161559.GA248292@lion.gg3.net>
-	<s5h7jmkt8j9.wl@alsa2.suse.de> <20050112022402.GB9290@lion.gg3.net>
-	<87wtuga67g.fsf@blackdown.de> <s5h4qhk8fx8.wl@alsa2.suse.de>
+From: dave murray-rust <hdsp@mo-seph.com>
+Subject: HDSP OSS Emulation
+Date: Fri, 14 Jan 2005 11:40:34 +0000
+Message-ID: <200501141140.34929.hdsp@mo-seph.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.blackdown.de (smtp.blackdown.de [213.239.206.42])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE92E283
-	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 11:59:41 +0100 (MET)
-In-Reply-To: <s5h4qhk8fx8.wl@alsa2.suse.de> (Takashi Iwai's message of "Fri,
-	14 Jan 2005 11:26:43 +0100")
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,29 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+Hi there,
 
-> Hmm.  The change was to fix alignment on x86-64 on the contrary.
-> When we put s64 there, it breaks.
+First of all, many thanks to all for getting the HDSP working on
+linux, it's looking lovely.
 
-Ah, I see.
+I'm having a problem with the OSS emulation, however, in that it
+outputs on all 18 channels simultaneously. I read something about this
+on the list archives [1], and I was wondering if any progress has been
+made, or if there are any workarounds? The application I'm running is
+based on the (rather outdated) xaudio library, and responds badly to
+'aoss'.
 
-> > OK, I'll add it with ifdef CONFIG_PPC64.
+Any thoughs?
 
-You might want to check how other architectures align long longs in
-32-bit mode.  At least SPARC uses mod 8 too.
-How about #ifndef CONFIG_X86_64?
+Cheers,
+dave
 
+[1]
+(Question from Ed Wildgoose, response from Thomas Charbonnel, May
+2004)
 
-        Juergen
+> 4) Why does the OSS emulation write to all (16)  channels when an app
+> opens it in 2 channel mode?  It's very easy to do something really silly
+>  as a result (I got a rather nasty burning smell from my expensive
+> speakers after inadvertently putting a lot of clipped signal through
+> them at high power...)  Is this an OSS issue, or just the way this
+> driver works?  (I don't have any other multichannel cards to compare
+> against!)
 
+I'm aware of this problem, but still have to track it down. I guess it's
+related to the fact that the card can only be opened using all available
+channels. I don't know if oss emulation uses the plughw facility, but
+there must be something similar because non-interleaved streams are
+handled properly, there just lacks something to deal with the number of
+channel.
 -- 
-Juergen Kreileder, Blackdown Java-Linux Team
-http://www.blackdown.org/java-linux/java2-status/
+He who laughs last thinks slowest.
+  - forwarded email
+
+
 
 
 -------------------------------------------------------
