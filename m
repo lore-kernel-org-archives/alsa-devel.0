@@ -1,17 +1,13 @@
-From: Glenn Maynard <glenn@zewt.org>
-Subject: Re: snd_pcm_wait returning EPIPE
-Date: Mon, 11 Oct 2004 10:11:57 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000577]: locking two (or more) mixer sliders together to get full volume range
+Date: Mon, 11 Oct 2004 16:15:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041011141156.GU12858@zewt.org>
-References: <20041007152634.GK12858@zewt.org> <s5hwtxx4kxn.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <20041011141553.8FE0711030@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from h0040333b7dc3.ne.mediaone.net (h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 954CD27D
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 16:12:03 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <s5hwtxx4kxn.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E88082B5
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 16:15:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,55 +19,53 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 11, 2004 at 12:18:44PM +0200, Takashi Iwai wrote:
-> At Thu, 7 Oct 2004 11:26:34 -0400,
-> Glenn Maynard wrote:
-> > 
-> > I've disabled the underrun state, eg. setting
-> > snd_pcm_sw_params_set_stop_threshold to dsnd_pcm_sw_params_get_boundary,
-> > which results in EPIPE never being returned from snd_pcm_wait (as I wanted),
-> > so I can handle underruns myself.  I'm opening hw:0 directly, to avoid
-> > resampling.
-> > 
-> > However, I'm receiving a report of a system returning EPIPE:
-> > 
-> > https://sourceforge.net/tracker/index.php?func=detail&aid=1035604&group_id=37892&atid=421366
-> > https://sourceforge.net/tracker/download.php?group_id=37892&atid=421366&file_id=103978&aid=1035604
-> > 
-> > This is apparently on an x86-64 system.
-> > 
-> > Is this a known problem?  Am I probably doing something wrong that just
-> > happens to usually work?  I'm treating EPIPE as an unexpected condition,
-> > since it's not clear why it would happen here; should I have it call
-> > snd_pcm_prepare() and retry anyway?
-> 
-> -EPIPE is usually buffer over/underrun (XRUN), so apps are supposed to
-> call snd_pcm_prepare() after receiving this.
 
-Right, I understand that.  However, the docs say:
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000577
+======================================================================
+Reported By:                ldarby
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Bug ID:                     577
+Category:                   alsamixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             10-10-2004 17:35 CEST
+Last Modified:              10-11-2004 16:15 CEST
+======================================================================
+Summary:                    locking two (or more) mixer sliders together to get full volume range
+Description: 
+I noticed that the only way to reduce the volume to the lowest (not muting
+it tho) is reducing both Master and PCM sliders, and to get the loudest
+non-distorted volume, both need to increased to almost max.  I think I
+remember a mixer for a windows driver that could lock two mixer sliders
+together to do this, and I've done this myself from within XMMS, but it
+relies on Master and PCM elems being in a certain position (probably sound
+card dependent).  Would it be a good idea to implement this in a general
+way in alsamixer, or has this already been done in another mixer?
+(googling for linux mixers reveals far too many to check through...)
 
-"PCM is automatically stopped in SND_PCM_STATE_XRUN state when available
-frames is >= threshold. If the stop threshold is equal to boundary (also
-software parameter - sw_param) then automatic stop will be disabled
-(thus device will do the endless loop in the ring buffer)."
+Thanks,
+Laurence
+======================================================================
 
-However, after setting the stop threshold to boundary, I'm still getting
-this.
+----------------------------------------------------------------------
+ tiwai - 10-11-2004 16:15 CEST 
+----------------------------------------------------------------------
+Please discuss on alsa-devel ML.
+(This is not a bug :)
 
-The bug report says:
-
-"...  tried to use 32 bits binaries after having installed all the necessary
-32 bits libraries and having loaded the module snd-ioctl32 necessary when a 32
-applications tries to link with 64 bits alsa drivers."
-
-This is the only report of this I've received.  Could there be a problem
-related to snd-ioctl32?  I don't know exactly what the default boundary
-value represents, but it appears to be 0x40000000 on my system; if that
-scales to a similar 64-bit value (such as 0x4000000000000000) inside the
-64-bit ALSA drivers, I could see problems.  (But I'll stop guessing ...)
-
--- 
-Glenn Maynard
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-10-04 17:35 ldarby         New Bug                                      
+10-11-04 16:15 tiwai          Bugnote Added: 0002082                       
+======================================================================
 
 
 -------------------------------------------------------
