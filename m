@@ -1,11 +1,11 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-intel8x0
-Date: Thu, 17 Mar 2005 14:20:14 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0503171417490.7260-100000@studcom.urz.uni-halle.de>
-References: <1110473095.5618.3.camel@m2.pieceofhud.com>
+Subject: Re: Cannot play .au file with CVS Audigy2 driver
+Date: Thu, 17 Mar 2005 14:30:45 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503171429020.7260-100000@studcom.urz.uni-halle.de>
+References: <20050313001355.76730.qmail@web52901.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <1110473095.5618.3.camel@m2.pieceofhud.com>
+In-Reply-To: <20050313001355.76730.qmail@web52901.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,22 +15,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Koby Andersen <koby@razordata.com>
+To: Chris Rankin <rankincj@yahoo.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Koby Andersen wrote:
-> > > My sound card works properly so long as no headphones are attached.  As
-> > > soon as I plug in headphones all sound is muted to both the speakers and
-> > > the headphones.
->
-> Chip: Realtek ALC202 rev 0
+Chris Rankin wrote:
+> $ aplay monk.au
+> Playing Sparc Audio 'monk.au' : Mu-Law, Rate 8000 Hz, Mono
+> aplay: set_params:857: Sample format non available
 
-It seems this is some automatic behaviour of this codec.
-Unfortunately, we don't have documentation for this chip.
+Did you redefine the "default" device?
+
+The default "default" definition uses plughw:0 which automatically
+converts sample formats.  If you redefine this with hw:X instead,
+these conversions aren't available anymore.
 
 
-Regards,
+HTH
 Clemens
 
 
