@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 16:45:08 +0100
-Message-ID: <4caaad1ed2ac5d4fb3e262a8575e2342@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 16:58:21 +0100
+Message-ID: <c4cd7ce0cc3732d1fd76c04d703c8cbe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03BD9212
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 16:45:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CA4F212
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 16:58:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 16:45 CET
+Last Modified:              12-27-2004 16:58 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,26 +56,20 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-27-04 16:38 
-----------------------------------------------------------------------
-speaker setup is 2.1.  2 speakers.  the subwoofer channel is generated post
-alsa processing in the passive xover of speaker system.  so therefore, as
-far as alsa is concerned, just 2 speakers period.  these are analogue
-speakers.
-
-anything more pls let me know.  would sure like to get these speakers
-working.  do you think i should just do a whole new install of fedora??
-
-Thanks!
-jerry
-
-----------------------------------------------------------------------
  pzad - 12-27-04 16:45 
 ----------------------------------------------------------------------
 Set "Master" volume.
 Set "Surround" volume.
 Set "Center" volume.
 Set "LFE" volume
+
+----------------------------------------------------------------------
+ misnagid - 12-27-04 16:58 
+----------------------------------------------------------------------
+here is new file per your instructions, called test3.state.  still not
+working tho.  ugh!
+
+jerr
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +106,7 @@ Date Modified  Username       Field                    Change
 12-27-04 16:34 misnagid       File Added: test2.state                      
 12-27-04 16:38 misnagid       Note Added: 0002965                          
 12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
 ======================================================================
 
 
