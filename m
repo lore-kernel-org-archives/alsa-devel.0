@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Wed, 8 Dec 2004 12:10:22 +0100
-Message-ID: <41b62ac74f1b196555043324a5de399e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000715]: pc speaker always routed through laptop speakers
+Date: Wed, 8 Dec 2004 12:12:33 +0100
+Message-ID: <e569397c1d55ff2116aba42215a689c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5CD43D1
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 12:10:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A8A5E3D1
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 12:12:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=715> 
 ======================================================================
-Reported By:                tigermb
+Reported By:                rafi
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   709
-Category:                   PCI - via82xx
+Issue ID:                   715
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               debian
+Kernel Version:             2.6.9 (from source)
 ======================================================================
-Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              12-08-2004 12:10 CET
+Date Submitted:             12-08-2004 06:02 CET
+Last Modified:              12-08-2004 12:12 CET
 ======================================================================
-Summary:                    Recording doesnt work
+Summary:                    pc speaker always routed through laptop speakers
 Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+When the pc speaker driver is loaded, it always beeps through the laptop's
+speakers, even when something is plugged into the headphone jack, or the
+headphone jack on the docking station.
 
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
+Also, if audio is being played through the other devices, it also switches
+to the sspeakers for the duration of the beep.  And the beep is not
+affected by any of the volume controlls.
 ======================================================================
 
 ----------------------------------------------------------------------
- tigermb - 12-07-04 22:21 
+ tiwai - 12-08-04 12:12 
 ----------------------------------------------------------------------
-It is strange. Even when i dont run X and dont run any sound related
-programs, its still blocked.
+Try the CVS version.  You might have 'Headphone Jack Detect' switch.
+Otherwise, you may turn on/off the speaker via either 'External Amplifer'
+or 'Mono Playback Switch' separately.
 
-----------------------------------------------------------------------
- tiwai - 12-08-04 12:10 
-----------------------------------------------------------------------
-Hmm, try fuser to check which process is using the device.
-
-Otherwise, something is seriously broken.  Check whether you have no
-kernel oops or something.
+Also, please provide contents of /proc/asound/card0/codec97#0/* files and
+the current /etc/asound.state for debugging.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
-12-06-04 20:59 tiwai          Note Added: 0002735                          
-12-06-04 23:24 tigermb        File Added: asound.state                     
-12-06-04 23:25 tigermb        Note Added: 0002738                          
-12-07-04 14:32 tiwai          Note Added: 0002747                          
-12-07-04 17:59 tigermb        Note Added: 0002750                          
-12-07-04 18:01 tigermb        Note Added: 0002751                          
-12-07-04 18:22 tigermb        File Added: strace.log                       
-12-07-04 18:23 tigermb        Note Added: 0002752                          
-12-07-04 18:28 tiwai          Note Added: 0002754                          
-12-07-04 22:21 tigermb        Note Added: 0002767                          
-12-08-04 12:10 tiwai          Note Added: 0002777                          
+12-08-04 06:02 rafi           New Issue                                    
+12-08-04 06:02 rafi           Distribution              => debian          
+12-08-04 06:02 rafi           Kernel Version            => 2.6.9 (from source)
+12-08-04 12:12 tiwai          Note Added: 0002778                          
 ======================================================================
 
 
