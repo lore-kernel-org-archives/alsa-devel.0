@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Driver development: Mixer control naming
-Date: Tue, 13 May 2003 12:04:47 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Opening a device 2 times, loopback interface....
+Date: Tue, 13 May 2003 12:11:17 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030513120447.pochini@shiny.it>
-References: <20030513011018.11517.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <Pine.LNX.4.44.0305131207020.1179-100000@pnote.perex-int.cz>
+References: <CBEIKLKHDDAOGEKMPCGEEEACCAAA.stephane.boulanger@fh-bonn-rhein-sieg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030513011018.11517.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+In-Reply-To: <CBEIKLKHDDAOGEKMPCGEEEACCAAA.stephane.boulanger@fh-bonn-rhein-sieg.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,47 +17,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 13 May 2003, [iso-8859-1] St=E9phane Boulanger wrote:
 
-On 13-May-2003 Eliot Blennerhassett wrote:
-> Hello,
->
-> Say I have a card with 4 playback streams each with its
-> own volume control.
->
-> Each stream can be mixed to any of 4 lineouts.
-> (I.e. a matrix mixer with total 16 controls)
-> [...]
+> Dear List,
+>=20
+> we=B4re currently developing an end-to-end delay measurement tool, that s=
+hould
+> not only measure the network delay, but also the time the application
+> (audiostreaming (rat, for example)) needs to calculate the used algorithm=
+s
+> (GSM, PCM, whatever). To realize the choosen program design, we need to
+> access the soundcard device form two different applications (streaming
+> application and the measurement tool) at the same time. More exactly:
+>=20
+> - When audiodata is inputted, not only the streaming application should b=
+e
+> able to access it, but also our measurement tool (at the same time
+> obviously).
+>=20
+> - When audiodata is send to the sounddriver (repectively the soundcard), =
+the
+> measurement tool should be able to read it (maybe in the form of a copied
+> datastream send to the measurement tool).
+>=20
+>=20
+> While browing the ALSA documentation, I found some interesting parts abou=
+t
+> the loopback interface, that might help us. But is it still contained in =
+the
+> 0.9 version of ALSA? Moreover, would the loopback interface satisfy our
+> needs?
 
+The loopback interface is dead. We have alsa-lib which can do all
+requested things. See the dsnoop plugin and file plugin. You may also
+modify them to satisfy your requirements.
 
-We talked about a very similar questiont a few weeks
-ago. To make it simple, you have some options:
+The only "negative" item is that it will work with ALSA native=20
+applications only or with the alsa-oss library.
 
-1-
-Let snd_kcontrol_new_t .count=1 and write uinfo->count=n;
-in the _info callback. This way you have a single control
-and you can access the different volumes by
-ucontrol->value.integer.value[n] in the callbacks. amixer
-will "see" a single control with n items.
+=09=09=09=09=09=09Jaroslav
 
-2-
-Let snd_kcontrol_new_t .count=n and return uinfo->count=1;
-in the _info callback. Doing so you have n controls with
-the same name but different index. In the callbacks the
-index is ucontrol->id.index and its value is always
-ucontrol->value.integer.value[0]. amixer will see n
-indipendent controls.
-
-3-
-I suppose you can mix the above methods too, but I never
-tried it. I guess you can lock controls by their id, so
-method 2 should allow you to lock each single control.
-
-
-Bye.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
