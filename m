@@ -1,12 +1,11 @@
-From: "Ed Wildgoose" <Ed@Wildgooses.com>
-Subject: Jack-Alsa plugin - problems
-Date: Mon, 5 Jan 2004 11:29:04 -0000
+From: Christophe.LINDHEIMER@fr.thalesgroup.com
+Subject: Datasheet for ES 1938
+Date: Mon, 5 Jan 2004 12:38:51 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <04de01c3d37f$20a3aa10$5d40a8c0@FRiskMan.com>
+Message-ID: <66CE949D18BCB249ABE8D9AF48C4F1CE777A19@helios.clb.tcfr.thales>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,75 +18,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I'm having some problems getting the alsa input into Jack working
-correctly.
+Hi.
 
-The soundcard is an RME96/8 PAD, Alsa from Kernel 2.6 pre9, and Jack version
-0.91.1 - I'm firing up Jackd with:
+I am working with a Terractec 128i PCI. ( ES 13938 chip )
+I need to develop a driver for this card with a non Linux OS.
+I think that I will start with sources from Linux.
 
-jackd -R -t 2000 -d alsa -d rme96 -r 44100 -p 1024 -n 8 -m -zs -H -M &
+However to understand exactly what I do :) I would like to have the full
+datasheet of the chip.
+Has someone this document ?
+ESS Tech Hotline doesn't seem to send it, and I have no response from
+Terratec yet.
 
-...and I have an asound config (below) which lets me play sounds correctly
-with something like: aplay -D jackplug blah.wav
+Help welcome...
 
-However, trying to use either xmms, mplayer or mythtv with the same alsa
-device just seems to leave the app "hanging" and not doing anything, and
-attempts to fastforward in mplayer and mythtv (which presumably causes the
-alsa layer in each app to try and pause then reopen the sound layer) causes
-the error:
+Regards
 
-"You cannot set callbacks on an active client
-cannot connect alsaP:out_000
- to alsa_pcm:playback_1"
-
-No sound comes out...
-
-Is this an alsa issue, sound card driver problem or something else?  Apart
-from aplay (which does work) are there any other things I should try to test
-the alsa-jack plugin?  Just for reference at least some native jack apps
-seem to be working fine, although I haven't tried the xmms-jack plugin yet.
-
-Can anyone please help with some debugging ideas here.  I'm really keen to
-get Jack working as it seems to be the best way to integrate Brutefir in
-order to do some fancy room correction effects (note: Brutefir is not active
-in the failed tests above, just to remove some variables...)
-
-Thanks all
-
-/etc/asoundrc.conf
-
-        pcm.rme96 {
-                type hw
-                card 0
-        }
-
-        ctl.rme96 {
-                type hw
-                card 0
-        }
-
-#    pcm.!default {
-#       type plug
-#       slave.pcm "jackplug"
-#    }
-
-        pcm.jackplug {
-                type plug
-                slave { pcm "jack" }
-        }
-
-        pcm.jack {
-                type jack
-                playback_ports {
-                       0 alsa_pcm:playback_1
-                       1 alsa_pcm:playback_2
-                }
-                capture_ports {
-                       0 alsa_pcm:capture_1
-                       1 alsa_pcm:capture_2
-                }
-        }
-
+Chris
 
 
 -------------------------------------------------------
