@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001020]: Driver only records left channel when requested to record in stereo from Line-In
-Date: Tue, 29 Mar 2005 20:14:42 +0200
-Message-ID: <08ae5fb6a5259ca3eef273c8be84d455@bugtrack.alsa-project.org>
+Date: Tue, 29 Mar 2005 20:19:45 +0200
+Message-ID: <6af68562a23aa282d54b3360606c6ebe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBC2A1E8
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 20:14:42 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B763F1B2
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 20:19:45 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.11
 ======================================================================
 Date Submitted:             03-29-2005 14:13 CEST
-Last Modified:              03-29-2005 20:14 CEST
+Last Modified:              03-29-2005 20:19 CEST
 ======================================================================
 Summary:                    Driver only records left channel when requested to
 record in stereo from Line-In
@@ -60,12 +60,6 @@ Note also, that drivers for ens1371 and via82xx worked well in the older
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 17:14 
-----------------------------------------------------------------------
-How did you record?  Provide the information to reproduce your problem
-precisely.
-
-----------------------------------------------------------------------
  David Klusacek - 03-29-05 20:14 
 ----------------------------------------------------------------------
 Sorry tiwai, I filled the procedure into 'Step To Reproduce' form not
@@ -79,6 +73,18 @@ form.
 
 The next time I will write everything into the 'Describtion' paragraph.
 
+----------------------------------------------------------------------
+ tiwai - 03-29-05 20:19 
+----------------------------------------------------------------------
+Ah I see now.  It's really bad that this item is hidden...
+
+Anyway, I don't think there is a bug around the PCM core part.  If it
+were, we must have received more bug reports.
+
+Please make sure that the physical jack connection is correct.
+Then, attach /etc/asound.state to check the mixer configuration.  For
+example, you might miss the capture source for the right channel.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -86,6 +92,7 @@ Date Modified  Username       Field                    Change
 03-29-05 14:13 David Klusacek Kernel Version            => 2.6.11          
 03-29-05 17:14 tiwai          Note Added: 0004248                          
 03-29-05 20:14 David Klusacek Note Added: 0004257                          
+03-29-05 20:19 tiwai          Note Added: 0004258                          
 ======================================================================
 
 
