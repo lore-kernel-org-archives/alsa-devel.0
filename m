@@ -1,14 +1,14 @@
-From: Michael Ulbrich <mul@rentapacs.de>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: NEW hdsp 9652 problems - {WAS: alsaconf -L - where's
  Waldo?)
-Date: Sat, 22 Mar 2003 15:22:36 +0100
+Date: Sat, 22 Mar 2003 20:41:30 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E7C71AC.18C05119@rentapacs.de>
-References: <E18wipo-0000xC-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.44.0303222038340.8529-100000@pnote.perex-int.cz>
+References: <E18wRlw-0002ZE-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E18wRlw-0002ZE-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +17,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
+On Fri, 21 Mar 2003, Paul Davis wrote:
+
+> >   Well, I guess thanks then for saving the rest of my vacation Friday
+> >from being a total waste of time. I took the day off to focus on getting
+> >this Alsa stuff going. Now I find I cannot. Too bad for me I guess. 
 > 
-> >It was not possible to get the firmware rev 11 loaded. During boot the
-> 
-> which version? the initial version i sent to the list was
-> corrupted. the correct files look like this:
-> 
-> -rw-rw-r--   1 paul     paul       293050 Mar 11 09:50 /usr/local/music/src/alsa-cvs/alsa-kernel/pci/rme9652/digiface_firmware_rev11.dat
-> -rw-rw-r--   1 paul     paul       293051 Mar 11 09:51 /usr/local/music/src/alsa-cvs/alsa-kernel/pci/rme9652/multiface_firmware_rev11.dat
+> mark - i'm not trying to apportion blame, but i would note that if you
+> had not updated the firmware, this would not have happened. also, i
+> had hoped that takashi or jaroslav would have applied the patches
+> already mailed to the mailing list to CVS, but they chose not for
+> various reasons.
 
-Hi Paul,
+Paul, I think that my impression regarding these patches was that they're 
+intended mostly for testing. Please, mark patches which should go to the 
+CVS tree explicitly. Nobody other than the driver developer knows it.
 
-yep, I got the correct versions from:
+						Jaroslav
 
-ftp://ftp.alsa-project.org/pub/tests/hdsp_rev11.tar.bz2
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-as Jaroslaw posted on Sun, Mar 16.
-
-Thanks ... Michael
 
 
 -------------------------------------------------------
