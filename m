@@ -1,14 +1,14 @@
-From: thomas schorpp <t.schorpp@gmx.de>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Re: [alsa-cvslog] CVS: BEFORE REVERT  [SUCCESS]
-   C-Media CMI9761 -A- type, TESTING 01
-Date: Wed, 16 Feb 2005 23:00:41 +0100
-Message-ID: <4213C289.7030500@gmx.de>
-References: <E1D1Ttl-0000lb-In@sc8-pr-cvs1.sourceforge.net> <4213BB44.5060702@gmx.de>
-Reply-To: t.schorpp@gmx.de
+	C-Media CMI9761 -A- type, TESTING 01
+Date: Wed, 16 Feb 2005 17:24:36 -0500
+Message-ID: <1108592676.29298.30.camel@krustophenia.net>
+References: <E1D1Ttl-0000lb-In@sc8-pr-cvs1.sourceforge.net>
+	 <4213BB44.5060702@gmx.de>  <4213C289.7030500@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4213BB44.5060702@gmx.de>
+In-Reply-To: <4213C289.7030500@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +18,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: t.schorpp@gmx.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-thomas schorpp wrote:
-
-> after modprobe
+On Wed, 2005-02-16 at 23:00 +0100, thomas schorpp wrote:
+> a) oss-apps sound on DXS slider nr 2 (xmms , /dev/mixer , dsp)
 > 
-> - arts works with pcm fine
-> - working master vol slider(!) (kmix)
-> - working pcm vol regulation on 1. dxs slider (rest 3 no sound reaction)
+> only discrete access to /dev/mixer (on/off), see if i can fix that (add 
+> pcm slider again, reading diff to 2.6.0)
 > 
-> ... further tesing...
-> 
+> suggest no fixed status without reaching that.
 
+This can't be fixed.  The softvol plugin won't work with the in-kernel
+OSS emulation.
 
-a) oss-apps sound on DXS slider nr 2 (xmms , /dev/mixer , dsp)
-
-only discrete access to /dev/mixer (on/off), see if i can fix that (add 
-pcm slider again, reading diff to 2.6.0)
-
-suggest no fixed status without reaching that.
-
-y
-tom
-
+Lee
 
 
 
