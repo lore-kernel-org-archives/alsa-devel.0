@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000625]: ISA - 4232 has no CD sound
-Date: Thu, 11 Nov 2004 14:40:31 +0100
-Message-ID: <ba25447e82021571cf6ed91d15d0560a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000624]: crash with alc850 when driver alsa intel8x0 is use
+Date: Thu, 11 Nov 2004 14:48:06 +0100
+Message-ID: <1f5880c17fd2aa5a1c28c0167223d7db@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2A2826F
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 14:40:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A53426F
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 14:48:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,206 +24,117 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=625> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=624> 
 ======================================================================
-Reported By:                hugovanwoerkom
+Reported By:                xmoucheron
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   625
-Category:                   ISA - cs4232
+Issue ID:                   624
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.9
+Distribution:               
+Kernel Version:             2.6.8.1 mdk
 ======================================================================
-Date Submitted:             11-03-2004 13:49 CET
-Last Modified:              11-11-2004 14:40 CET
+Date Submitted:             11-02-2004 20:24 CET
+Last Modified:              11-11-2004 14:48 CET
 ======================================================================
-Summary:                    ISA - 4232 has no CD sound
+Summary:                    crash with alc850 when driver alsa intel8x0 is use
 Description: 
-Switched from OSS to Alsa. Enabled sound, alsa, OSS emulation and cs4232
-isa card in kernel. Tried with modules and without. Has sound but not from
-the CD. System ran OSS module  with sound from the CD previous to kernel
-compile, so everything that OSS needed is still there.
+When mandrakelinux boot and when a song is played then the song is stopped
+and the acess to internet is stopped too.
+
+This problem isreproducibility every days and allways.
 ======================================================================
 
 ----------------------------------------------------------------------
- hugovanwoerkom - 11-11-04 13:47 
+ xmoucheron - 11-10-04 21:16 
 ----------------------------------------------------------------------
-On Debian systems:
-/var/lib/alsa/asound.state
-follows:
+My system environnement is a mandrakelinux 10.1 officiel with default
+installation.
 
-state.CS4236 {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PCM Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 52
-		value.1 52
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		index 1
-		value.0 false
-		value.1 false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		index 1
-		value.0 31
-		value.1 31
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Playback Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Mono Playback Volume'
-		value 15
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Output Playback Switch'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Output Playback Bypass'
-		value false
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 11
-		value.1 11
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Line
-		comment.item.1 Aux
-		comment.item.2 Mic
-		comment.item.3 Mix
-		iface MIXER
-		name 'Capture Source'
-		value.0 Mic
-		value.1 Mic
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost'
-		value.0 false
-		value.1 false
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Loopback Capture Switch'
-		value false
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Loopback Capture Volume'
-		value 63
-	}
-}
+I have
 
-I would turn on CD Playback Switch if I knew how.
+a motherboard asus K8N-E delux with 
+CPU  	- Socket 754 for AMD Athlon 64
+- AMD64 architecture enables simultaneous 32- and 64-bit computing
+Chipset 	NVIDIA nForce3 250Gb
+System Bus 	800 MHz
+ 	Chipset:
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8231;2 x UltraDMA
+133/100/66/33
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8231;2 x Serial ATA,
+support RAID 0, RAID 1, RAID 0+1, JBOD
+Silicon Image Sil 3114 SATA controller:
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8231;4 x Serial ATA
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8231;RAID 0, RAID 1,
+RAID 10, RAID 5, JBOD
+AI Audio 	Realtek ALC850, 8-channel CODEC
+Audio Sensing and Enumeration Technology
+Coaxial/Optical S/PDIF out ports on back I/O
+Gigabit LAN 	- Chipset built-in Gigabit MAC with external Marvell PHY
+supporting
+- 10/100/1000 BASE-T Ethernet
+IEEE 1394 	VIA VT6307 controller supports 2 x 1394 ports
+
+
+A processeur amd64 3200+.
+
+The symptom are simple:
+
+If a sound is player by an application as xmms, totem, mozilla, gaim,   or
+any all application,   the sound stop immediatly and the access to
+ethernet card is stopped. This problem arrive with a time different
+according to the application used. 
+For exemple with xmms, the problem is immediately. But with totem, it is
+after a small time.
+
+If , I forbidden the boot of alsa durind boot of the system and all server
+of sound, there isn't crash of sound system and acess to ethernet card is
+ok.
+
+There are on my mandrake 10.1: alsa +  sound ( it is the name that there
+are in mandrake control center in the section system -- service) 
+
+by defect, the acess od ethernet card is ok,  excep if sound system
+crash.
+I want to say, when sound system crash, the acess to ethernet card is
+immediately stopped.
+
+the driver od alsa :  intel8x0 is used by the system ans this is the only
+that can played a sound but it is temporary.
+
+But with this problem, I can to words with my computer on openoffice or
+others if server sound is stopped.
+
+Actually, alsa and server sound are stopped, but I would like to listen
+and to look music, video and used all applications who use sound.
+
+edited on: 11-10-04 21:16
 
 ----------------------------------------------------------------------
- tiwai - 11-11-04 14:40 
+ xmoucheron - 11-11-04 14:48 
 ----------------------------------------------------------------------
-Ah ok you're using cs4232 (the category was missing - added now).
-Then there is no CD volume control indeed.
+I come to install the mandrakelinux 10.1  64bit edition with alsa driver
+1.0.6 and the problem with this driver (intel 8x0) on mandrakelinux 64bit
+is most important.
 
-Try to turn on 'Aux Playback Switch' (or unmute 'Aux' on alsamixer).
+There is none sound with this version 64bit with alsa 1.0.6.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 13:49 hugovanwoerkom New Issue                                    
-11-03-04 13:49 hugovanwoerkom Distribution              => Debian Sarge    
-11-03-04 13:49 hugovanwoerkom Kernel Version            => 2.6.9           
-11-09-04 18:49 tiwai          Note Added: 0002333                          
-11-11-04 13:47 hugovanwoerkom Note Added: 0002384                          
-11-11-04 14:30 tiwai          Category                 ISA - cs4236 => ISA -
-cs4232
-11-11-04 14:40 tiwai          Note Added: 0002385                          
+11-02-04 20:24 xmoucheron     New Issue                                    
+11-02-04 20:24 xmoucheron     Kernel Version            => 2.6.8.1 mdk     
+11-04-04 13:36 xmoucheron     Note Added: 0002304                          
+11-09-04 10:46 tiwai          Note Added: 0002318                          
+11-09-04 10:47 tiwai          Note Added: 0002319                          
+11-10-04 21:12 xmoucheron     Note Added: 0002376                          
+11-10-04 21:16 xmoucheron     Note Edited: 0002376                         
+11-11-04 14:48 xmoucheron     Note Added: 0002386                          
 ======================================================================
 
 
