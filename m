@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Audio and Video sync. Getting Timestamps
-Date: Wed, 5 May 2004 11:39:06 +0200 (CEST)
+Subject: Re: assert failures in snd_pcm_mmap_commit
+Date: Wed, 5 May 2004 11:43:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405051137240.3593@pnote.perex-int.cz>
-References: <1083748400.4098b030eeb58@www.telecable.es> <s5hn04n1aer.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0405051143010.3593@pnote.perex-int.cz>
+References: <yw1xvfjbj2t4.fsf@kth.se>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn04n1aer.wl@alsa2.suse.de>
+In-Reply-To: <yw1xvfjbj2t4.fsf@kth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,27 +16,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: granda@telecable.es, alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 5 May 2004, Takashi Iwai wrote:
+On Tue, 4 May 2004, M?ns Rullg?rd wrote:
 
-> > I set SND_TSTAMP_MMAP like you told me. What function may i use? I've tried
-> > snd_pcm_status_get_trigger_tstamp and snd_pcm_status_get_tstamp, and the first
-> > always return the same timestamp or it changes every 4 or 6 seconds. And the
-> > second returns the "now" timestamp. What am i doing wrong?
-> 
-> no, you're not wrong, i overlooked that the SND_PCM_STATUS ioctl calls
-> the update of timestamp.  so, apparently there is no this timestamp
-> mode for the period-updates.
-> 
-> but, anyway, you can get the sound frame position and the timestamp at
-> the same time.  it should suffice to calculate the sync, i believe.
+> I am using Linux 2.6.4 with ALSA driver 1.0.3 and alsa-lib 1.0.3a
+> (which I see now is a little out-dated).  The sound card is a SiS7012
+> in an Asus laptop.
 
-That's right. The semantics is - mark timestamp when the stream pointer
-is updated - not at period boundary (which can be shifted with interrupt 
-latency issues).
+Try alsa-lib 1.0.4 . I think that I've fixed this bug there.
 
 						Jaroslav
 
