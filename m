@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] init.c: remove superfluous strcpy
-Date: Tue, 03 Dec 2002 09:26:07 +0100 (MET)
+Subject: [PATCH] fix alsa-utils installation docs
+Date: Tue, 03 Dec 2002 09:26:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0212030919370.17800-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0212030918110.17800-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
@@ -19,25 +19,24 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-At this point in choose_default_id(), id points to card->id.
+In the list of commands for CVS compilation, autoheader was missing.
 
 
-Index: alsa-kernel/core/init.c
+Index: alsa-utils/INSTALL
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/init.c,v
-retrieving revision 1.20
-diff -u -r1.20 init.c
---- alsa-kernel/core/init.c	30 Nov 2002 10:14:03 -0000	1.20
-+++ alsa-kernel/core/init.c	3 Dec 2002 08:16:51 -0000
-@@ -393,8 +393,6 @@
- 			idx_flag++;
- 		}
- 	}
--
--	strcpy(card->id, id);
- }
+RCS file: /cvsroot/alsa/alsa-utils/INSTALL,v
+retrieving revision 1.3
+diff -u -r1.3 INSTALL
+--- alsa-utils/INSTALL	26 Nov 2001 18:39:49 -0000	1.3
++++ alsa-utils/INSTALL	3 Dec 2002 08:15:31 -0000
+@@ -25,6 +25,7 @@
+ For compilation you can use these commands:
 
- int snd_card_register(snd_card_t * card)
+ 	aclocal
++	autoheader
+ 	automake --foreign --copy --add-missing
+ 	autoconf
+ 	./configure
 
 
 
