@@ -1,16 +1,15 @@
-From: Duncan Sands <baldrick@wanadoo.fr>
-Subject: Re: cs46xx: alsa-docs note
-Date: Wed, 26 Feb 2003 20:53:54 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: aserver, smix
+Date: Wed, 26 Feb 2003 14:17:24 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302262053.54462.baldrick@wanadoo.fr>
-References: <3E5D0073.3020903@boosthardware.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <200302261914.UAA08589@alsa.alsa-project.org>
+References: <3E5D0647.8040407@boosthardware.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E5D0073.3020903@boosthardware.com>
-Content-Disposition: inline
+Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA08589
+	for <alsa-devel@alsa-project.org>; Wed, 26 Feb 2003 20:14:59 +0100
+In-reply-to: Your message of "Thu, 27 Feb 2003 03:24:07 +0900."
+             <3E5D0647.8040407@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,33 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, mail@richardstevens.de
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Jozef Kosoru <zyzstar@uid0.sk>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 26 February 2003 18:59, Patrick Shirkey wrote:
-> Sorry I must have missed sending this here.
+>> I would like to ask what is the main purpose of the aserver. It can run
+>> on the same machine as the client only (AFAIK) and it cannot mix multiple
+>> client streams into the one device. So I've missed the point of that
+>> application -- is there something for which it could be good for?
+>> 
+>> ALSA plugin documentation mentions the 'smix' plugin. But I cannot find
+>> any further information nor the source code in the library for that. Is
+>> it something which will be introduced it the future ALSA releases?
+>> According the doc it is exactly something I've been looking for a long
+>> time; pcm device sharing.
+>> 
 >
-> The following has been submitted as a note for the documentation of cs46xx.
+>This has been discussed many times.
 >
-> sender: 	mail_NoSPaM_@richard_NOSPAM_stevens.de
-> date:   	Friday, 03 January 2003
->
-> Terratec DMX XFire 1024:
->
-> The DMX XFire 1024 doesn't get initialized correctly the first time
-> the alsa modules are loaded. Sound is heavily distorted. Usually
-> reloading the modules solves this problem. One can do that
-> autmatically by loading, unloading and reloading the modules in
-> the bootscripts.
+>Currently the only ways to get pcm device sharing, I assume you mean 
+>using multiple devices as one virtual device are to write it up in your 
+>.asoundrc or use the patch which has been submitted but not applied to 
+>jack for this purpose.
 
-I have this card, and I've never seen this problem.  I suggest you
-change it to:
-
-The DMX XFire 1024 may not get initialized correctly the first time...
-
-All the best,
-
-Duncan.
+we also have the dmix plugin now, right jaroslav?
 
 
 -------------------------------------------------------
