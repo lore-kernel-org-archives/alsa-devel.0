@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000842]: plug:multi:ladspa chain causes "aplay: pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion `!snd_interval_empty(i)' failed."
-Date: Sat, 22 Jan 2005 19:40:16 +0100
-Message-ID: <316ced560b4ae3e0d394aae6a3512266@bugtrack.alsa-project.org>
+Date: Sat, 22 Jan 2005 19:42:13 +0100
+Message-ID: <0bdccb98cfacce2484a5cc98d75de1cb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2929252
-	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2005 19:40:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68E1E252
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2005 19:42:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=842> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-22-2005 19:40 CET
-Last Modified:              01-22-2005 19:40 CET
+Last Modified:              01-22-2005 19:42 CET
 ======================================================================
 Summary:                    plug:multi:ladspa chain causes "aplay:
 pcm_params.c:146: snd_pcm_hw_param_get_min: Assertion `!snd_interval_empty(i)'
@@ -125,10 +125,17 @@ Aborted by signal Aborted...
 # No sound is ever produced. Was expecting sound from all four speakers.
 ======================================================================
 
+----------------------------------------------------------------------
+ roothorick - 01-22-05 19:42 
+----------------------------------------------------------------------
+I forgot to mention that using MPlayer exhibits exactly the same behavior.
+FWIW.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-22-05 19:40 roothorick     New Issue                                    
+01-22-05 19:42 roothorick     Note Added: 0003377                          
 ======================================================================
 
 
