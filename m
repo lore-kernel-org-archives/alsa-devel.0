@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000487]: Driver builds, but offers wrong mixer controls and no sound
-Date: Wed,  8 Sep 2004 06:40:49 +0200 (CEST)
+From: =?iso-8859-1?q?Dinesh=20Ahuja?= <mdlinux7@yahoo.co.in>
+Subject: Re: ALSA Programming Interface for Kernel 2.6.8
+Date: Wed, 8 Sep 2004 05:53:25 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908044049.9F3B0101DB@server.perex-int.cz>
+Message-ID: <20040908045325.43180.qmail@web8510.mail.in.yahoo.com>
+References: <20040907130432.4318a5d0@mango.fruits.de>
+Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E76732A2
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 06:40:49 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id AEB39209D8
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 06:40:49 +0200 (MEST)
+In-Reply-To: <20040907130432.4318a5d0@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,52 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> depending on your distribution all you need to do is
+> to install a  alsa-dev or libasound-dev pakag >
+[naming differs from dist to dist]. The
+> api docs should be available on alsa-project.org,
+> though somewhat
+> obfuscated, thus here's a direct link:
+> 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000487
-======================================================================
-Reported By:                Quietti
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     487
-Category:                   PARISC - harmony
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1-pa7
-======================================================================
-Date Submitted:             09-08-2004 06:40 CEST
-Last Modified:              09-08-2004 06:40 CEST
-======================================================================
-Summary:                    Driver builds, but offers wrong mixer controls and no sound
-Description: 
-The driver builds with the correct options, the module can be loaded, but
-the mixer control it offers do not correspond to my model 712 (Gecko)
-hardware. 
+I am using Red Hat Linux 9.0 and trying to get all the
+neccessary packages for my Vanilla Kernel 2.6.8 but
+could not able to find on any site. Could you please
+guide me where I can these packages for Kernel 2.6.8.
 
-Additionally, trying to send sound to the module produces horrible
-chainsaw noise in the speakers. Esound also informs me that the hardware
-does not support any suitable sample rate. Something is evidently broken.
+Regards
+Dinesh
 
-I am quite positive that the corresponding Harmony OSS driver in kernel
-2.4 works well with this workstation, so this is definitely not a hardware
-problem (the same module in kernel 2.6 has been broken from day 1).
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-08-04 06:40 Quietti        New Bug                                      
-09-08-04 06:40 Quietti        Distribution              => Debian          
-09-08-04 06:40 Quietti        Kernel Version            => 2.6.8.1-pa7     
-======================================================================
+________________________________________________________________________
+Yahoo! India Matrimony: Find your life partner online
+Go to: http://yahoo.shaadi.com/india-matrimony
 
 
 -------------------------------------------------------
