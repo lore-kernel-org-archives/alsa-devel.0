@@ -1,15 +1,13 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Wed, 18 Sep 2002 00:15:31 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsamixer on cvs (works!)
+Date: Tue, 17 Sep 2002 17:08:28 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D87B793.6090608@yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200209180008.RAA06607@cmn29.stanford.edu>
+References: <Pine.LNX.4.33.0209130956340.647-100000@pnote.perex-int.cz>
+Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mta01-svc.ntlworld.com (mta01-svc.ntlworld.com [62.253.162.41])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA10973
-	for <alsa-devel@alsa-project.org>; Wed, 18 Sep 2002 01:15:55 +0200
+In-Reply-To: <Pine.LNX.4.33.0209130956340.647-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,20 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Does this mean that the alsa-lib needs to be updated in CVS to be -rc4? 
-I am trying to compile xine and wine from CVS as well as ALSA, and this 
-doesn't work because alsa-utils needs the new headers but xine and wine 
-currently need the old ones. I imagine that the xine and wine people can 
-update their code-bases accordingly, but I doubt that they would relish 
-the prospect of checking for each changed ALSA API in their configure 
-scripts.
+> > > I'm using 2.4.20-pre4 + lowlat + preempt + capabilities + acpi
+> > > (I think that's all)
+> > >
+> > > > anyway, i changed the relevant part on cvs.  please try once to
+> > > > update.
+> > >
+> > > I'll try again...
+> >
+> > Compiles fine and seems to be working ok (intel8x0). I don't
+> > know what the situation was before because I did not look at
+> > it, but now there are two ac97 codecs recognized (I guess the
+> > second one corresponds to the modem - I'll have to find time
+> > to test the modem so verify it works). There is no delay in
+> > recognizing them as far as I can tell.
+>
+> Note that modem codecs are only detected. You might send me contents of
+> /proc/asound/card0/intel8x0 and ac97* files to verify, if everything is
+> ok.
 
-Chris
+I almost forgot about this:
 
+/proc/asound/card0/intel8x0:
+Intel8x0
+
+Global control        : 0x00000002
+Global status         : 0x00300300
+AC'97 codecs ready    : primary secondary
+
+/proc/asound/card0/ac97#0:
+0-0/0: Yamaha YMF753
+
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 16-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF
+Extended status  : SPCV SPDIF=3/4
+SPDIF Control    : Consumer PCM Category=0x0 Generation=0 Rate=48kHz
+
+/proc/asound/card0/ac97#1-1
+1-1/0: Conexant (21)
+
+Capabilities     :
+DAC resolution   : 16-bit
+ADC resolution   : 16-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended modem ID: codec=1  CID1 LIN1
+
+-- Fernando
 
 
 -------------------------------------------------------
