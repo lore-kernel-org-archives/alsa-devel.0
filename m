@@ -1,14 +1,14 @@
-From: Nicola Orru' <nigu@itadinanta.it>
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
 Subject: Re: emu10k1 module compile error with latest cvs
-Date: Sat, 2 Aug 2003 16:04:24 +0200
+Date: Sat, 2 Aug 2003 20:06:21 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030802160424.03b022de.nigu@itadinanta.it>
-References: <1059818056.5386.5.camel@gruuvi>
+Message-ID: <20030802190621.7778.qmail@web40602.mail.yahoo.com>
+References: <20030802160424.03b022de.nigu@itadinanta.it>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1"; boundary="=.bp0pg(ptsTXxP_"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1059818056.5386.5.camel@gruuvi>
+In-Reply-To: <20030802160424.03b022de.nigu@itadinanta.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,50 +17,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Nicola Orru' <nigu@itadinanta.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---=.bp0pg(ptsTXxP_
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ --- Nicola Orru' <nigu@itadinanta.it> wrote:
+> It looks like a typo. Try and open emufx.c and
+> replace EMU10K1_GRP_* with EMU10k1_GPR_*.
 
-On 02 Aug 2003 12:54:16 +0300
-Jaakko Prattala <Jaakko.Prattala@Helsinki.FI> wrote:
+Yup, a typo. Changing .._GRP_.. to .._GPR_.. fixed it.
 
-> gcc -D__KERNEL__ -DMODULE=1
-> -I/home/jaakko/downloads/alsa020803/alsa-driver/include 
-> -I/lib/modules/2.4.20-8/build/include -O2 -mpreferred-stack-boundary=2
-> -march=athlon -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
-> -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD 
-> -DKBUILD_BASENAME=emufx   -c -o emufx.o emufx.c
-> In file included from emufx.c:2:
-> ../../alsa-kernel/pci/emu10k1/emufx.c: In function
-> `snd_emu10k1_gpr_ctl_put':
-> ../../alsa-kernel/pci/emu10k1/emufx.c:367:
-> `EMU10K1_GRP_TRANSLATION_BASS' undeclared (first use in this function)
+Cheers,
+Chris
 
-It looks like a typo. Try and open emufx.c and replace EMU10K1_GRP_* with EMU10k1_GPR_*.
+P.S. alsa-lib is still broken, though.
 
-
--- 
-Ciao,
-Nicola
---------------------------------------------------------------------
-* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
---------------------------------------------------------------------
-
---=.bp0pg(ptsTXxP_
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE/K8T1UZWo8oDibtERAj2hAJwP5OA8MzQl/sVkHJi22IqUEGhpQwCeK3SW
-NUa0HgN/qotNNEE269NVUW4=
-=bWrj
------END PGP SIGNATURE-----
-
---=.bp0pg(ptsTXxP_--
+________________________________________________________________________
+Want to chat instantly with your online friends?  Get the FREE Yahoo!
+Messenger http://uk.messenger.yahoo.com/
 
 
 -------------------------------------------------------
