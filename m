@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000450]: Line In only gives left channel - no stereo recording/listening
-Date: Wed, 18 Aug 2004 02:04:30 +0200 (CEST)
+Date: Wed, 18 Aug 2004 02:17:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818000430.36E671102F@server.perex-int.cz>
+Message-ID: <20040818001702.8AC171102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8338F25E
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 02:04:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8FE6208
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 02:17:02 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 46E3418B87
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 02:04:30 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9BE2D18B91
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 02:17:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000450
 ======================================================================
@@ -41,7 +41,7 @@ Distribution:               Debian unstable/testing/experimental
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             08-18-2004 02:04 CEST
-Last Modified:              08-18-2004 02:04 CEST
+Last Modified:              08-18-2004 02:17 CEST
 ======================================================================
 Summary:                    Line In only gives left channel - no stereo recording/listening
 Description: 
@@ -53,12 +53,25 @@ shows good input signal (waveform pattern) for the left channel but
 absolutely nothing for right.
 ======================================================================
 
+----------------------------------------------------------------------
+ ZaphodB - 08-18-2004 02:08 CEST 
+----------------------------------------------------------------------
+forgot: stereo-recording from Line In with audacity works with WindowsXP
+;-)
+
+----------------------------------------------------------------------
+ ZaphodB - 08-18-2004 02:17 CEST 
+----------------------------------------------------------------------
+sorry, overlooked BugID 0000382 reporting basically same bug.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-18-04 02:04 ZaphodB        New Bug                                      
 08-18-04 02:04 ZaphodB        Distribution              => Debian unstable/testing/experimental
 08-18-04 02:04 ZaphodB        Kernel Version            => 2.6.8.1         
+08-18-04 02:08 ZaphodB        Bugnote Added: 0001573                       
+08-18-04 02:17 ZaphodB        Bugnote Added: 0001574                       
 ======================================================================
 
 
