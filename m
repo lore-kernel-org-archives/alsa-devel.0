@@ -1,15 +1,13 @@
-From: "Scotty W. Peoples" <s_wpeoplesnc@lonza.it>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Tue, 07 Dec 2004 15:46:21 -0100
-Message-ID: <8bc601c4dc7c$b48c2756$cfb1aca0@wisofak.uni-rostock.de>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro usb_maxpacket() for portability
+Date: Tue, 7 Dec 2004 23:01:51 +0100
+Message-ID: <200412072301.52065.annabellesgarden@yahoo.de>
+References: <200412021319.20027.annabellesgarden@yahoo.de> <200412062315.01880.annabellesgarden@yahoo.de> <s5hfz2iba7x.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_PhitB2nGp/fzsHs"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from wisofak.uni-rostock.de (251.red-82-158-94.user.auna.net [82.158.94.251])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id F16063B5
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 22:42:08 +0100 (MET)
+In-Reply-To: <s5hfz2iba7x.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +17,237 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
+--Boundary-00=_PhitB2nGp/fzsHs
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Do you want a rolex watch?
+Am Dienstag 07 Dezember 2004 12:48 schrieb Takashi Iwai:
+> A part of patches seems missing.  I got:
+> 
+> usx2yhwdeppcm.c: In function `usX2Y_usbpcm_urb_capt_retire':
+> usx2yhwdeppcm.c:77: error: structure has no member named `hwdep_pcm_shm'
+> ...
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+oops, this patch should be complete now.
+> 
+> 
+> The code looks almost fine.  I found some strange coding style
+> occasinally (e.g. unnecessary block in a function or a goto-jump into
+> the if-branch).  The fixed usx2yhwdeppcm.c is attached below.  Also,
+> the patch file which would be needed for alsa-driver tree is below,
+> too.
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+This patch is based on your usx2yhwdeppcm.c.
+> 
+> 
+> In addition, two things I'd like to request you to change.
+> 
+> 1. handling of pcm streams in usX2Y_reset() and
+>    snd_usX2Y_hwdep_pcm_open() 
+> 
+>    It's quite hacky.  It'd be simpler to create another PCM instances
+>    for hwdep PCM.
+> 
+>    For example, when hwdep is opened and mmapped, only hwdep-pcm is
+>    allowed, i.e. access to the normal PCM would result in -EBUSY.
+>    OTOH, when hwdep is closed, hwdep-pcm would return -EBUSY. 
+>    Also, hwdep should return -EBUSY if pcm is already running.
 
-Visit us: http://www.bhex.com/rep/rolex/
+Ok, done. 
+To use it now, jackd is started like this:
+$ jackd -R -dusx2y -dhw:1,2 -r44100 -p128 -n2
+The important difference is the ",2".
+> 
+> 2. RAM mmap support
+> 
+>    The RAM mmap would work only on certain architectures.
+>    For example, it won't work properly on ARM.
+>    You should add some ifdefs, or more restriction in Kconfig.
+>    (This is true for the other hwdep mmap, too.)
 
-Best regards,
-Hilton Jones
+snd-usb-usx2y now depends on X86 || PPC || ALPHA.
+
+slightly corrected patch header:
+>>>>
+Summary: hwdep interface for pcm data.
+
+Implements "rawusb" pcm data transfer through hwdep interface:
+The usb_hc moves pcm data from/into memory via DMA.
+That memory is mmaped by jack's usx2y driver.
+Jack's usx2y driver is the first/last executable code to read/write pcm data.
+Read/write is a combination of power of 2 period shaping and float/int conversation.
+Compared to standard alsa/jack we leave out power of 2 period shaping
+inside snd-usb-usx2y which needs memcpy() and additional buffers.
+As a side effect possible unwanted pcm-data coruption resulting of
+standard alsa's snd-usb-usx2y period shaping scheme falls away.
+Result is sane jack operation at buffering schemes down to 128frames, 2 periods.
+Also changed Kconfig file, so snd-usb-usx2y is only available for X86, PPC or ALPHA platforms,
+as on others DMA-memory isn't mmapable.
+
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+<<<<
+
+Karsten
 
 
-No thanks: http://www.bhex.com/z.php
 
+--Boundary-00=_PhitB2nGp/fzsHs
+Content-Type: application/x-bzip2;
+  name="snd-usb-usx2y+hwdep_pcm.patch.0.8.7a.bz2"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="snd-usb-usx2y+hwdep_pcm.patch.0.8.7a.bz2"
+
+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
+
+--Boundary-00=_PhitB2nGp/fzsHs--
 
 
 -------------------------------------------------------
