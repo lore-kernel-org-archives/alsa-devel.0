@@ -1,14 +1,21 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
-Date: Thu, 6 Feb 2003 23:10:34 +0000 (GMT)
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: current cvs compile error
+Date: 06 Feb 2003 15:38:01 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030206231034.36902.qmail@web40607.mail.yahoo.com>
-References: <20030206154054.3b9ad91d.sebastian_kapfer@web.de>
+Message-ID: <1044574681.5056.98.camel@cmn37.Stanford.EDU>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030206154054.3b9ad91d.sebastian_kapfer@web.de>
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA13124
+	for <alsa-devel@alsa-project.org>; Fri, 7 Feb 2003 00:38:36 +0100
+Received: from cmn37.stanford.edu (cmn37.stanford.edu [171.64.197.186])
+	by cm-mail.stanford.edu (8.11.6/8.11.6) with ESMTP id h16Nc1C02132
+	for <alsa-devel@alsa-project.org>; Thu, 6 Feb 2003 15:38:01 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by cmn37.stanford.edu (8.11.6/8.11.6) with ESMTP id h16Nc1E12993
+	for <alsa-devel@alsa-project.org>; Thu, 6 Feb 2003 15:38:01 -0800
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,35 +24,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sebastian Kapfer <sebastian_kapfer@web.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- --- Sebastian Kapfer <sebastian_kapfer@web.de> wrote:
-> I can find a use for stdio FD's
-> in the new process either. The exec'd process can't
-> even know which FD corresponds to which file.
+I _think_ this is the fix, please check (the error is "undeclared
+variable ctl")...
 
-I'm assuming from the context of your message that you
-meant "CAN'T find a use ... either". But the whole
-point of a general purpose API (which is what libc is
-and presumably is what ALSA aspires to have) is to
-support *ALL* possible uses, whether you can imagine
-them or not.
+--- alsa-kernel/core/timer.c~	2003-02-06 11:21:11.000000000 -0800
++++ alsa-kernel/core/timer.c	2003-02-06 15:19:26.000000000 -0800
+@@ -953,7 +953,7 @@
+ 	}
+ 	spin_unlock(&tu->qlock);
+ 	if (_wake) {
+-		kill_fasync(&ctl->fasync, SIGIO, POLL_IN);
++		kill_fasync(&tu->fasync, SIGIO, POLL_IN);
+ 		wake_up(&tu->qchange_sleep);
+ 	}
+ }
 
-The API does not *need* to set the FD_CLOEXEC flag,
-and so it should not. It is the height of arrogance to
-assume that something has no use simply because you
-can't imagine using it.
-
-Chris
+-- Fernando
 
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
