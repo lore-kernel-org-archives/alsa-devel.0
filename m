@@ -1,11 +1,13 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Upgrade driver to 1.0.6, memory allocation?
-Date: Wed, 18 Aug 2004 19:57:22 -0700
+Subject: Apologies
+Date: Wed, 18 Aug 2004 20:58:33 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <184801c48598$400a3330$41ca010a@mail2world.com>
+Message-ID: <350501c485a0$cbe4d650$2701010a@mail2world.com>
+Reply-To: <linux@blennerhassett.gen.nz>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_1849_01C4855D.93AB5B30"
+	boundary="----=_NextPart_000_1D3B_01C48565.7F3F1C10"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,118 +19,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: linux@blennerhassett.gen.nz
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_1849_01C4855D.93AB5B30
+------=_NextPart_000_1D3B_01C48565.7F3F1C10
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="Windows-1252"
 Content-Transfer-Encoding: 7bit
 
-Hello all,
+Sorry about the HTML+text mails, and multiple copies.
+icqmail has just "improved" their services so I cant send plain text
+anymore, and cant have incoming mail forwarded back to me.
 
-with the upgrade to 1.0.6, my alsa driver broke. (asihpi)
-Now I'm trying to put it together again, and could do with some tips...
-Mostly it still contained lots of easy to fix snd_magic_cast() but
-Can anybody confirm that the following update is the 'correct' thing to
-do?
+time to find another way to send mail to alsa-devel (Sending from my
+usual ISP is blocked, never have been able to find out why..)
 
-(My) old code:
-call snd_malloc_pages_fallback in the open callback.
-
-New code:
-call snd_pcm_lib_malloc_pages() in the hw_params callback
-
-and call snd_pcm_lib_preallocate_pages_for_all() in the sound card pcm
-init function (in my case snd_card_asihpi_pcm()
-================================
-By default according to pcm_memory.c, only a maximum of 4 substreams are
-allowed.
-My cards have up to 16 substreams.
-
-Chapter 10 of "Writing an alsa driver" says
-"snd_pcm_lib_malloc_pages(substream, size);
-Note that you have to pre-allocate to use this function. "
-
-Does this only mean that you have to preallocate at least one buffer to
-use the function?
-
-If I read it correctly, snd_pcm_lib_malloc_pages will still try to
-allocate some memory for substreams> 4, this just becomes less likely as
-the system mem becomes fragmented.
-
-Is there a rationale for making the substreams limit 4 as opposed to any
-other number?
-I guess I can change the max_substreams by providing a module parameter
-to snd-pcm module.
-============================
-snd_pcm_lib_preallocate_pages1()
-...
-if (size> 0 && preallocate_dma && substream->number <maximum_substreams)
-preallocate_pcm_pages(substream, size);
-...
-Maybe I'm missing something, but it seems the possible error return
-value from preallocate_pcm_pages is ignored - is this intentional?
-===========================
-TIA for any enligtenment about the above.
-
--- Eliot
+- Eliot
 
 
 
 <P><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">_______________________________________________________________<BR><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">ICQ - You get the message, anywhere!<br>Get it @ <a href="http://www.icq.com" target=new>http://www.icq.com</a></font><br><br>&nbsp;</font></font>
-------=_NextPart_000_1849_01C4855D.93AB5B30
-Content-Type: text/html
-Content-Transfer-Encoding: 7bit
+------=_NextPart_000_1D3B_01C48565.7F3F1C10
+Content-Type: text/html;
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 
 <HTML>
 <BODY>
-Hello all,<br>
+Sorry about the HTML+text mails, and multiple copies.<br>
+icqmail has just "improved" their services so I cant send plain text =
+anymore, and cant have incoming mail forwarded back to me.<br>
 <br>
-with the upgrade to 1.0.6, my alsa driver broke. (asihpi)<br>
-Now I'm trying to put it together again, and could do with some tips...<br>
-Mostly it still contained lots of easy to fix snd_magic_cast() but<br>
-Can anybody confirm that the following update is the 'correct' thing to do?<br>
+time to find another way to send mail to alsa-devel (Sending from my =
+usual ISP is blocked, never have been able to find out why..)<br>
 <br>
-(My) old code:<br>
-call snd_malloc_pages_fallback in the open callback.<br>
-<br>
-New code:<br>
-call snd_pcm_lib_malloc_pages() in the hw_params callback<br>
-<br>
-and call snd_pcm_lib_preallocate_pages_for_all() in the sound card pcm init function (in my case  snd_card_asihpi_pcm()<br>
-================================<br>
-By default according to pcm_memory.c, only a maximum of 4 substreams are allowed.<br>
-My cards have up to 16 substreams.<br>
-<br>
-Chapter 10 of "Writing an alsa driver" says "snd_pcm_lib_malloc_pages(substream, size);<br>
-Note that you have to pre-allocate to use this function. "<br>
-<br>
-Does this only mean that you have to preallocate at least one buffer to use the function?<br>
-<br>
-If I read it correctly, snd_pcm_lib_malloc_pages will still try to allocate some memory for substreams&gt; 4, this just becomes less likely as the system mem becomes fragmented.<br>
-<br>
-Is there a rationale for making the substreams limit 4 as opposed to any other number?<br>
-I guess I can change the max_substreams by providing a module parameter to snd-pcm module.<br>
-============================<br>
-snd_pcm_lib_preallocate_pages1()<br>
-...<br>
-if (size&gt; 0 && preallocate_dma && substream->number &lt;maximum_substreams)<br>
-		preallocate_pcm_pages(substream, size);<br>
-...<br>
-Maybe I'm missing something, but it seems the possible error return value from preallocate_pcm_pages is ignored - is this intentional?<br>
-===========================<br>
-TIA for any enligtenment about the above.<br>
-<br>
--- Eliot<br>
+- Eliot<br>
 
 </BODY></HTML>
 
 
 <P><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">_______________________________________________________________<BR><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">ICQ - You get the message, anywhere!<br>Get it @ <a href="http://www.icq.com" target=new>http://www.icq.com</a></font><br><br>&nbsp;</font></font>
-------=_NextPart_000_1849_01C4855D.93AB5B30--
+------=_NextPart_000_1D3B_01C48565.7F3F1C10--
 
 
 
