@@ -1,11 +1,14 @@
-From: Laurielle LEA <lauriellelea@yahoo.fr>
-Subject: Overrun buffer
-Date: Sat, 2 Apr 2005 00:43:08 +0200 (CEST)
-Message-ID: <20050401224309.89334.qmail@web25109.mail.ukl.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000156]: MIDI fails with "cmd: 0xff failed at 0x300 (status = 0xff, data = 0xff)"
+Date: Sat, 2 Apr 2005 15:26:09 +0200
+Message-ID: <b706a40c492cbc3adeefe98ea3234740@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 821E1183
+	for <alsa-devel@alsa-project.org>; Sat,  2 Apr 2005 15:26:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,35 +18,84 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,=20
 
-I have now a problem of overrun buffer during capture.
-But it's not occured all the time. Sometimes i have
--EPIPE for snd_pcm_readi
-I tried to use  snd_pcm_prepare(), snd_pcm_drop() or
-snd_pcm_drain() calls but I have still -EPIPE.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=156> 
+======================================================================
+Reported By:                gwittenburg
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   156
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian testing/unstable
+Kernel Version:             2.6.4
+======================================================================
+Date Submitted:             03-24-2004 06:07 CET
+Last Modified:              04-02-2005 15:26 CEST
+======================================================================
+Summary:                    MIDI fails with "cmd: 0xff failed at 0x300 (status =
+0xff, data = 0xff)"
+Description: 
+MIDI playback with aplaymidi doesn't produce any output with all channels
+turned on in alsamixer. While aplaymidi is running a quiet, high-pitched
+sound is comming from some part in the laptop. The following two lines
+appear in dmesg:
 
-Do you know how can I solve this ?
+cmd: 0xff failed at 0x300 (status = 0xff, data = 0xff)
+cmd: 0x3f failed at 0x300 (status = 0xff, data = 0xff)
 
-Thanks a lot.
-Laurielle LEA.
+The same happens if the snd-intel8x0 module was inserted with
+mpu_port=0x330. (btw, usually I would have expected one of these two to
+fail...) snd_rawmidi is loaded with midi_map=0.
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-28-05 04:10 
+----------------------------------------------------------------------
+Submitter: Does this problem still exist with current ALSA versions?
+
+----------------------------------------------------------------------
+ gwittenburg - 04-02-05 15:26 
+----------------------------------------------------------------------
+The problem has been solved: I neither can reproduce "cmd: 0xff failed at
+0x300 (status = 0xff, data = 0xff)" nor the high-pitched sound anymore,
+because the MIDI ports are now detected correctly as not being available,
+i.e. "aplaymidi -l" returns no available ports. Hence I'm not able to play
+MIDI on the sound chip directly, which is correct. This is an improvement
+when compared to "aplaymidi -l" wrongly reporting "64:0 Rawmidi 0 - Intel
+82801CA-ICH3 M Intel 82801CA-ICH3 MPU-401" with kernel 2.6.4. Now I'm
+running 2.6.10 with Debian patches.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-24-04 06:07 gwittenburg    New Issue                                    
+03-24-04 06:07 gwittenburg    Distribution              => Debian
+testing/unstable
+03-24-04 06:07 gwittenburg    Kernel Version            => 2.6.4           
+03-24-04 06:11 gwittenburg    Issue Monitored: gwittenburg                    
+03-24-04 10:02 perex          Note Added: 0000696                          
+03-24-04 13:10 gwittenburg    Note Added: 0000700                          
+03-24-04 15:04 perex          Note Added: 0000701                          
+03-25-04 02:32 gwittenburg    Note Added: 0000704                          
+03-28-05 04:10 jdthood        Note Added: 0004231                          
+04-02-05 15:26 gwittenburg    Note Added: 0004298                          
+======================================================================
 
 
-=09
-
-=09
-	=09
-__________________________________________________________________
-D=E9couvrez le nouveau Yahoo! Mail : 250 Mo d'espace de stockage pour vos=
- mails !=20
-Cr=E9ez votre Yahoo! Mail sur http://fr.mail.yahoo.com/
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
