@@ -1,17 +1,13 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: Re: Removal of /proc/asound ?
-Date: Mon, 19 May 2003 20:03:01 +1000
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: ALC650 + Mic input not working
+Date: Mon, 19 May 2003 11:59:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
-References: <20030517081625.6ef24458.erikd-alsa@mega-nerd.com>
-	<Pine.LNX.4.44.0305171343140.21997-100000@pnote.perex-int.cz>
-	<20030518081331.7b9eca31.erikd-alsa@mega-nerd.com>
-	<s5h4r3re0a8.wl@alsa2.suse.de>
+Message-ID: <200305190959.LAA09754@www4.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783512-1804289383-1053338368=:9752"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4r3re0a8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,45 +17,42 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 19 May 2003 11:46:55 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+--97783512-1804289383-1053338368=:9752
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-> > If it was a request from the 2.5 kernel people, why is this change impacting
-> > people running 2.4 kernels.
-> 
-> i also thought of this.  in theory, it's not difficult to implement
-> the compatible layer.
-> 
-> meanwhile, it's not too hard to create device files, too.  once if you
-> made them, then the system works like before.
-> 
-> frankly saying, i'm not sure which is the really better way.
-> if there are MANY demands on the old way, we'll consider to implement
-> it back again (but not appearing in the 2.5 kernel tree :)
+Sorry, here it is, but this is only half solution.
 
-There are times when backward compatibility is important and other times
-when it is not.
+Peter Zubaj
 
-Personally, I quite look forward to using DEVFS and the other 2.5/2.6 
-features when I do finally make the switch. Until then, i would like as 
-little change as possible.
 
-I therefore strongly urge you to keep 2.4 functionality as it was and feel
-free to do whatever is needed for the 2.5/2.6 kernel.
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AZ=EDskajte superv=FDhodn=E9 ADSL e=B9te v=FDh=
+odnej=B9ie. Ceny u=BE od 399 Sk mesa=E8ne bez=0ADPH. By=BB r=FDchly sa naoz=
+aj oplat=ED. http://www.slovanet.sk/menu/adsl.html=0A=0A
+--97783512-1804289383-1053338368=:9752
+Content-Type: APPLICATION/octet-stream; name="E:\\patches\\MSI_KT333.diff"
+Content-Transfer-Encoding: BASE64
 
-Regards,
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-Peter F. Curran : Microsoft. Still delivering a text editor with 
-    Win95/98 that can only open a max 64K file, despite being on 
-    a machine with an 8Gig HD and 64M of ram....
-G Cook: Perhaps, but Notepad is still the most functional program 
-    in the whole suite!
+LS0tIGFjOTdfcGF0Y2guYy5vbGQJMjAwMy0wNC0wNyAxNDoyNjoyNy4wMDAw
+MDAwMDAgLTAxMDAKKysrIGFjOTdfcGF0Y2guYwkyMDAzLTA1LTE4IDA5OjAx
+OjAxLjAwMDAwMDAwMCAtMDEwMApAQCAtMzc0LDYgKzM3NCwxMyBAQAogCXZh
+bCAmPSB+MHhjMDAwOyAvKiBzbG90OiAzLDQsNyw4LDYsOSAqLwogCXNuZF9h
+Yzk3X3dyaXRlX2NhY2hlKGFjOTcsIEFDOTdfQUxDNjUwX01VTFRJQ0gsIHZh
+bCk7CiAKKwl2YWwgPSBzbmRfYWM5N19yZWFkKGFjOTcsIDB4NzYpOworCXZh
+bCA9IHZhbCB8IDE7CisJc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5NywgMHg3
+NiwgdmFsKTsKKwl2YWwgPSBzbmRfYWM5N19yZWFkKGFjOTcsIDB4NzgpOwor
+CXZhbCA9IHZhbCB8IDB4MTAwOworCXNuZF9hYzk3X3dyaXRlX2NhY2hlKGFj
+OTcsIDB4NzgsIHZhbCk7CisKIAkvKiBmdWxsIERBQyB2b2x1bWUgKi8KIAlz
+bmRfYWM5N193cml0ZV9jYWNoZShhYzk3LCBBQzk3X0FMQzY1MF9TVVJSX0RB
+Q19WT0wsIDB4MDgwOCk7CiAJc25kX2FjOTdfd3JpdGVfY2FjaGUoYWM5Nywg
+QUM5N19BTEM2NTBfTEZFX0RBQ19WT0wsIDB4MDgwOCk7Cg==
+
+--97783512-1804289383-1053338368=:9752--
 
 
 -------------------------------------------------------
