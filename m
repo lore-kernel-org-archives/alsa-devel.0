@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000764]: ABIT VA-20 works with dxs_support=1
-Date: Fri, 4 Feb 2005 18:04:13 +0100
-Message-ID: <0bea9d8077695944ee8de420d88c8694@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000882]: Sound stops working in two scenarios with snd-via82xx module
+Date: Fri, 4 Feb 2005 18:29:59 +0100
+Message-ID: <193124a6cf51a34c269d612b555c272f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D07DF1ED
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 18:04:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93AD71F4
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 18:29:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,60 +21,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=764> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=882> 
 ======================================================================
-Reported By:                tomhughes
+Reported By:                rob
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   764
+Issue ID:                   882
 Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   tweak
+Reproducibility:            sometimes
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Redhat 9
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             12-31-2004 12:41 CET
-Last Modified:              02-04-2005 18:04 CET
+Date Submitted:             02-03-2005 18:59 CET
+Last Modified:              02-04-2005 18:29 CET
 ======================================================================
-Summary:                    ABIT VA-20 works with dxs_support=1
+Summary:                    Sound stops working in two scenarios with
+snd-via82xx module
 Description: 
-My ABIT VA-20 motherboard is not currently recognised by the dxs_support
-whitelist in the via82xx driver but I have tested it with a 44.1kHz sound
-file and dxs_support=1 and it appears to work correctly. The lspci output
-for the device is:
+Sound normally works fine, but we have problems a large percentage of the
+time when booting after a day or two of the systems being off, or less
+frequently if I unplug/replug or turn on/off amplified speakers.  It seems
+to vary from machine to machine even with identical hardware.
 
-  00:11.5 Class 0401: 1106:3059 (rev 60)
-          Subsystem: 147b:1411
-          Flags: medium devsel, IRQ 10
-          I/O ports at bc00 [size=256]
-          Capabilities: <available only to root>
+This is a major annoyance for us as we have many of these systems which
+we're trying to use in an educational setting with audio.  We can work
+around it, but it's not ideal.  If only it had showed up in our initial
+testing!
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 20:13 
+ tiwai - 02-04-05 13:08 
 ----------------------------------------------------------------------
-Thanks for the info.  The entry was added to CVS.
+Please elaborate what do you mean "sound stops working".
+It's important to know whether you got errors, or just got silence.
+Also, which system (app, sound server) is used is essential.
+
+----------------------------------------------------------------------
+ rob - 02-04-05 18:29 
+----------------------------------------------------------------------
+"Sound stops working" means I hear silence.  If I turn up the speakers
+really loud I hear a hum/growling sound.
+
+When this happens I don't see any errors anywhere either from apps or the
+kernel and the modules are still loaded, at least in the second scenario. 
+So far I haven't been able to verify this on the first scenario, since it
+is harder to reproduce where I can work on the system.
+
+I'm using xine to play video with audio with either the alsa or OSS xine
+driver (via alsa) with the same results.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 12:41 tomhughes      New Issue                                    
-12-31-04 12:41 tomhughes      Distribution              => Fedora Core 3   
-12-31-04 12:41 tomhughes      Kernel Version            => 2.6.9           
-01-03-05 20:13 tiwai          Status                   new => resolved     
-01-03-05 20:13 tiwai          Resolution               open => fixed       
-01-03-05 20:13 tiwai          Assigned To               => tiwai           
-01-03-05 20:13 tiwai          Note Added: 0003073                          
-01-03-05 20:13 tiwai          Assigned To              tiwai =>            
-02-04-05 18:04 tiwai          Status                   resolved => closed  
+02-03-05 18:59 rob            New Issue                                    
+02-03-05 18:59 rob            Distribution              => Redhat 9        
+02-03-05 18:59 rob            Kernel Version            => 2.4.22          
+02-04-05 13:08 tiwai          Note Added: 0003500                          
+02-04-05 18:29 rob            Note Added: 0003513                          
 ======================================================================
 
 
