@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: USB audio devices
-Date: Thu, 11 Mar 2004 09:09:18 +0100 (MET)
+Date: Thu, 11 Mar 2004 09:14:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403110859010.18812-100000@studcom.urz.uni-halle.de>
-References: <200403102104.49431.annabellesgarden@yahoo.de>
+Message-ID: <Pine.HPX.4.33n.0403110910060.18812-100000@studcom.urz.uni-halle.de>
+References: <Pine.HPX.4.33n.0403091851500.4549-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200403102104.49431.annabellesgarden@yahoo.de>
+In-reply-to: <Pine.HPX.4.33n.0403091851500.4549-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-> We can also vary the exact USB frame time.
-> With UHCI 1.1 USB Hosts there is the SOF Register.
-> ...
-> It really works here already with the us428: The trick is:
-> We first make the USB-Frame longer until we capture 1 Sample Frame more  45
-> (for 44100). then the USB-Frame is shortened until we capture only 43 Sample
-> Frames for one USB Frame. and so on.
+Clemens Ladisch wrote:
 
-Cool idea!
+> Jaroslav Kysela wrote:
+>
+> > I don't know much about USB 2.0,
+>
+> Not too much differences for the driver.
 
-However, standard-compliant devices are supposed to base their timing
-for feedback/feedforward information on the arrival of SOF packets.
-Introducing jitter into the SOF timer may not be a good idea in every
-case.
-
-And this won't work if there is more than one audio device connected
-to the same bus, or if the HC is OHCI or EHCI.
+Well, I should have read the specification before saying such things.
+The format of synchronization information has changed, too; it's not
+10.14 bits but 12.13 packed into 16.16 (4 bytes).
 
 
 Regards,
