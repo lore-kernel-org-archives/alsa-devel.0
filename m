@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000615]: AC'97 broken on SB Live 24 bit
-Date: Sun, 31 Oct 2004 16:24:01 +0100
-Message-ID: <27d7f12f72107c49eb9002a7f58105cb@bugtrack.alsa-project.org>
+From: "Chandra Corley" <chandracorley_ux@icomp.co.nz>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Sun, 31 Oct 2004 18:57:52 +0200
+Message-ID: <7e3201c4bf6a$cfb22d08$6d872875@to.epost.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CD2F2C2
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 16:24:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +16,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Heya,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=615> 
-======================================================================
-Reported By:                MRB
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   615
-Category:                   PCI - audigyls
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.7-gentoo-r1
-======================================================================
-Date Submitted:             10-29-2004 12:34 CEST
-Last Modified:              10-31-2004 16:24 CET
-======================================================================
-Summary:                    AC'97 broken on SB Live 24 bit
-Description: 
-The Creative Sound Blaster 24bit is using an Audigy chip according to its
-PCI ID. The driver audigyls doesn't work because AC'97 does not respond
-and AC'97 0 access is not valid. When you remove the error checking the
-audigyls module can be loaded but there's no sound output. See attached
-file for details. 
-======================================================================
+Do you want a rolex watch?
 
-----------------------------------------------------------------------
- MRB - 10-31-04 00:30 
-----------------------------------------------------------------------
-Tested it, compiled with latest release. Driver loads without any errors,
-no more ac97 errors in syslog. In alsamixer volume or mute of AC97, SPDIF,
-Unknown and What U Hear cannot be changed, everthing else set to max. I
-get no sound whatever on all 3 output plugs, neither with Creative 7.1
-speakers nor a headphone. Over the input plug I get sound that with a lot
-of creativity sounds like it's supposed to ( a lot of noise and extremely
-unclean, hard to notice it's not random noise ) and only over the left
-speaker of my headphones. 
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
 
-Output in syslog loading module and attempting to play sound attached (
-uncommented snd_printk calls ). 
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
 
-If the soundcard it not available to the developers I'm willing to donate
-the price of the card if that helps.
+Visit us: http://www.roiex.com/rep/rolex/
 
-----------------------------------------------------------------------
- jcdutton - 10-31-04 16:24 
-----------------------------------------------------------------------
-This looks like I will actually have to play with the actual card.
-As you offer to donate the value of a card, I will agree to try to get it
-working.
-Please email me direct, and we can arrange things off list.
+Best regards,
+Hilton Jones
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-29-04 12:34 MRB            New Issue                                    
-10-29-04 12:34 MRB            File Added: details.txt                      
-10-29-04 12:34 MRB            Distribution              => Gentoo Linux    
-10-29-04 12:34 MRB            Kernel Version            => 2.6.7-gentoo-r1 
-10-30-04 18:08 jcdutton       Note Added: 0002289                          
-10-31-04 00:30 MRB            Note Added: 0002290                          
-10-31-04 00:30 MRB            File Added: details2.txt                     
-10-31-04 16:24 jcdutton       Note Added: 0002294                          
-======================================================================
 
+No thanks: http://roiex.com/z.php
 
 
 
