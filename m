@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000621]: Audigy input
-Date: Sun, 31 Oct 2004 15:14:57 +0100
-Message-ID: <c33bea86af36b89343daf988c800540e@bugtrack.alsa-project.org>
+Date: Sun, 31 Oct 2004 15:16:34 +0100
+Message-ID: <a380bc67934709ac1ff3fc1bd83ae549@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8FFF32D1
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 15:14:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BBAD92D3
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 15:16:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             10-31-2004 15:14 CET
-Last Modified:              10-31-2004 15:14 CET
+Last Modified:              10-31-2004 15:16 CET
 ======================================================================
 Summary:                    Audigy input
 Description: 
@@ -51,10 +51,21 @@ many of the output sliders cannot be muted by pressing M (like Master or
 PCM).
 ======================================================================
 
+----------------------------------------------------------------------
+ KoxtaRF - 10-31-04 15:16 
+----------------------------------------------------------------------
+I forgot to give you my system specs...
+
+Linux Gentoo (current)
+Alsa 1.0.6
+kernel 2.6.9 (using included alsa-driver)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-31-04 15:14 KoxtaRF        New Issue                                    
+10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
+10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
 ======================================================================
 
 
