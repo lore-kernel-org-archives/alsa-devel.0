@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Abramo Bagnara <abramo.bagnara@libero.it>
 Subject: Re: matrix mixer control (Re: Complex mixer questio
-Date: Wed, 2 Apr 2003 19:18:34 +0200 (CEST)
+Date: Wed, 02 Apr 2003 19:18:40 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304021916210.3649-100000@pnote.perex-int.cz>
-References: <E190lKN-0001jp-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3E8B1B70.2060505@libero.it>
+References: <3E84C6BA0011E1C5@ims5a.libero.it> (added by postmaster@libero.it)
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E190lKN-0001jp-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <3E84C6BA0011E1C5@ims5a.libero.it> (added by postmaster@libero.it)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,15 +18,15 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Abramo Bagnara <abramo.bagnara@libero.it>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2 Apr 2003, Paul Davis wrote:
-
-> >Ortogonally to that, IMO the increasing numbers of controls in modern 
-> >professional hardware justify the choice of hash table access to 
-> >controls (try to imagine a 26 channel hardware level meter that need to 
-> >be polled 50 times per second).
+Paul Davis ha scritto:
+>>Ortogonally to that, IMO the increasing numbers of controls in modern 
+>>professional hardware justify the choice of hash table access to 
+>>controls (try to imagine a 26 channel hardware level meter that need to 
+>>be polled 50 times per second).
+> 
 > 
 > TotalMix for the HDSP will not do that. Thomas is working on mapping
 > the meters into user space. Its not reasonable to do this via system
@@ -33,14 +34,15 @@ On Wed, 2 Apr 2003, Paul Davis wrote:
 > until that is done, I think he created a control that gets all the
 > values in a single system call.
 
-Why peak reading requires a RT-task? It's not time critical operation.
+This open a more general problem for generic mmap support for controls, 
+but I think this is postponible.
 
-						Jaroslav
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 
