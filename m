@@ -1,14 +1,9 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: mpu401_pnp
-Date: Mon, 7 Feb 2005 16:54:14 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
-References: <4207664F.8030305@free.fr>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3474B20B
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 16:54:16 +0100 (MET)
-In-Reply-To: <4207664F.8030305@free.fr>
+From: administracion-newprint@in-out.es
+Subject: Re: Status
+Date: Mon, 7 Feb 2005 11:29:25 -0500
+Message-ID: <200502071629.j17GTPnU027145@host.verdial.org>
+References: <200502071629.j17GTMZQ026520@host.verdial.org>
+In-Reply-To: <200502071629.j17GTMZQ026520@host.verdial.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,33 +13,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: matthieu castet <castet.matthieu@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-matthieu castet wrote:
-> Ok, I found a bug in your patch : when you call pnp_register_driver, you
-> should check that it is >= 0. If not you shouldn't call
-> pnp_unregister_driver.
+El correo al cual a enviado este eMail no existe, para contactar con nosotros por favor envie sus correos a alguna de las siguientes direcciones.
 
-I just copied this from the other ALSA PnP drivers.  It seems those
-have all the same bug.
+administración@in-out.es 	Administracion Grupo IN-out.
 
-> One question : does snd_card_set_dev(card, &device->dev) is important ?
+comercial@in-out.es		Dpto. Comercial Grupo IN-out.
 
-Well, this pointer should be set if possible, but I'm not sure if it's
-actually used anywhere.
+pedidos@in-out.es		Pedidos Grupo IN-out.
 
-> It wasn't use with acpi.
-
-Well, it should have been used. :-)  I adapted the ACPI code from the
-serial driver which of course didn't have this, and the 2.4 kernel I
-developed this on didn't have 'struct device' anyway.
-
-
-Best regards,
-Clemens
-
+grafismo@in-out.es		Dpto. diseño Grupo IN-out
 
 
 -------------------------------------------------------
