@@ -1,14 +1,14 @@
-From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
-Subject: Re: [PATCH] integrate snd-usb-midi into snd-usb-audio
-Date: Tue, 3 Sep 2002 16:27:49 +0200 (CEST)
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsamixer on cvs
+Date: Tue,  3 Sep 2002 12:23:49 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020903142749.31441.qmail@web12205.mail.yahoo.com>
-References: <s5hlm6tbnye.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <200209031923.MAA07291@cmn29.stanford.edu>
+References: <Pine.LNX.4.44.0209022137350.7932-100000@cmn37.stanford.edu>
+	<s5h65xne5sr.wl@alsa2.suse.de>
+Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlm6tbnye.wl@alsa2.suse.de>
+In-Reply-To: <s5h65xne5sr.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: tiwai@suse.de, clemens@ladisch.de
-Cc: alsa-devel@lists.sourceforge.net, karsten wiese <annabellesgarden@yahoo.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> schrieb: > Hi,
-> 
-> thanks.  the patch is applied now to cvs.
-> could you check whether it works for you?
-> 
-> 
-> Karsten, can you rewrite the patch for your tascam
-> driver based on
-> this new mechanism?  if any other changes are
-> needed, please let us
-> know.
-> 
-no changes needed. works well as it is now.
-changed tascam driver available via email.
-Tascam did not answer yet our calls to allow us the
-use of their firmware.
+> > After installing a new cvs version I'm getting an assertion failure in
+> > alsamixer (or amix).
+> >
+> > # alsamixer
+> > alsamixer: simple.c:869: simple_add1: Assertion `!simple->ctls[type].elem' 
+> > failed.
+> > Aborted
+>
+> could you try to remove the assert() at alsa-lib/src/mixer/simple.c
+> line 869?  this looks like a wrong conditional...
 
-proposal for autoloading snd-usb-midi from
-snd-usb-audio if needed:
+I tried that and it seems to work fine now, obviously I did
+not do extensive tests. Thanks.
 
-	request_module( "snd-usb-midi");
-
-this way the tascam driver releaves the user from
-taking care that snd-usb-midi is present.
-
-Karsten
-
-__________________________________________________________________
-
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
+-- Fernando
 
 
 -------------------------------------------------------
