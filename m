@@ -1,13 +1,14 @@
-From: Stephen Hassard <steve@hassard.net>
+From: Florin Andrei <florin@andrei.myip.org>
 Subject: Re: Audigy 2 support - update
-Date: Thu, 22 May 2003 22:36:12 -0700
+Date: 23 May 2003 00:30:28 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030523053612.GA10909@www.angiotech.com>
+Message-ID: <1053675028.18540.70.camel@rivendell.home.local>
 References: <20030523051240.GA10831@www.angiotech.com>
+Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 In-Reply-To: <20030523051240.GA10831@www.angiotech.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -20,13 +21,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 22, 2003 at 10:12:40PM -0700, Stephen Hassard wrote:
+On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
+
 > I've connected my midi keyboard to the keyboard port via an adapter, and I can route my midi keypressed to the Audigy 2 synth using my soundfont.
 
-oops, that should have read joystick port, not keyboard.
+So MIDI input seems to work, is that what you're saying?
 
-later,
-Steve
+How about MIDI output?
+
+You're using a plain Audigy2, not Audigy2 Platinum, is that correct?
+
+-- 
+Florin Andrei
+
+http://florin.myip.org/
+
 
 
 -------------------------------------------------------
