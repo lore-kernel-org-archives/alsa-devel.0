@@ -1,19 +1,9 @@
-From: matt yee-king <yeeking@no-future.com>
-Subject: Re: [linux-audio-user] Re: pbook users please test ALSA
-Date: 17 May 2002 18:19:22 +0000
+From: Jack Howarth <howarth@bromo.msbb.uc.edu>
+Subject: Re:  Re: [Alsa-devel Request for test of powermac driver
+Date: Mon, 20 May 2002 21:19:42 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1021659570.14478.26.camel@bennyhill.belmont>
-References: <20020517134841.919F94C115@dioniso.waptopic.com>
-	<3CE52189.557F9DB2@folkwang-hochschule.de>
-	<20020517161719.781224C115@dioniso.waptopic.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200205210119.VAA33669@bromo.msbb.uc.edu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp-relay1.noc.dsvr.net (smtp-relay02.tc.dsvr.net [212.69.192.6])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA22582
-	for <alsa-devel@alsa-project.org>; Fri, 17 May 2002 19:20:44 +0200
-In-Reply-To: <20020517161719.781224C115@dioniso.waptopic.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,22 +12,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: linux-audio-user@music.columbia.edu
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net, mis@creazone.com
 List-Id: alsa-devel@alsa-project.org
 
-
-yep... just grabbed alsa from cvs and it compiled... nice one  Takashi!
-
-i've got xmms playing thru the oss emulation, i am building alsaplayer
-now to test an alsa native app.=20
-
-theres some strange quirks with the volume though, like the  no sound
-until mic boost adjusted thing mentioned by  J=F6rn. and xmms doesn't seem
-to be able to adjust the volume either.=20
-
-- matthew
-
+Michal,
+   Well on newer machines which don't have analog cd output I'm not
+sure if you can get playback with most cd players. I know xmms-cdread
+has the ability to read the digital CD audio stream but I don't know
+how many other players have the ability. Remember too that xmms itself
+doesn't have that ability, only xmms-cdread provides that.
+                      Jack
 
 _______________________________________________________________
 
