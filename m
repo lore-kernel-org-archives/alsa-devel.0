@@ -1,24 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: [MPlayer-users] gmplayer ALSA bug [was Re: [ALSA -
-	driver 0000475]: multiple input streams]
-Date: Fri, 03 Sep 2004 20:21:17 -0400
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: hardware channel mixing
+Date: Fri, 03 Sep 2004 21:19:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094257277.6575.127.camel__12336.2394435846$1094258214$gmane$org@krustophenia.net>
-References: <20040903171836.F159C2D0C0@server.perex-int.cz>
-Reply-To: "MPlayer usage questions, features,  bugreports" <mplayer-users@mplayerhq.hu>
+Message-ID: <1094260793.3727.19.camel@localhost>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+	 <1094254221.6575.94.camel@krustophenia.net>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from teamsearchmr.co.uk (teamsearchmr.plus.com [80.229.42.233])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4E502C9
-	for <alsa-devel@alsa-project.org>; Sat,  4 Sep 2004 02:23:28 +0200 (MEST)
-Received: from 212.85.249.130 ([212.85.249.130])
-	by teamsearchmr.co.uk (teamsearchmr.co.uk)
-	(MDaemon.PRO.v7.1.1.R)
-	with DomainPOP id md50000068747.msg
-	for <alsa-devel@alsa-project.org>; Sat, 04 Sep 2004 01:26:00 +0100
-In-Reply-To: <20040903171836.F159C2D0C0@server.perex-int.cz>
+In-Reply-To: <1094254221.6575.94.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,52 +19,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: bugtrack@alsa-project.org
-Cc: alsa-devel@alsa-project.org, mplayer-users@mplayerhq.hu
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-09-03 at 13:18, bugtrack@alsa-project.org wrote:
-> mplayer gives this result:
-> ==========================================================================
-> Opening audio decoder: [mp3lib] MPEG layer-2, layer-3
-> MP3lib: init layer2&3 finished, tables done
-> AUDIO: 44100 Hz, 2 ch, 16 bit (0x10), ratio: 24000->176400 (192.0 kbit)
-> Selected audio codec: [mp3] afm:mp3lib (mp3lib MPEG layer-2, layer-3)
-> ==========================================================================
-> Checking audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
-> AF_pre: af format: 2 bps, 2 ch, 44100 hz, little endian signed int
-> AF_pre: 44100Hz 2ch Signed 16-bit (Little-Endian)
-> audio_setup: Can't open audio device /dev/dsp: Device or resource busy
-> alsa-init: got device=0, subdevice=0
-> alsa-init: 1 soundcard found, using: default
+Hi,
+
+[snip]
+> Not quite, it's 32 mono substreams, 21 stereo.  Each mono substream
+> requires 2 voices, each stereo substream, three.  There is an extra
+> voice allocated per playback substream that is silent, and is just used
+> to generate the period interrupts.
 > 
-> (. gmplayer freeze .)
-> 
-> (. Closing xmms .)
-> 
-> alsa: 44100 Hz/2 channels/4 bpf/65536 bytes buffer/Signed 16 bit Little
-> Endian
-> AO: [alsa] 44100Hz 2ch Signed 16-bit (Little-Endian) (2 bps)
-> Building audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
-> Video: no video
-> Starting playback...
-> ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
-> alsa-control: mixer attach /dev/mixer error: No such file or directory
+> I have pored over the code, and I don't understand exactly why the extra
+> voice is needed, Jaroslav said something like "if you don't use the
+> extra voice the interrupts are going faster than the voice position".  I
+> think it might be needed so that multiple can playback, each with
+> different period sizes.
 
-There is an egregious bug in gmplayer, where it blithely tries to open
-ALSA devices (hw:x,x) using OSS device names (/dev/mixer).  I have been
-meaning to file a bug report but didn't have the bandwidth, but now
-people are reporting this as an ALSA bug.  To make matters worse, the
-problem only occurs in gmplayer, and that regular mplayer works fine.
+Smells like incomplete hardware spec. Wasting a DMA channel for timing
+purposes sounds pretty stupid, despite it may be the only known way to
+make it work right now.
 
-Is this fixed in a more recent release?
+> There is currently no way to open an 8 or 16 channel playback
+> substream.  There are the various plughw surround plugins, but these
+> seem to work by allocating several mono/stereo streams.  This is
+> certainly wasteful - 5.1 surround wastes 2 voices.
+>  
+> I have been planning to add another playback device to the emu10k1
+> driver with one 16-63 channel substream, to correspond to the hw:0,2
+> capture device which can record up to 64 channels.
 
-Lee
+There is one problem: If the DMA engine really can demultiplex that many
+interleaved channels, the buffer/period *time* will be pretty low. I
+think more than 4 or 6 interleaved channels per DMA is not very sane. 
+Using several DMA channels would work, but again thats the same as using
+several alsa pcm devices plugged together. The voice waste should be
+eliminated by other means in my opinion.
 
-_______________________________________________
-MPlayer-users mailing list
-MPlayer-users@mplayerhq.hu
-http://mplayerhq.hu/mailman/listinfo/mplayer-users
+Would'nt it be time to think about a resource manager ? Something like
+CheckoutVoice() / CheckinVoice() ? Using a resource manager inside a
+individual driver already relieves a lot of problems, but maybe using a
+resource manager at ALSA-LIB level, would not be a bad idea. Just a
+thought that came to my mind...
+
+Best Regards
+
+Manuel Jander
+
 
 
 
