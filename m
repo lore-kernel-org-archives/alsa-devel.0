@@ -1,12 +1,12 @@
-From: "David E. Storey" <dave@tamos.net>
-Subject: dsnoop
-Date: 16 May 2003 16:24:08 -0400
+From: Chip Salzenberg <chip@pobox.com>
+Subject: "Missing, Reward Offered: /proc/asound/dev"
+Date: Fri, 16 May 2003 16:50:18 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1053116648.423.11.camel@localhost>
+Message-ID: <20030516205018.GI7921@perlsupport.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,63 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Folks,
+OK, I'm in the habit of playing with the CVS drivers, and of course
+when it breaks it's my own fault, and that's fine ... but:
 
-Would anyone be so kind as to offer up an example of using dsnoop? I'd
-like to use jack to perform all kinds on monitoring on a device and use
-an alsa app, namely arecord, to do the actual recording. I've tried
-using the jack plugin and while it works, when I hit CTRL-C on arecord
-to stop recording, it pretty much halts jack.
+Today I see in CVS that the "/proc/asound/dev" directory is not just
+temporarily broken; its support has been entirely removed.  Now none
+of my alsa apps (well, OK, I only have two) are happy, nor do they
+have any prospect of being happy in the future.
 
-When I use dsnoop now, if there's nothing using the device, it returns:
-
-set_params:810: Channels count non available
-
-And if something, like jack, is using the original device, it just sits
-and waits without doing much of anything. My .asoundrc file looks a
-little something like:
-
-pcm.intel8x0 {
-        type hw
-        card 0
-}
-
-ctl.intel8x0 {
-        type hw
-        card 0
-}
-
-pcm.snoop {
-        type dsnoop
-        ipc_key 3346
-        slave { pcm "intel8x0" }
-}
-
-pcm.jackplug {
-        type plug
-        slave { pcm "jack" }
-}
-
-pcm.jack {
-        type jack
-        playback_ports {
-                0 alsa_pcm:playback_1
-                1 alsa_pcm:playback_2
-        }
-        capture_ports {
-                0 alsa_pcm:capture_1
-                1 alsa_pcm:capture_2
-        }
-}
-
-Any help would be GREATLY appreciated. And if I should be using another
-list, please let me know kindly.
-
-d!
-
+Can I get a "WTF?" from the congregation?!  Amen!
+-- 
+Chip Salzenberg               - a.k.a. -               <chip@pobox.com>
+"I wanted to play hopscotch with the impenetrable mystery of existence,
+    but he stepped in a wormhole and had to go in early."  // MST3K
 
 
 -------------------------------------------------------
