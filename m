@@ -1,15 +1,11 @@
-From: "Russell Phipps" <russellphipps_dg@d2vodafone.de>
-Subject: Premium Replica Watches
-Date: Wed, 08 Dec 2004 21:51:36 -0600
-Message-ID: <43d201c4dda2$9e12acf0$f34f7e88@cfnavarra.es>
+From: Timo Sivula <timo.sivula@luukku.com>
+Subject: Re: [Alsa-user] El Cheapo: Works, but some open questions still.
+Date: Thu, 9 Dec 2004 06:49:33 +0200 (EET)
+Message-ID: <1102567773702.timo.sivula.1129.qHy8HBgpm3EHdIbzvfsntQ@luukku.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cfnavarra.es (210-85-101-186.cm.dynamic.apol.com.tw [210.85.101.186])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id C57D9351
-	for <alsa-devel@alsa-project.org>; Thu,  9 Dec 2004 04:55:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,29 +15,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Get the Finest Rolex Watch Replica!
+Lee Revell kirjoitti 09.12.2004 kello 02:31:
 
-We only sell premium watches. There's no battery in these replicas just
-like the real ones since they charge themselves as you move. The second h=
-and
-moves JUST like the real ones, too. These original watches sell in stores
-for thousands of dollars. We sell them for much less.=20
+> No.  You need to get into the driver and figure out what's going on.
+> Add some printk()s to the driver to measure the delay in starting the
+> devices.
 
-- Replicated to the Smallest Detail
-- 98% Perfectly Accurate Markings=20
-- Signature Green Sticker w/ Serial Number on Watch Back
-- Magnified Quickset Date
-- Includes all Proper Markings
+Help! I am comfortable removing a couple of crystals from a souncard and so=
+ldering in some wire, but adding one line of text in a source code file mak=
+es me very insecure.=20
 
-Visit us: http://www.bhex.com/rep/rolx/
+Could you give me some hands on advice on how to do this? Which file? Where=
+ exactly do I insert the text, etc...
 
-All orders placed before December 12th will be at your door before
-Christmas!
+My software competence is, ahem, somewhat limited.
 
-No thanks: http://www.bhex.com/z.php
+Timo
+
+..............................................................
+ MTV3 Laajakaista - Hauskemman el=E4m=E4n puolesta.
+ http://www.mtv3.fi/liittyma/hankinta/laajakaista/
 
 
 
