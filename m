@@ -1,13 +1,17 @@
-From: Flo Gleixner <flo@bier.homeip.net>
-Subject: Re: Problem recording with via 8235
-Date: Mon, 26 Jul 2004 20:16:30 +0200 (CEST)
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Tascam US-224/428 MMC: Work in progress...
+Date: Tue, 27 Jul 2004 00:36:18 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.60.0407261942000.26365@octopus.goldach.test>
-References: <Pine.LNX.4.60.0407231650160.25456@octopus.goldach.test>
+Message-ID: <33252.192.168.1.8.1090884978.squirrel@192.168.1.8>
+References: <33466.195.245.190.93.1089901175.squirrel@195.245.190.93>        
+     <7444.195.245.190.93.1090312112.squirrel@195.245.190.93>         
+    <20040720180512.GA527@tuba.home>      
+    <1861.195.245.190.93.1090402661.squirrel@195.245.190.93>   
+    <32829.192.168.1.5.1090718653.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
+Content-Type: multipart/mixed;boundary="----=_20040727003618_19124"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.60.0407231650160.25456@octopus.goldach.test>
+In-Reply-To: <32829.192.168.1.5.1090718653.squirrel@192.168.1.5>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,414 +20,210 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Flo Gleixner <flo@bier.homeip.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: martin-langer@gmx.de, annabellesgarden@yahoo.de, ws@seh.de
 List-Id: alsa-devel@alsa-project.org
 
+------=_20040727003618_19124
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-Hmm. you guys need probably more Information:
+Hi,
 
-uname -m ; uname -r
-i686
-2.6.3-15mdk
+That's me again, now with another iteration of a modified us428control.
+MMC support has been improved and transport LEDs is getting almost
+functional. Tascam control protocol sysex decoding is also complete (LEDs
+control mainly).
 
+As before, I'm only testing this on my US-224. US-428 owners should test
+and report is everything is to their taste. Work is in progress...
 
-lspci
-00:00.0 Host bridge: VIA Technologies, Inc. VT8377 [KT400 AGP] Host Bridge
-00:01.0 PCI bridge: VIA Technologies, Inc. VT8235 PCI Bridge
-00:07.0 SCSI storage controller: Adaptec AIC-7861 (rev 01)
-00:10.0 USB Controller: VIA Technologies, Inc. USB (rev 80)
-00:10.1 USB Controller: VIA Technologies, Inc. USB (rev 80)
-00:10.2 USB Controller: VIA Technologies, Inc. USB (rev 80)
-00:10.3 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 82)
-00:11.0 ISA bridge: VIA Technologies, Inc. VT8235 ISA Bridge
-00:11.1 IDE interface: VIA Technologies, Inc. 
-VT82C586A/B/VT82C686/A/B/VT8233/A/C/VT8235 PIPC Bus Master IDE (rev 06)
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 
-AC97 Audio Controller (rev 50)
-00:12.0 Ethernet controller: VIA Technologies, Inc. VT6102 [Rhine-II] (rev 
-74)
-01:00.0 VGA compatible controller: nVidia Corporation NV25 [GeForce4 Ti 
-4200] (rev a3)
+Suggestions are welcome, of course.
+
+Take care,
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
-lsmod
-...
-snd-seq-oss            31232  0
-snd-seq-midi-event      7552  1 snd-seq-oss
-snd-seq                51024  4 snd-seq-oss,snd-seq-midi-event
-snd-pcm-oss            51812  0
-snd-mixer-oss          17952  1 snd-pcm-oss
-snd-via82xx            24160  0
-snd-pcm                93156  2 snd-pcm-oss,snd-via82xx
-snd-timer              24484  2 snd-seq,snd-pcm
-snd-ac97-codec         58148  1 snd-via82xx
-gameport                4480  1 snd-via82xx
-snd-page-alloc         11972  2 snd-via82xx,snd-pcm
-snd-mpu401-uart         7072  1 snd-via82xx
-snd-rawmidi            23616  1 snd-mpu401-uart
-snd-seq-device          8008  3 snd-seq-oss,snd-seq,snd-rawmidi
-snd                    52484  12 
-snd-seq-oss,snd-seq-midi-event,snd-seq,snd-pcm-oss,snd-mixer-oss,snd-via82xx,snd-pcm,snd-timer,snd-ac97-codec,snd-mpu401-uart,snd-rawmidi,snd-seq-device
-soundcore               9248  1 snd
-...
+------=_20040727003618_19124
+Content-Type: application/x-tgz; name="us428control-0.4.2.tar.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="us428control-0.4.2.tar.gz"
+
+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
+utSlLnWpS13qUpe61KUudf989x/KwI/QAMgAAA==
+------=_20040727003618_19124--
 
 
-dmesg
-...
-via82xx: Assuming DXS channels with 48k fixed sample rate.
-          Please try dxs_support=1 or dxs_support=4 option
-          and report if it works on your machine.
-PCI: Setting latency timer of device 0000:00:11.5 to 64
-...
-
-
-
-I tried with dxs_support=1 and dxs_support=4 but this does not help. I 
-still cannot record from microphone or line. Not a byte.
-
-
-More info:
-
-arecord -l
-**** List of CAPTURE Hardware Devices ****
-card 0: V8235 [VIA 8235], device 0: VIA 8235 [VIA 8235]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 0: V8235 [VIA 8235], device 1: VIA 8235 [VIA 8235]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-
-
-Mixer settings:
-
-Simple mixer control 'Master',0
-   Capabilities: pvolume pswitch pswitch-joined
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 16 [52%] [on]
-   Front Right: Playback 16 [52%] [on]
-Simple mixer control 'Master Mono',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 31
-   Mono: Playback 0 [0%] [off]
-Simple mixer control '3D Control - Center',0
-   Capabilities: volume volume-joined
-   Playback channels: Mono
-   Limits: 0 - 15
-   Mono: 0 [0%]
-Simple mixer control '3D Control - Depth',0
-   Capabilities: volume volume-joined
-   Playback channels: Mono
-   Limits: 0 - 15
-   Mono: 0 [0%]
-Simple mixer control '3D Control - Switch',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'PCM',0
-   Capabilities: pvolume pswitch pswitch-joined
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 21 [68%] [on]
-   Front Right: Playback 21 [68%] [on]
-Simple mixer control 'Surround',0
-   Capabilities: pvolume pswitch
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 0 [0%] [off]
-   Front Right: Playback 0 [0%] [off]
-Simple mixer control 'Surround Down Mix',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'Center',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 31
-   Mono: Playback 31 [100%] [off]
-Simple mixer control 'Center/LFE Down Mix',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'LFE',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 31
-   Mono: Playback 0 [0%] [off]
-Simple mixer control 'Line',0
-   Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Playback channels: Front Left - Front Right
-   Capture channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 22 [71%] [on] Capture [off]
-   Front Right: Playback 22 [71%] [on] Capture [off]
-Simple mixer control 'Line-In As Surround',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [on]
-Simple mixer control 'CD',0
-   Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Playback channels: Front Left - Front Right
-   Capture channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 0 [0%] [off] Capture [off]
-   Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mic',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Playback channels: Mono
-   Capture channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono: Playback 22 [71%] [on]
-   Front Left: Capture [on]
-   Front Right: Capture [on]
-Simple mixer control 'Mic As Center/LFE',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'Mic Boost (+20dB)',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'Mic Select',0
-   Capabilities:
-   Mono:
-Simple mixer control 'Video',0
-   Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Playback channels: Front Left - Front Right
-   Capture channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 0 [0%] [off] Capture [off]
-   Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Phone',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Playback channels: Mono
-   Capture channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Mono: Playback 0 [0%] [off]
-   Front Left: Capture [off]
-   Front Right: Capture [off]
-Simple mixer control 'IEC958',0
-   Capabilities: pswitch pswitch-joined cswitch cswitch-joined
-   Playback channels: Mono
-   Capture channels: Mono
-   Mono: Playback [off] Capture [off]
-Simple mixer control 'IEC958 Input Monitor',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'IEC958 Output',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [on]
-Simple mixer control 'IEC958 Playback AC97-SPSA',0
-   Capabilities: volume volume-joined
-   Playback channels: Mono
-   Limits: 0 - 3
-   Mono: 3 [100%]
-Simple mixer control 'PC Speaker',0
-   Capabilities: pvolume pvolume-joined pswitch pswitch-joined
-   Playback channels: Mono
-   Limits: Playback 0 - 15
-   Mono: Playback 0 [0%] [off]
-Simple mixer control 'Aux',0
-   Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Playback channels: Front Left - Front Right
-   Capture channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 0 [0%] [off] Capture [off]
-   Front Right: Playback 0 [0%] [off] Capture [off]
-Simple mixer control 'Mono Output Select',0
-   Capabilities:
-   Mono:
-Simple mixer control 'Capture',0
-   Capabilities: cvolume cswitch cswitch-joined
-   Capture channels: Front Left - Front Right
-   Limits: Capture 0 - 15
-   Front Left: Capture 10 [67%] [on]
-   Front Right: Capture 10 [67%] [on]
-Simple mixer control 'Mix',0
-   Capabilities: cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Capture channels: Front Left - Front Right
-   Front Left: Capture [off]
-   Front Right: Capture [off]
-Simple mixer control 'Mix Mono',0
-   Capabilities: cswitch cswitch-joined cswitch-exclusive
-   Capture exclusive group: 0
-   Capture channels: Front Left - Front Right
-   Front Left: Capture [off]
-   Front Right: Capture [off]
-Simple mixer control 'Analog to IEC958 Output',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'Duplicate Front',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'Exchange Center/LFE',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'External Amplifier Power Down',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'Input Source Select',0
-   Capabilities:
-   Mono:
-Simple mixer control 'Input Source Select',1
-   Capabilities:
-   Mono:
-Simple mixer control 'Swap Surround Slot',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-Simple mixer control 'VIA DXS',0
-   Capabilities: pvolume
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 31 [100%]
-   Front Right: Playback 31 [100%]
-Simple mixer control 'VIA DXS',1
-   Capabilities: pvolume
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 31 [100%]
-   Front Right: Playback 31 [100%]
-Simple mixer control 'VIA DXS',2
-   Capabilities: pvolume
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 31 [100%]
-   Front Right: Playback 31 [100%]
-Simple mixer control 'VIA DXS',3
-   Capabilities: pvolume
-   Playback channels: Front Left - Front Right
-   Limits: Playback 0 - 31
-   Front Left: Playback 31 [100%]
-   Front Right: Playback 31 [100%]
-
-
-Is there a general Doc for mixer settings? Or a doc that is driver 
-dependant?
-
-Please help me! What additional Info do you need?
-
-Thanks,
-
-Flo
-
-
-On Fri, 23 Jul 2004, Flo Gleixner wrote:
-
->
-> Sorry for crossposting, but this problem is probably more for the devels.
->
-> Thanks for your time.
->
-> Flo
->
-> ---------- Forwarded message ----------
-> Date: Thu, 22 Jul 2004 00:51:12 +0200 (CEST)
-> From: Flo Gleixner <flo@bier.homeip.net>
-> To: alsa-user@lists.sourceforge.net
-> Subject: [Alsa-user] Problem recording with via 8235
->
->
-> Hi,
->
-> does somebody know what i'm doing wrong:
->
-> arecord -vv & while true ; do date ; sleep 1 ; done
-> RIFF$_WAVEfmt @data_Recording WAVE 'stdout' : Unsigned 8 bit, Rate 8000 Hz, 
-> Mono
-> Plug PCM: Hardware PCM card 0 'VIA 8235' device 0 subdevice 0
->
-> Its setup is:
-> stream       : CAPTURE
-> access       : RW_INTERLEAVED
-> format       : U8
-> subformat    : STD
-> channels     : 1
-> rate         : 8000
-> exact rate   : 8000 (8000/1)
-> msbits       : 8
-> buffer_size  : 4000
-> period_size  : 1000
-> period_time  : 125000
-> tick_time    : 1000
-> tstamp_mode  : NONE
-> period_step  : 1
-> sleep_min    : 0
-> avail_min    : 1000
-> xfer_align   : 1000
-> start_threshold  : 1
-> stop_threshold   : 4000
-> silence_threshold: 0
-> silence_size : 0
-> boundary     : 2097152000
-> [1] 4146
-> Tue Jul 20 00:27:17 CEST 2004
-> Tue Jul 20 00:27:18 CEST 2004
-> Tue Jul 20 00:27:19 CEST 2004
-> Tue Jul 20 00:27:20 CEST 2004
-> Tue Jul 20 00:27:21 CEST 2004
-> Tue Jul 20 00:27:22 CEST 2004
-> Tue Jul 20 00:27:23 CEST 2004
-> Tue Jul 20 00:27:24 CEST 2004
-> Tue Jul 20 00:27:25 CEST 2004
-> Tue Jul 20 00:27:26 CEST 2004
-> arecord: pcm_read:1164: read error: Input/output error
-> [1]+  Exit 1                  arecord -vv
-> Tue Jul 20 00:27:27 CEST 2004
-> Tue Jul 20 00:27:28 CEST 2004
->
->
-> If i strace arecord, i see this:
->
-> ....
-> open("/dev/snd/pcmC0D0c", O_RDWR)       = 5
-> ....
-> ioctl(5, 0xc25c4111, 0xbffff384)        = 0
-> ioctl(5, 0xc0684113, 0xbfffef10)        = 0
-> ioctl(5, 0x4140, 0x4002d278)            = 0
-> --- next one takes 10 secs. ---
-> ioctl(5, 0x800c4151, 0xbffff5b0)        = -1 EIO (Input/output error)
-> write(2, "arecord: pcm_read:1164: ", 24arecord: pcm_read:1164: ) = 24
-> write(2, "read error: Input/output error", 30read error: Input/output error) 
-> = 30
->
->
-> aplay works as far as i see. I use Mandrake 10.0 which uses alsa 1.0.2
->
-> Another problem i have: unreal tournament plays sounds in double speed.
->
-> Thanks for the help!
->
-> Flo
->
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by BEA Weblogic Workshop
-> FREE Java Enterprise J2EE developer tools!
-> Get your free copy of BEA WebLogic Workshop 8.1 today.
-> http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
 
 
 -------------------------------------------------------
