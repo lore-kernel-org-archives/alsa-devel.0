@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
-Date: Thu, 16 Sep 2004 10:22:37 +0200 (CEST)
+Subject: [ALSA - lib 0000496]: nearest-neighbor downsampling causes noise
+Date: Thu, 16 Sep 2004 11:24:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040916082237.40BB63F018@server.perex-int.cz>
+Message-ID: <20040916092414.282163F01A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98BE21E9
-	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 10:22:37 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D08A2FC
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 11:25:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,92 +22,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000469
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000496
 ======================================================================
-Reported By:                wouter
-Assigned To:                pzad
+Reported By:                grabner
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     469
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Bug ID:                     496
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8
+Status:                     new
 ======================================================================
-Date Submitted:             08-28-2004 01:36 CEST
-Last Modified:              09-16-2004 10:22 CEST
+Date Submitted:             09-10-2004 22:06 CEST
+Last Modified:              09-16-2004 11:24 CEST
 ======================================================================
-Summary:                    volume of sblive mic recording too low
+Summary:                    nearest-neighbor downsampling causes noise
 Description: 
-The recordings made with the Mic input on my sblive (5.1) are substantially
-lower in volume than direct playback output. If fact, they are too low to
-be really useful in for instance video conferencing, barely reaching 1/4
-in the VU meter of the gnomemeeting voip program - with Mic boost on.
-
-Setting "Capture" to anything but zero stops any sound from being
-captured.
-
-"AC97 Capture" seems to be controlling the volume of the recording, but it
-is too low even with the slider on 100%.
-
-People on the users mailinglist seem to indicate that "Capture" actually
-should work, which it doesn't.
+The rate-conversion plugin in ALSA-1.0.7rc1 uses the nearest-neighbor
+method for downsampling (function snd_pcm_rate_shrink in
+src/pcm/pcm_rate.c), which causes considerable noise.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 09-07-2004 09:40 CEST 
+ tiwai - 09-15-2004 18:18 CEST 
 ----------------------------------------------------------------------
-What ac97 uses your sb live ???
-Check /proc/asound/card*/codec97#*/ac97#?-? file for your card.
+The patch looks fine.
+
+Could you provide the summary, description and signed-off-by
+for the patch to apply to ALSA CVS tree?
+
+thanks.
 
 ----------------------------------------------------------------------
- wouter - 09-07-2004 16:47 CEST 
+ grabner - 09-16-2004 11:24 CEST 
 ----------------------------------------------------------------------
-[senta:~] cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: SigmaTel STAC9708/11
+Ok, here is the required information:
 
-Capabilities     :
-DAC resolution   : 18-bit
-ADC resolution   : 18-bit
-3D enhancement   : SigmaTel 3D Enhancement
+-----
+Summary: Fix the downsampling noise problem
+ 
+The patch replaces the nearest neighbor downsampling method in the sample
+rate conversion plugin by linear interpolation of the closest two samples,
+thus significantly reducing the resampling noise.
+ 
+Signed-off-by: Markus Grabner <grabner@icg.tu-graz.ac.at>
+-----
 
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=0 SDAC DSA=0
-Extended status  : SDAC
-
-----------------------------------------------------------------------
- pzad - 09-16-2004 10:22 CEST 
-----------------------------------------------------------------------
-On my audigy "capture" control works as expected.
-
-Could you attach content of (ac97 codec register dump)
-/proc/asound/card*/codec97#*/ac97#?-?+reg
-when "capture" is 0 and capture works
-and
-/proc/asound/card*/codec97#*/ac97#?-?+reg
-when "capture" is not 0 and capture doesn't work ???
+Regards,
+Markus
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-28-04 01:36 wouter         New Bug                                      
-08-28-04 01:36 wouter         File Added: amixer.txt                       
-08-28-04 01:36 wouter         Distribution              => Debian          
-08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
-09-07-04 09:40 pzad           Bugnote Added: 0001704                       
-09-07-04 16:47 wouter         Bugnote Added: 0001716                       
-09-16-04 10:22 pzad           Bugnote Added: 0001767                       
+09-10-04 22:06 grabner        New Bug                                      
+09-10-04 22:06 grabner        File Added: downsample_interpolate.patch                    
+09-10-04 22:08 grabner        Bug Monitored: grabner                       
+09-15-04 18:18 tiwai          Bugnote Added: 0001763                       
+09-16-04 11:24 grabner        Bugnote Added: 0001768                       
 ======================================================================
 
 
