@@ -1,10 +1,10 @@
-From: Markus Plail <plail@web.de>
-Subject: Re: AC3 Passthru on SB Live
-Date: 28 Feb 2002 12:01:45 +0100
-Message-ID: <87664hswdi.fsf@www.gitteundmarkus.de>
-References: <NGBBLNODKDFPBFMBBFAFMEDMCCAA.James@superbug.demon.co.uk>
-	<s5h8z9elvmc.wl@alsa2.suse.de>
-In-Reply-To: <s5h8z9elvmc.wl@alsa2.suse.de>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: .asoundrc - share device
+Date: Thu, 28 Feb 2002 15:56:11 +0200 (EET)
+Message-ID: <Pine.LNX.4.44.0202281544350.3739-100000@ecabase.localdomain>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20020228112349.8615D2760@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,46 +13,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Date: 28 Feb 2002 12:01:45 +0100
-Message-ID: <878z9dswdi.fsf@www.gitteundmarkus.de>
-Lines: 29
-User-Agent: Gnus/5.0808 (Gnus v5.8.8) XEmacs/21.4 (Common Lisp)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
---text follows this line--
-* "Takashi" == Takashi Iwai schrieb am Wed, 27 Feb 2002 17:47:39 +0100:
-> At Wed, 27 Feb 2002 15:50:47 -0000,
-> James Courtier-Dutton wrote:
->> Hello
->> 
->> AC3 passthru on the SB Live does not seem to work on all platforms
->> with the latest alsa-cvs. (26-2-2002) It works on my system, which
->> is a SB Live Rev 6, which only started working recently.
+On Thu, 28 Feb 2002, Patrick Shirkey wrote:
 
-> Just curious - are you using a kernel with HIGHMEM config?  If
-> working with this config, then it should not be a problem of memory
-> allocation.  Or, it might be the problem of dma mask.  ALSA uses
-> 31bit mask while Creative's driver uses 29bit.  But anyway this
-> won't affect unless you have more than 512MB RAM and kernel
-> ocasionally allocates the area greater than 512MB.
-James has a rev 06 card so it doesn't apply to him. I have a rev07
-card and it doesn't work and I don't have HIGHMEM enabled.
+> I attempted to get the share device working a little while ago but had
+> no luck. I can try again though. Actually, at the time Abramo said that
+> it was possible but that it had not been coded completely yet due to
+> funding constraints. Is that right or was it not specific to the share
+> device?
 
->> It does not work on a SB Live rev 7 (I don't have this, but others
->> have reported.)
+It's good to note that the current pcm_share plugin that exists does not
+allow mixing audio from multiple source channels to one output channel.  
+Instead it can be used to allow multiple clients to access different
+channels of one PCM device at the same time.
 
-> IIRC, we still don't implement the direct pass-through method (PASS2
-> in Creative's driver) for the recent models (rev.7 or newer).
-> Perhaps this makes difference.
-Are there plans to implement this? Can I help with doing that? Don't 
-know if any of the developers have a rev07 card.
+For instance you could have share1, which outputs to hw:0 channels 1 and 
+2, and share2 which outputs to hw:0 channels 3 and 4.
 
-Regards
-Markus
+What is missing is a pcm_mix plugin, which allows multiple clients to 
+write to the same channels (like esd, arts and other audio daemons).
+
+Another currently available option is to use the pcm_shm plugin which
+outputs audio to a separate aserver process (see alsa-lib/aserver). This
+plugin does work, but like pcm_share, hasn't been widely used yet. But
+it's the only working ALSA alternative for concurrent pcm access at the
+moment.
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 _______________________________________________
