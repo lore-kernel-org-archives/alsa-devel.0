@@ -1,14 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: trigger commands
-Date: Mon, 24 Mar 2003 17:10:40 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] OPL4 support
+Date: Mon, 24 Mar 2003 17:36:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030324171040.pochini@shiny.it>
-References: <s5hu1dtowqj.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0303241734250.14658-100000@studcom.urz.uni-halle.de>
+References: <s5hy935p006.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu1dtowqj.wl@alsa2.suse.de>
+In-reply-to: <s5hy935p006.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,25 +18,18 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> (i also don't know any pci (or other bus) cards with opl4, though...)
 
-On 24-Mar-2003 Takashi Iwai wrote:
->> Ok, PAUSE_PUSH-->stop() and TRIGGER_STOP-->stop()-and-reset dma
->> pointer. In my case RELEASE and START are the same thing.
->
-> note that resetting the dma pointer wouldn't be necessary in STOP
-> trigger (although it may be safer), since the dma pointer will be
-> reprogrammed anyway by the succeeding call or prepare callback from
-> the ALSA middle layer.
-
-I didn't know that prepare callback had to reset the dma pointer. That
-could explain why sometimes the sound "jerks" when I change track with
-xmms and stop/start/prepare are called 2-3 times in a very short time.
+The marketing for the ALS4000 claims it's "compatible with the Yamaha OPL4
+wavetable synthesizer", but, judging from the manual, this is a lie. :(
 
 
-Bye.
+Clemens
+
 
 
 
