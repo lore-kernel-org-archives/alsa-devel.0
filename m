@@ -1,19 +1,16 @@
-From: Bruce Cooper <cooperb@iinet.net.au>
-Subject: Re: M-Audio Revolution 7.1
-Date: 10 Feb 2003 21:05:53 +0800
+From: ljp <ljp@llornkcor.com>
+Subject: Re: pause and resume
+Date: Mon, 10 Feb 2003 06:45:26 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1044882353.1960.2.camel@home.cowardly.homeip.net>
-References: <10366.165.228.129.12.1044847107.squirrel@home.cowardly.homeip.net>
-	 <s5h8ywo4hdd.wl@alsa2.suse.de>
-	 <1044878241.3145.14.camel@home.cowardly.homeip.net>
-	 <s5hznp42v11.wl@alsa2.suse.de>
-	 <1044881001.1875.15.camel@home.cowardly.homeip.net>
-	 <s5hsmuw2t7g.wl@alsa2.suse.de>
+Message-ID: <200302100645.26455.ljp@llornkcor.com>
+References: <1044738808.12267.2.camel@spiritship.localhost> <s5hbs1k4hn2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmuw2t7g.wl@alsa2.suse.de>
+In-Reply-To: <s5hbs1k4hn2.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,39 +20,35 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Umm, it is supposed to be an 8 channel card, so where are the other two
-coming from?  One of the other chips?  I will have a look around the web
-site and see what I can find.
+RME Digi96/8 PST
 
-Thanks!
 
-On Mon, 2003-02-10 at 20:52, Takashi Iwai wrote:
-> At 10 Feb 2003 20:43:21 +0800,
-> Bruce Cooper wrote:
-> > 
-> > I have pulled the card out now
-> > 
-> > It has the following chips:
-> > 
-> > main chip marked ICEnsemble ENVY25HT ICE1724 (where did I get 1712A
-> > from?) 0151CD 2IA0002104.  
-> > 
-> > A chip in a socket, which I assume is the rom for the card, but is has
-> > had something written on it (RC with a red line through it) which
-> > obscures the part name.  
-> > 
-> > AKM AK4355VF 042A0224N
-> 
-> this is the codec chip (192kHz/24bit, 6 channels).
-> 
-> 	http://www.asahi-kasei.com/akm/en/product/ak4355/ek4355.pdf
-> 
-> 
+On Monday February 10 2003 02:19 am, Takashi Iwai wrote:
+> At 08 Feb 2003 14:13:28 -0700,
+>
+> L.J. Potter <ljp@llornkcor.com> wrote:
+> > Is it usual for a card to be able to pause, but not be able to resume?
+>
+> if so, it's likely a bug of the driver.  on which sound card?
+>
+>
 > Takashi
-> 
+
+-- 
+My cat's a debugger....
+
+Potter, Lorn, "ljp"
+core member / Web Administrator
+Project OPIE- the Open Palmtop Integrated Environment
+http://opie.handhelds.org 
+IRC: irc.freenode.net #opie #opie.de
+
+llornkcor@handhelds.org
+llornkcor@helixcommunity.org
+
 
 
 -------------------------------------------------------
