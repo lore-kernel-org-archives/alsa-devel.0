@@ -1,15 +1,15 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000334]: EMU10K1, capturing audio is impossible
-Date: Sun, 13 Jun 2004 23:30:17 +0200
+Date: Mon, 14 Jun 2004 01:38:15 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <77289ce89a0aa6ae86e4bf326b2e5dd3@bugtrack.alsa-project.org>
+Message-ID: <1f35f050b4e98ce8816227df79ee1189@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BE13633E
-	for <alsa-devel@alsa-project.org>; Sun, 13 Jun 2004 23:30:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B14D11BD
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 01:38:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -49,7 +49,7 @@ Kernel Version:             2.6.7rc love-sources
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             06-13-2004 23:30 CEST
-Last Modified:              06-13-2004 23:30 CEST
+Last Modified:              06-14-2004 01:38 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -78,6 +78,15 @@ reported it, I thought I would.=20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
+----------------------------------------------------------------------
+ netslayer - 06-14-2004 01:38 CEST=20
+----------------------------------------------------------------------
+Just to clarify, I figured out that recording audio off of LINE IN does
+work. However, there is no way of recording audio with LINE muted, so as
+not to hear the pass through. I want to be able to record, just like in
+0.9.8 from the LINE IN, without having to actually listen to the pass
+through audio when it is unmuted.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -90,6 +99,8 @@ Date Modified  Username       Field                    Change            =
    =20
 06-13-04 23:30 netslayer      Kernel Version            =3D> 2.6.7rc love=
 -sources
+06-14-04 01:38 netslayer      Bugnote Added: 0001305                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
