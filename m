@@ -1,14 +1,18 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: RTC timer questions
-Date: Thu, 4 Apr 2002 11:30:42 +0200
+From: Richard Bown <bownie@bownie.com>
+Subject: ALSA instrument API
+Date: Thu, 4 Apr 2002 12:21:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020404113042.02c1189a.mdeboer@iua.upf.es>
+Message-ID: <200204041124.AFF89495@msgdirector2.onetel.net.uk>
+References: <20020404113042.02c1189a.mdeboer@iua.upf.es>
+Reply-To: bownie@bownie.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Received: from iuamtg.upf.es (iuamtg.upf.es [193.145.55.151])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA11916
-	for <alsa-devel@alsa-project.org>; Thu, 4 Apr 2002 11:31:41 +0200
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Received: from msgdirector2.onetel.net.uk (IDENT:mirapoint@msgdirector2.onetel.net.uk [212.67.96.149])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA13403
+	for <alsa-devel@alsa-project.org>; Thu, 4 Apr 2002 13:24:47 +0200
+In-Reply-To: <20020404113042.02c1189a.mdeboer@iua.upf.es>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,40 +22,22 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-I sent the following to the list, but did not get any answer, so I
-repost, and will elaborate a bit on it.
+Thanks to Maarten I've got involved in implementing ALSA support for Rosegarden 4.
+I've been browsing the ALSA API and patching together a driver layer to give us a
+general framework we can share between ALSA and aRts.  The ALSA Instrument API looks
+promising but so far I can't find much on it on the mailing list archive or on
+the web.  Any clues for an overview?
 
-> Hello, I noticed that the alsa rtctimer is not compiled when you have
-> the RTC in your kernel as a module. The problem is in
-> alsa-kernel/core/Makefile, where CONFIG_RTC is tested for y
-> and not for m. 
+We've got the beginnings of quite a sophisticated Instrument/Studio concept in the
+pipeline similar to Logic's Environment and of course I'd like to make the most
+of the driver features as flexibly as we can right from the start.
 
-> Where can I find up-to-date documentation about how to use the rtc timer?
-
-The latest I find is a mail by Takashi, that is a year old, which says:
-
-Installation:
-Add the following lines in /etc/modules.conf:
-options snd-timer snd_timer_limit=2
-alias snd-timer-1 snd-rtctimer
-For using RTC timer in sequencer as default:
-options snd-seq snd_seq_default_timer=1
-
-This is not working anymore, because parameters changed.
-
-Starting sound driver: snd-emu10k1 done
-/lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o: invalid parameter parm_snd_seq_default_timer
-/lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o: insmod /lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o failed
-/lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o: invalid parameter parm_snd_seq_default_timer
-/lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o: insmod /lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o failed
-/lib/modules/2.4.18/kernel/sound/acore/seq/snd-seq.o: insmod snd-seq-midi failed
-
-Also, is there any way (apart from 'listining') to know whether the rtctimer
-is used by the sequencer or not?
-
-Maarten
+Cheers,
+Richard Bown
+-- 
+http://www.all-day-breakfast.com/rosegarden
+http://www.bownie.com
