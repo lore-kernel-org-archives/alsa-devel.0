@@ -1,14 +1,12 @@
-From: "Jass Singh" <jassey@attbi.com>
-Subject: I am looking for Suitable candidate
-Date: Tue, 13 May 2003 09:04:07 -0700
+From: John Hubbard <hubbardjohn@earthlink.net>
+Subject: An offer to help from a Linux Device Driver engineer
+Date: Tue, 13 May 2003 11:21:48 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <005a01c31969$491577b0$0701a8c0@biserver>
-References: <s5h1xz3uf43.wl@alsa2.suse.de>
+Message-ID: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_005B_01C3192E.9CB69FB0"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5h1xz3uf43.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,54 +18,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hello,
+    May I help the ALSA project, by building device drivers for anything that is not yet supported?  I am a device driver engineer looking to gain experience with Linux Audio, and to advance my knowledge in this area.  I definitely have an ulterior motive (to enhance my resume) but I also happen to love composing on my SY-85 synthesizer in my spare time, so this is not as unnatural as it sounds...
 
-------=_NextPart_000_005B_01C3192E.9CB69FB0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+    My first idea was to find an unsupported sound card, purchase one, and provide ALSA support for it.  However, after lurking on this mailing list for a few days, I see that you all  have been busy, and it may actually be difficult to find an unsupported card.
 
-Hi Developers,
+   Can anyone advise me as to kernel/driver work that needs to be done here?
 
-I am looking for candidates who has hands on Linux Kernel and device
-driver experience with strong ALSA and OSS experience. Would appreciate
-if you could refer me developer and contact me at the followings.
+thanks,
+john h
+-------------------------
+John F. Hubbard
+hubbardjohn@earthlink.net
 
-Thanks,
-
-Jass
-Beyond Innovation Inc.
-Ph. 408.246.6060
-Fax. 408.884.2465
-jass@bi-usa.biz  
-
-------=_NextPart_000_005B_01C3192E.9CB69FB0
-Content-Type: text/x-vcard;
-	name="Jass Singh (jass@bi-usa.biz).vcf"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
-	filename="Jass Singh (jass@bi-usa.biz).vcf"
-
-BEGIN:VCARD
-VERSION:2.1
-N:Singh;Jass
-FN:Jass Singh (jass@bi-usa.biz)
-ORG:Beyond Innovation, Inc.
-TITLE:Chief Technology Officer
-TEL;WORK;VOICE:(408) 246-6060
-TEL;CELL;VOICE:(408) 828-1788
-TEL;WORK;FAX:(408) 884-2465
-ADR;WORK:;;3386 Vincent Drive, Suite #102;Santa Clara;CA -;95051;United =
-States of America
-LABEL;WORK;ENCODING=3DQUOTED-PRINTABLE:3386 Vincent Drive, Suite =
-#102=3D0D=3D0ASanta Clara, CA - 95051=3D0D=3D0AUnited Stat=3D
-es of America
-URL;WORK:http://www.bi-usa.biz
-EMAIL;PREF;INTERNET:jass@bi-usa.biz
-REV:20030306T234322Z
-END:VCARD
-
-------=_NextPart_000_005B_01C3192E.9CB69FB0--
 
 
 
