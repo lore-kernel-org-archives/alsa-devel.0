@@ -1,9 +1,16 @@
-From: "thewade" <pdman@aproximation.org>
-Subject: Re: Change of iomem types
-Date: Mon, 20 Sep 2004 15:20:28 -0600
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
+Date: Tue, 21 Sep 2004 09:41:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409202120.i8KLKSEL027402@sanctuary.aproximation.org>
+Message-ID: <20040921074149.3EBAE32005@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 99EA8287
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 09:41:49 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 53552262E2
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 09:41:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -12,28 +19,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> > I answered my own question (I thought).
-> > I checked out the CVS version of alsa and copied the alsa-kernel contents to 
-> > linux/sound
-> > but when I compiled I get this, any ideas why? Thanks!
-> 
-> Apparently, you didn\'t copy the header files to linux/include/sound.
-> Also, the alsa-kernel tree is kept for the very recent linux-kernel
-> version (2.6.9-rc2) only.  So, this way won\'t work for you anyway.
 
-As usual you are correct Mr. Iwai. I downloaded and patched 2.6.8.1 to 2.6.9-rc2 and copied the alsa-kernel contents to sound and alsa-kernel/include to include/sound but now it doesnt detect the cardbus on boot and running hdsploader freezes my machine.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000510
+======================================================================
+Reported By:                ungod
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     510
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             3.1
+======================================================================
+Date Submitted:             09-21-2004 09:41 CEST
+Last Modified:              09-21-2004 09:41 CEST
+======================================================================
+Summary:                    Utilization of AC'97 on Aureon 7.1 Space
+Description: 
+As of now, the Aureon driver lacks the capability to playback both analog
+input channels and the PCM channel, and the input channels have no
+seperate volume control, although the AC'97 chip on the board, STAC9744,
+apparently has the capability.
 
-You had mentioned that you merged your iomem code with the kernel; if I
-download and patch kernel 2.6.8.1 to 2.6.9-rc2-bk6 will I then have the
-iomem code in the kernel?
+I tried some commercial OSS drivers, and they worked properly, so I know
+that it is possible.
+======================================================================
 
-Thanks for your work and your patience with newbies like me whos coding
-skills cannot save themselves.
-
--thewade
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-04 09:41 ungod          New Bug                                      
+09-21-04 09:41 ungod          Distribution              => Debian GNU/Linux
+09-21-04 09:41 ungod          Kernel Version            => 3.1             
+======================================================================
 
 
 -------------------------------------------------------
