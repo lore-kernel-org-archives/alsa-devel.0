@@ -1,18 +1,13 @@
-From: Andy Wingo <wingo@pobox.com>
-Subject: Re: Another question/note regarding CVS compile process
-Date: Wed, 15 May 2002 21:30:26 -0400
+From: pshirkey@boosthardware.com
+Subject: Re: Re: ALSA user documentation
+Date: 17 May 2002 10:10:14 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020516013025.GF608@jesus>
-References: <000001c1fc61$fffe07b0$ac1f830a@ico>
+Message-ID: <20020517101014.24329.qmail@www7.networkshosting.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+Content-Transfer-Encoding: binary
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from jesus (rdu162-226-026.nc.rr.com [24.162.226.26])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA24470
-	for <alsa-devel@alsa-project.org>; Thu, 16 May 2002 03:30:59 +0200
 Content-Disposition: inline
-In-Reply-To: <000001c1fc61$fffe07b0$ac1f830a@ico>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,27 +16,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: martin-langer@gmx.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 15 May 2002, Ivica Bukvic wrote:
-
-> One more thing I noticed about my build process:
+On 5/17/2002 - 04:06:26, Martin Langer  said:
+> On Thu, May 16, 2002 at 06:19:15PM -0700, Patrick Shirkey 
+wrote:
+> > I have just applied the template to all the cards 
+listed on the alsa-howto wiki.
 > 
-> When I do ./build prep
+> Hi,
 > 
-> I get the following response:
+> What about the soundcard matrix, I mean the email address 
+on top of that page?
+> I don't get an answer from there. Are you working on that 
+page, too?
 > 
-> aclocal: ../alsa-lib/utils/alsa.m4: 15: duplicated macro 'AM_PATH_ALSA'
 
-This is buggy behavior on the part of aclocal. aclocal comes with
-automake, if I recall correctly; upgrade your automake and this error
-will go away. Mine is 1.5, as I have automake 1.5. The 1.4 series might
-still have this bug, I don't know.
+I can merge the page into the main website easily but I 
+thought Dan was still around and the page seems to be
+being regularly updated.
 
-regards,
+I'm pretty sure Dan replied to something here only a few 
+weeks ago.
 
-wingo.
+> Why? .... Since 0.9.0rc1 we have a basic "rme32" driver 
+for the models:
+> RME Digi32, Digi32/8 and Digi32 Pro.
+> 
+> Maybe we should integrate this information somewhere?
+> 
+> I should warn every user: there are still 2 big problems 
+up to now:
+> - full duplex doesn't work
+> - Adat (just Digi32/8) isn't included.
+> 
+> .... but I'm trying to solve it....
+> 
+> 
+> thanks,
+> martin
+> 
+> 
+> -- 
+> 
+>     /"\
+>     \ /    ASCII RIBBON CAMPAIGN - AGAINST HTML MAIL
+>      X                           - AGAINST MS ATTACHMENTS
+>     / \
+> 
+> 
+> 
+
+
+
 
 _______________________________________________________________
 
