@@ -1,16 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem with www.alsa-project.org web site.
-Date: Tue, 10 Aug 2004 13:03:47 +0200 (CEST)
+Subject: Re: Bugged ES1978 Maestro 2E (rev 10) ? make it works
+Date: Tue, 10 Aug 2004 13:16:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408101258560.1779@pnote.perex-int.cz>
-References: <4118A730.1050304@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0408101316180.1779@pnote.perex-int.cz>
+References: <20040810103809.GB6622@schurger.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 467C71FE
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 13:06:51 +0200 (MEST)
-In-Reply-To: <4118A730.1050304@superbug.demon.co.uk>
+In-Reply-To: <20040810103809.GB6622@schurger.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,60 +16,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: jean@schurger.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Aug 2004, James Courtier-Dutton wrote:
+On Tue, 10 Aug 2004 jean@schurger.org wrote:
 
-> The real ALSA project web site is http://www.alsa-project.org/
-> 
-> There appears to now be a FAKE alsa project web site
-> http://www.alsaproject.org/
-> 
-> The only difference being the "-" sign.
-> 
-> I think that in the intrests of users, we should fight to get ownership 
-> of alsaproject.org.
-> 
-> Any comments?
+> Hi,
+> 	I have an (old) laptop with an ESS Technology ES1978 Maestro 2E
+> 	(rev 10), that seems to have an "STAC9721/23" inside (id =
+> 	0x83847609).
 
-Domain ID:D104190554-LROR
-Domain Name:ALSAPROJECT.ORG
-Created On:04-Apr-2004 16:44:16 UTC
-Last Updated On:04-Jun-2004 03:47:08 UTC
-Expiration Date:04-Apr-2005 16:44:16 UTC
-Sponsoring Registrar:R39-LROR
-Status:OK
-Registrant ID:B2E4E1A20136C3E2
-Registrant Name:Mr. Luigi Marruso  C.
-Registrant Organization:HobbyLeasing.com
-Registrant Street1:PO Box 103
-Registrant City:Asti
-Registrant Postal Code:14100
-Registrant Country:IT
-Registrant Email:domains@hobbyregistry.com
-Admin ID:B2E4E1A20136C3E2
-Admin Name:Mr. Luigi Marruso  C.
-Admin Organization:HobbyLeasing.com
-Admin Street1:PO Box 103
-Admin City:Asti
-Admin Postal Code:14100
-Admin Country:IT
-Admin Email:domains@hobbyregistry.com
-Tech ID:B2E4E1A20136C3E2
-Tech Name:Mr. Luigi Marruso  C.
-Tech Organization:HobbyLeasing.com
-Tech Street1:PO Box 103
-Tech City:Asti
-Tech Postal Code:14100
-Tech Country:IT
-Tech Email:domains@hobbyregistry.com
-Name Server:NS1.PROREDIRECT.COM
-Name Server:NS2.PROREDIRECT.COM
-
-It seems like that the ALSA project web name is used to increase adverts 
-for an Italian company.
+Fixed in CVS. Thanks.
 
 						Jaroslav
 
