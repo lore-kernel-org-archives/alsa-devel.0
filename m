@@ -1,11 +1,21 @@
-From: wal_teichmann@t-online.de (Wolfgang Teichmann)
-Subject: Terratec DMX 6fire problem
-Date: Fri, 18 Oct 2002 23:35:52 +0200
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: CVSCOMPILE problems
+Date: Fri, 18 Oct 2002 23:10:31 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB07EB8.20909@t-online.de>
+Message-ID: <Pine.LNX.4.44.0210182300460.1689-100000@localhost.localdomain>
+References: <20021016141742.GB25933@ee.unsw.edu.au>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms080509020800070508090401"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from srv1.mail.cv.net (srv1.mail.cv.net [167.206.112.40])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA32655
+	for <alsa-devel@alsa-project.org>; Sat, 19 Oct 2002 05:10:37 +0200
+Received: from [192.168.2.100] (ool-43532d3b.dyn.optonline.net [67.83.45.59])
+ by srv1.mail.cv.net (Sun Internet Mail Server sims.4.0.2000.10.12.16.25.p8)
+ with ESMTP id <0H4700J65KPLVB@srv1.mail.cv.net> for
+ alsa-devel@alsa-project.org; Fri, 18 Oct 2002 23:08:09 -0400 (EDT)
+In-reply-to: <20021016141742.GB25933@ee.unsw.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,95 +24,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Matt Flax <flatmax@ieee.org>
+Cc: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a cryptographically signed message in MIME format.
+Hello!
 
---------------ms080509020800070508090401
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+> In relation to this article/patch, I need to compile the CVS sources
+> after 14'th :
+> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg04810.html
+> 
+> I have downloaded them, but am having trouble compiling them.
 
-Hallo,
+I think you have downloaded the snapshot of the repository, not the
+sources.  You can use the snapshot of the repository to set up your own
+CVS server, but I don't think you need it.
 
-I have a TV card connected to the rear input of the Terratec DMX 6fire , 
-but when I start xawtv or xawdecode - no sound.
-Alsamixer does not help.
-If I start the PC with Windows and restart (warm boot) into Linux, there 
-is sound in xawtv and xawdecode.
-Any idea?
+Either take the latest source snapshot from
+ftp://ftp.alsa-project.org/pub/cvsexport or use the CVS server on
+cvs.alsa-project.org, as described at
+http://www.alsa-project.org/download.php3
 
-regards,
-W. Teichmann
+> But I need to run cvscompile ?
 
---------------ms080509020800070508090401
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Yes, you need to run cvscompile.
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJZDCC
-AxAwggJ5oAMCAQICAwiCPDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
-BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
-HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
-bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMTAxODAxMTk1OVoXDTAzMTAxODAxMTk1OVowSzEf
-MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEoMCYGCSqGSIb3DQEJARYZd2FsX3Rl
-aWNobWFubkB0LW9ubGluZS5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK3t
-9U/z1sitJNCUAu5FS2TmcSPNb0gVDWjsGFyRTlGj9CPLsrTwKit8pRZmhvdKl1NALv6c1wQj
-9duLTW9CzNOqKUtDwO95t13s8bPGjIl6hDssadXu7RT+MVduAtHGNnk4NdIVP6mygFgtsomE
-TtJ5o97/loxL+1+FZ8d62PiUP7YyNMMto/zo3SNDSmV+4fsQLQE6C2S9cUukO4vkW8Zk7arf
-B86NJ4fBnT1qgUgmcoFh21qnkrDybkpOKdnoMAXiEgmKPNu9TXn61xASxTOSlMO67CXoZV8e
-5Jtu0pF7RqoAD90mEpGvSOxyfCQqlfpxawOvyB/7CyJOhG03Ek0CAwEAAaM2MDQwJAYDVR0R
-BB0wG4EZd2FsX3RlaWNobWFubkB0LW9ubGluZS5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3
-DQEBBAUAA4GBALto5AYCDKxUDHP2QBOhsT08knVjdE6HCKKMM/4nEQZn7Dy5iVDp634APC16
-rX8VgZ8uGVMrFvxOByDBpN3zSeyWWYlKga0P3vr0whc1icUq6sPHGbjFx7haLxrHE3wD4kin
-XPLQX9p5c0ZKjc3eYvpSm5H1mr/lRMhVtQNdWdXjMIIDEDCCAnmgAwIBAgIDCII8MA0GCSqG
-SIb3DQEBBAUAMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
-VQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUg
-U2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAwHhcN
-MDIxMDE4MDExOTU5WhcNMDMxMDE4MDExOTU5WjBLMR8wHQYDVQQDExZUaGF3dGUgRnJlZW1h
-aWwgTWVtYmVyMSgwJgYJKoZIhvcNAQkBFhl3YWxfdGVpY2htYW5uQHQtb25saW5lLmRlMIIB
-IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAre31T/PWyK0k0JQC7kVLZOZxI81vSBUN
-aOwYXJFOUaP0I8uytPAqK3ylFmaG90qXU0Au/pzXBCP124tNb0LM06opS0PA73m3Xezxs8aM
-iXqEOyxp1e7tFP4xV24C0cY2eTg10hU/qbKAWC2yiYRO0nmj3v+WjEv7X4Vnx3rY+JQ/tjI0
-wy2j/OjdI0NKZX7h+xAtAToLZL1xS6Q7i+RbxmTtqt8Hzo0nh8GdPWqBSCZygWHbWqeSsPJu
-Sk4p2egwBeISCYo8271NefrXEBLFM5KUw7rsJehlXx7km27SkXtGqgAP3SYSka9I7HJ8JCqV
-+nFrA6/IH/sLIk6EbTcSTQIDAQABozYwNDAkBgNVHREEHTAbgRl3YWxfdGVpY2htYW5uQHQt
-b25saW5lLmRlMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAu2jkBgIMrFQMc/ZA
-E6GxPTySdWN0TocIoowz/icRBmfsPLmJUOnrfgA8LXqtfxWBny4ZUysW/E4HIMGk3fNJ7JZZ
-iUqBrQ/e+vTCFzWJxSrqw8cZuMXHuFovGscTfAPiSKdc8tBf2nlzRkqNzd5i+lKbkfWav+VE
-yFW1A11Z1eMwggM4MIICoaADAgECAhBmRXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUA
-MIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
-IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0
-aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1h
-aWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcN
-MDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
-DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
-BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
-bCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKmY8cJJUU+
-0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL8dbd
-YaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
-AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
-YmVsMS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEE
-BQADgYEAMbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0q
-OPdQVahs9w2tTBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C
-81rbyjz2ROomaYd/SJ7OpZ/nhNjJYmKtBcYxggMnMIIDIwIBATCBmjCBkjELMAkGA1UEBhMC
-WkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
-EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJz
-b25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIgjwwCQYFKw4DAhoFAKCCAWEwGAYJKoZI
-hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDIxMDE4MjEzNTUyWjAjBgkq
-hkiG9w0BCQQxFgQUpIaEmIZZsPpF+7D2B/SWFmJrj0cwUgYJKoZIhvcNAQkPMUUwQzAKBggq
-hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
-hvcNAwICASgwga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UE
-CBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEd
-MBsGA1UECxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVt
-YWlsIFJTQSAyMDAwLjguMzACAwiCPDANBgkqhkiG9w0BAQEFAASCAQArTYnbYp/vSFnbNWNg
-1HMgEUlD9kkMWb2dfdmjUnT+HaWNrvBPh1u90rEZ50zilkSfuBT/WLDeEOgVM8DXNNW3Cz2M
-72WHGWYywzthi6uK+wHlHZZWEu/BLkZ4ckT6h+GxZzfQ6hZ+A7qpRGC90tMc3tiR+4plB7v9
-agsEaSDI4m8ThfmJ178UJXeSk0s2/qEbGTDMeYuhWjJsNHqRHW/bhtNpdrpPHjOCcw1LEL8z
-HdhiLtE47UVQmoPwGjWNyQWeL5/Xm3p6/bdF+BR2YzNllC/jRhpCesJ4tVTEhhvxYsQLA/nm
-FMrR2BLi5j0Igy66k7It9iL5AnXVd4vMZCRbAAAAAAAA
---------------ms080509020800070508090401--
+> confused
+
+Somebody please add an explanation on
+http://www.alsa-project.org/download.php3 near "CVS repository snapshots".  
+I'm sure that a significant part of downloads of those snapshots are by
+people who don't need them.
+
+-- 
+Regards,
+Pavel Roskin
 
 
 
