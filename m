@@ -1,13 +1,32 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: poll_descriptors_count
-Date: Tue, 2 Jul 2002 08:01:18 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] conf.c: parsing floating point numbers
+Date: Tue, 02 Jul 2002 10:52:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0207020756030.523-100000@pnote>
-References: <20020701220054.GA13325@reverberate.org>
+Message-ID: <3D2169B3.FA0D9F45@ladisch.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020701220054.GA13325@reverberate.org>
+Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA22164
+	for <alsa-devel@alsa-project.org>; Tue, 2 Jul 2002 10:52:10 +0200
+Received: from mserv1.urz.uni-halle.de ([141.48.3.145] helo=mserv1)
+	  by mailgate.uni-halle.de with esmtp (EXIM Version 3.35)
+	  for <alsa-devel@alsa-project.org>
+	  id 17PJOK-00000b-00; Tue, 02 Jul 2002 10:52:08 +0200
+Received: from conversion-daemon.mail.uni-halle.de by mail.uni-halle.de
+ (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ id <0GYM00C015M1LH@mail.uni-halle.de> for alsa-devel@alsa-project.org; Tue,
+ 02 Jul 2002 10:52:07 +0200 (MEST)
+Received: from studcom.urz.uni-halle.de
+ (studcom.urz.Uni-Halle.DE [141.48.3.19]) by mail.uni-halle.de
+ (iPlanet Messaging Server 5.2 (built Feb 21 2002))
+ with ESMTP id <0GYM006E75YVD9@mail.uni-halle.de> for
+ alsa-devel@alsa-project.org; Tue, 02 Jul 2002 10:52:07 +0200 (MEST)
+Received: from ladisch.de (ifiu23.informatik.Uni-Halle.DE [141.48.14.23])
+	by studcom.urz.uni-halle.de (8.9.3 (PHNE_22672)/8.9.3)
+ with ESMTP id KAA20444	for <alsa-devel@alsa-project.org>; Tue,
+ 02 Jul 2002 10:52:07 +0200 (METDST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,51 +35,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Joshua Haberman <joshua@haberman.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 1 Jul 2002, Joshua Haberman wrote:
+When parse_value finds something looking like a number, it first calls
+safe_strtoll to test whether the value's type is integer.
+Unfortunately, safe_strtoll simply grabs anything which may be an
+integer, and doesn't check for any following characters (e.g. the
+decimal point of a floating point number).
 
-> On Mon, 1 Jul 2002, Joshua Haberman wrote:
-> > > This gives me the impression that snd_pcm_poll_descriptors_revents() is a
-> > > function that somehow "summarizes" all of the pfds into a single revents
-> > > that speaks to the status of the entire PCM handle.
-> 
-> * Paul Davis (pbd@op.net) wrote:
-> > I don't use this function at all, considering it something of it a
-> > band-aid.-
-> 
-> * Jaroslav Kysela (perex@suse.cz) wrote:
-> > Yes, it translates multiple revents into one for application. Please, use
-> > this function for the library flexibility.
-> 
-> Hmm.  What do I do now?  :-)
-> 
-> Jaroslav, is it true what Paul says about this function not being robust
-> in the case of multithreaded use and poll(2) errors?  Can it be made to
-> be more robust?
+This means that all floating point numbers are parsed as integers.
 
-Paul talks about snd_pcm_wait() function. True, it has limited 
-functionality and can be used only for simple applications.
+The patch adds a check for the end of the string, similar to
+safe_strtol and safe_strtod.
 
-> Looking at the implementation I infer that
-> snd_pcm_poll_descriptors_revents() is not designed to handle pfds from
-> more than one stream.  Is that correct?
 
-Yes, but don't look to the implementation. It can slightly change in the 
-future. The wait_for_poll() function in alsa-lib/test/pcm.c does really 
-the correct poll sequence, so use this code and don't try to do things 
-differently than designed like Paul often does ;-)
+--- alsa-lib/src/conf.c.org     Tue Jul  2 00:39:34 2002
++++ alsa-lib/src/conf.c Tue Jul  2 00:52:22 2002
+@@ -463,11 +463,14 @@
+ int safe_strtoll(const char *str, long long *val)
+ {
+        long long v;
++       int endidx;
+        if (!*str)
+                return -EINVAL;
+        errno = 0;
+-       if (sscanf(str, "%Ld", &v) != 1)
++       if (sscanf(str, "%Ld%n", &v, &endidx) < 1)
+                return -EINVAL;
++       if (str[endidx])
++               return -EINVAL;
+        *val = v;
+        return 0;
+ }
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
+Clemens
 
 
 -------------------------------------------------------
