@@ -1,12 +1,16 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Lots of BUG alerts with latest CVS and Audigy2
-Date: Fri, 11 Mar 2005 14:35:53 -0500
-Message-ID: <1110569754.18889.5.camel@mindpipe>
-References: <20050311001056.21034.qmail@web52903.mail.yahoo.com>
+Subject: Re: Please, send ./configure output to
+	<alsa-devel@alsa-project.org>
+Date: Fri, 11 Mar 2005 15:01:42 -0500
+Message-ID: <1110571302.19093.2.camel@mindpipe>
+References: <000001c5266b$1368ab30$6401a8c0@rkh>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <20050311001056.21034.qmail@web52903.mail.yahoo.com>
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 470BB1E3
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 21:01:44 +0100 (MET)
+In-Reply-To: <000001c5266b$1368ab30$6401a8c0@rkh>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,30 +20,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: RKHenry <robert.henry@earthlink.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-03-11 at 00:10 +0000, Chris Rankin wrote:
-> Hi,
+On Fri, 2005-03-11 at 13:49 -0500, RKHenry wrote:
+> checking for GCC version... Kernel compiler: gcc egcs-2.91.66
+> 19990314/Linux (egcs-1.1.2 release) Used compiler: 2.96
 > 
-> I don't know what this means, but it's a very persistent error!
+> Fatal error: Compiler type does not match
 > 
-> Mar  9 23:06:22 volcano kernel: BUG (or not enough voices), number 1, next free 30!
+> Decoded kernel compiler: type=egcs version=2.91.66
+> 
+> Decoded used compiler: type=gcc version=2.96
 
-Please try a newer CVS checkout (from today or tomorrow).  I believe the
-"Oops in emu10k1_efx_playback_prepare" bug could have also caused this
-error.
+There's your problem.  You are trying to compile the ALSA modules with
+gcc 2.96, while your kernel was compiled with egcs 2.91.66.
 
-Also, the above error message is a little buggy, as the condition does
-not always represent an error.
+Wow, this looks like an old system.  Red Hat 6.x?
 
-Were you using the wavetable synth at the time?
+Anyway, you have to use the same compiler to compile ALSA and the
+kernel.  Either install egcs-2.91.66 and build ALSA with it, or
+recompile the kernel with gcc 2.96.
 
-Also, if you get the error again please post the contents
-of /proc/asound/card0/voices.
-
-Lee
+Lee 
 
 
 
