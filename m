@@ -1,8 +1,8 @@
 From: "Emilio Federici" <emo_xine-mail@lycos.com>
 Subject: FM801 5.1 surround
-Date: Mon, 19 Aug 2002 16:38:25 +0100
+Date: Mon, 19 Aug 2002 16:38:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <LPKLFKCDFFOABBAA@mailcity.com>
+Message-ID: <DLHPJKLLEFOABBAA@mailcity.com>
 Reply-To: emo_xine-mail@lycos.com
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
