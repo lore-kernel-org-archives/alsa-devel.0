@@ -1,14 +1,13 @@
-From: "Nicholas Albion" <nalbion@jacques.com.au>
-Subject: handling under runs in SND_PCM_NONBLOCK mode
-Date: Tue, 3 Aug 2004 18:10:54 +1000
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Mixer API
+Date: Tue, 3 Aug 2004 10:20:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <C179AABD90EE5A4F9A9FFCD13DD6EEED544F8B@server.jacques.com.au>
+Message-ID: <200408030820.i738Ka4k016237@www7.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,14 +19,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-If I open ALSA in SND_PCM_NONBLOCK mode, how do I handle under runs?
+Hi,
 
-Calling "snd_pcm_prepare(alsa_handlePlayback);" results in:
-ALSA lib pcm_hw.c:466:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE =
-failed: Device or resource busy.
+I have question:
+What is prefered mixer api for ALSA ?
 
-Opening in default ("0") mode works okay, but I'd prefer to be in =
-non-blocking mode.
+There are 2 of them:
+1) ctl (snd_ctl_* and snd_hctl_*)interface - directly maped to driver
+2) mixer (snd_mixer_*) interface - build above ctl interface
+
+For me looks like mixer interface is there only for compatibility
+reasons with OSS and has two functions:
+1) combine "X Playback Volume", "X Playback Switch", "X Capture
+Volume", "X Capture Switch" to one "X" element (in alsa mixer showed
+as two elements)
+2) emulate "Capture Source" for AC97 based soundcards to "Capture
+Switch-es".
+
+I think, that ctl interface is better for mixer app (little more
+complicated, but better).
+
+I ask becase I start hate "Capture Source" emulated with "Capture
+Switch-es" (average Audigy user problem - I can't set capture source).
+And most of mixer GUI app have problems with alsa mixer api (KMix -
+used in kde is broken for ALSA).
+And I start to think implement new qt (kde) based mixer (based on ctl
+interface).
+
+Peter Zubaj
+
+
+
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
