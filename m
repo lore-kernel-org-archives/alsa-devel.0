@@ -1,13 +1,7 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000940]: Audiotrak Sound Cards
-Date: Tue, 22 Mar 2005 22:23:14 +0100
-Message-ID: <442b190a1395b50805d64f1960103fa6@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C25A0261
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:23:14 +0100 (MET)
+From: =?ISO-2022-JP?B?GyRCNVQkYSRpJGwkPyQsJGpFNztIIXkbKEI=?= <now@hiw.vig-seet.to>
+Subject: =?ISO-2022-JP?B?GyRCPyc1JCRIQDY9YyRJJEMkQSQsJCo5JSRfISkbKEI=?=
+Date: Wed, 23 Mar 2005 04:24:49 +0900 (KST)
+Message-ID: <20050322192449.4C76E138A8@year.ori-g.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,57 +11,123 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.netalsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=940> 
-======================================================================
-Reported By:                tdammers
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   940
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             02-24-2005 11:31 CET
-Last Modified:              03-22-2005 22:23 CET
-======================================================================
-Summary:                    Audiotrak Sound Cards
-Description: 
-I just had a little e-mail exchange with the German representative of
-Audiotrak. I asked for ALSA drivers and / or specs for the Inca88/AnDA008
-sound card. They state that they do not and will never support Linux for
-any of their hardware, and they will not expose hardware information to
-enable third-party developers to  make drivers. IMO, Audiotrak devices
-(especially the inca88/anda008) should be listed as 'not alsa compatible'.
-======================================================================
+メールカフェ====--====--====--====--====--====--====--====--====--==
 
-----------------------------------------------------------------------
- jdthood - 03-22-05 22:23 
-----------------------------------------------------------------------
-> IMO, Audiotrak devices (especially the inca88/anda008) should be listed 
-> as 'not alsa compatible'.
+～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆
+
+　　　　◆　◆　◆　あなたは清純派？それともお色気派？◆　◆　◆
+
+　　　　　　　　　　　◇　◇　◇　◇　◇　◇　◇　◇　◇　◇　
+
+～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆
+
+　　　　http://koakuma.polty.cc/?z2nifui43j
+
+====--====--====--====--====--====--====--====--====--====--====-
+
+□□▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+
+　 □　　純真無垢なハダカの天使と
+
+   □□　　　　　　　　　　お色気たっぷりの小悪魔ＧＡＬ達の競演。o○o。。o○o。
+
+　　　□□ 
+
+　 □□　　　　　ヌレヌレエッチな小悪魔が
+
+　 □　　　　　　　　　　　　　恥ずかしがる天使達をネットリ責める。o○o。。o○o。
+
+□□
+
+　 □　http://koakuma.polty.cc/?z2nifui43j
+
+ 
+
+ヌレヌレ企画第１弾
+
+━━━━━━━━・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：★
+
+史上初！！ＰＣ版袋とじ企画第３弾
+
+　　　　　　　　　　　何が出るかはお楽しみ♪前回、前々回と想像を絶する反響
+
+　　　　　　　　　　　を呼んだアノ袋とじ企画の第３弾がついに上陸！！！！！！
+
+ 
+
+ヌレヌレ企画第２弾
+
+━━━━━━━━・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：★
+
+　　　　http://koakuma.polty.cc/?z2nifui43j
+
+ 
+
+ヴィーナス監禁・・・いたいけなヴィーナス達を監禁虜辱！想像を絶する責め苦に
+
+　　　　　　　　　　　次第に自我が崩壊し始める
+
+ 
+
+恥辱小悪魔　・・・悪戯好きな小悪魔な女の子たちを、逆に辱め弄ぶ！どうしようもない
+
+　　　　　　　　　　　ほどの快感に喜びの声を上げる彼女達♪
+
+ 
+
+エンジェル盗撮・・・可愛いエンジェル達の人に見せれない恥ずかしいトコロを
+
+　　　　　　　　　　　こっそり盗撮しちゃいました♪感度抜群の高性能カメラを設置
+
+ 
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+ 
+
+　　　　乱れ飛ぶ彼女達の声や体液にとても正常ではいられない・・・・・。
+
+・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
+
+　　　　http://koakuma.polty.cc/?z2nifui43j
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+◆お・知・ら・せ◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆
+
+ 
+
+・メールカフェはメールマガジンの配信スタンドとなっており、登録会員様に
+
+　定期的にメールマガジンを配信しております。
+
+・当局はご紹介先のサイトにおけるいかなるトラブルや損害に対しても
+
+　一切の責任を負いかねます。
+
+・掲載情報に関してのご質問には応じておりませんので予めご了承下さい。
+
+・当メールマガジンに掲載された記事の一部または全部を
+
+　許可なく転載することを禁止致します。
+
+・ 身に覚えのない配信はいたずらの可能性がございます
+
+　購読解除をご希望の方は、お手数ですが下記のアドレスよりログインし、
+
+　ご自身でお手続き下さい。
+
+========================== http://hiw.vig-seet.to/mail-cafe/
 
 
-Can someone please update the Soundcard Matrix with this information?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-24-05 11:31 tdammers       New Issue                                    
-03-22-05 22:23 jdthood        Note Added: 0004139                          
-======================================================================
+◆お・知・ら・せ◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆
 
-
+====--====--====--====--====--====--====--====--====--==メールカフェ
 
 
 -------------------------------------------------------
