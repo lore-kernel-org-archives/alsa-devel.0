@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000344]: usx2y driver causes kernel oops
-Date: Thu, 24 Jun 2004 22:17:40 +0200
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Speaker test and all that
+Date: Thu, 24 Jun 2004 15:44:26 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b2e60c22ec9539246b9bd4285e358ea7@bugtrack.alsa-project.org>
+Message-ID: <20040624224426.43140.qmail@web60804.mail.yahoo.com>
+References: <E1BdKj1-00077O-EV@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E1BdKj1-00077O-EV@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,101 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+In a previous message I wrote...
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0344
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                maggoi
-Assigned To:                karsten
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     344
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.6
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-24-2004 18:06 CEST
-Last Modified:              06-24-2004 22:17 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    usx2y driver causes kernel oops
-Description:=20
-While playing a soundfile using my Tascam us-122 (Alsa Module snd-usx2y)
-after a few seconds the sound stutters and i get an Kernel oops.=20
-This is not happening if I use Jack.
-I'm using the latest alsa drivers 1.0.5. With kernel 2.6.6.=20
-
-dmesg:
-Debug: sleeping function called from invalid context at mm/slab.c:1996
-in_atomic():1, irqs_disabled():1
- [<c01152f7>] __might_sleep+0xb7/0xe0
- [<c013be33>] __kmalloc+0xa3/0xb0
- [<c026dad1>] usb_alloc_urb+0x21/0x60
- [<f89b3775>] snd_usX2Y_substream_prepare+0xd5/0x1c0 [snd_usb_usx2y]
- [<f89b3397>] snd_usX2Y_urb_play_start+0xa7/0x170 [snd_usb_usx2y]
- [<f89b35bf>] snd_usX2Y_pcm_play_trigger+0x3f/0x50 [snd_usb_usx2y]
- [<f89490e8>] snd_pcm_do_start+0x28/0x30 [snd_pcm]
- [<f8948dc9>] snd_pcm_action_single+0x39/0x70 [snd_pcm]
- [<f8948f12>] snd_pcm_action_lock_irq+0x92/0x1e0 [snd_pcm]
- [<c0112a8c>] do_page_fault+0x34c/0x54e
- [<f894c4d7>] snd_pcm_common_ioctl1+0x167/0x2f0 [snd_pcm]
- [<f894c6c0>] snd_pcm_playback_ioctl1+0x60/0x3b0 [snd_pcm]
- [<c0150a32>] vfs_write+0xd2/0x130
- [<c0162f20>] sys_ioctl+0x100/0x270
- [<c010413b>] syscall_call+0x7/0xb
+> While I have seen .../test/pcm.c I have not seen 'speaker-test.c'.  A
+> quick 'find' did not yield it either.  Is this something new??
 
 
+My error.  I see that 'speaker-test' was introduced in Version 1.05.
 
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+While it is a nice program (it helped me find out that on a VIA 8235
+the 'Line' control fed the Back channels into the Front channels, at a
+lower level), I have a suggestion:
 
-----------------------------------------------------------------------
- karsten - 06-24-2004 22:17 CEST=20
-----------------------------------------------------------------------
-As a test please replace all occurrences of GFP_KERNEL in=20
-function snd_usX2Y_substream_prepare() with GFP_ATOMIC.
-That function is in alsa-driver/usb/usx2y/usbusx2yaudio.c.
+Please call the 'Non-Front' channels the 'BACK' channels.  Having both
+'Right' and 'Rear' abbreviated as 'R' can be confusing.  The NQRC
+(National Quadraphonic Radio Committee) back in the 70's figured this
+out (I was there!) when setting up 4 channel broadcast standards in the
+USA.  Note that this is only a documentation change.  I defer to others
+the names LFE and Center.
 
-Thanks for debugging.
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-24-04 18:06 maggoi         New Bug                                    =
- =20
-06-24-04 18:06 maggoi         Distribution              =3D> Gentoo      =
-   =20
-06-24-04 18:06 maggoi         Kernel Version            =3D> 2.6.6       =
-   =20
-06-24-04 22:17 karsten        Bugnote Added: 0001337                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+=====
+-- 
+Tom Watson
+tsw@johana.com
 
 
+		
+__________________________________
+Do you Yahoo!?
+Yahoo! Mail - 50x more storage than other providers!
+http://promotions.yahoo.com/new_mail
 
 
 -------------------------------------------------------
