@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000792]: alsa fails to initialize after UDEV is installed
-Date: Mon, 14 Feb 2005 19:38:04 +0100
-Message-ID: <e86072a3861bd92023cc5a524980a0a2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000204]: No volume control
+Date: Mon, 14 Feb 2005 19:36:47 +0100
+Message-ID: <3c635a9c46207007784bb2b1d6155bfe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35903248
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:38:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 37214248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:36:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,75 +23,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=792> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=204> 
 ======================================================================
-Reported By:                sluce
+Reported By:                pborman
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   792
-Category:                   alisp
+Project:                    ALSA - driver
+Issue ID:                   204
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22-1.2115.nptl
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-08-2005 04:12 CET
-Last Modified:              02-14-2005 19:38 CET
+Date Submitted:             04-12-2004 21:01 CEST
+Last Modified:              02-14-2005 19:36 CET
 ======================================================================
-Summary:                    alsa fails to initialize after UDEV is installed
+Summary:                    No volume control
 Description: 
-I'm really running 1.0.7 but that wasn't an option above.
-The kernel reports that it finds my CMI8330 card and alsa says:
-pnp: the driver 'cmi8330' has been registered
-pnp: match found with the PnP device '01:01.00' and the driver 'cmi8330'
-pnp: match found with the PnP device '01:01.03' and the driver 'cmi8330'
-pnp: Device 01:01.00 activated.
-pnp: Device 01:01.03 activated.
-ALSA sound/isa/sb/sb_common.c:130: SB [0x220]: DSP chip found, version =
-4.13
-
-I am unable to use the sound card.  KDE is configured to use alsa but is
-unable to open the sound device.
-
-I'll happily provide more information if you tell me what you want to see.
+Sound plays ok, system events, xmms etc.
+Can mute sound using amixer set PCM off
+but can't control volume with amixer or alsamixer, master volume control
+moves up & down but volume doesn't change
 ======================================================================
 
 ----------------------------------------------------------------------
- sluce - 01-13-05 17:53 
+ pborman - 04-14-04 00:34 
 ----------------------------------------------------------------------
-Thanks to Thomas Hood, this issue is resolved.  The problem was a too
-backlevel hotplug installation.  I upgraded hotplug to sarge and all is
-well.
-
-
+Using alsa driver 1.0.4
+ASRock motherboard with SiS7012 chipset, correctly identified by
+alsaconfig
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 20:42 
+ tiwai - 01-13-05 17:26 
 ----------------------------------------------------------------------
-OK, closing now.
+ALSA 1.0.8 includes the softvol plugin for this problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 04:12 sluce          New Issue                                    
-01-08-05 18:43 sluce          Issue Monitored: sluce                       
-01-08-05 18:44 sluce          Issue End Monitor: sluce                     
-01-08-05 23:34 sluce          File Added: 792.txt                          
-01-08-05 23:35 sluce          Note Added: 0003131                          
-01-10-05 15:03 tiwai          Note Added: 0003136                          
-01-10-05 20:49 sluce          Note Added: 0003139                          
-01-12-05 06:05 sluce          Note Edited: 0003139                         
-01-13-05 17:52 sluce          Note Added: 0003197                          
-01-13-05 17:53 sluce          Note Edited: 0003197                         
-01-13-05 20:42 tiwai          Status                   new => resolved     
-01-13-05 20:42 tiwai          Resolution               open => fixed       
-01-13-05 20:42 tiwai          Assigned To               => tiwai           
-01-13-05 20:42 tiwai          Note Added: 0003200                          
-01-13-05 20:42 tiwai          Assigned To              tiwai =>            
-02-14-05 19:38 tiwai          Status                   resolved => closed  
+04-12-04 21:01 pborman        New Issue                                    
+04-12-04 21:01 pborman        Distribution              => Fedora Core 1   
+04-12-04 21:01 pborman        Kernel Version            => 2.4.22-1.2115.nptl
+04-14-04 00:34 pborman        Note Added: 0000801                          
+04-28-04 20:48 pborman        Issue Monitored: pborman                     
+01-13-05 17:26 tiwai          Status                   new => resolved     
+01-13-05 17:26 tiwai          Resolution               open => fixed       
+01-13-05 17:26 tiwai          Assigned To               => tiwai           
+01-13-05 17:26 tiwai          Note Added: 0003194                          
+01-13-05 17:26 tiwai          Assigned To              tiwai =>            
+02-14-05 19:36 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
