@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Thu, 30 Dec 2004 13:13:29 +0100
-Message-ID: <4bc7f1e49fc730d2f6db6400567a1d6f@bugtrack.alsa-project.org>
+From: Rafal Mazurkiewicz <ramazur@eportal.pl>
+Subject: Prywaty-zacja
+Date: 30 Dec 2004 14:34:14 +0100
+Message-ID: <20041230133417.B5CC91DB@alsa.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7901323B
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 13:13:30 +0100 (MET)
+Received: from eportal.pl (m236.class147.petrotel.pl [217.28.147.236])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5CC91DB
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 14:34:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,57 +21,48 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-885=
+9-2">
+</head>
+<body>
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
-======================================================================
-Reported By:                mr-k
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              12-30-2004 13:13 CET
-======================================================================
-Summary:                    Driver and all sound aplications hangs
-Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
-
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
-
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-======================================================================
+<p style=3D"text-align: justify; line-height: 16pt; margin-top: 6.0pt">
+<span style=3D"font-size: 12.0pt"><br>
+W ostatnim czasie CA IB przeprowadzi=B3o bardzo korzystn=B1 (dla CA IB) t=
+ransakcj=EA z=20
+PZU. Wed=B3ug szacunkowej oceny analityk=F3w i doradc=F3w inwestycyjnych =
+PZU S.A.=20
+straci=B3o na tej operacji co najmniej 100 mln z=B3otych. Rynek&nbsp;zasz=
+okowa=B3a zani=BFona=20
+warto=B6=E6 transakcji zakupu przez CA IB akcji trzech funduszy NFI. W&nb=
+sp;nagrod=EA CA IB=20
+zostaje zaproszone przez ministra skarbu&nbsp; do z=B3o=BFenia ofert na d=
+oradztwo=20
+przy prywatyzacji PZU SA. To co robi MSP mo=BFna by nazwa=E6 grotesk=B1, =
+gdyby nie=20
+fakt, =BFe za &#8222;dobr=B1 zabaw=EA&#8221; p=B3aci ca=B3e spo=B3ecze=F1=
+stwo. W&nbsp;sprawie transakcji z PZU=20
+pani Alicja Kornasiewicz i CA IB powinni dosta=E6 zaproszenie, lecz do=20
+prokuratury.</span></p>
+<p style=3D"text-align: justify; margin-top:0">
+<font size=3D"2"><u>=ACr=F3d=B3o:</u><br>
+PKO BP i reszta =B6wiata&nbsp;
+<a href=3D"http://www.issues.150m.com/raport/pko-bp.htm">
+http://www.issues.150m.com/raport/pko-bp.htm</a> </font></p>
+<p style=3D"text-align: justify; margin-top:-6pt">
+<font size=3D"2"><u>Inne strony:</u></font><font size=3D"3"><br>
+</font><font size=3D"2">
+<a href=3D"http://zls.mimuw.edu.pl/KTM/archiwum/706427344.txt">
+http://zls.mimuw.edu.pl/KTM/archiwum/706427344.txt</a><br>
+<a href=3D"http://www.geocities.com/readares/">
+http://www.geocities.com/readares/</a><br>
+<a href=3D"http://www.kurier.iap.pl/zdanie/zdanie.php">
+http://www.kurier.iap.pl/zdanie/zdanie.php</a> </font></p>
+<BR>&nbsp;</p>
+</body>
+</html>
 
 
 
