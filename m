@@ -1,15 +1,16 @@
-From: Iain Kennedy <iain@psand.net>
-Subject: Re: Re: hdspmixer issues
-Date: Wed, 22 Sep 2004 15:46:41 +0100 (BST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: [PATCH] emu10k1: add interval timer support
+Date: Wed, 22 Sep 2004 11:01:11 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409221545340.2696@tallow.psand.net>
-References: <Pine.LNX.4.58.0409202101350.2974@tallow.psand.net>
- <s5hk6uoylxb.wl@alsa2.suse.de>
-Reply-To: iain@psand.net
+Message-ID: <1095865270.498.20.camel@krustophenia.net>
+References: <1095405566.19045.35.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
+	 <1095795402.13220.21.camel@krustophenia.net> <s5hacvizjzv.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk6uoylxb.wl@alsa2.suse.de>
+In-Reply-To: <s5hacvizjzv.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,53 +19,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 21 Sep 2004, Takashi Iwai wrote:
-
-> At Mon, 20 Sep 2004 21:09:18 +0100 (BST),
-> Iain Kennedy wrote:
+On Wed, 2004-09-22 at 06:16, Takashi Iwai wrote:
+> At Tue, 21 Sep 2004 15:36:42 -0400,
+> Lee Revell wrote:
+> > 
+> > I am using kX ASIO as a reference for how multichannel PCM should work. 
+> > From the application's point of view, this looks like 16 mono channels. 
+> > In the mixer, for each of the 16 ASIO channels you have 4/8 drop down
+> > boxes to set the FX send destinations and 4/8 sliders to set the send
+> > amounts.  By default ASIO 1 goes to FXBus channel 0, 2 goes to FXBus 1,
+> > etc.  Multiple applications can open the same ASIO channel and the
+> > driver will allocate additional voices with the same send routing.
+> > 
+> > I think that the ALSA equivalent would be to have another device with
+> > channels_min=channels_max=1, and 16 substreams for which the routing
+> > would be controlled with the mixer; if multiple applications open the
+> > same substream we would allocate another voice.  You would call
+> > snd_pcm_period_elapsed for each of these streams in the handler for the
+> > EFX capture interrupt.  All applications using this device must use the
+> > same period size settings, as in the Windows driver, the only setting in
+> > the ASIO control panel is the latency aka buffer size.
 > >
-> > > > I"ve been messing with hdsp (again :-) and found out that my hdspmixer
-> > > > has very oddly behaving sound meters. While the input (2nd row)
-> > > > appears to be more or less ok (the yellow peak things kind of fly all
-> > > > over the place and often drop off below green lines or even completely
-> > > > dissapear), the analog outputs as well as combined monitoring output
-> > > > (front 1/4" phono jack on the multiface) only occassionally spike with
-> > > > a line input (usually only one channel). I am wondering why this is so
-> > > > since the audio is definitely working ok, but the monitoring of the
-> > > > outputs simply isn"t working (at least not visually).
-> > >
-> > > i"ve been experiencing similar spikes on the analog outputs as ico
-> > > described. since we had a somehow similar problem with screwed up pci
-> > > cycles that was caused by incorrect initialisation of the cardbus briges
-> > > on our machines, i somehow doubt that it"s related to the problem we
-> > > had.
-> >
-> > > cheers...
-> >
-> > I've been experiencing lack of/sporadic metering on hdspmixer too..
-> > I'm running Debian testing with kernel 2.6.8 (same effect with 2.6.3),
-> > with both the debian alsa packages and a locally compiled latest alsa
-> > version...
-> >
-> > I had no such problem using 2.4.xx series kernels, although I was using a
-> > pre-1.06 version of the alsa drivers..
->
-> Are you using ppc?  I found a bug in hdsp driver that it doesn't
-> handle big-endian correctly in the metering mmap.
-> Could you try the CVS version?
->
->
-> Takashi
->
+> > You would then use an .asoundrc plugin that would look like a 16 channel
+> > PCM device, and would consist of 16 mono channels, hw:x,x,0 through
+> > hw:x,x,15.
+> 
+> Maybe I didn't get your point, but why not simply provide a 16-channel
+> non-interleaved device?
+> 
 
-I'm using intel architecture... (Inspiron 8500 with 2GHz P4 M)
+Several reasons.  With the kX driver, if I am using a ReWire host like
+Ableton Live, and I want to use an app that is not ReWire capable, I
+would have the app output to two extra ASIO channels, say 10 and 11, 
+and Live can use these as inputs like any other physical input.  Live
+would then output to ASIO 1/2 (front), ASIO 3/4 (rear), and ASIO 5/6
+(headphones/prelisten).  It seems like the best way to do this in ALSA
+is to have the driver support a bunch of mono channels and use alsalib
+plugins to make multichannel devices out of these.
 
-I've tried the CVS version, and still get the same results.
+How would I open only channels 10 and 11 with one app and 1-6 with
+another using a single 16 channel device?  
 
-Iain
+Also, it seemed like it would be easier to handle mmap with a bunch of
+mono streams, but maybe I don't understand the mmap completely.  The OSS
+driver for example does not support mmap for multichannel PCM.
+
+Lee
+
 
 
 -------------------------------------------------------
