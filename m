@@ -1,14 +1,13 @@
-From: Troy Benjegerdes <hozer@hozed.org>
+From: Jaroslav Kysela <perex@perex.cz>
 Subject: Re: ymfpci, big-endian, and spdif out
-Date: Fri, 10 Jan 2003 19:48:48 -0600
+Date: Sat, 11 Jan 2003 10:53:51 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030111014848.GD393@kalmia.hozed.org>
-References: <20030108053721.GC10119@kalmia.hozed.org> <Pine.LNX.4.33.0301081229000.531-200000@pnote.perex-int.cz> <20030110065545.GC393@kalmia.hozed.org> <s5hvg0x6wvc.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.33.0301111052260.613-100000@pnote.perex-int.cz>
+References: <20030111014848.GD393@kalmia.hozed.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hvg0x6wvc.wl@alsa2.suse.de>
+In-Reply-To: <20030111014848.GD393@kalmia.hozed.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,25 +16,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Troy Benjegerdes <hozer@hozed.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> > results in alsa-kernel/core/pcm_memory.c:alloc_pcm_pages() getting
-> > called with substream->dma_type= SNDRV_PCM_DMA_TYPE_UNKNOWN.
->  
-> oh, you found a bug :)  it was introduced due to my last change to pcm
-> pre-allocator.  now fixed on cvs.
+On Fri, 10 Jan 2003, Troy Benjegerdes wrote:
+
+> > > results in alsa-kernel/core/pcm_memory.c:alloc_pcm_pages() getting
+> > > called with substream->dma_type= SNDRV_PCM_DMA_TYPE_UNKNOWN.
+> >  
+> > oh, you found a bug :)  it was introduced due to my last change to pcm
+> > pre-allocator.  now fixed on cvs.
+> > 
+> > thanks for your report!
 > 
-> thanks for your report!
+> Okay, now we're getting somewhere.. I'm not getting any errors anymore.
+> The reciever (hardware AC3 decoder) is recognizing I'm sending it
+> something other than PCM, but no sound comes out and none of the dolby
+> digital or other indicators light up. Any ideas?
 
-Okay, now we're getting somewhere.. I'm not getting any errors anymore.
-The reciever (hardware AC3 decoder) is recognizing I'm sending it
-something other than PCM, but no sound comes out and none of the dolby
-digital or other indicators light up. Any ideas?
+Please, use this patch and try to change '#if 0' to '#if 1' until it 
+works (any combination):
 
-(Xine is still giving me a 'sample format not available' error, not that
-it matters while ac3dec doesn't even work)
+Index: ac3spdif.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-tools/ac3dec/ac3spdif.c,v
+retrieving revision 1.4
+diff -u -r1.4 ac3spdif.c
+--- ac3spdif.c	8 Jan 2003 11:30:04 -0000	1.4
++++ ac3spdif.c	11 Jan 2003 09:52:32 -0000
+@@ -154,10 +154,15 @@
+         done_banner = 1;
+       }
+       
+-#ifndef _a_b_c_d_e_f /* WORDS_BIGENDIAN */
++#if 0
+       // extract_ac3 seems to write swabbed data
+       swab(&buf[10], &buf[10], syncinfo.frame_size * 2 - 2);
+ #endif
++
++#if 0
++      swab(buf, buf, (syncinfo.frame_size * 2 - 2) + 10);
++#endif
++
+       res = output_play((short *)buf, BLOCK_SIZE / 2 / 2);	/* 2 channels, 16-bit samples */
+       ret = ret < 0 ? ret : res;
+       bzero(buf,BLOCK_SIZE);
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
