@@ -1,17 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: bugs in usb midi alsa code?
-Date: Fri, 08 Nov 2002 09:39:48 +0100 (MET)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: usb audio sound quality
+Date: Fri, 08 Nov 2002 18:18:13 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0211080920200.23272-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.44.0211071037490.16062-100000@cmn37.stanford.edu>
+Message-ID: <3DCB8155.5000202@boosthardware.com>
+References: <Pine.LNX.4.44.0211060959140.1126-100000@cmn37.stanford.edu> <3DC97C55.6000507@boosthardware.com> <3DCAE7C8.5030808@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA04456
-	for <alsa-devel@alsa-project.org>; Fri, 8 Nov 2002 09:39:55 +0100
-In-reply-to: <Pine.LNX.4.44.0211071037490.16062-100000@cmn37.stanford.edu>
+Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id KAA05094
+	for <alsa-devel@alsa-project.org>; Fri, 8 Nov 2002 10:29:30 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,48 +19,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> > OSS:         rawmidi -v -I /dev/midix
->
->   ./rawmidi -v -I /dev/midi1 --> works fine
->
-> > ALSA direct: rawmidi -v -I /dev/snd/midiCxD0
->
->   ./rawmidi -v -I /dev/snd/midiC1D0 --> works fine
+Patrick Shirkey wrote:
+> I'm getting a lot of wierd sound quality bugs while using JACK. It seems 
+> like the driver is storing the crappyness somewhere and each time I 
+> access it the quality gets worse. Is it possible that the driver could 
+> allow the data to linger and make things unstable?
+> 
+> I have been doing some testing today with various softsynths and my mem 
+> is getting pretty full. Turning off jack just freed up 10MB but still 
+> it's at
+> 
+> Mem:    386484K total,   336212K used,    50272K free,    41304K buffers
+> 
+> The machine has been up for 7 hours. Is that reasonable?
+> 
 
-These two tests access the driver directly, without going through the ALSA
-library, so I'll assume that the driver itself works fine.
-
-> > ALSA Lib:    rawmidi -v -i hw:x,0
->
-> ./rawmidi -v -i hw:1,0
-> Using:
-> Input: device hw:1,0
-> Output: NONE
-> ALSA lib rawmidi.c:247:(snd_rawmidi_open_conf) symbol _snd_rawmidi_hw_open
-> is not defined inside (null)
-> snd_rawmidi_open hw:1,0 failed: -6
-> Closing
->
-> > ALSA Lib:    rawmidi -v -i hw:x,0,0
->
-> Same as the previous test.
-
-The ALSA lib is not able to load and call a function from librawmidi.
-There seems to be something wrong with your ALSA configuration.
->From the error message I would deduce that there is a rawmidi_type
-definition in .asoundrc or /etc/asound.conf or /usr/share/alsa/alsa.conf
-which lacks the "lib" key, but I'm not sure about this.
-You might try recompiling and installing the alsa-lib package, or
-temporarily removing the config files mentioned above.
+I have just tested a cool machine with native alsa and the quality is 
+crystal clear. Testing with JACK caused and through alsa while running 
+JACK caused the degradation again. I will work on the assumption that 
+means that the stress of running JACK is the culprit of audio quality 
+degradation and I guess that ssm (and possibly JACK) has some mem leaks. 
+Thanks for your work Takashi and Clemens.
 
 
-HTH
-Clemens
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
