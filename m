@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000746]: No sound when play
-Date: Fri, 24 Dec 2004 19:34:41 +0100
-Message-ID: <7a9315455770261ea69a7b1e6c70e831@bugtrack.alsa-project.org>
+Date: Fri, 24 Dec 2004 19:38:53 +0100
+Message-ID: <9a819118a849637e67a3ae5fb0b0b21a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D699D241
-	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2004 19:34:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2445241
+	for <alsa-devel@alsa-project.org>; Fri, 24 Dec 2004 19:38:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=746> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               fedora core 3
 Kernel Version:             2.6.9-1.681_FC3.smp
 ======================================================================
 Date Submitted:             12-24-2004 19:34 CET
-Last Modified:              12-24-2004 19:34 CET
+Last Modified:              12-24-2004 19:38 CET
 ======================================================================
 Summary:                    No sound when play
 Description: 
@@ -68,12 +68,24 @@ snd_page_alloc         14088  2 snd_azx,snd_pcm
 
 ======================================================================
 
+----------------------------------------------------------------------
+ smuslo - 12-24-04 19:38 
+----------------------------------------------------------------------
+aplay   /usr/share/sounds/info.wav
+Playing WAVE '/usr/share/sounds/info.wav' : Signed 16 bit Little Endian,
+Rate 44100 Hz, Mono
+ALSA lib pcm_params.c:2096:(snd_pcm_hw_refine_slave) Slave PCM not usable
+aplay: set_params:835: Broken configuration for this PCM: no
+configurations available
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-24-04 19:34 smuslo         New Issue                                    
 12-24-04 19:34 smuslo         Distribution              => fedora core 3   
 12-24-04 19:34 smuslo         Kernel Version            => 2.6.9-1.681_FC3.smp
+12-24-04 19:38 smuslo         Issue Monitored: smuslo                      
+12-24-04 19:38 smuslo         Note Added: 0002931                          
 ======================================================================
 
 
