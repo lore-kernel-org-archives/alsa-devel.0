@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
-Date: Fri, 11 Mar 2005 10:24:25 +0100
-Message-ID: <7ea8307ee5ed575acbd8064836c4f6f1@bugtrack.alsa-project.org>
+From: =?utf-8?q?Jeffrey Vipa?= <handshakedmeo@signifeye.com>
+Subject: =?utf-8?q?Low monetary value b?=
+ =?utf-8?q?ut vast choice. Can?=
+ =?utf-8?q? be confident about?=
+ =?utf-8?q? your health.?=
+Date: Fri, 11 Mar 2005 06:48:07 +0000
+Message-ID: <E1D9gX4-00070k-In@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 503881DE
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 10:24:25 +0100 (MET)
+Content-Type: multipart/alternative;
+	 boundary="xbJQ9eMQfdUP7L"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,62 +17,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?utf-8?q?Sadie Lees?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=980> 
-======================================================================
-Reported By:                dobromir
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   980
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-11-2005 01:17 CET
-Last Modified:              03-11-2005 10:24 CET
-======================================================================
-Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
-Description: 
-I found in the alc850 spec that setting 12th bit in register 0x6a routes to
-spdif all data from ADC. I write small program that sets this register,
-and this works for me, but I use only 2 speakers configuration.
-Unfortunately I don't have enough 
-knowledge of alsa architecture to write a proper patch.
-======================================================================
+--xbJQ9eMQfdUP7L
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-----------------------------------------------------------------------
- dobromir - 03-11-05 08:27 
-----------------------------------------------------------------------
-12th bit means 1 << 12
+What's a pity, the similar medicine worths a lot more if it is ma=
+rked. Such wherefore have you spend much more especially when you=
+ will get the equivalent drugs at a more low cost?
+Wide option of our wares will help you to subdue whatever of your=
+ ailment. At Pharmoze, I give you the similar doses, the generic =
+interpretation - the equal caliber the equivalent prescription - =
+in a very reasonable price.
 
-----------------------------------------------------------------------
- dobromir - 03-11-05 10:24 
-----------------------------------------------------------------------
-Finaly I found how to resolve this issue. I replaced
-snd_ac97_spdif_controls_alc655 with snd_ac97_spdif_controls_alc650 in
-function patch_alc850_specific, and now I have proper mixer settings for
-spdif on my card.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-11-05 01:17 dobromir       New Issue                                    
-03-11-05 08:27 dobromir       Note Added: 0003880                          
-03-11-05 10:19 dobromir       File Added: alc_850_mixer.patch                   
+--xbJQ9eMQfdUP7L
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-03-11-05 10:24 dobromir       Note Added: 0003883                          
-======================================================================
-
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+What's worse, the equivalent medication worths much bigger if it =
+is brand named. Consequently how come ought you pay much more esp=
+ecially as you may acquire the similar medical facilities at a mo=
+re cheaper worth? <BR>
+Tremendous selection of our wares will support you to subdue what=
+soever of your illness. In Pharmoze, we administer you the same m=
+edical preparations, the generic interpretation - the similar qua=
+lity the equal formula - in a very judicious worth.<BR>
+<BR>
+<A href=3D"">examination this facts</A><BR>
+<BR>
+</BODY>
+</HTML></HTML>
+--xbJQ9eMQfdUP7L--
 
 
 
