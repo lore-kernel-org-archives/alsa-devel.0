@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Wed, 12 Jan 2005 15:02:41 +0100
-Message-ID: <1772996b93950661af26de1c849241fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Wed, 12 Jan 2005 15:05:29 +0100
+Message-ID: <4532769148f98713b1d186d65f247512@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC11116E
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:02:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90AC42F2
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:05:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,77 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
 ======================================================================
-Reported By:                pcmcginty
-Assigned To:                
+Reported By:                FishB8
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   748
-Category:                   PCI - intel8x0
+Issue ID:                   705
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Arch Linux
-Kernel Version:             2.6.10
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              01-12-2005 15:02 CET
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              01-12-2005 15:05 CET
 ======================================================================
-Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
-chipset choppy, plays to fast
+Summary:                    RME96 Driver crashes
 Description: 
-I've been spending a lot of time getting sound to work on my Sharp Actius
-MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
-ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
-2.6.10 kernel series cause the sound to become garbled as if the song is
-skipping through the music faster than it should. I have not tried ont he
-2.6.8 series. I can compile and try out if required. It is possible this
-is some other kernel issue, however I'm not sure how to track down where
-the kernel might be breaking the ALSA driver.
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- JonathanL - 01-12-05 14:13 
+ corwin - 01-12-05 12:53 
 ----------------------------------------------------------------------
-I have the same problem, with one ALI 5455 (integrated to my ALI
-motherboard) All work fine with alsa-driver-1.0.5 but sound seems to go
-too fast with alsa >= 1.0.6 (cvs included). All programs are  repporting
-messages like "alsa-space: xrun of at least 0,187 msecs. resetting
-stream1,8% 8 0 99%" (this one is from mplayer) even for a 48 kHz sampled
-file.
-I join my codec97#0 files.
+Confirmed. I'm using 2.6.10 with 1.0.8-rc2, and my RME96 is working well
+(ADAT and analog.)
 
 ----------------------------------------------------------------------
- tiwai - 01-12-05 15:02 
+ tiwai - 01-12-05 15:05 
 ----------------------------------------------------------------------
-Did you try 1.0.8rc2?
+OK, resolved to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 06:50 pcmcginty      New Issue                                    
-12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
-12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
-12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
-12-27-04 15:12 tiwai          Note Added: 0002961                          
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
-12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
-12-27-04 19:28 pcmcginty      Note Added: 0002973                          
-01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
-01-12-05 14:13 JonathanL      Note Added: 0003163                          
-01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
-    
-01-12-05 15:02 tiwai          Note Added: 0003164                          
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 12:30 martin         Note Added: 0002715                          
+12-04-04 17:56 FishB8         Note Added: 0002717                          
+12-04-04 19:21 FishB8         Note Added: 0002718                          
+12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
+12-07-04 18:44 tiwai          Note Added: 0002758                          
+12-07-04 23:06 FishB8         Note Added: 0002768                          
+12-08-04 12:08 tiwai          Note Added: 0002776                          
+12-09-04 00:22 FishB8         Note Added: 0002796                          
+12-09-04 11:22 tiwai          Note Added: 0002798                          
+12-12-04 20:04 martin         Note Added: 0002819                          
+12-12-04 23:35 FishB8         Note Added: 0002820                          
+12-13-04 19:28 martin         Note Added: 0002822                          
+12-15-04 06:09 FishB8         Note Added: 0002825                          
+12-15-04 20:06 martin         Note Added: 0002828                          
+12-16-04 18:27 tiwai          Note Added: 0002835                          
+01-12-05 02:46 FishB8         Note Added: 0003160                          
+01-12-05 12:53 corwin         Note Added: 0003162                          
+01-12-05 15:05 tiwai          Status                   new => resolved     
+01-12-05 15:05 tiwai          Resolution               open => fixed       
+01-12-05 15:05 tiwai          Assigned To               => tiwai           
+01-12-05 15:05 tiwai          Note Added: 0003167                          
 ======================================================================
 
 
