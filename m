@@ -1,16 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: "Unexpected hw_pointer value - wrong interrupt
-	acknowledge?" with emu10k1
-Date: Tue, 13 Jul 2004 14:56:13 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000386]: usb speakers don't show up in /proc/asound/cards
+Date: Tue, 13 Jul 2004 21:09:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1089744973.20381.53.camel@mindpipe>
-References: <1089679085.10777.83.camel@mindpipe>
-	 <s5hu0wban64.wl@alsa2.suse.de>
+Message-ID: <c2dcc04e5a0b98539f1d0d895edbde03@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0wban64.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,54 +15,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-07-13 at 12:26, Takashi Iwai wrote:
-> At Mon, 12 Jul 2004 20:38:05 -0400,
-> Lee Revell wrote:
-> > 
-> > > On Sun, 2004-07-11 at 01:25, Andrew Morton wrote:
-> > > > What we need to do is to encourage audio testers to use ALSA drivers, to
-> > > > enable CONFIG_SND_DEBUG in the kernel build and to set
-> > > > /proc/asound/*/*/xrun_debug and to send us the traces which result from
-> > > > underruns.
-> > > > 
-> > > 
-> > > OK, here goes.  The following traces result from running JACK overnight
-> > > like so, on an otherwise idle system.  Hardware is a VIA EPIA 6000, with
-> > > a 600Mhz C3 processor.  Kernel is 2.6.7 + volunatary_preempt patch. 
-> > > voluntary_preempt and kernel_preemption are both on.
-> > > 
-> > > jackd -v --realtime -d alsa --outchannels 2 --rate 48000 --shorts
-> > > --playback --period 32  --nperiods 2
-> > > 
-> > > These settings require less than 666 microseconds scheduler latency. 
-> > > The average performance is quite good - 5-20 *microseconds*!
-> > > 
-> > 
-> > While running the above test, I also noticed these messages from the
-> > ALSA driver.  These messages did not occur during the overnight test;
-> > they began when I sat down at the console to check the results.
-> > 
-> > Jul 12 17:31:43 mindpipe kernel: ALSA /usr/src/alsa-cvs-1.0.5/alsa-driver/alsa-kernel/core/pcm_lib.c:199: Unexpected hw_pointer value [1] (stream = 0, delta: -16, max jitter = 32): wrong interrupt acknowledge?
-> 
-> The message appears when an unexpected DMA pointer is read in the
-> interrupt handler.  Either the handling of irq was delayed more than
-> the buffer size, an irq is issued at the wrong timing, or the DMA
-> pointer reigster is somehow screwed up.
-> 
-> Since you're using quite small buffer, I guess the former case.
-> 
 
-I thought this was what an XRUN was, when the handling of the irq is
-delayed more than the buffer size.  Sometimes these messages are
-associated with XRUNs, sometimes not.
+The following bug has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0386
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                hadess
+Assigned To:                Clemens Ladisch
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     386
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.7-bk19
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-13-2004 21:09 CEST
+Last Modified:              07-13-2004 21:09 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    usb speakers don't show up in /proc/asound/ca=
+rds
+Description:=20
+My USB speakers don't show up in /proc/asound/cards, even though
+snd_usb_audio is loaded, and playback working with them.
 
-Is this a kernel issue, ALSA midlevel issue, or driver issue?
+I think this causes problem with "aplay -l" which doesn't list  the
+devices, and also seems to be a problem for "gnome-alsamixer" which will
+not show the mixer for that device.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Lee
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-13-04 21:09 hadess         New Bug                                    =
+ =20
+07-13-04 21:09 hadess         Distribution              =3D> Fedora Core =
+2  =20
+07-13-04 21:09 hadess         Kernel Version            =3D> 2.6.7-bk19  =
+   =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
 
