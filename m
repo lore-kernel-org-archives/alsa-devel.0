@@ -1,14 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: mpu401_pnp
-Date: Mon, 7 Feb 2005 09:46:53 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502070940520.3379-100000@studcom.urz.uni-halle.de>
-References: <1093985441.4134e4a1e2295@imp4-q.free.fr>
+Subject: Re: Using specific code for midi/gameport instead of
+ generic one.
+Date: Mon, 7 Feb 2005 10:35:01 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0502071024410.3379-100000@studcom.urz.uni-halle.de>
+References: <4203CEEC.9000700@free.fr>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56CAE1EC
-	for <alsa-devel@alsa-project.org>; Mon,  7 Feb 2005 09:46:55 +0100 (MET)
-In-Reply-To: <1093985441.4134e4a1e2295@imp4-q.free.fr>
+In-Reply-To: <4203CEEC.9000700@free.fr>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,21 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: castet.matthieu@free.fr
-Cc: alsa-devel@alsa-project.org
+To: matthieu castet <castet.matthieu@free.fr>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-castet.matthieu@free.fr wrote:
-> I send you a mpu401 modules that support pnpbios.
+matthieu castet wrote:
+> what's the advantage of using specific code (via82xx.c for example) for
+> managing midi/gameport instead of the generic module mpu401 and ns558 ?
 
-Applied (merged with mpu401.c), thanks.
+The MPU-401 code in via82xx.c is used only for VT82C686 chips where
+the MIDI port shares an interrupt with the AC'97 controller.
 
-(I didn't read your mail from Friday until I had written the patch. :)
+There is no reason for the gameport code, except that it would work
+even if PnP happens to be disabled.
 
-> As you can see, because of a bug in pnpbios code, sometime it doesn't find a
-> irq, so it add a litle hack waiting the bug is fix in the kernel.
+> These modules should be able to use pnp layer, so they should be able to
+> know/change the io ports in use without writing directly in LPC pci device.
 
-I didn't add this workaround.  Is this bug still in the kernel?
+There is no driver that changes I/O ports by writing to the LPC bridge
+device.  This wouldn't work anyway because the driver wouldn't know
+how to reconfigure the SuperIO chip behind the bridge.
 
 
 Best regards,
