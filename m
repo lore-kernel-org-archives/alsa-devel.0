@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000392]: feature requests
-Date: Wed, 10 Nov 2004 05:08:27 +0100
-Message-ID: <ccaa3f44ee7ad10092e21a32f2687bf9@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: add interval timer support
+Date: Tue, 09 Nov 2004 23:32:52 -0500
+Message-ID: <1100061173.22666.11.camel@krustophenia.net>
+References: <1095405566.19045.35.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
+	 <1099511035.1617.32.camel@krustophenia.net>
+	 <1099517082.1617.38.camel@krustophenia.net>  <s5hu0rzqevv.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13FDA2D1
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 05:08:27 +0100 (MET)
+In-Reply-To: <s5hu0rzqevv.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +20,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2004-11-09 at 15:24 +0100, Takashi Iwai wrote:
+> At Wed, 03 Nov 2004 16:24:41 -0500,
+> Lee Revell wrote:
+> > 
+> > On Wed, 2004-11-03 at 14:43 -0500, Lee Revell wrote:
+> > > OK I converted this code to use the ALSA timer API.
+> > 
+> > Here is the patch against ALSA CVS.  I tested it with the ALSA from
+> > kernel 2.6.9-rc3-mm3 because CVS does not build currently.
+> 
+> The patch to include/emu10k1.h is missing, too.
+> Could you give it?
+> 
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=392> 
-======================================================================
-Reported By:                gblack
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   392
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.25
-======================================================================
-Date Submitted:             07-16-2004 09:07 CEST
-Last Modified:              11-10-2004 05:08 CET
-======================================================================
-Summary:                    feature requests
-Description: 
-I'm not sure if this is the right place to post this, but there are several
-features that my integrated audio has that don't seem to be supported by
-the alsa driver. My sound chip is the Sigmatel STAC9758 running under an
-intel chipset.
+Sorry, here it is.
 
-1. When headphones are plugged into the headphone jack, the built in
-speakers don't turn off, which they do under that other OS.
-
-2. I've done some research into being able to play several sounds
-simultaneously, and found that this can either be done in hardware on the
-soundcard, or in software. On my desktop (also gentoo), which has a
-soundblaster, I didn't need to configure anything special to get mixing,
-and on my laptop I did. From that, I think that there isn't support for
-hardware mixing in the intel8x0 driver, and I would like to request that
-it be added, please.
-
-3. I don't know if this should be done through alsa or not, but the output
-jacks on my laptop are supposed to be configurable to provide different
-functions, ie 5 channel surround, or stereo, mic, and headphones, etc. If
-this can be done through alsa or another program, please let me know.
-
-I'd like to try to help fix these problems, but I don't know much about
-sound cards, and even less about kernel drivers. If you could suggest a
-good starting point, that would also be appreciated.
-
-A discussion about getting the sound to work, as well as other issues with
-this laptop, can be found at:
-http://www.linuxquestions.org/questions/history/145832
-
-Thanks!
-======================================================================
-
-----------------------------------------------------------------------
- gnif - 11-10-04 05:08 
-----------------------------------------------------------------------
-ummmm, duh, you cant add mixing support to a chip in your pc, research your
-problem before posting that kind of crap. The soundblaster does hardware
-mixing, software mixing has to be configured by you, it is not for the
-driver to handle. Alsa has plenty of support for software mixing, you need
-to go and read the documentation.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-04 09:07 gblack         New Issue                                    
-07-16-04 09:07 gblack         Distribution              => Gentoo          
-07-16-04 09:07 gblack         Kernel Version            => 2.4.25          
-11-10-04 05:08 gnif           Note Added: 0002357                          
-======================================================================
+Index: alsa-kernel/include/emu10k1.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/include/emu10k1.h,v
+retrieving revision 1.49
+diff -u -r1.49 emu10k1.h
+--- alsa-kernel/include/emu10k1.h	30 Oct 2004 07:44:19 -0000	1.49
++++ alsa-kernel/include/emu10k1.h	10 Nov 2004 04:32:30 -0000
+@@ -31,6 +31,7 @@
+ #include <sound/ac97_codec.h>
+ #include <sound/util_mem.h>
+ #include <sound/pcm-indirect.h>
++#include <sound/timer.h>
+ #include <linux/interrupt.h>
+ #include <asm/io.h>
+ 
+@@ -1000,6 +1001,8 @@
+ 	snd_pcm_substream_t *pcm_capture_mic_substream;
+ 	snd_pcm_substream_t *pcm_capture_efx_substream;
+ 
++	snd_timer_t *timer;
++
+ 	emu10k1_midi_t midi;
+ 	emu10k1_midi_t midi2; /* for audigy */
+ 
+@@ -1019,6 +1022,7 @@
+ int snd_emu10k1_pcm_efx(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
+ int snd_emu10k1_fx8010_pcm(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
+ int snd_emu10k1_mixer(emu10k1_t * emu);
++int snd_emu10k1_timer(emu10k1_t * emu, int device);
+ int snd_emu10k1_fx8010_new(emu10k1_t *emu, int device, snd_hwdep_t ** rhwdep);
+ 
+ irqreturn_t snd_emu10k1_interrupt(int irq, void *dev_id, struct pt_regs *regs);
 
 
 
