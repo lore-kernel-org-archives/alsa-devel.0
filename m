@@ -1,14 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: CVS ALSA failed upgrade in Linux 2.6.3
-Date: Wed, 03 Mar 2004 01:07:47 +0000
+From: Marcel <shizuma@magma.ca>
+Subject: sbawe isa non pnp woes
+Date: Tue, 2 Mar 2004 21:33:16 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40452FE3.8080202@superbug.demon.co.uk>
-References: <200402251411.OAA12812@liam2.demon.co.uk> <200403022335.AAA22545@liam2.demon.co.uk>
+Message-ID: <20040303023316.GA23931@dailyplanet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403022335.AAA22545@liam2.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,44 +15,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: William <walsac2@liam2.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-William wrote:
-> James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
-> 
->>Use directions at: -
->>http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
->>
-> 
-> 
-> Thanks, James.  Like I said in my previous reply to you, the section
-> describing option 1 is confusing because it seems to contradict itself
-> firstly by saying alsa-driver is needed (at the first paragraph) and
-> secondly by saying alsa-driver might not be needed (at the end of the section)
-> because Linux 2.6.3 includes alsa-driver-1.0.2,
-> which misses the point of wanting to use CVS alsa-driver in the first place,
-> i.e. to get the very latest drivers -- not those in alsa-driver-1.0.2.
-> Basically it doesn't explain why you should install CVS alsa-drivers.
-> Also it doesn't say what to do with alsa-kernel yet the cvs example shows
-> alsa-kernel being checked out.  As Takashi Iwai said earlier, alsa-kernel
-> includes stable drivers only and excludes new/experimental drivers.
-> My understanding is you should install either alsa-kernel or CVS alsa-drivers,
-> but not both of them.
-> 
-> William
-> 
-> 
-The point of option 1 is to explain how to upgrade alsa if you need to. 
-Not everyone needs to upgrade.
-If you wish to use the cvs, you have to get alsa-driver and alsa-kernel, 
-because alsa-driver uses files from ../alsa-kernel
-So, if you follow the cvs command exactly it will work.
+Hello
 
-Cheers
-James
+I have a isa awe 64 card configurable on-board for pnp/non-pnp (a jumper).
+I choose not to use pnp and assing (another jumper) irq 5 for DOS (heheheh)
+compatability.  This card always been giving me excellent results with
+DOS/Windows/OSS.
 
+Could someone help me in getting rid of underrun conditions I have when I
+"aplay bong.wav".  This is a 1 second wave file I play to indicate time:  I
+play it 3 times at 3:00, 9 times at 9:00.  The computer is sollicited
+sometimes when this file is played (a cron job) and I get underrun
+condition.  I think it wouldn't be too hard to give high priority to aplay
+for 1 second from time to time so the sound wouldn't be so distorted, but I
+don't have any wee idea what to do.  Well I read somewhere to use alsaplay
+-r suid root but it's worst than aplay.
+
+Another thing, seems a bug had been replaced by another bug.  See what I
+have to do in order to get snd-sbawe do load.  Took me days to figure out
+this!  A nightmare.  Won't load witn any deviation to this:
+
+v 1.0.2 compile options:
+#./configure --with-cards=sbawe --with-sequencer=yes \
+# --with-kernel=/usr/local/src/linux
+
+V 0.9.8 compile options:
+./configure --with-cards=sbawe --with-sequencer=yes --with-isapnp=no \
+ --with-kernel=/usr/local/src/linux
+
+V 0.9.8 modprobe options:
+options snd-sbawe port=0x220 irq=5 dma8=1 dma16=5 mpu_port=0x330 \
+awe_port=0x620
+
+V 1.0.2 modprobe options:
+#options snd-sbawe port=0x220 irq=5 dma8=1 dma16=5 mpu_port=0x330 \
+awe_port=0x620 isapnp=0
+
+I have PNP enabled in kernel.
+
+Just some thoughts.
+ 
 
 
 -------------------------------------------------------
