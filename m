@@ -1,32 +1,39 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: io_remap_page_range (was Re: [Alsa-devel] alsa-driver will not
-	compile with kernel  2.6.9-rc2-mm4-S7)
-Date: Fri, 01 Oct 2004 20:51:08 -0400
+Subject: Re: [Alsa-devel] alsa-driver will not compile with kernel
+	2.6.9-rc2-mm4-S7
+Date: Fri, 01 Oct 2004 21:23:18 -0400
 Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <1096678268.27818.84.camel@krustophenia.net>
+Message-ID: <1096680198.22244.6.camel@krustophenia.net>
 References: <1096675930.27818.74.camel@krustophenia.net>
 	 <32868.192.168.1.8.1096677269.squirrel@192.168.1.8>
+	 <20041002004854.GB26711@thundrix.ch>
+	 <1096678383.27818.87.camel@krustophenia.net>
+	 <1096679629.22244.4.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S266914AbUJBAvQ@vger.kernel.org>
-In-Reply-To: <32868.192.168.1.8.1096677269.squirrel@192.168.1.8>
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>, alsa-devel <alsa-devel@lists.sourceforge.net>
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S267164AbUJBBXV@vger.kernel.org>
+In-Reply-To: <1096679629.22244.4.camel@krustophenia.net>
+To: Tonnerre <tonnerre@thundrix.ch>
+Cc: Rui Nuno Capela <rncbc@rncbc.org>, linux-kernel <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-10-01 at 20:34, Rui Nuno Capela wrote:
-> Lee Revell wrote:
-> Good grief! I'm having this too, and I was desperate thinking I was the
-> only one, and ultimately offering the blame to gcc 3.4.1 which is what I'm
-> test-driving now on my laptop (Mdk 10.1c).
-> 
-> Now I remember that -mm4 has some issue about remap_page_range kernel
-> symbol being renamed to something else, which is breaking the build of
-> outsider modules (i.e. not the ones bundled under the kernel source tree).
-> Or so it seems.
+On Fri, 2004-10-01 at 21:13, Lee Revell wrote:
+> For now unset CONFIG_OLD_REMAP_PAGE_RANGE and it should work.  Not yet
+> tested.
 
-Looking through my archives I cannot find a report of this exact issue,
-but you are probably right.  Looks like ALSA drivers need to be updated.
+Yup, this works.  Trivial patch:
+
+--- alsa-driver/configure~	2004-09-29 16:05:19.000000000 -0400
++++ alsa-driver/configure	2004-10-01 21:14:20.000000000 -0400
+@@ -6629,7 +6629,7 @@
+ CFLAGS=$ac_save_CFLAGS
+ if test "$new_remap" != "1"; then
+   cat >>confdefs.h <<\_ACEOF
+-#define CONFIG_OLD_REMAP_PAGE_RANGE 1
++#undef CONFIG_OLD_REMAP_PAGE_RANGE
+ _ACEOF
+ 
+ fi
 
 Lee
