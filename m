@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000468]: stuttering audio output with SDL_audio applications
-Date: Fri, 27 Aug 2004 03:48:21 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] emu10k1: don't bother to invalidate cache for the extra
+ voice
+Date: Fri, 27 Aug 2004 01:26:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827014821.09E772500E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1093584379.20987.4.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A8F51F4
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 03:48:21 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 1ADE71AAF5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 03:48:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,51 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Since the extra voice is only used to generate the period interrupts and
+is always silent, I don't see why we need to invalidate its cache. 
+Apparently the author of the driver felt the same way.  Latency tracing
+shows that this can shave 20 usecs off the 120 usecs required for
+startup and xrun recovery.
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000468
-======================================================================
-Reported By:                int-e
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     468
-Category:                   PCI - via82xx
-Reproducibility:            sometimes
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             08-27-2004 03:48 CEST
-Last Modified:              08-27-2004 03:48 CEST
-======================================================================
-Summary:                    stuttering audio output with SDL_audio applications
+Lee
 
-Description: 
-I traced this down to the check that's now called check_invalid_pos() in
-calc_linear_pos() in the driver being triggered with lastpos==bufsize and
-res==bufsize/2.
+--- alsa-kernel/pci/emu10k1/emupcm.c~	2004-07-14 12:14:54.000000000 -0400
++++ alsa-kernel/pci/emu10k1/emupcm.c	2004-08-27 01:20:05.000000000 -0400
+@@ -574,7 +574,6 @@
+ 	spin_lock(&emu->reg_lock);
+ 	switch (cmd) {
+ 	case SNDRV_PCM_TRIGGER_START:
+-		snd_emu10k1_playback_invalidate_cache(emu, epcm->extra);	/* do we need this? */
+ 		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0]);
+ 		/* follow thru */
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 
-I think lastpos should be 0 at that point.
 
-Moving the assignment viadev->lastpos = res; at the end of that function
-after the wrap handling if() solved the problem for me.
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-27-04 03:48 int-e          New Bug                                      
-08-27-04 03:48 int-e          File Added: via82xx.diff                     
-08-27-04 03:48 int-e          Distribution              => Gentoo          
-08-27-04 03:48 int-e          Kernel Version            => 2.6.8.1         
-======================================================================
 
 
 -------------------------------------------------------
