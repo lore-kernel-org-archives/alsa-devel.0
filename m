@@ -1,13 +1,13 @@
-From: tom burkart <alsa@aussec.com>
-Subject: Re: Re: alsa 0.9.5 - ymfpci - Yay!
-Date: Thu, 17 Jul 2003 21:17:40 +1000 (EST)
+From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
+Subject: Re: ALSA timer and 2.6.0-test1 panic
+Date: Thu, 17 Jul 2003 14:06:04 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307172116240.1505-100000@home.aussec.com>
-References: <s5hwuehzgdr.wl@alsa2.suse.de>
+Message-ID: <yw1xisq14atv.fsf@users.sourceforge.net>
+References: <yw1xlluyln01.fsf@users.sourceforge.net> <s5hlluxzccx.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hwuehzgdr.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,23 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Today, Takashi Iwai wrote:
+Takashi Iwai <tiwai@suse.de> writes:
 
-> could you try once whether the oss ymfpci driver works?
-> if it works, then unload it and start the ALSA again?
-While it works, I noticed a lot of arifacts in the sound that never used
-to be there...
+>> I get thousands of these messages when using the ALSA timer in kernel
+>> 2.6.0-test1:
+>
+> there is an unblanced spinlock.
+> could you try the attached patch?
 
-tom.
-Consultant
+It seems to work.  Thanks.
 
-AUSSEC    Phone: 61 4 1768 2202
-339 Blaxland Rd., Ryde NSW 2112
-Email: tom@aussec.com
+-- 
+Måns Rullgård
+mru@users.sf.net
 
 
 
