@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
-Date: Tue, 7 Dec 2004 21:40:24 +0100
-Message-ID: <430abbbfa6c1464d2375406b768f5e8b@bugtrack.alsa-project.org>
+Date: Tue, 7 Dec 2004 21:53:36 +0100
+Message-ID: <95b43cc0fbd3fab2ea281324763a6c73@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A68E337E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 21:40:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C1B41B5
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 21:53:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.9-1.6_FC2custom
 ======================================================================
 Date Submitted:             12-07-2004 18:12 CET
-Last Modified:              12-07-2004 21:40 CET
+Last Modified:              12-07-2004 21:53 CET
 ======================================================================
 Summary:                    Sound still bad with alsa on sb audigyls / ca0106
 Description: 
@@ -51,19 +51,6 @@ Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
 Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
 the CVS version is used.
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 12-07-04 20:24 
-----------------------------------------------------------------------
-"CVS seems worse, which bugs me since last bug report was closed woth a
-"Use snd-ca0106 from CVS remark"!"
-
-Dude, take it easy.  The second part of James advice was "If it still
-doesn't work, open a new bug report", for the simple reason that the
-"Audigy LS" driver was replaced by the CA0106 driver, and leaving bugs
-open against a nonexistent driver does not make sense.
-
-This was all explained in James' note when he closed the original bug.
 
 ----------------------------------------------------------------------
  scorpion77 - 12-07-04 21:40 
@@ -77,6 +64,22 @@ Most important question would be, is this work in progress and if it is,
 when can I / we expect decent support for this chip, soon or rather on the
 longterm? I can still return the thing and get a better card u know ;)
 
+----------------------------------------------------------------------
+ jcdutton - 12-07-04 21:53 
+----------------------------------------------------------------------
+You don't really give me much information do you.
+How about some useful info, like:
+cat /proc/asound/card0/cards
+cat /proc/asound/version
+etc.
+
+I suspect you are trying to play a file at 44.1khz, and the sound card
+does not support that rate(hardware limitation), so alsa-lib tries to
+resample 44.1khz to 48khz.
+That, together with badly written applications that you might be using is
+bound to fail.
+If the media file plays fine in xine, this is not an alsa bug.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -85,6 +88,7 @@ Date Modified  Username       Field                    Change
 12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
 12-07-04 20:24 rlrevell       Note Added: 0002764                          
 12-07-04 21:40 scorpion77     Note Added: 0002765                          
+12-07-04 21:53 jcdutton       Note Added: 0002766                          
 ======================================================================
 
 
