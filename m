@@ -1,18 +1,14 @@
-From: John covici <covici@ccs.covici.com>
-Subject: Re: modprobe fails for via82xx in alsa-0.9.3a
-Date: Wed, 21 May 2003 09:29:13 -0400
+From: Richard Cochran <cochran@cs.umass.edu>
+Subject: Re: documentation - yeah right!
+Date: Wed, 21 May 2003 10:43:49 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <16075.32553.785487.478126@ccs.covici.com>
-References: <m3smr8vasr.fsf@ccs.covici.com>
-	<s5hfzn8va58.wl@alsa2.suse.de>
-	<16075.25666.840544.292981@ccs.covici.com>
-	<s5h7k8kv7xd.wl@alsa2.suse.de>
-Reply-To: covici@ccs.covici.com
+Message-ID: <20030521104349.A793@loki.cs.umass.edu>
+References: <PM.9386.1053461408@pmweb11.uk1.bibliotech.net> <XFMail.20030521093456.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7k8kv7xd.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <XFMail.20030521093456.pochini@shiny.it>; from pochini@shiny.it on Wed, May 21, 2003 at 09:34:56AM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,63 +17,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: covici@ccs.covici.com, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Here is what I got when I tried to install-- note the page-alloc
-module is there:
+On Wed, May 21, 2003 at 09:34:56AM +0200, Giuliano Pochini wrote:
+>> doxygen is just an excuse to avoid writing documentation and should be
+>> banned from all projects. If I want a list of all the damn globals
+>> I'll look in the source code thankyou.
 
-Starting sound driver: snd-via82xx /lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_free_reserved_Rd027fa8d
-/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_free_pages_Rce5f2dfe
-/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_get_reserved_R3761189e
-/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_set_reserved_Rd569b169
-/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_alloc_pages_Rfc708157
-/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: insmod /lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o failed
-/lib/modules/2.4.20-xfs-newspeech/kernel/sound/acore/snd-pcm.o: insmod snd-via82xx failed
-done
-Module                  Size  Used by    Not tainted
-snd-page-alloc          5932   0 
-w83781d                20464   0  (unused)
-eeprom                  3636   0  (unused)
-i2c-proc                7472   0  [w83781d eeprom]
-i2c-isa                 1192   0  (unused)
-i2c-viapro              3984   0  (unused)
-i2c-core               15848   0  [w83781d eeprom i2c-proc i2c-isa i2c-viapro]
-3c59x                  27152   2  (autoclean)
-nls_iso8859-1           2876   4  (autoclean)
-advansys               86400   0  (unused)
-scsi_mod               95476   1  [advansys]
-ipt_MARK                 792   4  (autoclean)
-iptable_mangle          2168   1  (autoclean)
-iptable_filter          1740   1 
-ipt_LOG                 3416   1 
-ipt_limit                920   1 
-ip_nat_ftp              3088   0  (unused)
-iptable_nat            15576   2  [ip_nat_ftp]
-ip_conntrack_ftp        4080   1 
-ip_conntrack           18976   2  [ip_nat_ftp iptable_nat ip_conntrack_ftp]
-ip_tables              11896   8  [ipt_MARK iptable_mangle iptable_filter ipt_LOG ipt_limit iptable_nat]
-8139too                15208   1  (autoclean)
-mii                     2512   0  (autoclean) [8139too]
+I must agree with the sentiment of the original poster. Even if you
+document every last API function, you still have not explained the
+API. One would need a written (human language, not source code)
+document to describe the goals of the architecture and how to use the
+API on the large scale. OSS has a short, readable document that does
+this.
 
-on Wednesday 05/21/2003 Takashi Iwai(tiwai@suse.de) wrote
- > At Wed, 21 May 2003 07:34:26 -0400,
- > John covici wrote:
- > > 
- > > Should I delete it from the module tree, or if not, when should I do
- > > an rmmod -- seems that the script would just reload it again as it
- > > loads everything with snd if I remember correctly.
- > 
- > just make sure that you really reloaded snd-page-alloc.
- > as said, the script was changed not to reload snd-page-alloc module.
- > 
- > 
- > Takashi
+I am a talented programmer with some (little) free time to spend on
+linux audio drivers/apps. I evaluated Alsa and OSS and concluded that
+I would avoid Alsa for the following reasons:
 
--- 
-         John Covici
-         covici@ccs.covici.com
+1. After two attempts, I could not get the existing Alsa drivers to
+work with my own sound cards at all. The installation seems very
+complex, even for linux drivers! For example consider the multitude of
+sources (five different tarballs to download) and different kernel
+modules. When it comes to linux, I don't give up easily. I tried to
+install Alsa because I read that Alsa was "more advanced", but I found
+it only to be "more complex". In contrast, the OSS modules work with
+a simple 'insmod' command. In fairness, I expect this problem to go
+away with kernel 2.6, now that Alsa is part of the kernel.
+
+2. The OSS drivers for my cards lacked some features, but reading the
+Alsa sources revealed that the Alsa drivers had the same limitations,
+and indeed shared the same code (I'm talking about i810_audio and
+usb-audio).
+
+3. The Alsa API seems overly complex. OSS has a pretty straightforward
+interface, like other drivers, using open, read, write, and mmap. All
+things being equal, I aways prefer the simpler way.
+
+4. I could not find a design document for the Alsa way. "Architecture"
+is in the name, but what is the architecture? Is it only apparent in
+the driver sources? Alsa promises to deliver better audio performance
+and more functionality, but how will the Alsa architecture provide
+this?
+
+> Hey, ALSA developers are not your slaves. What about to contribute ?
+> Use the sources and the list, and while you learn to use the seq
+> interface, you write the documentation.
+
+5. I've gleaned from the list that the Alsa API is still in a state of
+flux. Am I correct? If so, then this troubles me. The "code first,
+figure the design out later" approach is sometimes needed, but for an
+ambitious idea like Alsa, with long term goals, it would be good to
+have some kind of design thought out, and spelled out in black and
+white.
+
+It seems to me that the main problem with OSS is the uneven quality of
+the drivers, not the overall design. OSS would only need better
+drivers and a user space library like alsa-lib, for rate/format
+conversion and mixing.
+
+I don't mean to flame the good work of the Alsa contributors. I follow
+the list, and I would like to learn the Alsa way. I am skeptical,
+however, and would like to see a discussion of how Alsa delivers what
+OSS cannot.
+
+Thanks in advance for your helpful comments...
+
+Richard
+
+PS I looked (again) at the stuff on the Alsa "documents" page, and I
+found two broken links:
+
+ Howto use the ALSA API - Paul Davis has also written a brief explanation.
+ http://www.op.net/~pbd/alsa-audio.html
+
+ http://www.alsa-project.org/alsa/cvs/alsa-driver/INSTALL
+
+There does not seem to be an "installation guide" available from the
+Alsa site.
+
 
 
 -------------------------------------------------------
