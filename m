@@ -1,14 +1,11 @@
-From: Francisco Moraes <fmoraes74@netzero.net>
+From: fmoraes74@netzero.net
 Subject: Re: Emu10k1x driver
-Date: Fri, 14 May 2004 19:49:09 -0400
+Date: Sat, 15 May 2004 01:30:51 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A55AF5.6050009@netzero.net>
-References: <20040514.045055.28422.197543@webmail10.nyc.untd.com> <s5hlljvm8qz.wl@alsa2.suse.de>
+Message-ID: <20040514.183141.22943.204423@webmail25.nyc.untd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlljvm8qz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +14,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: fmoraes74@netzero.net
+Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-
->i noticed that you set the irq mask IPR_CH_0_LOOP|IPR_CH_0_HALF_LOOP.
->does it mean that the chip generates interrupts twice per buffer?
->if yes, what we need is to limit the number of periods to 2.
->
->  
->
-Well, you can enable the half buffer interrupt. I am not sure if that 
-helps or improves anything but it is available.
 
 >the attached patch includes some fixes by me for the latest cvs, and
 >changes the periods to 2.  i'll apply it to cvs now.
->  
->
-I also noticed that I forgot to enable the interrupts for the other two 
-voices.
+
+Is your patch for kernel 2.6?
 
 Francisco
+
+________________________________________________________________
+The best thing to hit the Internet in years - NetZero HiSpeed!
+Surf the Web up to FIVE TIMES FASTER!
+Only $14.95/ month -visit www.netzero.com to sign up today!
 
 
 -------------------------------------------------------
