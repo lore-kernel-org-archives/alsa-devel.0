@@ -1,19 +1,17 @@
-From: Ove Kaaven <ovek@transgaming.com>
-Subject: Re: PCM questions
-Date: Sat, 06 Mar 2004 16:45:04 +0100
+From: Tim Blechmann <TimBlechmann@gmx.net>
+Subject: Re: amd64 anyone?
+Date: Sat, 6 Mar 2004 18:52:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078587904.30309.1018.camel@renegade>
-References: <1078416129.1865.868.camel@renegade>
-	 <Pine.LNX.4.58.0403041720490.2204@pnote.perex-int.cz>
-	 <1078422542.1866.899.camel@renegade>
-	 <Pine.LNX.4.58.0403041932480.2204@pnote.perex-int.cz>
-	 <1078430057.30309.921.camel@renegade>
-	 <Pine.LNX.4.58.0403050839190.1869@pnote.perex-int.cz>
+Message-ID: <20040306185216.407b2c81@laptop>
+References: <20040228101234.GA1809@finnendahl.de>
+	<200402281828.43616.ge@gabrielebner.at>
+	<20040303201741.35fabc4f@laptop>
+	<200403032231.27189.ge@gabrielebner.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0403050839190.1869@pnote.perex-int.cz>
+In-Reply-To: <200403032231.27189.ge@gabrielebner.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,30 +20,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-lør, 06.03.2004 kl. 11.10 skrev Jaroslav Kysela:
-> I also extended the "auto-silence" function in driver in our CVS.
-> Now, the code detects the written samples so snd_pcm_start() doesn't
-> silence the whole ring buffer in this case.
-> 
-> Here is the patch for driver:
+> Am Mittwoch, 3. M=E4rz 2004 20:17 schrieb Tim Blechmann:
+> > are you planing to use this machine with a hdsp?
+>=20
+> I'm afraid not, but I'd kindly test it for you if you sent me a hdsp
+> (cardbus iface, this is a laptop).
+would it be possible that you send me the lspci -vvv output? i'd like to
+check which cardbus-to-pci bridge they used ...
 
-OK, thanks, may be useful for future projects.
+thanks...
 
-I have a new question. How can I handle a buffer wraparound with
-snd_pcm_mmap_begin and snd_pcm_mmap_commit? It seems that currently, if
-the app frame pos is near the end of the buffer, the returned number of
-mapped frames is apparently only up to the end of the buffer. But the
-code that fills the buffer will want to handle the wraparound itself, so
-I would like to return the requested number of frames to the code, and
-let it do its own wraparound to offset=0 when the end of buffer is
-reached. Is it safe to do something like calling snd_pcm_mmap_begin
-twice to achieve this, then snd_pcm_mmap_commit twice after the sound
-code has filled the buffer up?
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
 
+
+
+--=20
+ Tim                          mailto:TimBlechmann@gmx.de
+                              ICQ: 96771783
+--
+The only people for me are the mad ones, the ones who are mad to live,
+mad to talk, mad to be saved, desirous of everything at the same time,
+the ones who never yawn or say a commonplace thing, but burn, burn,
+burn, like fabulous yellow roman candles exploding like spiders across
+the stars and in the middle you see the blue centerlight pop and
+everybody goes "Awww!"
+                                                          Jack Kerouac
 
 
 
