@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000987]: new chipset
-Date: Sat, 19 Mar 2005 18:19:03 +0100
-Message-ID: <2bd8d165ca47fad130511b276e920065@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
+Date: Sat, 19 Mar 2005 18:17:20 +0100
+Message-ID: <731bcb401b9c7dd823eaae6d62b6c781@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41D281E9
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:19:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0FE171E9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:17:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,73 +21,83 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=987> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
 ======================================================================
-Reported By:                mitchix
-Assigned To:                jcdutton
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   987
-Category:                   PCI - ca0106
+Issue ID:                   712
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               debian useing pure64 sid
-Kernel Version:             2.6.10-9-amd64-k8
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-12-2005 22:49 CET
-Last Modified:              03-19-2005 18:19 CET
+Date Submitted:             12-07-2004 18:36 CET
+Last Modified:              03-19-2005 18:17 CET
 ======================================================================
-Summary:                    new chipset
+Summary:                    Setting <4 channels in surround40 fails
 Description: 
-Vendor 1462: Micro-Star International Co., Ltd.
-Card model K8N Neo4 Platinum/SLI
-
-On Board Audio
- 	
-Creative sound Bluster Live 24-bit H/W audio
-24-bit / 96KHz audio quality
-100db SNR clarity
-Up to 7.1 CH Surround Sound, Dolby Digital ready
-
-modprobe snd_ca0106
-Model 1009 Rev 00000000 Serial 10091462
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000901 The onboard audigyls chip on msi k8 dia...
+If you try
+alsa-lib/test/pcm -D surround40:0
+You obtain: Channels count (1) not available for playbacks: Invalid
+argument
+But we have 4 channels!
+I've tried to find the problem into the sources without luck :(
 ======================================================================
 
 ----------------------------------------------------------------------
- mitchix - 03-12-05 22:55 
+ tiwai - 12-07-04 18:42 
 ----------------------------------------------------------------------
-Sorry this is Dup of 901
+This is not a bug.
+surround40 is for 4 seprated channels.
+
+If you want to duplicate 2-channel stereo signal to 4-channels, try the
+CVS version.  It can have a new mixer control 'Duplicate Front'. 
+Otherwise, you can do it via asoundrc (see bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617).
 
 ----------------------------------------------------------------------
- jcdutton - 03-19-05 18:19 
+ darkbrain - 12-07-04 18:51 
 ----------------------------------------------------------------------
-Fixed in 1.0.9
+BTW with cmipci driver it's possible. There is an incompatibility with
+openal witch try to open 2 channels without luck.
+
+----------------------------------------------------------------------
+ tiwai - 12-07-04 18:54 
+----------------------------------------------------------------------
+No, cmipci driver doesn't do it, too.
+
+----------------------------------------------------------------------
+ darkbrain - 12-07-04 18:59 
+----------------------------------------------------------------------
+I'll investigate better into openal source tree.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 16:34 
+----------------------------------------------------------------------
+Submitter: Is there still an issue here or can this report be closed?
+
+----------------------------------------------------------------------
+ darkbrain - 03-19-05 18:17 
+----------------------------------------------------------------------
+Yes it was my mistake on openal configuration file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 22:49 mitchix        New Issue                                    
-03-12-05 22:49 mitchix        Distribution              => debian useing pure64
-sid
-03-12-05 22:49 mitchix        Kernel Version            => 2.6.10-9-amd64-k8
-03-12-05 22:55 mitchix        Note Added: 0003899                          
-03-19-05 18:17 jcdutton       Relationship added       duplicate of 0000901
-03-19-05 18:19 jcdutton       Duplicate ID             0 => 901            
-03-19-05 18:19 jcdutton       Status                   assigned => resolved
-03-19-05 18:19 jcdutton       Resolution               open => fixed       
-03-19-05 18:19 jcdutton       Note Added: 0004061                          
+12-07-04 18:36 darkbrain      New Issue                                    
+12-07-04 18:42 tiwai          Note Added: 0002757                          
+12-07-04 18:51 darkbrain      Note Added: 0002759                          
+12-07-04 18:54 tiwai          Note Added: 0002761                          
+12-07-04 18:59 darkbrain      Note Added: 0002762                          
+03-19-05 16:34 jdthood        Note Added: 0004056                          
+03-19-05 18:17 darkbrain      Note Added: 0004060                          
 ======================================================================
 
 
