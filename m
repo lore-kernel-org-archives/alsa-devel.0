@@ -1,12 +1,18 @@
-From: Torsten Mohr <tmohr@s.netic.de>
-Subject: Code to capture a buffer
-Date: Sat, 24 Jan 2004 02:26:54 +0100
+From: John Gotts <jgotts@linuxsavvy.com>
+Subject: dxs_support detection or feature broken?
+Date: Fri, 23 Jan 2004 23:40:18 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200401240226.54832.tmohr@s.netic.de>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_encEA225R9TOya0"
+Message-ID: <200401240440.i0O4eIOv015342@ann-arbor.fmfts.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from ann-arbor.fmfts.com (IDENT:lNSB57wkKDZqYDT0m5LPAz5hZerRUL9m@fmfts.com [64.9.213.97])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA16039
+	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2004 05:41:11 +0100
+Received: from ann-arbor.fmfts.com (localhost [127.0.0.1])
+	by ann-arbor.fmfts.com (8.12.8/8.12.8) with ESMTP id i0O4eIsI015346
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2004 23:40:18 -0500
+Received: from ann-arbor.fmfts.com (jgotts@localhost)
+	by ann-arbor.fmfts.com (8.12.8/8.12.8/Submit) with ESMTP id i0O4eIOv015342
+	for <alsa-devel@alsa-project.org>; Fri, 23 Jan 2004 23:40:18 -0500
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,217 +21,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I have an ASUS A7V8X motherboard with a VIA VT8233 audio controller equipped
+with SPDIF.  I have a set of digital speakers and use the SPDIF out for
+everything possible.  (The speakers will fall back to analog if there is no
+digital signal present.)
 
---Boundary-00=_encEA225R9TOya0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97 Audio Controller (rev 50)
 
-Hi,
+For a long time (through 1.0.0rc1) I had been using plug:spdif as my audio
+device and aplay had no problems playing 22,050 Hz WAV files:
 
-i got this code constructed from an example i found googling.
+aplay -D plug:spdif <filename>.wav
 
-What i basically want is to initialise some settings and then
-i'd like to capture some PCM to a buffer.  This should be
-repeatable, i want to initialise ONCE and call a capture
-function whenever i need some data.
-It is perfectly ok, if the data buffers that are captured are
-not consecutive.
+But with 1.0.1 my speakers started playing 22,050 Hz WAV files at 48,000 Hz.
 
-The code basically works, but whenever i try to capture the
-buffer a SECOND time, the whole program crashes.
+After reading the following thread:
 
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg10448.html
 
-Has anybody got a hint for me on what could be wrong?
+I added the following line to my /etc/modules.conf:
 
+options snd-via82xx dxs_support=3
 
-Thanks for any hints,
-Torsten.
+and plug:spdif is working again.  One message says "By default snd-via82xx uses
+dxs_support=3 (except for certain known motherboards)."  Either my motherboard
+should become unknown or this feature is not working correctly.
 
---Boundary-00=_encEA225R9TOya0
-Content-Type: text/x-csrc;
-  charset="us-ascii";
-  name="sound.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="sound.c"
+John
 
-#define _GNU_SOURCE
-#include <stdio.h>
-#include <malloc.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-#include <alsa/asoundlib.h>
-#include <sys/signal.h>
-
-#include "sound.h"
-#include "settings.h"
-
-#define QWE	fprintf(stderr, "File %s, Line %i\n", __FILE__, __LINE__)
-
-
-snd_pcm_t *pcm_handle;
-snd_pcm_stream_t stream = SND_PCM_STREAM_CAPTURE;
-snd_pcm_hw_params_t* hwparams;
-char *pcm_name = "default";
-
-int rate = 44100; /* Sample rate */
-int exact_rate;   /* Sample rate returned by */
-                      /* snd_pcm_hw_params_set_rate_near */ 
-int dir;          /* exact_rate == rate --> dir = 0 */
-                      /* exact_rate < rate  --> dir = -1 */
-                      /* exact_rate > rate  --> dir = 1 */
-int periods = 2;       /* Number of periods */
-int periodsize = 4*SAMPLES; /* Periodsize (bytes) */
-
-unsigned char *data;
-int pcmreturn, l1, l2;
-short s1, s2;
-int frames;
-
-snd_pcm_state_t sss;
-
-
-static void show(snd_pcm_state_t* s) {
-	switch(*s) {
-		case SND_PCM_STATE_OPEN:
-			printf("open\n");
-			break;
-
-		case SND_PCM_STATE_SETUP:
-			printf("SETUP\n");
-			break;
-
-		case SND_PCM_STATE_PREPARED:
-			printf("PREPARED\n");
-			break;
-
-		case SND_PCM_STATE_RUNNING:
-			printf("RUNNING\n");
-			break;
-
-		case SND_PCM_STATE_XRUN:
-			printf("XRUN\n");
-			break;
-
-		case SND_PCM_STATE_DRAINING:
-			printf("DRAINING\n");
-			break;
-
-		case SND_PCM_STATE_PAUSED:
-			printf("PAUSED\n");
-			break;
-
-		case SND_PCM_STATE_SUSPENDED:
-			printf("SUSPENDED\n");
-			break;
-	}
-}
-
-unsigned char* sound_get_data(void) {
-	return data;
-}
-
-int sound_init(void) {
-	pcm_name = strdup("plughw:0,0");
-	snd_pcm_hw_params_alloca(&hwparams);
-
-    if (snd_pcm_open(&pcm_handle, pcm_name, stream, 0) < 0) {
-      fprintf(stderr, "Error opening PCM device %s\n", pcm_name);
-      return(-1);
-    }
-
-    /* Init hwparams with full configuration space */
-    if (snd_pcm_hw_params_any(pcm_handle, hwparams) < 0) {
-      fprintf(stderr, "Can not configure this PCM device.\n");
-      return(-1);
-    }
-
-    if (snd_pcm_hw_params_set_access(pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
-      fprintf(stderr, "Error setting access.\n");
-      return(-1);
-    }
-  
-    /* Set sample format */
-    if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, SND_PCM_FORMAT_S16_LE) < 0) {
-      fprintf(stderr, "Error setting format.\n");
-      return(-1);
-    }
-
-    /* Set sample rate. If the exact rate is not supported */
-    /* by the hardware, use nearest possible rate.         */ 
-    exact_rate = snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &rate, &dir);
-    if (dir != 0) {
-      fprintf(stderr, "The rate %d Hz is not supported by your hardware.\n"
-                       "==> Using %d Hz instead.\n", rate, exact_rate);
-    }
-
-    /* Set number of channels */
-    if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, 2) < 0) {
-      fprintf(stderr, "Error setting channels.\n");
-      return(-1);
-    }
-
-    /* Set number of periods. Periods used to be called fragments. */ 
-    if (snd_pcm_hw_params_set_periods(pcm_handle, hwparams, periods, 0) < 0) {
-      fprintf(stderr, "Error setting periods.\n");
-      return(-1);
-    }
-
-    /* Set buffer size (in frames). The resulting latency is given by */
-    /* latency = periodsize * periods / (rate * bytes_per_frame)     */
-    if (snd_pcm_hw_params_set_buffer_size(pcm_handle, hwparams, (periodsize * periods)>>2) < 0) {
-      fprintf(stderr, "Error setting buffersize.\n");
-      return(-1);
-    }
-
-    /* Apply HW parameter settings to */
-    /* PCM device and prepare device  */
-    if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
-      fprintf(stderr, "Error setting HW params.\n");
-      return(-1);
-    }
-
-    data = (unsigned char *)calloc(periodsize*periods*4, 0);
-    frames = periodsize >> 2;
-
-QWE;
-//    snd_pcm_start(pcm_handle);
-
-	sss = snd_pcm_state(pcm_handle);
-	show(&sss);
-}
-
-
-void sound_capture(void) {
-QWE;
-	show(&sss);
-QWE;
-	while(pcmreturn = snd_pcm_readi(pcm_handle, data, frames), pcmreturn < 0) {
-	    snd_pcm_prepare(pcm_handle);
-		QWE;
-	}
-QWE;
-	show(&sss);
-QWE;
-	snd_pcm_drop(pcm_handle);
-QWE;
-	show(&sss);
-QWE;
-	printf("pcmreturn %i\nperiodsize %i\n", pcmreturn, periodsize); // */
-QWE;
-	show(&sss);
-
-}
-
-
---Boundary-00=_encEA225R9TOya0--
-
+-- 
+John GOTTS <jgotts@linuxsavvy.com>  http://linuxsavvy.com/staff/jgotts
 
 
 -------------------------------------------------------
