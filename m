@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Tue, 15 Jun 2004 16:41:23 +0200
+Date: Tue, 15 Jun 2004 15:56:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <94a13bfc4cf6d66cca5e99e1f3711dbd@bugtrack.alsa-project.org>
+Message-ID: <4d0a5958d973ba27eea58f6499d69d03@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             05-11-2004 11:14 CEST
-Last Modified:              06-15-2004 16:41 CEST
+Last Modified:              06-15-2004 15:56 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -152,14 +152,6 @@ where to begin ( any hints or links ? ).
 xine player seems to support 7.1 a/52 sound
 i'm hounting for a good test 7.1 DVD ( a/52 and dts ) now.
 
-----------------------------------------------------------------------
- pzad - 06-15-2004 16:41 CEST=20
-----------------------------------------------------------------------
-I don't think that xine supports 7.1 (maybe I am wrong)
-
-For 7.1 playback only changes in .conf files are needed in alsa-lib.
-Driver should be ok with this patch.
-
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -191,8 +183,6 @@ Date Modified  Username       Field                    Change            =
 06-10-04 22:48 bryanhundven   Bugnote Added: 0001298                     =
  =20
 06-15-04 15:56 wraiden        Bugnote Added: 0001309                     =
- =20
-06-15-04 16:41 pzad           Bugnote Added: 0001310                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
