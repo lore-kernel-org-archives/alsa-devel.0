@@ -1,18 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Ignore: Re: 1.0.3rc2 release ... alsa-utils fails compiling
- aplay.
-Date: Thu, 26 Feb 2004 00:38:33 +0000
+From: Ken Bass <kbass@kenbass.com>
+Subject: Re: Sound programming confusion
+Date: 25 Feb 2004 23:39:19 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <403D4009.9060209@superbug.demon.co.uk>
-References: <Pine.LNX.4.58.0402252108180.15215@pnote.perex-int.cz> <403D3B8D.9010709@superbug.demon.co.uk>
+Message-ID: <1077770359.23452.19.camel@localhost.localdomain>
+References: <1077736614.19756.44.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA12793
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 01:31:09 +0100
-In-Reply-To: <403D3B8D.9010709@superbug.demon.co.uk>
+In-Reply-To: <1077736614.19756.44.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,78 +17,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Accidentally install alsa-lib 0.9.6 before alsa-utils, instead of 
-alsa-lib-1.0.3rc2.
-Compiles and installs fine now.
+Here is another questions (to make it easier):
 
-Sorry
+7) How do I do accomplish this using an asoundrc file? I can't even
+figure that out. I've got an SB Live! 5.1 (EMU10K1).
+How do I 'simply' setup 2 'streams' (not sure I'm using the correct
+terminology).
+  The first stereo 'stream' would output to the front L/R speakers at
+25kHz. This first stream would only require an input 'wav' file of 2
+channels (stereo).
+  The second 'stream' would output to the rear L speaker at 22050Hz.
+This second would only require an inpt 'wav' file of 1 channel (mono).
 
-James
+  I mean under OSS this is so simple! Open /dev/dsp at 25kHz and open
+/dev/dsp1 at 22050Hz. Unfortunately, I cannot get the routing to work
+reliably under OSS which is why I'm attempting the world of ALSA. 
 
-James Courtier-Dutton wrote:
-> Jaroslav Kysela wrote:
+
+On Wed, 2004-02-25 at 14:16, Ken Bass wrote:
+> I'm trying to accomplish a programming task and am pretty confused about
+> the capabilities of the sound drivers and how I would accomplish this in
+> an application. I've been through the HOWTO and tutorial as well as
+> attempted to read the PCM interface parts of the also-lib docs. But I've
+> got more questions than answers. The SB-Live-mixer.txt was not helpful.
 > 
->> Hello all,
->>
->>     I released 1.0.3rc2 packages. The full changelog from 1.0.2 will 
->> came with the final release, but it would be nice to do some tests 
->> with this code with smaller number of testers to not follow the 1.0.2 
->> situation when we have to quickly release several versions due to 
->> compilation problems. Please, test the packages.
->>
->>                     Thanks,
->>                         Jaroslav
->>
->> -----
->> Jaroslav Kysela <perex@suse.cz>
->> Linux Kernel Sound Maintainer
->> ALSA Project, SuSE Labs
->>
-> alsa-driver-1.0.3rc2 compiles and installs ok.
-> alsa-lib-1.0.3rc2 compiles and installs ok.
-> alsa-utils-1.0.3rc2 fails with:
+> I've got an SB Live! 5.1 (EMU10K1) device that is my target using analog
+> outputs.
 > 
-> make[1]: Entering directory `/u/alsa/alsa-utils-1.0.3rc2/aplay'
-> if gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include    -g -O2 -MT 
-> aplay.o -MD -MP -MF ".deps/aplay.Tpo" \
->   -c -o aplay.o `test -f 'aplay.c' || echo './'`aplay.c; \
-> then mv -f ".deps/aplay.Tpo" ".deps/aplay.Po"; \
-> else rm -f ".deps/aplay.Tpo"; exit 1; \
-> fi
-> aplay.c: In function `set_params':
-> aplay.c:841: warning: passing arg 3 of `snd_pcm_hw_params_set_rate_near' 
-> makes integer from pointer without a cast
-> aplay.c:860: warning: passing arg 3 of 
-> `snd_pcm_hw_params_set_period_time_near' makes integer from pointer 
-> without a cast
-> aplay.c:863: warning: passing arg 3 of 
-> `snd_pcm_hw_params_set_period_size_near' makes integer from pointer 
-> without a cast
-> aplay.c:867: warning: passing arg 3 of 
-> `snd_pcm_hw_params_set_buffer_time_near' makes integer from pointer 
-> without a cast
-> aplay.c:870: warning: passing arg 3 of 
-> `snd_pcm_hw_params_set_buffer_size_near' makes integer from pointer 
-> without a cast
-> aplay.c:879: warning: passing arg 2 of 
-> `snd_pcm_hw_params_get_period_size' from incompatible pointer type
-> aplay.c:879: error: too many arguments to function 
-> `snd_pcm_hw_params_get_period_size'
-> aplay.c:880: error: too many arguments to function 
-> `snd_pcm_hw_params_get_buffer_size'
-> aplay.c:886: error: too many arguments to function 
-> `snd_pcm_sw_params_get_xfer_align'
-> make[1]: *** [aplay.o] Error 1
-> make[1]: Leaving directory `/u/alsa/alsa-utils-1.0.3rc2/aplay'
-> make: *** [all-recursive] Error 1
+> High Level:
+> 
+> 1) I've got 3 separate PCM 'mono' streams of data that I want to send to
+> 3 different outputs.
+> 
+>   a) How many PCM inputs do these cards/drivers support? Under OSS,
+> there were 2, /dev/dsp and /dev/dsp1. Ideally I would like each input
+> stream to have a seperate sample rate. In practice, 2 of them will be
+> 25kHz, and one will be 22050Hz.
+>   
+> 2) I want to reconfigure the 'routing' on the fly. How do I do this?
+> I've seen documentation (which wasn't clear) about .asoundrc files and
+> such, but I need to change this programmaticaly.
+>   Input 1- 25 kHz PCM stream 
+>   Input 2- 25 kHz PCM stream
+>   Input 3- 22050Hz PCM stream
+>   Output 1 - Front L
+>   Output 2 - Front R
+>   Output 3 - Rear L
+>   
+>   I want to route (on the fly) any of those inputs to any of those
+> outputs (being careful to erase all routes and recreate them each time I
+> reconfigure).
+> 
+> 3) I'm totally confused about the capabilities of this card. Is this
+> described at a high level somewhere or can someone explain this?
+> 
+> 4) I'm not clear how to control these routes, what 'hw' device names to
+> use, etc. I've seen references to ld10k1, 
+> 
+> 5) In the SB-Live-mixer.txt, section 3, PCM stream related controls --
+> I'm lost. What is a PCM Send Routing, what are A, B, C, D destinations,
+> why is there a distinction between mono and left/right, and how are
+> these controlled?
+> 
+> 6) I see references to 'surround40' or 'surround51'. I'm not sure if
+> that is what I want because they cannot be changed on the fly.
 > 
 > 
-> Cheers
-> James
 > 
 > 
 > -------------------------------------------------------
@@ -104,8 +97,6 @@ James Courtier-Dutton wrote:
 > Alsa-devel mailing list
 > Alsa-devel@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
 
 
 
