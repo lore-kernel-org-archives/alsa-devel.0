@@ -1,14 +1,12 @@
-From: juan <jcb@niluge.net>
-Subject: Re: maestro3 driver hangs dell laptop
-Date: Thu, 7 Aug 2003 02:04:35 +0200
+From: drclaw@dogsolitude.org
+Subject: HDSP MIDI question...
+Date: Thu, 7 Aug 2003 00:35:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030807000435.GA12100@athena>
-References: <20030803210237.GA1176@zeus.homenet> <s5hr840kxyt.wl@alsa2.suse.de> <20030805140827.GB25707@athena> <s5hptjkkxbt.wl@alsa2.suse.de>
+Message-ID: <20030807043553.GA8421@dogsolitude.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hptjkkxbt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,19 +18,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 05 August, 2003 ? 04:12:22PM +0200, Takashi Iwai wrote:
-> At Tue, 5 Aug 2003 16:08:27 +0200,
-> 
-> do you see the LED blinking?
-> if yes, you could see a last kernel dieing message in the log terminal
-> (often alt+F10 in linux console).  try to switch to that one quickly
-> after loading the module, and wait for the death.  if sysrq is enabled
-> in the kernel, you can see even the backtrace via alt+sysrq+P.
+Hi, when I run "aconnect -i" it just spits out "Timer" and "Announce", I
+was wondering how I'm supposed to connect my HDSP (multiface, alsa
+0.9.6) midi input to an application.  I know it's functioning because
+jmax is able to "see" (and use) the HDSP midi ports, but aconnect can't.
+I was wondering if this was a known difficulty, or if it sounds like I'm
+doing something wrong.  
 
-what i do when i want to load the faulty maestro3 is boot with
-init=/bin/sh ro , so i really have only one console.
+Thanks,
 
-when the machine is frozen, nothing works not even sys req keys
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 
 -------------------------------------------------------
