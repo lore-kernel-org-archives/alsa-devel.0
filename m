@@ -1,13 +1,14 @@
-From: "Ivica Bukvic" <ico@fuse.net>
-Subject: Re: More Midisport 2x2 troubles
-Date: Thu, 3 Apr 2003 07:00:46 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: More Midisport 2x2 troubles
+Date: Thu, 03 Apr 2003 16:50:18 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000001c2f9d8$a97da0b0$ac1f830a@ICO>
+Message-ID: <Pine.HPX.4.33n.0304031613060.24337-100000@studcom.urz.uni-halle.de>
+References: <000001c2f9d8$a97da0b0$ac1f830a@ICO>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <000001c2f9d8$a97da0b0$ac1f830a@ICO>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,85 +17,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: 'Clemens Ladisch' <clemens@ladisch.de>
+To: Ivica Bukvic <ico@fuse.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Guys, I am forwarding this to you as well from the alsa-user list since
-right now I am looking for example code how to access the 2nd set of I/O
-MIDI ports on my Midisport 2x2 (seems that having /dev/midi and
-/dev/midi1 does not work any more for some reason, even though it worked
-just fine in 0.9.1). Any help on this issue is greatly appreciated!
+Ivica Bukvic wrote:
+> However, I am a bit confused, since this feature with /dev/midi stuff
+> worked like a charm just a couple weeks ago (ver. 0.9.1). So, did
+> something change dramatically since?
 
-P.S. One thing I just realized is that there is something rather unclear
-to me in the explanation generously provided by Clemens:
+No. The USB MIDI driver has behaved in this way since 0.9.0rc4.
 
-> /dev/midi0  -> card 0, device 0, subdevice 0
-> /dev/amidi0 -> card 0, device 1, subdevice 0
-> /dev/midi1  -> card 1, device 0, subdevice 0
-> /dev/amidi1 -> card 1, device 1, subdevice 0
-> /dev/midi2  -> card 2, device 0, subdevice 0
-> /dev/amidi2 -> card 2, device 1, subdevice 0
+> Can you also point me in the right direction where I can see a simple
+> ALSA code to accessing the both of the MIDI raw ports?
 
-since none of the amidi devices does not work on my setup (see my last
-e-mail for more info) and it seems as if it should. Furthermore, what
-happens when the midi interface has more than 2 I/O ports?
+alsa-lib/test/rawmidi.c does some operations with both OSS and ALSA ports.
+When using two ports, you'd call snd_rawmidi_open() twice and then have
+two handles, similar to two file handles.
+alsa-lib/test/control.c enumerates rawmidi devices.
 
-Ico
+BTW: Are you soure you want to use rawmidi ports? Many software
+synthesizers create sequencer ports only.
 
------Original Message-----
-Thanks for your help!
+> P.S. One thing I just realized is that there is something rather unclear
+> to me in the explanation generously provided by Clemens:
+>
+> > /dev/midi0  -> card 0, device 0, subdevice 0
+> > /dev/amidi0 -> card 0, device 1, subdevice 0
+> > /dev/midi1  -> card 1, device 0, subdevice 0
+> > /dev/amidi1 -> card 1, device 1, subdevice 0
+> > /dev/midi2  -> card 2, device 0, subdevice 0
+> > /dev/amidi2 -> card 2, device 1, subdevice 0
+>
+> since none of the amidi devices does not work on my setup (see my last
+> e-mail for more info) and it seems as if it should.
 
-However, I am a bit confused, since this feature with /dev/midi stuff
-worked like a charm just a couple weeks ago (ver. 0.9.1). So, did
-something change dramatically since?
+Your two ports are subdevices 0 and 1 of card 1, device 0.
+/dev/amidi1 points to device 1 which doesn't exist.
 
-Can you also point me in the right direction where I can see a simple
-ALSA code to accessing the both of the MIDI raw ports?
+> Furthermore, what happens when the midi interface has more than 2 I/O
+> ports?
 
-Thanks!
+If the ports are subdevices of one device, only the first can be accessed
+with the OSS /dev/midiX file.
+If each port is a seperate device, the first two ports can be accessed
+with /dev/midiX and /dev/amidiX.
 
-Ico
+Drivers for multiport interfaces usually use the first alternative (one
+device with subdevices) because there is a limit of 8 rawmidi devices per
+card.
 
-> For multiport USB MIDI interfaces, the ports are subdevices of one
-midi
-> device. This isn't a problem with programs using the ALSA API, but
-when
-> you want to use the OSS-compatible /dev/midiX ports, you cannot access
-> any subdevices other than the first directly.
-> 
-> The mapping of OSS MIDI devices to ALSA MIDI devices is as follows:
-> /dev/midi0  -> card 0, device 0, subdevice 0
-> /dev/amidi0 -> card 0, device 1, subdevice 0
-> /dev/midi1  -> card 1, device 0, subdevice 0
-> /dev/amidi1 -> card 1, device 1, subdevice 0
-> /dev/midi2  -> card 2, device 0, subdevice 0
-> /dev/amidi2 -> card 2, device 1, subdevice 0
-> ...
-> 
-> > If this is the case, then how do I access the second port.
-> 
-> You can load the snd-virmidi driver to create a virtual soundcard
-having
-> its own MIDI device, and then connect this port to the 2x2's second
-MIDI
-> port (with aconnect).
-> 
-> > In this situation the hdsp is not in use, so midisport assumes the
-2nd
-> > card position.
-> > ...
-> > options snd-usb-audio vid=0x763 pid=0x1001 index=2
-> 
-> It shouldn't, because the above options line tells the driver to load
-at
-> index 2. And if you'd use 0x1110 as product ID, it actually would. ;-)
-> (0x1001 is the ID of the device without firmware.)
-> 
-> 
-> HTH
-> Clemens
-> 
+
+HTH
+Clemens
 
 
 
