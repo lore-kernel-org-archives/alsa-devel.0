@@ -1,14 +1,13 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: All Capture devices missing from CVS alsamixer?
-Date: Mon, 20 Sep 2004 21:14:07 +0100 (BST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
+Date: Mon, 20 Sep 2004 22:23:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920201407.17317.qmail@web52909.mail.yahoo.com>
-References: <414ECB4B.6080708@superbug.co.uk>
-Mime-Version: 1.0
+Message-ID: <20040920202342.3B6564904D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <414ECB4B.6080708@superbug.co.uk>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 90A96329
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 22:23:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +16,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- --- James Courtier-Dutton <James@superbug.co.uk>
-wrote: 
-> Well in my view, pressing F1 for HELP should have
-> been enough.
 
-Except that F1 just brings up the gnome-terminal help
-browser...
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000509
+======================================================================
+Reported By:                gbilotta
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     509
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian GNU/Linux Testing
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             09-20-2004 19:20 CEST
+Last Modified:              09-20-2004 22:23 CEST
+======================================================================
+Summary:                    Conexant Moden "not ready"
+Description: 
+modprobing for snd_intel8x0m gives the following error:
 
-Chris
+MC'97 1 converters and GPIO not ready (0xff00)
+======================================================================
 
+----------------------------------------------------------------------
+ sashak - 09-20-2004 22:23 CEST 
+----------------------------------------------------------------------
+Hello Giuseppe "Oblomov",
 
+I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
+at least) modem reset should be performed by writing something to register
+AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
+probably this hw just works in right way.
 
-	
-	
-		
-___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun!  http://uk.messenger.yahoo.com
+Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
+-p0 ):
+
+--- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
++0300
++++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
+@@ -1784,7 +1784,16 @@
+                goto __access_ok;
+        }
+ 
++#define JUST_FORCHECK 1
++#ifdef JUST_FORCHECK
++       /* reset to defaults */
++       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
++               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
+*/
++       else
++               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
++#else
+        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
++#endif
+        if (bus->wait)
+                bus->wait(ac97);
+        else {
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-20-04 19:20 gbilotta       New Bug                                      
+09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
+09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
+09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
+09-20-04 19:21 gbilotta       File Added: lspci.out                        
+09-20-04 22:23 sashak         Bugnote Added: 0001795                       
+======================================================================
 
 
 -------------------------------------------------------
