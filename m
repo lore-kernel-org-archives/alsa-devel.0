@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
-Date: Mon, 20 Dec 2004 15:38:57 +0100
-Message-ID: <759eb04835a2760dface7694cf58feb3@bugtrack.alsa-project.org>
+From: <business@postbank.de>
+Subject: =?koi8-r?B?U2VociBnZWVocnRlciBQb3N0?=
+ =?koi8-r?B?YmFua2t1bmRl?=
+Date: Mon, 20 Dec 2004 06:47:52 -0800
+Message-ID: <857139460.20040913060223@postbank.de>
+Reply-To: <direkt@postbank.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="----------236EA222F28"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FE57156
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 15:38:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,82 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------------236EA222F28
+Content-Type: text/plain; charset=koi8-r
+Content-Transfer-Encoding: 8bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
-======================================================================
-Reported By:                fermier
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   736
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Mandrake 10.1 Offficial
-Kernel Version:             2.3.8.1-12mdk
-======================================================================
-Date Submitted:             12-20-2004 07:40 CET
-Last Modified:              12-20-2004 15:38 CET
-======================================================================
-Summary:                    modprobe snd-azx still gives segmentation fault
-Description: 
-After having read the other errors reported for the CMI9880 sound chip and
-that the CVS version has been fixed, I downloaded the latest CVS version
-of the alsa-driver.  ./configure and make seem to complete without errors.
- After a make install a modprobe snd-azx still gives a segmentation fault
-just like the normal tarred ball install and the previous CVS gave.  After
-a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
-becomes a zombie process the same is true for modprobe -r snd or modprobe
--r snd-azx
-======================================================================
+Sehr geehrter Postbankkunde,
+in der letzter Zeit ist es sehr hÄufig zu betrØgerischen VorfÄllen bei unserem Service gekommen! Verschiedenste Spion-Programme installieren sich unbemerkt auf Computern unserer Kunden und versenden persÃnliche Daten an BetrØger! Um sich dagegen zu schØtzen empfehlen wir Ihnen die neuesten Antivirenprogramm Programme zu nutzen und diese tÄglich zu erneuern! AntiVir Personal Edition 
+www.free-av.de
 
-----------------------------------------------------------------------
- fermier - 12-20-04 15:35 
-----------------------------------------------------------------------
-Oh, you can rest assured that when I tried the CVS version I made as sure
-as I can that the tar ball version was removed.  I first stopped all sound
-and alsa services and disabled restart at boot.  I then rebooted.  I was
-then able to make a modprobe -r snd.  lsmod confirmed no snd services and
-no alsa either.  This I followed with a make uninstall of the tar ball
-version and only then did I download the CVS version.  There is one thing
-that bothers me though and this is that with Mandrake 10.1 Official comes
-the version 1.0.6.  Many applications I use seem to depend on it, but they
-are not really using it, because there is no sound driver installed. 
-However, I have no idea whether there could be a clash between 1.0.7 and
-this 1.0.6.  It seems unlikely though.  There is no snd-azx in 1.0.6 so it
-should report this if it was using this when I tried to insert the
-drivers.
+Trotz Allem haben unsere Experten ermittelt, dass in etwa jedem zweiten Rechner ein Trojaner steckt und die PasswÃrter der Postbank auch weitergeschickt wurden! Um dieses Problem zu lÃsen wollten wir jeden einzelnen Kunden erneut identifizieren um so die BetrØger zu stoppen! Mit diesem Verfahren versuchen wir Ihnen die hÃchste Sicherheit zu bieten! Die Identifizierung wird durch den Nur so  kÃnnen wir Sie in Zukunft identifizieren und nur Sie werden Zugriff auf ihr Konto haben! 
 
-----------------------------------------------------------------------
- tiwai - 12-20-04 15:38 
-----------------------------------------------------------------------
-I meant to make sure that you remove (clean up) module _files_  in
-/lib/modules/.... before installation of the CVS version.  I suspect that
-you're still seeing 1.0.7 module by some reason.  Or, make sure that
-snd-azx.ko there is the latest one you installed from the CVS version
-(e.g. checking the timestamp).
+Bitte rufe Sie die folgende Nummer an und bestÄtigen Ihre neuen Daten!
+017-56825864  
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-20-04 07:40 fermier        New Issue                                    
-12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
-Offficial
-12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
-12-20-04 08:31 rlrevell       Note Added: 0002868                          
-12-20-04 13:04 fermier        Note Added: 0002871                          
-12-20-04 13:05 fermier        Note Added: 0002872                          
-12-20-04 14:27 tiwai          Note Added: 0002873                          
-12-20-04 15:35 fermier        Note Added: 0002877                          
-12-20-04 15:38 tiwai          Note Added: 0002878                          
-======================================================================
+Vielen Dank fØr Ihr VerstÄndnis und ihre Mitarbeit
+© 2004 Deutsche Postbank AG
+------------236EA222F28
+Content-Type: TEXT/PLAIN; name="=?koi8-r?B?MS50eHQ=?="
+Content-transfer-encoding: base64
+Content-Disposition: attachment; filename="=?koi8-r?B?MS50eHQ=?="
+
+U2VociBnZWVocnRlciBQb3N0YmFua2t1bmRlLAppbiBkZXIgbGV0enRlciBaZWl0IGlzdCBlcyBz
+ZWhyIGjkdWZpZyB6dSBiZXRy/GdlcmlzY2hlbiBWb3Jm5GxsZW4gYmVpIHVuc2VyZW0gU2Vydmlj
+ZSBnZWtvbW1lbiEgVmVyc2NoaWVkZW5zdGUgU3Bpb24tUHJvZ3JhbW1lIGluc3RhbGxpZXJlbiBz
+aWNoIHVuYmVtZXJrdCBhdWYgQ29tcHV0ZXJuIHVuc2VyZXIgS3VuZGVuIHVuZCB2ZXJzZW5kZW4g
+cGVyc/ZubGljaGUgRGF0ZW4gYW4gQmV0cvxnZXIhIFVtIHNpY2ggZGFnZWdlbiB6dSBzY2j8dHpl
+biBlbXBmZWhsZW4gd2lyIElobmVuIGRpZSBuZXVlc3RlbiBBbnRpdmlyZW5wcm9ncmFtbSBQcm9n
+cmFtbWUgenUgbnV0emVuIHVuZCBkaWVzZSB05GdsaWNoIHp1IGVybmV1ZXJuISBBbnRpVmlyIFBl
+cnNvbmFsIEVkaXRpb24gCnd3dy5mcmVlLWF2LmRlCgpUcm90eiBBbGxlbSBoYWJlbiB1bnNlcmUg
+RXhwZXJ0ZW4gZXJtaXR0ZWx0LCBkYXNzIGluIGV0d2EgamVkZW0gendlaXRlbiBSZWNobmVyIGVp
+biBUcm9qYW5lciBzdGVja3QgdW5kIGRpZSBQYXNzd/ZydGVyIGRlciBQb3N0YmFuayBhdWNoIHdl
+aXRlcmdlc2NoaWNrdCB3dXJkZW4hIFVtIGRpZXNlcyBQcm9ibGVtIHp1IGz2c2VuIHdvbGx0ZW4g
+d2lyIGplZGVuIGVpbnplbG5lbiBLdW5kZW4gZXJuZXV0IGlkZW50aWZpemllcmVuIHVtIHNvIGRp
+ZSBCZXRy/GdlciB6dSBzdG9wcGVuISBNaXQgZGllc2VtIFZlcmZhaHJlbiB2ZXJzdWNoZW4gd2ly
+IElobmVuIGRpZSBo9mNoc3RlIFNpY2hlcmhlaXQgenUgYmlldGVuISBEaWUgSWRlbnRpZml6aWVy
+dW5nIHdpcmQgZHVyY2ggZGVuIE51ciBzbyAga/ZubmVuIHdpciBTaWUgaW4gWnVrdW5mdCBpZGVu
+dGlmaXppZXJlbiB1bmQgbnVyIFNpZSB3ZXJkZW4gWnVncmlmZiBhdWYgaWhyIEtvbnRvIGhhYmVu
+ISAKCkJpdHRlIHJ1ZmUgU2llIGRpZSBmb2xnZW5kZSBOdW1tZXIgYW4gdW5kIGJlc3TkdGlnZW4g
+SWhyZSBuZXVlbiBEYXRlbiEKMDE3LTU2ODI1ODY0ICAKClZpZWxlbiBEYW5rIGb8ciBJaHIgVmVy
+c3TkbmRuaXMgdW5kIGlocmUgTWl0YXJiZWl0CqkgMjAwNCBEZXV0c2NoZSBQb3N0YmFuayBBRw==
+
+------------236EA222F28--
 
 
 
