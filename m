@@ -1,19 +1,18 @@
-From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
-Subject: Re: Re: ice1712 driver broken in 2.6.1-mm kernels
-Date: Wed, 21 Jan 2004 22:25:13 +0200 (EET)
+From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Subject: Re: xine with dmix
+Date: Wed, 21 Jan 2004 22:45:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.OSF.4.58.0401212214060.155462@kosh.hut.fi>
-References: <1074633766.6579.2.camel@moria.arnor.net>
- <Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>
- <1074637277.6579.16.camel@moria.arnor.net> <Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>
- <1074712729.5895.11.camel@moria.arnor.net>
+Message-ID: <1074721534.371.15.camel@thor.asgaard.local>
+References: <1074607760.9700.453.camel@thor.asgaard.local>
+	 <Pine.LNX.4.58.0401201628140.2010@pnote.perex-int.cz>
+	 <1074614789.9699.464.camel@thor.asgaard.local>
+	 <1074620372.9697.480.camel@thor.asgaard.local>
+	 <Pine.LNX.4.58.0401212012430.2010@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp-3.hut.fi (root@smtp-3.hut.fi [130.233.228.93])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA22006
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2004 21:25:15 +0100
-In-Reply-To: <1074712729.5895.11.camel@moria.arnor.net>
+In-Reply-To: <Pine.LNX.4.58.0401212012430.2010@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,71 +21,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Torrey Hoffman <thoffman@arnor.net>
-Cc: Jaroslav Kysela <perex@suse.cz>, ALSA Development <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Just one problem remains to be solved for this card:  The Audiophile
-> 24/96 is a 4-in, 4-out card (stereo analog input and output, plus
-> independent SPDIF input and output).  But only one set of inputs and
-> outputs is showing up for use:
->
-> [thoffman@moria thoffman]$ cat /proc/asound/pcm
-> 01-00: ICE1712 multi : ICE1712 multi : playback 1 : capture 1
->
-> Shouldn't there be separate devices for the analog & SPDIF inputs and
-> outputs?  If not, how do I send different signals to the analog &
-> digital outputs?
+On Wed, 2004-01-21 at 20:19, Jaroslav Kysela wrote:
+> 
+> [...] I've tested xine with dmix today and I figured after several hours 
+> of looking for totaly another problem, that it was 'snd_pcm_wait()' function 
+> which causes trouble in conjunction with the xine ALSA code algorithm.
+> 
+> The result patch (attached to this mail and available also in CVS) is that
+> xine works with dmix even without the slowptr option! 
 
-You have to create .asoundrc to your home directory.
-
-for spdif, put:
-
-pcm.2496_spdif
-{
-        type plug
-        ttable.0.8 1
-        ttable.1.9 1
-        slave.pcm {
-                type hw
-                card 1
-                device 0
-        }
-}
-
-(If I remember correctly, your card was no. 1, if not, change 'card 1')
-
-This device can be used like this:
-
-aplay -D 2496_spdif foo.wav
-arecord -D 2496_spdif -f dat bar.wav
-
-For combined analog & digital performance (4 channels):
-
-pcm.2496_4ch
-{
-        type plug
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.2.8 1
-        ttable.3.9 1
-        slave.pcm {
-        type hw
-        card 1
-        device 0
-        }
-}
-
-then record 4 channels:
-
-arecord -D 2496_4ch -c 4 -f cd foobar.wav
+Indeed, great work! Thanks again, you rock.
 
 
-I'm not sure how you can easily send different signals to analog & digital
-outputs. I guess if you have 4 channel wav, the first two channels will be
-played to analog and 3&4 to digital output.
+-- 
+Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
+Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
 
-Tommi Uimonen
 
 
 -------------------------------------------------------
