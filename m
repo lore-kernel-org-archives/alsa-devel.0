@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Date: Wed, 29 Dec 2004 01:38:26 +0100
-Message-ID: <67ac30a9b2164bbe02fed5d4f517e730@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] emu10k1: change "Music" to "Synth" in mixer control names.
+Date: Tue, 28 Dec 2004 20:24:13 -0500
+Message-ID: <1104283454.27377.3.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E228E2E1
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:38:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,91 +15,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+This patch changes "Music" to "Synth" in the mixer control names, in
+order to make it clear that these controls affect the wavetable synth.
+"Music" is confusing and could equally well refer to PCM, plus the
+Windows drivers (kX and Creative) call it "Synth" so users expect this.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
-======================================================================
-Reported By:                wschrep
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   756
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               debian/knoppmyth
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-29-2004 01:15 CET
-Last Modified:              12-29-2004 01:38 CET
-======================================================================
-Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Description: 
-Well on the website it states I have this chip:
-CMedia CMI9761 6 channel AC'97 audio codec
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-When I do an lsmod I get this: 
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97
-Audio Controller (rev 50)
-
-So I use the via82xx alsa sound driver module
-
-I get sound but when I use the mixer settings only mute works I cannot
-change the levels of the audio output neither master or pcm changes
-anything.
-
-I did have to use the 1.0.4 drivers instead of 1.0.5 release because of
-compilation bug see other bugreport. The libs and utils from version 1.0.4
-and 1.0.5 compile without problems but with neither can I get the controls
-to work.
-
-
-======================================================================
-
-----------------------------------------------------------------------
- wschrep - 12-29-04 01:24 
-----------------------------------------------------------------------
-Ok so what do I do because checked alsa-user and alsa-devel but
-don't seem to find a solution for this problem.
-
-This is part of my lsmod output:
-
-snd_mixer_oss          17024  2 snd_pcm_oss
-snd_via82xx            23200  3
-snd_pcm                84772  2 snd_pcm_oss,snd_via82xx
-snd_timer              21188  1 snd_pcm
-snd_ac97_codec         61828  1 snd_via82xx
-snd_page_alloc          8964  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         6272  1 snd_via82xx
-snd_rawmidi            20320  1 snd_mpu401_uart
-snd_seq_device          6728  1 snd_rawmidi
-snd                    45988  9
-snd_pcm_oss,snd_mixer_oss,snd_via82xx,snd_pcm,snd_timer,snd_ac97_codec,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore               7328  4 snd
-
-----------------------------------------------------------------------
- rlrevell - 12-29-04 01:38 
-----------------------------------------------------------------------
-There's nothing you can do for now, because YOUR HARDWARE LACKS THIS
-FEATURE.  The upcoming ALSA 1.0.8 release should have a "software volume"
-plugin to handle broken hardware like yours.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-29-04 01:15 wschrep        New Issue                                    
-12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
-12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
-12-29-04 01:18 rlrevell       Note Added: 0002989                          
-12-29-04 01:24 wschrep        Note Added: 0002990                          
-12-29-04 01:38 rlrevell       Note Added: 0002991                          
-======================================================================
+Index: alsa-2.6.10-rc2/alsa-kernel/pci/emu10k1/emufx.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
+retrieving revision 1.66
+diff -u -r1.66 emufx.c
+--- alsa-2.6.10-rc2/alsa-kernel/pci/emu10k1/emufx.c	23 Nov 2004 15:11:54 -0000	1.66
++++ alsa-2.6.10-rc2/alsa-kernel/pci/emu10k1/emufx.c	29 Dec 2004 01:20:21 -0000
+@@ -1065,10 +1065,10 @@
+ 	snd_emu10k1_init_stereo_control(&controls[nctl++], "Wave Playback Volume", gpr, 100);
+ 	gpr += 2;
+ 
+-	/* Music Playback */
++	/* Synth Playback */
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(stereo_mix+0), A_GPR(stereo_mix+0), A_GPR(gpr), A_FXBUS(FXBUS_MIDI_LEFT));
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(stereo_mix+1), A_GPR(stereo_mix+1), A_GPR(gpr+1), A_FXBUS(FXBUS_MIDI_RIGHT));
+-	snd_emu10k1_init_stereo_control(&controls[nctl++], "Music Playback Volume", gpr, 100);
++	snd_emu10k1_init_stereo_control(&controls[nctl++], "Synth Playback Volume", gpr, 100);
+ 	gpr += 2;
+ 
+ 	/* Wave (PCM) Capture */
+@@ -1077,10 +1077,10 @@
+ 	snd_emu10k1_init_stereo_control(&controls[nctl++], "PCM Capture Volume", gpr, 0);
+ 	gpr += 2;
+ 
+-	/* Music Capture */
++	/* Synth Capture */
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(capture+0), A_GPR(capture+0), A_GPR(gpr), A_FXBUS(FXBUS_MIDI_LEFT));
+ 	A_OP(icode, &ptr, iMAC0, A_GPR(capture+1), A_GPR(capture+1), A_GPR(gpr+1), A_FXBUS(FXBUS_MIDI_RIGHT));
+-	snd_emu10k1_init_stereo_control(&controls[nctl++], "Music Capture Volume", gpr, 0);
++	snd_emu10k1_init_stereo_control(&controls[nctl++], "Synth Capture Volume", gpr, 0);
+ 	gpr += 2;
+ 
+ 	/*
+@@ -1608,19 +1608,19 @@
+ 	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Wave Capture Switch", gpr + 2, 0);
+ 	gpr += 4;
+ 
+-	/* Music Playback Volume */
++	/* Synth Playback Volume */
+ 	for (z = 0; z < 2; z++)
+ 		VOLUME_ADD(icode, &ptr, playback + z, 2 + z, gpr + z);
+-	snd_emu10k1_init_stereo_control(controls + i++, "Music Playback Volume", gpr, 100);
++	snd_emu10k1_init_stereo_control(controls + i++, "Synth Playback Volume", gpr, 100);
+ 	gpr += 2;
+ 
+-	/* Music Capture Volume + Switch */
++	/* Synth Capture Volume + Switch */
+ 	for (z = 0; z < 2; z++) {
+ 		SWITCH(icode, &ptr, tmp + 0, 2 + z, gpr + 2 + z);
+ 		VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
+ 	}
+-	snd_emu10k1_init_stereo_control(controls + i++, "Music Capture Volume", gpr, 0);
+-	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Music Capture Switch", gpr + 2, 0);
++	snd_emu10k1_init_stereo_control(controls + i++, "Synth Capture Volume", gpr, 0);
++	snd_emu10k1_init_stereo_onoff_control(controls + i++, "Synth Capture Switch", gpr + 2, 0);
+ 	gpr += 4;
+ 
+ 	/* Surround Digital Playback Volume (renamed later without Digital) */
 
 
 
