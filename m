@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Mon, 21 Mar 2005 01:16:46 +0100
-Message-ID: <099e07acb117345a8d3b86fc7598af44@bugtrack.alsa-project.org>
+Date: Mon, 21 Mar 2005 01:36:23 +0100
+Message-ID: <d07035f5b25180cba448b02e974712e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD31C25D
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 01:16:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A105261
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 01:36:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-21-2005 01:16 CET
+Last Modified:              03-21-2005 01:36 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,25 +100,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 03-21-05 00:12 
-----------------------------------------------------------------------
-Can you try to get the code to work with the find/remove code I suggested?
-I put the missing functions in the previous post.
-
-Your problem is that you seem to have a different AC97 codec than the
-standard. This different codec seems to already define the mixer control
-that the driver is trying to add, which caused the -16 error (EBUSY) from
-the ctl_add call. It would be nice if you could attach a dump of the
-/proc/asound/card0/codec#0/* files?
-
-As for your mixer problems, that is either mixture of alsa versions or
-some other problem, unlikely related to the driver. Maybe someone in the
-development list can suggest something.
-
-Let me know if the code I suggested works, because I can then make a patch
-so that ALSA 1.0.9 will avoid the problem on your system.
-
-----------------------------------------------------------------------
  Q3Man - 03-21-05 01:16 
 ----------------------------------------------------------------------
 I just added those two functions and reverted the previous addition back to
@@ -127,6 +108,15 @@ it, it locks the system up.
 
 I'm going to put some more printk's in and try to see exactly where it
 dies.
+
+----------------------------------------------------------------------
+ Q3Man - 03-21-05 01:36 
+----------------------------------------------------------------------
+It appears that my system log daemon isn't writing the kern_err outputs to
+disk before the system crashes, or reiserfs is just nukeing the additions
+on startup. Is there an equivilant command to snd_printk that will print
+the message to the console so I can write them down? I already tried
+snd_printf, but it comes up as an unknown symbol.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -168,6 +158,7 @@ Date Modified  Username       Field                    Change
 03-20-05 19:19 Q3Man          Note Added: 0004097                          
 03-21-05 00:12 fmoraes        Note Added: 0004107                          
 03-21-05 01:16 Q3Man          Note Added: 0004108                          
+03-21-05 01:36 Q3Man          Note Added: 0004109                          
 ======================================================================
 
 
