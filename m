@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000005]: alsa-driver-1.0.2: unresolved symbols in snd.o
-Date: Tue, 27 Jan 2004 22:08:15 +0100 (CET)
+Subject: [ALSA - driver 0000004]: snd.o misses undefined symbol sound_class
+Date: Tue, 27 Jan 2004 22:11:04 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127210815.43C9F25009@server.perex-int.cz>
+Message-ID: <20040127211104.7CE3F25009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA18305
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:08:23 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA18379
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:11:10 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,56 +20,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been CLOSED
 ======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000005
+http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000004
 ======================================================================
-Reporter:                   ZlatkO
-Handler:                    
+Reporter:                   khali
+Handler:                    perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     5
-Category:                   CORE - control
+Bug ID:                     4
+Category:                   OTHERS
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 8.1
+Status:                     closed
+Distribution:               Slackware 8.0
 Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             01-27-2004 21:31 CET
-Last Modified:              01-27-2004 22:08 CET
+Date Submitted:             01-27-2004 21:15 CET
+Last Modified:              01-27-2004 22:11 CET
 ======================================================================
-Summary:                    alsa-driver-1.0.2: unresolved symbols in snd.o
+Summary:                    snd.o misses undefined symbol sound_class
 Description: 
-snd.o fails to load due to an unresolved symbol ("sound_class") on a
-Slackware 8.1 system, kernel 2.4.24 (plain vanilla from kernel.org),
-modutils-2.4.16.
+After installing the alsa drivers, I am unable to load snd.o. See the
+output of "depmod -ae":
+depmod: *** Unresolved symbols in
+/lib/modules/2.4.24-1/kernel/sound/acore/snd.o
+depmod:         sound_class
 
-There is no "sound_class" in the kernel's own
-/usr/src/linux-2.4.24/drivers/sound/sound_core.c - am I supposed to
-replace it with alsa-kernel/sound_core.c? This was not necessary in
-previous ALSA versions.
+Configure options: --with-oss=yes --with-cards=intel8x0
+Compilation successful.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 01-27-2004 22:08 CET 
+ perex - 01-27-2004 22:11 CET 
 ----------------------------------------------------------------------
-I cannot reproduce this bug, but it might be possible that removing
-of line 'extern struct class_simple *sound_class;' in
-alsa-driver/alsa-kernel/core/sound.c solves this bug.
-
-Can you confirm?
-
-I've recreated new alsa-driver package with date:
-
-Jan 27 22:02 alsa-driver-1.0.2.tar.bz2
+This report is same as report http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000005, so please, monitor this report.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-27-04 21:31 ZlatkO         New Bug                                      
-01-27-04 22:08 perex          Bugnote Added: 0000005                       
+01-27-04 21:15 khali          New Bug                                      
+01-27-04 21:43 ZlatkO         Bug Monitored: ZlatkO                        
+01-27-04 22:10 perex          Assigned To               => perex           
+01-27-04 22:10 perex          Status                   new => assigned     
+01-27-04 22:11 perex          Bugnote Added: 0000006                       
+01-27-04 22:11 perex          Status                   assigned => closed  
 ======================================================================
 
 
