@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000528]: Please support ADPCM
-Date: Fri, 24 Sep 2004 08:28:28 +0200 (CEST)
+From: "Jaime Stephenson" <jstephenson_gh@tvtec.co.uk>
+Subject: ,-Home loans at 3.9:%
+Date: Fri, 24 Sep 2004 22:25:26 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924062828.90B929061@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <310701c4a285$0fcc4ea2$75099ed2@moderator.de>
+Mime-Version: 1.0
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F34A926A
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 08:28:28 +0200 (MEST)
+Received: from moderator.de (ajs161.neoplus.adsl.tpnet.pl [83.25.252.161])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 1AE7D239
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 08:34:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,54 +22,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+Hello<p>
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000528
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     528
-Category:                   aplay/arecord
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-24-2004 05:52 CEST
-Last Modified:              09-24-2004 08:28 CEST
-======================================================================
-Summary:                    Please support ADPCM
-Description: 
-Hi,
+Would you REFlNANCE if you knew you'd S<jqvvzovbgqcrwec>AVE TH0US<jxkfnqw=
+jqzrylc>ANDS?<p>
 
-together with some help from Steven Kowalik, I was able to find out that
-aplay fails to play some pcm encoded files. A closer look reveals that the
-files, that fail to play, are encoded with ADPCM encoded. I've found some
-explanation about ADPCM at these URLs:
+We'll get you lnterest as low as 3.93%.<p>
 
-http://www-mobile.ecs.soton.ac.uk/speech_codecs/standards/adpcm.html
-http://www.hr/josip/DSP/FAQ/23.html
+Don't believe me? Fill out our small online form and we'll show you how.<=
+p>
 
-I would appreciate if aplay would also support those kind of pcm encoded
-files. Thanks for adding that support.
+Get the house and/or car you always wanted, it only takes 2 minutes of yo=
+ur time:<br>
+<a href=3D"http://www.infomediabot4u.biz/new/index.php?a=3D2">http://www.=
+infomediabot4u.biz/new/index.php?a=3D2</a>
+</html>
 
-Christian
-======================================================================
-
-----------------------------------------------------------------------
- pzad - 09-24-2004 08:28 CEST 
-----------------------------------------------------------------------
-I think, that there is adpcm plugin.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-24-04 05:52 jdthood        New Bug                                      
-09-24-04 08:28 pzad           Bugnote Added: 0001857                       
-======================================================================
 
 
 -------------------------------------------------------
