@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000972]: No sound after install...
-Date: Mon, 14 Mar 2005 21:45:03 +0100
-Message-ID: <3b38398b749399acafacb475d78029bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Mon, 14 Mar 2005 21:52:18 +0100
+Message-ID: <cbb5a9b3a2d520471a93d2241a725850@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86C7A1C0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 21:45:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4B841C0
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 21:52:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,61 +21,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                rbechard1
-Assigned To:                fmoraes
+Reported By:                rav0r
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   972
-Category:                   PCI - emu10k1x
+Issue ID:                   992
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             03-08-2005 02:00 CET
-Last Modified:              03-14-2005 21:45 CET
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              03-14-2005 21:52 CET
 ======================================================================
-Summary:                    No sound after install...
+Summary:                    no supported card
 Description: 
-After following all of the install instructions included with the
-documentation there is no sound from the sound card. The settings in
-DiskDrake indicate that the sound card is using the correct driver and
-alsaconf reconfigured it several times to no effect. I also check the
-mixer outputs and nothing is muted.
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
-
-----------------------------------------------------------------------
- rbechard1 - 03-09-05 03:14 
-----------------------------------------------------------------------
-There is no /snd folder in my /dev directory...
-
-----------------------------------------------------------------------
- rbechard1 - 03-14-05 21:45 
-----------------------------------------------------------------------
-I recently found the new alsa 1.0.8 RPM packages for Mandrake 10.2 and
-installed them with RPMDRAKE. This resolved this problem. It was much
-easier as your src code continues to give be problems. I no longer need
-help as this issue has now been resolved.
-
-I 'strongly" suggest that your webmaster should put the RPM packages on
-your website for the various distributions, it would save your support
-people alot of time!!!!!!!!!!!!!!!!!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 02:00 rbechard1      New Issue                                    
-03-08-05 02:01 rbechard1      Issue Monitored: rbechard1                    
-03-08-05 09:54 rbechard1      Note Added: 0003813                          
-03-09-05 02:11 fmoraes        Note Added: 0003820                          
-03-09-05 03:14 rbechard1      Note Added: 0003824                          
-03-14-05 21:45 rbechard1      Note Added: 0003908                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
 ======================================================================
 
 
