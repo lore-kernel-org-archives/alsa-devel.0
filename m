@@ -1,10 +1,11 @@
-From: "Postmaster" <postmaster@orotech.net>
-Subject: Undeliverable Mail
-Date: Tue, 14 Sep 2004 07:18:02
+From: xiao-gua <eloise@t-online.de>
+Subject: =?Windows-1251?B?ze7i4P8g6u7r6+Xq9uj/?=
+Date: Tue, 14 Sep 2004 12:17:09 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <10409140718.AA11042646@orotech.net>
+Message-ID: <E1C7CJm-0002Cd-4p@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Requested action not taken: virus detected
-
-Original message follows.
-
-Received: from orotech.net [80.24.245.241] by orotech.net
-  (SMTPD32-8.12) id A36219D200A8; Tue, 14 Sep 2004 07:17:54 -0400
-From: alsa-devel@lists.sourceforge.net
-To: tim@orotech.net
-Subject: SPAM: Re: Failure
-Date: Tue, 14 Sep 2004 13:18:30 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0016----=_NextPart_000_0016"
-X-Priority: 3
-X-MSMail-Priority: Normal
-Message-Id: <200409140717296.SM03328@orotech.net>
-X-RBL-Warning: AHBL: 1078244721 bruns - Spam Source - Too many ranges to list - TELEFONICA DE ESPANA - needs to clean up their abuse problem on rima-tde.net before removal will happen
-X-RBL-Warning: SPAMHEADERS: This E-mail has headers consistent with spam [4000020f].
-X-Declude-Sender: alsa-devel@lists.sourceforge.net [80.24.245.241]
-X-Note: This E-mail was scanned by Declude JunkMail (www.declude.com) for spam.
-X-Spam-Tests-Failed: AHBL, NOLEGITCONTENT, SPAMHEADERS, WEIGHT10, WEIGHT15 [15]
-X-Note: This E-mail was sent from 241.Red-80-24-245.pooles.rima-tde.net ([80.24.245.241]).
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: 7bit
+=CD=EE=E2=E0=FF =EA=EE=EB=EB=E5=EA=F6=E8=FF =EF=EE=F1=F2=E5=EB=FC=ED=EE=E3=
+=EE =E1=E5=EB=FC=FF =ED=E0 =F1=E0=E9=F2=E5 www.elitpresent.ru
 
 
-Protected message is available.
-
-
-
-------=_NextPart_000_0016----=_NextPart_000_0016
-
-------=_NextPart_000_0016----=_NextPart_000_0016--
-
-
+=00
 
 
 -------------------------------------------------------
 This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
 Project Admins to receive an Apple iPod Mini FREE for your judgement on
-who ports your project to Linux PPC the best. Sponsored by IBM. 
+who ports your project to Linux PPC the best. Sponsored by IBM.=20
 Deadline: Sept. 13. Go here: http://sf.net/ppc_contest.php
