@@ -1,15 +1,15 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: How to put 16bit none audio PCM data stream into a 32bit none audio S/P-DIF transport stream?
-Date: Thu, 10 Apr 2003 13:26:57 +0200
+From: cw <cw@acidtechno.net>
+Subject: Re: Waveterminal 192M Envy24HT
+Date: 10 Apr 2003 12:44:47 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030410112657.GA2332@ulima.unil.ch>
-References: <s5hn0j1q97r.wl@alsa2.suse.de> <3E934193.6090605@cucumelo.org> <20030408205515.GB6940@ulima.unil.ch> <3E933EF6.5030601@superbug.demon.co.uk> <3E93C4CA.4080604@cucumelo.org> <20030409082815.GA14489@ulima.unil.ch> <s5h65poq65j.wl@alsa2.suse.de> <20030409114312.GE14489@ulima.unil.ch> <s5h4r57rf1m.wl@alsa2.suse.de> <3E9553C2.3000100@superbug.demon.co.uk>
+Message-ID: <1049978687.28149.34.camel@localhost.localdomain>
+References: <200303201857.h2KIvVft063936@mail.mega.nu>
+Reply-To: cw@acidtechno.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3E9553C2.3000100@superbug.demon.co.uk>
+In-Reply-To: <200303201857.h2KIvVft063936@mail.mega.nu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,37 +18,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Daniel Pouzzner <douzzer@mega.nu>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 10, 2003 at 12:21:38PM +0100, James Courtier-Dutton wrote:
+Hi,
 
-Hello James and others ;-)
+I guess that we haven't received a reply from ESI regarding this ?
+I just emailed another contact there, so ill see if i get a reply, but
+if not is it worth trying the manufacture of the envy24ht chip (via i
+think) maybe they will give us info on the firmware of the card ? 
 
-> You say that in windows SPDIF works fine and you get the AC3 decoded by=
-=20
-> your external decoder.
-> Does the decoder have any indicators telling you whether it is an AC3 o=
-f=20
-> PCM stream ?
 
-Yes (well, I have an indicator of Dolby Digital).
+chris
 
-> So, in linux, when playing a DVD in PASSTHRU mode in xine, does your=20
-> decoder think it is AC3 or PCM ?
 
-PCM...
+> >It is not usually difficult to do the reverse engineering 
+> >and collect a schematic how is the envy chip connected with the I/O chips 
+> >using a simple voltmeter.
+> 
+> Umm, I think you underestimate the skills you have amassed that make
+> such an operation seem easy to you!
+> 
+> >I think that the card is green in the matrix, because we have 
+> >documentation for the master (envy) chip.
+> 
+> That's what I suspect.
+> 
+> I just emailed the contact for the esi-pro.com domain (for lack of a
+> better contact) as follows:
+> 
+> 
+> >Date: Thu, 20 Mar 2003 13:54:16 -0500 (EST)
+> >To: chesslim@egosys.net
+> >Subject: Waveterminal 192X tech details
+> >From: Daniel Pouzzner <douzzer@mega.nu>
+> >
+> >A number of people, myself included, are interested in adding
+> >Waveterminal 192 support to ALSA (the Linux soundcard driver
+> >backplane).  Can you make available the necessary technical details on
+> >the Waveterminal 192's firmware?
 
-> If the decoder still thinks it is PCM, then the problem is a bug in the=
-=20
-> alsa-driver, and not the application or sample rate.
-
-I think it's something I have tried to explain here ;-)
-
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
 
 
 -------------------------------------------------------
