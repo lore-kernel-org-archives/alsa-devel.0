@@ -1,130 +1,44 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
-Date: Mon, 15 Nov 2004 15:41:38 +0100
-Message-ID: <c2e6b9c2a27e63db97e20f018c47d117@bugtrack.alsa-project.org>
+From: Ingo Molnar <mingo@elte.hu>
+Subject: Re: [patch] Real-Time Preemption, -RT-2.6.10-rc1-mm3-V0.7.25-1
+Date: Mon, 15 Nov 2004 17:11:59 +0100
+Message-ID: <20041115161159.GA32580@elte.hu>
+References: <20041025104023.GA1960@elte.hu> <20041027001542.GA29295@elte.hu> <20041103105840.GA3992@elte.hu> <20041106155720.GA14950@elte.hu> <20041108091619.GA9897@elte.hu> <20041108165718.GA7741@elte.hu> <20041109160544.GA28242@elte.hu> <20041111144414.GA8881@elte.hu> <20041111215122.GA5885@elte.hu> <61930.195.245.190.94.1100529227.squirrel@195.245.190.94>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19BCD28E
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 15:41:39 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261616AbUKOPOe@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <61930.195.245.190.94.1100529227.squirrel@195.245.190.94>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: linux-kernel@vger.kernel.org, Lee Revell <rlrevell@joe-job.com>, mark_h_johnson@raytheon.com, "K.R. Foley" <kr@cybsft.com>, Bill Huey <bhuey@lnxw.com>, Adam Heath <doogie@debian.org>, Florian Schmidt <mista.tapas@gmx.net>, Thomas Gleixner <tglx@linutronix.de>, Michal Schmidt <xschmi00@stud.feec.vutbr.cz>, Fernando Pablo Lopez-Lezcano <nando@ccrma.stanford.edu>, Karsten Wiese <annabellesgarden@yahoo.de>, Gunther Persoons <gunther_persoons@spymac.com>, emann@mrv.com, Shane Shrybman <shrybman@aei.ca>, Amit Shah <amit.shah@codito.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
-======================================================================
-Reported By:                pancogi
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   650
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4.27
-======================================================================
-Date Submitted:             11-15-2004 11:59 CET
-Last Modified:              11-15-2004 15:41 CET
-======================================================================
-Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
-Description: 
-hi
-my Sb Live do not work with emu10k1, lspci -v say:
+* Rui Nuno Capela <rncbc@rncbc.org> wrote:
 
-0000:00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
-(rev 08)
-        Subsystem: Creative Labs CT4760 SBLive! OEM version
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        I/O ports at d800 [size=32]
-        Capabilities: [dc] Power Management version 2
+>   1) Almost everytime the P4/SMP box locks up while unloading the ALSA
+> modules e.g.on shutdown. This has been an issue for quite some time on
+> the latest RT patches, not exclusive to RT-V0.7.26-3. Probably it
+> started since the merge into -mm3, but not sure.
 
-lspci -n, say:
+hm, the syslog you sent suggests that it's the 2.6.10-rc1-mm3-RT-V0.7.24
+kernel that crashed:
 
-0000:00:0d.0 Class 0401: 1102:0002 (rev 08)
+ Nov 11 12:39:46 lambda kernel: EFLAGS: 00010083   (2.6.10-rc1-mm3-RT-V0.7.24)
 
-dmesg after modprobe snd-emu10k1,
+not -V0.7.26-3. The particular rmmod crash you got:
 
-PCI: Found IRQ 5 for device 00:0d.0
-ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1905: AC'97 0 does not
-respond - RESET
-ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1913: AC'97 0 access is not
-valid [0x0], removing mixer.
+ Nov 11 12:39:46 lambda kernel:  [<c013b72c>] kmem_cache_free+0x4a/0xc7 (8)
+ Nov 11 12:39:46 lambda kernel:  [kobject_cleanup+142/144] kobject_cleanup+0x8e/0x90 (12)
+ Nov 11 12:39:46 lambda kernel:  [<c01b0f08>] kobject_cleanup+0x8e/0x90 (12)
 
-dmesg after modprobe oss modules emu10k1, say:
+seems to be quite related to one of the fixes that -V0.7.25 includes:
 
-emu10k1: EMU10K1 rev 8 model 0x8028 found, IO at 0xd800-0xd81f, IRQ 5
-ac97_codec: AC97  codec, id: 0x0000:0x0000 (Unknown)
+ - added upstream fix for kobject related crash, pointed out by Shane
+   Shrybman.
 
-but no sound output.
-with kernel 2.6.9, the same.
+so ... unless you got similar crashes with -V0.7.25 or later kernels
+(but no syslog traces), please try the latest one (-V0.7.26-4), does
+that one crash in rmmod too?
 
-thanks,
-giovanni.
-======================================================================
-
-----------------------------------------------------------------------
- pancogi - 11-15-04 15:07 
-----------------------------------------------------------------------
-ok, source modified, compiled.
-
-now module snd-emu10k1 is loaded, and alsamixer show me some control.
-the pc is far from me, and now i can't hear sound, may be this evening.
-if you want report from /proc/asound, ask
-
-perhaps i can find a sister of this CT4760 working, and try if is a true
-hardware problem.
-
-> will recomend to swap soundcard.
-
-thanks, which one?
-
-anyhow, thanks a lot, and forgive my english.
-
-----------------------------------------------------------------------
- pzad - 11-15-04 15:41 
-----------------------------------------------------------------------
-> thanks, which one?
-
-Working one. :-)
-
-This card looks damaged.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-15-04 11:59 pancogi        New Issue                                    
-11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
-11-15-04 12:20 pancogi        Note Added: 0002411                          
-11-15-04 12:47 pancogi        Issue Monitored: pancogi                     
-11-15-04 12:53 pzad           Note Added: 0002412                          
-11-15-04 13:30 pancogi        Note Added: 0002413                          
-11-15-04 13:43 pzad           Note Added: 0002414                          
-11-15-04 13:45 pzad           Note Edited: 0002414                         
-11-15-04 15:07 pancogi        Note Added: 0002415                          
-11-15-04 15:41 pzad           Note Added: 0002416                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: InterSystems CACHE
-FREE OODBMS DOWNLOAD - A multidimensional database that combines
-robust object and relational technologies, making it a perfect match
-for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
+	Ingo
