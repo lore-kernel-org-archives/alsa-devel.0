@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Sun, 26 Sep 2004 15:28:21 +0200 (CEST)
+Date: Sun, 26 Sep 2004 15:43:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926132821.1A5C91200A@server.perex-int.cz>
+Message-ID: <20040926134347.88A5412009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 812642C7
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 15:28:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFD08292
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 15:43:47 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-26-2004 15:28 CEST
+Last Modified:              09-26-2004 15:43 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -151,6 +151,13 @@ some irq claims).
 
 Hope this eases the search for a solution :)
 
+----------------------------------------------------------------------
+ karsten - 09-26-2004 15:43 CEST 
+----------------------------------------------------------------------
+Please update all of alsa-kernel/usb from cvs head.
+"Badness in usb_unlink_urb at drivers/usb/core/urb.c:457" should vanish.
+Redo netconsole logs.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -169,6 +176,7 @@ Date Modified  Username       Field                    Change
 09-26-04 15:16 rncbc          File Added: netconsole.out.1.txt                    
 09-26-04 15:26 karsten        Bugnote Edited: 0001912                      
 09-26-04 15:28 rncbc          Bugnote Added: 0001921                       
+09-26-04 15:43 karsten        Bugnote Added: 0001922                       
 ======================================================================
 
 
