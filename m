@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Wed, 29 Sep 2004 05:28:03 +0200 (CEST)
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Wed, 29 Sep 2004 05:05:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929032803.4089B3C04C@server.perex-int.cz>
+Message-ID: <20040929030545.B87D83C04C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 981BC321
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 05:28:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 35902321
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 05:05:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,287 +22,161 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
 ======================================================================
-Reported By:                Andrew
-Assigned To:                
+Reported By:                skamp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     453
+Bug ID:                     410
 Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     feedback
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             08-18-2004 13:16 CEST
-Last Modified:              09-29-2004 05:28 CEST
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-29-2004 05:05 CEST
 ======================================================================
-Summary:                    it is impossible to select spdif as capture source
+Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
-There are no anything spdif-input-related among
-capture source enumeration.
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
+
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 19:55 CEST 
+ tiwai - 07-30-2004 16:51 CEST 
 ----------------------------------------------------------------------
-Did you use 'iec958' pcm?
-
-    % arecord -Diec958 -fdat foo.wav
+Isn't it a hardware limitation?
 
 ----------------------------------------------------------------------
- Andrew - 08-25-2004 23:47 CEST 
+ skamp - 08-01-2004 14:29 CEST 
 ----------------------------------------------------------------------
-A dat fromat doesn't work: "Sample format non available"
-I have tried
-
-arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
-
-Format/rate are accepted, but the resulted file is empty.
-I use aureon 7.1.
-
-While filing the isuue, I have thought about capture selecting via
-mixer Capture Source control. Does this (others?) control influence
-to shown above command working?
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
 
 ----------------------------------------------------------------------
- tiwai - 08-27-2004 19:39 CEST 
+ skamp - 08-01-2004 18:00 CEST 
 ----------------------------------------------------------------------
-You can use'plug:iec958' for 16bit conversion.
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
 
-"Capture Source" shouldn't affect the digital input.
-It might be a wrong CS8415 initialization sequence in the driver...
-
-----------------------------------------------------------------------
- Andrew - 09-07-2004 10:33 CEST 
-----------------------------------------------------------------------
-I have tried with plug:iec958 with the same silent file. Is there any way
-to be sure spdif input is receiving some signal?
-
-----------------------------------------------------------------------
- tiwai - 09-08-2004 17:16 CEST 
-----------------------------------------------------------------------
-Could you elaborate more?
-Is the DMA working?  Or did you get the short-cut output?
-Is it all zero or any signals in the output?
-
-Also, as I wrote, the CS8415 init sequence might be wrong.
-Compare the CS8415 init data in aureon.c with the datasheet
-whether it's correct for your setting.
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
 
 ----------------------------------------------------------------------
- Andrew - 09-08-2004 17:55 CEST 
+ tiwai - 08-02-2004 18:21 CEST 
 ----------------------------------------------------------------------
-Takashi,
-
-You think I'm more clever than I am :-)
-
-OK, the aim is simple: to be able to record from FM tuner. Last one is an
-"onboard" tuner of AV receiver. Last one is the only source I can try as
-source
-with spdif output. All this is the reason of my last question about a way
-to be
-sure spdif input is receiving some signal: my sound card is the only
-device I
-can use to receive something via spdif.
-
-All my attempts of capturing from spdif input lead to silent wav file.
-
-I will be happy to answer to your question about DMA and init data, but
-I don't understand these things. I see, the issue is not of high
-priority,
-so I'm ready to wait for the moment you will find a minute to clarify
-starting point(s) for my next attempts to bugnote in more informative
-manner :-)
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:48 CEST 
+ ungod - 09-28-2004 22:37 CEST 
 ----------------------------------------------------------------------
-My question is what do you mean 'silent' and 'empty' in your texts.
-
-Are the all data in the recorded file value zero, or the no
-(or shorter) data is recorded?  Or, the data values are not zero
-but significantly small values?
-
-All these three have different meanings.  The first case is usually
-that the signal is not routed or processed in codec but the DMA is
-running to get data.  The second case implies that the DMA is not
-running or stopped due to lack of data.  The last one implies that
-the signal is physically processed (and DMA running) but something
-(e.g. digital attenuation) in codec is not set properly.  In the
-case of SPDIF, the last one shouldn't happen, though.
+This is fixed in the latest CVS (See bugnote 0000510 for details)
 
 ----------------------------------------------------------------------
- ungod - 09-23-2004 20:40 CEST 
+ tiwai - 09-28-2004 23:15 CEST 
 ----------------------------------------------------------------------
-One reason why the S/PDIF input might not work, is that the GPIO direction
-pins are initialized the wrong way. In the 1.0.7rc1 drivers, they are
-initialized to 0xBFFFFF or 1011 1111 ... 1111. However, there are only 23
-GPIO pins, so why define directions for the 24th pin? Apparently the
-driver use some imaginary GPIO23 for the Prodigy 7.1 card???
-
-Anyway, GPIO22 is, according to both the driver (and my voltmeter), the
-CS8415 CS pin. GPIO21 is the SPI MISO pin (in the driver they call it
-CS8415_CDTO - quite misleading I think). With the current direction
-settings the GPIO22 (CS) is input and GPIO21 (MISO) is output, but this is
-wrong. So, by setting it to 5FFFF (0101 1111 ... 1111), the CS pin is
-output and MISO is input.
-
-I've changed it on my own computer, but I have actually not tested the
-S/PDIF input before and after the change!
-
-I've analysed what some commercial OSS drivers do, and they agree that
-GPIO22 should be output and GPIO21 input
-
-edited on: 09-23-04 20:40
+Ok, then close this bug now.
 
 ----------------------------------------------------------------------
- ungod - 09-24-2004 04:14 CEST 
+ skamp - 09-29-2004 02:14 CEST 
 ----------------------------------------------------------------------
-Aside from the GPIO bug, it seems that the S/PDIF input is not connected to
-RXP0 on the CS8415A as the driver assume, but to RXP1.
-
-I've attached a patch (for 1.0.7rc1) which fixes the GPIO bug and uses
-RXP1 instead of RXP0.
-
-----------------------------------------------------------------------
- Andrew - 09-24-2004 10:11 CEST 
-----------------------------------------------------------------------
-About "silent" and "empty": I mean zero signal level in output
-files. Files have length in accordance with recording time.
-
-I have tried ice1724-spdif.diff with the same result.
+I just installed alsa-* from CVS: the bug is NOT fixed. I still can't
+listen to both line-in AND sound coming from applications (line-out - I'm
+not talking about optical-out). Besides, line-in is now monophonic,
+although I can hear the sound in both speakers of my headphones.
+"amixer cset numid=24 on,off" (that's the "Capture switch") returns
+"values=off,on", and so does "amixer cset numid=24 off,off".
+The mixer (or driver, I don't know) is also very buggy (as you predicted);
+it took me about 15 minutes just to figure out how to hear sound coming
+from line-in at a reasonable volume.
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 11:10 CEST 
+ ungod - 09-29-2004 04:33 CEST 
 ----------------------------------------------------------------------
-Could you provide a summary, description and a signed-off-by
-for your patch, so that I can commit to CVS with changelog?
+Weird.
 
-thanks.
+As far as I know, the Sky, Space and Universe cards ought to be identical
+at that point. In the latest CVS, the aureon driver should give you mixer
+control to Line/CD/AUX/Mic/AC97 (AC97 being line/CD/AUX/Mic mixed
+together) and a Mic boost.
+In order to get both line, aux and wave sound; line, aux, ac97 and front
+should be unmuted and volumes set accordingly, and the H/W and H/W 1
+should be PCM Out.
 
-----------------------------------------------------------------------
- ungod - 09-24-2004 13:44 CEST 
-----------------------------------------------------------------------
-I'm not that familiar with CVS rules for the coresponding Changelog, but I
-assume you mean something like this:
+At least on my Space I can hear it all, and the line in sound is perfectly
+stereo.
 
-Summary: Aureon S/PDIF input fixes
-
-Description: Fix GPIO pin directions and use RXP1 instead of RXP0 as
-S/PDIF source on CS8415A
-
-Signed-off-by: Peter Christensen <peter@developers.dk>
-
-----------------------------------------------------------------------
- ungod - 09-24-2004 13:51 CEST 
-----------------------------------------------------------------------
-By the way, it is most likely that the Aureon 7.1 Universe use more than
-one RXP on the CS8415A. One for COAX, one for Optical etc., so it should
-probably be a mixer setting or something. I can only test it for the
-Aureon 7.1 Space which only has an optical input, and here RXP1 apparently
-was the correct source.
-
-As to no sound fra S/PDIF, I admit that the commercial OSS drivers
-provided better S/PDIF in sound than the ALSA drivers, so the chips
-CS8415A is probably not initialized entirely correct. And - are you using
-the Universe og Space version of Aureon 7.1?
+But I see that it is actually not possible with the current drivers, to
+record the AC97 mixed sound without also hearing it on the front channels
+(the recorded sound should however only be the AC97 sound), but I probably
+change the way at which the AC97 is muted, so that only playback sound is
+muted (currently the AC97 chip itself is muted)
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 14:32 CEST 
+ ungod - 09-29-2004 05:05 CEST 
 ----------------------------------------------------------------------
-I applied the patch to CVS now.
-Thanks.
+Well, I've made some changes, so that you may record while not listening.
+Strangely however, the capture volume for left and right are not
+identical, although the mixer claims so.
 
-----------------------------------------------------------------------
- ungod - 09-24-2004 15:02 CEST 
-----------------------------------------------------------------------
-I noticed that the S/PDIF sound was kind of noise and ugly, so I modified
-the init sequence of the CS8415A chip and got far better sound out of it
-(don't know if it will affect you silence). If I should do a summary etc.
-again:
+Well, I've uploaded a patch for the AC'97 mute, although I can't imagine
+this would solve you problem, if indeed it is a driver problem.
 
-Summary: Aureon S/PDIF input fixes
+Patch description:
 
-Description:
- GPIO directions changed
-   * GPIO>22 not configured as they do not exist
-   * GPIO22 set to output (CS8415A CS pin)
-   * GPIO21 set to input. (SPI MISO pin)
+Summary: Fix AC97 master mute
 
- Init sequence of CS8415A changed:
-  * SWCLK is set to 1 (OMCK output to RMCK pin)
-  * MUX2:0 is set to 001 (S/PDIF input on RXP1)
-  * SODEL is set to 1 (MSB of SDOUT data occurs if the second OSCLK period
-after the OLRCK edge)
-  * SOLRPOL is set to 1 (SDOUT data is for the right channel with OLRCK is
-high)
+Instead of muting the AC97 chip and thus eliminating the possibility of
+recording, muting is done by setting front playback to DAC only instead of
+DAC+AUX.
 
-Signed-off-by: Peter Christensen <peter@developers.dk>
-
-The above is for ice1724-spdif2.diff which also does the work of
-ice1724-spdif.diff
-
-edited on: 09-24-04 15:02
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 14:42 CEST 
-----------------------------------------------------------------------
-Ok, committed the new patch to CVS.
-
-----------------------------------------------------------------------
- ungod - 09-25-2004 01:13 CEST 
-----------------------------------------------------------------------
-Argh! Dammit - I accidently typed a wrong E-mail address, and you managed
-to add it to the CVS before I corrected it.
-
-----------------------------------------------------------------------
- ungod - 09-29-2004 05:28 CEST 
-----------------------------------------------------------------------
-I've looked a bit closer on the Aureon card. Apparently RXP0 is the digital
-CD input and RXP1 is optical on the Space model. On the universe it seems
-that RXP1 is used for both optical and coax and some additional chip (on
-the 5.25" bay) does the the Optical/Coax choice.
-
-I personally only have the Space card, but if you have the Universe model,
-this is most likely the reason why you will get no sound.
-
-I've been working on adding S/PDIF input settings (So far a mute and a
-Optical/CD in selection), but I don't really want to publish anything
-until I know how it works on the Universe model.
+Signed-off-by: Peter Christensen <ungod@developers.dk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 13:16 Andrew         New Bug                                      
-08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
-08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
-08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
-09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
-09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
-09-08-04 17:55 Andrew         Bugnote Added: 0001737                       
-09-23-04 18:48 tiwai          Bugnote Added: 0001832                       
-09-23-04 20:34 ungod          Bugnote Added: 0001847                       
-09-23-04 20:35 ungod          Bugnote Edited: 0001847                      
-09-23-04 20:38 ungod          Bugnote Edited: 0001847                      
-09-23-04 20:39 ungod          Bugnote Edited: 0001847                      
-09-23-04 20:40 ungod          Bugnote Edited: 0001847                      
-09-24-04 04:10 ungod          File Added: ice1724-spdif.diff                    
-09-24-04 04:14 ungod          Bugnote Added: 0001854                       
-09-24-04 10:11 Andrew         Bugnote Added: 0001859                       
-09-24-04 11:10 tiwai          Bugnote Added: 0001860                       
-09-24-04 13:44 ungod          Bugnote Added: 0001883                       
-09-24-04 13:51 ungod          Bugnote Added: 0001884                       
-09-24-04 14:32 tiwai          Bugnote Added: 0001885                       
-09-24-04 14:36 ungod          Bugnote Added: 0001887                       
-09-24-04 14:36 ungod          File Added: ice1724-spdif2.diff                    
-09-24-04 14:42 tiwai          Bugnote Added: 0001888                       
-09-24-04 15:02 ungod          Bugnote Edited: 0001887                      
-09-25-04 01:13 ungod          Bugnote Added: 0001907                       
-09-29-04 05:28 ungod          Bugnote Added: 0001966                       
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
+09-29-04 02:14 skamp          Bugnote Added: 0001963                       
+09-29-04 02:14 skamp          Resolution               fixed => reopened   
+09-29-04 02:14 skamp          Status                   resolved => feedback
+09-29-04 02:15 skamp          Bug Monitored: skamp                         
+09-29-04 04:33 ungod          Bugnote Added: 0001964                       
+09-29-04 05:05 ungod          Bugnote Added: 0001965                       
 ======================================================================
 
 
