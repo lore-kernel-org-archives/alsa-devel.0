@@ -1,13 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Using hardware timers for the ALSA sequencer
-Date: Wed, 16 Mar 2005 23:31:09 -0500
-Message-ID: <1111033869.22344.2.camel@mindpipe>
-References: <1110845236.15588.23.camel@mindpipe>
-	 <1111018873.3239.1.camel@localhost>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: [patch] for 9880 spdif out
+Date: Thu, 17 Mar 2005 12:48:16 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D69F@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1111018873.3239.1.camel@localhost>
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C52AAC.88DD3B18"
+Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3AD41226
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 06:43:23 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,26 +18,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mjander@users.sourceforge.net
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
+Cc: bugtrack@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-03-16 at 20:21 -0400, Manuel Jander wrote:
-> Hi,
-> 
-> At least the aureal vortex has a high resolution hardware timer too. So
-> if this leads to some code to support hardware timers, i would suggest
-> something useable for other hardware too.
-> 
+This is a multi-part message in MIME format.
 
-With Clemens' code for the ymfpci timer and the OSS emu10k1 driver I was
-able to implement the ALSA timer support for emu10k1 in about 20
-minutes.  If you know how to enable and disable timer interrupts and set
-the timer rate (and have the hardware of course) you should try to
-implement the support for the vortex.
+------_=_NextPart_001_01C52AAC.88DD3B18
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
 
-Lee
 
+Hi,
+
+There is mute control on 9880's spdif (IEC958) out, so it needs to be =
+turned on/off in mixer.
+The patch is for CVS version and I think it can be patched to azx too. =
+Hope this also fix the 9880 SPDIF-out bug.
+
+       Signed-off-by: ChenLi Tien <cltien@cmedia.com.tw>
+
+Sincerely,
+ChenLi Tien
+
+------_=_NextPart_001_01C52AAC.88DD3B18
+Content-Type: text/x-patch;
+	name="hda_codec.c.patch"
+Content-Transfer-Encoding: base64
+Content-Description: hda_codec.c.patch
+Content-Disposition: attachment;
+	filename="hda_codec.c.patch"
+
+SW5kZXg6IGFsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2NvZGVjLmMKPT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQpSQ1MgZmls
+ZTogL2N2c3Jvb3QvYWxzYS9hbHNhLWtlcm5lbC9wY2kvaGRhL2hkYV9jb2RlYy5jLHYKcmV0cmll
+dmluZyByZXZpc2lvbiAxLjcKZGlmZiAtYSAtdSAtcjEuNyBoZGFfY29kZWMuYwotLS0gYWxzYS1r
+ZXJuZWwvcGNpL2hkYS9oZGFfY29kZWMuYwkxNiBNYXIgMjAwNSAxMzozNzowOSAtMDAwMAkxLjcK
+KysrIGFsc2Eta2VybmVsL3BjaS9oZGEvaGRhX2NvZGVjLmMJMTcgTWFyIDIwMDUgMDQ6NDA6MTIg
+LTAwMDAKQEAgLTk1NSw2ICs5NTUsOCBAQAogCWlmIChjaGFuZ2UgfHwgY29kZWMtPmluX3Jlc3Vt
+ZSkgewogCQljb2RlYy0+c3BkaWZfY3RscyA9IHZhbDsKIAkJc25kX2hkYV9jb2RlY193cml0ZShj
+b2RlYywgbmlkLCAwLCBBQ19WRVJCX1NFVF9ESUdJX0NPTlZFUlRfMSwgdmFsICYgMHhmZik7CisJ
+CXB1dF92b2xfbXV0ZShjb2RlYywgbmlkLCAwLCBIREFfT1VUUFVULCAwLCB2YWwgPyAwIDogMHg4
+MCk7CisJCXB1dF92b2xfbXV0ZShjb2RlYywgbmlkLCAxLCBIREFfT1VUUFVULCAwLCB2YWwgPyAw
+IDogMHg4MCk7CiAJfQogCXVwKCZjb2RlYy0+c3BkaWZfbXV0ZXgpOwogCXJldHVybiBjaGFuZ2U7
+Cg==
+
+------_=_NextPart_001_01C52AAC.88DD3B18--
 
 
 -------------------------------------------------------
