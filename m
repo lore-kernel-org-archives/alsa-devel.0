@@ -1,16 +1,15 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [PATCH] add support for mandrake in alsaconf
-Date: 24 Nov 2003 10:58:20 -0800
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: Pops at start of song
+Date: Mon, 24 Nov 2003 11:01:40 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1069700300.2235.11.camel@cmn37.stanford.edu>
-References: <1069458051.11875.5.camel@cmn37.stanford.edu>
-	 <3FBF3808.1060104@gmx.de> <1069641542.7493.18.camel@cmn30.stanford.edu>
-	 <m27k1p24o1.fsf_-_@vador.mandrakesoft.com>  <s5hbrr13iix.wl@alsa2.suse.de>
+Message-ID: <NDBBLGIKBJENLAMOLFHGIEAJDPAB.mknecht@controlnet.com>
+References: <Pine.LNX.4.58.0311241923570.9896@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbrr13iix.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.58.0311241923570.9896@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,47 +18,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, Lars Heineken <Lars.Heineken@gmx.de>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> At Mon, 24 Nov 2003 14:59:42 +0000,
-> Thierry Vignaud wrote:
-> > 
-> > [1  <text/plain (7bit)>]
-> > Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU> writes:
-> > 
-> > > > I think we need a similar extension to support Mandrake, after
-> > > > installation from the sources all modules in modules.conf where
-> > > > gone, except the ones from alsa.. :-)
-> > > 
-> > > I think the patch will fix mandrake too. I have the dubious honor of
-> > > being able to claim ownership of the original bug :-( Anything
-> > > having a /etc/redhat-release file but without having "Red Hat"
-> > > inside would trigger the bug.
-> > > 
-> > > The currently result with Mandrake would be to use the SuSE filter
-> > > to try to erase the oss preferences from modules.conf. If the RedHat
-> > > filter is better then another "if" could be added to the distro
-> > > selection code to include Mandrake.
-> > 
-> > untested:
-> 
-> shall i apply this?  let me know.
+>
+> Ok, can you force the master rate for HDSP?
 
-I think it does no harm but does not change the end result either. It
-creates a new option ("mandrake") but there is no code to handle it so
-the if's should just execute the SuSE (default) code as they do now. 
+Yes, I can force the HDSP master rate to be 44.1KHz.
 
-Options:
-a) define 'distribution="redhat"' for the mandrake detection code _if_
-the oss options erasure for redhat works fine under mandrake (mandrake
-users should test this).
-b) add another handler for mandrake's modules.conf oss options (should
-be written taking into account whatever mandrake uses to configure sound
-so that the proper strings are removed from modules.conf). 
+I can then force the Pro Tools PC be a master also, at 44.1K, but there will
+be random clicks and pops since the two are not synced to each other. If I
+do this and record on the Pro Tools PC, I get all zeros with a random click
+here and there. This is the only way I can record using Pro Tools as the
+problem with the HDSP happens and shuts down Pro Tools since it doesn't like
+the clock changing. (I.e. - the Pro Tools session is 44.1K, and the clock
+changes to 48K, so it gets upset and stops recording.)
 
--- Fernando
+> Then you can simply send some
+> short (a few seconds) .wav file (or other file) with same rate to selected
+> channels (maybe via aplay if you have a good configuration in
+> ~/.asoundrc).
+
+There is no problem when using aplay, or at least using alsaplayer there
+isn't. I've never had these problems with any Alsa application. Only with
+apps that seem to use the OSS emulator, I think. I will try to get the noise
+recorded when using xmms. You should get zeros leading in, then this noise,
+and then the audio.
+
+
+> Then you can compare (maybe via some editor) if the whole
+> .wav file is in the recorded stream (plus some zero samples at begging and
+> end of this stream). Or, you can send me your source and recorded files
+> and I'll compare them for you (only mark which file is master).
+>
+> 						Jaroslav
+
+I've just set up an apache server at home, so later today I'll put the audio
+files there, and then give you an IP address where you can pick them up.
+What time zone are you in by the way?
+
+Thanks very much,
+Mark
+
 
 
 
