@@ -1,13 +1,14 @@
-From: tom burkart <alsa@aussec.com>
-Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
-Date: Thu, 12 Jun 2003 22:44:44 +1000 (EST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: problems with rme digi96/8
+Date: Thu, 12 Jun 2003 14:50:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306122242060.1298-300000@home.aussec.com>
-References: <Pine.LNX.4.44.0306121253150.1795-100000@pnote.perex-int.cz>
+Message-ID: <XFMail.20030612145047.pochini@shiny.it>
+References: <Pine.LNX.4.44.0306121257380.1795-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="-1463809536-843262512-1055421884=:1298"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306121253150.1795-100000@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.44.0306121257380.1795-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,82 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
 
----1463809536-843262512-1055421884=:1298
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+On 12-Jun-2003 Jaroslav Kysela wrote:
+> On 12 Jun 2003, Gorm David Lai wrote:
+>
+>> I tried your example. Aplay is rather stupid, so it is seems it needs a
+>
+> Not too stupid, but you should use right device (plughw vs. hw) and
+> probably right alsa-lib configuration (~/.asoundrc).
 
-Today, Jaroslav Kysela wrote:
+The format written in the sound file has priority over command
+line options. It's a bit annoying and should be changed IMHO.
 
-> In that case, we might compare PCI registers (lspci -s<DEV> -xxx).
-The two dumps are attached: snd-ymfpci for alsa the ymfpci for oss...
 
-tom.
+Bye.
 
----1463809536-843262512-1055421884=:1298
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=snd-ymfpci
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0306122244440.1298@home.aussec.com>
-Content-Description: alsa hex dump
-Content-Disposition: attachment; filename=snd-ymfpci
-
-MDA6MGMuMCBNdWx0aW1lZGlhIGF1ZGlvIGNvbnRyb2xsZXI6IFlhbWFoYSBD
-b3Jwb3JhdGlvbiBZTUYtNzQ0QiBbRFMtMVMgQXVkaW8gQ29udHJvbGxlcl0g
-KHJldiAwMikNCjAwOiA3MyAxMCAxMCAwMCAwNyAwMCAxMCA4MiAwMiAwMCAw
-MSAwNCAwMCA0MCAwMCAwMA0KMTA6IDAwIDgwIGZmIGVmIDAxIGZmIDAwIDAw
-IGZkIGZlIDAwIDAwIDAwIDAwIDAwIDAwDQoyMDogMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgNzkgMTEgMDEgMDANCjMwOiAwMCAwMCAw
-MCAwMCA1MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwYiAwMSAwNSAxOQ0KNDA6
-IDFhIDAwIDAwIDg4IDc5IDExIDAxIDAwIDA4IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwDQo1MDogMDEgMDAgMDEgMDQgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDANCjYwOiAwMCBmZiAyMCAwMiAyMCBmZiAwMSAwMiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMA0KNzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQo4MDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjkwOiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0K
-YTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwDQpiMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDANCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0KZDA6IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQplMDogMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCmYwOiAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MA0KDQo=
----1463809536-843262512-1055421884=:1298
-Content-Type: TEXT/PLAIN; charset=US-ASCII; name=ymfpci
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.44.0306122244441.1298@home.aussec.com>
-Content-Description: OSS hex dump
-Content-Disposition: attachment; filename=ymfpci
-
-MDA6MGMuMCBNdWx0aW1lZGlhIGF1ZGlvIGNvbnRyb2xsZXI6IFlhbWFoYSBD
-b3Jwb3JhdGlvbiBZTUYtNzQ0QiBbRFMtMVMgQXVkaW8gQ29udHJvbGxlcl0g
-KHJldiAwMikNCjAwOiA3MyAxMCAxMCAwMCAwNyAwMCAxMCA4MiAwMiAwMCAw
-MSAwNCAwMCA0MCAwMCAwMA0KMTA6IDAwIDgwIGZmIGVmIDAxIGZmIDAwIDAw
-IGZkIGZlIDAwIDAwIDAwIDAwIDAwIDAwDQoyMDogMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgNzkgMTEgMDEgMDANCjMwOiAwMCAwMCAw
-MCAwMCA1MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwYiAwMSAwNSAxOQ0KNDA6
-IDdmIDkwIDAwIDg4IDc5IDExIDAxIDAwIDA4IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwDQo1MDogMDEgMDAgMDEgMDQgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDANCjYwOiAwMCBmZiAyMCAwMiAyMCBmZiAwMSAwMiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMA0KNzA6IDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQo4MDogMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCjkwOiAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0K
-YTA6IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwDQpiMDogMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDANCmMwOiAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMA0KZDA6IDAwIDAwIDAwIDAwIDAwIDAw
-IDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwIDAwDQplMDogMDAgMDAgMDAg
-MDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDAgMDANCmYwOiAw
-MCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAwMCAw
-MA0KDQo=
----1463809536-843262512-1055421884=:1298--
 
 
 -------------------------------------------------------
