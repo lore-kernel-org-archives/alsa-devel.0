@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000697]: alsa-driver tarball contains .cvsignore files
-Date: Thu, 2 Dec 2004 16:12:53 +0100
-Message-ID: <2b631ede0776a542a7f2aed8dbb0c513@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: snd_seq_sync_output_queue does not work
+Date: Thu, 2 Dec 2004 16:41:10 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0412021625200.27068-100000@studcom.urz.uni-halle.de>
+References: <20041202115801.6119.qmail@web42108.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A26A256
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 16:12:54 +0100 (MET)
+In-Reply-To: <20041202115801.6119.qmail@web42108.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Bengt_M=E5nsson?= <bengt_mansson@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Bengt Månsson wrote:
+> I'm trying to make an app where I need to exchange an
+> 18k sysex. I use Rh9.
+> I think I've worked out the receiving part, but
+> sending will not work.
+> I chop the big sysex into 256 byte blocks and send in
+> a sequence. This seems to work fine when I run it
+> stepwise in the debugger, but crash when I run it at
+> full speed.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=697> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   697
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             12-01-2004 21:03 CET
-Last Modified:              12-02-2004 16:12 CET
-======================================================================
-Summary:                    alsa-driver tarball contains .cvsignore files
-Description: 
-The 1.0.7 alsa-driver tarball contains .cvsignore files.
-======================================================================
+The sequencer isn't designed to handle big sysexs.  Due to the
+message-based architecture it's difficult to signal back to the
+sending application that the output buffer is full.
 
-----------------------------------------------------------------------
- jdthood - 12-02-04 15:52 
-----------------------------------------------------------------------
-No big problem.  It's just ugly.  Or even "fugly" as my colleague put it.
+I'd guess some message couldn't be delivered and was thrown away.
 
-----------------------------------------------------------------------
- tiwai - 12-02-04 16:12 
-----------------------------------------------------------------------
-Ok, now fixed on CVS.
+Try to limit the rate of messages so that you don't exceed the MIDI
+data rate.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-01-04 21:03 jdthood        New Issue                                    
-12-02-04 15:46 tiwai          Note Added: 0002683                          
-12-02-04 15:52 jdthood        Note Added: 0002684                          
-12-02-04 16:12 tiwai          Status                   new => resolved     
-12-02-04 16:12 tiwai          Resolution               open => fixed       
-12-02-04 16:12 tiwai          Assigned To               => tiwai           
-12-02-04 16:12 tiwai          Note Added: 0002686                          
-======================================================================
+> I think I've traced the problem down to the call to
+> snd_seq_sync_output_queue. I expect that call to hang
+> until the output is drained, and return a 0.
+> What happens is that the call seems to return
+> immediately with a 1.
 
+The documentation is wrong, any nonnegative return value indicates
+success (the current implementation always returns 1).
+
+snd_seq_sync_output_queue waits until all events have been sent.  At
+this point, it's too late to detect events than cannot be delivered at
+the destination.
+
+
+The documentation, if it actually existed, would tell you to use the
+rawmidi API for big chunks of sysex data.  See the amidi program for
+an example.
+
+
+HTH
+Clemens
 
 
 
