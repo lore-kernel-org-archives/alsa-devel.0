@@ -1,11 +1,13 @@
-From: William <walsac3@liam2.demon.co.uk>
-Subject: [alsa-announce] ALSA 1.0.5
-Date: Sat, 29 May 2004 11:48:46 +0100
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Xruns with Audiophile 2496 M-audio
+Date: Sat, 29 May 2004 12:52:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405291048.LAA23047@liam2.demon.co.uk>
-References: <Pine.LNX.4.58.0405291025420.1781@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0405291234350.566@autumn>
+References: <20040529114908.2118135c@pentium233.krystal.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0405291025420.1781@pnote.perex-int.cz>
+In-Reply-To: <20040529114908.2118135c@pentium233.krystal.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,23 +16,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Remi Bernhard <rgbmlist2@free.fr>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
->
->       ALSA 1.0.5 release is available for download.
+[Remi Bernhard]
+>I read a lot a great thing about the audiophile 24/96 on the net, and i
+>decided to buy it to get better latency than my old sblive! I just
+>received the audiophile 24/96 and unfortunatly, i have a lot of XRuns
+>with when i run jackd.
 
-URL from http://www.alsa-project.org/:
-<a href="ftp://ftp.alsa-project.org/pub/firmware/alsa-firmware-1.0.5.tar.bz2">1.0.5</a>
+my old system had various 2.4.x-ll kernels, asus board and a k6-III
+450, then migrated to kernel 2.4.19-ll, a cheap-as-hell board (forgot
+the brand name) and an athlon xp 2k, ALSA versions ranging from
+pre-0.9 CVS to 1.0.3.
 
- $ wget ftp://ftp.alsa-project.org/pub/firmware/alsa-firmware-1.0.5.tar.bz2
+the PCI audiophile 24/96 ran and runs smooth as a train in all
+configurations at 64 frames / 44.1 kHz.
 
-No such file `alsa-firmware-1.0.5.tar.bz2'.
+obvious question, is your kernel ll-patched? if not, go here:
 
-William
+http://www.zipworld.com.au/~akpm/linux/schedlat.html
 
+(i gather that 2.4 is still the better choice for low-latency
+operations.)
+
+oh, btw, the ISA 'Blaster AWE64 i used to run in the old board did
+64/44.1 just as stable as the audiophile.
+
+cheers,
+
+tim
 
 
 -------------------------------------------------------
