@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
-Date: Sat, 1 Jan 2005 02:28:08 +0100
-Message-ID: <137bc1cf22b1d1d42e868a3e0d8efe92@bugtrack.alsa-project.org>
+Date: Sat, 1 Jan 2005 10:01:01 +0100
+Message-ID: <a73e287e9ed43a9e80dad89595097917@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8CDBD33B
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 02:28:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 02F93324
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 10:01:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
 Date Submitted:             12-31-2004 23:02 CET
-Last Modified:              01-01-2005 02:28 CET
+Last Modified:              01-01-2005 10:01 CET
 ======================================================================
 Summary:                    Analog/Digital output not working.
 Description: 
@@ -64,19 +64,15 @@ misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
 ----------------------------------------------------------------------
- ianw1234 - 01-01-05 00:33 
-----------------------------------------------------------------------
-Well, ok.. playing a sound with "aplay -Dplug:spdif wavfile.wav" works, as
-does mplayer -ao alsa:device=spdif.
-
-I'll see if I can map the OSS devices to this, but it seems strange that I
-would need to do a lot of .asoundrc trickery to get this to work.
-
-----------------------------------------------------------------------
  rlrevell - 01-01-05 02:28 
 ----------------------------------------------------------------------
 You don't have to do "a bunch of asound trickery", you just have to output
 to the correct device, as you can see.
+
+----------------------------------------------------------------------
+ pzad - 01-01-05 10:01 
+----------------------------------------------------------------------
+Try to play with "IEC958 Optical Raw" switch.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +81,7 @@ Date Modified  Username       Field                    Change
 12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
 01-01-05 00:33 ianw1234       Note Added: 0003028                          
 01-01-05 02:28 rlrevell       Note Added: 0003030                          
+01-01-05 10:01 pzad           Note Added: 0003031                          
 ======================================================================
 
 
