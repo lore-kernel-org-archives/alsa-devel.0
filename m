@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000783]: Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
-Date: Mon, 3 Jan 2005 16:40:28 +0100
-Message-ID: <3ac5622153d9ddddb150e68a8e7409be@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: [PATCH] Disable SPDIF in on ASUS W1000 motherboard as it does not
+ have an spdif in.
+Date: Mon, 03 Jan 2005 15:43:51 +0000
+Message-ID: <41D96837.5030707@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------080906010209020801080605"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A226B2FB
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:40:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +16,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------080906010209020801080605
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=783> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   783
-Category:                   CORE OSS - pcm
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-03-2005 16:40 CET
-Last Modified:              01-03-2005 16:40 CET
-======================================================================
-Summary:                    Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
-Description: 
-I just discovered that Ubuntu is applying the patch presented below.  It
-adds three lines to snd_pcm_oss_read1().
+Here is a motherboard specific patch to fix sound output on the ASUS 
+W1000 laptop.
 
-(The patch comes from this file:
-http://people.ubuntu.com/~scott/ongoing-merge/alsa-driver/alsa-driver_merged.patch
-)
+--------------080906010209020801080605
+Content-Type: text/plain;
+ name="disable-spdif-in.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="disable-spdif-in.diff.txt"
 
-The patch doesn't appear in your cvs.  I decided that I should forward it
-to you for consideration.  If it's correct, it's probably obvious to you
-that it is; if it isn't correct, it's probably obvious to you that it
-isn't.
+Index: alsa-driver/alsa-kernel/include/ac97_codec.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/include/ac97_codec.h,v
+retrieving revision 1.61
+diff -u -r1.61 ac97_codec.h
+--- alsa-driver/alsa-kernel/include/ac97_codec.h	27 Dec 2004 14:36:39 -0000	1.61
++++ alsa-driver/alsa-kernel/include/ac97_codec.h	3 Jan 2005 15:25:05 -0000
+@@ -555,6 +555,7 @@
+ 	AC97_TUNE_ALC_JACK,	/* for Realtek, enable JACK detection */
+ 	AC97_TUNE_INV_EAPD,	/* inverted EAPD implementation */
+ 	AC97_TUNE_MUTE_LED,	/* EAPD bit works as mute LED */
++	AC97_TUNE_NO_SPDIF_IN,	/* NO SPDIF IN */
+ };
+ 
+ struct ac97_quirk {
+Index: alsa-driver/alsa-kernel/pci/intel8x0.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0.c,v
+retrieving revision 1.186
+diff -u -r1.186 intel8x0.c
+--- alsa-driver/alsa-kernel/pci/intel8x0.c	27 Dec 2004 14:36:39 -0000	1.186
++++ alsa-driver/alsa-kernel/pci/intel8x0.c	3 Jan 2005 15:25:06 -0000
+@@ -1798,6 +1798,12 @@
+ 	},
+  	{
+ 		.vendor = 0x1043,
++		.device = 0x1843,
++		.name = "ASUS W1000/CMI9739",
++		.type = AC97_TUNE_NO_SPDIF_IN
++	},
++ 	{
++		.vendor = 0x1043,
+ 		.device = 0x80f3,
+ 		.name = "ASUS ICH5/AD1985",
+ 		.type = AC97_TUNE_AD_SHARING
+Index: alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_codec.c,v
+retrieving revision 1.163
+diff -u -r1.163 ac97_codec.c
+--- alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c	3 Jan 2005 12:05:21 -0000	1.163
++++ alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c	3 Jan 2005 15:25:07 -0000
+@@ -2460,6 +2460,16 @@
+ 	return 0;
+ }
+ 
++static int tune_no_spdif_in(ac97_t *ac97)
++{
++	/* disable spdif in */
++	snd_ac97_write_cache(ac97, AC97_CM9739_SPDIF_CTRL,
++		snd_ac97_read(ac97, AC97_CM9739_SPDIF_CTRL) & ~0x01);
++	snd_ac97_write_cache(ac97, AC97_CM9739_MULTI_CHAN,
++		snd_ac97_read(ac97, AC97_CM9739_MULTI_CHAN) | (1 << 14));
++	return 0;
++}
++
+ struct quirk_table {
+ 	const char *name;
+ 	int (*func)(ac97_t *);
+@@ -2474,6 +2484,7 @@
+ 	{ "alc_jack", tune_alc_jack },
+ 	{ "inv_eapd", tune_inv_eapd },
+ 	{ "mute_led", tune_mute_led },
++	{ "no_spdif_in", tune_no_spdif_in },
+ };
+ 
+ /* apply the quirk with the given type */
 
-Note that the three lines added by the patch are copied verbatim out of
-snd_pcm_oss_write1().
-
---- alsa-driver_1.0.7-2/sound/core/oss/pcm_oss.c	2004-11-11
-06:41:05.000000000 +0000
-+++ alsa-driver_1.0.7-2ubuntu1/sound/core/oss/pcm_oss.c	2004-12-11
-12:46:11.806838912 +0000
-@@ -926,6 +926,9 @@ static ssize_t snd_pcm_oss_read1(snd_pcm
- 			buf += tmp;
- 			bytes -= tmp;
- 			xfer += tmp;
-+			if ((substream->ffile->f_flags & O_NONBLOCK) != 0 &&
-+			    tmp != runtime->oss.period_bytes)
-+				break;
- 		}
- 	}
- 	return xfer;
-
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-05 16:40 jdthood        New Issue                                    
-======================================================================
-
-
+--------------080906010209020801080605--
 
 
 -------------------------------------------------------
