@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000467]: Need quirk added for Sony S1XP laptop
-Date: Thu, 26 Aug 2004 23:35:49 +0200 (CEST)
+Date: Thu, 26 Aug 2004 23:46:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040826213549.BFCC62500E@server.perex-int.cz>
+Message-ID: <20040826214612.1F9D22500C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA9E21A2
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 23:38:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 754211F6
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 23:46:12 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id D92F915A83
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 23:35:49 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 2C2AC1B1E2
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 23:46:12 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +23,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000467
 ======================================================================
@@ -41,7 +41,7 @@ Distribution:               FC2
 Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
 Date Submitted:             08-26-2004 23:35 CEST
-Last Modified:              08-26-2004 23:35 CEST
+Last Modified:              08-26-2004 23:46 CEST
 ======================================================================
 Summary:                    Need quirk added for Sony S1XP laptop
 Description: 
@@ -60,12 +60,26 @@ lspci -vn output:
 Let me know if you need any more details.
 ======================================================================
 
+----------------------------------------------------------------------
+ hadess - 08-26-2004 23:37 CEST 
+----------------------------------------------------------------------
+Forgot that the driver is snd-intel8x0
+
+----------------------------------------------------------------------
+ hadess - 08-26-2004 23:46 CEST 
+----------------------------------------------------------------------
+My apologies, again. The quirk isn't needed. To get the sound working, the
+"External Amplifier" needs to be disabled with:
+$ amixer set 'External Amplifier' mute
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-26-04 23:35 hadess         New Bug                                      
 08-26-04 23:35 hadess         Distribution              => FC2             
 08-26-04 23:35 hadess         Kernel Version            => 2.6.6-1.435.2.3 
+08-26-04 23:37 hadess         Bugnote Added: 0001638                       
+08-26-04 23:46 hadess         Bugnote Added: 0001639                       
 ======================================================================
 
 
