@@ -1,18 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Kernel crash
-Date: Thu, 23 Sep 2004 09:43:39 +0200 (CEST)
+From: n-socihouse@in-out.es
+Subject: Re: SMTP Server
+Date: Thu, 23 Sep 2004 03:55:16 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409230942560.2289@pnote.perex-int.cz>
-References: <s5h7jr7whqj.wl@alsa2.suse.de> <XFMail.20040907095502.pochini@shiny.it>
- <20040911210212.317d930b.pochini@shiny.it> <s5hekl6tdru.wl@alsa2.suse.de>
- <20040913220729.466531ce.pochini@shiny.it> <s5h4qlzx22k.wl@alsa2.suse.de>
- <20040915195008.33713acb.pochini@shiny.it> <Pine.LNX.4.58.0409170847400.1774@pnote.perex-int.cz>
- <s5hvfed19gw.wl@alsa2.suse.de> <s5hu0tx18z7.wl@alsa2.suse.de>
- <Pine.LNX.4.58.0409221000340.166@pnote.perex-int.cz> <s5hbrfyzkdx.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200409230755.i8N7tGWV017930@host.verdial.org>
+References: <200409230755.i8N7t9LR017900@host.verdial.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbrfyzkdx.wl@alsa2.suse.de>
+In-Reply-To: <200409230755.i8N7t9LR017900@host.verdial.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,37 +14,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 22 Sep 2004, Takashi Iwai wrote:
+El correo al cual a enviado este eMail no existe, para contactar con nosotros por favor envie sus correos a alguna de las siguientes direcciones.
 
-> OTOH, when you link streams but feed/read data separately for each
-> stream, the clock difference doesn't matter.  Each stream may have
-> even different periods, buffer sizes, whatever.
-> 
-> So, in the first case, handling xrun/drain/drop in sync of all linked
-> streams makes sense.  But what about the second case...? 
-> 
-> Well, the link can be removed dynamically.  So, in theory, we can
-> propose like the following:
-> 
-> - Start, drain, drop and xrun of linked streams are operated to all
->   streams by a single call.  Especially, drain assures that the all
->   streams get sync'ed.
-> 
-> - When one wants to operate drain and drop separately, explicitly
->   unlink streams after the sync'ed start.
+administración@in-out.es 	Administracion Grupo IN-out.
 
-This proposal seems reasonable.
+comercial@in-out.es		Dpto. Comercial Grupo IN-out.
 
-						Jaroslav
+pedidos@in-out.es		Pedidos Grupo IN-out.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+grafismo@in-out.es		Dpto. diseño Grupo IN-out
 
 
 -------------------------------------------------------
