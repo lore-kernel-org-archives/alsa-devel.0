@@ -1,16 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [RFC] Echoaudio driver
-Date: Tue, 26 Oct 2004 23:18:54 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
+Date: Wed, 27 Oct 2004 00:10:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041026231854.4708848a.pochini@shiny.it>
-References: <s5his9h4a3u.wl@alsa2.suse.de>
-	<XFMail.20041012112521.pochini@shiny.it>
-	<20041023161530.605de269.pochini@shiny.it>
+Message-ID: <ebd859fce497d040ea9221a9dae1e8f9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041023161530.605de269.pochini@shiny.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0BD252F5
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 00:10:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,38 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 23 Oct 2004 16:15:30 +0200
-Giuliano Pochini <pochini@shiny.it> wrote:
 
-> Ok, external firmware should work for all cards. [...]
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
+======================================================================
+Reported By:                Grazy
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   609
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.8
+======================================================================
+Date Submitted:             10-27-2004 00:10 CEST
+Last Modified:              10-27-2004 00:10 CEST
+======================================================================
+Summary:                    No Mixer control for Ouput on CMI9880
+Description: 
+The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
+But there is only one mixer control for "Capture" and two mute switch for
+"Line" and "Mic". But nothing to control the output volume.
+======================================================================
 
-0.9.4- Two busy loops were been replaced with something more
-system-friendly (the machine does not freeze anymore while loading the
-firmware, expecially if something goes wrong). Some more coding style
-changes were done (c++ comments).
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-27-04 00:10 Grazy          New Issue                                    
+10-27-04 00:10 Grazy          Distribution              => Debian          
+10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
+======================================================================
 
 
-There are two semi-issues left.
-
-1- All levels are exported to userspace in 24.8 fixed point format. This is
-done by the driver, because the hw currently only have 1 or 0.5 dB
-resolution. I'm not sure if exporting gains in native resolution is better.
-
-2- There is that ugly hack to make the sample rate selection work fine in
-the most common cases. I already talked about that. The problem is that the
-sample clock is shared by all channels. The current implementation allows an
-app to change che clock freely as far as there is only one pcm device open.
-When there are >1 it allows one app to set the clock only once. This method
-prevents an app to kick in and screw up an already running recording or
-playback. It's a hack, but it worked fine so far. I think it's about ok :-/
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
