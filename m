@@ -1,13 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: Carlo Wood <carlo@alinoe.com>
 Subject: Re: Bug in OSS simulation (ALSA 0.9.4)
-Date: Fri, 11 Jul 2003 02:09:57 +0300 (EEST)
+Date: Fri, 11 Jul 2003 01:43:20 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307110209040.5612-100000@ecabase.localdomain>
-References: <20030710013326.GA12086@alinoe.com>
+Message-ID: <20030710234320.GA21216@alinoe.com>
+References: <20030710015134.GA12482@alinoe.com> <Pine.LNX.4.44.0307110150040.5612-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030710013326.GA12086@alinoe.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0307110150040.5612-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,54 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlo Wood <carlo@alinoe.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: alsa-devel@lists.sourceforge.net, xvoice@yahoogroups.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 10 Jul 2003, Carlo Wood wrote:
+On Fri, Jul 11, 2003 at 01:54:51AM +0300, Kai Vehmanen wrote:
+> No, this definitely looks like a driver bug. In OSS-emulation mode the 
+> xruns should be ignored (just lke kernel/OSS drivers do).
 
-> ~>a.out
-> Fragment size: 1024
-> Number of fragments: 32767
-> Number of channels: 1
-> Sample rate: 22050
-> Read 1024 bytes.
-> Number of full fragments that can be read or written without blocking: 0
-> Total number of fragments allocated for buffering: 2
-> Size of a fragment in bytes: 1024
-> Number of bytes that can be read or written immediately without blocking: 0
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 1, 1632
-> Read 1024 bytes.
-> #fragments, #bytes: 2, 2048
-> Read 1024 bytes.
-> #fragments, #bytes: 1, 1024
-> Read 1024 bytes.
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 0, 0
-> #fragments, #bytes: 0, 0
+Ok.  Any chance that this can be fixed soon?
+If only in CVS.
 
-How about if you make the following change to the test:
+If you have no time to look into it, then
+can you at least tell me if it is possible
+to run the alsa modules in usermode somehow,
+so I can debug them with gdb?
 
---cut--
-    printf("#fragments, #bytes: %d, %d\n", info.fragments, info.bytes);
--    if (info.fragments > 0)
--    {
-      ssize_t rlen = read(fd, buf, sizeof(buf));
-      if (rlen <= 0)
-      {
-	perror("read");
-	exit(1);
-      }
-      printf("Read %d bytes.\n", rlen);
--    }
-    static struct timespec naptime = { 0, 100000000 };
---cut--
+I am afraid I have no experience with kernel
+(model) debugging.  Can you give me a pointer
+to where I read up on debugging this?
 
 -- 
- http://www.eca.cx
- Audio software for Linux!
-
+Carlo Wood <carlo@alinoe.com>
 
 
 -------------------------------------------------------
