@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 13:09:20 +0100
-Message-ID: <0c8ac4251a57a1b84ebf577c27ebebf1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000674]: sound modules loaded, unmuted channels, progressbar moving STILL no output
+Date: Wed, 24 Nov 2004 13:19:08 +0100
+Message-ID: <70232da06da80d90b5ecc44d20496421@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E2B52AD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:09:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 99FDF2AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:19:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,97 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=674> 
 ======================================================================
-Reported By:                bons78
+Reported By:                IceRAM
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   674
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Distribution:               ArchLinux
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 13:09 CET
+Date Submitted:             11-24-2004 13:12 CET
+Last Modified:              11-24-2004 13:19 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    sound modules loaded, unmuted channels, progressbar
+moving STILL no output
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
-
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
-
-
-
+I can't get any sound out of the integrated sound card, even though I've
+tried everything possible (I think - oh, I haven't tried Windows, yet)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 13:01 
+ IceRAM - 11-24-04 13:19 
 ----------------------------------------------------------------------
-Try to replace __copy_in_user() with copy_in_user() in ioctl32.c?
+Distro: ArchLinux (http://www.archlinux.org) [^]
+Kernel: 2.6.9 vanilla
+ALSA: 1.0.7
+(http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=alsa&s_lastupdate=&pp=50)
+[^]
+Motherboard: GigaByte 8IK1100
+Chipset: ALC655 (in the specs*), detected as ALC658 rev 0 by ALSA
+*
+http://www.giga-byte.com/MotherBoard/Products/Products_Spec_GA-8IK1100.htm),
+[^]
 
-----------------------------------------------------------------------
- tiwai - 11-24-04 13:09 
-----------------------------------------------------------------------
-Ah ok, then we'll just need to provide a wrapper of copy_in_user() for
-older kernels.
+# lspci | grep audio
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02)
+
+Attached:
+/etc/asound.state
+/etc/modprobe.conf
+~/.asoundrc
+lsmod.txt (lsmod | grep snd)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
-11-24-04 13:01 eradicator     Note Added: 0002556                          
-11-24-04 13:01 tiwai          Note Added: 0002557                          
-11-24-04 13:09 tiwai          Note Added: 0002559                          
+11-24-04 13:12 IceRAM         New Issue                                    
+11-24-04 13:12 IceRAM         File Added: asound.state                     
+11-24-04 13:12 IceRAM         Distribution              => ArchLinux       
+11-24-04 13:12 IceRAM         Kernel Version            => 2.6.9           
+11-24-04 13:13 IceRAM         File Added: .asoundrc                        
+11-24-04 13:17 IceRAM         File Added: modprobe.conf                    
+11-24-04 13:19 IceRAM         Note Added: 0002560                          
 ======================================================================
 
 
