@@ -1,12 +1,17 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000348]: Used CVS version for audigy ls card.  Volume is always at full even when muted
-Date: Mon, 28 Jun 2004 13:06:09 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: [PATCH] AudigyLS updates.
+Date: Mon, 28 Jun 2004 13:39:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <630b4c0bda06607e4350eacc035dee68@bugtrack.alsa-project.org>
+Message-ID: <40E0117D.6010503@superbug.demon.co.uk>
+References: <40DC9B32.6000204@superbug.demon.co.uk> <s5hlli8dkld.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from anchor-post-33.mail.demon.net (anchor-post-33.mail.demon.net [194.217.242.91])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D58D616A
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jun 2004 13:36:07 +0200 (MEST)
+In-Reply-To: <s5hlli8dkld.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,102 +20,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> 
+>>2) Add a CAPUTRE source switch for switch between "MIC", "Line in", 
+>>"SPDIF in", "TAD in", "AUX in" and "What u hear". Currently, one cannot 
+>>switch to capture "SPDIF in" or "What u hear", but all the other inputs 
+>>are possible via switches in the AC97.
+> 
+> 
+> This will need better control on user-space.
+> ac97 mixer will provide the generic capture source only...
+> 
+> 
+> Takashi
+> 
+> 
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0348
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                ezelkow1
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     348
-Category:                   CORE - control
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:              =20
-Kernel Version:             2.6.6-1.435
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-28-2004 06:18 CEST
-Last Modified:              06-28-2004 13:06 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Used CVS version for audigy ls card.  Volume =
-is
-always at full even when muted
-Description:=20
-I have an audigy ls card.  I had no sound when i first installed fedora
-core 2.  I went applied the patch found at
-:http://www.superbug.demon.co.uk/alsa/  to the 1.0.5a drivers before
-installing the cvs version.  This gave me sound but no control.  Today i
-have updated the cvs version and I still have the same problem.  My volum=
-e
-is constantly maxed out, even with all channels muted in alsamixer.  I
-have no other mixer apps running and the volume problem happens in every
-app i use.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I am adding better controls as I find out what does what.
+How is the userspace mixer controls status? (Using a lisp .conf file to 
+control how the mixer behaves).
 
-----------------------------------------------------------------------
- jcdutton - 06-28-2004 13:06 CEST=20
-----------------------------------------------------------------------
-This driver is still in development. As I find out how things work, I am
-adding to it. If you download audigyls.c and AudigyLS.conf again from
-http://www.superbug.demon.co.uk/alsa/ you will find they have changed.
-The version that has Analog volume controls is "Version: 0.3". See line 4
-of audigyls.c to check version number.
-I am generally uploading new versions of audigyls.c about twice a day.
+What shall I call the AC97 capture controls?
+1) AC97 Master CAPTURE.
+2) AC97 MIC CAPTURE.
+3) AC97 Line in CAPTURE.
+4) AC97 TAD in CAPTURE.
+5) AC97 AUX CAPTURE.
+option (1) to (5) can act together, so one can record some from MIC and 
+also some from Line in at the same time.
+6) Feedback into PLAYBACK from CAPTURE.
 
-The only PLAYBACK controls that currently do anything are: -
-Analog Front
-Analog Rear
-Analog Center/LFE
-SPDIF Front
-SPDIF Rear
-SPDIF Center/LFE
+There is also another capture source register I have found out about.
+0 - Selects SPDIF CAPTURE.
+1 - What you hear CAPTURE.
+2 - Unknown
+3 - AC97 CAPTURE. (See 1) to 5) above)
+If this register is not set to 3, all the AC97 inputs are muted.
 
-For CAPTURE from Mic in or Line in. (The AudigyLS uses the AC97 playback
-channel for capture. The AC97 capture channel is not used at all.)
-Master
-Mic  (The one marked as playback)
-Mic boost
-Line (The one marked as playback)
-Digital/Analog ( switch must be in Analog mode for CAPTURE. )
-CAPTURE feedback into PLAYBACK.
+I think I will add some new control renaming/deleting code, so that only 
+the controls I know about are displayed to the user. I can put an #if 1 
+... #endif round it, so that I can disable the renaming when I am testing.
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-28-04 06:18 ezelkow1       New Bug                                    =
- =20
-06-28-04 06:18 ezelkow1       Kernel Version            =3D> 2.6.6-1.435 =
-   =20
-06-28-04 13:06 jcdutton       Bugnote Added: 0001345                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Is there a document somewhere for alsa-driver developers that states 
+what one should set things to as the default, the "on start up" settings?
+
+E.g.
+Initial Analog volume controls.
+Should digital out be enabled at startup, or analog outputs.
+
+I think we should have the following (although the audigyls.c does not 
+follow this yet!):-
+Analog volume controls muted.
+Default to Analog output.
+
+In windows the defaults are:
+I don't know what the analog defaults are.
+digital out is disabled at start up.
+
+The windows driver controls digital output using a on/off switch called 
+"SPDIF Out"
+
+I think it might be a good idea to change the "Audigy Analog/Digital 
+Output Jack"  to instead say "SPDIF Out", with it defaulting to off for 
+Analog.
+
+The "Audigy Analog/Digital Output Jack" being an on/off switch was 
+confusing, because it was not clear to a casual user what [off] meant. 
+Does that mean "Analog off", or "Digital off".
 
 
+Cheers
+James
 
 
 -------------------------------------------------------
