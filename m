@@ -1,12 +1,11 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: Re: Test: SBLive! (C) 2003 need extra effort on Rear Analog Output
-Date: Fri, 26 Mar 2004 13:26:42 +0100
+From: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
+Subject: Has this patch been updated on any ALSA releases?
+Date: Fri, 26 Mar 2004 12:02:54 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403261226.i2QCQg16023146@www6.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <51BF576D5A02CC4CB2591F50994FD76691CA75@nts013.uk.trt.thales>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,24 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: guanyim@hotmail.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Because Creative uses diffrent AC97 codec and this codec has same=20
-controls as controls implemented in dsp. then on 9.8 it fails to=20
-load.=20
+Hi,
 
-Could you send me output of /proc/asound/card/codec97/ac97 <- this=20
-is not exact name
-/proc/asound/card/codec97/ac97reg
-where card is card name
-???
+I have the same problem as Andrea Mohr, and I wish to patch it. See:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09732.html
 
-Peter Zubaj
+The patch is posted by Jaroslav Kysela:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg09781.html
 
-=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
- a bezpecna prevadzka=0A=0A=0A
+I was wondering if:
+a) The patch works as it is?
+b) The patch has been added to a stable ALSA drivers release?
+
+Thank you.
+
+Chee
+
 
 
 -------------------------------------------------------
