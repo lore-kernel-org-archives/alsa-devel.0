@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000785]: Add support to quickly change volume
-Date: Fri, 7 Jan 2005 18:25:31 +0100
-Message-ID: <353a7dde62e7ca7a0bf1b7b4e66a7b45@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000391]: Built-in sound card not seen.
+Date: Fri, 7 Jan 2005 18:29:01 +0100
+Message-ID: <b2087e32512f4fc220ae6f027ed318a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81BC624F
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:25:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7505F24F
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:29:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=785> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=391> 
 ======================================================================
-Reported By:                nijel
-Assigned To:                
+Reported By:                PhilTR
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   785
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   391
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.4.20-31.9
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-05-2005 12:27 CET
-Last Modified:              01-07-2005 18:25 CET
+Date Submitted:             07-16-2004 00:21 CEST
+Last Modified:              01-07-2005 18:29 CET
 ======================================================================
-Summary:                    Add support to quickly change volume
+Summary:                    Built-in sound card not seen.
 Description: 
-Attached patch adds support for quickly changing volume using 0-9 keys in
-simmilar way as aumix does.
+I can't say that this is really a bug although its got me bugged. I
+installed a new mother board (GA-8IPE 1000 Pro) which has a built-in
+RealTek sound card:
+02:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
+RTL-8139/8139C/8139
+C+ (rev 10)
+        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at 9000 [size=256]
+        Memory at fb004000 (32-bit, non-prefetchable)       [size=256]
+        Capabilities: [50] Power Management version 2
+
+Linux dutifully loaded w/o incident and after loggin in I received the
+following error message: 'Couldn't open mixer device /dev/sound/mixer" 
+
+I've been receiving help at <a
+href="http://www.linuxquestions.org/questions/showthread.php?s=&threadid=203196&perpage=15&pagenumber=1">LinuxQuestions.org<a/>
+but, to get to the point, I'm wondering if anyone here has a fix? I've
+downloaded "alsa-xxxx-1.0.5" (firmware is: 1.0.4) Set-up proceeded w/o
+incident. Running "alsaconf" got me: "No supported PnP or PCI card dound"
+and "No legacy drivers found." 
+
+Your kind patience is appreciated. philtr (rabne@pipeline.com)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- nijel - 01-05-05 14:00 
+ PhilTR - 01-01-05 19:51 
 ----------------------------------------------------------------------
-Added new patch to fix muting on start, I forgot to set initial value
-correctly.
+Problem fixed with new sound card that was not plug-n-pray.
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 18:25 
+ tiwai - 01-07-05 18:29 
 ----------------------------------------------------------------------
-Well, I already assigned some number keys for alternatives to F1-F5.
-I think this feature is very nice, so we need to reassign keys.
-Any suggestions?
+OK, closing this now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-05-05 12:27 nijel          New Issue                                    
-01-05-05 12:27 nijel          File Added: alsamixer-numbers.patch               
-    
-01-05-05 14:00 nijel          File Added: alsamixer-numbers2.patch              
-     
-01-05-05 14:00 nijel          Note Added: 0003089                          
-01-07-05 18:25 tiwai          Note Added: 0003110                          
+07-16-04 00:21 PhilTR         New Issue                                    
+07-16-04 00:21 PhilTR         Kernel Version            => 2.4.20-31.9     
+07-16-04 11:55 tiwai          Note Added: 0001440                          
+07-24-04 21:00 PhilTR         Note Added: 0001472                          
+07-30-04 17:09 tiwai          Note Added: 0001495                          
+01-01-05 19:51 PhilTR         Note Added: 0003034                          
+01-07-05 18:29 tiwai          Status                   new => resolved     
+01-07-05 18:29 tiwai          Resolution               open => not an issue
+01-07-05 18:29 tiwai          Assigned To               => tiwai           
+01-07-05 18:29 tiwai          Note Added: 0003113                          
 ======================================================================
 
 
