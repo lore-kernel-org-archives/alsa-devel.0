@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000630]: Too strict max periods constraints for dmix plugin
-Date: Fri, 5 Nov 2004 11:31:49 +0100
-Message-ID: <7ef92a2491b7a98ce060d0057dd03ade@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000535]: via82xx: "codec 0 is not valid..."
+Date: Fri, 5 Nov 2004 11:53:32 +0100
+Message-ID: <31a1adb6cf4d301597aacb99ef38dfe0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5DE8251
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 11:31:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0867C256
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 11:53:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=630> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=535> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   630
-Category:                   
-Reproducibility:            always
+Project:                    ALSA - driver
+Issue ID:                   535
+Category:                   PCI - via82xx
+Reproducibility:            have not tried
 Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-05-2004 11:31 CET
-Last Modified:              11-05-2004 11:31 CET
+Date Submitted:             09-24-2004 14:29 CEST
+Last Modified:              11-05-2004 11:53 CET
 ======================================================================
-Summary:                    Too strict max periods constraints for dmix plugin
+Summary:                    via82xx: "codec 0 is not valid..."
 Description: 
-See Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=233200
-(http://bugs.debian.org/233200).
+Trying to play any sound at all generates lines like this in the syslog:
 
-The submitter reports:
-> I encountered a problem with alsa-oss with some OSS only apps: they try
-to limit the maximum number of fragments to a lower value than the number
-of periods configured for dmix (the minimum number which provides smooth
-playback with all ALSA apps), which fails.
+kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:588:
+codec_read: codec 0 is not valid [0xfe0000]
+kernel: ALSA /usr/src/modules/alsa-driver/alsa-kernel/pci/via82xx.c:727:
+invalid via82xx_cur_ptr, using last valid pointer
 
-The submitter also provides a patch.  The patch doesn't apply any longer
-to alsa-oss.c but the code that it patches now appears in pcm.c.
+
+with no sound ever being produced.  I don't know anything about sound
+hardware, so don't know what other information you need.  It's an onboard
+chip, listed in the debconf data below.
+
 
 
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 14:54 
+----------------------------------------------------------------------
+Try to turn off ACPI?
+
+----------------------------------------------------------------------
+ jdthood - 11-05-04 11:53 
+----------------------------------------------------------------------
+In reply to the "turn off ACPI" suggestion the submitter replies "No
+change".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-05-04 11:31 jdthood        New Issue                                    
+09-24-04 14:29 jdthood        New Issue                                    
+09-24-04 14:54 tiwai          Note Added: 0001889                          
+11-05-04 11:53 jdthood        Note Added: 0002306                          
 ======================================================================
 
 
