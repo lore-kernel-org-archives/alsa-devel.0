@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [Alsa-devel] alsamixer idea
-Date: Thu, 19 Aug 2004 08:53:14 +0200
+Date: Thu, 19 Aug 2004 03:02:32 -0400
 Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <200408190653.i7J6rDKT026873@www7.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <1092898951.8432.101.camel@krustophenia.net>
+References: <200408190653.i7J6rDKT026873@www7.pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <200408190653.i7J6rDKT026873@www7.pobox.sk>
 Errors-To: alsa-user-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
 	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,19 +17,21 @@ List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
 	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: rlrevell@joe-job.com
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thu, 2004-08-19 at 02:53, Peter Zubaj wrote:
+> Hi,
+> 
+> I think in upper left corner is full control name (for selected control).
+> 
 
-I think in upper left corner is full control name (for selected control).
+True.  This is not a big deal (though ugly), the main advantage is that
+you can fit a lot more controls on the screen.
 
-Peter Zubaj
+Lee
 
-
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
