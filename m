@@ -1,15 +1,16 @@
-From: Adrian Bunk <bunk@stusta.de>
-Subject: [2.6 patch] ALSA: remove unused functions
-Date: Fri, 29 Oct 2004 00:08:53 +0200
+From: "Vince Lake" <vlakewa@corporate.southam.ca>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Thu, 28 Oct 2004 20:02:11 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041028220853.GH3207__33688.8558617376$1099003158$gmane$org@stusta.de>
+Message-ID: <f92501c4bd42$5f1a8e31$be1982f5@auriga.ta3.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; x-action=pgp-signed
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B38DE250
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 00:09:24 +0200 (MEST)
-Content-Disposition: inline
+Received: from auriga.ta3.sk (pc-30-249-1.san-francisco2.pc.metropolis-inter.com [200.30.249.1])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 05EA430F
+	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 01:03:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,67 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Heya,
 
-The patch below removes two unused ALSA functions.
+Do you want a rolex watch?
+
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://www.roiex.com/rep/rolex/
+
+Best regards,
+Hilton Jones
 
 
-diffstat output:
- sound/pci/cmipci.c             |    7 +------
- sound/pci/ymfpci/ymfpci_main.c |    5 -----
- 2 files changed, 1 insertion(+), 11 deletions(-)
+No thanks: http://roiex.com/z.php
 
-
-Signed-off-by: Adrian Bunk <bunk@stusta.de>
-
-- --- linux-2.6.10-rc1-mm1-full/sound/pci/cmipci.c.old	2004-10-28 23:48:17.000000000 +0200
-+++ linux-2.6.10-rc1-mm1-full/sound/pci/cmipci.c	2004-10-28 23:48:38.000000000 +0200
-@@ -499,17 +499,12 @@
- 	return inw(cm->iobase + cmd);
- }
- 
-- -/* read/write operations for byte register */
-+/* write operation for byte register */
- inline static void snd_cmipci_write_b(cmipci_t *cm, unsigned int cmd, unsigned char data)
- {
- 	outb(data, cm->iobase + cmd);
- }
- 
-- -inline static unsigned char snd_cmipci_read_b(cmipci_t *cm, unsigned int cmd)
-- -{
-- -	return inb(cm->iobase + cmd);
-- -}
-- -
- /* bit operations for dword register */
- static void snd_cmipci_set_bit(cmipci_t *cm, unsigned int cmd, unsigned int flag)
- {
-- --- linux-2.6.10-rc1-mm1-full/sound/pci/ymfpci/ymfpci_main.c.old	2004-10-28 23:49:00.000000000 +0200
-+++ linux-2.6.10-rc1-mm1-full/sound/pci/ymfpci/ymfpci_main.c	2004-10-28 23:49:11.000000000 +0200
-@@ -52,11 +52,6 @@
- 
- static void snd_ymfpci_irq_wait(ymfpci_t *chip);
- 
-- -static inline u8 snd_ymfpci_readb(ymfpci_t *chip, u32 offset)
-- -{
-- -	return readb(chip->reg_area_virt + offset);
-- -}
-- -
- static inline void snd_ymfpci_writeb(ymfpci_t *chip, u32 offset, u8 val)
- {
- 	writeb(val, chip->reg_area_virt + offset);
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
-
-iD8DBQFBgW31mfzqmE8StAARArTeAJ9lT46xFgZ6muJjWM5wxD9JYYwMswCeN49M
-ycYCKqQnXeVjf7cvX4fOsWA=
-=U50D
------END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
