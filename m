@@ -1,16 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Quattro MIDI (was: CVS changes, rc4 release in H-9)
-Date: Wed, 23 Oct 2002 01:22:23 +0900
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: CVS changes, rc4 release in H-9
+Date: Tue, 22 Oct 2002 11:51:30 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB57B3F.6050609@boosthardware.com>
-References: <Pine.HPX.4.33n.0210221804560.12054-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.44.0210221147430.2070-100000@cmn37.stanford.edu>
+References: <Pine.LNX.4.33.0210221313250.521-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA04320
-	for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2002 18:23:40 +0200
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA16904
+	for <alsa-devel@alsa-project.org>; Tue, 22 Oct 2002 20:52:30 +0200
+In-Reply-To: <Pine.LNX.4.33.0210221313250.521-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,47 +19,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>, tiwai@suse.de
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Patrick Shirkey wrote:
+> > > Yep, please, commit it for more wide use...
+> > 
+> > ok, it's now on alsa-driver/utils.
+> > should it be installed to the public directory via "make install" ?
 > 
->>I'm now not able to use the qinit program to initialise the quattro
->>device anymore. A check of cat /proc/asound/card2/ yields only these
->>files now.
->>
->>id         midi0      oss_mixer
->>
->>i.e no stream info. I guess that nix noticed this last week on LAU but I
->>haven't updated for a couple of weeks so didn't catch when it happened.
-> 
-> 
-> I added a quirk for the MIDI port. (BTW: Does it work?)
-> It seems the USB subsystem only loads the first id_table entry it finds
-> for each interface. As a quick fix, remove the Quattro entry from
-> usbquirks.h, but I'm going to write a patch to use both pcm and MIDI.
-> 
+> I don't think so. Perhaps, we might add a note for users to the INSTALL 
+> file.
 
-I would like to test it but I have no midi gear :)
+Please do, it is a very useful utility. 
 
-I s'pose I could get the interface working but I haven't the time at the 
-mo. There is another person who is trying I'll ask them how they are going.
+On a different aspect of the upcoming release. The module options naming
+has been changed, I hope that will be highlighted in the release notes. I
+just managed to install the latest cvs (it worked, at least in limited
+tests)  and of course the modules failed to load... I bet most users will
+not do a detailed reading of the error messages :-) My first reaction (and 
+I should know better) was to think, oops the module is broken...
 
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
+-- Fernando
 
 
 
