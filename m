@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Wed, 24 Nov 2004 12:40:07 +0100
-Message-ID: <0ef40cf412eebbaae52ffcb7085394c3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000595]: No support for Audigy 2 rev 8 (Audigy 2 Value)
+Date: Wed, 24 Nov 2004 12:40:26 +0100
+Message-ID: <f34290ca596aaf84afe1abc64deb0458@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 627922AD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:40:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD8D42AF
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:40:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,98 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+A new RELATIONSHIP has been added to the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=595> 
 ======================================================================
-Reported By:                bji
-Assigned To:                
+Reported By:                mohammed_imran
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
+Issue ID:                   595
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.3,2.6.5,2.6.8
 ======================================================================
-Date Submitted:             11-21-2004 02:53 CET
+Date Submitted:             10-22-2004 15:47 CEST
 Last Modified:              11-24-2004 12:40 CET
 ======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
+Summary:                    No support for Audigy 2 rev 8 (Audigy 2 Value)
 Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
+Hi. I have read the alsa readme and checked support but it seems that
+audigy 2 cards currently working with alsa (emu10k1 driver) have revision
+4. I recently bought an Audigy 2 Value card and doing lspci lists it as:
+03:02.0 Multimedia audio controller: Creative Labs: Unknown device 0008
 
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
+I guess this card is revision 8 and not revision 4. I have tried to make
+it work with alsa 1.0.6a to no avail.
 
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
+No Linux system up to Kernel 2.6.8 detects this sound card and i haven't
+tried any kernel above 2.6.8.
 
-I have tried the following:
-
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
-
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
-
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
-
+The Audigy 2 Value card is new (its not the ZS Value)
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000597 Audigy 2 Value detected
 ======================================================================
 
 ----------------------------------------------------------------------
- bji - 11-24-04 12:33 
+ pzad - 10-22-04 16:03 
 ----------------------------------------------------------------------
-OK, I attached /etc/asound.state.  Thank you very much for looking into
-this problem.
-
-----------------------------------------------------------------------
- tiwai - 11-24-04 12:40 
-----------------------------------------------------------------------
-Please, don't mix up bugs on different systems.  Rather create a new bug
-report for a different board.  We can mark them as duplicated once after
-we find they are really identical.
-
-(Both of you have different AC97 codec chips, so the culprit could be also
-different in a high probability...)
+AFAIK this card has new chip. This chip is not supported. There are no
+specs available from Creative for now. No specs = no driver unless someone
+reverse engineering original drivers. Or you can try to add this pci id to
+emu10k1 driver and try if it will work.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
-11-21-04 02:56 bji            File Added: proc_asound.txt                    
-11-21-04 03:16 bji            Note Added: 0002483                          
-11-21-04 03:19 bji            Note Added: 0002484                          
-11-23-04 16:20 tiwai          Note Added: 0002522                          
-11-23-04 23:23 IceRAM         Note Added: 0002537                          
-11-23-04 23:24 IceRAM         File Added: asound.state                     
-11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
-11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
-11-23-04 23:27 IceRAM         Note Added: 0002538                          
-11-23-04 23:28 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
-11-23-04 23:45 IceRAM         Note Added: 0002539                          
-11-23-04 23:45 IceRAM         File Added: .asoundrc                        
-11-23-04 23:46 IceRAM         Note Edited: 0002538                         
-11-24-04 12:32 bji            File Added: asound.state                     
-11-24-04 12:33 bji            Note Added: 0002550                          
-11-24-04 12:40 tiwai          Note Added: 0002552                          
+10-22-04 15:47 mohammed_imran New Issue                                    
+10-22-04 15:47 mohammed_imran Kernel Version            => 2.6.3,2.6.5,2.6.8
+10-22-04 16:03 pzad           Note Added: 0002243                          
+11-01-04 22:25 wbrown338      Issue Monitored: wbrown338                    
+11-24-04 12:40 pzad           Relationship added       duplicate of 0000597
 ======================================================================
 
 
