@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: Sudden ISA DMA problems
-Date: Mon, 18 Feb 2002 19:53:30 +0000 (GMT)
-Message-ID: <20020218195330.4664.qmail@web13104.mail.yahoo.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] ALSA not using updated lseek locking
+Date: Mon, 18 Feb 2002 21:12:31 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202182108080.509-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Received: from web13104.mail.yahoo.com (web13104.mail.yahoo.com [216.136.174.149])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA07719
-	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2002 20:53:37 +0100
-In-Reply-To: <Pine.LNX.4.31.0202181411530.505-100000@pnote.perex-int.cz>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA08099
+	for <alsa-devel@alsa-project.org>; Mon, 18 Feb 2002 21:13:40 +0100
+In-Reply-To: <1014060111.935.2766.camel@phantasy>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,37 +16,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@alsa-project.org
+To: Robert Love <rml@tech9.net>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "torvalds@transmeta.com" <torvalds@transmeta.com>, "manfred@colorfullife.com" <manfred@colorfullife.com>
 List-Id: alsa-devel@alsa-project.org
 
- --- Jaroslav Kysela <perex@suse.cz> wrote:
-> I verified the contents of pci_allocate_consistent()
-> and I agree that it
-> should work at least for i386 and alpha
-> architectures so I reverted back
-> your code.
+On 18 Feb 2002, Robert Love wrote:
 
+> Manfred Spraul just pointed out to me that ALSA contains three lseek
+> implementations, none of which use the new lseek locking rules.  While
+> it is possible the ALSA people intended for there to be no locking (as
+> in it not being needed), I suspect the recent change was overlooked.
+>
+> The lseek implementations are:
+>
+> 	sound/core/hwdep.c :: snd_hwdep_llseek
+> 	sound/core/info.c :: snd_info_entry_llseek
+> 	sound/isa/gus/gus_mem_proc.c :: snd_gf1_mem_proc_llseek
+>
+> snd_hwdep_llseek in hwdep.c clearly does not need locking.  I suspect
+> the other two functions do.  The BKL seems the only available option.
+>
+> Please apply.
 
-Hi,
+Sorry to reply too late, but I've not received this email before. It seems
+that LKML has some trouble. Only the part of patch for sound/core/info.c
+is valid, because llseek in gus_mem_proc.c is called from snd_info_entry_llseek(),
+thus the function is already protected.
 
-I have ported my driver to use the new
-snd_malloc_isa_pages() call ... and my driver is
-broken again. The interesting thing is that it does
-work *occasionally" and then I can both play music and
-upload the firmware. I was wondering if the dma_addr_t
-(which is really just a uint32, I think) has to have a
-value below a certain threshold before ISA DMA
-transfers will work? I am trying to test this theory
-now, but I need it to start working again first...
+						Jaroslav
 
-Chris
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 _______________________________________________
 Alsa-devel mailing list
