@@ -1,14 +1,14 @@
-From: <Jari.Selin@nokia.com>
-Subject: RE: Alsa Fullduplex and VoIP
-Date: Thu, 26 Jun 2003 15:03:57 +0300
+From: Fred Gleason <fredg@salemradiolabs.com>
+Subject: Test Report: snd-asihpi with an ASI6114
+Date: Thu, 26 Jun 2003 09:41:47 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <009CA59D1752DD448E07F8EB2F911757016EEA7A@esebe004.ntc.nokia.com>
+Message-ID: <200306260941.47611.fredg@salemradiolabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,25 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eliot Blennerhassett <bigblen@icqmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I've got things working with my ASI6114.  Playback works well.
 
-> 1. How to make server which is actiong as a playback program waits=20
-> and plays in order the packets received from the client.
-> 2. sychonisation issue.
-> 3. How to over come the buffer xrun in case of playback?
+Alsamixer shows me a bewildering array of controls, few of which seem to do 
+anything.  How do I control stream levels?
 
-There are a few of open source libraries for VoIP. Couple of excellent
-sources of information:
+Cheers!
 
-http://www.cs.columbia.edu/~hgs/rtp/
-http://www-mice.cs.ucl.ac.uk/multimedia/software/rat/
 
-I hope these help you get started.
-
-	Jari Selin
+|-------------------------------------------------------------------------|
+|      Frederick F. Gleason, Jr.      |         Salem Radio Labs          |
+|       Voice: 1-(540)-341-2880       |      87 Lee Highway, Suite 11     |
+|        FAX: 1-(540)-341-7176        |        Warrenton, VA 20188        |
+|-------------------------------------------------------------------------|
+|               What is now proved was once only imagin'd.                |
+|                                      -- William Blake                   |
+|-------------------------------------------------------------------------|
 
 
 
