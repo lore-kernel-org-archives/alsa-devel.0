@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: aplay/arecord
-Date: Fri, 01 Oct 2004 09:29:24 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000549]: Jackd crash randomly
+Date: Fri,  1 Oct 2004 10:07:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20041001092924.pochini@shiny.it>
-References: <001a01c4a775$3ea1f470$0201010a@ankkennedy>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Message-ID: <20041001080725.539A32A001@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <001a01c4a775$3ea1f470$0201010a@ankkennedy>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AD815217
+	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 10:07:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +16,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andy Kennedy <akennedy@wpid-am.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-On 01-Oct-2004 Andy Kennedy wrote:
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549
+======================================================================
+Reported By:                roswel
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     549
+Category:                   USB - usb-usx2y
+Reproducibility:            random
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian sid/experimental
+Kernel Version:             2.6.9-rc2-bk14
+======================================================================
+Date Submitted:             09-29-2004 07:52 CEST
+Last Modified:              10-01-2004 10:07 CEST
+======================================================================
+Summary:                    Jackd crash randomly
+Description: 
+Hi,
+I still have some troubles with jackd. I rebuilt a kernel without
+USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
+hang with the following jackd error  : 
+04:25:29.436 Audio connection graph change.
+delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
+restart ...
+04:28:42.753 XRUN callback. (1)
 
-> arecord -r 44100 -f U8 -c 2 -D hw:0,0 something.wav -- Invalid format.
->
-> What am I doing wrong here?  Why will it not let me have U8 as the format on
-> hw:0,0, when it is the same thing as the others. . .
+I never have this error with my integrated chip using intel_i8x0 driver.
+But wost, after a random time, jackd crash with the following error : 
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+could not start playback (Broken pipe)
+jackd watchdog: timeout - killing jackd
 
-No, it's not the same thing.  plughw: transparently converts
-the given format to one that the card supports, while hw:
-doesn't. In this case your card can only record S16_LE, so
-the data must be converted to U8.
+And in my kernel logs, i've got : 
+Sequence Error!(ep=10;nuc=1,frame=643)
+Sequence Error!(ep=8;nuc=0,frame=643)
+Sequence Error!(ep=8;nuc=1,frame=644)
 
+Jackd crashs also if i'm not doing anything. I tried to let it run
+sometimes without using it, and it crashs.
 
---
-Giuliano.
+Thanx for your attention.
+======================================================================
+
+----------------------------------------------------------------------
+ karsten - 10-01-2004 01:24 CEST 
+----------------------------------------------------------------------
+please recheck snd-usb-usx2y version 0.8.0, which I posted to the
+alsa-devel list.
+
+----------------------------------------------------------------------
+ roswel - 10-01-2004 10:07 CEST 
+----------------------------------------------------------------------
+How to get it, i'm not subscribe to alsa-devel list. Can you forward me
+your mail? or give me a link kto download it please.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-29-04 07:52 roswel         New Bug                                      
+09-29-04 07:52 roswel         Distribution              => Debian sid/experimental
+09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
+09-29-04 07:52 roswel         Bug Monitored: roswel                        
+10-01-04 01:24 karsten        Bugnote Added: 0001989                       
+10-01-04 10:07 roswel         Bugnote Added: 0001996                       
+======================================================================
 
 
 -------------------------------------------------------
