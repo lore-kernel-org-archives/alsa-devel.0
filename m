@@ -1,16 +1,12 @@
-From: =?iso-8859-1?q?Z=E9bulon?= <zeb@zebulon.org.uk>
-Subject: Re: Terratec Aureon Space
-Date: Fri, 16 May 2003 18:50:41 +0200
+From: "David E. Storey" <dave@tamos.net>
+Subject: dsnoop
+Date: 16 May 2003 16:24:08 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305161850.41809.zeb@zebulon.org.uk>
-References: <200305151826.55345.zeb@zebulon.org.uk> <1053081208.17139.41.camel@caernarfon> <s5hn0hndvh8.wl@alsa2.suse.de>
+Message-ID: <1053116648.423.11.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0hndvh8.wl@alsa2.suse.de>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,58 +15,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Le Vendredi 16 Mai 2003 12:41, Takashi Iwai a =E9crit :
-> At 16 May 2003 11:33:28 +0100,
->
-> Liam Girdwood wrote:
-> > Hi Takishi,
-> >
-> > On Fri, 2003-05-16 at 10:33, Takashi Iwai wrote:
-> > > > Can I expect to see it supported in the future ?
-> > >
-> > > only if we get enough technical information...
-> > >
-> > > at least we need to know the wire connection between codec and ice1724
-> > > chips, especially 61, 62 and 63 pins of Wolfson chip and GPIO pins of
-> > > ice1724 chip.
-> >
-> > I'm currently developing Linux drivers for our AC97 range of audio
-> > codecs. Unfortunately, the WM8770 is not in my schedule at the moment as
-> > I'm busy working on WM97xx touchscreen drivers.
-> >
-> > However, the WM8770 datasheet is available here.
-> > http://www.wolfsonmicro.com/download.asp/did.217/WM8770.pdf
-> >
-> > Hope this helps.
->
-> thanks for the follow-up.
->
-> i already know it (and that's why i wrote the specific pin numbers in
-> my mail above :)  the wolfson chip is fine, it's perfectly described
-> in the datasheet.
->
-> the only question is the connection between the controller and the
-> code chips.  envy24ht has many GPIO pins, which are used for i2c
-> controls in most cases with 24bit DAC/ADC.
-> if the card vendor provides us this info, the driver will be ready in
-> a day (hopefully :)
->
->
-> Takashi
+Folks,
 
-Thanks for the answer. I just sent an email to request some technical=20
-information from Terratec, emphasizing the importance to support the Linux=
-=20
-community.
+Would anyone be so kind as to offer up an example of using dsnoop? I'd
+like to use jack to perform all kinds on monitoring on a device and use
+an alsa app, namely arecord, to do the actual recording. I've tried
+using the jack plugin and while it works, when I hit CTRL-C on arecord
+to stop recording, it pretty much halts jack.
 
-Cheers
-Eric
+When I use dsnoop now, if there's nothing using the device, it returns:
+
+set_params:810: Channels count non available
+
+And if something, like jack, is using the original device, it just sits
+and waits without doing much of anything. My .asoundrc file looks a
+little something like:
+
+pcm.intel8x0 {
+        type hw
+        card 0
+}
+
+ctl.intel8x0 {
+        type hw
+        card 0
+}
+
+pcm.snoop {
+        type dsnoop
+        ipc_key 3346
+        slave { pcm "intel8x0" }
+}
+
+pcm.jackplug {
+        type plug
+        slave { pcm "jack" }
+}
+
+pcm.jack {
+        type jack
+        playback_ports {
+                0 alsa_pcm:playback_1
+                1 alsa_pcm:playback_2
+        }
+        capture_ports {
+                0 alsa_pcm:capture_1
+                1 alsa_pcm:capture_2
+        }
+}
+
+Any help would be GREATLY appreciated. And if I should be using another
+list, please let me know kindly.
+
+d!
+
 
 
 -------------------------------------------------------
-Enterprise Linux Forum Conference & Expo, June 4-6, 2003, Santa Clara
-The only event dedicated to issues related to Linux enterprise solutions
-www.enterpriselinuxforum.com
+This SF.net email is sponsored by: If flattening out C++ or Java
+code to make your application fit in a relational database is painful, 
+don't do it! Check out ObjectStore. Now part of Progress Software.
+http://www.objectstore.net/sourceforge
