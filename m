@@ -1,14 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: usx2y: known problems with us122 and alsa-drivers-1.0.1?
-Date: Sun, 11 Jan 2004 15:58:51 +0100
+From: Michael Huijsmans <mgh@telering.at>
+Subject: [PATCH] ens1373/ct5880 - Switch Line In to Rear Out
+Date: Sun, 11 Jan 2004 18:55:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040111145851.GA1248@tuba.home>
-References: <1073762822.1019.14.camel@serrano> <200401111449.06508.annabellesgarden@yahoo.de>
+Message-ID: <20040111185547.34073761.mike@marune.alastor>
+Reply-To: mgh@telering.at
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200401111449.06508.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,62 +16,100 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Bill Gribble <grib@billgribble.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Jan 11, 2004 at 02:49:06PM +0100, Karsten Wiese wrote:
-> Am Samstag, 10. Januar 2004 20:27 schrieben Sie:
-> >
-> > $ ls -l /dev/snd
-> > total 0
-> > crw-rw----    1 root     audio    116,   0 Dec 31  1969 controlC0
-> > crw-rw----    1 root     audio    116,  32 Dec 31  1969 controlC1
-> > crw-rw----    1 root     audio    116,   4 Dec 31  1969 hwC0D0
-> > crw-rw----    1 root     audio    116,   8 Dec 31  1969 midiC0D0
-> > crw-rw----    1 root     audio    116,  24 Dec 31  1969 pcmC0D0c
-> > crw-rw----    1 root     audio    116,  16 Dec 31  1969 pcmC0D0p
-> > crw-rw----    1 root     audio    116,  56 Dec 31  1969 pcmC1D0c
-> > crw-rw----    1 root     audio    116,  48 Dec 31  1969 pcmC1D0p
-> > crw-rw----    1 root     audio    116,  33 Dec 31  1969 timer
+Hi,
 
-1969 ?
+The Gigabyte GA-7DXR motherboard has a 4-channel SB128 
+(ct5880 + STAC9708/11) onboard. The line in and second line out (rear out)
+are wired to the same connector. 
+After some trial-and-error with the ct5880 GPIO registers I found one which
+switches line in to rear out.
 
-> >
-> > When I attached the USB device, here's the message I saw in
-> > /var/log/messages:
-> >
-> > Jan 10 12:50:10 serrano kernel: hub 3-0:1.0: new USB device on port 2,
-> > assigned
-> > address 5
-> > Jan 10 12:50:10 serrano kernel: midi: probe of 3-2:1.0 failed with error
-> > -5
+The patch below adds a new mixer element when the ens1371 finds itself
+on a GA-7DXR (by checking subsystem vendor & device IDs).
+Other motherboards with the ct5880 may have different IDs and/or
+may require a different GPIO line.
 
-That's strange.
+Cheers,
+Mike
 
-> > Jan 10 12:50:11 serrano /etc/hotplug/usb/tascam_fw: load
-> > /usr/share/alsa/firmware/usx2yloader/us122fw.ihx for 1604/8006/100 to
-> > /proc/bus/usb/003/005
-> > Jan 10 12:50:11 serrano kernel: usb 3-2: USB disconnect, address 5
-> > Jan 10 12:50:13 serrano kernel: hub 3-0:1.0: new USB device on port 2,
-> > assigned
-> > address 6
-> > Jan 10 12:50:13 serrano kernel: midi: probe of 3-2:1.0 failed with error
-> > -5
+ 
+--- alsa-driver-1.0.1-orig/alsa-kernel/pci/ens1370.c	2003-10-28 12:28:01.000000000 +0100
++++ alsa-driver-1.0.1/alsa-kernel/pci/ens1370.c	2004-01-10 16:45:12.000000000 +0100
+@@ -1512,6 +1512,54 @@
+ 	.put =		snd_es1373_rear_put,
+ };
+ 
++static int snd_es1373_line_info(snd_kcontrol_t *kcontrol,
+snd_ctl_elem_info_t *uinfo)
++{
++        uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
++        uinfo->count = 1;
++        uinfo->value.integer.min = 0;
++        uinfo->value.integer.max = 1;
++        return 0;
++}
++
++static int snd_es1373_line_get(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
++{
++	ensoniq_t *ensoniq = snd_kcontrol_chip(kcontrol);
++	int val = 0;
++	
++	spin_lock_irq(&ensoniq->reg_lock);
++	if ((ensoniq->ctrl & ES_1371_GPIO_OUTM) >= 4)
++	    	val = 1;
++	ucontrol->value.integer.value[0] = val;
++	spin_unlock_irq(&ensoniq->reg_lock);
++	return 0;
++}
++
++static int snd_es1373_line_put(snd_kcontrol_t * kcontrol,
+snd_ctl_elem_value_t * ucontrol)
++{
++	ensoniq_t *ensoniq = snd_kcontrol_chip(kcontrol);
++	unsigned int nval1 = 0;
++	
++	nval1 = ucontrol->value.integer.value[0];
++	spin_lock_irq(&ensoniq->reg_lock);
++	if(nval1) {
++	  ensoniq->ctrl |= ES_1371_GPIO_OUT(4);	/* switch line-in -> rear out */
++	} else {
++	  ensoniq->ctrl &= ~(ES_1371_GPIO_OUT(4));
++	}
++	outl(ensoniq->ctrl, ES_REG(ensoniq, CONTROL));
++	spin_unlock_irq(&ensoniq->reg_lock);
++	return nval1;
++}
++
++static snd_kcontrol_new_t snd_ens1373_line __devinitdata =
++{
++	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =		"Line In->Rear Out Switch",
++	.info =		snd_es1373_line_info,
++	.get =		snd_es1373_line_get,
++	.put =		snd_es1373_line_put,
++};
++
+ static void snd_ensoniq_mixer_free_ac97(ac97_t *ac97)
+ {
+ 	ensoniq_t *ensoniq = snd_magic_cast(ensoniq_t,
+ac97->private_data, return);
+@@ -1586,6 +1634,11 @@
+ 		ensoniq->cssr |= ES_1373_REAR_BIT26;
+ 		snd_ctl_add(card, snd_ctl_new1(&snd_ens1373_rear, ensoniq));
+ 	}
++	if ((ensoniq->subsystem_vendor_id == 0x1274) &&
++	    (ensoniq->subsystem_device_id == 0x2000)) { /* GA-7DXR */
++		 snd_ctl_add(card, snd_ctl_new1(&snd_ens1373_line, ensoniq));
++	}
++
+ 	return 0;
+ }
 
-I don't see /dev/snd/seq. Can that be the cause? I've only 2.4 experience
-and there I use ./snddevices in alsa-driver for creating all the devices.
 
-crw-rw----    1 root     audio    116,   1 28. Mai 2003  seq
-
-And a fresh compiled alsa CVS runs fine with my us122. no problems and there
-are no midi changes at all.
-
-martin
-
-
--- 
-The only nice thing about spam is that it doesn't ring.
 
 
 -------------------------------------------------------
