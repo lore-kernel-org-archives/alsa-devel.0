@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sun, 13 Feb 2005 01:21:12 +0100
-Message-ID: <9d29558e3c3fabff090c6db74666f973@bugtrack.alsa-project.org>
+Date: Sun, 13 Feb 2005 01:27:14 +0100
+Message-ID: <c3305eaca2fc9f0b7dfe89a52c73a811@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F043E177
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 01:21:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 21D2E202
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 01:27:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
 ======================================================================
@@ -34,12 +34,14 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
 Distribution:               Gentoo
 Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-11-2005 23:49 CET
-Last Modified:              02-13-2005 01:21 CET
+Last Modified:              02-13-2005 01:27 CET
 ======================================================================
 Summary:                    The onboard audigyls chip on msi k8 diamond
 motherboard not recognized. Path supplied.
@@ -50,25 +52,17 @@ Have made a path.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 02-13-05 01:08 
-----------------------------------------------------------------------
-In you patch change:
-+	 { 0x00071102, "Live! by MSI [SB0000]"}, /* MSI SB Audigy2LS without
-AC97 */
-
-to
-+	 { 0x10091462, "Live! by MSI [SB0438]"}, /* MSI SB Audigy2LS without
-AC97 */
-
-then see if "cat /proc/asound/cards" displays better info.
-
-----------------------------------------------------------------------
  sHINOBI - 02-13-05 01:21 
 ----------------------------------------------------------------------
 *nods*, seems to be better:
 
 0 [CA0106         ]: CA0106 - CA0106
                      Live! by MSI [SB0438] at 0xde00 irq 233
+
+----------------------------------------------------------------------
+ jcdutton - 02-13-05 01:27 
+----------------------------------------------------------------------
+Thank you. A modified patch will be added to alsa cvs.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +80,9 @@ Date Modified  Username       Field                    Change
 02-13-05 00:54 sHINOBI        Note Added: 0003575                          
 02-13-05 01:08 jcdutton       Note Added: 0003576                          
 02-13-05 01:21 sHINOBI        Note Added: 0003577                          
+02-13-05 01:27 jcdutton       Status                   assigned => resolved
+02-13-05 01:27 jcdutton       Resolution               open => fixed       
+02-13-05 01:27 jcdutton       Note Added: 0003578                          
 ======================================================================
 
 
