@@ -1,12 +1,15 @@
-From: mark@undertone.org
-Subject: Creative Lab's Extigy
-Date: Thu, 12 Sep 2002 12:26:59 -0500
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: alsamixer on cvs
+Date: Thu, 12 Sep 2002 11:00:42 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020912172659.GA20084@undertone.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200209121800.LAA20487@cmn29.stanford.edu>
+References: <Pine.LNX.4.33.0209110931080.607-100000@pnote.perex-int.cz>
+	<200209112032.NAA19147@cmn29.stanford.edu>
+	<s5helbzpoh6.wl@alsa2.suse.de>
+Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <s5helbzpoh6.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hola:
+> > I just tried cvs and I'm getting an unresolved symbol error
+> > on snd.o, pci_alloc_consistent
+>
+> this is likely because of my last change.
+> which kernel are you using?
+> perhaps pci_alloc_consistent() is defined as a macro for some other
+> function in your kernel.
 
-I'm a new guy on this list, so I apologise if any of this has been
-discussed already -- archives seem to say "no"...  I've been a
-longtime audiophile and work professionally with linux/solaris
-systems. While I appreciate the tremendous work done with the USB
-audio support, I'm just not getting access to the featureset I want on
-my extigy (external USB audigy card from cl). So, I figured that I'd
-just get on this list and ask around about how fiesable it would be to
-write one. 
+I'm using 2.4.20-pre4 + lowlat + preempt + capabilities + acpi
+(I think that's all)
 
-I admit I do not have much experience writing device drivers. However,
-I'd like to believe myself to be technically competant enough with the
-linux kernel to begin doing so. What I'm looking for here are a few
-pointers and tips for where to start, what code to stare at for a
-while, etc. The ALSA documentation is pretty good as is, but I think
-I'd need a little more than that as far as driver development goes.
+> anyway, i changed the relevant part on cvs.  please try once to
+> update.
 
-Is it fiesable? Would a driver need to be written from scratch? Could
-I just hook some extentions into the present usb-audio driver? Does
-Creative Labs even release enough info/specs to write a decent driver?
-Is there something comming down the pipe that would make any such
-effort pointless in the near future?
-
-Sorry about the newbie bit, thanks.
--mark
+I'll try again...
+-- Fernando
 
 
 -------------------------------------------------------
