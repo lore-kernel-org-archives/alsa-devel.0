@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000628]: Can't record audio
-Date: Thu, 17 Feb 2005 18:34:12 +0100
-Message-ID: <9ba2e542c9f0df6c1859609ad360345f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000915]: When compiled with SND_HWDEP enabled, the intel8x0 driver is no longer able to share an IRQ with other devices
+Date: Thu, 17 Feb 2005 18:39:01 +0100
+Message-ID: <22d1267d5d1c28be92474c55a65c1f3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ECE0223D
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 18:34:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CCF623D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 18:39:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,63 +21,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=628> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=915> 
 ======================================================================
-Reported By:                pawlik
+Reported By:                Jochen
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   628
-Category:                   PCI - via82xx
+Issue ID:                   915
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.8.1
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10-gentoo-r7
 ======================================================================
-Date Submitted:             11-03-2004 18:46 CET
-Last Modified:              02-17-2005 18:34 CET
+Date Submitted:             02-17-2005 10:17 CET
+Last Modified:              02-17-2005 18:39 CET
 ======================================================================
-Summary:                    Can't record audio
+Summary:                    When compiled with SND_HWDEP enabled, the intel8x0
+driver is no longer able to share an IRQ with other devices
 Description: 
-I'm not able to record any audio. Reading from /dev/dsp results in an
-"Input/Output Error".
-The hardware I'm using is Soltek 75DRV5 with built-in soundcard.
+On my System an intel8x0 card and a Intel PRO Wireless 2200BG card share
+irq5 which works perfectly with SND_HWDEP.
+
+I recently enabled SND_HWDEP for another audio driver. since then all
+commands the ipw2200 driver issues to the wlan card time out, the audio
+driver however is still working.
+
+Since I didn't change the ipw2200 driver but only an alsa related option,
+I guess it's an alsa bug
 ======================================================================
 
 ----------------------------------------------------------------------
- rossaxe - 01-16-05 17:09 
+ Jochen - 02-17-05 18:33 
 ----------------------------------------------------------------------
-What is this particular knob supposed to do? So far as I can tell, it just
-offers a choice betweens 'works' and 'breaks'
+Yes, but since the bluetooh driver needs SND_HWDEP I "selected" it by
+compiling SND_USB_USX2Y (everything as module)
+
+with this I get the hwdep module, I need for using the bluetooth driver -
+but lose my wlan card. Note that the sound card is still working.
 
 ----------------------------------------------------------------------
- tiwai - 01-17-05 15:07 
+ tiwai - 02-17-05 18:39 
 ----------------------------------------------------------------------
-This defines the connection of which input pin is selected for the certain
-input path.  So, whether it works or not strongly depends on the hardware.
+Then correct your driver's Kconfig file to select SND_HWDEP.
+
+Anyway, this sounds like a false positive.
+hwdep module can't influence on intel8x0 or any other drivers.  It's a
+core module and have no h/w access by itself.
+Check whether any other drivers are loaded casually and conflict.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 18:46 pawlik         New Issue                                    
-11-03-04 18:46 pawlik         Distribution              => Debian          
-11-03-04 18:46 pawlik         Kernel Version            => 2.6.8.1         
-11-09-04 15:28 tiwai          Note Added: 0002323                          
-11-18-04 19:41 prymitive      Issue Monitored: prymitive                    
-01-16-05 10:05 pawlik         Note Added: 0003214                          
-01-16-05 17:09 rossaxe        Note Added: 0003219                          
-01-17-05 15:07 tiwai          Status                   new => resolved     
-01-17-05 15:07 tiwai          Resolution               open => not an issue
-01-17-05 15:07 tiwai          Assigned To               => tiwai           
-01-17-05 15:07 tiwai          Note Added: 0003236                          
-01-17-05 15:07 tiwai          Assigned To              tiwai =>            
-02-17-05 18:34 tiwai          Status                   resolved => closed  
+02-17-05 10:17 Jochen         New Issue                                    
+02-17-05 10:17 Jochen         Distribution              => Gentoo          
+02-17-05 10:17 Jochen         Kernel Version            => 2.6.10-gentoo-r7
+02-17-05 10:56 Jochen         Note Added: 0003627                          
+02-17-05 18:18 tiwai          Note Added: 0003629                          
+02-17-05 18:33 Jochen         Note Added: 0003633                          
+02-17-05 18:39 tiwai          Note Added: 0003634                          
 ======================================================================
 
 
