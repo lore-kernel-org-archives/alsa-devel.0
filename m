@@ -1,92 +1,32 @@
-From: "guan yim" <guanyim@hotmail.com>
-Subject: Re: Need to know SBLive Chip difference
-Date: Tue, 30 Mar 2004 09:54:20 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Sea2-F12qv5jKxJdqDx0003d629@hotmail.com>
+From: Russell King <rmk+lkml@arm.linux.org.uk>
+Subject: Re: [linux-audio-user] snd-hdsp+cardbus=distortion -- the sagacontinues (cardbus driver=culprit?) UPDATE: 99.9% sure it is the cardbus driver yenta_socket
+Date: Tue, 30 Mar 2004 09:00:53 +0100
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040330090053.A3956@flint.arm.linux.org.uk>
+References: <20040329235823.04bacef4@laptop> <20040330055204.UUGL2042.smtp1.fuse.net@64BitBadass>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hotmail.com (sea2-f12.sea2.hotmail.com [207.68.165.12])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA05975
-	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 09:54:59 +0200
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pzad@pobox.sk
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20040330055204.UUGL2042.smtp1.fuse.net@64BitBadass>; from ico@fuse.net on Tue, Mar 30, 2004 at 12:52:11AM -0500
+To: Ivica Ico Bukvic <ico@fuse.net>
+Cc: 'A list for linux audio users' <linux-audio-user@music.columbia.edu>, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, linux-pcmcia@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Mar 30, 2004 at 12:52:11AM -0500, Ivica Ico Bukvic wrote:
+> 6) Pester alsa-dev, lau, and kernel/pcmcia people to death begging for help
+> :-)
+> 
+> IN-PROGRESS :-)
 
+What needs to happen is that the card driver author needs to investigate
+what is going on, and, if it seems related to the core PCMCIA core or
+the socket driver, we need to get involved.
 
+IOW, linux-pcmcia people don't debug card drivers.
 
->From: p z oooo <pzad@pobox.sk>
->Reply-To: p z oooo <pzad@pobox.sk>
->To: guanyim@hotmail.com
->Subject: Re: [Alsa-devel] Need to know SBLive Chip difference
->Date: Tue, 30 Mar 2004 08:37:35 +0200
-
->Right now I compared changes between alsa 1.0.3b  and 1.0.4rc1.
->Diffrence is that 1.0.4rc1 contains support for AC97 codec used in
->2003 SB Live (Sigmatel STAC9758) and I think, that make it not to
->working.
->
->Try to change line in alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c
->{ 0x83847658, 0xffffffff, "STAC9758/59", patch_sigmatel_stac9758,
->	NULL },
->
->to
->{ 0x83847658, 0xffffffff, "STAC9758/59", NULL,	NULL },
->
->Peter Zubaj
->
->=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->Java Desktop System predstavuje prvu pouzitelnu alternativu voci Windows=
- za
->poslednych 15 rokov, pretoze prinasa z=E1kaznikom bezpecne a doveryhodne
->desktopove riesenie za zlomok ceny Windows.
->Viac informacii najdete na : http://www.somi.sk/sun/java_desktop.php
->=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D
->
-
-Ya thanks I get back the Front L/R and Center/Subwoofer output now.
-
-
->Hi,
->
->Personaly I don't think there is diffrence in emu10k1 between 2003 and=20
->2002. Diffrence is in AC97 codec. In 2002 is two channel. In 2003 is six=
-=20
->channel. I looked for datasheet for this AC97 codec, but it is not publi=
-c=20
->available. I think, that only some initialization is needed.
->
->Could you try OSS driver if it works ???
->
->Peter Zubaj
->
-
-Trying oss thing to see if can get the Rear L/R. Btw, how could I get the=
-=20
-AC97 spec for this new codec, by subscription and pay some fee to some=20
-organization? I wish I could help.
-
-_________________________________________________________________
-MSN 8 with e-mail virus protection service: 2 months FREE*=20
-http://join.msn.com/?page=3Dfeatures/virus
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
