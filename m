@@ -1,15 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [PATCH]snd-usb-usx2y
-Date: Fri, 5 Dec 2003 09:05:53 +0100 (CET)
+Subject: Re: Problem in alsaconf
+Date: Fri, 5 Dec 2003 09:35:29 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312050905350.12693@pnote.perex-int.cz>
-References: <200311271544.21367.annabellesgarden@yahoo.de>
- <200312042302.14540.annabellesgarden@yahoo.de> <20031204224623.GB6074@tuba.home>
- <200312050041.24111.annabellesgarden@yahoo.de>
+Message-ID: <Pine.LNX.4.58.0312050934240.12693@pnote.perex-int.cz>
+References: <20031204234839.GB4760@steinchen.winterberg.local>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312050041.24111.annabellesgarden@yahoo.de>
+In-Reply-To: <20031204234839.GB4760@steinchen.winterberg.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,17 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Martin Langer <martin-langer@gmx.de>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Sebastian Stein <seb.stein@hpfsc.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ondrejj@salstar.sk, Bernd Kaindl <bk@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 5 Dec 2003, Karsten Wiese wrote:
+On Fri, 5 Dec 2003, Sebastian Stein wrote:
 
-> The attached patch against CVS-HEAD does that.
-> Please try it. If us122 works again, ask Jaroslav to commit it, as Takashi is 
-> on vacation.
+> I'm not sure who is the current maintainer of the alsaconf shell script in
+> the alsa-utils-1.0.0rc1 package, so I'm sending this mail to all of you!
+> 
+> On startup I can see a message saying:
+> 
+> /usr/bin/alsaconf: line 29: [: too many arguments
+> /usr/bin/alsaconf: line 31: [: too many arguments
 
-It also slipped to rc2. Thanks.
+It does not happen with:
+
+GNU bash, version 2.05b.0(1)-release (i586-suse-linux)
+and
+grep (GNU grep) 2.5.1
+
+Perhaps, you don't have grep installed?
+
+> Also, there is another problem with finding the alsasound script
+> ($rcalsasound). On my distro it can be found under
+> /etc/rc.d/inet.d/alsasound. Maybe a better approach then fixed path would
+
+Added new path. Thanks.
 
 						Jaroslav
 
