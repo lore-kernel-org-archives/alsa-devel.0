@@ -1,11 +1,14 @@
-From: Pieter Palmers <ppalmers@esat.kuleuven.ac.be>
-Subject: userspace pcm/midi for firewire based cards
-Date: Mon, 15 Nov 2004 18:58:28 +0000
-Message-ID: <4198FC54.7000309@esat.kuleuven.ac.be>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000641]: Bug in WM8770 init on aureon
+Date: Mon, 15 Nov 2004 20:09:10 +0100
+Message-ID: <4e9c7d7c20cb72a7e964094e1b444364@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C62728A
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 20:09:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,39 +18,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-I'm working on the development of DM1000 based firewire based devices 
-(ESI QuataFire 610, M-Audio FireWire devices, ...).
-The question that arises is: userspace driver or kernel driver. 
-Personally I favor the userspace driver, because we can use the FW libs 
-that are already present for some of the stuff. On the other hand it 
-seems to me that programming a kernel driver would be ?easier? than 
-implementing a plugin. If I'm right, that would require providing all 
-interfaces/capabilities the alsa-lib middle layer provides.
-What are the thoughts about this on this list? I've already seen some 
-small discussions about this (e.g. bluetooth), but I'm not completely 
-convinced... what about the latency/realtime behaviour of the two options?
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=641> 
+======================================================================
+Reported By:                ungod
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   641
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             11-11-2004 00:03 CET
+Last Modified:              11-15-2004 20:09 CET
+======================================================================
+Summary:                    Bug in WM8770 init on aureon
+Description: 
+On aureon cards the ADC on WM8770 is initialized to AIN6L/AIN5R, although
+the comment states AC'97.
+======================================================================
 
- From a development perspective I do think that it's nice to work in 
-userland. I still remember the numerous reboots when working on the isis 
-kernel driver...
-Would it be interesting to construct userland code in such a way that it 
-is easy to migrate it to kernel space? Or isn't it worth the effort?
+----------------------------------------------------------------------
+ tiwai - 11-15-04 20:09 
+----------------------------------------------------------------------
+Applied to CVS.
 
-And finally a practical question: The PCM part can be implemented as a 
-plugin, for which I should look at pcm_jack.c. Is there an equivalent 
-plugin mechanism for MIDI stuff? I've googled around, but I couldn't 
-find a clear answer.
+Thanks.
 
-Greets,
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-11-04 00:03 ungod          New Issue                                    
+11-11-04 00:03 ungod          File Added: aureon-wm-init-fix.diff               
+    
+11-15-04 20:09 tiwai          Status                   new => resolved     
+11-15-04 20:09 tiwai          Resolution               open => fixed       
+11-15-04 20:09 tiwai          Assigned To               => tiwai           
+11-15-04 20:09 tiwai          Note Added: 0002418                          
+======================================================================
 
-Pieter Palmers
-FreeBoB project
-freebob.sourceforge.net
+
 
 
 -------------------------------------------------------
