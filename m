@@ -1,15 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: mantis bug reports, again
-Date: Thu, 15 Jul 2004 08:22:04 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000355]: Installation
+Date: Thu, 15 Jul 2004 14:22:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407151222.i6FCM457008578@localhost.localdomain>
-References: <200407151338.03983.cannam@all-day-breakfast.com>
+Message-ID: <20040715122242.1D70618005@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from out001.verizon.net (out001pub.verizon.net [206.46.170.140])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B2091157
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:22:08 +0200 (MEST)
-In-reply-to: Your message of "Thu, 15 Jul 2004 13:38:03 BST."
-             <200407151338.03983.cannam@all-day-breakfast.com>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9396B201
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:22:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,26 +16,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Cannam <cannam@all-day-breakfast.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> mis-encoded email from mantis
->
->Why do you say it's mis-encoded?  It looks like valid RFC 1341/2045 
->MIME quoted-printable to me and my mail reader.
 
-E-mail clients are not required to handle MIME, and quoted-printable
-is entirely unnecessary when regular text works just fine (and appears
-to be the default for Mantis auto-email sent from several other Mantis
-systems). This is the kind of nonsense I'd expect from an MS-centric
-site, not one at the core of the Linux kernel :) 
+The following bug has been CLOSED
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000355
+======================================================================
+Reported By:                tboothe
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     355
+Category:                   0_compilation problem_!!!
+Reproducibility:            have not tried
+Severity:                   feature
+Priority:                   normal
+Status:                     closed
+Distribution:               Fedora Core 1
+Kernel Version:             
+======================================================================
+Date Submitted:             06-30-2004 20:57 CEST
+Last Modified:              07-15-2004 14:22 CEST
+======================================================================
+Summary:                    Installation
+Description: 
+I get the following error when trying to follow the steps shown on the site
+for installing drivers for an intel8x0 chipset.  I am new to Linux so
+please excuse my ignorance.  Any suggestions as to how to correct this?
 
-If regular text wasn't sufficient, I'd be happy to say "I must switch
-mail clients", but this would be the only situation I have come across
-that would to require this.
+Thanks
+======================================================================
 
---p
+----------------------------------------------------------------------
+ perex - 07-15-2004 14:22 CEST 
+----------------------------------------------------------------------
+I'm sorry, we don't support ALSA version 0.5 now.
+Basically, you need to install the gcc package (C compiler) and some other
+development packages.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+06-30-04 20:57 tboothe        New Bug                                      
+06-30-04 20:57 tboothe        Distribution              => Fedora Core 1   
+07-15-04 14:22 perex          Bugnote Added: 0001434                       
+07-15-04 14:22 perex          Status                   assigned => closed  
+======================================================================
 
 
 -------------------------------------------------------
