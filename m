@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
-Date: Tue, 21 Dec 2004 18:10:57 +0100
-Message-ID: <b0256fa0115bf5b22842b4da91559750@bugtrack.alsa-project.org>
+Date: Tue, 21 Dec 2004 18:31:29 +0100
+Message-ID: <cdbef02978b3bcc79f5aa43567f6dd2f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 55671222
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 18:10:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5026A243
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 18:31:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               FEDORA CORE 3
 Kernel Version:             2.6.9-1.667
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-16-2004 09:09 CET
-Last Modified:              12-21-2004 18:10 CET
+Last Modified:              12-21-2004 18:31 CET
 ======================================================================
 Summary:                    segmentation fault when running modprobe & alsaconf,
 no sound, no mixer on D915GAV
@@ -87,16 +89,6 @@ Help me to make mysound work fine...
 ======================================================================
 
 ----------------------------------------------------------------------
- IMAMUDDIN AKBAR - 12-21-04 10:29 
-----------------------------------------------------------------------
-thank you for your direction. now my sound can work, i can hear sound on
-startup and exit..
-but i still confuse becouse when i run:
-#system-config-soundcards 
-its still said that "no soundcards were detected"
-could you tell me why it could happen?
-
-----------------------------------------------------------------------
  rlrevell - 12-21-04 18:10 
 ----------------------------------------------------------------------
 Probably because the azx driver is so new that system-config-soundcard does
@@ -106,6 +98,13 @@ there will be a new Fedora RPM available.
 If this is a problem for you please file a Fedora bug report.
 
 This one can be closed.
+
+----------------------------------------------------------------------
+ tiwai - 12-21-04 18:31 
+----------------------------------------------------------------------
+OK, moved to FIXED now.
+
+BTW, 1.0.8rc1 will be released soon.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -127,6 +126,9 @@ Date Modified  Username       Field                    Change
 12-21-04 03:08 rlrevell       Note Added: 0002895                          
 12-21-04 10:29 IMAMUDDIN AKBARNote Added: 0002897                          
 12-21-04 18:10 rlrevell       Note Added: 0002898                          
+12-21-04 18:31 tiwai          Status                   feedback => resolved
+12-21-04 18:31 tiwai          Resolution               reopened => fixed   
+12-21-04 18:31 tiwai          Note Added: 0002899                          
 ======================================================================
 
 
