@@ -1,8 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: emu10k1: difference between _fx8010_ and _efx_
-Date: Fri, 25 Jun 2004 17:16:57 -0400
+Date: Fri, 25 Jun 2004 17:16:58 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1088198182.23832.9.camel@mindpipe>
+Message-ID: <1088198217.23832.10.camel@mindpipe>
 References: <1088106324.1591.18.camel@mindpipe>
 	 <s5h7jtvfx7x.wl@alsa2.suse.de>
 Mime-Version: 1.0
@@ -18,8 +18,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 2004-06-25 at 11:56, Takashi Iwai wrote:
