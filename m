@@ -1,13 +1,15 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: MIDI+USB - one way?
-Date: Sat, 03 Aug 2002 04:34:27 +0900
+Subject: alesis adat/pcr
+Date: Sat, 03 Aug 2002 04:43:11 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4ADEC3.2040803@boosthardware.com>
-References: <20020802001554.48f2f13a.mis@creazone.com> <3D4A67B8.730CE3F@ladisch.de> <20020802083548.5ff93902.mis@creazone.com> <200208021817.08060.plcl@telefonica.net> <3D4ABCA6.9E126597@ladisch.de> <3D4AD766.4030908@boosthardware.com>
+Message-ID: <3D4AE0CF.7080001@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www7.networkshosting.com ([66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id VAA08563
+	for <alsa-devel@alsa-project.org>; Fri, 2 Aug 2002 21:38:56 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,23 +18,10 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-
-> Can you guys tell me what the differences are in installing the card 
-> compared to the standard template. thx.
-> 
-
-Sorry I meant:
-
-Can you guys tell me what the differences are in installing a midi  card 
-compared to the standard template. thx.
-
-
-
-
+Can anyone tell me the module name for the alesis adat/pcr soundcard?
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
