@@ -1,15 +1,17 @@
-From: Charles =?iso-8859-15?q?Fl=E8che?= <charles.fleche@free.fr>
-Subject: Edirol UA-25
-Date: Sat, 2 Oct 2004 21:05:15 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: A need for support for SPI interfacing in alsa.
+Date: Sat, 02 Oct 2004 15:02:51 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410022105.19655.charles.fleche@free.fr>
+Message-ID: <1096743770.5845.27.camel@krustophenia.net>
+References: <415EF5B2.6050106@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart4254706.QJsf47GRbO";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id EA40E22D
+	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 21:02:52 +0200 (MEST)
+In-Reply-To: <415EF5B2.6050106@superbug.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,43 +20,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, alsa-user-request@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart4254706.QJsf47GRbO
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Sat, 2004-10-02 at 14:38, James Courtier-Dutton wrote:
+> More and more sound card manufacturers are moving away from AC97 codecs.
+> Up until recently, this was not really a problem, but I came across a 
+> new sound card today. The Creative SB Live! 7.1 24bit.
+> This is based on the Audigy LS.
 
-Hi everybody !
+Wait, is this a PCI card?  Does it have the FX8010 DSP?  I really hope
+this does not mean they are moving away from the emu10k1/emu10k2
+architecture in order to support 24/96.  I was hoping they would come
+out with an emu10k3 with a similar architecture to the emu10k1/10k2
+except running at 96Khz.
 
-Is there anybody who can use the new UA-25 ? I can use it, but only in simp=
-le=20
-mode, so only in 16/44, no MIDI, no DIgital IN...
-Do you how could I use it in advanced mode ? 24/96, MIDI and Optical Link i=
-n=20
-this small box would be great !
-Soon !
+Lee
 
-Charles Fl=E8che
-
-=2D-=20
-ID GnuPG key : 92ADDEF8
-http://pgp.mit.edu:11371/pks/lookup?op=3Dget&search=3D0x92ADDEF8
-
---nextPart4254706.QJsf47GRbO
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-
-iD8DBQBBXvvvyYZ7d5Kt3vgRAu3zAJ45L69wJG/FAhrXzELyqEwYgrNbTgCeNHuS
-FPzio1vLEPG8yaU/RQdw2WA=
-=hvBd
------END PGP SIGNATURE-----
-
---nextPart4254706.QJsf47GRbO--
 
 
 -------------------------------------------------------
