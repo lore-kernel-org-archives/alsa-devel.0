@@ -1,51 +1,40 @@
-From: David Garcia Garzon <dgarcia@iua.upf.es>
-Subject: In progress: User documentation in Spanish
-Date: Thu, 20 Nov 2003 21:10:14 +0100
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <200311202110.14217.dgarcia@iua.upf.es>
+From: Karim Yaghmour <karim@opersys.com>
+Subject: Re: USB Audio problems
+Date: Thu, 20 Nov 2003 15:25:58 -0500
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <3FBD2356.6090002@opersys.com>
+References: <3FBBC461.1020006@opersys.com> <3FBC560B.7040104@opersys.com> <3FBC91C4.7020209@gmx.li>
+Reply-To: karim@opersys.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-Content-Disposition: inline
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: linux-audio-dev-request@music.columbia.edu, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3FBC91C4.7020209@gmx.li>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Niklas Werner <bergtroll@gmx.li>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am currently working on a 'no-compilation, no-installation, no-programming'
-user manual for Alsa-Jack-Ladspa.
 
-I wanted to bring some friends of mine to Linux. They use Windows based music
-software, so i intended to do some introduction (in spanish) to the
-capababilities of Alsa-Jack-Ladspa(-Ladcca?) arquitecture for final users.
-Due to the initial intent I did it in Spanish. Now it seems language was a
-wrong choice. Most related documentation is full of programming and
-installation details and I think that it is a globally needed documentation.
-So i plan to do it more general and translate it but only after the structure
-would get  some degree of stability.
+Niklas Werner wrote:
+> hmmm, the submit_urb-error is gone, but random lockups and 
+> usb-device-disconnect until reboot have come... (bitkeeper-2.6 from just 
+> one hour ago...) with your function.
 
-The current (Spanish) draft is located at:
-http://www.salleurl.edu/~is04069/Modders/Docs/alsadoc.html
-Most mature sections are 'General arquitecture', 'Sequencer' and 'Config
- files syntax'. Maybe, some alsa hacker who undestand Spanish (Jordi? Nando?)
- could review them. I have lot's of questions, since i had to figure out a
- lot of things from code or from proposals (which i don't know if they
- finally get implemented as explained). But I will ask those questions only
- to the developers lists. That's the correct audience by now, isn't it?
+Interesting. I haven't seen any of these.
 
+Karim
 -- 
-David García Garzón <david.garcia@removespam.iua.upf.es>
-Phone: 034 93 542 21 99
-Music Technology Group, Institut Universitari de l'Audiovisual
-Universitat Pompeu Fabra
+Author, Speaker, Developer, Consultant
+Pushing Embedded and Real-Time Linux Systems Beyond the Limits
+http://www.opersys.com || karim@opersys.com || 514-812-4145
 
 
 
