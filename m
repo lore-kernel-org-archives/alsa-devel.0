@@ -1,19 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: emu10k1 device naming
-Date: Tue, 27 Jul 2004 15:17:06 -0400
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Hammerfall (hdsp) initialization problem
+Date: Tue, 27 Jul 2004 15:26:24 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090955826.1094.65.camel@mindpipe>
-References: <1090729766.1952.7.camel@mindpipe>
-	 <Pine.LNX.4.58.0407251013410.2010@pnote.perex-int.cz>
-	 <1090779307.14951.24.camel@mindpipe>
-	 <Pine.LNX.4.58.0407270852520.1775@pnote.perex-int.cz>
-	 <s5hr7qx4f6l.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0407271937390.2325@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200407271926.i6RJQPeR009489@localhost.localdomain>
+References: <s5hllh54dm0.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0407271937390.2325@pnote.perex-int.cz>
+In-reply-to: Your message of "Tue, 27 Jul 2004 18:30:15 +0200."
+             <s5hllh54dm0.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,41 +15,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>, Thomas Charbonnel <thomas@undata.org>, Tim Blechmann <TimBlechmann@gmx.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-07-27 at 13:38, Jaroslav Kysela wrote:
-> On Tue, 27 Jul 2004, Takashi Iwai wrote:
-> 
-> > Hmm, but there is no big disadvantage to use EFX for the default
-> > capture...  Or do we have any?
-> 
-> Hardware rate conversions.
-> 
+>Jean-Marc Valin wrote:
+>> 
+>> > The problem is that you have to know the PCI pointer to call
+>> > dma_alloc_coherent() correctly beforehand.  Otherwise you'll get only
+>> > ZONE_DMA under 16MB region.
+>> 
+>> Still, there must be *something* that can be done, no? What are other
+>> OSs doing about that? I mean, the card manual doesn't say "if you insert
+>> this card after boot, it won't work", so I don't see why ALSA
 
-Correct, I did not think of this.  The current default allows stereo
-capture and playback at any sample rate, albeit at the expense of
-multichannel, low latency capabilities.  This is the best default.
+actually, the manual for other OS'es *does* say that, at least it does
+for the non-hotplugged devices like the original digi9652. i have
+always assumed that the same problem would exist for hot-pluggable
+devices too.
 
-The other problem with the FX capture device is that currently the only
-way to select the channels to record is to manually edit asound.state
-and then do alsactl restore.  To put this in the mixer, we would need to
-add 'EFX Voices Mask', consisting of 64 boolean values, and the number
-of these which are unmuted at any given time must be a power of two.
-Not sure if this is possible with the current mixer API, it certainly
-would not be pretty.
+--p
 
-Anyway, this issue is moot, because it turns out that JACK does support
-full-duplex mode using different devices for capture and playback.  The
-documentation and help text was incorrect.  This will be fixed in the
-next JACK release.
-
-The next release of qjackctl will also be updated to reflect this
-development, as qjackctl currently disables the selection of input and
-output devices if full duplex mode is selected.
-
-Lee
 
 
 
