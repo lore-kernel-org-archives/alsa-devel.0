@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Sun, 21 Nov 2004 03:16:17 +0100
-Message-ID: <a83fcc87165bdcba6f3fac37498b1d12@bugtrack.alsa-project.org>
+Date: Sun, 21 Nov 2004 03:19:11 +0100
+Message-ID: <ca99a2b66c16bfdc7abe4c588de3c88d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DBD8152
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 03:16:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB8CF26B
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 03:19:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-21-2004 03:16 CET
+Last Modified:              11-21-2004 03:19 CET
 ======================================================================
 Summary:                    No sound output  despite unmuting and maximizing all
 volume settings
@@ -72,14 +72,6 @@ with 2.6.9.  Still no sound.
 them.  Still no sound.
 
 ======================================================================
-
-----------------------------------------------------------------------
- bji - 11-21-04 02:55 
-----------------------------------------------------------------------
-Oh, I should mention that previously I had been using Debian unstable and
-the sound worked perfectly.  I believe that the kernel version was 2.6.8
-or 2.6.9 (unfortunately I have blown away that installation and can't get
-any information from it).
 
 ----------------------------------------------------------------------
  bji - 11-21-04 03:16 
@@ -114,6 +106,49 @@ alias sound-service-0-3 snd-pcm-oss
 alias sound-service-0-8 snd-seq-oss
 alias sound-service-0-12 snd-pcm-oss
 
+----------------------------------------------------------------------
+ bji - 11-21-04 03:19 
+----------------------------------------------------------------------
+Here are the modules that are installed after my system boots:
+
+Module                  Size  Used by
+snd_pcm_oss            55208  0 
+snd_mixer_oss          19712  1 snd_pcm_oss
+snd_intel8x0           36924  1 
+snd_ac97_codec         76896  1 snd_intel8x0
+snd_pcm               111240  3 snd_pcm_oss,snd_intel8x0,snd_ac97_codec
+snd_timer              34948  1 snd_pcm
+snd                    61156  8
+snd_pcm_oss,snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer
+soundcore              11360  1 snd
+snd_page_alloc         10504  2 snd_intel8x0,snd_pcm
+uhci_hcd               34960  0 
+ehci_hcd               37380  0 
+ipw2100               146372  0 
+ieee80211              35908  1 ipw2100
+i915                   86788  3 
+md5                     4608  1 
+ipv6                  272320  8 
+ds                     19204  2 
+ipt_REJECT              7296  1 
+ipt_state               2176  1 
+ip_conntrack           45876  1 ipt_state
+iptable_filter          3200  1 
+ip_tables              18048  3 ipt_REJECT,ipt_state,iptable_filter
+dm_mod                 62740  0 
+button                  6928  0 
+battery                 9220  0 
+ac                      5124  0 
+yenta_socket           20864  0 
+pcmcia_core            67396  2 ds,yenta_socket
+arc4                    2176  1 
+ieee80211_crypt_wep     5376  1 
+ieee80211_crypt         7684  2 ieee80211,ieee80211_crypt_wep
+8139too                30336  0 
+mii                     5504  1 8139too
+ext3                  121576  1 
+jbd                    90392  1 ext3
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -123,6 +158,7 @@ Date Modified  Username       Field                    Change
 11-21-04 02:55 bji            Note Added: 0002481                          
 11-21-04 02:56 bji            File Added: proc_asound.txt                    
 11-21-04 03:16 bji            Note Added: 0002483                          
+11-21-04 03:19 bji            Note Added: 0002484                          
 ======================================================================
 
 
