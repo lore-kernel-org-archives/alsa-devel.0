@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001033]: hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-Date: Tue, 5 Apr 2005 14:52:41 +0200
-Message-ID: <41f56477ef62edede581d4ce37d98868@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001037]: No volume control with SIS7012 on SIS 755 Athlon64 system
+Date: Tue, 5 Apr 2005 17:25:11 +0200
+Message-ID: <af7642e21b33d6d592d633d6208449cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50D3D230
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 14:52:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB5F523D
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 17:25:11 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,67 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1033> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1037> 
 ======================================================================
-Reported By:                sjankie
+Reported By:                pharm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1033
-Category:                   PCI - azx
+Issue ID:                   1037
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11.6
+Distribution:               Debian unstable
+Kernel Version:             2.6.10-9-amd64-k8
 ======================================================================
-Date Submitted:             04-03-2005 15:07 CEST
-Last Modified:              04-05-2005 14:52 CEST
+Date Submitted:             04-05-2005 17:25 CEST
+Last Modified:              04-05-2005 17:25 CEST
 ======================================================================
-Summary:                    hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Summary:                    No volume control with SIS7012 on SIS 755 Athlon64
+system
 Description: 
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
+I can't get any volume control on this system. The volume mixer makes no
+difference to the output, which is only affected by the PCM mixer which
+appears to either be 100% or nothing. (ie, if I set it to 0 then the sound
+is muted, but any other setting results in maximum volume). I've tried
+setting ac97_quirk to values up to 13 and none of them made any
+difference.
 
-azx driver compliens about: NO AFG found.
-
-alsmixer starts, but no sound.
+cheers, Phil
 ======================================================================
-
-----------------------------------------------------------------------
- 1g0R - 04-04-05 17:09 
-----------------------------------------------------------------------
-Hi,
-
-I have Asus p5Ad2-e Premium motherboard with intel HDA sound.
-I use alsa 1.0.9rc2 with option "snd name" model=full_dig in
-modprobe.conf
-and its working SPDIF, and analog output.
-Check your /usr/lib or /usr/local/lib alsa module files.
-
-----------------------------------------------------------------------
- sjankie - 04-05-05 14:52 
-----------------------------------------------------------------------
-Can you give me your lspci output?
-Can you be more spec. about the  
-model=full_dig, driver  nags about: unknow word: model
-TNX,
-
-Sjankie
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-05 15:07 sjankie        New Issue                                    
-04-03-05 15:07 sjankie        Kernel Version            => 2.6.11.6        
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-03-05 15:08 sjankie        Issue End Monitor: sjankie                    
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-04-05 17:09 1g0R           Note Added: 0004328                          
-04-05-05 14:52 sjankie        Note Added: 0004337                          
+04-05-05 17:25 pharm          New Issue                                    
+04-05-05 17:25 pharm          Distribution              => Debian unstable 
+04-05-05 17:25 pharm          Kernel Version            => 2.6.10-9-amd64-k8
 ======================================================================
 
 
