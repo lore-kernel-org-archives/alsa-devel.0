@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Thu, 26 Aug 2004 21:46:35 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] audigy NX 2 alsa and fedora C1
+Date: Thu, 26 Aug 2004 16:28:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040826194635.82F9E2500C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1093552120.5678.88.camel@krustophenia.net>
+References: <Pine.HPX.4.33n.0408261727420.9298-100000@studcom.urz.uni-halle.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC0E21EA
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 21:46:35 +0200 (MEST)
+In-Reply-To: <Pine.HPX.4.33n.0408261727420.9298-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,91 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: =?ISO-8859-1?Q?Fran=E7ois?= Patte <Francois.Patte@math-info.univ-paris5.fr>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2004-08-26 at 11:29, Clemens Ladisch wrote:
+> François Patte wrote:
+> > I can "see" my sound card with lsusb:
+> >
+> > Bus 002 Device 002: ID 041e:3020 Creative Technology, Ltd
+> >
+> > But  cat /proc/asound/cards replies:
+> >
+> > --- no soundcards ---
+> >
+> > lsmod | grep snd gives:
+> >
+> > snd-usb-audio          60192   0  (unused)
+> > ...
+> > and the audio modules is also installed.
+> 
+> The audio module is the kernel's oss driver which conflicts with the
+> ALSA driver.  Don't load it.
+> 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
-======================================================================
-Reported By:                Cyrille
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     432
-Category:                   PCI - atiixp-modem
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10
-Kernel Version:             2.4.24
-======================================================================
-Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              08-26-2004 21:46 CEST
-======================================================================
-Summary:                    Impossible de se connecter : NODIALTONE
-Description: 
-I've got a TOSHIBA SATELITTE A30 222 laptop
-Sound card and modem are based upon ATI IXP
-But I'm not able to run modem in spite of the differents bug-report on
-ALSA web site
-(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
--
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
- -
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
-) and on Unixtrix.com (http://www.unixtrix.com/)
+This seems to be the second most common source of problems (#1 being
+mixer issues): conflicts between ALSA and OSS drivers.
 
-Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
--, I'm always in the same situation : compilation is OK, modem driver OK
-but I'm not able to connect : NODIALTONE
-======================================================================
+Would it be feasible to have the ALSA drivers detect if there is an OSS
+module loaded, and complain loudly?  Then at least it will show up in
+dmesg.
 
-----------------------------------------------------------------------
- sashak - 08-25-2004 19:11 CEST 
-----------------------------------------------------------------------
-There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
-bit in ATI_REG_CMD register (reg 003, bit 27 - look in
-'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
-to reported here - DMA works ok, line still be disconnected.
+Lee
 
-Uploaded patch solves the problem.
-
-----------------------------------------------------------------------
- netstar - 08-26-2004 01:18 CEST 
-----------------------------------------------------------------------
-Additional problems with patch when applied to alsa CVS.  All conditions
-necessary are met.
-
-----------------------------------------------------------------------
- netstar - 08-26-2004 18:54 CEST 
-----------------------------------------------------------------------
-Forget that, now working fine, congratulations.
-
-----------------------------------------------------------------------
- Cyrille - 08-26-2004 21:46 CEST 
-----------------------------------------------------------------------
-Concretrely, does it mean the current version of alsa driver will not run
-with this hardware ?
-Thanx
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-08-04 19:02 Cyrille        New Bug                                      
-08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
-08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
-08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
-08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
-08-25-04 19:11 sashak         Bugnote Added: 0001624                       
-08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
-08-26-04 01:18 netstar        Bugnote Added: 0001630                       
-08-26-04 18:54 netstar        Bugnote Added: 0001634                       
-08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
-======================================================================
 
 
 -------------------------------------------------------
