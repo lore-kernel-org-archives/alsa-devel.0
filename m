@@ -1,16 +1,15 @@
-From: Joachim Blaabjerg <styx@gentoo.org>
-Subject: Re: Fwd: [Alsa-user] VIA VT8235 (ALC201) problems
-Date: Wed, 16 Oct 2002 18:39:51 +0200
+From: Peter L Jones <peter@drealm.org.uk>
+Subject: Re: help needed on how to autoload snd-usb-midi
+Date: Wed, 16 Oct 2002 18:49:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210161839.51651.styx@gentoo.org>
-References: <200210161628.19666.styx@gentoo.org> <200210161826.12753.styx@gentoo.org> <s5hfzv65opd.wl@alsa2.suse.de>
+Message-ID: <200210161849.29189@advent.drealm.org.uk>
+References: <Pine.HPX.4.33n.0210161227530.11784-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfzv65opd.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0210161227530.11784-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,44 +18,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 16 October 2002 18:32, Takashi Iwai wrote:
-> At Wed, 16 Oct 2002 18:26:12 +0200,
+On Wednesday 16 Oct 2002 12:19, Clemens Ladisch wrote:
+[snip]
 >
-> Joachim Blaabjerg wrote:
-> > On Wednesday 16 October 2002 18:12, you wrote:
-> > > 8235 has the same pci id with 8233, so it's ok.
-> > >
-> > >
-> > > Takashi
-> >
-> > As far as I know, though, the 8235 south bridge uses a different sound
-> > chip. VT8233 uses ALC650, while VT8235 uses ALC201. Or am I wrong?
->
-> yes, you are confused among two things.
->
-> ALC650 and ALC201 are AC97 codecs, which corresponds to ADC/DAC and
-> mixer parts.  it has nothing to do with the sound engine.
-> the sound core of VT8235 is almost identical with 8233, thus via82xx
-> driver is the one you need.
+> Well, the real reason why I wrote a sequencer driver was that I wanted to
+> decide between a rawmidi and a sequencer driver, but there wasn't any
+> sequencer driver supporting input, so I had to write one to find out about
+> it.  ;-)
 
-Ah, I see. I guess this is an alsa-user issue, then. Sorry :)
+That's a _good_ reason in my book... ;-)
 
-> > And no, I still can't get sound. :)
 >
-> please elaborate the phenomenon __on the latest driver__.
+> It turns out there isn't any real advantage over a rawmidi driver, so I
+> think I'll change the driver to use rawmidi in the next few days.
+
+Will this affect the code used when I'm playing (with) my USB MIDI keyboard?  
+(i.e. do I need to test it? ;-) )
 >
-> * totally silent  --> check the mixer configuration?
 >
-> * playback produces repeated sounds --> irq problem?
+> Regards
+> Clemens
+>
+>
+>
+> -------------------------------------------------------
+> This sf.net email is sponsored by: viaVerio will pay you up to
+> $1,000 for every account that you consolidate with us.
+> http://ad.doubleclick.net/clk;4749864;7604308;v?
+> http://www.viaverio.com/consolidator/osdn.cfm
+> _______________________________________________
 
-That might be it. Thanks for the assistance!
+Oh dear, we're selling stuff for sf.net :-))
 
-Best Regards,
-
+-- Peter
 
 
 -------------------------------------------------------
