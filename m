@@ -1,15 +1,13 @@
-From: Friedrich.Ewaldt@gmx.de
-Subject: Re: Terratec DMX XFire DSP
-Date: Fri, 2 Aug 2002 13:00:06 +0200 (MEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: MIDI+USB - one way?
+Date: Fri, 02 Aug 2002 13:06:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7280.1028286006@www26.gmx.net>
+Message-ID: <3D4A67B8.730CE3F@ladisch.de>
+References: <20020802001554.48f2f13a.mis@creazone.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mx0.gmx.net (mx0.gmx.net [213.165.64.100])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id NAA01892
-	for <alsa-devel@alsa-project.org>; Fri, 2 Aug 2002 13:00:38 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,41 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: alsa-devel@alsa-project.org
+To: Michal Seta <mis@creazone.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Benny,
+Michal Seta wrote:
+> I got a midisport2x2 interface.  I had it working with the usb-midi
+> driver  but then I found out that alsa .rc3 had support for usb-midi.
+> So I got the CVS version and all compiled fine.  I had it working,
+> too.  Now, for some strange reason, no matter what I try I am only
+> able to get MIDI -out but can't get MIDI-in.  I havn't really tested
+> with alsa compatible software (aseqview only) I need access to ramidi
+> devices (well, for now).
 
-I'm quite sure. Have a look at the following link <;-)
+I tested the snd-usb-midi driver with the ALSA rawmidi test programs
+(rawmidi and midiloop in alsa-lib/test), and it worked.
 
-ftp://ftp.terratec.de/Audio/DMXXfire/Images/DMXXFire1024_Board_L.jpg
+I've already heard rumors that the OSS-compatible rawmidi input doesn't
+work. Try to use /dev/snd/midiC?D? instead.
 
->>regarding your cs46xx DSP and codec list:
->>AFAIK the Xfire card has got a CS4624 DSP, not a CS4630. The main (only?)
->>difference should be the processing power (CS4624: 255MIPS, CS4630:
->>420MIPS).
->
->Are you sure ?
->If the Windows system properties tells say that's a CS4624 it can be 
->becourse
->it uses the same driver for both cs4630 and cs4624, as they are binary 
->compatible.
->If you do a "lspci" on Linux it will probably say that it's cs4624/ 
->..SoundFusion (something), but does
->not mean that the device really has a cs4624.
+It seems I'll have to do some further testing over the weekend ...
 
->Just sounds strange for me that Terratec have choosen the cs4624 ....
 
-(It was probably cheaper. The XFire was a competitive product to the
-Soundblaster1024. It was about 100DM ~ 50EU ~ 50$)
-
-regards fritz_e
-
--- 
-GMX - Die Kommunikationsplattform im Internet.
-http://www.gmx.net
-
+HTH
+Clemens
 
 
 -------------------------------------------------------
