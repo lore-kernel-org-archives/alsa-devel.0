@@ -1,10 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Channel modes feature request.
-Date: Tue, 12 Aug 2003 00:19:34 +0100
+From: "Edward Wildgoose" <Ed@Wildgooses.com>
+Subject: Re: RME HDSP 9632 driver
+Date: Tue, 12 Aug 2003 10:02:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F382486.4070604@superbug.demon.co.uk>
+Message-ID: <002901c360b0$7b2bbb40$cb40a8c0@FRiskMan.com>
+References: <32833.62.106.184.128.1060585201.squirrel@www.undata.org>        <200308111132.10869.chris@realcomputerguy.com> <33325.62.106.184.128.1060616722.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,23 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a SB live audio card.
-I can open it with device names like: -
-surround40 (Front Left, Front Right, Rear Left, Rear Right)
-surround51 (Front Left, Front Right, Rear Left, Rear Right, Center, LFE)
+> I've just got an answer from RME. Expect something to test soon :)
 
-There is a requirement for: -
-surround41 (Front Left, Front Right, Rear Left, Rear Right, LFE)
-surround50 (Front Left, Front Right, Rear Left, Rear Right, Center)
+Wow.  Are you getting a test card or just documentation?
 
-How can I get alsa to support these ?
+The vague reviews suggest that the analogue quality on this card is going to
+better even than the 96/8, so I'm definitely a potential buyer... (if you
+get a test card, I would be interested to hear subjective comments on
+quality versus other RME cards)
 
-Cheers
-James
-
+Ed W
 
 
 
