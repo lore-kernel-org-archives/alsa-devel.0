@@ -1,13 +1,21 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: RE: Dma query
-Date: Thu, 26 Feb 2004 15:26:11 +0100 (CET)
+Subject: Re: alsa-lib & oss 1.0.3rc1
+Date: Thu, 26 Feb 2004 15:33:44 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402261518490.13076@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F29032@DBDE01>
+Message-ID: <Pine.LNX.4.58.0402261530490.13076@pnote.perex-int.cz>
+References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
+ <1077754003.2680.26.camel@thor.asgaard.local>  <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
+  <1077804788.27443.51.camel@thor.asgaard.local>
+ <Pine.LNX.4.58.0402261510310.13076@pnote.perex-int.cz>
+ <1077805803.2677.67.camel@thor.asgaard.local>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F29032@DBDE01>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA30126
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 15:38:35 +0100
+In-Reply-To: <1077805803.2677.67.camel@thor.asgaard.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,48 +24,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 26 Feb 2004, Gupta, Kshitij wrote:
+On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
 
-> Hi,
-> 	So does that mean that the __next period__ DMA transfer parameters
-> should be set in the interrupt routine(end of transfer of one period).  But
-> to set the next DMA transfer params we must know the start address of the
-> buffer which the middle layer has filled (and if the middle layer has filled
-> up more than one buffers then this buffer should be at the head of the
-> list).
-> Also one more point is that the hardware provides us the mechanism of
-> linking the DMA channels ( linking means that once one dma channel finishes
-> the transfer other one starts automatically).  So this feature provides us
-> the facility of queuing up the DMA transfers.
-> regards
-> -kshitij
+> On Thu, 2004-02-26 at 15:10, Jaroslav Kysela wrote:
+> >=20
+> > Can you try with the mpg123 program? It works on x86.
+>=20
+> It can successfully print the usage info, but also crashes when trying
+> to actually play a file. Note that even gdb crashes on startup, so the
+> problem seems completely unrelated to sound?
 
-Basically, we only copy the soundcard hardware and old ISA DMA engine 
-which is same as for PCI hardware etc.
+It looks that the wrapper code does not work as expected.
+Can you add a printf calls to all public functions in=20
+the alsa-oss/alsa/alsa-oss.c code, so we can determine
+where the code hangs?
 
-The buffer size is divided to subblocks (we call them periods). These 
-periods determine spaces between interrupts and it's not necessary that
-buffer_size == period_size * N (where N is an integer). Some hardware 
-(like ISA DMA controllers) can do any period sizes.
 
-So, simply program your DMA controller to runtime->dma_addr + offset 
-for actual period and next periods. If you allow to set any period size, 
-then you need also handle shifts (you can avoid this by settings
-snd_pcm_hw_constraint_integer(runtime, SNDRV_PCM_HW_PARAM_PERIODS)) ).
-
-> ps: one more nasty question I wanted to ask on the list was about how much
-> time does it take to write a driver(from scratch) with such a complex
-> framework ;)...probably just sharing experiences....
-
-One week with full debugging. And I don't think that coding drivers is 
-complex, but it's required to know what's going on in the midlevel code
-and you need to know the Linux kernel side memory handling.
-
-						Jaroslav
+=09=09=09=09=09=09Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
