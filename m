@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] dmix share one socket to more than one user
-Date: Sun, 7 Dec 2003 10:33:02 +0100 (CET)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Re: doc-page
+Date: Mon, 08 Dec 2003 00:43:21 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312071030270.20863@pnote.perex-int.cz>
-References: <20031207042229.GB26017@bart.intergenia.de>
+Message-ID: <3FD34A99.9050309@boosthardware.com>
+References: <20031204194243.4841b5a7.mista.tapas@gmx.net> <3FCF87DB.10106@boosthardware.com> <20031205171604.GA19309@tuba.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031207042229.GB26017@bart.intergenia.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,48 +16,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Maik Broemme <mbroemme@plusserver.de>
+To: Martin Langer <martin-langer@gmx.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 7 Dec 2003, Maik Broemme wrote:
-
-> Hi,
+Martin Langer wrote:
+> Thank you very much, Patrick for the work you've done until now.
 > 
-> today i got some problems with the dmix pcm plugin, i start one
-> mpg123 as root and later i want to start as normal user alsaplayer
-> to test something. I got permission denied error, because the socket
-> is only writable from the user who has created it. I have made a
-> little patch which implements a new config entry for the socket
-> permissions. For example:
+> But one point I still miss is some kind of browseable Changelog. And a good
+> complete changelog history is also good for detecting bugs.
 > 
-> pcm.softmix {
->         type dmix
->         ipc_key 1024
->         ipc_perm 666
-> ...
-> }
+> Well, only the users in the mailling lists can know if driver xy has changed
+> (or maybe improved) since the last version or not. So normal users have to
+> try out each version. And that's far away from perfect IMHO.
 > 
-> If you are interested in i could do this for all pcm plugins which
-> creates a socket, also i could implement another entry like
-> ipc_group = "audio"; no problem i think with getgrgid(); Another
-> thing which is changed now; the default file permissions if no
-> ipc_perm entry in the config file exists, is 0644, i think there
-> is no need to have 755 for the socket :)
 
-I changed the default permissions to 0600 to provide better security. 
-Your code is in CVS (with modifications for dsnoop and dmix plugins).
+Nice idea. I think I know how this can be accomplished too.
 
-The 'ipc_group' option might be also useable, so if you find a bit of 
-time, I like to see it in alsa-lib.
+I'll look into it.
 
-					Thanks,
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
