@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000196]: full duplex doesn't work any more
-Date: Tue, 22 Mar 2005 09:38:25 +0100
-Message-ID: <5aa6562552441a5c13e344620148a313@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
+Date: Tue, 22 Mar 2005 09:41:19 +0100
+Message-ID: <369bb3849202e89dfdf5d1d07af8cae6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 926C928B
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:38:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F89F28B
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:41:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,66 +21,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=196> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
 ======================================================================
-Reported By:                nathanel
+Reported By:                vapspwi
 Assigned To:                
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   196
-Category:                   
+Project:                    ALSA - utils
+Issue ID:                   849
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     closed
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             04-08-2004 20:59 CEST
-Last Modified:              03-22-2005 09:38 CET
+Date Submitted:             01-26-2005 20:15 CET
+Last Modified:              03-22-2005 09:41 CET
 ======================================================================
-Summary:                    full duplex doesn't work any more
+Summary:                    aplay apparently plays mono wav files using OSS, but
+plays stereo wav files using ALSA
 Description: 
-I'm using the attached .asoundrc to separate front an rear speakers of my
-Soundblaster Live! to dsp and dsp1 respectively. I have my headphones
-connected to the rear speaker output and running gnomemeeting with
-alsa-oss on dsp1. Unfortunately this setup stopped working with alsa-oss
-version 1.0.3 or higher (Different versions of alsa-libs didn't make any
-difference). Playing music solely on dsp1 still works (tried with xmms
-OSS) and recording also works (other people can hear me in gnomemeeting),
-but both at the same time is no longer functioning (read: I can't hear my
-dialog partner). As gnomemeering opens the audio device for recording
-first, i suspect that full duplex support got broken somewhere between
-1.0.2 and 1.0.3.
+Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
+aplay, the output is routed to all 26 playback channels of my HDSP 9652
+card (observed using hdspmixer).  Based on some web research, it appears
+that this is because aplay is using OSS to play the mono wav file.  When I
+play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
+output is routed only to playback channels 1 and 2 of the HDSP 9652,
+apparently because aplay is using ALSA to play the stereo wav file.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-22-05 09:37 
+ tiwai - 01-31-05 19:01 
 ----------------------------------------------------------------------
-It has been a long time since you filed this bug.  You never
-got a reply.  Have you managed to make any progress on it on
-your own?
+I guess you meant aplay instead of alsamixer?
 
+Anyway, aplay has nothing to do with OSS.  It can't.  Never ever.
 
+What is the problem?  The behavior to routing the channels depends on the
+configuration of "plug" layer.  As default, only first channels are copied
+except for mono stream.  You can change this policy in your ~/.asoundrc. 
+See the alsa-lib's reference.
 
 ----------------------------------------------------------------------
- nathanel - 03-21-05 16:15 
+ jdthood - 03-20-05 13:45 
 ----------------------------------------------------------------------
-Unfortunately no. Meanwhile I had some look at the changes between alsa-oss
-1.0.2 and 1.0.3 and it seems to me that some major rewrite/refactoring was
-going on at that time, making it quite hard to spot any differences that
-could be the cause. I eventually gave up and for now I'm still sticking to
-the old version.
+This one can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-08-04 20:59 nathanel       New Issue                                    
-04-08-04 20:59 nathanel       File Added: .asoundrc                        
-03-20-05 23:59 jdthood        Note Added: 0004104                          
-03-21-05 16:15 nathanel       Note Added: 0004119                          
-03-22-05 09:37 jdthood        Note Edited: 0004104                         
-03-22-05 09:38 jdthood        Status                   new => feedback     
+01-26-05 20:15 vapspwi        New Issue                                    
+01-26-05 20:16 vapspwi        Issue Monitored: vapspwi                     
+01-26-05 23:46 vapspwi        Issue End Monitor: vapspwi                    
+01-31-05 19:01 tiwai          Note Added: 0003455                          
+03-20-05 13:45 jdthood        Note Added: 0004088                          
+03-22-05 09:41 jdthood        Status                   new => closed       
+03-22-05 09:41 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
