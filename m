@@ -1,11 +1,10 @@
-From: Matthew Wilson <matthewwilson@dsl.pipex.com>
-Subject: M-Audio MobilePre
-Date: 28 Dec 2003 18:14:43 +0000
+From: Markus Gaugusch <markus@gaugusch.at>
+Subject: SonyPI module and via82xx sound driver
+Date: Sun, 28 Dec 2003 20:47:07 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1072635283.4185.4.camel@localhost.localdomain>
+Message-ID: <Pine.LNX.4.53.0312282043360.31435@tweety.gaugusch.at>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,17 +17,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Greetings list,
-Could I enquire as to progress with the MobilePre and other related
-cards? I read in the archives a firmware loader is required in order for
-them to work.  If the firmware were loaded under windows, could the card
-be used? I am going to buy one of these (use under win until ALSA
-support is ready) and would be happy to test, although I am an ALSA
-newbie.
+Hi,
+The sonypi module uses IO Address 0x1080 - 0x1084B, which is in the range
+of the via82xx sound driver (0x1000 - 0x10ff). Is it possible to exclude
+the address range of the sonypi module in the via82xx driver? I'm pretty
+sure that it isn't really used by ALSA :)
 
-cheers
-Matthew Wilson.
+thanks
+Markus
 
+-- 
+__________________    /"\
+Markus Gaugusch       \ /    ASCII Ribbon Campaign
+markus(at)gaugusch.at  X     Against HTML Mail
+                      / \
 
 
 -------------------------------------------------------
