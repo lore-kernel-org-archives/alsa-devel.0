@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000705]: RME96 Driver crashes
-Date: Sat, 4 Dec 2004 12:30:38 +0100
-Message-ID: <4971f7ea93ffdda34f08bf2ff39f0c2c@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [PATCH] New snd-audigyls driver available.
+Date: Sat, 04 Dec 2004 12:38:39 +0000
+Message-ID: <41B1AFCF.5040301@superbug.co.uk>
+References: <41AF9A47.3060706@superbug.co.uk>	<s5hk6rzzk5i.wl@alsa2.suse.de>	<41B0BC11.5090106@superbug.co.uk>	<s5h4qj32ln6.wl@alsa2.suse.de>	<41B0CA3C.8070606@superbug.co.uk> <s5hzn0v1441.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8492328
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 12:30:38 +0100 (MET)
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 759EB32D
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 13:38:44 +0100 (MET)
+In-Reply-To: <s5hzn0v1441.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +20,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+>>>
+>>>Shall I replace the struct/function names from audigyls to ca0106,
+>>>too?  Or, would you like to keep audigyls there?
+>>>
+>>>
+>>>Takashi
+>>>
+>>
+>>Ah! Good question. I think for the sake of consistancy, replacing those 
+>>would also be a good idea.
+>>Do you want me to do that, or would it be easier if you do it.
+> 
+> 
+> Could you do that?  I can't test the changed driver here.
+> 
+> 
+> Takashi
+> 
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
-======================================================================
-Reported By:                FishB8
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   705
-Category:                   PCI - RME 96
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-03-2004 23:43 CET
-Last Modified:              12-04-2004 12:30 CET
-======================================================================
-Summary:                    RME96 Driver crashes
-Description: 
-Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
-it to crash. Whenever an audio program uses ALSA and stops playing the
-driver hangs. When trying to start JACK, it never gets started but the CPU
-hits 100%. It's impossible to kill any of the programs because any program
-dealing with processes hangs as well. The system will not totally shut
-down and has to be reset. Kernel 2.6.8 works just fine.
-======================================================================
+Done, download the new ca0106 driver from:
+http://www.alsa-project.org/~james/alsa-driver/ca0106/
 
-----------------------------------------------------------------------
- martin - 12-04-04 12:30 
-----------------------------------------------------------------------
-please apply the patch called "pcmnative.patch" from bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611 or use the
-ALSA CVS version.
+The install.txt explains how to integrate it into the alsa-driver CVS.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-03-04 23:43 FishB8         New Issue                                    
-12-03-04 23:43 FishB8         File Added: config                           
-12-03-04 23:43 FishB8         Distribution              => Gentoo          
-12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
-12-04-04 12:30 martin         Note Added: 0002715                          
-======================================================================
-
-
+The CA0106.conf will replace the AudigyLS.conf
 
 
 -------------------------------------------------------
