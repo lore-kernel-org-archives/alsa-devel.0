@@ -1,11 +1,10 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: ES1938 MIDI input not working?
-Date: Mon, 26 May 2003 18:28:52 +0200 (METDST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: To soundcard matrix maintainer
+Date: 26 May 2003 21:57:17 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0305261828210.26683-100000@studcom.urz.uni-halle.de>
+Message-ID: <1053986238.975.7.camel@Jay>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed; boundary="=-EApMQS6fh3CQ7TXRPtJk"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,62 +14,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I have a report that, with an ES1938 card, MIDI (input only) doesn't =
-work.
-It looks as if MIDI interrupts aren't generated or acknowledged prope=
-rly.
-
-es9138.c has the following MIDI interrupt code:
-
-=09/* MPU401 */
-=09if (status & 0x80) {
-=09=09// snd_es1938_mixer_bits(chip, ESSSB_IREG_MPU401CONTROL, 0x40, =
-0); /* ack? */
-=09=09if (chip->rmidi) {
-=09=09=09handled =3D 1;
-=09=09=09snd_mpu401_uart_interrupt(irq, chip->rmidi->private_data, re=
-gs);
-=09=09}
-=09}
-
-This was added in revision 1.6 of es1938.c, with the log message "not
-tested well". In revision 1.22, the "ack?" line was commented out, wi=
-thout
-any relevant log message.
-
-Has this code been tested? Does anybody know if it works, somewhere?
+--=-EApMQS6fh3CQ7TXRPtJk
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
 
-Regards,
-Clemens
+Please, can you replace the part about Echoaudio cards with the attached
+file ?
+
+Tnx.
 
 
+--=-EApMQS6fh3CQ7TXRPtJk
+Content-Disposition: attachment; filename=echocards.html
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; name=echocards.html; charset=ISO-8859-1
 
----------- Forwarded message ----------
-Date: Mon, 26 May 2003 10:27:05 +0200
-=46rom: Stefan Gruber <GruberLISCON@netscape.net>
-Newsgroups: de.comp.os.unix.linux.misc, de.rec.musik.elektronisch
-Subject: Re: MIDI: Ausgabe ja, Eingabe nein
+<tr><th rowspan=3D"10">
+     <a href=3D"http://www.echoaudio.com/">Echo Digital Audio</a>
+ </tr>
+ <tr>
+      <td>Darla20</td>
+      <td>Motorola DSP56301</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>&nbsp;</td>
+    </tr>
+ <tr>
+      <td>Gina20</td>
+      <td>Motorola DSP56301</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>[Rio][Tio][Aio]</td>
+    </tr>
+ <tr>
+      <td>Laya20</td>
+      <td>Motorola DSP56301</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>[Rio][Tio][Aio]</td>
+    </tr>
+ <tr>
+      <td>Darla24</td>
+      <td>Motorola DSP56301</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>&nbsp;</td>
+    </tr>
+ <tr>
+      <td>Gina24</td>
+      <td>DSP56301 or DSP56361</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>[Rio][Tio][Aio]</td>
+    </tr>
+ <tr>
+      <td>Layla24</td>
+      <td>Motorola DSP56361</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>[Rio][Tio][Aio]</td>
+    </tr>
+ <tr>
+      <td>Mona</td>
+      <td>DSP56301 or DSP56361</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>[Rio][Tio][Aio]</td>
+    </tr>
+ <tr>
+      <td>Mia</td>
+      <td>Motorola DSP56361</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>(4)[Rio]</td>
+    </tr>
+ <tr bgcolor=3D"#aaaaaa">
+      <td>Indigo</td>
+      <td>Motorola DSP56361</td>
+      <td align=3D"center"><a href=3D"http://space.virgilio.it/g_pochini@vi=
+rgilio.it/ea.html">Details</a></td>
+      <td>[X?]</td>
+    </tr>
 
-(... cat /dev/midi00 ...)
-
-> Wird dabei "Rx bytes" in /proc/asound/card0/midi0 hochgez=E4hlt?
-
-Nein. "Rx bytes" bleibt permanent auf Null.
-
-> Wird bei empfangenen MIDI-Bytes ein Interrupt generiert? (kann man =
-in
-> /proc/interrupts mitz=E4hlen)
-
-Scheinbar kommt auch hier nichts. Auf welchem IRQ m=FCsste der denn k=
-ommen?
-
-
+--=-EApMQS6fh3CQ7TXRPtJk--
 
 
 
