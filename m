@@ -1,8 +1,8 @@
 From: Andrei Boros <andrei@srr.ro>
-Subject: Opti92x-ad1848 won't take Opti924 card
-Date: Mon, 22 Sep 2003 12:00:32 +0300
+Subject: cvs alsa-lib compilation :
+Date: Mon, 22 Sep 2003 12:06:38 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F6EBA30.28AC216F@srr.ro>
+Message-ID: <3F6EBB9E.C9C13190@srr.ro>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -19,63 +19,58 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
- Updated cvs tree 30min ago. Compiled the driver. Installed the driver.
- System is kernel-2.2.24, glibc-2.1.3
- configure ran with --with-debug=detect
+ running ./cvscompile in alsa-lib (cvs tree) yields the following : 
 
- gate:~# modprobe snd-opti92x-ad1848
-/lib/modules/2.2.24/misc/snd-opti92x-ad1848.o: unresolved symbol
-isapnp_resource_change_R09b965af
-snd: Device or resource busy
+ gate:~/install/alsa-cvs/alsa-lib# ./cvscompile
+configure.in:44: warning: do not use m4_patsubst: use patsubst or
+m4_bpatsubst
+configure.in:182: warning: do not use m4_regexp: use regexp or
+m4_bregexp
+autoheader: `include/config.h.in' is unchanged
+CFLAGS=-O2 -Wall -W -pipe -g
 
-Though depmod -a returns no errors about unresolved symbols.
 
-Then manually inserting modprobe snd-isapnp will log the following 
-Sep 22 12:00:25 gate kernel: isapnp: Card 'OPTi Audio 16'
-Sep 22 12:00:25 gate kernel: isapnp: 1 Plug & Play card detected total
+Then : 
 
-Then again modprobe snd-opti92x-ad1848, same error, and logs the
-following : 
+checking whether build environment is sane... yes
+/root/install/alsa-cvs/alsa-lib/missing: Unknown `--run' option
+Try `/root/install/alsa-cvs/alsa-lib/missing --help' for more
+information
+configure: WARNING: `missing' script is too old or missing
 
-Sep 22 12:01:22 gate kernel: no OPTi 82C92x soundcard found
 
-in /etc/modules.conf I have the following, based on online documentation
-:
+Note : make is 
+GNU Make version 3.79.1, by Richard Stallman and Roland McGrath.
 
-###########################################################################
-#
-# ALSA modules
-# ALSA portion
-alias char-major-116            snd
-options snd                     cards_limit=2
-#options snd-isapnp                    
-isapnp_reserve_irq=8,9,10,11,12,13,14,15
-alias snd-card-0                snd-cs46xx
-alias snd-card-1                snd-opti92x-ad1848
+gcc is 
+Reading specs from /usr/lib/gcc-lib/i386-slackware-linux/2.95.3/specs
+gcc version 2.95.3 20010315 (release)
 
-# Sound module options here
-options snd-cs46xx              mmap_valid=1 index=0 id="Fortissimo-II"
-enable=1
-options snd-opti-92x-ad1848     index=1 isapnp=1 id="Opti924" port=0x220
-irq=5 dma1=0 fm_port=0x38
+Kernel is 2.2.24
+glibc is 2.1.3 (would like to update to 2.2.5, but still having problems
+with it).
 
-# OSS/Free portion
-alias char-major-14             soundcore
-alias sound-slot-0              snd-card-0
-alias sound-slot-1              snd-card-1
+Ok, so far these seem to be warnings. 
 
-# card #1
-alias sound-service-0-0         snd-mixer-oss
-alias sound-service-0-1         snd-seq-oss
-alias sound-service-0-3         snd-pcm-oss
-alias sound-service-0-8         snd-seq-oss
-alias sound-service-0-12        snd-pcm-oss
+./cvscompile finally fails with : 
 
-# card #2
-alias sound-service-1-0         snd-mixer-oss
-alias sound-service-1-3         snd-pcm-oss
-alias sound-service-1-12        snd-pcm-oss
-
+/bin/sh ../../libtool --mode=compile gcc -DHAVE_CONFIG_H -I. -I.
+-I../../include -I../../include    -O2 -Wall -W -pipe -g -c -o
+control_symbols.lo `test -f control_symbols.c || echo
+'./'`control_symbols.c
+make[2]: stat:control_symbols.lo: Too many levels of symbolic links
+/bin/sh ../../libtool --mode=link gcc  -O2 -Wall -W -pipe -g   -o
+libcontrol.la   cards.lo hcontrol.lo control.lo control_hw.lo
+control_shm.lo setup.lo control_symbols.lo
+rm -fr .libs/libcontrol.la .libs/libcontrol.* .libs/libcontrol.*
+(cd . && ln -s cards.lo cards.lo)
+ln: cards.lo: File exists
+make[2]: *** [libcontrol.la] Error 1
+make[2]: Leaving directory
+`/serve/install/alsa-cvs/alsa-lib/src/control'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-lib/src'
+make: *** [all-recursive] Error 1
 
 
 
