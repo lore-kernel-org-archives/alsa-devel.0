@@ -1,12 +1,10 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: [PATCH] cs46xx some few corrections
-Date: Thu, 12 Dec 2002 22:00:07 +0100
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: playback in multiple period_size?
+Date: Thu, 12 Dec 2002 12:50:53 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF8F8D7.2000308@cucumelo.org>
-References: <3DF5A135.4090008@cucumelo.org> <3DF5E870.4040806@gmx.de> <3DF7B30D.7000408@cucumelo.org> <3DF89C1A.9020205@gmx.de>
+Message-ID: <20021212205053.3929.qmail@web11507.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,23 +14,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> As Cirrus doesn't help in the moment, do you have an idea why I managed
-> to get perfect sounding SPDIF input (after switching off/on the input 3
-> times or so) with 0.9.0rc6 and why I don't get undistorted sound with
-> cvs+latest patch? Could you see what loading the win driver before
-> booting into linux changes on the card if I would send some proc/asound/
-> dumps?
-> Thanks!
+Hi all,
 
-You right, it must possible to get it that good as it was
-in rc6. I'll will investigate in on this.
+I have come to realize that, whenever I drain() on a playback_handle to which a
+number of sample non-multiple of the period_size has been written, my
+application waits for several seconds to finally recover with an error EIO.
 
-/Benny
+Is the driver supposed to play audio if less than period_size is present in the
+buffer?
 
+Is the application supposed to always add silence at the end to ensure that a
+multiple of period_size has been written?
+
+Thanks,
+Guilhem.
+
+
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
+http://mailplus.yahoo.com
 
 
 -------------------------------------------------------
