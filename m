@@ -1,12 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa.sf.net
-Date: Mon, 18 Mar 2002 10:06:28 +0100 (CET)
+From: Adam Teeling <ateeling@wua.cc>
+Subject: [non-subcriber] Re: Maestro 3 SPDIF
+Date: Mon, 18 Mar 2002 11:08:56 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203181006210.498-100000@pnote.perex-int.cz>
-References: <m3wuwbndnx.fsf@lugabout.jhcloos.org>
+Message-ID: <20020318110856.71c34bda.ateeling@wua.cc>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <m3wuwbndnx.fsf@lugabout.jhcloos.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,31 +14,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "James H. Cloos Jr." <cloos@jhcloos.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 17 Mar 2002, James H. Cloos Jr. wrote:
+>> Also, the SPDIF output doesn't seem to work, is there a way to turn it on?
+>> It isn't mentioned in asound.state.
 
-> Perhaps someone in the alsa group at sf could upload something like
-> one of the files attached below to:
-> 
->     alsa.sf.net:/home/groups/a/al/alsa/htdocs/index.php 
-> 
-> so anyone going to alsa.sf.net at least gets redirected to either the
-> project page at sf or to alsa-project.org....
-> 
-> first redirects to sf.net/projects/alsa.  The 2nd to alsa-project.org.
+>AFAIK, it's difficult.  ESS provides only a very tiny dsp code.
+>Although there are registers to control spdif, it looks like that we
+>need another dsp code in addition to that, and moreover the
+>initialization of gpio or whatever connection to spdif will be
+>required.  But i may be wrong.  never tested spdif yet.
 
-Thanks. Added.
 
-						Jaroslav
+>Takashi
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Does anyone know if this will be support in the future?
+Is it even possible to support? What can be doen to help?
+I would really like this feature.  Thanks, and if any replys
+could be cc:ed to me that would be great.
+adam
 
 
 _______________________________________________
