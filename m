@@ -1,15 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Fwd: Re: [MPlayer-dev-eng] AV out of sync
-	with "-ao alsa" in gmplayer, mplayer works ok]
-Date: Wed, 29 Dec 2004 05:25:12 -0500
-Message-ID: <1104315912.2984.21.camel@krustophenia.net>
-References: <1104311474.2984.2.camel@krustophenia.net>
-	 <yw1x1xd976fz.fsf@inprovide.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000437]: Problem with the spec file
+Date: Wed, 29 Dec 2004 12:18:07 +0100
+Message-ID: <b160a94a45e320cbe19b8acea501d019@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1x1xd976fz.fsf@inprovide.com>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 272E32E3
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 12:18:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,30 +18,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
-Cc: alsa-devel@lists.sourceforge.net, Reimar.Doeffinger@stud.uni-karlsruhe.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-12-29 at 11:19 +0100, Måns Rullgård wrote:
-> >> From the users perspective things like this make ALSA look bad, while
-> >> the problem is really with gmplayer's shoddy ALSA support.
-> >
 
-Me
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=437> 
+======================================================================
+Reported By:                croiset
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   437
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.4.7-10
+======================================================================
+Date Submitted:             08-13-2004 09:56 CEST
+Last Modified:              12-29-2004 12:18 CET
+======================================================================
+Summary:                    Problem with the spec file
+Description: 
+There is a problem the spec file generated with the configure.
 
-> >>From what I saw of ALSA as a developer it is bad, but that's a bit of
-> > personal opinion of course. What I refer to is very slow software
-> 
+you might replace this line in alsa-driver.spec.in :
+/lib/modules/*/kernel/*
+by :
+/lib/modules/*/misc/*
 
-Reimar
 
-> Who said what here?
-> 
+======================================================================
 
-Anyway, sorry for my previous tone, I would really like to improve the
-situation, by helping the mplayer developers get good alsa support.
+----------------------------------------------------------------------
+ croiset - 08-13-04 10:52 
+----------------------------------------------------------------------
+There is some more modification in the spec file :
 
-Lee
+%build
+KVER=`uname -r`
+%configure --with-moddir=/lib/modules/$KVER/misc
+
+It will permit to install the modules in the good directory KVER instead
+of KVERcustom.
+
+----------------------------------------------------------------------
+ croiset - 12-29-04 12:18 
+----------------------------------------------------------------------
+Ouups it was a problem due to a misconfiguration. The bug can be closed.
+Test made with 1.0.8rc1
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-13-04 09:56 croiset        New Issue                                    
+08-13-04 09:56 croiset        Kernel Version            => 2.4.7-10        
+08-13-04 10:52 croiset        Note Added: 0001561                          
+12-29-04 12:18 croiset        Note Added: 0002995                          
+======================================================================
 
 
 
