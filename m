@@ -1,13 +1,12 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: [ANN][AudioScience] asihpi driver patch
-Date: Wed, 28 Jan 2004 19:51:12 -0800 (PST)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: easy way to query device capabilities
+Date: Fri, 30 Jan 2004 23:11:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040128195112.21820.h005.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20040130231137.22745fc9.mista.tapas@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,26 +18,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The latest driver for AudioScience cards is available as a patch against ALSA
-1.02 from
 
-http://www.audioscience.com/internet/download/linux.htm
+Hi,
 
-Also the latest HPI driver needed to make the whole thing work.
+i wondered if there was a tool that searched the configuration space of
+a pcm device for valid combinations of format, samplerate, channel
+count, etc..
 
+This would be very very useful..
 
-- Eliot
-(still keen to see this incorporated into the ALSA source tree...)
+T.I.A,
+Flo
 
+-- 
+signature :)
 
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
