@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000412]: Matrix does not show that Ensoniq 5880 uses ens1371 driver
-Date: Wed, 13 Oct 2004 08:16:54 +0200 (CEST)
+Subject: [ALSA - WWW server 0000551]: Audigy ES
+Date: Wed, 13 Oct 2004 08:47:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013061654.8C1BD1B00B@server.perex-int.cz>
+Message-ID: <20041013064725.DBDBB1B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5118210
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:16:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CEE92ED
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:47:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,43 +22,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000412
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000551
 ======================================================================
-Reported By:                oanjao
+Reported By:                Jakub Z
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Bug ID:                     412
+Bug ID:                     551
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             07-29-2004 00:31 CEST
-Last Modified:              10-13-2004 08:16 CEST
+Date Submitted:             09-29-2004 22:44 CEST
+Last Modified:              10-13-2004 08:47 CEST
 ======================================================================
-Summary:                    Matrix does not show that Ensoniq 5880 uses ens1371 driver
+Summary:                    Audigy ES
 Description: 
-Please add the Ensoniq 5880 chipset to the list.  It uses the snd-ens1371
-driver.
+Hi. I have bought an Audigy ES. It is an OEM card with the Audigy chip
+(unlike the Audigy LS, which is btw twice as expensive). I was afraid that
+the card would not work with ALSA. I checked the sound matrix on the alsa
+website and it wasn't listed there at all. However, it seems to work
+(well, at least playback works perfectly, recording works also, however
+the volume is much lower compared to a SB Live!. What doesn't work at all
+are my headphones but I'll have to check it, maybe it's my setup).
+
+What steps need to be taken so that the card is added as supported to the
+sound matrix? Also, if you'd like any info regarding that card, just let
+me know.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-13-2004 08:16 CEST 
+ Jakub Z - 09-29-2004 22:57 CEST 
 ----------------------------------------------------------------------
-Added also to Ensoniq table - 5880 is Creative value for newer versions of
-Ensoniq chips.
+Well I have an issue with it that I didn't have with a SB Live!. When I do
+a 'alsactl restore' while playing an mp3, I get:
+
+alsactl: set_control:966: Cannot write control '2:0:0:EMU10K1 PCM Send
+Routing:0' : Operation not permitted
+
+I have to stop the playback and do a 'alsactl restore', then it works.
+
+----------------------------------------------------------------------
+ perex - 10-13-2004 08:47 CEST 
+----------------------------------------------------------------------
+Added to matrix.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-29-04 00:31 oanjao         New Bug                                      
-10-13-04 08:16 perex          Bugnote Added: 0002112                       
-10-13-04 08:16 perex          Assigned To               => perex           
-10-13-04 08:16 perex          Resolution               open => fixed       
-10-13-04 08:16 perex          Status                   new => resolved     
+09-29-04 22:44 Jakub Z        New Bug                                      
+09-29-04 22:57 Jakub Z        Bugnote Added: 0001976                       
+09-29-04 22:59 Jakub Z        Bug Monitored: Jakub Z                       
+10-13-04 08:47 perex          Bugnote Added: 0002113                       
+10-13-04 08:47 perex          Assigned To               => perex           
+10-13-04 08:47 perex          Resolution               open => fixed       
+10-13-04 08:47 perex          Status                   new => resolved     
 ======================================================================
 
 
