@@ -1,13 +1,13 @@
-From: Hartwig Krebitz <a9830608@unet.univie.ac.at>
-Subject: Re: audiophile 192 alsa driver
-Date: Wed, 09 Feb 2005 06:24:02 +0100
-Message-ID: <42099E72.3070105@unet.univie.ac.at>
-References: <4204DD6D.1020203@unet.univie.ac.at> <s5hpszau83o.wl@alsa2.suse.de>
-Reply-To: a9830608@unet.univie.ac.at
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000724]: No apparent support for Creative Sounblaster 24 bit.
+Date: Wed, 9 Feb 2005 07:25:27 +0100
+Message-ID: <f04118b47fc0e9fda73e1862f6646ccf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hpszau83o.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 547E0237
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 07:25:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,59 +17,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
 
-First of all: Thanks for your mail.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=724> 
+======================================================================
+Reported By:                sjberryman
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   724
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               Fedora Core1, Core2 and Suse 9.2
+Kernel Version:             2.6.9 2.4.28 2.6.8
+======================================================================
+Date Submitted:             12-13-2004 09:21 CET
+Last Modified:              02-09-2005 07:25 CET
+======================================================================
+Summary:                    No apparent support for Creative Sounblaster 24 bit.
+Description: 
+No apparent support for Creative Sounblaster 24 bit.
 
-concerning M-Audio:
+Fedora does not find any sound device.
 
-I've posted an inquiry one week ago. I got a standard
-reply: ... can't provide support ... third party
-developers blabla ...
+Susi finds a device but can't activate it.
+======================================================================
 
-Today i received another similar reply from the M-Audio support team.
-I wrote back and tried to point out the problem once again - No answer
-so far.
+----------------------------------------------------------------------
+ sHINOBI - 02-08-05 23:32 
+----------------------------------------------------------------------
+Hello, I have K8N SLI Platinum motherboard with integrated SB Live 24 bit.
+I tried the drivers 1.0.8, but with no luck. There is a following log in
+messages:
 
-concerning codec chips:
+kernel: AC'97 0 does not respond - RESET
+kernel: AC'97 0 access is not valid [0x0], removing mixer.
+kernel: CA0106: probe of 0000:01:0d.0 failed with error -5
 
-What exactly do you mean by codec chips? - A listing of all chips on the
-board, including all id numbers? - I should be able to provide one then.
+Does anyone has an idea what should be wrong or how can I debug it
+further?
 
+I use Fedora Core 3 and the latest devel kernel. The soundcard is detected
+(the same way as sjberryman) but /proc/asound/cards is empty.
 
-Best regards,
-Hartwig
+----------------------------------------------------------------------
+ pzad - 02-09-05 07:25 
+----------------------------------------------------------------------
+This card probably doesn't have AC97 too.
+Search ca0106 driver for line
+if ((chip->serial != 0x10061102) && (chip->serial != 0x10071102) ) { /*
+The SB0410 and SB0413 do not have an ac97 chip. */
 
+and add chip->serial of your card there too.
 
-Takashi Iwai schrieb:
-> At Sat, 05 Feb 2005 15:51:25 +0100,
-> Hartwig Krebitz wrote:
-> 
->>Hello,
->>
->>I hope this is the right place to post this:
->>
->>There was a suggestion to take some pictures of the audiophile 192 which
->>should help identifying the chips and the way they're connected to each
->>other. - I tried to do so. You can find them at
->>http://www.unet.univie.ac.at/~a9830608/map192/index.html - Hope this
->>will help to develop a driver. If there is sth. you can't identify,
->>please drop me a few lines and marked picture. I"ll get back to you as
->>fast as possible.
-> 
-> 
-> Listing up what codec chips are on the card would be helpful, at
-> least.
-> 
-> But above all:  did you already try to send inquiry to M-Audio?
-> M-Audio has been cooperative to ALSA development, so far...
-> 
-> 
-> Takashi
-> 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-13-04 09:21 sjberryman     New Issue                                    
+12-13-04 09:21 sjberryman     Distribution              => Fedora Core1, Core2
+and Suse 9.2
+12-13-04 09:21 sjberryman     Kernel Version            => 2.6.9 2.4.28 2.6.8
+12-13-04 09:26 sjberryman     Issue Monitored: sjberryman                    
+12-13-04 10:07 pzad           Note Added: 0002821                          
+12-16-04 18:28 tiwai          Status                   new => resolved     
+12-16-04 18:28 tiwai          Resolution               open => not an issue
+12-16-04 18:28 tiwai          Assigned To               => tiwai           
+12-16-04 18:28 tiwai          Assigned To              tiwai =>            
+01-19-05 09:08 sjberryman     Status                   resolved => feedback
+01-19-05 09:08 sjberryman     Resolution               not an issue => reopened
+01-19-05 09:08 sjberryman     Note Added: 0003263                          
+01-19-05 14:27 tiwai          Note Added: 0003266                          
+01-22-05 22:15 nadavkav       Note Added: 0003379                          
+01-22-05 23:20 fmoraes        Note Added: 0003381                          
+01-25-05 22:39 Kane32         Note Added: 0003411                          
+01-26-05 13:18 nadavkav       Note Added: 0003416                          
+02-08-05 23:26 sHINOBI        Issue Monitored: sHINOBI                     
+02-08-05 23:32 sHINOBI        Note Added: 0003534                          
+02-09-05 07:25 pzad           Note Added: 0003535                          
+======================================================================
+
 
 
 
