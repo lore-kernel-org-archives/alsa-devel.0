@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Mon, 28 Mar 2005 12:11:53 +0200
-Message-ID: <1d68abf08c313ef95e3ba6dc3c15a92c@bugtrack.alsa-project.org>
+Date: Mon, 28 Mar 2005 12:19:37 +0200
+Message-ID: <0c62e45e1cdc49554e9e2d052392c90e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B6183278
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 12:11:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 729E0278
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 12:19:37 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
 ======================================================================
@@ -35,23 +35,20 @@ Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     feedback
+Status:                     closed
 Distribution:               
 Kernel Version:             2.6.11.5
+Resolution:                 reopened
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-28-2005 12:11 CEST
+Last Modified:              03-28-2005 12:19 CEST
 ======================================================================
 Summary:                    no audio in - unable to record
 Description: 
 I can only get a weak hiss from the card even with the recording level up
 full
 ======================================================================
-
-----------------------------------------------------------------------
- msillence - 03-28-05 02:19 
-----------------------------------------------------------------------
-Thanks James.
 
 ----------------------------------------------------------------------
  Cimmo - 03-28-05 12:11 
@@ -61,6 +58,11 @@ In my Fedora Core 4 test list there is no people with my soundcard, here
 seems the best place to have help.
 
 msillence have you tried some IN input with our board? Does it work?
+
+----------------------------------------------------------------------
+ jcdutton - 03-28-05 12:19 
+----------------------------------------------------------------------
+Won't fix. No documents available from Creative.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +87,8 @@ Date Modified  Username       Field                    Change
 03-28-05 02:00 jcdutton       Note Added: 0004227                          
 03-28-05 02:19 msillence      Note Added: 0004228                          
 03-28-05 12:11 Cimmo          Note Added: 0004238                          
+03-28-05 12:19 jcdutton       Status                   feedback => closed  
+03-28-05 12:19 jcdutton       Note Added: 0004239                          
 ======================================================================
 
 
