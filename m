@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000762]: Driver and all sound aplications hangs
-Date: Thu, 30 Dec 2004 13:17:33 +0100
-Message-ID: <989e72094494a239d8f64587560f23ae@bugtrack.alsa-project.org>
+Date: Thu, 30 Dec 2004 15:03:25 +0100
+Message-ID: <eb487702a1c32c971dbdde9fa433e332@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B73F82C9
-	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 13:17:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 823342DF
+	for <alsa-devel@alsa-project.org>; Thu, 30 Dec 2004 15:03:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,9 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=762> 
+The following issue has been DELETED.
 ======================================================================
 Reported By:                mr-k
 Assigned To:                
@@ -78,6 +76,7 @@ Date Modified  Username       Field                    Change
 12-30-04 13:13 mr-k           Distribution              => Gentoo          
 12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
 12-30-04 13:17 mr-k           Note Added: 0003019                          
+12-30-04 15:03 tiwai          Issue Deleted: 0000762                       
 ======================================================================
 
 
