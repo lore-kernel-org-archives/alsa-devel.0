@@ -1,13 +1,14 @@
-From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: return value of snd_pcm_hw_params_set_rate_near
-Date: Mon, 01 Mar 2004 10:21:34 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Scatter Gather
+Date: Mon, 01 Mar 2004 13:52:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xllmkapnl.fsf@kth.se>
-References: <4042E48F.8090009@comcast.net>
+Message-ID: <Pine.HPX.4.33n.0403010928390.5532-100000@studcom.urz.uni-halle.de>
+References: <1077905854.6881.28.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <1077905854.6881.28.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,40 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Doug McLain <nostar@comcast.net> writes:
+Manuel Jander wrote:
+> AFAIK, it seems that when using a scatter gather buffer, not every
+> period is located inside of a page. ...
+> The problem is that a DMA transfer can not go accross 2 different pages.
+> On Aureal hardware, even on contiguous buffers this causes all sort of
+> odd problems. Each DMA chunk must be on the same page.
+> ...
+> That means that i would have to split each period that crosses a page
+> boundary into 2 DMA chunks, with all the complications involved because
+> of irregular sizes, offsets... ARghhh!
 
-> According to the alsa documentation, the return value of
-> snd_hw_params_set_rate_near is the 'approximate chosen rate', and the
-> 3rd arg being type 'int'.  The two tutorials at the documentation
-> section of the alsa-project website both hold true to this with code
-> like:
->
-> exact_rate = snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, rate, &dir);
->     if (dir != 0) {
->       fprintf(stderr, "The rate %d Hz is not supported by your
->       hardware.\n                      ==> Using %d Hz instead.\n",
->       rate, exact_rate);
->     }
->
-> After unsuccesful attempts at using this function this way (I'm
-> learning linux audio software devel starting with alsa drivers and
-> user interface), I went into the aplay source and found the version
-> that tests a before and after version of arg 3 (which is a pointer to
-> int that gets changed to the result rate by the function) and tests
-> the return only for err. I assume this function changed?  Im at the
-> learning stage so I'm probably stating the obvious, but when your new
-> sometimes reassurance from someone that knows helps.  Is the
-> documentaion just behind, or did this slip by unnoticed?  Curious...
+Yes.  Every driver using SG must do this.  Look into bt87x.c or
+via82xx.c for examples.
 
-The function was changed some time ago, along with a few other similar
-cases.
+> I could just leave the period size as a power of 2, on that way, a
+> period would never cross any page boundary, but most ALSA programs are
+> too picky to accept that kind of restrictions in most cases.
 
--- 
-Måns Rullgård
-mru@kth.se
+Devices like usb and ymfpci have a fixed period size, but their
+drivers emulate arbitrary period sizes.
+
+
+Regards,
+Clemens
+
 
 
 
