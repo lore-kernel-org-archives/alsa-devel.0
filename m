@@ -1,14 +1,16 @@
-From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
-Subject: Re: current cvs, unresolved symbol in snd-msnd-pinnacle.o
-Date: Sat, 20 Jul 2002 00:06:30 +0200 (CEST)
+From: Thorsten Haas <thorsten.haas@gmx.de>
+Subject: Re: quattro multi plugin.
+Date: Sat, 20 Jul 2002 01:44:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020719220630.34677.qmail@web12207.mail.yahoo.com>
-References: <200207192045.NAA16694@cmn29.stanford.edu>
+Message-ID: <200207200144.53693.thorsten.haas@gmx.de>
+References: <3D37BBBA.7030308@boosthardware.com> <3D381A7F.4090708@boosthardware.com> <s5hd6tjr4g9.wl@alsa2.suse.de>
+Reply-To: mail@thorstenhaas.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200207192045.NAA16694@cmn29.stanford.edu>
+In-Reply-To: <s5hd6tjr4g9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,73 +22,27 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+uhm, do I get you right; it is now possible to record from usb-quattro using 
+FOUR channels simultanously?
 
-snd-msnd-pinnacle behaves better now after changing
-alsa-kernel/core/sound.c a bit:
-
-(last lines of the file here:)
->>>
-  /* wrappers */
-#ifdef CONFIG_SND_DEBUG_MEMORY
-EXPORT_SYMBOL(snd_wrapper_kmalloc);
-EXPORT_SYMBOL(snd_wrapper_kfree);
-EXPORT_SYMBOL(snd_wrapper_vmalloc);
-EXPORT_SYMBOL(snd_wrapper_vfree);
-#endif
-#ifdef HACK_PCI_ALLOC_CONSISTENT
-EXPORT_SYMBOL(snd_pci_hack_alloc_consistent);
-#endif
-<<<
-
-Takashi, please put the additional two lines
- EXPORT_SYMBOL(snd_wrapper_vmalloc);
- EXPORT_SYMBOL(snd_wrapper_vfree);
-into cvs.
-
-ciao, 
-karsten
-
- --- Fernando Pablo Lopez-Lezcano
-<nando@ccrma.Stanford.EDU> schrieb: > > > Found this
-last evening, just confirmed it is
-> still there:
-> > >
-> > > # depmod -ae
-> > > depmod: *** Unresolved symbols in
-> > >
+Am Freitag, 19. Juli 2002 19:51 schrieb Takashi Iwai:
+> At Fri, 19 Jul 2002 22:56:15 +0900,
 >
-/lib/modules/2.4.18-11.ll/kernel/drivers/sound/isa/msnd/snd-msnd-pinnacle.o
-> > > depmod: 	vfree
-> >
-> > i hope it's fixed on cvs now.  please give a try.
-> 
-> Not there yet, sorry... :-(
-> 
-> # depmod -ae
-> depmod: *** Unresolved symbols in  
+> Patrick Shirkey wrote:
+> > This is wierd. Using the exact same commands I cannot get jackd to load
+> > now. The card still, ahem, works, cough, with a single pcm device.
 >
-/lib/modules/2.4.18-11.ll/kernel/drivers/sound/isa/msnd/snd-msnd-pinnacle.o
-> depmod: 	snd_wrapper_vfree
-> 
-> -- Fernando
-> 
-> 
+> how about the asoundrc attached below?
+> this will map hw:2,1 and hw:2,2 as 4 channels pcm.
+> i thought that these two devices correspond to 96kHz, so you need to
+> specify other frequency for jackd.
 >
--------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
 >
-https://lists.sourceforge.net/lists/listinfo/alsa-devel 
+> Takashi
 
-__________________________________________________________________
-
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
+-- 
+mailto:mail@thorstenhaas.de
+http://www.thorstenhaas.de 
 
 
 -------------------------------------------------------
