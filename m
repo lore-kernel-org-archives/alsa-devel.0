@@ -1,108 +1,44 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000504]: after the alsa modules are loaded, active speaker beginns to make noise
-Date: Wed, 12 Jan 2005 21:48:12 +0100
-Message-ID: <82f368174a4cf288d0c16099895acd87@bugtrack.alsa-project.org>
+From: Greg KH <greg@kroah.com>
+Subject: Re: [PATCH] fix: macros to detect existance of unlocked_ioctl and compat_ioctl
+Date: Wed, 12 Jan 2005 13:29:54 -0800
+Message-ID: <20050112212954.GA13558@kroah.com>
+References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050112203606.GA23307@mellanox.co.il>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 076A62F3
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 21:48:12 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261474AbVALVhw@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20050112203606.GA23307@mellanox.co.il>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+Cc: Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, VANDROVE@vc.cvut.cz
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, Jan 12, 2005 at 10:36:06PM +0200, Michael S. Tsirkin wrote:
+> To make life bearable for out-of kernel modules, the following patch
+> adds 2 macros so that existance of unlocked_ioctl and compat_ioctl
+> can be easily detected.
+>  
+> Signed-off-by: Michael S. Tsirkin <mst@mellanox.co.il>
+> 
+> diff -puN include/linux/fs.h~ioctl-rework include/linux/fs.h
+> --- 25/include/linux/fs.h~ioctl-rework	Thu Dec 16 15:48:31 2004
+> +++ 25-akpm/include/linux/fs.h	Thu Dec 16 15:48:31 2004
+> @@ -907,6 +907,12 @@ typedef struct {
+>  
+>  typedef int (*read_actor_t)(read_descriptor_t *, struct page *, unsigned long, unsigned long);
+>  
+> +/* These macros are for out of kernel modules to test that
+> + * the kernel supports the unlocked_ioctl and compat_ioctl
+> + * fields in struct file_operations. */
+> +#define HAVE_COMPAT_IOCTL 1
+> +#define HAVE_UNLOCKED_IOCTL 1
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=504> 
-======================================================================
-Reported By:                placew
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   504
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo.2004
-Kernel Version:             2.6.7-gentoo-r6
-======================================================================
-Date Submitted:             09-16-2004 12:36 CEST
-Last Modified:              01-12-2005 21:48 CET
-======================================================================
-Summary:                    after the alsa modules are loaded, active speaker
-beginns to make noise
-Description: 
-i've got my alsa modules compiled in a kernel, v.2.6.7-gentoo-r6. At boot,
-once, there are the alsa modules loaded, active speaker starts hissing.
-When mp3 (or other sound) is playing, the noise is getting low, almoust
-unhearable. Active speaker stops hissing once the modules are unloaded
-during the reboot.  My soundcard is ensoniq PCI128, using module ens1371.
-Thanks for cooperation.
-======================================================================
+No, we do not do that in the kernel today, and I'm pretty sure we don't
+want to start doing it (it would get _huge_ very quickly...)
 
-----------------------------------------------------------------------
- Sebastian - 12-02-04 21:12 
-----------------------------------------------------------------------
-Same here with snd_intel8x0 (Asus A7N8X Deluxe mainboard with nforce2
-onboard-sound). The noise starts when the snd_intel8x0 driver is loaded. 
+Please don't apply this.  Remember, out-of-the-tree modules are on their
+own.
 
-I can't hear the noise when playing music. When I start playing and press
-pause (with xmms), the noise disappears. It starts again when I hit "stop"
-on xmms. This is not xmms-related, same with other players. Seems as if
-accessing the sound device stops the noise as long as the device is being
-used. After releasing the device, the noise comes back.
+thanks,
 
-Muting the channels doesn't help. I can hear the noise with all channels
-muted (including inputs).
-
-A friend of mine found that this only occurs with his computer (Thinkpad
-T20, don't remember the sound chip) with kernel-2.6-included alsa drivers.
-Kernel 2.4 with separate alsa did not show any noise. Didn't tried 2.4
-here but will do so soon.
-
-Sebastian
-
-----------------------------------------------------------------------
- wvd - 01-12-05 21:48 
-----------------------------------------------------------------------
-Same here, modules compiled with a 2.6.10 GNU/Linux, exactly the same
-behaviour as discribed by reporter 'placew'.
-Using the same ensoniq 1371
-Alsa version 1.05a
-Hissing fades when screen activity (RIVA TNT2)
-Muting ALL does not have any effect on the hissing.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-16-04 12:36 placew         New Issue                                    
-09-16-04 12:36 placew         Distribution              => Gentoo.2004     
-09-16-04 12:36 placew         Kernel Version            => 2.6.7-gentoo-r6 
-09-17-04 10:42 placew         Issue Monitored: placew                      
-09-17-04 10:42 placew         Issue End Monitor: placew                    
-09-28-04 16:07 djtm           Note Added: 0001948                          
-12-02-04 21:01 Sebastian      Issue Monitored: Sebastian                    
-12-02-04 21:12 Sebastian      Note Added: 0002698                          
-01-12-05 21:48 wvd            Note Added: 0003179                          
-======================================================================
-
-
-
-
--------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+greg k-h
