@@ -1,17 +1,16 @@
 From: Tim Goetze <tim@quitte.de>
 Subject: Re: m-audio uc33?
-Date: Mon, 22 Dec 2003 20:12:09 +0100 (CET)
+Date: Mon, 22 Dec 2003 20:03:39 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312222004310.532@autumn>
+Message-ID: <Pine.LNX.4.58.0312221918000.532@autumn>
 References: <Pine.LNX.4.58.0312221548530.532@autumn> <20031222163400.GA826@tuba.home>
- <20031222181724.GA19302@fliwatut.scifi> <20031222182423.GB19302@fliwatut.scifi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from natsmtp00.webmailer.de (natsmtp00.rzone.de [81.169.145.165])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA04187
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2003 20:17:25 +0100
-In-Reply-To: <20031222182423.GB19302@fliwatut.scifi>
+Received: from natsmtp01.rzone.de (natsmtp01.rzone.de [81.169.145.166])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA04009
+	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2003 20:08:57 +0100
+In-Reply-To: <20031222163400.GA826@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,25 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Frank Barknecht <fbar@footils.org>
+To: Martin Langer <martin-langer@gmx.de>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Frank Barknecht wrote:
+Martin Langer wrote:
 
->> Yeah, it looks like it is exactly the same, only a lot more expensive
->> than the real one, which is available below 200 Euro for example here:
->> http://www.netzmarkt.de/thomann/artikel-160144.html
+>It looks like an evolution product:
+>http://www.evolution.co.uk/products/evo_uc33e.htm
 >
->Well, now I see that there is a difference between the uc33 and the
->uc33e, at least in price:
->http://www.netzmarkt.de/thomann/artikel-166464.html
+>The evolution keyboards in the past were using normal USB MIDI drivers. Good
+>chances that the uc33 is running in compliance with the specification, too.
+>But I can't give a promise here. In case of uc33 it's not written in their
+>product description. Somewhere else?
 >
->But I wonder, if there is a difference in the hardware, too??
+>BTW: The controller knobs of my Evolution MK-249C are working fine
+>and ALSA has no evolution quirks inside. I don't know a device of
+>them which wasn't class compliant until now.
 
-i think the 'e' variant can dump and receive sysex changing the
-controller mappings (and whatever else is programmable). i'd rather
-rewrite/map events on the host side than fiddle with sysex anyway.
+good to hear. i've dug up a document which i think is the one you are
+referring to, http://www.djcj.org/LAU/guide/evolution-usb-midi.php --
+it talks about *all* evolution keyboards, and the uc-33 looks just
+like a mk-449c without the keys.
+
+>The Evolution guys were very helpful in the past. They have also written a
+>linux HOWTO for their keyboards. But now they are part of M-Audio and that
+>can change a lot...
+
+if i'm not mistaken, m-audio are of the relatively more helpful kind.
+they even provided jaroslav with hw for driver development iirc.
+
+thanks a lot!
 
 tim
 
