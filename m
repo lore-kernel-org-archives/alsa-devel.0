@@ -1,12 +1,12 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Conversion from S16 format to ALAW
-Date: Wed, 17 Nov 2004 08:37:19 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411170836150.16382-100000@studcom.urz.uni-halle.de>
-References: <419A2B91.8070803@ma.tech.ascom.ch>
+Subject: Re: UA-1000 working now?
+Date: Wed, 17 Nov 2004 08:43:26 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411170842030.16382-100000@studcom.urz.uni-halle.de>
+References: <20041116180853.M82353@stickist.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <419A2B91.8070803@ma.tech.ascom.ch>
+In-Reply-To: <20041116180853.M82353@stickist.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,22 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
+To: Yon Mercury <swirlee@stickist.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Manu Sharma wrote:
-> I have another question about the warning given in function header of
-> snd_pcm_alaw_open (same applies for corresponding mulaw function).
->
-> Does the warning suggest that applications should not be using this
-> function directly, they should instead configure their alsa.conf and use
-> snd_pcm_open ?
+Yon Mercury wrote:
+> Looking back, I see that UA-1000 support entered the stage in ALSA 1.0.5
 
-Yes.  The way how alsa-lib creates plugins might change in the future.
+Proper sample rate detection is in 1.0.7.  However, the original
+problem (playback doesn't work due to synchronization problems) hasn't
+been solved.
 
 
-HTH
+Best regards,
 Clemens
 
 
