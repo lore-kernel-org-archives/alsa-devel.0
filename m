@@ -1,8 +1,8 @@
 From: =?iso-8859-1?Q?Ren=E9_Kermis?= <kermis@gmx.de>
 Subject: Re: Updated: via8233 driver -- testers wanted
-Date: Fri, 31 May 2002 14:13:28 +0200
+Date: Fri, 31 May 2002 14:33:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <00da01c2089c$96239570$6abc5f86@kermit>
+Message-ID: <00ea01c2089f$59cb1960$6abc5f86@kermit>
 References: <004401c20880$5f095b40$6abc5f86@kermit> <s5hit54h9ip.wl@alsa2.suse.de> <200205311336.55102.webmaster@refstart.nl>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -20,20 +20,25 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Sorry,
 
-I tried to to record from mic and line in. I have no problems with
-recording, but the file is empty.
+forgot to mention, that I cannot check the status of the interrupt, because
+there are other devices on the same interrupt (NIC and SCSI-adapter). I
+could not find an option in my bios to give the audio chip an own interrupt.
 
-Some very strange things happend on my machine. I tried to use the oss
-module and it worked without problems. Then I uninstalled the evaluation
-version and removed the modules from memory and reloaded your modules. Now I
-can playback sounds without getting an error, but the sound is too fast,
-exactly 2x faster than it should be. Is it possible, that it is only an
-initialization problem of the sound chip?
+           CPU0
+  0:    1551713          XT-PIC  timer
+  1:       6143          XT-PIC  keyboard
+  2:          0          XT-PIC  cascade
+  8:          1          XT-PIC  rtc
+ 11:     814617          XT-PIC  AM53C974, eth0, VIA8233
+ 12:      35795          XT-PIC  hpt37x2
+NMI:          0
+LOC:    1551630
+ERR:        272
+MIS:          0
 
 René
-
 
 ----- Original Message -----
 From: "Niek van der Maas" <webmaster@refstart.nl>
