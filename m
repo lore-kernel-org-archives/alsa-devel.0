@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000882]: Sound stops working in two scenarios with snd-via82xx module
-Date: Thu, 3 Feb 2005 18:59:49 +0100
-Message-ID: <3f8e2c94f3d0228bcdb454275c9dfe24@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Thu, 3 Feb 2005 20:20:58 +0100
+Message-ID: <ef1f6dd7587e273c43b97093270c202f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 245DF205
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 18:59:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A492021D
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 20:20:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +21,84 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=882> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                rob
-Assigned To:                
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   882
-Category:                   PCI - via82xx
-Reproducibility:            sometimes
-Severity:                   major
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   mixer
+Reproducibility:            always
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Redhat 9
-Kernel Version:             2.4.22
+Status:                     assigned
 ======================================================================
-Date Submitted:             02-03-2005 18:59 CET
-Last Modified:              02-03-2005 18:59 CET
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              02-03-2005 20:20 CET
 ======================================================================
-Summary:                    Sound stops working in two scenarios with
-snd-via82xx module
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-Sound normally works fine, but we have problems a large percentage of the
-time when booting after a day or two of the systems being off, or less
-frequently if I unplug/replug or turn on/off amplified speakers.  It seems
-to vary from machine to machine even with identical hardware.
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-This is a major annoyance for us as we have many of these systems which
-we're trying to use in an educational setting with audio.  We can work
-around it, but it's not ideal.  If only it had showed up in our initial
-testing!
-
-
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+has duplicate       0000786 Master can't handle all channel
+related to          0000172 Master volume control only controls fro...
+======================================================================
+
+----------------------------------------------------------------------
+ adamk75 - 02-01-05 22:57 
+----------------------------------------------------------------------
+pzad, please? :-)
+
+----------------------------------------------------------------------
+ rlrevell - 02-03-05 20:20 
+----------------------------------------------------------------------
+Peter Zubaj and Mikael Magnusson have provided me with all the necessary
+info to implement a proper master volume for the SBLive.  I should have
+this working real soon now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 18:59 rob            New Issue                                    
-02-03-05 18:59 rob            Distribution              => Redhat 9        
-02-03-05 18:59 rob            Kernel Version            => 2.4.22          
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
+01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
+01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
+01-27-05 01:00 adamk75        Note Added: 0003418                          
+02-01-05 22:57 adamk75        Note Added: 0003475                          
+02-03-05 20:20 rlrevell       Note Added: 0003493                          
 ======================================================================
 
 
