@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
-Date: Sun, 28 Nov 2004 18:41:30 +0100
-Message-ID: <645ab6912a4317dc73d71a8a0fbddade@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
+Date: Sun, 28 Nov 2004 18:35:29 +0100
+Message-ID: <ad058d204d8ad7b94d13e57fe8a92253@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 316C61C3
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 18:41:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6B8F243
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 18:35:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
 ======================================================================
-Reported By:                d637e16c5433737884c13889afdeaf34
-Assigned To:                
+Reported By:                spirou
+Assigned To:                martin
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   682
-Category:                   PCI - RME 96
+Issue ID:                   611
+Category:                   PCI - RME 32
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9-gentoo-r1
 ======================================================================
-Date Submitted:             11-27-2004 00:59 CET
-Last Modified:              11-28-2004 18:41 CET
+Date Submitted:             10-27-2004 03:44 CEST
+Last Modified:              11-28-2004 18:35 CET
 ======================================================================
-Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
+Summary:                    Can't access Digi32 with kernel 2.6.9
 Description: 
-As it's impossible to use the alsamixer with the rme96 driver here's a
-small patch for it to make it work. (it's not from me, it's from undog
-#alsa on irc.freenode.org)
-
-This patch will break rmedigicontrol, so i made a small patch for
-rmedigicontrol that'll fix this, too.
-
-Adding is trivial, it's just editing 8 lines of source.
-
-
-Regards,
-Matthias
-
-PS: Added patch for rme96.c
+The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
+All I get is a "Device busy". With 2.6.8 everything is fine.
+lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 11-28-04 18:41 
+ martin - 11-16-04 23:54 
 ----------------------------------------------------------------------
-The patch is similar to the one of bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=570
+Indeed, 2.6.9 is broken. But 2.6.10-rc2 with the patch from above seems to
+me free of bugs again :) Well, I haven't done big tests here, but it looks
+good ATM.
+
+----------------------------------------------------------------------
+ martin - 11-28-04 18:35 
+----------------------------------------------------------------------
+Can I close this bug? Is it also resolved for you, if you are using newer
+code?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
-           
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
-           
-11-28-04 18:41 martin         Note Added: 0002628                          
+10-27-04 03:44 spirou         New Issue                                    
+10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
+10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
+11-09-04 19:16 tiwai          Note Added: 0002341                          
+11-10-04 02:47 spirou         Note Added: 0002354                          
+11-10-04 11:04 martin         Note Added: 0002360                          
+11-10-04 12:08 tiwai          Note Added: 0002363                          
+11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
+     
+11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
+    
+11-10-04 22:33 martin         Note Added: 0002377                          
+11-10-04 22:37 martin         Note Added: 0002380                          
+11-11-04 15:04 tiwai          Note Added: 0002388                          
+11-11-04 16:11 martin         Note Added: 0002389                          
+11-14-04 15:07 martin         Note Added: 0002408                          
+11-14-04 20:05 martin         File Added: pcmnative.patch                    
+11-14-04 20:17 martin         Note Added: 0002409                          
+11-15-04 04:59 spirou         Note Added: 0002410                          
+11-15-04 20:25 martin         Note Added: 0002420                          
+11-16-04 16:19 tiwai          Note Added: 0002425                          
+11-16-04 23:54 martin         Note Added: 0002431                          
+11-28-04 18:35 martin         Note Added: 0002627                          
 ======================================================================
 
 
