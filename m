@@ -1,13 +1,15 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
+From: Erich Focht <efocht@hpce.nec.com>
 Subject: Re: usx2y hangs SuSE 9.2 Pro kernel
-Date: Tue, 9 Nov 2004 21:53:36 -0000 (WET)
-Message-ID: <32933.192.168.1.5.1100037216.squirrel@192.168.1.5>
-References: <200411092216.41896.efocht@hpce.nec.com>
+Date: Wed, 10 Nov 2004 00:28:45 +0100
+Message-ID: <200411100028.46091.efocht@hpce.nec.com>
+References: <200411092216.41896.efocht@hpce.nec.com> <32933.192.168.1.5.1100037216.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411092216.41896.efocht@hpce.nec.com>
+In-Reply-To: <32933.192.168.1.5.1100037216.squirrel@192.168.1.5>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,38 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erich Focht <efocht@hpce.nec.com>
+To: Rui Nuno Capela <rncbc@rncbc.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Erich Focht,
+On Tuesday 09 November 2004 22:53, Rui Nuno Capela wrote:
+> > I'm having trouble with my Tascam US-122. When trying to run it with
+> > the SuSE 9.2 Pro kernel (2.6.8-24.3-default) the kernel hangs
+> > immediately. I wonder whether the devices are tested at all with this
+> > kernel...
+> >
+> > Does anybody have a hint where to look at?
 >
-> I'm having trouble with my Tascam US-122. When trying to run it with
-> the SuSE 9.2 Pro kernel (2.6.8-24.3-default) the kernel hangs
-> immediately. I wonder whether the devices are tested at all with this
-> kernel...
->
-> Does anybody have a hint where to look at?
->
+> Yes. It seems that you're suffering from that nasty snd-usb-usx2y OHCI
+> bug, which has been known around since ALSA 1.0.6.
+> 
+> Look at ALSA bugtracker's:
+> 
+> Bug #000425 (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=425)
+> Bug #000607 (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607)
 
-Yes. It seems that you're suffering from that nasty snd-usb-usx2y OHCI
-bug, which has been known around since ALSA 1.0.6.
+Thanks a lot!!!
 
-Look at ALSA bugtracker's:
+I'll either press the patches into the SuSE kernel or switch to the
+-mm tree. At least I know it should work afterwards.
 
-Bug #000425 (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=425)
-Bug #000607 (https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607)
-
-Good news is that's been already solved as of current CVS (snd-usb-usx2y
-0.8.6). Bad news is, if you wanna get your US-122 working right now,
-you'll have to build the alsa-kernel/alsa-driver tandem from CVS, or you
-might wait for the official ALSA 1.0.7 release or even longer for a SUSE
-9.2 package update.
-
-Cheers,
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+Regards,
+Erich
 
 
 
