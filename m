@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 21:31:26 +0100
-Message-ID: <6964408c2635a770d9e9d94f7cb36701@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 21:47:53 +0100
+Message-ID: <695d83d1f98c4508ef8f9c2b46df9e12@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41FE2268
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 21:31:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0B3D268
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 21:47:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 21:31 CET
+Last Modified:              12-27-2004 21:47 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,25 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-27-04 21:09 
-----------------------------------------------------------------------
-Just to let you know...
-Ran a Live CD, Mepis Version 2004.04
-Sound was absolutely FINE, right off the start!
-KMix had all the switches ON except MicBoost and IEC958 Opt.
-In other words, Audigy Analog/Digital Output jack was on.
-No buzz, sound from Mepis and music files were all great.  
-Dont know what Mepis uses, whether OSS or ALSA but I
-believe that XMMS had OSS setup and for Mepis ALSA.
-Still everything worked!
-Here under Fedora, nothing works.
-Can running under Live CD Mepis help you to diagnose the 
-problem here under Fedora?
-
-Thanks,
-Jerry
-
-----------------------------------------------------------------------
  pzad - 12-27-04 21:31 
 ----------------------------------------------------------------------
 Do you have .asoundrc (asound.conf) file in you home directory ?? If yes,
@@ -84,6 +65,346 @@ Could you attach output of
 aplay -L
 and
 aplay -l
+
+----------------------------------------------------------------------
+ misnagid - 12-27-04 21:47 
+----------------------------------------------------------------------
+I do not have either of those 2 files.
+Here are the outputs:
+[root@ashkenazi jerry]# aplay -L
+PCM list:
+hw {
+        @args.0 CARD
+        @args.1 DEV
+        @args.2 SUBDEV
+        @args.CARD {
+                type string
+                default {
+                        @func getenv
+                        vars {
+                                0 ALSA_PCM_CARD
+                                1 ALSA_CARD
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.card'
+                        }
+                }
+        }
+        @args.DEV {
+                type integer
+                default {
+                        @func igetenv
+                        vars {
+                                0 ALSA_PCM_DEVICE
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.device'
+                        }
+                }
+        }
+        @args.SUBDEV {
+                type integer
+                default {
+                        @func refer
+                        name 'defaults.pcm.subdevice'
+                }
+        }
+        type hw
+        card $CARD
+        device $DEV
+        subdevice $SUBDEV
+}
+plughw {
+        @args.0 CARD
+        @args.1 DEV
+        @args.2 SUBDEV
+        @args.CARD {
+                type string
+                default {
+                        @func getenv
+                        vars {
+                                0 ALSA_PCM_CARD
+                                1 ALSA_CARD
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.card'
+                        }
+                }
+        }
+        @args.DEV {
+                type integer
+                default {
+                        @func igetenv
+                        vars {
+                                0 ALSA_PCM_DEVICE
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.device'
+                        }
+                }
+        }
+        @args.SUBDEV {
+                type integer
+                default {
+                        @func refer
+                        name 'defaults.pcm.subdevice'
+                }
+        }
+        type plug
+        slave.pcm {
+                type hw
+                card $CARD
+                device $DEV
+                subdevice $SUBDEV
+        }
+}
+plug {
+        @args.0 SLAVE
+        @args.SLAVE {
+                type string
+        }
+        type plug
+        slave.pcm $SLAVE
+}
+dmix {
+        @args.0 SLAVE
+        @args.1 FORMAT
+        @args.2 RATE
+        @args.SLAVE {
+                type string
+                default 'hw:0,0'
+        }
+        @args.FORMAT {
+                type string
+                default S16_LE
+        }
+        @args.RATE {
+                type integer
+                default 48000
+        }
+        type dmix
+        ipc_key 5678293
+        ipc_key_add_uid yes
+        slave {
+                pcm $SLAVE
+                format $FORMAT
+                rate $RATE
+        }
+}
+dsnoop {
+        @args.0 SLAVE
+        @args.1 FORMAT
+        @args.2 RATE
+        @args.SLAVE {
+                type string
+                default 'hw:0,0'
+        }
+        @args.FORMAT {
+                type string
+                default S16_LE
+        }
+        @args.RATE {
+                type integer
+                default 48000
+        }
+        type dsnoop
+        ipc_key 5778293
+        ipc_key_add_uid yes
+        slave {
+                pcm $SLAVE
+                format $FORMAT
+                rate $RATE
+        }
+}
+shm {
+        @args.0 SOCKET
+        @args.1 PCM
+        @args.SOCKET {
+                type string
+        }
+        @args.PCM {
+                type string
+        }
+        type shm
+        server $SOCKET
+        pcm $PCM
+}
+tee {
+        @args.0 SLAVE
+        @args.1 FILE
+        @args.2 FORMAT
+        @args.SLAVE {
+                type string
+        }
+        @args.FILE {
+                type string
+        }
+        @args.FORMAT {
+                type string
+                default raw
+        }
+        type file
+        slave.pcm $SLAVE
+        file $FILE
+        format $FORMAT
+}
+file {
+        @args.0 FILE
+        @args.1 FORMAT
+        @args.FILE {
+                type string
+        }
+        @args.FORMAT {
+                type string
+                default raw
+        }
+        type file
+        slave.pcm null
+        file $FILE
+        format $FORMAT
+}
+null {
+        type null
+}
+default {
+        type plug
+        slave.pcm {
+                type hw
+                card {
+                        @func getenv
+                        vars {
+                                0 ALSA_PCM_CARD
+                                1 ALSA_CARD
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.card'
+                        }
+                }
+                device {
+                        @func igetenv
+                        vars {
+                                0 ALSA_PCM_DEVICE
+                        }
+                        default {
+                                @func refer
+                                name 'defaults.pcm.device'
+                        }
+                }
+                subdevice {
+                        @func refer
+                        name 'defaults.pcm.subdevice'
+                }
+        }
+}
+cards 'cards.pcm'
+front 'cards.pcm.front'
+rear 'cards.pcm.rear'
+center_lfe 'cards.pcm.center_lfe'
+side 'cards.pcm.side'
+surround40 'cards.pcm.surround40'
+surround41 'cards.pcm.surround41'
+surround50 'cards.pcm.surround50'
+surround51 'cards.pcm.surround51'
+surround71 'cards.pcm.surround71'
+iec958 'cards.pcm.iec958'
+spdif 'cards.pcm.iec958'
+modem 'cards.pcm.modem'
+[root@ashkenazi jerry]#                                                   
+                                                   
+
+[root@ashkenazi jerry]# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: Audigy2 [Sound Blaster Audigy2], device 0: emu10k1 [EMU10K1]
+  Subdevices: 32/32
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=8
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=11
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=12
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=13
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=14
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=15: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=15
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=16: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=16
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=17: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=17
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=18: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=18
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=19: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=19
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=20: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=20
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=22: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=22
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=23: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=23
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=24
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=25: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=25
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=26: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=26
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=27: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=27
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=28: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=28
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=29: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=29
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=30: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=30
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=31: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=31
+card 0: Audigy2 [Sound Blaster Audigy2], device 2: emu10k1 efx [EMU10K1
+EFX]
+  Subdevices: 8/8
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=5
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=6
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
+[root@ashkenazi jerry]#
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -129,6 +450,7 @@ Date Modified  Username       Field                    Change
 12-27-04 19:27 misnagid       Note Added: 0002972                          
 12-27-04 21:09 misnagid       Note Added: 0002975                          
 12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
 ======================================================================
 
 
