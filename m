@@ -1,7 +1,9 @@
-From: Juhana Sadeharju <kouhia@nic.funet.fi>
-Subject: Updating www.alsa-project.org?
-Date: Fri, 8 Feb 2002 16:42:03 +0200
-Message-ID: <20020208144208Z38455-696+7957@nic.funet.fi>
+From: Paul Davis <pbd@Op.Net>
+Subject: Re: stupid question about pcm devices
+Date: Fri, 08 Feb 2002 09:48:58 -0500
+Message-ID: <200202081449.JAA27593@renoir.op.net>
+In-reply-to: Your message of "Fri, 08 Feb 2002 07:24:44 +0100."
+             <XFMail.020208072444.guenther.sohler@newlogic.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -10,69 +12,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Guenther Sohler <guenther.sohler@newlogic.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello. I found out that the current www.alsa-project.org pages
-are not as good as they should be. They are next to nothing
-for non-developers (such as vendors) who yet don't know what
-Alsa is. Information is in wrong importantness order, and there
-actually is not a clear explanation what is the Alsa. A good page
-don't start with a ChangeLog of sorts!
+>I have seen that alsa provides nice pcm devices in /dev/snd directory
+>
+>*They are split in playback and capture devices :) nice idea.
+>In Oss I was able to pipe data from and to them and therfore was
+>recording/playing back at a certain sample rate.
+>With alsa this is not possible anymore. it says the descriptor was in a bad
+>state. Is it possible ???
 
-I don't want write all the changes we need to do for the
-webpages. I even cannot do that because I don't have php3
-system. So, would somebody copy existing pages to the temporary
-directory "www.alsa-project.org/new/" where we all together will
-incrementally rewrite the web pages? Thanks.
+jaroslav answered this in one way. i'd like to add this:
 
-My suggestions are following:
+under OSS, most people understand that cat > /dev/dspN requires that
+the data match the "default" format for the "dsp" device. any mismatch
+will result in noise. the same is true for ALSA.
 
-The main page would contain the contents table (on left) and should
-describe (on right) clearly what is the Alsa project and what are
-the contact addresses. Don't expect people to join the mailing lists
-for contacting purposes. No other information.
+however, under ALSA, the devices are not that simple. specifically,
+OSS required opening+closing devices to reset the parameters, whereas
+ALSA instead allows the devices to remain open, but stopped,
+reconfigured, then restarted. these are all done by ioctl(2) calls.
 
-I would rearrange the content table as shown here; the most important
-information would come first.
-  Press
-  Vendor Call
-  Search
-  News
-  Soundcards
-  Download
-  Documentation
-  Mailing-Lists
-  Bug Reporting  (perhaps should be elsewhere)
-  Applications
-  Links
+this means that, in terms of system calls, there is always at least
+one ioctl(2) call required to get the device started after it is
+opened. as a result of this, "cat > /dev/snd/pcmC0D0" or equivalent
+will never work, since cat merely calls open(2) on the device - it
+does not start it (i.e. make the ioctl(2) call).
 
-I deleted the "new API" because it goes to Documentation
-page. I'm also considering Development page which would contain
-the devel materials. It looks like the devel material is now
-distributed around the webpages.
+i suspect that some people in the kernel community will object to this
+design, noting that it violates The Unix Way. however, there are many
+devices that require ioctl(2)'s to get them set up for use, so ALSA
+will not be the first. i doubt, for example, if "cat > /dev/scanner"
+will work, and "cat > /dev/modem" normally results in garbage
+someplace. 
 
-If Development page would be added it would contain CVS source
-access, documentation for non-user API, devel mailing list info,
-bug reporting, ChangeLog of sorts, and link to SourceForge
-(which is now badly hidden under the main title (should be removed
- from there)).
+>*Is there something like aconnect for pcm devices ????
+>
+>when I do a sfxload, it operates on /dev/sequencer, which makes the seq-oss
+>module automatically to load. Is there a way to load the patches in native als
+>a
+>???
 
-The vertical align of the contents table should be changed:
-  valign="middle"  -->  valign="top"
-Then readers have greater changes to access the other pages
-without the use of the scrollbar everytime.
+rewrite sfxload.
 
-I have not yet written the texts for the main page (or the other
-pages) but if this rewriting gets started, I will continue.
-
-Suggestions? ...and I don't want to hear the webpage is good
-enough now. It is worst of the kind --- think about vendors
-who are looking if Alsa is good enough for them.
-
-Best regards,
-
-Juhana
+--p
 
 _______________________________________________
 Alsa-devel mailing list
