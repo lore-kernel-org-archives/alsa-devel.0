@@ -1,15 +1,14 @@
-From: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Subject: Re: [partialy fixed] Creamware Noah, snd-usb-audio
-	capable?
-Date: Mon, 23 Feb 2004 18:46:06 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
+Date: Wed, 25 Feb 2004 09:23:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1077558366.2725.6.camel@chief.local>
-References: <Pine.HPX.4.33n.0402200947200.13625-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0402250921050.3124-100000@studcom.urz.uni-halle.de>
+References: <200402250010.AAA06565@liam2.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0402200947200.13625-100000@studcom.urz.uni-halle.de>
+In-reply-to: <200402250010.AAA06565@liam2.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,71 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Will <walsac2@liam2.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Hartmut Geissbauer wrote:
-> > > > The only thing that's missing now are the two playback ports.
-> > >
-> > > Please show the output of "lsusb -v".
+Will wrote:
+
+> Clemens Ladisch <clemens@ladisch.de> wrote:
 > >
-> >       bInterfaceNumber        2
-> >       iInterface              4 Noah Audio Out
-> >       bAlternateSetting       1
-> >         bFormatType             1 (FORMAT_TYPE_I)
-> >         bNrChannels             2
-> >         bBitResolution         16
-> >         tSamFreq[ 0]        44100
-> >           Transfer Type            Isochronous
-> >           Synch Type               Asynchronous
->=20
-> The descriptors look OK.
->=20
-> Are there any messages in the system log (dmesg) when the driver is
-> loaded?  If not, please compile ALSA again after running configure
-> with the --with-debug=3Ddetect parameter, and try again.
->=20
-Please the the messages attached. It seems, there's something odd with
-the playback endpoint.
+> >If you get correct output when you run "amidi -p virtual -d" and
+> >aconnect your keyboard to that port, then it may be a bug in
+> >arecordmidi.  I'll test when I'm at home.
+>
+> This is what I get:
+>
+>   $ pmidi -l
+>     Port     Client name                       Port name
+>     64:0     Rawmidi 0 - Sound Blaster 16 M    Sound Blaster 16 MPU-401
 
----------------------------------------------
-usb 1-2.4: new full speed USB device using address 5
-usb 1-2.4: new device strings: Mfr=3D1, Product=3D2, SerialNumber=3D0
-drivers/usb/core/message.c: USB device number 5 default language ID
-0x409
-usb 1-2.4: Product: CreamWare Noah Synthesizer
-usb 1-2.4: Manufacturer: CreamWare GmbH
-drivers/usb/core/usb.c: usb_hotplug
-usb 1-2.4: registering 1-2.4:1.0 (config #1, interface 0)
-drivers/usb/core/usb.c: usb_hotplug
-usb 1-2.4: registering 1-2.4:1.1 (config #1, interface 1)
-drivers/usb/core/usb.c: usb_hotplug
-snd-usb-audio 1-2.4:1.1: usb_probe_interface
-snd-usb-audio 1-2.4:1.1: usb_probe_interface - got id
-ALSA sound/usb/usbaudio.c:2331: 5:2:1 : no or invalid class specific
-endpoint descriptor
-ALSA sound/usb/usbaudio.c:2392: 5:3:1: add audio endpoint 0x87
-ALSA sound/usb/usbaudio.c:2392: 5:3:2: add audio endpoint 0x87
-ALSA sound/usb/usbaudio.c:2392: 5:3:3: add audio endpoint 0x87
-ALSA sound/usb/usbmidi.c:812: MIDIStreaming version 01.00
-ALSA sound/usb/usbmidi.c:849: EP 81: 1 jack(s)
-ALSA sound/usb/usbmidi.c:838: EP 02: 1 jack(s)
-ALSA sound/usb/usbmidi.c:782: created 1 output and 1 input ports
-usb 1-2.4: registering 1-2.4:1.2 (config #1, interface 2)
-drivers/usb/core/usb.c: usb_hotplug
-usb 1-2.4: registering 1-2.4:1.3 (config #1, interface 3)
-drivers/usb/core/usb.c: usb_hotplug
-usb 1-2.4: registering 1-2.4:1.4 (config #1, interface 4)
-drivers/usb/core/usb.c: usb_hotplug
-------------------------------------------------
+You didn't apply all my patches, or recompile; this name would be
+different.
 
-Driver version: alsa 1.0.2c
-kernel 2.6.3 (unpatched)
-=20
-K=EEndly regards, Hartmut
---=20
-Hartmut Geissbauer <nwgbh@swissonline.ch>
+Did you change asequencer.h in both the kernel and alsa-lib?
+
+> playing various notes on the MIDI keyboard gives correct MIDI output in ASCII:
+>
+>    90 29 4A
+>    ...
+
+On my machine, arecordmidi works just fine.
+
+
+Regards,
+Clemens
+
 
 
 
