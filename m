@@ -1,15 +1,12 @@
-From: "Marsha Olson" <m.olsonhb@stahl.voest.ada.at>
-Subject: (no subject)
-Date: Fri, 03 Dec 2004 07:12:54 +0000
-Message-ID: <1edd01c4d907$4c6a5e24$0ec6ed05@0.1.5.2.8.6.9.5.1.4.1.tpc.int>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Is there any queston when using ALSA in arm platform?
+Date: Fri, 3 Dec 2004 08:18:40 +0100
+Message-ID: <200412030718.iB37IaIP006319@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 0.1.5.2.8.6.9.5.1.4.1.tpc.int (55.38.234.216.rev.connection.ca [216.234.38.55])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B48F2266
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 07:01:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,21 +16,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: sudong@tcl.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-Get new ClALlS softtabs for R0CKHARD lNSTANT ERECTl0NS<p>
-Simply place HALF A PlLL under your tongue 5min before action,<br>
-for results that last all day.<p>
-RRP retail is $19/PlLL<br>
-<a href=3D"http://oebrvmddnw.123-rx.com/cs/?gagabob">0rder from us today =
-at the price of $3.50</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://xnuuuqdwffijn.123-rx.com/rm.php?gagabob">not thank you(=
-ab0rt)</a>
-</html>
+Hi,
 
+AFAIK AC97 API is not dependant on bus type.=20
+
+This is code from emu10k1 driver, it initializes ac97 struct:
+
+ac97_template_t ac97;
+static ac97_bus_ops_t ops =3D {
+=09.write =3D snd_emu10k1_ac97_write,
+=09.read =3D snd_emu10k1_ac97_read,
+};
+
+if ((err =3D snd_ac97_bus(emu->card, 0, &ops, NULL, &pbus)) < 0)
+=09return err;
+=09=09
+memset(&ac97, 0, sizeof(ac97));
+ac97.private_data =3D emu;
+ac97.private_free =3D snd_emu10k1_mixer_free_ac97;
+if ((err =3D snd_ac97_mixer(pbus, &ac97, &emu->ac97)) < 0)
+=09return err;=20
+
+
+.write =3D snd_emu10k1_ac97_write,
+.read =3D snd_emu10k1_ac97_read,
+
+These 2 functions are responsible to transfer control data to/from
+ac97. You should implement it for your chip.
+
+Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
+ najvacsi slovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
