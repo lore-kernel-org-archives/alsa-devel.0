@@ -1,11 +1,19 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Re: Re: should i be able to abort in the middle of
- snd_pcm_mmap_{begin,commit} ?
-Date: Thu, 14 Feb 2002 20:12:40 +0200 (EET)
-Message-ID: <Pine.LNX.4.44.0202142006470.3739-100000@ecabase.localdomain>
+From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
+Subject: RE: ALSA is in 2.5!!!
+Date: Thu, 14 Feb 2002 18:28:59 -0000
+Message-ID: <NGBBLNODKDFPBFMBBFAFIEMBCAAA.James@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.LNX.4.31.0202141856150.510-100000@pnote.perex-int.cz>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.93])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA06094
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 19:29:03 +0100
+Received: from superbug.demon.co.uk ([158.152.58.16] helo=jcd12345)
+	by anchor-post-35.mail.demon.net with smtp (Exim 3.34 #1)
+	id 16bQcq-0003ZK-0Z
+	for alsa-devel@alsa-project.org; Thu, 14 Feb 2002 18:28:56 +0000
+In-Reply-To: <s5hk7tg47bw.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,69 +22,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 14 Feb 2002, Jaroslav Kysela wrote:
+Another nice feature of getting alsa into the kernel is that the code will
+then be checked with the Stanford checker.
 
->> What I did try was replacing drop() with snd_pcm_drain() and this resulted
->> in a hang (not a kernel hang, but process never returns to user-space) in
->> the driver level. Here's the backtrace:
-> I'm curious what is saying this command:
-> cat /proc/asound/card0/pcm0p/sub0/*
+This is an intelligent checker which checks for bad pointers and generally
+tries to catch bugs in code even before they show themselves.
 
-Doh, I've totally forgot ALSA's proc entries. Anyways, here's the 
-whole dump (status doesn't look good):
+It has generally improved the quality of linux kernel code, so now that
+alsa-driver is in the linux kernel, it will be checked as well.
 
---cut--
-status:
-
-state: <NULL>
-trigger_time: 1013709966.595600
-tstamp      : 1013710109.203655
-delay       : -6285920
-avail       : 6287968
-avail_max   : 6287968
-
-hw_params:
-
-access: MMAP_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 2
-rate: 44100 (1445100000/32768)
-period_size: 1024
-buffer_size: 2048
-tick_time: 10000
-
-sw_params:
-
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 1024
-xfer_align: 1024
-start_threshold: 4294967295
-stop_threshold: 4294967295
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
---cut--
-
-Status during normal processing (same exact setup):
-
---cut--
-state: RUNNING
-trigger_time: 1013710204.382739
-tstamp      : 1013710213.136159
-delay       : 1040
-avail       : 1008
-avail_max   : 1040
---cut--
-
--- 
- http://www.eca.cx
- Audio software for Linux!
+Cheers
+James
 
 
 _______________________________________________
