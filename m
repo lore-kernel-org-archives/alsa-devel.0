@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000179]: unresolved symbols
-Date: Fri, 16 Jul 2004 12:54:45 +0200 (CEST)
+Subject: [ALSA - driver 0000352]: cracks and blibs when playing Quake 1
+Date: Fri, 16 Jul 2004 12:50:57 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105445.76F3D26008@server.perex-int.cz>
+Message-ID: <20040716105057.284C926005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE48C22B
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:54:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6AE72255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:50:57 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,59 +22,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000179
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000352
 ======================================================================
-Reported By:                pohl457
+Reported By:                maps4711
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     179
-Category:                   0_compilation problem_!!!
+Bug ID:                     352
+Category:                   PCI - es1938
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian Linux 3.0r2 (woody)
-Kernel Version:             Kernel 2.2.22
+Distribution:               Debian
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             04-02-2004 20:03 CEST
-Last Modified:              07-16-2004 12:54 CEST
+Date Submitted:             06-30-2004 13:34 CEST
+Last Modified:              07-16-2004 12:50 CEST
 ======================================================================
-Summary:                    unresolved symbols
+Summary:                    cracks and blibs when playing Quake 1
 Description: 
-after compiling the alsa driver on a frehly configured kernel source 2.2.22
-I have unresolved symbols. With kernel 2.4.20 (Pentium 4) I have no
-problems
+Playing Quake1 (quakeforge-flavor with ALSA-driver) I hear cracks and
+blibs. Other apps (xine, mpg321) are fine. The OSS driver in 2.6.7
+produces no cracks (but reverses stereo BTW).
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 04-03-2004 13:56 CEST 
+ maps4711 - 07-03-2004 15:32 CEST 
 ----------------------------------------------------------------------
-Try alsa-driver 1.0.4.
+I fixed it, i.e. it works for me.
+
+*No swapping of stereo channels
+*no cracks
+
+See the patch for details.
 
 ----------------------------------------------------------------------
- pohl457 - 04-06-2004 21:11 CEST 
+ perex - 07-04-2004 13:07 CEST 
 ----------------------------------------------------------------------
-compile problem solved with alsa 1.0.4
-thank you.
-
-----------------------------------------------------------------------
- perex - 04-07-2004 19:46 CEST 
-----------------------------------------------------------------------
-Fixed in newer release.
+Applied to CVS. Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-02-04 20:03 pohl457        New Bug                                      
-04-02-04 20:03 pohl457        Distribution              => Debian Linux 3.0r2 (woody)
-04-02-04 20:03 pohl457        Kernel Version            => Kernel 2.2.22   
-04-03-04 13:56 perex          Bugnote Added: 0000735                       
-04-06-04 21:11 pohl457        Bugnote Added: 0000758                       
-04-07-04 19:46 perex          Bugnote Added: 0000761                       
-04-07-04 19:46 perex          Resolution               open => fixed       
-04-07-04 19:46 perex          Status                   assigned => resolved
-07-16-04 12:54 tiwai          Status                   resolved => closed  
+06-30-04 13:34 maps4711       New Bug                                      
+06-30-04 13:34 maps4711       Distribution              => Debian          
+06-30-04 13:34 maps4711       Kernel Version            => 2.6.7           
+07-03-04 15:32 maps4711       File Added: alsa-driver-2.6.7-es1938.diff                    
+07-03-04 15:32 maps4711       Bugnote Added: 0001378                       
+07-04-04 13:07 perex          Bugnote Added: 0001379                       
+07-04-04 13:07 perex          Assigned To               => perex           
+07-04-04 13:07 perex          Resolution               open => fixed       
+07-04-04 13:07 perex          Status                   new => resolved     
+07-16-04 12:50 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
