@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Safe to call snd_pcm_close after failed snd_pcm_open?
-Date: Tue, 9 Sep 2003 11:04:22 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: M-Audio MobilePre/Sonica/Transit/Ozone testers wanted
+Date: Tue, 09 Sep 2003 11:21:46 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309091102170.12936@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0309010807230.14319-100000@pnote.perex-int.cz>
- <3F53D15B.3090507@superbug.demon.co.uk> <Pine.LNX.4.53.0309021232410.29300@pnote.perex-int.cz>
- <3F548405.80902@superbug.demon.co.uk> <Pine.LNX.4.53.0309041141580.4568@pnote.perex-int.cz>
- <opru73f61vq1sf88@mail.broadpark.no>
+Message-ID: <Pine.HPX.4.33n.0309091119290.5853-100000@studcom.urz.uni-halle.de>
+Reply-To: usb-midi-fw-user@lists.sourceforge.net
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <opru73f61vq1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,27 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>
-Cc: alsa-devel@lists.sourceforge.net
+To: usb-midi-fw-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu, linux-audio-user@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 9 Sep 2003, Arve Knudsen wrote:
 
-> Hi
->
-> Is it safe to call snd_pcm_close for a pcm which failed to open (assuming
-> the pcm handle is !NULL)? Not that important, but it might simplify my
-> code somewhat.
+The M-Audio MobilePre/Sonica/Transit/Ozone devices need a firmware
+download before they can be used with Linux.
 
-No, if open failed, the pcm handle is unitialized, thus
-the snd_pcm_close() call is not allowed.
+I've released a first beta of the madfu-firmware package which tries
+to accomplish this.
 
-						Jaroslav
+Please note that I do not have any of these devices, and that the
+loader is not tested at all. That's why I'm searching for volunteers.
+:-)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+To download the beta, go to
+http://sourceforge.net/project/showfiles.php?group_id=87777&release_id=183375
+
+Please send any success/failure reports to
+usb-midi-fw-user@lists.sf.net
+
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
