@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - WWW server 0000329]: wish: Categories for soundcard matrix
-Date: Tue, 22 Jun 2004 18:48:35 +0200
+Subject: [ALSA - driver 0000337]: "alsactl restore" always fails
+Date: Tue, 22 Jun 2004 18:51:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <c84e158c1aed48515913840e850ee3cb@bugtrack.alsa-project.org>
+Message-ID: <b4616fed18fe6b79dad195ee6f6774af@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,72 +24,54 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0329
+0337
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                digthemdeep
-Assigned To:               =20
+Reported By:                kuulasma
+Assigned To:                tiwai
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - WWW server
-Bug ID:                     329
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Bug ID:                     337
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian sarge
+Kernel Version:             Linux 2.6.6-1-686
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-10-2004 01:27 CEST
-Last Modified:              06-22-2004 18:48 CEST
+Date Submitted:             06-16-2004 22:04 CEST
+Last Modified:              06-22-2004 18:51 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    wish: Categories for soundcard matrix
+Summary:                    "alsactl restore" always fails
 Description:=20
-When I shop for new a new soundcard, an important criteria is naturally
-support under ALSA.
+Dell Latitude CPt with an NM256ZX fails always to restore previously save=
+d
+state. Command "alsactl store" succesfully stores current state but
+"alsactl restore" always fails to restore previous state. The OSS driver
+works fine.
 
-This process could be made substantially easier if the soundcard matrix
-could be browsed by category.
-
-Ie.,
-
-Cards for musicians (that's me):
-	Terratec:	ESW88 MT (24bit/96kHz;8in/8out...)
-				(link to sc. matrix)
-			DMX 6Fire (24/96;mic/phono ins)
-				(link)
-	Creative Labs:	Audigy 2 Platinum (short features)
-				(link)
-
-Cards for Gamers:
-	Creative Labs:
-		Audigy 2
-		...
-	Hercules:
-		...
-
-Otherwise I have to go out into the real world, find a card that suits my
-needs and my price range, then look it up on ALSA, where it most likely i=
-s
-not listed, then start over.
+Example:
+----------------------------------------------------------
+# alsactl restore
+alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
+Switch:0' : Invalid argument
+----------------------------------------------------------
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 06-22-2004 18:48 CEST=20
+ tiwai - 06-22-2004 18:51 CEST=20
 ----------------------------------------------------------------------
-Hmm, it's not easy to sort out which one is for which purpose.
-Some one might say that card ABC isn't enough professional for
-serious musicians.
-
-It'd be nice, though, if we have another matching categories,
-e.g. supported format, sample rate, etc.
+Can you toggle CD mute on alsamixer, or like 'amixer set CD mute'?
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -97,9 +79,15 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-10-04 01:27 digthemdeep    New Bug                                    =
+06-16-04 22:04 kuulasma       New Bug                                    =
  =20
-06-22-04 18:48 tiwai          Bugnote Added: 0001332                     =
+06-16-04 22:04 kuulasma       Distribution              =3D> Debian sarge=
+   =20
+06-16-04 22:04 kuulasma       Kernel Version            =3D> Linux 2.6.6-=
+1-686
+06-17-04 14:12 kuulasma       Bug Monitored: kuulasma                    =
+ =20
+06-22-04 18:51 tiwai          Bugnote Added: 0001333                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
