@@ -1,23 +1,16 @@
-From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
-Subject: Re: Re: Ready Developer
-Date: Fri, 13 Sep 2002 23:45:36 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [Alsa-user] SBLive, OSS mixer (PCM/Master) + digital out
+Date: Sun, 15 Sep 2002 11:13:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020913214536.GA4322@fliwatut.scifi>
-References: <s5hbs71u9ud.wl@alsa2.suse.de> <Pine.LNX.4.21.0209131842400.639-100000@summer.quitte>
+Message-ID: <Pine.LNX.4.33.0209151106150.1203-100000@pnote.perex-int.cz>
+References: <3D833E56.7030200@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.netcologne.de (smtp.netcologne.de [194.8.194.112])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA27412
-	for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2002 23:46:40 +0200
-Received: from fliwatut.scifi (dial-213-168-72-237.netcologne.de [213.168.72.237])
-	by smtp.netcologne.de (8.12.2/8.12.2) with ESMTP id g8DLjkgq020710
-	for <alsa-devel@alsa-project.org>; Fri, 13 Sep 2002 23:45:55 +0200 (MEST)
-Received: (from freak@localhost)
-        by fliwatut.scifi (8.12.0.Beta5/8.12.0.Beta5/Debian 8.12.0-1) id g8DLjaYQ009905
-        for alsa-devel@alsa-project.org; Fri, 13 Sep 2002 23:45:36 +0200
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.21.0209131842400.639-100000@summer.quitte>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA22908
+	for <alsa-devel@alsa-project.org>; Sun, 15 Sep 2002 11:14:52 +0200
+In-Reply-To: <3D833E56.7030200@web.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -26,28 +19,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Stefan <stefan.mau@web.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Tim Goetze hat gesagt: // Tim Goetze wrote:
+On Sat, 14 Sep 2002, Stefan wrote:
 
-> Takashi Iwai wrote:
+> Jaroslav Kysela wrote:
 > 
-> >At Fri, 13 Sep 2002 18:16:00 +0200,
-> >I wrote:
-> >> 
-> >> hmm, does the attached path cure?
+> >On Fri, 23 Aug 2002, Stefan wrote:
 > >
-> >obviously i should have compiled the code before sending it...
-> >attached again.
+> >  
+> >
+> >> >> So how do I get OSS applications using the Wave slider instead PCM/Master? I'm 
+> >> >> not sure if this is an alsa thing but apps not supporting it.
+> >> >> Maybe there's a workaround in .asoundrc? I had a look at the docs, but it 
+> >> >> appeared quite complex to me.
+> >>
+> >>    
+> >>
+> >>>no, it's not possible.
+> >>>so far, each OSS mixer is hard-coded to the alsa mixer element, such
+> >>>as "Master" or "PCM".
+> >>>      
+> >>>
+> >>>you can change the driver code (alsa-kernel/core/oss/mixer_oss.c)
+> >>>but of course it's not a common solution...
+> >>>      
+> >>>
+> >> 
+> >>I think that Master slider and even Wave slider have no effect at all on Digital Output
+> >>is very crappy. Even the OSS Kernel driver supports that. I would really love it
+> >>when the Master slider would have an effect on the Digital Output.
+> >>Why is it called Master slider when I can mute it and still get sound out of my Digital Boxes.
+> >>    
+> >>
+> >
+> >Because the digital path is totaly different than analog one. It's true 
+> >that Master referes analog master (and only front, because rear path is 
+> >standalone as digital out as well). We can rename Master to Analog Master 
+> >for EMU10K1 if you want to not confuse you and others.
+> >  
+> >
+> I noticed that Wave Surround works both for Analog Rear Output and 
+> Digital Rear!
+> And some other things, that may be interesting for all people outside 
+> with 5.1, 4.1 Box Sets.
+> I'm using a DTT 2500 Digital Cambridge Soundworks +
+> SBLive! Player 1024 (Digital Output with yellow 3,5 mm)!
 > 
-> /me hugs takashi (hope you don't mind ;)
+> Things I noticed that work, don't work with ALSA 0.9 rc3 in the alsamixer
+> 
+> Master -> works only Analog Front (NO Analog Rear, no Digital in any way!)
+> Master Mono -> what's that? necessary?
+> Tone, Bass, Treble -> works fine with Analog + Digital
+> 3D Control -> necessary?, I hear no difference!
+> PCM -> Works ONLY for front Analog output! (No Analog Rear, no Digital)
+> Surround Digital, Surround Digital Capture, Center, LFE, -> I think this 
+> is for new generation SBLive! 5.1, right?
+> Wave -> Front Digital Boxes AND Front Analog Output (is louder than Wave 
+> Sourround!!! why?)
+> Wave Surround -> Rear Digital Boxes AND Rear Analog Output
+> 
+> Music -> no Idea!
+> Music Cap -> no Idea
+> Line -> Works only for Analog Front Output (no Digital, No Analog Rear!)
+> 
+> The rest of the controls I don't really understand, all the EMU10k1 PCM 
+> Send stuff... maybe someone could
+> explain that, I've not found any Documentation about that.
+> 
+> When I'm hearing MP3 sound, I can't adjust the volumne in any 
+> application when using Digital Output.
+> Even with Analog Connection (Front+Rear) I can then only adjust the 
+> Analog Front Boxes. That's driving me crazy! :(
+> The different Wave, Wave Sourround sliders are nice, but the overall 
+> volumne should be controlled with Master/PCM sliders.
+> 
+> Who's the hero that can hack this?
 
-Hugs from me, 2: This even works with RC1. Great stuff.
+This sort of hacks should be implemented in the user space.
 
-ciao,
--- 
- Frank Barknecht                               _ ______footils.org__
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 
 -------------------------------------------------------
