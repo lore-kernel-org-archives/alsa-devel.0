@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000601]: Getting error while trying to insert the modules into the kernel>>cannot proceede further
-Date: Sun, 20 Mar 2005 13:30:42 +0100
-Message-ID: <ee36e1b647692debd767fd7ac6ca3f3e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000649]: alsaplayer only works as root
+Date: Sun, 20 Mar 2005 13:31:39 +0100
+Message-ID: <898a649323c89cd2f6b3485378d3b666@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7987A250
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:30:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C089250
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 13:31:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,72 +23,49 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=601> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=649> 
 ======================================================================
-Reported By:                djcobra
+Reported By:                mthoro
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   601
-Category:                   alsamixer
+Issue ID:                   649
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             10-24-2004 21:16 CEST
-Last Modified:              03-20-2005 13:30 CET
+Date Submitted:             11-14-2004 15:37 CET
+Last Modified:              03-20-2005 13:31 CET
 ======================================================================
-Summary:                    Getting error while trying to insert the modules
-into the kernel>>cannot proceede further
+Summary:                    alsaplayer only works as root
 Description: 
-sir,
-i have followed the installation instructions of the above mentioned
-driver to the letter according to what is given in the link :
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI128+%28earlier+model+CT4700%29.&chip=ES1370&module=ens1370
-but unfortunatly>>i am not able to proceed further after the step where i
-am supposed to insert the modules into the keranl>>as when i try to run
-the given comand :
-
-modprobe snd-ens1370;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
-snd-seq-oss
-
-i get an error : 
-
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o:
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o failed
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
-snd-ens1370 failed
-
-
-Kindly help me solve this problem so that i too can listen to wonderful
-music in the eccelent quality provided by this awesome driver that u have
-created
+changed permissions on snd devices to 777.  player only works after login
+as root.  after login as user in audio group, player will not work even if
+I log back in as root.  I have to reboot and login as root to get the
+player to work again. gnome cd player works okay, but the alsaplayer is
+great!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 19:24 
+ Clemens Ladisch - 11-15-04 18:10 
 ----------------------------------------------------------------------
-Are you sure that snd-ens1370 is the driver for your card?
-The driver for SB Live is usually snd-emu10k1.
+It seems you're using a system that automatically creates device nodes
+(devfs or udev).  You have to change the devfs/udev configuration so that
+it sets correct permissions.  Ask the debian experts.
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:30 
+ jdthood - 03-20-05 13:31 
 ----------------------------------------------------------------------
-This can be closed.
+This report can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-24-04 21:16 djcobra        New Issue                                    
-10-26-04 22:19 djcobra        Issue Monitored: djcobra                     
-11-09-04 19:24 tiwai          Note Added: 0002347                          
-03-20-05 13:30 jdthood        Note Added: 0004086                          
+11-14-04 15:37 mthoro         New Issue                                    
+11-15-04 18:10 Clemens LadischNote Added: 0002417                          
+03-20-05 13:31 jdthood        Note Added: 0004087                          
 ======================================================================
 
 
