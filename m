@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
-Date: Tue, 9 Nov 2004 10:37:44 +0100
-Message-ID: <430735e0b862256102152693737fa222@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000638]: emerge alsa-driver-1.0.6a fails on kbuild enabled system
+Date: Tue, 9 Nov 2004 10:42:33 +0100
+Message-ID: <04d6ec5304cd005030f3a022e6987917@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 30CDD23E
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:37:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB8B3259
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 10:42:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=638> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                tiwai
+Reported By:                eehmke
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   637
-Category:                   PCI - atiixp
+Issue ID:                   638
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               Gentoo
-Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-Resolution:                 not an issue
-Fixed in Version:           
+Kernel Version:             2.6.9-r1
 ======================================================================
-Date Submitted:             11-08-2004 18:50 CET
-Last Modified:              11-09-2004 10:37 CET
+Date Submitted:             11-09-2004 10:42 CET
+Last Modified:              11-09-2004 10:42 CET
 ======================================================================
-Summary:                    Laptop volume control & mute buttons don't work
+Summary:                    emerge alsa-driver-1.0.6a fails on kbuild enabled
+system
 Description: 
-The Compaq, like may laptops, comes with buttons to increase and decrease
-volume, as well as a mute button. Under Linux these buttons do nothing.
-The mute button is always lit even when sound is coming out. The volume
-control buttons do not adjust volume.
+
+
+My system is kbuild enabled, i.e. the kernel is not built into the
+standard /usr/src/linux directory. Only the sourced are here. The kernel
+aoutput is in /var/tmp/kernel-output/2.6.9-gentoo-r1, the environment
+variable KBUILD_OUTPUT is set correctly. When emerging alsa-driver, the
+process fails:
+
+checking for kernel version... The file
+/usr/src/linux/include/linux/version.h does not exist.
+Please, install the package with full kernel sources for your
+distribution
+or use --with-kernel=dir option to specify another directory with kernel
+sources (default is /lib/modules/2.6.9-gentoo-r1/build).
+
+!!! ERROR: media-sound/alsa-driver-1.0.6a failed.
+
+In fact the missing file is in
+/var/tmp/kernel-output/2.6.9-gentoo-r1/include/linux/version.h
+which is correct on my system.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-09-04 10:35 
-----------------------------------------------------------------------
-Usually these buttons are controlled over ACPI.
-In some cases, you can get a key event in X server, then you can configure
-the window manager to do the right thing.
-
-Anyway, this is not a bug or a missing feature of the sound driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-08-04 18:50 Mark Knecht    New Issue                                    
-11-08-04 18:50 Mark Knecht    Distribution              => Gentoo          
-11-08-04 18:50 Mark Knecht    Kernel Version            =>
-2.6.9-rc2-mm4-VP-S7-noACPI-UMP
-11-09-04 10:35 tiwai          Note Added: 0002317                          
-11-09-04 10:36 tiwai          Resolution               open => not an issue
-11-09-04 10:37 tiwai          Status                   assigned => resolved
+11-09-04 10:42 eehmke         New Issue                                    
+11-09-04 10:42 eehmke         Distribution              => Gentoo          
+11-09-04 10:42 eehmke         Kernel Version            => 2.6.9-r1        
 ======================================================================
 
 
