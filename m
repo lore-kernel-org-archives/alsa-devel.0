@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: ALSA + jack + xrun = kernel crash
-Date: Sat, 17 May 2003 08:27:29 -0400
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Where did my PCM devices go (using devfs)?
+Date: Sat, 17 May 2003 13:29:22 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19H0hA-0002q5-00@sc8-sf-list1.sourceforge.net>
-References: <1053136440.1197.213.camel@newbie.localnet.local>
+Message-ID: <20030517122922.35181.qmail@web40603.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "16 May 2003 20:54:01 CDT."
-             <1053136440.1197.213.camel@newbie.localnet.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arthur Peters <amp@singingwizard.org>
-Cc: Alsa dev list <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hello, I am experiencing a reletivly hard crash (SysRq works but SysRq-B
->prints a message saying it will reboot then doesn't). The crash happens
-  [ ... ]
->My hardware is:
->Dual PIII 1Ghz with 512M RAM on a Tyan MB.
-  [ .... ]
->My software is:
->ALSA drivers 0.9.3a or current CVS
+Hi,
 
-current CVS (and presumably 0.9.3a) has a severe bug with SMP
-systems. i reported it last week, along with as much output as i could
-get from my machine when it locked up. nobody has been able to do
-anything about it since then.
+I've just loaded the latest CVS version of ALSA and
+discovered that my /dev/snd directory now contains
+only the following devices:
 
-you will need to back to the cvs snapshot of april 27th to get a
-working version for SMP systems.
+/dev/snd/controlC0
+/dev/snd/controlC1
 
-jaroslav or takashi - any ideas about fixing this?
+I use devfs with Linux-2.4.20, and I obviously have
+two sound devices installed. Yes, I know that
+/proc/asound/dev has been removed - but I obviously
+don't link to it because I still see the control
+devices.
+
+Chris
+
+
+__________________________________________________
+Yahoo! Plus
+For a better Internet experience
+http://www.yahoo.co.uk/btoffer
 
 
 -------------------------------------------------------
