@@ -1,12 +1,14 @@
-From: Dirk.Kalis@t-online.de
-Subject: RE: ice1712 Card ID problem next
-Date: Thu,  9 Sep 2004 19:41:02 +0200
+From: ross@lug.udel.edu
+Subject: Re: RE: ice1712 Card ID problem
+Date: Thu, 9 Sep 2004 14:14:21 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1C5Sus-1Z6jpI0@cmpmail03.bbul.t-online.de>
+Message-ID: <20040909181421.GA24152@jose.lug.udel.edu>
+References: <E3DC5887246ABD48BFE0B3CA0183FC25010164CB@SLBENF.ebdmail.alcatel.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <E3DC5887246ABD48BFE0B3CA0183FC25010164CB@SLBENF.ebdmail.alcatel.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,29 +17,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Dirk.Kalis@nextiraone.de
+Cc: alsa-devel@lists.sourceforge.net, bkaney@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Ross,
+On Thu, Sep 09, 2004 at 10:28:02AM +0200, Dirk.Kalis@nextiraone.de wrote:
+> first the 8 outputs are pcm channels only. the analog inputs/outputs are set to 0 because in the driver the values for
+> num_total_dacs and num_total_adcs are set to 0 if the Card ID is not known.
+> Try this 2 patches recompile the driver and envy24control.
+> the patch for envy24control is not necessary because no special handling for delta44 in envy24control
 
-not needed patch for envy24control must be corrected as follows.
+Yea, that's exactly what happened - the patches totally fix the problem.
+The card is properly recognized, envy24control finds the right number of
+input and output channels, and I can hear output.  Thanks so much!
 
-regards
-Dirk
-**********************************************************************
---- envy24control.h.ori Thu Sep  9 10:02:50 2004
-+++ envy24control.h     Thu Sep  9 09:50:42 2004
-@@ -31,6 +31,7 @@
- #define ICE1712_SUBDEVICE_DELTADIO2496 0x121431d6
- #define ICE1712_SUBDEVICE_DELTA66      0x121432d6
- #define ICE1712_SUBDEVICE_DELTA44      0x121433d6
-+#define ICE1712_SUBDEVICE_DELTA44_2    0x121433a0
- #define ICE1712_SUBDEVICE_AUDIOPHILE    0x121434d6
- #define ICE1712_SUBDEVICE_DELTA410      0x121438d6
- #define ICE1712_SUBDEVICE_DELTA1010LT   0x12143bd6
-********************************************************************
+Now, my questions is: why did this change?  Things worked fine for a
+long time.  Was this logic added to the ice1712 driver at some point, or
+did the subdevice ID on my card change?  The second is kind of scary -
+seems to indicate possibly flaky hardware, though it's odd Brian is
+seeing the same thing...
+
+Anyhow, I'm good now - thanks a ton!
+
+Ross
 
 
+
+-- 
+Ross Vandegrift
+ross@lug.udel.edu
+
+"The good Christian should beware of mathematicians, and all those who
+make empty prophecies. The danger already exists that the mathematicians
+have made a covenant with the devil to darken the spirit and to confine
+man in the bonds of Hell."
+	--St. Augustine, De Genesi ad Litteram, Book II, xviii, 37
 
 
 -------------------------------------------------------
