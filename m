@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000482]: alsa.m4 AM_PATH_ALSA broken with libraries starting with m
-Date: Tue, 9 Nov 2004 16:32:51 +0100
-Message-ID: <3a7ca8102edb6311cc551210a06a561a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000470]: Inverted master volume control on TerraTec Aureon 7.1 Space
+Date: Tue, 9 Nov 2004 16:31:47 +0100
+Message-ID: <85199561f19521f932148e8d1932db66@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E5BB2B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:32:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 021F02A9
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:31:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=482> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=470> 
 ======================================================================
-Reported By:                nate
+Reported By:                ungod
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   482
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   470
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
+Distribution:               Debian GNU/Linux 3.1
+Kernel Version:             2.6.9-rc1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-05-2004 22:26 CEST
-Last Modified:              11-09-2004 16:32 CET
+Date Submitted:             08-29-2004 00:43 CEST
+Last Modified:              11-09-2004 16:31 CET
 ======================================================================
-Summary:                    alsa.m4 AM_PATH_ALSA broken with libraries starting
-with m
+Summary:                    Inverted master volume control on TerraTec Aureon
+7.1 Space
 Description: 
-The macro for checking the path of the alsa lib is broken.  If the existing
-LIBS includes any libraries that start with 'm', they are clobbered:
-
-56: 	  LIBS=`echo $LIBS | sed 's/-lm//'`
-57:   	  LIBS=`echo $LIBS | sed 's/-ldl//'`
-58:  	  LIBS=`echo $LIBS | sed 's/-lpthread//'`
-59: 	  LIBS=`echo $LIBS | sed 's/ //'`
-60:       LIBS="$ALSA_LIBS $LIBS"
-
-There should be a better way of accomplishing this.
+It seems that the master volume control on (at least some) TerraTec Aureon
+7.1 Space cards are inverted, thus setting the volume to 100 in alsamixer
+practically mutes the sound.
+The front volume control (and probably the rest) operates correctly.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-08-04 17:17 
+ tiwai - 09-13-04 16:04 
 ----------------------------------------------------------------------
-We can simply remove these sed replacements.  It's nothing but an
-optimization...
-
-----------------------------------------------------------------------
- tiwai - 09-16-04 12:00 
-----------------------------------------------------------------------
-Removed these sed lines on cvs.
+Already fixed on cvs (1.0.7rc1).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-05-04 22:26 nate           New Issue                                    
-09-08-04 17:17 tiwai          Note Added: 0001735                          
-09-16-04 12:00 tiwai          Status                   new => resolved     
-09-16-04 12:00 tiwai          Resolution               open => fixed       
-09-16-04 12:00 tiwai          Assigned To               => tiwai           
-09-16-04 12:00 tiwai          Note Added: 0001770                          
-11-09-04 16:32 tiwai          Status                   resolved => closed  
+08-29-04 00:43 ungod          New Issue                                    
+08-29-04 00:43 ungod          Distribution              => Debian GNU/Linux 3.1
+08-29-04 00:43 ungod          Kernel Version            => 2.6.9-rc1       
+09-13-04 16:04 tiwai          Status                   new => resolved     
+09-13-04 16:04 tiwai          Resolution               open => fixed       
+09-13-04 16:04 tiwai          Assigned To               => tiwai           
+09-13-04 16:04 tiwai          Note Added: 0001750                          
+11-09-04 16:31 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
