@@ -1,21 +1,16 @@
-From: GCZ <geeceezee@free.fr>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 09:14:39 +0200
+Date: Tue, 10 Aug 2004 09:33:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411875DF.7030203@free.fr>
-References: <200408100636.i7A6aMAo030159@www4.pobox.sk>
-Reply-To: geeceezee@free.fr
+Message-ID: <Pine.LNX.4.58.0408100931160.1779@pnote.perex-int.cz>
+References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix3-1.free.fr (postfix3-1.free.fr [213.228.0.44])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10273234
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 09:14:41 +0200 (MEST)
-Received: from [192.168.1.21] (auteuil-3-82-66-93-25.fbx.proxad.net [82.66.93.25])
-	by postfix3-1.free.fr (Postfix) with ESMTP id BD65117350D
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 09:14:39 +0200 (CEST)
-In-Reply-To: <200408100636.i7A6aMAo030159@www4.pobox.sk>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1463F229
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 09:36:23 +0200 (MEST)
+In-Reply-To: <411875DF.7030203@free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,23 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: GCZ <geeceezee@free.fr>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Peter Zubaj wrote:
-> http://www.osnews.com/comment.php?news_id=7976
+On Tue, 10 Aug 2004, GCZ wrote:
 
-Well, right after I read the article, I downloaded 4Front's OSS drivers, 
-and my Terratec Aureon 5.1 Sky finally worked as expected. Now I can 
-listen to PCM, line-in and aux at the same time, play Quake 3 with 
-sound, etc...
+> Peter Zubaj wrote:
+> > http://www.osnews.com/comment.php?news_id=7976
+> 
+> Well, right after I read the article, I downloaded 4Front's OSS drivers, 
+> and my Terratec Aureon 5.1 Sky finally worked as expected. Now I can 
+> listen to PCM, line-in and aux at the same time, play Quake 3 with 
+> sound, etc...
+> 
+> I'm waiting for the trial period to end, then I'll probably will buy 
+> myself a license. $30 is a little bit expensive for a driver (it should 
+> be provided for free by Terratec), but making my sound card work is 
+> worth it.
 
-I'm waiting for the trial period to end, then I'll probably will buy 
-myself a license. $30 is a little bit expensive for a driver (it should 
-be provided for free by Terratec), but making my sound card work is 
-worth it.
+It would be better to debug the driver.
 
-Once again, I'm back to OSS.
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
