@@ -1,18 +1,11 @@
-From: Guenther Sohler <guenther.sohler@newlogic.com>
-Subject: silent midi in audixy
-Date: Thu, 21 Feb 2002 07:51:56 +0100 (MET)
-Message-ID: <XFMail.20020221075156.guenther.sohler@newlogic.com>
-Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: should i be able to abort in the middle of
+ snd_pcm_mmap_{begin,commit} ?
+Date: Thu, 21 Feb 2002 09:14:18 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202210913180.578-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
-Received: from enterprise2.newlogic.com (enterprise2.newlogic.at [194.208.88.1])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA01853
-	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2002 07:52:30 +0100
-Received: from enterprise2.newlogic.com (enterprise2 [172.27.1.1])
-	by enterprise2.newlogic.com (8.9.2/8.9.2) with ESMTP id HAA28743
-	for <alsa-devel@alsa-project.org>; Thu, 21 Feb 2002 07:51:58 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.31.0202200818200.529-100000@pnote.perex-int.cz>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <Pine.LNX.4.44.0202210745340.3739-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,37 +14,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo Jaroslaw,
+On Thu, 21 Feb 2002, Kai Vehmanen wrote:
 
-Yesterday I tried to load the soundfonts to load louder.
-100% instead of 70% does not make much difference.
-Then I tried to amplify the samples itself.
-After some time i knew how to do this. But I realized, that the samples have
-already been in the range from -32768 to 32767(optimal range, quality). so
-amplication does not really make sence.
-But i nevertheless tried to amplify and cut them, so the sf2 file was full of
-square wave fonts. it sounded a little bit loader(still not enough) but the
-quality was gone.
-The problem in my silent music must be somewhere
-As i want to play pcm and midi simultaniously in my application,
-they should have approximatly have the same volume.
-even i put music slider to maximum and pcm to minimum, i hardly reach this goal.
+> On Tue, 19 Feb 2002, Jaroslav Kysela wrote:
+>
+> >> I'm still a bit puzzled why I didn't get xruns in the test case quoted
+> >> below, but until I can reproduce the problem, there's not much to discuss
+> > You posted this sw params on alsa-devel a few days ago:
+> [....]
+> > sw_params:
+> > stop_threshold: 4294967295
+> [...]
+> > As you can see, the stop_threshold is set to UMAX_INT. In case when
+> > stop_threshold is above ring buffer size, then it means for drivers: I
+> > don't care about xruns, don't report them. The stop threshold must be
+> > equal to ring buffer size to get xruns when no more frames are in ring
+> > buffer.
+>
+> Hmm, makes sense. This raises a few new questions:
+>
+> 1) Is 'avail > stop_threshold' the only condition when a stream
+>    can move from RUNNING to XRUN state? The only places I located
+>    in the current source tree, where this state change happens, were
+>    in alsa-kernel/core/pcm_lib.c, functions
+>    snd_pcm_update_hw_ptr_interrupt() and snd_pcm_update_hw_ptr().
+>
+> 2) If (1) is true, why does runnig jack produces xruns every
+>    now and then...? The stop_threshold is UMAX_INT for
+>    both directions and it should never occur that over
+>    buffer_size samples is writable to, or readable from
+>    the pcm device.
+>
+> And to save your time ;), here's one possible explanation to (2):
+>
+> Looking at jackd code, one possibility is that the we are only getting an
+> EPIPE from snd_pcm_avail_update(), but the stream is still in RUNNING
+> state. At least in alsa-lib/src/pcm/pcm_hw.c:snd_pcm_hw_avail_update()
+> we have a test for:
+>
+> --cut--
+> if (avail > pcm->buffer_size)
+> 	return -EPIPE;
+> --cut--
+>
+> This would trigger jackd's xrun handling code, but leave state to RUNNING.
+> Am I on the right track here?
 
-Again this question: I assume, there is an ac97 at the very output of the
-audixy.  So where is the wavetable synthesizer connected to this ac97 ?
-is there a block diagram available somewhere ?
+Yes, this condition is faulty. It should be 'avail >= pcm->stop_threshold'.
+Fixed in CVS and thanks for verbose error detection.
 
-Writing a small mixer dum program, i found out there are 32*3 hidden mixer
-sliders with emu10k1 which amixer and alsamixer do not show, because they are
-inactive.
-What are they used for and how to they become active ? Are they related to my
-problem ?
+						Jaroslav
 
-rds guenther
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 _______________________________________________
