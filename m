@@ -1,14 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Hammerfall DSP driver installation problem
-Date: Wed, 23 Oct 2002 15:21:21 +0200 (METDST)
+From: wal_teichmann@t-online.de (Wolfgang Teichmann)
+Subject: alsa-utils-0.9.0rc4
+Date: Wed, 23 Oct 2002 15:21:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0210231513150.23561-100000@studcom.urz.uni-halle.de>
-References: <s5hsmyx1j2d.wl@alsa2.suse.de>
+Message-ID: <3DB6A244.9040604@t-online.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms040202030600000803070206"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5hsmyx1j2d.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +14,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> the dependency to rawmidi was missing in the entry for hdsp driver.
-> now fixed on cvs.
+This is a cryptographically signed message in MIME format.
 
-> Log message:
->   fixed dependency of hdsp and usb-audio drivers.
+--------------ms040202030600000803070206
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Oops. And I forgot the dependency in alsa-kernel/core/seq/, too.
+Hallo,
 
+I have a problem compiling alsa-utils-0.9.0rc4:
 
-Index: alsa-kernel/core/seq/Makefile
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/seq/Makefile,v
-retrieving revision 1.21
-diff -u -r1.21 Makefile
---- alsa-kernel/core/seq/Makefile	5 Sep 2002 13:38:47 -0000	1.21
-+++ alsa-kernel/core/seq/Makefile	23 Oct 2002 13:10:38 -0000
-@@ -73,7 +73,7 @@
- obj-$(CONFIG_SND_EMU10K1) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o snd-seq-midi-emul.o snd-seq-virmidi.o
- obj-$(CONFIG_SND_TRIDENT) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o snd-seq-midi-emul.o snd-seq-instr.o
- obj-$(CONFIG_SND_YMFPCI) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o snd-seq-midi-emul.o snd-seq-instr.o
--obj-$(CONFIG_SND_USB_AUDIO) += snd-seq.o snd-seq-device.o snd-seq-midi-event.o snd-seq-virmidi.o
-+obj-$(CONFIG_SND_USB_AUDIO) += snd-seq-midi.o snd-seq.o snd-seq-device.o snd-seq-midi-event.o
+RedHat 8.0
 
- obj-m := $(sort $(obj-m))
+./configure
 
+creating cache ./config.cache
+configure: error: can not find install-sh or install.sh in . ./.. ./../..
+
+Any hint?
+
+-Wolfgang
+
+--------------ms040202030600000803070206
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJZDCC
+AxAwggJ5oAMCAQICAwiCPDANBgkqhkiG9w0BAQQFADCBkjELMAkGA1UEBhMCWkExFTATBgNV
+BAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUx
+HTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVl
+bWFpbCBSU0EgMjAwMC44LjMwMB4XDTAyMTAxODAxMTk1OVoXDTAzMTAxODAxMTk1OVowSzEf
+MB0GA1UEAxMWVGhhd3RlIEZyZWVtYWlsIE1lbWJlcjEoMCYGCSqGSIb3DQEJARYZd2FsX3Rl
+aWNobWFubkB0LW9ubGluZS5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK3t
+9U/z1sitJNCUAu5FS2TmcSPNb0gVDWjsGFyRTlGj9CPLsrTwKit8pRZmhvdKl1NALv6c1wQj
+9duLTW9CzNOqKUtDwO95t13s8bPGjIl6hDssadXu7RT+MVduAtHGNnk4NdIVP6mygFgtsomE
+TtJ5o97/loxL+1+FZ8d62PiUP7YyNMMto/zo3SNDSmV+4fsQLQE6C2S9cUukO4vkW8Zk7arf
+B86NJ4fBnT1qgUgmcoFh21qnkrDybkpOKdnoMAXiEgmKPNu9TXn61xASxTOSlMO67CXoZV8e
+5Jtu0pF7RqoAD90mEpGvSOxyfCQqlfpxawOvyB/7CyJOhG03Ek0CAwEAAaM2MDQwJAYDVR0R
+BB0wG4EZd2FsX3RlaWNobWFubkB0LW9ubGluZS5kZTAMBgNVHRMBAf8EAjAAMA0GCSqGSIb3
+DQEBBAUAA4GBALto5AYCDKxUDHP2QBOhsT08knVjdE6HCKKMM/4nEQZn7Dy5iVDp634APC16
+rX8VgZ8uGVMrFvxOByDBpN3zSeyWWYlKga0P3vr0whc1icUq6sPHGbjFx7haLxrHE3wD4kin
+XPLQX9p5c0ZKjc3eYvpSm5H1mr/lRMhVtQNdWdXjMIIDEDCCAnmgAwIBAgIDCII8MA0GCSqG
+SIb3DQEBBAUAMIGSMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYD
+VQQHEwlDYXBlIFRvd24xDzANBgNVBAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUg
+U2VydmljZXMxKDAmBgNVBAMTH1BlcnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzAwHhcN
+MDIxMDE4MDExOTU5WhcNMDMxMDE4MDExOTU5WjBLMR8wHQYDVQQDExZUaGF3dGUgRnJlZW1h
+aWwgTWVtYmVyMSgwJgYJKoZIhvcNAQkBFhl3YWxfdGVpY2htYW5uQHQtb25saW5lLmRlMIIB
+IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAre31T/PWyK0k0JQC7kVLZOZxI81vSBUN
+aOwYXJFOUaP0I8uytPAqK3ylFmaG90qXU0Au/pzXBCP124tNb0LM06opS0PA73m3Xezxs8aM
+iXqEOyxp1e7tFP4xV24C0cY2eTg10hU/qbKAWC2yiYRO0nmj3v+WjEv7X4Vnx3rY+JQ/tjI0
+wy2j/OjdI0NKZX7h+xAtAToLZL1xS6Q7i+RbxmTtqt8Hzo0nh8GdPWqBSCZygWHbWqeSsPJu
+Sk4p2egwBeISCYo8271NefrXEBLFM5KUw7rsJehlXx7km27SkXtGqgAP3SYSka9I7HJ8JCqV
++nFrA6/IH/sLIk6EbTcSTQIDAQABozYwNDAkBgNVHREEHTAbgRl3YWxfdGVpY2htYW5uQHQt
+b25saW5lLmRlMAwGA1UdEwEB/wQCMAAwDQYJKoZIhvcNAQEEBQADgYEAu2jkBgIMrFQMc/ZA
+E6GxPTySdWN0TocIoowz/icRBmfsPLmJUOnrfgA8LXqtfxWBny4ZUysW/E4HIMGk3fNJ7JZZ
+iUqBrQ/e+vTCFzWJxSrqw8cZuMXHuFovGscTfAPiSKdc8tBf2nlzRkqNzd5i+lKbkfWav+VE
+yFW1A11Z1eMwggM4MIICoaADAgECAhBmRXK3zHT1z2N2RYTQLpEBMA0GCSqGSIb3DQEBBAUA
+MIHRMQswCQYDVQQGEwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBl
+IFRvd24xGjAYBgNVBAoTEVRoYXd0ZSBDb25zdWx0aW5nMSgwJgYDVQQLEx9DZXJ0aWZpY2F0
+aW9uIFNlcnZpY2VzIERpdmlzaW9uMSQwIgYDVQQDExtUaGF3dGUgUGVyc29uYWwgRnJlZW1h
+aWwgQ0ExKzApBgkqhkiG9w0BCQEWHHBlcnNvbmFsLWZyZWVtYWlsQHRoYXd0ZS5jb20wHhcN
+MDAwODMwMDAwMDAwWhcNMDQwODI3MjM1OTU5WjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
+DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
+BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
+bCBSU0EgMjAwMC44LjMwMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDeMzKmY8cJJUU+
+0m54J2eBxdqIGYKXDuNEKYpjNSptcDz63K737nRvMLwzkH/5NHGgo22Y8cNPomXbDfpL8dbd
+YaX5hc1VmjUanZJ1qCeu2HL5ugL217CR3hzpq+AYA6h8Q0JQUYeDPPA5tJtUihOH/7ObnUlm
+AC0JieyUa+mhaQIDAQABo04wTDApBgNVHREEIjAgpB4wHDEaMBgGA1UEAxMRUHJpdmF0ZUxh
+YmVsMS0yOTcwEgYDVR0TAQH/BAgwBgEB/wIBADALBgNVHQ8EBAMCAQYwDQYJKoZIhvcNAQEE
+BQADgYEAMbFLR135AXHl9VNsXXnWPZjAJhNigSKnEvgilegbSbcnewQ5uvzm8iTrkfq97A0q
+OPdQVahs9w2tTBu8A/S166JHn2yiDFiNMUIJEWywGmnRKxKyQF1q+XnQ6i4l3Yrk/NsNH50C
+81rbyjz2ROomaYd/SJ7OpZ/nhNjJYmKtBcYxggPVMIID0QIBATCBmjCBkjELMAkGA1UEBhMC
+WkExFTATBgNVBAgTDFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQK
+EwZUaGF3dGUxHTAbBgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJz
+b25hbCBGcmVlbWFpbCBSU0EgMjAwMC44LjMwAgMIgjwwCQYFKw4DAhoFAKCCAg8wGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDIxMDIzMTMyMTA4WjAjBgkq
+hkiG9w0BCQQxFgQUn910rdpcL5ECQoz4WsK9I76vkrIwUgYJKoZIhvcNAQkPMUUwQzAKBggq
+hkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZI
+hvcNAwICASgwgasGCSsGAQQBgjcQBDGBnTCBmjCBkjELMAkGA1UEBhMCWkExFTATBgNVBAgT
+DFdlc3Rlcm4gQ2FwZTESMBAGA1UEBxMJQ2FwZSBUb3duMQ8wDQYDVQQKEwZUaGF3dGUxHTAb
+BgNVBAsTFENlcnRpZmljYXRlIFNlcnZpY2VzMSgwJgYDVQQDEx9QZXJzb25hbCBGcmVlbWFp
+bCBSU0EgMjAwMC44LjMwAgMIgjwwga0GCyqGSIb3DQEJEAILMYGdoIGaMIGSMQswCQYDVQQG
+EwJaQTEVMBMGA1UECBMMV2VzdGVybiBDYXBlMRIwEAYDVQQHEwlDYXBlIFRvd24xDzANBgNV
+BAoTBlRoYXd0ZTEdMBsGA1UECxMUQ2VydGlmaWNhdGUgU2VydmljZXMxKDAmBgNVBAMTH1Bl
+cnNvbmFsIEZyZWVtYWlsIFJTQSAyMDAwLjguMzACAwiCPDANBgkqhkiG9w0BAQEFAASCAQCQ
+ydzEkLP0NJ1DXaXh33rPi8f0xJqiXlwRHBFE2Fl+MFpR3lDYcvi9hyHJdiQRik2EvifpgC25
+ZhPKQsAt75wCUjcIyu484zmM9WKgHQv9f7rp1adZ62NC43u9L0lp+2+hxzMRJihmnJq37ChL
+dTDXt4pKpUL1N4Z+AjnJ5He3WnQcTWhckpPH9GVaWchrNOzvpaf9zbh/pm2w3IaH082mUA+9
+PhQ0dSM3/WzMLB4FL3p3T/lkJHfG3KxLrqrE+zEvUhhsRzobZJoCBiQ2hIX0Nx7Txr6mJ6dO
+d0rqZZFnL+g8L/JACJom9PE+Vs3vORTrRRmrANxHBQmvwE/q4C4/AAAAAAAA
+--------------ms040202030600000803070206--
 
 
 
