@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000755]: get error when trying to build 1.0.5 drivers with kernel 2.6.10
-Date: Tue, 22 Feb 2005 09:46:11 +0100
-Message-ID: <460f6298af0006c109c8225a48002194@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000062]: No volume control - cmi9739 AC97 codec
+Date: Tue, 22 Feb 2005 09:47:19 +0100
+Message-ID: <1234de7ba61a7e8dd806c24b5f57fa7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9B82174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:46:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54696174
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 09:47:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,77 +23,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=755> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=62> 
 ======================================================================
-Reported By:                wschrep
+Reported By:                LP
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   755
-Category:                   0_compilation problem_!!!
+Issue ID:                   62
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               knoppmyth r4v5
-Kernel Version:             2.6.10
+Distribution:               gentoo
+Kernel Version:             2.6.0
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-29-2004 00:50 CET
-Last Modified:              02-22-2005 09:46 CET
+Date Submitted:             02-15-2004 02:21 CET
+Last Modified:              02-22-2005 09:47 CET
 ======================================================================
-Summary:                    get error when trying to build 1.0.5 drivers with
-kernel 2.6.10
+Summary:                    No volume control - cmi9739 AC97 codec
 Description: 
-make -C /lib/modules/2.6.10/build
-SUBDIRS=/root/alsa/alsa-driver-1.0.5/kbuild modules
-make[1]: Entering directory `/usr/src/linux-2.6.10'
-  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/hwdep.o
-  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o
-/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: initializer
-element is not constant
-/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: (near
-initialization for `__param_arr_enable.num')
-make[3]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o]
-Error 1
-make[2]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore] Error 2
-make[1]: *** [_module_/root/alsa/alsa-driver-1.0.5/kbuild] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.10'
-make: *** [compile] Error 2
-root@mythtv:~/alsa/alsa-driver-1.0.5 # uname -r
-2.6.10
-root@mythtv:~/alsa/alsa-driver-1.0.5 # gcc --version
-gcc (GCC) 3.3.2 20030812 (Debian prerelease)
-Copyright (C) 2003 Free Software Foundation, Inc.
-This is free software; see the source for copying conditions.  There is
-NO
-warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
-PURPOSE.
+Using motherboard asrock k7s8xe+(sis748 chipset) which features sis7012,
+cmi9739 AC97 codec it is not possible to control volume. Is there any
+chance, that this can be implemented in future alsa versions, I heard, the
+problem is, that this hardware doesn't have a hardware PCM-Out volume
+control.
 
-
+P.S. There is an OSS driver available:
+http://www.cmedia.com.tw/download/e_UDA9738_linux.htm
+which maybe helpful.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-29-04 00:56 
+ LP - 03-02-04 00:05 
 ----------------------------------------------------------------------
-Please don't report bugs for old ALSA versions.  Try 1.0.8-rc1.
+Cool thanks.
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:46 
+ perex - 02-22-05 09:47 
 ----------------------------------------------------------------------
-No reaction.
+The softvol plugin in alsa-lib fixes this issue. It is default now (in
+CVS).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-29-04 00:50 wschrep        New Issue                                    
-12-29-04 00:50 wschrep        Distribution              => knoppmyth r4v5  
-12-29-04 00:50 wschrep        Kernel Version            => 2.6.10          
-12-29-04 00:56 rlrevell       Note Added: 0002988                          
-02-22-05 09:46 perex          Status                   assigned => resolved
-02-22-05 09:46 perex          Resolution               open => fixed       
-02-22-05 09:46 perex          Note Added: 0003692                          
+02-15-04 02:21 LP             New Issue                                    
+02-26-04 12:08 perex          Status                   new => assigned     
+02-26-04 12:08 perex          Assigned To               => perex           
+02-26-04 12:08 perex          Note Added: 0000341                          
+02-29-04 20:19 perex          Summary                  No volume control => No
+volume control - cmi9739 AC97 codec
+03-02-04 00:05 LP             Note Added: 0000428                          
+03-20-04 11:37 erol           Issue Monitored: erol                        
+11-22-04 20:58 ajir           Issue Monitored: ajir                        
+02-22-05 09:47 perex          Status                   assigned => resolved
+02-22-05 09:47 perex          Resolution               open => fixed       
+02-22-05 09:47 perex          Note Added: 0003693                          
 ======================================================================
 
 
