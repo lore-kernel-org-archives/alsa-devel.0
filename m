@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
-Date: Tue, 12 Oct 2004 14:49:16 +0200 (CEST)
+Subject: [ALSA - driver 0000569]: Software mixing to rear channel
+Date: Tue, 12 Oct 2004 14:50:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041012124916.3B97118009@server.perex-int.cz>
+Message-ID: <20041012125044.3D1EE18009@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 708442D9
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:49:16 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F1B42D9
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:50:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,61 +20,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000569
 ======================================================================
 Reported By:                pmatil
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     566
+Bug ID:                     569
 Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   minor
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               Debian GNU/Linux
 Kernel Version:             2.4.22
-Resolution:                 duplicate
-Duplicate:                  571
 ======================================================================
-Date Submitted:             10-05-2004 17:36 CEST
-Last Modified:              10-12-2004 14:49 CEST
+Date Submitted:             10-06-2004 15:22 CEST
+Last Modified:              10-12-2004 14:50 CEST
 ======================================================================
-Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
+Summary:                    Software mixing to rear channel
 Description: 
-No error messages, init-scripts work but doesn't save nor restore mixer
-settings. At boot, volumes are 0% but not muted. After setting the mixer
-settings, doing alsactl store / alsactl restore works and actually saves
-mixer settings to the default file. Still after boot/reboot settings have
-been reset and also the file has been cleared (all volumes = 0). Card is
-Terratec DMX Xfire 1024...(cs46xx)
+I don't know how to explain it, but since Terratec DMX Xfire 1024 has two
+stereo outputs (front and rear), it would be nice if there was a
+slider/button/etc. from which I could set same output to front and rear
+(eg. same signal), so my 4-channel amp. gets all 4-channels in and I get
+sound from all 4 speakers instead of the amp. mixing front to rear.
+Separated volume sliders for front and rear would be nice too.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-06-2004 11:35 CEST 
+ tiwai - 10-12-2004 14:50 CEST 
 ----------------------------------------------------------------------
-I doubt it's a driver problem if calling alsactl manually works...
-
-----------------------------------------------------------------------
- pmatil - 10-07-2004 17:46 CEST 
-----------------------------------------------------------------------
-OK, so I should put this note into what category? The initscript somehow
-resets the file that the mixer settings are in...
+You can do this by creating a new pcm in ~/.asoundrc.
+See an example in https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000579.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-05-04 17:36 pmatil         New Bug                                      
-10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
-10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
-10-06-04 11:35 tiwai          Bugnote Added: 0002020                       
-10-07-04 17:46 pmatil         Bugnote Added: 0002034                       
-10-12-04 14:49 tiwai          duplicate_id             0 => 571            
-10-12-04 14:49 tiwai          Assigned To               => tiwai           
-10-12-04 14:49 tiwai          Resolution               open => duplicate   
-10-12-04 14:49 tiwai          Status                   new => resolved     
+10-06-04 15:22 pmatil         New Bug                                      
+10-06-04 15:22 pmatil         Distribution              => Debian GNU/Linux
+10-06-04 15:22 pmatil         Kernel Version            => 2.4.22          
+10-12-04 14:50 tiwai          Bugnote Added: 0002098                       
 ======================================================================
 
 
