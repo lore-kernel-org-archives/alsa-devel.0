@@ -1,13 +1,19 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Question on ALSA versions
-Date: Fri, 5 Nov 2004 07:03:51 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411050658540.18780@pnote.perex-int.cz>
-References: <cmciu9$hsn$1@sea.gmane.org> <1099596730.1617.61.camel@krustophenia.net>
- <cmf0td$rqv$1@sea.gmane.org>
+From: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
+Subject: Re: Float sample format
+Date: Fri, 5 Nov 2004 08:33:52 +0100
+Message-ID: <E1CPyba-0008S3-1P@mailer.emlix.com>
+References: <Pine.HPX.4.33n.0411041550420.25979-100000@studcom.urz.uni-halle.de>
+Reply-To: nh@emlix.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <cmf0td$rqv$1@sea.gmane.org>
+Received: from mail.emlix.com (mail.emlix.com [193.159.217.188])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A477721D
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 08:33:55 +0100 (MET)
+In-Reply-To: <Pine.HPX.4.33n.0411041550420.25979-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,35 +23,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 5 Nov 2004, Alexander E. Patrakov wrote:
+On Thursday 04 November 2004 15:52, Clemens Ladisch wrote:
+> Nicolas H=FCppelsh=E4user wrote:
+> > What are the sample value ranges used when having sample format float(l=
+e)
+> > or double(le)?
+>
+> Between -1 and 1. (LE/BE doesn't make any difference.)
+>
+> > When playing, the sound is loudest when using the whole range the type
+> > offers.
+>
+> Really?  What sound card lets you play inifinitely loud samples? :-)
 
-> > In practice it usually works but there have been some specific incidents
-> > where this caused problems.  For example when a major change is made to
-> > a driver the hardware specific parts of alsa-lib will be updated to
-> > reflect the change.
-> 
-> Isn't it what minor and major versions are for? Or are they just an old
-> artifact that should not be relied upon? Or there is just lack of testing?
+;-)  Well, in fact for playback I use [FLT_MIN,FLT_MAX] and it turned out t=
+o=20
+be louder than [-1,1] on the Duo USB Audiosport (and in fact when playing t=
+he=20
+first time I had to pull down my ear-phones - that means the sound is=20
+approximatly infinitely loud).
 
-The alsa-lib 1.0+ should be compatible with ALSA driver code in 2.6
-kernels. Of course, it's better to use last alsa-lib because of bug-fixes.  
-This is true for drivers as well.
+Viele Gruesse / best regards
+        Nicolas Hueppelshaeuser
 
-The alsa-lib code tries to emulate new kernel driver features when older 
-driver is used. Also, the configuration files might be changes reflecting 
-the specific lowlevel driver, so in some cases, you'll need configuration 
-files matching specific driver version (emu10k1 driver is an example).
+=2D-
+nicolas hueppelshaeuser, emlix gmbh, http://www.emlix.com,
+mailto:nh@emlix.com
+fon +49 551 30664 -0, fax -11, bahnhofsallee 1b, 37081 g=F6ttingen, germany
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+emlix - your embedded linux partner
 
 
 -------------------------------------------------------
