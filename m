@@ -1,13 +1,14 @@
-From: Gary Scavone <gary@ccrma.Stanford.EDU>
-Subject: Re: weird snd_ctl_open() behavior
-Date: Fri, 6 Jun 2003 09:21:55 -0700 (PDT)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: SIS7012 SPDIF support
+Date: Fri, 06 Jun 2003 22:18:11 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306060913240.28000-100000@ccrma-gate.stanford.edu>
-References: <Pine.HPX.4.33n.0306060914010.22933-100000@studcom.urz.uni-halle.de>
+Message-ID: <3EE10513.9010308@superbug.demon.co.uk>
+References: <3EDB74E6.3020600@superbug.demon.co.uk>	<s5hptlvo57h.wl@alsa2.suse.de>	<3EDC8553.8080902@superbug.demon.co.uk>	<s5hisrnnype.wl@alsa2.suse.de>	<3EDFEC45.6010908@superbug.demon.co.uk> <s5hvfvjk27g.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0306060914010.22933-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <s5hvfvjk27g.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,58 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens,
+Takashi Iwai wrote:
+> 
+> 
+> oops, it seems like my mistake in the last change.
+> 
+> could you try the attached patch?
+> 
+> 
+> Takashi
 
-Thanks for the clarification.
+That seems to have helped. We now get sliders.
+We now get ac3 and dts sound with device name
+iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
+and pcm with device name
+iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2
 
-This behavior seems like a bug.  Could snd_ctl_open() not first
-compare the "card" argument to the known internal device id and then,
-if that fails, attempt to interpret the card as a number?  I'm using
-the id because it is what my program exposes to users for device
-selection (which is more human readable than the device number when an
-id is specified in the configuration).  It's a hassle for me to have
-to keep both an ascii id _and_ a device number around, especially when
-the ascii id is supposed to do what I need.
+We currently get no sound with device name: -
+default
+front
 
---gary
+We only have the spdif connected.
+So if sound is comming out of the analogue port, we will not know about it.
 
-On Fri, 6 Jun 2003, Clemens Ladisch wrote:
+It would be nice to get sound output with default and front, because 
+then oss emulation and alsa's automatic resampling would also work.
 
->>Gary Scavone wrote:
->>> I'm making use of a card's id (via the snd_ctl_card_info_get_id()
->>> function) to access a device.  Recently, I noticed some inconsistent
->>> behavior.  On a machine with an OmniIO box, if no "id" is set in the
->>> /etc/modules.conf file, a default id of "66" is returned.
->>
->>The default card id is composed of the letters and numbers of the last
->>word of the card's name (as seen in /proc/asound/cards).
->>
->>> So, when I attempt to use the snd_ctl_open() function, my ascii
->>> identifier looks like "hw:66" and the function call fails.  If I
->>> provide an "id" in /etc/modules.conf (ex. id=omniIO), then my ascii
->>> identifier looks like "hw:omniIO" and the call to snd_ctl_open()
->>> works.
->>
->>The first parameter to hw specifies the card; if it looks like a number,
->>it will be interpreted as the card number.
->>
->>> On my home laptop with a Maestro2e chipset, I don't have this problem
->>> (though I need to look more carefully at this when I go home because I
->>> don't use the value returned from snd_ctl_card_info_get_id() if the
->>> string length is zero and that might be happening on my laptop).
->>
->>The id is intended to provide a more readable identification than the card
->>number (for humans).  If you want to access a device from your program,
->>I'd suggest to use the card number instead because it's guaranteed to
->>never fail.
->>
->>
->>HTH
->>Clemens
+The problem with the device is that if you want a 48000hz spdif out, all 
+inputs have to also be 48000hz. So, if we open the device for 44100 hz 
+output, it would be nice if the spdif automatically changed to 44100 hz 
+as well.
+Currently, sound only seems to work if you send it to the device at 
+48000 hz. E.g. DVDs audio tracks.
+
+Cheers
+James
 
 
 
