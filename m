@@ -1,94 +1,61 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: card_id() in initval.h
-Date: Sat, 27 Dec 2003 09:56:05 +0100 (CET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312270951580.8959@pnote.perex-int.cz>
-References: <x7k74nuwwq.fsf@dorian.home.org>
+From: Martin Schlemmer <azarah@nosferatu.za.org>
+Subject: Re: OSS sound emulation broken between 2.6.0-test2 and test3
+Date: Sat, 27 Dec 2003 13:11:19 +0200
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1072523478.12308.52.camel@nosferatu.lan>
+References: <1080000.1072475704@[10.10.2.4]>
+	 <1072479167.21020.59.camel@nosferatu.lan>  <1480000.1072479655@[10.10.2.4]>
+	 <1072480660.21020.64.camel@nosferatu.lan>  <1640000.1072481061@[10.10.2.4]>
+	 <1072482611.21020.71.camel@nosferatu.lan>  <2060000.1072483186@[10.10.2.4]>
+	 <1072500516.12203.2.camel@duergar>  <8240000.1072511437@[10.10.2.4]>
+Reply-To: azarah@nosferatu.za.org
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <x7k74nuwwq.fsf@dorian.home.org>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andre Batista de Oliveira <abo@netvisao.pt>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-v1ie5bFjVyaxM7RYYj05"
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <8240000.1072511437@[10.10.2.4]>
+To: "Martin J. Bligh" <mbligh@aracnet.com>
+Cc: perex@suse.cz, alsa-devel@lists.sourceforge.net, Linux Kernel Mailing Lists <linux-kernel@vger.kernel.org>, Rob Love <rml@ximian.com>, Andrew Morton <akpm@osdl.org>, Stan Bubrouski <stan@ccs.neu.edu>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 23 Dec 2003, Andre Batista de Oliveira wrote:
 
-> I'm facing some problems passing the ALSA drivers'
-> parameters from the kernel command line.
-> 
-> When I try to specify the ID string for the card
-> (snd-sgalaxy=1,0,Waverider,0x220,0x530,10,3),
-> the kernel just reboots immediately, even before printing anything!
-> 
-> But when I leave the ID string unspecified
-> (snd-sgalaxy=1,0,,0x220,0x530,10,3), it boots and works fine,
-> and the card gets the default "Galaxy" ID.
+--=-v1ie5bFjVyaxM7RYYj05
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for the bug report. Could you try this "official" patch?
+On Sat, 2003-12-27 at 09:50, Martin J. Bligh wrote:
+> Something appears to have broken OSS sound emulation between=20
+> test2 and test3. Best I can tell (despite the appearance of the BK logs),=
+=20
+> that included ALSA updates 0.9.5 and 0.9.6. Hopefully someone who
+> understands the sound architecture better than I can fix this?
+>=20
 
-Index: initval.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/include/initval.h,v
-retrieving revision 1.17
-diff -u -r1.17 initval.h
---- initval.h	30 Oct 2003 14:21:07 -0000	1.17
-+++ initval.h	27 Dec 2003 09:00:51 -0000
-@@ -138,27 +138,24 @@
- #include <linux/init.h>
- static int __init get_id(char **str, char **dst)
- {
--	char *s, *d;
-+	char *s;
- 
- 	if (!(*str) || !(**str))
- 		return 0;
- 	for (s = *str; isalpha(*s) || isdigit(*s) || *s == '_'; s++);
- 	if (s != *str) {
--		*dst = (char *)kmalloc((s - *str) + 1, GFP_KERNEL);
--		s = *str; d = *dst;
--		while (isalpha(*s) || isdigit(*s) || *s == '_') {
--			if (d != NULL)
--				*d++ = *s;
--			s++;
-+		int len = s - *str;
-+		char *d = (char *)alloc_bootmem(len + 1);
-+		if (d != NULL) {
-+			memcpy(*dst = d, *str, len);
-+			d[len] = '\0';
- 		}
--		if (d != NULL)
--			*d = '\0';
- 	}
--	*str = s;
- 	if (*s == ',') {
--		(*str)++;
-+		*str = s + 1;
- 		return 2;
- 	}
-+	*str = s;
- 	return 1;
- }
- #endif
+I wont say I understand it, but a quick look seems the major change is
+the addition of the 'whole-frag' and 'no-silence' opts.  You might try
+the following to revert what 'no-silence' change at least does:
 
-					Jaroslav
+--
+ # echo 'xmms 0 0 no-silence' > /proc/asound/card0/pcm0p/oss
+ # echo 'xmms 0 0 whole-frag' > /proc/asound/card0/pcm0p/oss
+--
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+and restart xmms.  If that do not work, then one of the alsa guys will
+have to have a look.
 
 
--------------------------------------------------------
-This SF.net email is sponsored by: IBM Linux Tutorials.
-Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
-Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
-Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
+--=20
+Martin Schlemmer
+
+--=-v1ie5bFjVyaxM7RYYj05
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQA/7WjWqburzKaJYLYRAugoAJoC0b5VAlo7QQ5YhYrhR5FeT7lzaQCeI4V7
+QkxPc42WHB8vkuPnZ6oC+BM=
+=ZzUw
+-----END PGP SIGNATURE-----
+
+--=-v1ie5bFjVyaxM7RYYj05--
