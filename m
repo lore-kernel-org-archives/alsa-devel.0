@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
-Date: Sat, 19 Mar 2005 08:17:07 +0100
-Message-ID: <a712c99ac91cf9a583069828421e36f0@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
+Date: Sat, 19 Mar 2005 09:06:46 +0100
+Message-ID: <92f76c6325e57694b7bb2eb81e681811@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDDC71CF
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 08:17:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 18B1A1E6
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:06:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,75 +23,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=353> 
 ======================================================================
-Reported By:                AdamW
+Reported By:                JSchmitt
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   986
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Issue ID:                   353
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Mandrakelinux Cooker
-Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-12-2005 22:43 CET
-Last Modified:              03-19-2005 08:17 CET
+Date Submitted:             06-30-2004 19:36 CEST
+Last Modified:              03-19-2005 09:06 CET
 ======================================================================
-Summary:                    snd-ice1724 outputs white noise on rear surround
-output of Chaintech AV-710
+Summary:                    No sound as startup of KDE 3.2.3, errormessage in
+snd_pcm_hw.c
 Description: 
-A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
-which uses this driver. It has two DACs. There's a standard DAC that
-drives the first six channels. The rear surround channels, however, are
-driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
-card to drive the main two channels through this DAC instead in order to
-get a very high quality stereo line-level output. The card's Windows
-driver has an option to do just this, and in the past people have been
-successful doing it on Linux. I am attaching an asound.state file which
-owners of this card used with ALSA 1.0.7 to achieve this. However, I am
-having trouble getting this to work with ALSA 1.0.8. The rear surround
-output just produces white noise all the time. This is the case both with
-this asound.state loaded and also with default levels (i.e., what I get if
-I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
-changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
-it. Thanks!
+When I try to start X with KDE 3.2.3, I will get the following error
+mesages:
+
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+
+I will not get any sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- AdamW - 03-14-05 16:23 
+ rob_hughes - 10-23-04 23:27 
 ----------------------------------------------------------------------
-Some corrections and clarifications. ADS tells me the version of ALSA the
-file worked on was earlier than 1.0.7, he thinks 1.0.6. I tried rolling my
-ALSA back to 1.0.6 by installing an old MDK kernel, but no joy - still
-white noise. I'll try and find a kernel with 1.0.5 later. ADS confirms my
-problem with 1.0.8 (he has white noise too) and cannot find any mixer
-settings to fix it. I tried the driver from 1.0.9rc1, same problem.
-Thanks!
+Also, the correct bugzilla number is 124447, but that bug is still marked
+as new.
 
 ----------------------------------------------------------------------
- AdamW - 03-19-05 08:17 
+ jdthood - 03-19-05 09:06 
 ----------------------------------------------------------------------
-Further information:
-
-http://www.hydrogenaudio.org/forums/lofiversion/index.php/t31667.html
-
-Executive summary of that thread - someone is experiencing exactly the
-same problem with 1.0.6. If they warm reboot to Windows, play some audio,
-then warm reboot back to Linux, it works.
+Submitter: Does this problem still afflict 1.0.8 and 1.0.9rc1?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 22:43 AdamW          New Issue                                    
-03-12-05 22:43 AdamW          File Added: asound.state                     
-03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
-03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
-03-14-05 16:23 AdamW          Note Added: 0003904                          
-03-19-05 08:17 AdamW          Note Added: 0004010                          
+06-30-04 19:36 JSchmitt       New Issue                                    
+07-06-04 18:33 JSchmitt       Issue Monitored: JSchmitt                    
+07-15-04 14:20 perex          Note Added: 0001433                          
+07-15-04 17:57 JSchmitt       Note Added: 0001436                          
+08-17-04 06:11 samy           Note Added: 0001572                          
+08-17-04 06:11 samy           Issue Monitored: samy                        
+10-23-04 22:41 rob_hughes     Note Added: 0002256                          
+10-23-04 22:50 rob_hughes     Issue Monitored: rob_hughes                    
+10-23-04 23:27 rob_hughes     Note Added: 0002258                          
+10-25-04 01:08 rob_hughes     Note Edited: 0002256                         
+03-19-05 09:06 jdthood        Note Added: 0004011                          
 ======================================================================
 
 
