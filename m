@@ -1,16 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH, RFC] remove dead code an exports from alsa
-Date: Wed, 27 Oct 2004 15:52:14 +0200 (METDST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000605]: memalloc.c:53 build error
+Date: Wed, 27 Oct 2004 15:58:38 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0410270953290.8684-100000__44981.3335123055$1098885764$gmane$org@studcom.urz.uni-halle.de>
-References: <20041024133813.GA20174@lst.de>
+Message-ID: <3e7874c5b308994a004af1b078b8f6dc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E1B052C1
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 15:52:24 +0200 (MEST)
-In-Reply-To: <20041024133813.GA20174@lst.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 832C127D
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 15:58:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,60 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Christoph Hellwig <hch@lst.de>
-Cc: perex@suse.cz, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Christoph Hellwig wrote:
-> Alsa currently has tons of dead exports, often with totally unused
-> functions behind them.  Care to look over the huge patch below and
-> see what makes sense?
 
-Exported for historical reasons (and no longer necessary):
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=605> 
+======================================================================
+Reported By:                Andrew
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   605
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             10-26-2004 12:37 CEST
+Last Modified:              10-27-2004 15:58 CEST
+======================================================================
+Summary:                    memalloc.c:53 build error
+Description: 
+GCC 3.3.4 is in use.
+./cvscomile for current CVS tree shows:
 
-> ===== include/sound/ad1848.h 1.7 vs edited =====
-> -void snd_ad1848_dout(ad1848_t *chip, unsigned char reg, unsigned char value);
-> -unsigned char snd_ad1848_in(ad1848_t *chip, unsigned char reg);
-> -void snd_ad1848_mce_up(ad1848_t *chip);
-> -void snd_ad1848_mce_down(ad1848_t *chip);
-> -irqreturn_t snd_ad1848_interrupt(int irq, void *dev_id, struct pt_regs *regs);
-> ===== include/sound/es1688.h 1.4 vs edited =====
-> -irqreturn_t snd_es1688_interrupt(int irq, void *dev_id, struct pt_regs *regs);
+make[1]: Entering directory `/usr/src/linux-2.6.9-gentoo-r1'
+  CC [M]  /wrk/cvs/alsa/alsa-driver/kbuild/../acore/memalloc.o
+/wrk/cvs/alsa/alsa-driver/acore/memalloc.c:53: error: invalid lvalue in
+unary `&'
+/wrk/cvs/alsa/alsa-driver/acore/memalloc.c:53: error: initializer element
+is not constant
+/wrk/cvs/alsa/alsa-driver/acore/memalloc.c:53: error: (near initialization
+for `__param_arr_enable.num')
+make[4]: *** [/wrk/cvs/alsa/alsa-driver/kbuild/../acore/memalloc.o] Error
+1
 
-Not really used:
+======================================================================
 
-> ===== include/sound/ainstr_fm.h 1.1 vs edited =====
-> -extern char *snd_seq_fm_id;
-> ===== include/sound/ainstr_gf1.h 1.2 vs edited =====
-> -extern char *snd_seq_gf1_id;
-> ===== include/sound/ainstr_iw.h 1.2 vs edited =====
-> -extern char *snd_seq_iwffff_id;
-> ===== include/sound/core.h 1.37 vs edited =====
-> -extern int snd_cards_count;
+----------------------------------------------------------------------
+ Clemens Ladisch - 10-27-04 15:58 
+----------------------------------------------------------------------
+I get the same (compiling for vanilla 2.6.9 kernel with gcc 2.95.3).
 
-I removed all exports above from the ALSA CVS.
+I guess the latest module_param_array change isn't compatible with an old
+kernel like this. :-)
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-26-04 12:37 Andrew         New Issue                                    
+10-27-04 15:58 Clemens LadischNote Added: 0002274                          
+======================================================================
 
-The following headers are the driver API, so the unused symbols might
-be used by future drivers:
-
-> ===== include/sound/info.h 1.15 vs edited =====
-> ===== include/sound/pcm.h 1.30 vs edited =====
-> ===== include/sound/rawmidi.h 1.5 vs edited =====
-> ===== include/sound/seq_midi_emul.h 1.1 vs edited =====
-> ===== include/sound/seq_midi_event.h 1.3 vs edited =====
-> ===== include/sound/seq_virmidi.h 1.2 vs edited =====
-> ===== include/sound/timer.h 1.7 vs edited =====
-
-However, I think some of these functions should not be part of the
-API; I'll remove them, too.
-
-
-The functions in the snd-trident-synth module might be used when^Wif
-MIDI support for it will be written.
-
-
-Clemens
 
 
 
