@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: quattro usb-audio endianess conversion layer
-Date: Mon, 14 Jun 2004 19:14:00 +0200 (METDST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH] ALSA: remove magic cast (0/6)
+Date: Mon, 14 Jun 2004 20:18:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406141905110.14592-100000@studcom.urz.uni-halle.de>
-References: <40CDC671.4020706@boosthardware.com>
+Message-ID: <Pine.LNX.4.58.0406142003570.1795@pnote.perex-int.cz>
+References: <200406141555.i5EFtD7g013906@melkki.cs.helsinki.fi>
+ <s5hk6yadspp.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <40CDC671.4020706@boosthardware.com>
+Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 02DAB36A
+	for <alsa-devel@alsa-project.org>; Mon, 14 Jun 2004 20:19:02 +0200 (MEST)
+In-Reply-To: <s5hk6yadspp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,36 +20,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Pekka J Enberg <penberg@cs.helsinki.fi>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> > Patrick Shirkey wrote:
-> >
-> >>It turns out the reason for the noise in the input channels all this
-> >>time is due to the quattro only reading big endian at input.
->
-> I finally was able to test the patch and my first impression is that it
-> has made a significant difference
+On Mon, 14 Jun 2004, Takashi Iwai wrote:
 
-Good.
+> > This patch remove snd_magic_cast from the kernel.  It's on top of the
+> > kcalloc() patch and was compile-tested with allyesconfig.
+> 
+> Thanks for the patch.
+> 
+> Did you already make a patch to remove hidden_kmalloc and
+> hidden_vmalloc wrappers, or do I miss it?  They are also suprefluous.
+> 
+> Jaroslav, what do you think about removing kmalloc/vmalloc wrappers
+> and magic stuffs from the kernel tree?
+> 
+> For me, it's ok to remove them from the linux kernel tree
+> (ie. alsa-kernel tree).  I agree that they are not needed for the
+> matured drivers.  For the experimental drivers, We can provide another
+> type check mechanism in alsa-driver tree locally.
 
-> My next question is: Does anyone have a good idea how to apply this to a
-> jack setup without sacrificing latency?
+I think that we need to separate the patch:
 
-By adding non-native endianness support to Jack.  (Which requires
-supporting different sample formats for playback vs. recording.)
+1) removal of own memory pool (check for memory leaks)
+2) magic stuff
 
+The structure mistakes usually ends with an oops, but the memory leaks 
+cannot be detected easy inside the kernel.
 
-Regards,
-Clemens
+I don't like too much the idea to remove the own memory pool in the debug
+mode. It helped me in past numerous times and I think that ALSA is one
+from the clean subsystems in this area. I don't understand the kernel
+developers - there is no replacement. Yes, it's good only for debugging,
+but why not make debugging easier for other developers as well with
+proposing a general solution?
 
+Regarding the magic stuffs - I do not care so much. It can be removed now.
 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
-This SF.Net email is sponsored by the new InstallShield X.
->From Windows to Linux, servers to mobile, InstallShield X is the
-one installation-authoring solution that does it all. Learn more and
-evaluate today! http://www.installshield.com/Dev2Dev/0504
+This SF.Net email is sponsored by The 2004 JavaOne(SM) Conference
+Learn from the experts at JavaOne(SM), Sun's Worldwide Java Developer
+Conference, June 28 - July 1 at the Moscone Center in San Francisco, CA
+REGISTER AND SAVE! http://java.sun.com/javaone/sf Priority Code NWMGYKND
