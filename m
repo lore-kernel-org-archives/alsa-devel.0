@@ -1,14 +1,17 @@
-From: "Andreas Kuckartz" <A.Kuckartz@ping.de>
-Subject: Re: [Alsa-user] Re: Bugtracking system
-Date: 23 Jan 2004 10:59:12 +0100
+From: Mario Loritz <loritz@fh-furtwangen.de>
+Subject: Re: config bug with sbawe and --with-isapnp=no
+Date: Fri, 23 Jan 2004 11:13:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <012b01c3e198$4ccb0d00$a501a8c0@computer2>
-References: <Pine.LNX.4.44.0401210251440.30081-100000@sasami.anime.net> <01dc01c3e019$da571450$a501a8c0@computer2> <013e01c3e0db$5eb3d7d0$a501a8c0@computer2> <200401231545.41284.sam@vilain.net>
+Message-ID: <200401231113.35085.loritz@fh-furtwangen.de>
+References: <200401221249.07577.loritz@fh-furtwangen.de>
+Reply-To: loritz@fh-furtwangen.de
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200401221249.07577.loritz@fh-furtwangen.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +20,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sam Vilain <sam@vilain.net>
-Cc: alsa-user@lists.sourceforge.net, 	 <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sam Vilain wrote:
+Hello list,
 
-> What about sub-sub-categories for attaching bugs to individual
-> drivers?
+I reproduced the error message while the driver is loading:
 
-That is not supported by Bugzilla. One possibility is to remove one level
-and add something like "ALSA drivers" as a second separate top-level
-Category with the main drivers as individual Components. I think that can
-and should be done later when the use of bugzilla.kernel.org is established.
+# rcalsasound restart
 
-The Bugzilla administrator probably would hesitate to do that now before it
-is known that the system is really used for ALSA bugtracking. (There is not
-yet a single entry for the whole current "Alternate Trees" Category ...)
+Shutting down sound driver:                                          done
+Starting sound driver: snd-sbawe /lib/modules/2.4.21-166-default/kernel/sound/
+isa/sb/snd-sbawe.o: unresolved symbol pnp_activate_dev_R9e329e8c
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: unresolved 
+symbol pnp_register_card_driver_R14e159bf
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: unresolved 
+symbol pnp_manual_config_dev_R480f17aa
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: unresolved 
+symbol pnp_release_card_device_R0d53db9b
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: unresolved 
+symbol pnp_init_resource_table_R16084899
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: unresolved 
+symbol pnp_unregister_card_driver_R82704514
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: unresolved 
+symbol pnp_request_card_device_Rc3534026
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: insmod /lib/
+modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o failed
+/lib/modules/2.4.21-166-default/kernel/sound/isa/sb/snd-sbawe.o: insmod 
+snd-sbawe failed
+                                                                     done
+Starting sound driver: snd-ice1712                                   done
 
-Cheers,
-Andreas
+What is strange is that the drivers try to use symbols like "pnp_activate"
+that they dont need and dont use, as the drivers were compiled WITHOUT
+pnp support.
+
+Thanks for the answers so far!
+Mario 
 
 
 
