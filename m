@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000908]: suport for ESI Juli@ - ICE1724
-Date: Tue, 22 Feb 2005 10:07:27 +0100
-Message-ID: <028ee058238aa9036138584106857e7d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000931]: Wish for M-Audio Revolution 5.1 Support
+Date: Tue, 22 Feb 2005 10:40:34 +0100
+Message-ID: <5c1d95283362458c1fe48d6d5fae8b29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D6AC174
-	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:07:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9213175
+	for <alsa-devel@alsa-project.org>; Tue, 22 Feb 2005 10:40:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,57 +21,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000930.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=908> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=931> 
 ======================================================================
-Reported By:                arsen
-Assigned To:                perex
+Reported By:                Thinky
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   908
+Issue ID:                   931
 Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.11-rc4
+Status:                     new
+Distribution:               Debian unstable
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-14-2005 19:38 CET
-Last Modified:              02-22-2005 10:07 CET
+Date Submitted:             02-22-2005 10:40 CET
+Last Modified:              02-22-2005 10:40 CET
 ======================================================================
-Summary:                    suport for ESI Juli@ - ICE1724
+Summary:                    Wish for M-Audio Revolution 5.1 Support
 Description: 
-Hello. I have soundcard ESI Juli@ on chipset ICE1724.
-I tried run her with alsa 1.0.8 on kernel 2.6.10 and 2.6.11.
-Unfortunely soundcard don't work. In my logs i found that:
-
-- ice1724: No matching model found for ID 0x31305345
-- ice1724: Invalid EEPROM (size = 120)
-- ICE1724: probe of 0000:00:0a.0 failed with error -5
-- ALSA device list:
-- No soundcards found
-
-I know that other cards work correctly on this chipset and
-if it's necesarry i could help in tests of driver for this
-soundcard.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000930 Ego Sys <a href="mailto:Juli@ does" tar...
+Could you add support for that soundcard?
+I hope parts of the ice1724/12 driver can be reused so that it is not a
+too hard task.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-14-05 19:38 arsen          New Issue                                    
-02-14-05 19:38 arsen          Distribution              => Gentoo          
-02-14-05 19:38 arsen          Kernel Version            => 2.6.11-rc4      
-02-15-05 07:32 arsen          Issue Monitored: arsen                       
-02-22-05 10:07 perex          Status                   new => assigned     
-02-22-05 10:07 perex          Assigned To               => perex           
-02-22-05 10:07 perex          Relationship added       related to 0000930  
+02-22-05 10:40 Thinky         New Issue                                    
+02-22-05 10:40 Thinky         Distribution              => Debian unstable 
+02-22-05 10:40 Thinky         Kernel Version            => 2.6.10          
 ======================================================================
 
 
