@@ -1,13 +1,14 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: ALC650 + Mic input not working
-Date: Mon, 19 May 2003 07:54:46 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
+Date: Mon, 19 May 2003 08:26:56 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305190554.HAA17705@www7.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.HPX.4.33n.0305190824550.1170-100000@studcom.urz.uni-halle.de>
+References: <1053312860.6552.8.camel@SillyPuddy>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <1053312860.6552.8.camel@SillyPuddy>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +17,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Josh Green <jgreen@users.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Josh Green wrote:
+> I upgraded to ALSA 0.9.3a from 0.9.2 and am getting a kernel oops upon
+> insertion of the snd-ymfpci module.
 
-I have MSI KT333 (VIA8233A) + ALC650.
-For me, mic input is not working.
-It looks like my motherboard (and some of others too) uses GPIO0 pin=20
-of ALC650 to swich mic bias on/off. Look at ALC650AppNotes_1.4.pdf=20
-page 3 (this is recomended connection). ALC650 rev.E doesn't need=20
-this (and than mic is working). I tested attached patch and mic (sets=20
-bit 0 in reg. 0x76 to 1 - gpio0 =3D output and bit 8 in reg. 0x76 to 1=20
-=3D set mic bias - gpio0 - on) works, but I think it is not good,=20
-because when mic input is switched to center/LFE output, mic bias=20
-should be set to off.
-
-Peter Zubaj
+This is a bug in 0.9.3, it has been fixed on CVS.
 
 
+HTH
+Clemens
 
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AZ=EDskajte superv=FDhodn=E9 ADSL e=B9te v=FDh=
-odnej=B9ie v cenovom odpo=E8=EDtavan=ED Slovanet=0AADSL Teraz! =C8=EDm sk=
-=F4r sa rozhodnete, t=FDm viac u=B9etr=EDte.=0Ahttp://www.slovanet.sk/menu/=
-adsl.html=0A
+
 
 
 -------------------------------------------------------
