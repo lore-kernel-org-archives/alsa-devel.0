@@ -1,10 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_format_value() patch in pcm.c
-Date: Sun, 3 Mar 2002 08:35:22 +0100 (CET)
-Message-ID: <Pine.LNX.4.33.0203030833380.1982-100000@pnote.perex-int.cz>
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: Re: Status of ALSA documentation?
+Date: Mon, 4 Mar 2002 00:25:22 -0800 (PST)
+Message-ID: <20020304082522.666BC2757@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.LNX.4.30.0203030028390.2434-100000@gwyn.tux.org>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,48 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Samuel S Chessman <chessman@tux.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <pbd@Op.Net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 3 Mar 2002, Samuel S Chessman wrote:
+I'll try again tonight on my home computer. That should sort out a lot of this windohs exp vs netscrap BS.
 
-> I have been trying to get S16_LE format sound out of my ice1712 with
-> poor success, and noted the example in
-> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html
-> for setting up slaves.  I added a format line to ~/.asoundrc thus:
-> 
-> pcm.rate44100Hz {
->         type plug
->         slave {
->                 pcm "hw:0,0"
->                 rate 44100
->                 format "Unsigned 16 bit Little Endian"
->         }
-> }
-> 
-> and received a failure;
-> ALSA lib pcm.c:5504:(snd_pcm_slave_conf) unknown format
-> snd_pcm_open: Invalid argument (rate44100Hz)
-> 
-> Investigating the code led me to conclude that the snd_pcm_format_value()
-> function should be looking up strings in snd_pcm_format_descriptions[]
-> where they are defined instead of snd_pcm_format_names[] where they are not.
-> It would also be helpful to print out the unknown format with the error.
-> 
-> Perhaps I misunderstand but there is little documentation on format.
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
-I've added the support for long format description as well. The 
-snd_pcm_format_names[] is perfectly ok - try 'U16_LE' or 'S16_LE'.
 
-						Jaroslav
+--- Paul Davis <pbd@Op.Net> wrote:
+>>http://www.boosthardware.com/LAU/alsa/index5-pd.html
+>
+>there's a bug, because all the main text is invisible in netscape 4.
+>
+>i've tried to fix it, but i can't deal with automatically generated
+>HTML. the indentation is unreadable - nested tables where inner tables
+>are indented less than outer tables, etc.
+>
+>i tried ripping out large chunks, and got something, but when i tried
+>to narrow it down, i couldn't.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
 
+_____________________________________________________________
+You deserve a better email address! Get personalized email @yourname
+or @yourcompany from Everyone.net --> http://www.everyone.net?tag
 
 _______________________________________________
 Alsa-devel mailing list
