@@ -1,14 +1,14 @@
-From: George Socker <george.socker@verizon.net>
-Subject: Audigy 2 ZS Notebook support
-Date: Sat, 25 Dec 2004 19:33:00 -0500
-Message-ID: <200412251933.07361.george.socker@verizon.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000735]: Big noise sound at resume (back from suspend)
+Date: Sun, 26 Dec 2004 04:09:14 +0100
+Message-ID: <eca6fb6eadb1449cefcba36905e05f6d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1917545.V5LrspqxOW";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A47D3171
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 04:09:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,32 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---nextPart1917545.V5LrspqxOW
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hello,
- Is there any chance of getting this supported?=20
-It has the same PCI ID as an Audigy 2 Value, but loading snd-emu10k1=20
-from 1.0.8rc1 locks the system with no messages whatsoever.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=735> 
+======================================================================
+Reported By:                djdeath
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   735
+Category:                   PPC - powermac
+Reproducibility:            sometimes
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-20-2004 01:19 CET
+Last Modified:              12-26-2004 04:09 CET
+======================================================================
+Summary:                    Big noise sound at resume (back from suspend)
+Description: 
+Sometimes when putting my ibook G4 to suspend, I have a big noise sound at
+resume.
+About 2 seconds of noise (very near of cat /boot/vmlinuz > /dev/dsp).
 
---nextPart1917545.V5LrspqxOW
-Content-Type: application/pgp-signature
+======================================================================
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
+----------------------------------------------------------------------
+ tiwai - 12-23-04 16:11 
+----------------------------------------------------------------------
+Does it happen when you mute volumes before suspend/resume, too?
 
-iD8DBQBBzgbDlxdfGBfraWIRAhaBAJ9sof9KYGy4nID1pV12fTll6QV7MQCgjWJv
-Oj7R8xzWewW3XvLEb6V6nqQ=
-=8ote
------END PGP SIGNATURE-----
+----------------------------------------------------------------------
+ djdeath - 12-26-04 04:09 
+----------------------------------------------------------------------
+Yes, it does
 
---nextPart1917545.V5LrspqxOW--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-04 01:19 djdeath        New Issue                                    
+12-20-04 01:19 djdeath        Distribution              => Debian          
+12-20-04 01:19 djdeath        Kernel Version            => 2.6.9           
+12-20-04 01:21 djdeath        Note Added: 0002864                          
+12-23-04 16:11 tiwai          Note Added: 0002924                          
+12-26-04 04:09 djdeath        Note Added: 0002934                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
