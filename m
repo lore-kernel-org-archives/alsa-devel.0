@@ -1,14 +1,15 @@
-From: "Bill Merrill" <bmerrill@cert.ucr.edu>
-Subject: BrookTree
-Date: Thu, 25 Apr 2002 01:05:29 -0700
+From: Andy Wingo <wingo@pobox.com>
+Subject: Re: Example app source code or docs needed to help me do mmap.
+Date: Fri, 26 Apr 2002 21:34:43 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <003801c1ec2f$f762a620$0501a8c0@bill>
-References: <Pine.LNX.4.44.0204241639410.10208-100000@volamar.theswamp.priv>
+Message-ID: <20020427013443.GD664@jesus>
+References: <3CC9F106.8020806@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3CC9F106.8020806@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,66 +21,17 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-How's everyone doing? Another student and I are planning on implementing
-some new sound-card driver support under Linux.  We both possess an ATI TV
-Wonder, so we were interested in implementing driver support for the
-BrookTree bt878 chipset.  We have OS experience, but have not had experience
-implementing sound drivers.
+On Sat, 27 Apr 2002, James Courtier-Dutton wrote:
 
-If anyone has some good documentation that could provide some help in
-getting started, we'd greatly appreciate it.  The online documentation
-hasn't given us much to go with, so we're open for any info someone is
-willing to give is.
+> Can someone point me to an example alsa app doing mmap ?
 
-Thanks alot for reading
+I like the implementation in jack's alsa_driver. It is tricky code
+though (just MHO, after having ported it to a gstreamer alsa plugin) --
+the write() api is of course much easier.
 
-- Bill Merrill & Scott Paffrat
+regards,
 
------ Original Message -----
-From: "Tom Prado" <tprado@charter.net>
-To: <alsa-devel@lists.sourceforge.net>
-Sent: Wednesday, April 24, 2002 1:47 PM
-Subject: Re: [Alsa-devel] [PATCH] configure prob with MDK82 kernel
-
-
-> Thanks!  I try to run the release versions of the kernel so third party
-> apps (like vmware for instance) will be sure to work.  I've
-> attached the patch inline this time.  It's only one line to be added to
-> configure.in.  alsa 0.5.12 had this in it, it's gone from 0.9.0rc1.
->
-> --- alsa-driver-0.9.0rc1/configure.in Wed Apr 24 11:29:55 2002
-> +++ alsa-driver-0.9.0rc1.tom/configure.in Wed Apr 24 14:16:31 2002
-> @@ -82,6 +82,7 @@ EOF
->    exit 1
->  fi
->  AC_CACHE_VAL(kaversion,
-> +CFLAGS="$CFLAGS -I$CONFIG_SND_KERNELDIR/include"
->  [AC_TRY_RUN([
->  #include <stdio.h>
->  #include <ctype.h>
->
-> On Wed, 24 Apr 2002, Thierry Vignaud wrote:
->
-> > Tom Prado <tprado@charter.net> writes:
-> >
-> > > I had a problem running configure against the Linux Mandrake 8.2 UP
-> > > kernel.  It would fail when trying to determine the kernel version.
-> > > This patch for rc1 adds the needed includes so that linux/rhconfig.h
-> > > can be found when configure checks for the kernel version.
-> >
-> > use a 2.4.18-10mdk kernel and above: we've updated alsa from 0.5 upto
-> > 0.9 in 10mdk.
-> > note that this is a cooker kernel, not a mdk8.2 release kernel.
-> >
->
-> --
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
+wingo.
 
 _______________________________________________________________
 
