@@ -1,12 +1,14 @@
-From: Marcus Andersson <054185595@telia.com>
-Subject: HDSP monitor control
-Date: Mon, 28 Oct 2002 19:14:37 +0100
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Re: "Cannot allocate memory" problem with latest CVS
+Date: Mon, 28 Oct 2002 20:26:35 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DBD7E8D.9FF3A310@telia.com>
+Message-ID: <20021028202635.61916.qmail@web40601.mail.yahoo.com>
+References: <s5h4rb64msi.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h4rb64msi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,16 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+ --- Takashi Iwai <tiwai@suse.de> wrote: > At Mon, 28
+Oct 2002 13:21:48 +0000 (GMT),
+> could you try the attached patch?
+> as mentioned in my previous mail, this is really a
+> hack, but if it
+> works...
 
-it looks like Jack can enable hardware monitoring on each HDSP channel
-separately. How do I do this myself with amixer? I have not been able to
-find a useable control.
+My box has obviously released some memory overnight
+and is working again. I'll try the patch as soon as
+the problem reoccurs.
 
-Marcus
+Cheers,
+Chris
+
+
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
