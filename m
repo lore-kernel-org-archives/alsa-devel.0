@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Thu, 25 Nov 2004 06:45:00 +0100
-Message-ID: <6205be9b908407bd889f12b3d4d7136b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
+Date: Thu, 25 Nov 2004 07:07:25 +0100
+Message-ID: <6526bd6a886bd90eea727639422b2680@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3156C25D
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 06:45:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A8DE1FC
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 07:07:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,72 +24,99 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
 ======================================================================
-Reported By:                brentcfisher
+Reported By:                bji
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
+Issue ID:                   660
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              11-25-2004 06:45 CET
+Date Submitted:             11-21-2004 02:53 CET
+Last Modified:              11-25-2004 07:07 CET
 ======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Summary:                    No sound output  despite unmuting and maximizing all
+volume settings
 Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
+I get no sound output from any program I have tried (xmms, play, aplay, cat
+> /dev/audio) with no error messages or any other indication that there is
+a problem which would cause sound to not occur.
 
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
+I have already run alsamixer many times and tried every combination of
+muted and unmuted settings with all volumes maximized.  With no volume
+settings muted, and all volume settings at maximum level, I still get no
+sound.
 
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
+Everything *looks* like it's working - output in the kernel log, xmms's
+display, everything.  But I get no sound out of the built-in speaker or
+the headphone jack.
+
+I have tried the following:
+
+* Default install of Fedora Core 3; it recognized the sound card and
+installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
+I never got any sound out of this default install no matter what I tried.
+
+* Custom compiled the 2.6.9 kernel with no patches except the software
+suspend 2 patch.  This built the version of the ALSA drivers that come
+with 2.6.9.  Still no sound.
+
+* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
+them.  Still no sound.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- brentcfisher - 11-25-04 01:59 
+ tiwai - 11-24-04 14:57 
 ----------------------------------------------------------------------
-No, it's not a Realtek chip - ICEnsemble VT1616i is reported.  But the
-symptoms do sound very similar to those that you report.  Have you
-recompiled your kernel to enable Alsa debugging?  The messages did not
-appear in the log until I had enabled this debugging.
+Thanks.
+
+The problem in this bug seems that some missing codec setup for STAC9752. 
+Needs a more deeper look at the datasheet.
 
 ----------------------------------------------------------------------
- squarooticus - 11-25-04 06:45 
+ bji - 11-25-04 07:07 
 ----------------------------------------------------------------------
-I enabled debugging, but don't see any interesting messages when this
-problem occurs.  (I've seen similar invalid ptr messages from the
-intel_8x0 code, but they don't always occur in relation to this problem. 
-I think the two are separate, though they may be triggered by the same
-conditions.)
+Is there something I can do to help?  Thanks!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-11-25-04 06:45 squarooticus   Note Added: 0002586                          
+11-21-04 02:53 bji            New Issue                                    
+11-21-04 02:53 bji            Distribution              => Fedora Core 3   
+11-21-04 02:53 bji            Kernel Version            => 2.6.9           
+11-21-04 02:55 bji            Note Added: 0002481                          
+11-21-04 02:56 bji            File Added: proc_asound.txt                    
+11-21-04 03:16 bji            Note Added: 0002483                          
+11-21-04 03:19 bji            Note Added: 0002484                          
+11-23-04 16:20 tiwai          Note Added: 0002522                          
+11-23-04 23:23 IceRAM         Note Added: 0002537                          
+11-23-04 23:24 IceRAM         File Added: asound.state                     
+11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
+11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
+11-23-04 23:27 IceRAM         Note Added: 0002538                          
+11-23-04 23:28 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
+11-23-04 23:45 IceRAM         Note Added: 0002539                          
+11-23-04 23:45 IceRAM         File Added: .asoundrc                        
+11-23-04 23:46 IceRAM         Note Edited: 0002538                         
+11-24-04 12:32 bji            File Added: asound.state                     
+11-24-04 12:33 bji            Note Added: 0002550                          
+11-24-04 12:40 tiwai          Note Added: 0002552                          
+11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
+11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
+11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
+11-24-04 13:26 IceRAM         Note Added: 0002561                          
+11-24-04 14:57 tiwai          Note Added: 0002565                          
+11-25-04 07:07 bji            Note Added: 0002587                          
 ======================================================================
 
 
