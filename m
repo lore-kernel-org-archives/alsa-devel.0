@@ -1,13 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/core pcm_lib.c,1.20,1.21
-Date: Wed, 30 Oct 2002 20:45:11 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [patch] pcm-record (was cs46xx record (Thinkpad
+ A22) => deadlock)
+Date: Wed, 30 Oct 2002 21:33:26 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DC036C7.79DB33E6@libero.it>
-References: <E186xKi-0003hi-00@usw-pr-cvs1.sourceforge.net>
+Message-ID: <Pine.LNX.4.33.0210302132490.611-100000@pnote.perex-int.cz>
+References: <s5hela7bxsk.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hela7bxsk.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Wilfried Weissmann <Wilfried.Weissmann@gmx.at>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+On Wed, 30 Oct 2002, Takashi Iwai wrote:
+
+> At Tue, 29 Oct 2002 15:07:41 +0100,
+> Wilfried Weissmann wrote:
+> > 
+> > [1  <text/plain; us-ascii (7bit)>]
+> > I dug a little around in the code. The infinitive loop was caused by 
+> > being stuck in DRAINING mode. snd_pcm_lib_read1() returns -EPIPE in this 
+> > case (pcm_lib.c: 2146). Then we return to snd_pcm_oss_read3() which 
+> > continues to call this function until jdoomsday (= SysRq+b). I changed 
+> > the code to call snd_pcm_update_hw_ptr() before that. The patch is 
+> > attached. It *seems* to fix it. You want to have a _real_ close look at 
+> > that if you want to apply the patch, as it is just a shot in the dark. 
+> > At least I know now that the problem is (I figured it out by inserting 
+> > printk).
 > 
-> Update of /cvsroot/alsa/alsa-kernel/core
-> In directory usw-pr-cvs1:/tmp/cvs-serv13506
-> 
-> Modified Files:
->         pcm_lib.c
-> Log Message:
-> fixed the infinite loop at capture-draining on oss-emulation.
-> 
-> Index: pcm_lib.c
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-kernel/core/pcm_lib.c,v
-> retrieving revision 1.20
-> retrieving revision 1.21
-> diff -u -r1.20 -r1.21
-> --- pcm_lib.c   12 Oct 2002 14:38:42 -0000      1.20
-> +++ pcm_lib.c   30 Oct 2002 18:12:46 -0000      1.21
-> @@ -2138,7 +2138,7 @@
->                 snd_pcm_uframes_t frames, appl_ptr, appl_ofs;
->                 snd_pcm_uframes_t avail;
->                 snd_pcm_uframes_t cont;
-> -               if (runtime->sleep_min == 0 && runtime->status->state == SNDRV_PCM_STATE_RUNNING)
-> +               if (runtime->sleep_min == 0 && (runtime->status->state == SNDRV_PCM_STATE_RUNNING || runtime->status->state == SNDRV_PCM_STATE_DRAINING))
->                         snd_pcm_update_hw_ptr(substream);
->                 avail = snd_pcm_capture_avail(runtime);
->                 if (runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
+> looks correct.  applied to cvs now.
 
-What are you trying to do here?
+It's wrong. I reverted the change and included new updated code for the 
+OSS emulation.
 
-What's the reason to call snd_pcm_update_hw_ptr when PCM is not running?
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
