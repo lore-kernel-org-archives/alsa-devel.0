@@ -1,14 +1,14 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: alsaconf Problem on new CVS
-Date: 06 Apr 2003 13:53:54 -0700
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: cs46xx -> Terratec DMX XFire 1024 4channel output
+ success
+Date: Mon, 07 Apr 2003 00:23:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049662435.1088.5.camel@Wizard>
-References: <1049647378.4200.3.camel@Wizard>
+Message-ID: <3E90A8E0.6060507@cucumelo.org>
+References: <3E873CA2.2010607@cucumelo.org> <3E8B4877.4030306@gmx.de> <3E8F5C92.8080801@cucumelo.org> <3E901DC1.9090001@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1049647378.4200.3.camel@Wizard>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,70 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Solved. Apparently /etc/asound.state has changed format somehow.
-Rerunning alsamixer and then storing and retsoring the results fixed it.
+> sorry, I don't have the spec. And I think it would take some time for 
+> me to understand what's going on *exactly*.
+> So I just applied your last patch. But in the beginning it didn't 
+> change anything. I had a look on the code of your patch and saw this
+> snd_printdd("setting EAM bit on cs4294 CODEC\n");
+> line. Therefore I recompiled with --with-debug=detect, installed once 
+> again and switched on the syslogd on my system. I attached the cs46xx 
+> specific output as messages.gz to this mail. As you can see, the EAM 
+> message is not printed.
+> I commented out your check for the codec type:
+>
+>    if (1){   //(chip->nr_ac97_codecs == 1 &&
+> //       snd_cs46xx_codec_read(chip,AC97_VENDOR_ID2,
+> //                 CS46XX_PRIMARY_CODEC_INDEX) == 0x5d2d) {
+>        /* set primary cs4294 codec into Extended Audio Mode */
+>
+> recompiled, reinstalled and...
+> ... 4 channel output works!!!
+> It seems like I cannot change the output volume of the 
+> back('headphone') channels. The PCM slider only controls the 
+> first('front') output.
+>
+> What information do you need to get the codec check working (alsamixer 
+> tells me 'Cirrus Logic CS4294 rev 5'). Just tell me what I should do :)
+>
 
-Cheers,
-Mark
+The intention with that if(...) statment was to make sure that there was 
+only one codec available and that codec was a cs4294.
 
-On Sun, 2003-04-06 at 09:42, Mark Knecht wrote:
-> Hi all,
->    Fernando at PlanetCCRMA has built a new (from the last few day) CVS
-> version of Alsa. I've installed it via RPM, but I'm seeing the following
-> problems. My suspicion is that either I have an old config file laying
-> around that needs to be cleaned out, or there is a real problem here.
-> 
->    The stuff at the end happens when running alsaconf, and also when
-> booting.
-> 
->    Can someone point me toward how I fix this? (Assuming I can...)
-> 
-> Thanks,
-> Mark
-> 
-> Loading driver...
-> Starting sound driver snd-via82xx                          [  OK  ]
-> Starting sequencer                                         [  OK  ]
-> Restoring sound driver settings /usr/sbin/alsactl: set_control:803:
-> warning: name mismatch (IEC958 Capture Switch/Swap Surround Slot) for
-> control #47
-> /usr/sbin/alsactl: set_control:803: warning: name mismatch (Analog to
-> IEC958 Output/IEC958 Capture Switch) for control #48
-> /usr/sbin/alsactl: set_control:803: warning: name mismatch (IEC958 Input
-> Monitor/Analog to IEC958 Output) for control #49
-> /usr/sbin/alsactl: set_control:803: warning: name mismatch (External
-> Amplifier Power Down/IEC958 Input Monitor) for control #50
-> /usr/sbin/alsactl: set_control:803: warning: name mismatch (Input Source
-> Select/External Amplifier Power Down) for control #51
-> /usr/sbin/alsactl: set_control:890: bad control.51.value type
->                                                            [FAILED]
-> Setting default volumes...
-> ===============================================================================
-> 
->  Now ALSA is ready to use.
->  For adjustment of volumes, please use alsamixer or gamix.
-> 
->  Have a lot of fun!
-> 
-> [root@Wizard root]#
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: ValueWeb: 
-> Dedicated Hosting for just $79/mo with 500 GB of bandwidth! 
-> No other company gives more support or power for your dedicated server
-> http://click.atdmt.com/AFF/go/sdnxxaff00300020aff/direct/01/
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Could you test it again chaning the "0x5d2d" to "0x592d" ? (my misstake ...)
+If that dont work could you send me a dump of /proc/asound/card0/ac97#0regs
 
+I believe it should be possible to control the volume from the second 
+output, just need to find out how, so I'll try to find something in the 
+bloody cs4294 spec., well, and hopefully something will happen to the 
+code ;)
+
+/Benny
 
 
 
