@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000704]: low input levels
-Date: Wed, 23 Mar 2005 15:20:13 +0100
-Message-ID: <53de35d0f37c741a85eacfa4923698b7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001007]: no audio in - unable to record
+Date: Wed, 23 Mar 2005 10:09:56 +0100
+Message-ID: <37b92b8656107e0380c95e540bd840d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B211526B
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:20:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0B1C201
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 10:09:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,52 +21,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
 ======================================================================
-Reported By:                spamatica
-Assigned To:                
+Reported By:                msillence
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   704
-Category:                   PCI - ice1712
+Issue ID:                   1007
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     feedback
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             12-03-2004 21:46 CET
-Last Modified:              03-23-2005 15:20 CET
+Date Submitted:             03-22-2005 21:44 CET
+Last Modified:              03-23-2005 10:09 CET
 ======================================================================
-Summary:                    low input levels
+Summary:                    no audio in - unable to record
 Description: 
-As was noted recently on Linx audio user. It seems atleast the DELTA cards
-(I've got a Delta 44) have too low input level. Others reported that it
-differs when running the same card in windows. Myself I run it exclusively
-in Linux and have found that recording external signals I have to turn the
-volume for the external (pro) equipment, to max to get a reasonably high
-signal.
+I can only get a weak hiss from the card even with the recording level up
+full
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-06-04 20:56 
+ jcdutton - 03-23-05 00:45 
 ----------------------------------------------------------------------
-Are "IPGA Analog Capture Volume" adjusted properly?
+The driver does not support sound capture and won't any time soon due to
+lack of documentation.
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:20 
+ msillence - 03-23-05 10:09 
 ----------------------------------------------------------------------
-Submitter:  Are "IPGA Analog Capture Volume" adjusted properly?
+Hi,
+
+Fair enough no fixes without docs, could you change the support status
+though as I bought this card as it was shown as supported. Could save a
+few other people the same pain.
+Also for future reference I suspect that the problem lies with being able
+to switch the input as the same connector is used for digital in and
+analogue in...
+
+-- 
+Thanks,
+M
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 21:46 spamatica      New Issue                                    
-12-06-04 20:56 tiwai          Note Added: 0002734                          
-03-23-05 15:20 jdthood        Note Added: 0004157                          
+03-22-05 21:44 msillence      New Issue                                    
+03-22-05 21:44 msillence      Kernel Version            => 2.6.11.5        
+03-23-05 00:45 jcdutton       Status                   assigned => closed  
+03-23-05 00:45 jcdutton       Note Added: 0004146                          
+03-23-05 10:09 msillence      Status                   closed => feedback  
+03-23-05 10:09 msillence      Resolution               open => reopened    
+03-23-05 10:09 msillence      Note Added: 0004153                          
 ======================================================================
 
 
