@@ -1,13 +1,11 @@
-From: "Jeffrey W. Baker" <jwbaker@acm.org>
-Subject: Re: ALSA drivers for USB audio devices
-Date: 19 Mar 2002 14:48:25 -0800
+From: Zenaan Harkness <zen@getsystems.com>
+Subject: Re: Playback stutters
+Date: Wed, 20 Mar 2002 15:05:03 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1016578105.23423.52.camel@heat>
-References: <200203192236.RAA26515@renoir.op.net>
+Message-ID: <20020320150503.A31328@getsystems.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <200203192236.RAA26515@renoir.op.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,61 +14,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2002-03-19 at 14:39, Paul Davis wrote:
-> >Recently on this very list, Paul Barton-Davis proposed that one could
->                              ^^^^^^^^^^^^^^^^^
-> 			     Paul        Davis (op.net/~pbd/name.html)
+I am getting the same with stock 2.4.18, DELL Inspiron laptop (Maestro
+3i), my test is:
 
-My mistake.  Sorry.
+copy a cd image file from one partition to another, while trying to play
+an mp3 using mpg123.
 
-> >build a driver for a USB audio device entirely in user space.  I think
-> >this is an interesting idea, as I own an Edirol UA-5 USB audio device. 
-> 
-> Pray that it follows the "tandards" The existing OSS-based driver is
-> full of special case code for just about every device so far
-> supported.
+The mp3 skips all over the place.
 
-It supposedly uses some Steinberg driver that supports a number of USB
-devices, not all from Roland.  That gives me hope.  However, the ASIO
-driver doesn't support 24/96 operation, so this may be a
-device-by-device extension.  Duplex operation is limited to 24/48 anyway
-because of USB bandwidth.  I won't care as long as it works on my
-hardware :)
+I haven't applied any alsa patches yet - just been trying to set up this
+laptop since I got it at work a week ago. At first I thought it was the
+loop driver - I'd been loopback mounting my cd image, but that's not the
+case.
 
-> there are two approaches:
-> 
->       1) a new low-level ALSA driver that handles interactions
->              with a USB audio device, and presents the ALSA "midlevel"
-> 	     code with the normal *internal* ALSA API
-> 
->       2) a shared library that would be loaded by alsa-lib, based
->              on a description in an asoundrc file. this library 
-> 	     would use an existing USB driver that allowed raw
-> 	     "USB packet" I/O - it would format the USB packets
-> 	     in user space based on requests from alsa-lib,
-> 	     and then deliver them to the kernel USB driver.
+I've tried:
+ - low latency patch against 2.4.18
+ - preempt + lockbreak patches against 2.4.18
+ - preempt patch against 2.4.19-pre3-ac3 (lockbreak doesn't apply)
 
-The latter sounds more workable -- building packets is userspace is not
-hard at all, and profiling for performance is more practical.
+all have same problem. Since I've only recently tried setting up this
+laptop, I don't know whether or not an earlier kernel works or not. Does
+anyone know the earliest kernel that works for them without skipping, when
+copying a large file, etc?
 
-> the userspace implementation is only a translation layer between the
-> ALSA PCM API and the USB audio packet standard. it would be an
-> existing USB kernel driver that would take care of streaming the data
-> to and from the h/w. i don't think the user space code would have any
-> problems with this. the kernel driver might, but if so, its a crock
-> anyway, and needs reimplementing. i don't know either way.
-> 
-> i suspect that it would be faster to write the low-level module, but
-> more interesting and potentially more flexible to write the user space
-> library. 
+thanks
+zen
 
-Probably less duplication of code as well.
 
--jwb
+---
+I am also having this problem with both my ensoniq es1371 and my
+audiophile 2496 with kernel 2.4.18 and alsa 0.9beta12.  It seems
+to be way worse in mplayer and also when playing tribes2 where it
+just constanly shutters.    I have an es1371 at work where I installed
+the same version of alsa but there it's working fine with the game,
+the difference is that I'm running kernel 2.4.8 so I'm wondering if
+something broke in kernel 2.4.18 that causes this?
+
+I would really like to be able to get this running stable at home.
+My machine config at work and home is almost identical in both
+hardware and software except for the kernel version.
+
+Each soundcard have their own IRQ so I'm pretty sure the hardware
+I have at home is ok.  With OSS/free and OSS/commercial the sound is fine
+so it's something between alsa and kernel 2.4.18.
+
+When I was listening to music in xmms, if I move windows around or
+just click buttons in netcape for example it seems to shutters everytime
+I do that.
+
+Anybody else seeing this?
+
+> Hey,
+>
+> audio playback stutters on my system. All playback programms I have tested
+> have this problem (with and without artsd). I use alsa driver 0.9.0beta12.
+> The soundcard is a no-name ALS4000 soundcard. My system: Linux 2.4.18,
+> Debian testing, Dual Athlon, Tyan S2460. I have read that often IRQ
+> problems cause those kind of problems, but I already tried to disable as
+> much as possible hardware to free up interrups. I also changed the order of
+> the PCI cards and I tried it with and without MP Interrupts.
+> The playback stutters if e.g. I drag around windows or a programm starts
+> (even if the load is very low). It doesn't stutter if I do heavy
+> calcualtion (like running kfract multiple times) and the load is above 4.
+> What else should I try to narrow down the problem?
+>
+> regards,
+> Roland Schulz
+
 
 
 _______________________________________________
