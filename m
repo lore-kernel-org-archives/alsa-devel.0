@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000455]: segfault when trying to connect dmix->plug
-Date: Tue, 9 Nov 2004 16:32:25 +0100
-Message-ID: <a4a5428c8c907340a5f006192a56c66a@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
+Date: Tue, 9 Nov 2004 16:37:03 +0100
+Message-ID: <256ac4ba056e27ac767270181e6fcd28@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2958F2AA
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:32:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 939B02B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:37:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,56 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=455> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=511> 
 ======================================================================
-Reported By:                stsp
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   455
-Category:                   pcm - digital audio
+Project:                    ALSA - utils
+Issue ID:                   511
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-18-2004 20:20 CEST
-Last Modified:              11-09-2004 16:32 CET
+Date Submitted:             09-21-2004 19:43 CEST
+Last Modified:              11-09-2004 16:37 CET
 ======================================================================
-Summary:                    segfault when trying to connect dmix->plug
+Summary:                    [PATCH] 15_alsamixer_doc_keycase
 Description: 
-Hi.
-
-With the attached configuration I get
-segmentation fault:
----
-$ ogg123 mise02-ulicka.ogg
-ALSA lib pcm_dmix.c:873:(snd_pcm_dmix_open) dmix plugin can be only
-connected to hw plugin
-Segmentation fault
----
-
-Here is the problematic place:
----
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 1078196992 (LWP 30505)]
-snd_pcm_plug_open (pcmp=0xbffff7c0, name=0x43653b13 "default",
-    sformat=1131543104, schannels=1131543104, srate=1131543104,
-    route_policy=1131543104, ttable=0x4371fa40, tt_ssize=1131543104,
-    tt_cused=1131543104, tt_sused=1131543104, slave=0x428c6fdc,
-    close_slave=1131543104) at pcm_plug.c:1034
-1034            pcm->fast_ops = slave->fast_ops;
-(gdb) p pcm->fast_ops
-$1 = (snd_pcm_fast_ops_t *) 0x0
----
-So it is trying to assign to NULL.
+Patch for alsamixer.1 to make it mention that commands given in upper case
+can also be entered in lower case
 ======================================================================
 
 ----------------------------------------------------------------------
- stsp - 09-13-04 18:36 
+ jdthood - 09-23-04 19:49 
 ----------------------------------------------------------------------
-I guess I have to add the proper description to that patch:
+Summary: mention that commands given to alsamixer in upper case can also be
+entered in lower case
 
-------------
-Summary: [ALSA-LIB] dmix: dont forget to return -EINVAL on errors
-
-Description:
-snd_pcm_dmix_open() returns success if the open fails attempting
-to open not the HW plugin (dmix seems to be limited to use only
-the HW plugin right now). This leads to memory corruptions and
-eventually a SIGSEGV. The attached patch fixes the omission.
-
-Signed-off-by: Stas Sergeev <stsp@aknet.ru>
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 ----------------------------------------------------------------------
- tiwai - 09-15-04 20:44 
+ tiwai - 09-24-04 12:01 
 ----------------------------------------------------------------------
-Thanks, applied to CVS now.
+Applied.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 20:20 stsp           New Issue                                    
-08-18-04 20:20 stsp           File Added: asound.conf                      
-08-19-04 10:21 stsp           Note Added: 0001589                          
-08-19-04 10:22 stsp           File Added: logs.tar.gz                      
-08-19-04 10:23 stsp           Issue Monitored: stsp                        
-08-22-04 17:56 stsp           File Added: pcm_dmix.c.diff                    
-08-22-04 17:58 stsp           Note Added: 0001609                          
-09-13-04 18:36 stsp           Note Added: 0001753                          
-09-13-04 18:37 stsp           File Added: dmix_ret_fix.diff                    
-09-15-04 20:44 tiwai          Status                   new => resolved     
-09-15-04 20:44 tiwai          Resolution               open => fixed       
-09-15-04 20:44 tiwai          Assigned To               => tiwai           
-09-15-04 20:44 tiwai          Note Added: 0001764                          
-11-09-04 16:32 tiwai          Status                   resolved => closed  
+09-21-04 19:43 jdthood        New Issue                                    
+09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch       
+            
+09-22-04 18:13 tiwai          Note Added: 0001814                          
+09-23-04 19:49 jdthood        Note Added: 0001837                          
+09-24-04 12:01 tiwai          Status                   new => resolved     
+09-24-04 12:01 tiwai          Resolution               open => fixed       
+09-24-04 12:01 tiwai          Assigned To               => tiwai           
+09-24-04 12:01 tiwai          Note Added: 0001868                          
+11-09-04 16:37 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
