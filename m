@@ -1,14 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: CMI8738 quit working with recent kernel
-Date: Thu, 30 Sep 2004 00:15:33 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000553]: Experimental feature for dual codecs produce choppy sound
+Date: Thu, 30 Sep 2004 07:51:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1096517732.15983.4.camel@krustophenia.net>
-References: <b476569a04092920097a33948e@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040930055112.AFFC1B0A0@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <b476569a04092920097a33948e@mail.gmail.com>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3822208
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 07:51:12 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B989227A9B
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 07:51:12 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +19,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Hunt <kinema@gmail.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-09-29 at 23:09, Adam Hunt wrote:
-> I just upgraded from a painfully outdated 2.6.0-test6 kernel to
-> 2.6.8.1 and now my CMI8738 quit working.  All the modules are loaded
-> and /proc/asound/cards shows
-> 
-> 0 [CMI8738        ]: CMI8738 - C-Media PCI CMI8738
->                      C-Media PCI CMI8738 (model 37) at 0xa800, irq 12
-> 
-> Any thougts?
-> 
 
-Sorry, this is not nearly detailed enough to constitute a usable bug
-report.  Please give more details than "it doesn't work".
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000553
+======================================================================
+Reported By:                cgdef
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     553
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2
+======================================================================
+Date Submitted:             09-30-2004 07:51 CEST
+Last Modified:              09-30-2004 07:51 CEST
+======================================================================
+Summary:                    Experimental feature for dual codecs produce choppy sound
+Description: 
+I first discovered this feature in the 2.6.9-rc2 kernel. There is a option
+which allows you to enable support for dual codecs in the cs-46xx driver.
+I have a Turtle Beach Santa Cruz card and it does come with dual codecs
+(CS 4297A-JQ and CS 4294-JQ) and a dsp (CS 4630). If the alsa driver is
+compiled with support for dual codecs the sound produced is often choppy
+and way bellow ~90dB SNR (specs provided by the manufacturer and verified
+by several reviewers). 
+However, if the alsa driver is compiled without the experimental code and
+support for only one codec the sound problems disapear compleatelly.
+======================================================================
 
-Lee
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-30-04 07:51 cgdef          New Bug                                      
+09-30-04 07:51 cgdef          Distribution              => Gentoo          
+09-30-04 07:51 cgdef          Kernel Version            => 2.6.9-rc2       
+======================================================================
 
 
 -------------------------------------------------------
