@@ -1,12 +1,15 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: alsaconf Problem on new CVS
-Date: 06 Apr 2003 09:42:56 -0700
+From: alsa@0x00.my-ho.st
+Subject: Re: Maestro 2E (rev 10) not found or device busy w/
+ 0.9.2
+Date: Sun, 6 Apr 2003 12:55:56 -0600 (MDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1049647378.4200.3.camel@Wizard>
+Message-ID: <0304061234440.0@0x00.my-ho.st>
+References: <Pine.LNX.4.50.0303261659330.8112-100000@0x00.my-ho.st>
+ <s5hof3xnp8c.wl@alsa2.suse.de> <Pine.LNX.4.50.0303271039120.8112-100000@0x00.my-ho.st>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.50.0303271039120.8112-100000@0x00.my-ho.st>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,50 +18,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
-   Fernando at PlanetCCRMA has built a new (from the last few day) CVS
-version of Alsa. I've installed it via RPM, but I'm seeing the following
-problems. My suspicion is that either I have an old config file laying
-around that needs to be cleaned out, or there is a real problem here.
+On Thu, 27 Mar 2003 alsa@0x00.my-ho.st wrote:
 
-   The stuff at the end happens when running alsaconf, and also when
-booting.
+> On Thu, 27 Mar 2003, Takashi Iwai wrote:
+>
+> > At Wed, 26 Mar 2003 17:12:55 -0700 (MST),
+> > alsa@0x00.my-ho.st wrote:
+> > >
+> > > The 'maestro' driver included with Linux 2.4.x loads, and for the most
+> > > part works okay.  However trying to use the latest ALSA results in:
+> > >
+> > > kernel: es1968: not attempting power management.
+> > > kernel: ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1960: AC'97 0:0 does not respond - RESET
+> > > kernel: ESS Maestro soundcard not found or device busy
+> > >
+> > > Anyone have any suggestions on how to fix this?
+> >
+> > which version of alsa did you test exactly?
+> > i thought this was fixed in the recent version.  please try the cvs
+> > version if not tried yet.
+>
+> Thanks for the quick response.  I have tried 0.9.2 and the latest cvs;
+> both give the same errors.  :(
+>
+> Any suggestions?
 
-   Can someone point me toward how I fix this? (Assuming I can...)
+Since I didn't get any response yet I decided to look into this more
+closely myself.
 
-Thanks,
-Mark
+The problem appears to be that although 0x8a05 is written to the
+AC97_REC_GAIN register, a subsequent read returns 0xa05.  Anyone know why
+this might occur?  Could someone more familiar with the ALSA code give me
+some pointers on where to go from here?
 
-Loading driver...
-Starting sound driver snd-via82xx                          [  OK  ]
-Starting sequencer                                         [  OK  ]
-Restoring sound driver settings /usr/sbin/alsactl: set_control:803:
-warning: name mismatch (IEC958 Capture Switch/Swap Surround Slot) for
-control #47
-/usr/sbin/alsactl: set_control:803: warning: name mismatch (Analog to
-IEC958 Output/IEC958 Capture Switch) for control #48
-/usr/sbin/alsactl: set_control:803: warning: name mismatch (IEC958 Input
-Monitor/Analog to IEC958 Output) for control #49
-/usr/sbin/alsactl: set_control:803: warning: name mismatch (External
-Amplifier Power Down/IEC958 Input Monitor) for control #50
-/usr/sbin/alsactl: set_control:803: warning: name mismatch (Input Source
-Select/External Amplifier Power Down) for control #51
-/usr/sbin/alsactl: set_control:890: bad control.51.value type
-                                                           [FAILED]
-Setting default volumes...
-===============================================================================
+Thanks.
 
- Now ALSA is ready to use.
- For adjustment of volumes, please use alsamixer or gamix.
-
- Have a lot of fun!
-
-[root@Wizard root]#
-
-
+ - Ted
 
 
 -------------------------------------------------------
