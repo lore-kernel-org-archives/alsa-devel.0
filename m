@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
-Date: Wed, 2 Mar 2005 21:23:43 +0100
-Message-ID: <f2b65904e6db144564821df8266f233b@bugtrack.alsa-project.org>
+Date: Wed, 2 Mar 2005 22:08:46 +0100
+Message-ID: <4fc908e217c4c8ba5b27c052cbe11a5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D60113D
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 21:23:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF3CD1DB
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 22:08:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
 ======================================================================
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             03-02-2005 21:23 CET
-Last Modified:              03-02-2005 21:23 CET
+Last Modified:              03-02-2005 22:08 CET
 ======================================================================
 Summary:                    noisy output on low sample rate files when using
 dmix
@@ -55,11 +55,18 @@ Just to be sure, I generated some test tones with sgen
 the noise on these samles, which I am attaching.
 ======================================================================
 
+----------------------------------------------------------------------
+ hamel_g - 03-02-05 22:08 
+----------------------------------------------------------------------
+I confirm.
+If you use the same sampling rate that the sample, the noise disappears.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 03-02-05 21:23 mtraum         New Issue                                    
 03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
+03-02-05 22:08 hamel_g        Note Added: 0003781                          
 ======================================================================
 
 
