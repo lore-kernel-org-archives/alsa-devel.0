@@ -1,14 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Docu:: Alsa Audio API:: A minimal capture program
-Date: Sat, 31 Jan 2004 14:57:17 +0100 (CET)
+Subject: Re: Quake3 and DMIX
+Date: Sat, 31 Jan 2004 16:04:33 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401311456180.1876@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0401281614420.11576-100000@studcom.urz.uni-halle.de>
- <200401282338.25438.tmohr@s.netic.de>
+Message-ID: <Pine.LNX.4.58.0401311602310.1876@pnote.perex-int.cz>
+References: <Pine.LNX.4.58.0401082219001.32519@ultros>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200401282338.25438.tmohr@s.netic.de>
+In-Reply-To: <Pine.LNX.4.58.0401082219001.32519@ultros>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Torsten Mohr <tmohr@s.netic.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: David Lloyd <dmlloyd@tds.net>
+Cc: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 Jan 2004, Torsten Mohr wrote:
+On Fri, 30 Jan 2004, David Lloyd wrote:
 
-> Hi,
+> This actually covers (I think) all games based on the Quake3 engine.
 > 
-> thanks for that hint.
-> 
-> But sadly, the attached program doesn't work, though
-> i set stop_threshold to 0.  I didn't find any functions
+> So far, my attempts to get these games to work with the alsa dmix plugin 
+> have met with failure.
 
-This is wrong. You need to set this value to sw_params->boundary or 
-greater value to eliminate the stop detection, otherwise with zero,
-the stream is immediately stopped.
+Well quake uses oss mmap() feature which is tricky.
+We probably ommited something in our emulation or the support might be 
+problematic.
+
+Also, you may try to add 'slowptr yes' to your dmix plugin definition to 
+see if it helps.
 
 						Jaroslav
 
