@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000408]: Volume control is chaotic
-Date: Sat,  9 Oct 2004 01:21:10 +0200 (CEST)
+Date: Sat,  9 Oct 2004 02:05:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008232110.C124E4800E@server.perex-int.cz>
+Message-ID: <20041009000522.A0B624800E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 31B7A1AD
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 01:21:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1F30286
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 02:05:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-27-2004 18:40 CEST
-Last Modified:              10-09-2004 01:21 CEST
+Last Modified:              10-09-2004 02:05 CEST
 ======================================================================
 Summary:                    Volume control is chaotic
 Description: 
@@ -228,6 +228,15 @@ I turned to the software implemented mute. The private_value indicated
 thae bit 5 toggled mute on/off. Anyway this kind of mute is mono, so
 naturally the old mute function was the best.
 
+----------------------------------------------------------------------
+ ungod - 10-09-2004 02:05 CEST 
+----------------------------------------------------------------------
+Well, here is another revision (4.3) of the patch with adc_mute restored
+(strangely enought the patch is smaller - I've lost control of my alsa
+directory, so I only hope that the patch correspond to the CVS).
+Besides, I took the liberty to fix a bug in the wm_adc_mute_put, which
+caused that only the left record channel could be muted.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -258,6 +267,8 @@ Date Modified  Username       Field                    Change
 10-08-04 09:31 skamp          Bugnote Added: 0002044                       
 10-08-04 12:24 tiwai          Bugnote Added: 0002047                       
 10-09-04 01:21 ungod          Bugnote Added: 0002059                       
+10-09-04 02:00 ungod          File Added: aureon-volfix4.3.diff                    
+10-09-04 02:05 ungod          Bugnote Added: 0002060                       
 ======================================================================
 
 
