@@ -1,7 +1,7 @@
 From: peter plessas <plessas@mur.at>
-Subject: cvs compile, toplevel.config.in and alsa-kernel
-Date: Sun, 20 Mar 2005 17:48:07 +0100
-Message-ID: <423DA947.70609@mur.at>
+Subject: Re: cvs compile, toplevel.config.in and alsa-kernel SOLVED
+Date: Sun, 20 Mar 2005 18:25:00 +0100
+Message-ID: <423DB1EC.3000300@mur.at>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -17,28 +17,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear List,
+Replying to my own mail:
 
-I am afraid here comes a cvs-compiliation question :-)
+I took the cvs snapshots from http://alsa-project.org/alsa/ftp/
+which include a toplevel.config.in file.
 
-trying to build alsa-driver (fresh checkout) for a 2.6.11.5 kernel on a 
-debian ppc testing box.
+Problem solved!
 
-as i read from the docs, running ./cvscompile should do it, though i am 
-getting one or two errors:
-
-first:
-Makefile:24: toplevel.config: No such file or directory
-
-and:
-find: /usr/local/src/cvs/alsa_cvs/alsa-driver/alsa-kernel/: No such file 
-or directory
-
-shouldn't this be the kernel/ directory?
-
-spent some time on this now, and wanted to ask for a quick hint!
-
-thanks!
+Thanks!
 
 Peter
 
