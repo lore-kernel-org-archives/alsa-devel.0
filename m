@@ -1,16 +1,16 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000390]: modprobe on snd-cmipci fails
-Date: Thu, 15 Jul 2004 20:52:56 +0200 (CEST)
+From: Werner Schweer <ws@seh.de>
+Subject: Re: Re: snd-usb-usx2y 0.7.1 against cvs head:               please test it!
+Date: Thu, 15 Jul 2004 23:16:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040715185256.622911C009@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200407152316.25478.ws@seh.de>
+References: <200407131155.43747.annabellesgarden@yahoo.de> <200407142034.00652.ws@seh.de> <200407151053.59356.annabellesgarden@yahoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D6B3C21D
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 20:52:56 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 75F95123C4
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 20:52:56 +0200 (MEST)
+In-Reply-To: <200407151053.59356.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,61 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Thursday 15 July 2004 10:53, Karsten Wiese wrote:
+> Am Mittwoch 14 Juli 2004 20:34 schrieb Werner Schweer:
+> > On Wednesday 14 July 2004 19:41, Werner Schweer wrote:
+> > > On Wednesday 14 July 2004 19:19, Karsten Wiese wrote:
+...
+> > > > > /home/ws/projects/alsa/alsa-driver/kbuild/../usb/usx2y/usbusx2yaudi
+> > > > >o. c: 34 7: Sequence Error!(ep=8;nuc=1,frame=860)
+> > >
+> > > starting jackd with -S (force 16bit format) works!
+> >
+> > but only for about 20 minutes, then jackd dies with same error, same
+> > system error message :-(
+>
+> if your kernel is currently configured with CONFIG_USB_BANDWIDTH=y
+> (and you like to spend some more time testing):
+> Please recompile the kernel without that option and retry.
+> the relevant part of the .config would look like:
+>
+> #
+> # Miscellaneous USB options
+> #
+> CONFIG_USB_DEVICEFS=y
+> # CONFIG_USB_BANDWIDTH is not set
+> # CONFIG_USB_DYNAMIC_MINORS is not set
+> <<<<<<
+>
+> karsten
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000390
-======================================================================
-Reported By:                mudpuppy
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     390
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               redhat 7.3
-Kernel Version:             2.4.20-28
-======================================================================
-Date Submitted:             07-15-2004 20:52 CEST
-Last Modified:              07-15-2004 20:52 CEST
-======================================================================
-Summary:                    modprobe on snd-cmipci fails
-Description: 
-following the directions on the website;
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=C-Media&card=CMI8738&chip=CMI8738&module=cmipci
-get to the modprobe line and it fails with the following text;
+without USB_BANDWIDTH enabled all works fine now! I tested JACK with
+period size 144 / 2 buffers / 24 samples and it now works very stable.
 
-bash-2.05a# modprobe snd-cmipci 
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o:
-unresolved symbol schedule_work
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.20-28.7athalon-new_mobo/kernel/sound/acore/snd.o: insmod
-snd-cmipci failed
-bash-2.05a#uname -a 
-Linux u66-dsystem1 2.4.20-28.7athalon-new_mobo https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000008 SMP Fri Jul 16 11:09:29
-EDT 2004 i686 unknown.
-bash-2.05a#gcc -v
-Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/2.96/specs
-gcc version 2.96 20000731 (Red Hat Linux 7.3 2.96-110)
+/werner
 
 
-
-======================================================================
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-15-04 20:52 mudpuppy       New Bug                                      
-07-15-04 20:52 mudpuppy       Distribution              => redhat 7.3      
-07-15-04 20:52 mudpuppy       Kernel Version            => 2.4.20-28       
-======================================================================
 
 
 -------------------------------------------------------
