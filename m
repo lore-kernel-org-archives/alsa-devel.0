@@ -1,12 +1,14 @@
 From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: transport control bug...
-Date: Fri, 12 Dec 2003 22:29:53 +0100
+Subject: Re: transport control bug...
+Date: Fri, 12 Dec 2003 22:39:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDA3351.4030106@folkwang-hochschule.de>
+Message-ID: <3FDA357A.1030406@folkwang-hochschule.de>
+References: <3FDA3351.4030106@folkwang-hochschule.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3FDA3351.4030106@folkwang-hochschule.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,34 +20,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-hello everyone!
+sorry for the noise, this was meant to go to ardour-dev.
 
-i have jamin and ardour running. ardour reacts nicely to the "to start"=20
-and "to end" transport control buttons. now when i press "play" in=20
-jamin, the playhead in ardour starts moving, but no sound is heard.
-this happens regardless of the "jack transport master" setting in the=20
-options dialog.
-otoh, when i press "play" in ardour, everything is fine. can anyone=20
-reproduce this? if so, i'll put it up in mantis.
-
-both ardour and jamin are current cvs from less than 6 hrs ago.
-
-(btw, what does the "jack transport master" option mean ? my=20
-understanding is that any client can issue transport commands...)
-
-best,
-j=F6rn
-
---=20
-Happy Birthday, Professor !
-Noam Chomsky, born Dec 7, 1928
-
-J=F6rn Nettingsmeier
-Kurf=FCrstenstr 49, 45138 Essen, Germany
-http://spunk.dnsalias.org (my server)
-http://www.linuxaudiodev.org (Linux Audio Developers)
-
-
+Joern Nettingsmeier wrote:
+> hello everyone!
+> 
+> i have jamin and ardour running. ardour reacts nicely to the "to start" 
+<snip>
 
 
 
