@@ -1,18 +1,10 @@
-From: "Tory D. Nicholson" <tory.d_nicholson_pd@starfinanz.de>
-Subject: V1AGKRA 80% DISCOUNT
-Date: Thu, 02 Dec 2004 13:09:50 +0000
-Message-ID: <a7d401c4d870$b7dd214e$cac57b57@moisd.k12.mi.us>
+From: Bengt "Mÿffffe5nsson" <bengt_mansson@yahoo.com>
+Subject: snd_seq_sync_output_queue does not work
+Date: Thu, 2 Dec 2004 03:58:01 -0800 (PST)
+Message-ID: <20041202115801.6119.qmail@web42108.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 298A61C0
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 12:40:59 +0100 (MET)
-Received: from moisd.k12.mi.us (unknown [218.52.83.38])
-	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 5B6543D531
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 12:40:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,20 +14,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
-Simply disolve HALF A PlLL under your tongue 10min before action,<br>
-for results that last all weekend.<p>
-Normal retail is $19/PlLL<br>
-<a href=3D"http://uzxfywdusbd.i-pharm.net/d/">0rder from us today at the =
-price of $3.27</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://jzyloocmhsndnd.i-pharm.net/d/o.php">not interested(0pt-=
-0ut)</a>
-</html>
+I'm trying to make an app where I need to exchange an
+18k sysex. I use Rh9.
+I think I've worked out the receiving part, but
+sending will not work.
+I chop the big sysex into 256 byte blocks and send in
+a sequence. This seems to work fine when I run it
+stepwise in the debugger, but crash when I run it at
+full speed.
+I think I've traced the problem down to the call to
+snd_seq_sync_output_queue. I expect that call to hang
+until the output is drained, and return a 0.
+What happens is that the call seems to return
+immediately with a 1.
+Tried to use snd_seq_nonblock(0) but that didn't
+change anything.
+Does anyone have any hint?
+/Bengt
+
+
+
+		
+__________________________________ 
+Do you Yahoo!? 
+Take Yahoo! Mail with you! Get it on your mobile phone. 
+http://mobile.yahoo.com/maildemo 
 
 
 -------------------------------------------------------
