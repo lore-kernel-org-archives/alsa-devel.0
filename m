@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000607]: "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >= 0.8.6
-Date: Thu, 20 Jan 2005 19:16:26 +0100
-Message-ID: <61b5e9a65aadd88ad3fcf5b1b57eec59@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
+Date: Thu, 20 Jan 2005 19:18:22 +0100
+Message-ID: <090aa42b6b4823de6e83d1b088335249@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 21A7B211
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:16:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B7AF229
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:18:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,130 +22,132 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=607> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
 ======================================================================
-Reported By:                karsten
-Assigned To:                karsten
+Reported By:                fermier
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   607
-Category:                   USB - usb-usx2y
-Reproducibility:            sometimes
-Severity:                   feature
+Issue ID:                   736
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Mandrake 10.1 Offficial
+Kernel Version:             2.3.8.1-12mdk
 ======================================================================
-Date Submitted:             10-26-2004 21:36 CEST
-Last Modified:              01-20-2005 19:16 CET
+Date Submitted:             12-20-2004 07:40 CET
+Last Modified:              01-20-2005 19:18 CET
 ======================================================================
-Summary:                    "rawusb" aka hwdep_pcm patch for snd-usb-usx2y >=
-0.8.6
+Summary:                    modprobe snd-azx still gives segmentation fault
 Description: 
-Its usb's unableness to atomically handle power of 2 period sized data
-chuncs,
-what led to: 
-This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device for
-
-mmaped pcm transport.
-Advantage achieved:
-        The usb_hcd places reads/writes pcm data into dma-memory.
-        That memory is  mmaped by jack's usx2y driver.
-        Jack's usx2y driver is the first/last to read/write pcm data.
-        Read/write is a combination of power of 2 period shaping and
-        float/int conversation.
-        Compared to mainline alsa/jack we leave out power of 2 period
-shaping inside
-        snd-usb-* which needs memcpy() and additional buffers.
-        As a side effect possible unwanted pcm-data coruption resulting of
-        plain alsa's snd-usb-usx2y period shaping scheme falls away.
-        Result is sane jack operation at buffering schemes down to
-128frames,
-        2 periods.
-        plain usx2y alsa mode is able to achieve 64frames, 4periods, but
-only at the
-        cost of easier triggered i.e. aeolus xruns (128 or 256frames,
-        2periods works but is useless cause of crackling).
-
-New functionality would possibly be better integrated into mainlines at
-more 
-apropriate places.
-Target could be: jack mmaping power of 2 period sized float-pcm buffers
-and 
-letting alsa (snd-usb-lib - alsa-lib - plugin) do power of 2 period
-shaping 
-and float/int conversation.
-
+After having read the other errors reported for the CMI9880 sound chip and
+that the CVS version has been fixed, I downloaded the latest CVS version
+of the alsa-driver.  ./configure and make seem to complete without errors.
+ After a make install a modprobe snd-azx still gives a segmentation fault
+just like the normal tarred ball install and the previous CVS gave.  After
+a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
+becomes a zombie process the same is true for modprobe -r snd or modprobe
+-r snd-azx
 ======================================================================
 
 ----------------------------------------------------------------------
- rncbc - 12-10-04 23:49 
+ fermier - 12-20-04 18:10 
 ----------------------------------------------------------------------
-Just uploaded my own kernel patch
-    linux-2.6.10-rc2-mm3-usx2y-0.8.7.patch.gz
-as for convenience, which should apply against 2.6.10-rc2-mm3, and fit
-with latest Ingo's RT patch(es). It upgrades to the snd-usb-usx2y version
-0.8.7, as current of alsa-kernel CVS HEAD.
+Did a clean boot and here is the message.  I have to go and will only be
+able to continue with this reporting after 16 Jan 2005.  Sorry.  I'm late
+for my flight!
 
-My latest tests ran against my custom jack-0.99.28.3usx2y, that includes a
-proper jackd usx2y backend, and went just fine. 
-
-    (see http://www.rncbc.org/usx2y/)
-
-With that, I could reach a brand new low-latency "record" as with:
-
-    jackd -R -dusx2y -dhw:1,2 -r44100 -p64 -n2
-
-without crackling nor (much) xruns. Tested under
-2.6.10-rc2-mm-RT-V0.7.32-18 on a P4@2.5Ghz laptop. Never though this could
-happen with a USB audio device upon jackd, ever. Am I alone? Thanks
-Karsten, first you solved the ohci horror, now this... :)
-
-Two things to note about using this new interface:
-
-- hw:N,2 (N=0,1,... index of snd-usb-usx2y on the snd stack);
-- nrpacks=1 (e.g. modprobe snd-usb-usx2y nrpacks=1) is mandatory for this
-hwdep pcm interface being up and available.
-
-Take care.
+Dec 20 18:05:50 khazad kernel: Unable to handle kernel paging request at
+virtual address f8a31220
+Dec 20 18:05:50 khazad kernel:  printing eip:
+Dec 20 18:05:50 khazad kernel: c01393f1
+Dec 20 18:05:50 khazad kernel: *pde = 37e1e067
+Dec 20 18:05:50 khazad kernel: *pte = 00000000
+Dec 20 18:05:50 khazad kernel: Oops: 0002
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+Dec 20 18:05:50 khazad kernel: SMP 
+Dec 20 18:05:50 khazad kernel: Modules linked in: usbhid binfmt_misc md5
+ipv6 rfcomm l2cap bluetooth af_packet sk98lin eth1394 ide-cd cdrom
+ohci1394 ieee1394 loop nls_iso8859-1 ntfs nvidia sata_sil iteraid ata_piix
+libata scsi_mod ehci-hcd uhci-hcd usbcore reiserfs
+Dec 20 18:05:50 khazad kernel: CPU:    1
+Dec 20 18:05:50 khazad kernel: EIP:    0060:[module_unload_init+17/96]   
+Tainted: P   VLI
+Dec 20 18:05:50 khazad kernel: EIP:    0060:[<c01393f1>]    Tainted: P  
+VLI
+Dec 20 18:05:50 khazad kernel: EFLAGS: 00210246   (2.6.8.1-12mdksmp) 
+Dec 20 18:05:50 khazad kernel: EIP is at module_unload_init+0x11/0x60
+Dec 20 18:05:50 khazad kernel: eax: f8a31220   ebx: f8bc2000   ecx:
+f8a30d80   edx: 0000001f
+Dec 20 18:05:50 khazad kernel: esi: 00000460   edi: f8bc381c   ebp:
+f4457efc   esp: f4457efc
+Dec 20 18:05:50 khazad kernel: ds: 007b   es: 007b   ss: 0068
+Dec 20 18:05:50 khazad kernel: Process modprobe (pid: 4227,
+threadinfo=f4456000 task=f1872c90)
+Dec 20 18:05:50 khazad kernel: Stack: f4457f9c c013b417 f8a30d80 f8bc2000
+f8bc381c f8bc3708 00000003 f4457f3c 
+Dec 20 18:05:50 khazad kernel:        c015c054 c1813034 00200286 00000000
+00000488 00000000 00000000 f31ddee8 
+Dec 20 18:05:50 khazad kernel:        f7324e00 f8bab000 00000000 f8a30d80
+00000000 00000000 00000000 00000000 
+Dec 20 18:05:50 khazad kernel: Call Trace:
+Dec 20 18:05:50 khazad kernel:  [show_stack+127/160] show_stack+0x7f/0xa0
+Dec 20 18:05:50 khazad kernel:  [<c0107dff>] show_stack+0x7f/0xa0
+Dec 20 18:05:50 khazad kernel:  [show_registers+351/480]
+show_registers+0x15f/0x1e0
+Dec 20 18:05:50 khazad kernel:  [<c0107f9f>] show_registers+0x15f/0x1e0
+Dec 20 18:05:50 khazad kernel:  [die+139/256] die+0x8b/0x100
+Dec 20 18:05:50 khazad kernel:  [<c010816b>] die+0x8b/0x100
+Dec 20 18:05:50 khazad kernel:  [do_page_fault+966/1456]
+do_page_fault+0x3c6/0x5b0
+Dec 20 18:05:50 khazad kernel:  [<c011c3c6>] do_page_fault+0x3c6/0x5b0
+Dec 20 18:05:50 khazad kernel:  [error_code+45/56] error_code+0x2d/0x38
+Dec 20 18:05:50 khazad kernel:  [<c0107a7d>] error_code+0x2d/0x38
+Dec 20 18:05:50 khazad kernel:  [load_module+1591/2592]
+load_module+0x637/0xa20
+Dec 20 18:05:50 khazad kernel:  [<c013b417>] load_module+0x637/0xa20
+Dec 20 18:05:50 khazad kernel:  [sys_init_module+94/528]
+sys_init_module+0x5e/0x210
+Dec 20 18:05:50 khazad kernel:  [<c013b85e>] sys_init_module+0x5e/0x210
+Dec 20 18:05:50 khazad kernel:  [sysenter_past_esp+82/113]
+sysenter_past_esp+0x52/0x71
+Dec 20 18:05:50 khazad kernel:  [<c0106fa1>] sysenter_past_esp+0x52/0x71
+Dec 20 18:05:50 khazad kernel: Code: ff 40 34 83 c4 08 89 d0 5b 5e 5d c3
+8d b4 26 00 00 00 00 8d bc 27 00 00 00 00 55 ba 1f 00 00 00 89 e5 8b 4d 08
+8d 81 a0 04 00 00 <89> 81 a0 04 00 00 89 81 a4 04 00 00 89 c8 90 c7 80 a0
+00 00 00
 
 ----------------------------------------------------------------------
- tiwai - 01-20-05 19:16 
+ tiwai - 01-20-05 19:18 
 ----------------------------------------------------------------------
-The patch was already in ALSA 1.0.8.
+Try 1.0.8.  All odd bugs around azx should have been fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-26-04 21:36 karsten        New Issue                                    
-10-26-04 21:36 karsten        File Added:
-snd-usb-usx2y.patch.0.8.6+hwdep_pcm.bz2                    
-10-26-04 21:39 karsten        Note Added: 0002265                          
-10-27-04 02:01 rncbc          File Added: linux-2.6.9-ohci-hcd.patch.gz         
-          
-10-27-04 02:01 rncbc          File Added: linux-2.6.9-usx2y-0.8.6.patch.gz      
-             
-10-27-04 02:02 rncbc          File Added:
-linux-2.6.9-usx2y-0.8.6-rawusb.patch.gz                    
-10-27-04 02:02 rncbc          File Added: linux-2.6.9-mm1_usx2y-0.8.6.patch.gz  
-                 
-10-27-04 02:03 rncbc          File Added:
-linux-2.6.9-mm1_usx2y-0.8.6-rawusb.patch.gz                    
-10-27-04 02:26 rncbc          Note Added: 0002269                          
-11-09-04 19:22 tiwai          Note Added: 0002346                          
-12-02-04 20:19 karsten        Note Added: 0002697                          
-12-03-04 14:06 tiwai          Note Added: 0002710                          
-12-10-04 23:22 rncbc          File Added:
-linux-2.6.10-rc2-mm3-usx2y-0.8.7.patch.gz                    
-12-10-04 23:49 rncbc          Note Added: 0002809                          
-01-20-05 19:16 tiwai          Status                   assigned => resolved
-01-20-05 19:16 tiwai          Resolution               open => fixed       
-01-20-05 19:16 tiwai          Note Added: 0003333                          
+12-20-04 07:40 fermier        New Issue                                    
+12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
+Offficial
+12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
+12-20-04 08:31 rlrevell       Note Added: 0002868                          
+12-20-04 13:04 fermier        Note Added: 0002871                          
+12-20-04 13:05 fermier        Note Added: 0002872                          
+12-20-04 14:27 tiwai          Note Added: 0002873                          
+12-20-04 15:35 fermier        Note Added: 0002877                          
+12-20-04 15:38 tiwai          Note Added: 0002878                          
+12-20-04 16:01 fermier        Note Added: 0002879                          
+12-20-04 16:05 tiwai          Note Added: 0002881                          
+12-20-04 16:06 tiwai          Note Added: 0002882                          
+12-20-04 16:23 fermier        Note Added: 0002884                          
+12-20-04 16:34 tiwai          Note Added: 0002885                          
+12-20-04 17:32 fermier        Note Added: 0002889                          
+12-20-04 17:40 tiwai          Note Added: 0002891                          
+12-20-04 18:10 fermier        Note Added: 0002893                          
+01-20-05 19:18 tiwai          Note Added: 0003334                          
 ======================================================================
 
 
