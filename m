@@ -1,14 +1,13 @@
-From: Jeff Muizelaar <muizelaar@rogers.com>
-Subject: Re: [PATCH] more au88x0 eq cleanups
-Date: Tue, 21 Sep 2004 17:32:18 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
+Date: Wed, 22 Sep 2004 00:24:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41509DE2.1050702@rogers.com>
-References: <41501995.8030203@rogers.com> <s5hfz5bzu07.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040921222423.CFE5939006@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfz5bzu07.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D1692F8
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 00:24:24 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +16,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
 
->Could you provide a changelog with a summary and a signed-off-by
->lines?
->
->
->  
->
-Sure,
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000509
+======================================================================
+Reported By:                gbilotta
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     509
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian GNU/Linux Testing
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             09-20-2004 19:20 CEST
+Last Modified:              09-22-2004 00:24 CEST
+======================================================================
+Summary:                    Conexant Moden "not ready"
+Description: 
+modprobing for snd_intel8x0m gives the following error:
 
-cleanup au88x0 equalizer code by factoring out a sign_invert function 
-that ensures all negative integers become positive.
+MC'97 1 converters and GPIO not ready (0xff00)
+======================================================================
 
-Signed-off-by: Jeff Muizelaar <muizelaar@rogers.com>
+----------------------------------------------------------------------
+ sashak - 09-20-2004 22:23 CEST 
+----------------------------------------------------------------------
+Hello Giuseppe "Oblomov",
 
+I'm not sure that this is the reason, but according to AC97 spec (rev.2.3
+at least) modem reset should be performed by writing something to register
+AC97_EXTENDED_MID (0x3c) and AC97_RESET (0x0) should not be touched. So
+probably this hw just works in right way.
+
+Just for clarification could you try this patch ( cd linux-2.6.7 ; patch
+-p0 ):
+
+--- sound/pci/ac97/ac97_codec.c.orig    2004-09-20 23:00:24.903845416
++0300
++++ sound/pci/ac97/ac97_codec.c 2004-09-20 23:07:23.341233264 +0300
+@@ -1784,7 +1784,16 @@
+                goto __access_ok;
+        }
+ 
++#define JUST_FORCHECK 1
++#ifdef JUST_FORCHECK
++       /* reset to defaults */
++       if(ac97->scaps & AC97_SCAP_SKIP_AUDIO)
++               snd_ac97_write(ac97, AC97_EXTENDED_MID, 0);     /* modem
+*/
++       else
++               snd_ac97_write(ac97, AC97_RESET, 0);    /* audio */
++#else
+        snd_ac97_write(ac97, AC97_RESET, 0);    /* reset to defaults */
++#endif
+        if (bus->wait)
+                bus->wait(ac97);
+        else {
+
+----------------------------------------------------------------------
+ gbilotta - 09-22-2004 00:24 CEST 
+----------------------------------------------------------------------
+Yes, your diagnosis seems to be correct. With the separate init code for
+the modem I don't get the "not ready" error. Of course I'm still not 100%
+sure whether I can use the modem or not ... is there some way I can check?
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-20-04 19:20 gbilotta       New Bug                                      
+09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
+09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
+09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
+09-20-04 19:21 gbilotta       File Added: lspci.out                        
+09-20-04 22:23 sashak         Bugnote Added: 0001795                       
+09-22-04 00:24 gbilotta       Bugnote Added: 0001809                       
+======================================================================
 
 
 -------------------------------------------------------
