@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Wed, 2 Mar 2005 14:12:57 +0100
-Message-ID: <0fbf455fc30a03f84e7945a952187373@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: removing events from queue according to tag
+Date: Wed, 2 Mar 2005 13:37:50 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503021334340.6080-100000@studcom.urz.uni-halle.de>
+References: <20050302115858.69453.qmail@web51902.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33B0E1F3
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 14:12:57 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20050302115858.69453.qmail@web51902.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,94 +15,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Michael Geis <michaelgeis11@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Michael Geis wrote:
+> I am trying to remove events from a queue after having
+> scheduled them with a tag.
 
-The following issue has been set as RELATED TO issue 0000509.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
-======================================================================
-Reported By:                mart
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              03-02-2005 14:12 CET
-======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
-Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+This is a thing that has, AFAIK, not been used or tested at all.  It
+may be possible that there is a stupid bug somewhere, or that the
+documentation (if one can call it that) is wrong.
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
+> The following minimal program re-produces the problem.
 
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000509 Conexant Moden &quot;not ready&quot;
-======================================================================
+Thanks, I'll look into it.
 
-----------------------------------------------------------------------
- mart - 02-03-05 21:55 
-----------------------------------------------------------------------
-the exact model of the laptop is asus z91n:
-http://usa.asus.com/products/notebook/z9series/Z9100N/z9100n_overview.htm
 
-----------------------------------------------------------------------
- sashak - 02-03-05 23:21 
-----------------------------------------------------------------------
-I'm affraid that it is unsupported CXT codec. Problem like bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=509.
-Could you look at /proc/asound/card1/codec97#0/mc97#0-0 ?
-
-----------------------------------------------------------------------
- mart - 02-04-05 13:10 
-----------------------------------------------------------------------
-uhm,
-/proc/asound/card1/codec97#0/mc97#0-0 doesn't exists,
-but exists 
-/proc/asound/card1/codec97#0/mc97#1-1 that is:
-1-1/0: Conexant id 22
-
-Extended modem ID: codec=1 LIN1
-Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
-PRF(DAC2) PRG(HADC) PRH(HDAC)
-Line1 rate       : 48000Hz
-
-and a (long) /proc/asound/card1/codec97#0/mc97#1-1+regs
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-02-04-05 13:10 mart           Note Added: 0003501                          
-03-02-05 14:12 perex          Relationship added       related to 0000509  
-======================================================================
-
+Regards,
+Clemens
 
 
 
