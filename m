@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000925]: no sound with CMI9761A
-Date: Sat, 19 Feb 2005 18:55:12 +0100
-Message-ID: <440329ff3ab0f347cb90bae520afd52f@bugtrack.alsa-project.org>
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: Re: CMI8768 patch, softvol mixer slider
+Date: Sat, 19 Feb 2005 19:40:40 +0100
+Message-ID: <42178828.2020002@gmx.de>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>	 <4216EE28.6040702@gmx.de> <1108799809.9005.3.camel@krustophenia.net>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E5CE234
-	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 18:55:12 +0100 (MET)
+In-Reply-To: <1108799809.9005.3.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +17,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Sat, 2005-02-19 at 08:43 +0100, thomas schorpp wrote:
+> 
+>>hmm, if read the docs right its userspace.
+>>
+>>how about getting it in the kernel and calling it snd_x_csoftmix ?
+> 
+> 
+> Why?  It works fine in userspace.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925> 
-======================================================================
-Reported By:                Cus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   925
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE Linux 9.2
-Kernel Version:             2.6.11-rc3
-======================================================================
-Date Submitted:             02-19-2005 18:55 CET
-Last Modified:              02-19-2005 18:55 CET
-======================================================================
-Summary:                    no sound with CMI9761A
-Description: 
-I have no sound with my Chaintech VNF-250 motherboard. It has
-an integrated CMI9761A chip, the alsa driver detects it as CMI9761,
-everything seems to be ok, but i hear nothing.
-======================================================================
+surely.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-19-05 18:55 Cus            New Issue                                    
-02-19-05 18:55 Cus            File Added: lspci                            
-02-19-05 18:55 Cus            Distribution              => SuSE Linux 9.2  
-02-19-05 18:55 Cus            Kernel Version            => 2.6.11-rc3      
-======================================================================
+>  The whole point of alsa-lib is to get
+> things like software volume control and mixing and sample rate
+> conversion that don't need to be in the kernel out of the kernel.
 
+who decides on "need"?
 
+1. sw engineering reuseability:
+
+would you provide a base class without a generalizable feature requiring 
+every subclass implementing it? wheres the need for specialization here?
+
+2. the linux audio developers:
+
+"guys, theres no pcm master to access with the alsa driver on some cards 
+on the mixers. everone of us must implement it now in our apps, what a 
+hell work."
+
+3. audio professionals and simple end user
+
+"guys, i heard therere some great apps like ardour and multi-channel 
+realtime audio available on linux at low cost. lets go and save much 
+costs, buy this great suse and have fun. ... eh? wheres the pcm slider i 
+have with windows gone? they cant even provide that? ... so the other 
+apps cant be much. lets boot windows again and forget this suse..."
+
+4. the linux kernel developers?
+
+> 
+> Lee
+> 
+> 
+
+tom
 
 
 -------------------------------------------------------
