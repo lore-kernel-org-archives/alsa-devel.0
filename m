@@ -1,13 +1,13 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: SPDIF and cs46xx ?
-Date: Sun, 30 Mar 2003 03:11:00 +0200
+From: alsa@slackware.ru
+Subject: Re: Redhat 9.0 also has the snd.o unresolved symbol schedule_work issue
+Date: Sun, 30 Mar 2003 14:34:08 +0400 (MSD)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E864424.6060707@cucumelo.org>
-References: <14a4584ea6cb4a6894e70d84e717abc6.peter599@gotnet.net> <3E75075E.7030401@cucumelo.org> <20030329142035.GA16590@ulima.unil.ch>
+Message-ID: <Pine.LNX.4.53.0303301424030.21623@scil.sinp.msu.ru>
+References: <3E861CFC.9040908@corekin.no-ip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3E861CFC.9040908@corekin.no-ip.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,44 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gregoire Favre <greg@ulima.unil.ch>
-Cc: Peter Heatwole <peter599@gotnet.net>, alsa-devel@lists.sourceforge.net, werner@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->And is there any hope of any enhancement?
->I "need" the SPDIF of my Digifire 7.1 to be able to use the bitstreamout
->plugin of VDR made by Dr. Werner Fink
->(https://sourceforge.net/projects/bitstreamout/) because as he wrote the
->SPDIF out of my DVB card is not "good":
->
->"As long as the hardware on the DVB cards are not able to put
->the 16bit none audio PCM data stream into a 32bit none audio
->S/P-DIF transport stream all receivers which uses the bit flags
->of the S/P-DIF transport stream for identifying none audio
->loose.  All S/P-DIF data get from the DVB card to not have the
->none audio bit set.  AFAIK this is a hardware bug (or better
->this is the information I've got from TT) ..."
->
->But when I try the plugin I got:
->
->Mar 29 15:15:17 localhost vdr[9090]: S/P-DIF: Period size not available: Invalid argument
->Mar 29 15:15:17 localhost vdr[9090]: S/P-DIF: unable to establish BitStreamOut for none audio PCM 
->Mar 29 15:15:17 localhost vdr[9090]: REPLAY: can't open spdif interface
->
->  
->
-Seems like a user application problem to me.  The cs46xx driver just 
-support a limited set of period-size configurations, that's a limitation 
-in the HW. Then it's up to the application to handle it (I guess)
-I've managed to make AC3 and DTS through SPDIF work witth OGLE and Xine, 
-I dont see any reason why it would'nt work with any other application, 
-at least you should get further than: "S/P-DIF: Period size not 
-available: Invalid argument" then when you've managed to open the device 
-and write data to it maybe there will apear other unknown problems ...
+On Sat, 29 Mar 2003, Jason Corekin wrote:
 
-/Benny
+> I work for HP and I just downloaded the new RH 9.0 iso's from our
+> internal source yesterday.  After upgrading from RH 8.0 and the 2.4.18
+> kernel I tried to update my Alsa drivers to work with the new 2.4.20
+> kernel and found that althought the Alsa 0.9.2 drivers had compiled and
+> installed without trouble the would not load.  Instead I am getting the
+> error unresolved symbol schedule_work.
+
+please, check the kernel includes.
+/usr/include/linux MUST be the link to the include directory of the
+kernel. it was in the process of migration from 2.4.<20 to 2.4.>20.
+some distributions have /usr/include/linux as a directory. and, when
+compiling the fresh kernel, one can get strange things with unresolved
+symbols etc (old headers + new kernel).
+
+so,
+/usr/include/linux must be the link to /usr/src/linux/include/linux,
+if kernel sources were unpacked to the /usr/src/linux.
+and, also, You need to recompile drivers.
+
+maybe, the described approach can help.
 
 
 
