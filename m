@@ -1,16 +1,16 @@
-From: Tim Goetze <tim@quitte.de>
+From: tomasz motylewski <T.Motylewski@bfad.de>
 Subject: Re: Alsa Programming Examples
-Date: Sun, 9 Jun 2002 12:50:35 +0200 (CEST)
+Date: Sun, 9 Jun 2002 13:12:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0206091143590.844-100000@summer.quitte>
-References: <200206080926.25082.do1ypv@linux>
+Message-ID: <Pine.LNX.4.21.0206091308190.23357-100000@mailserver.intern.bfad.de>
+References: <Pine.LNX.4.21.0206091143590.844-100000@summer.quitte>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA32450
-	for <alsa-devel@alsa-project.org>; Sun, 9 Jun 2002 12:50:37 +0200
-In-Reply-To: <200206080926.25082.do1ypv@linux>
+Received: from mailserver.intern.bfad.de (mail.bfad.de [212.62.208.67])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA32719
+	for <alsa-devel@alsa-project.org>; Sun, 9 Jun 2002 13:11:44 +0200
+In-Reply-To: <Pine.LNX.4.21.0206091143590.844-100000@summer.quitte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,47 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Philipp Vollmer <vollmer.philipp@t-online.de>
-Cc: alsa-devel@alsa-project.org
+To: Tim Goetze <tim@quitte.de>
+Cc: Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Philipp Vollmer wrote:
+On Sun, 9 Jun 2002, Tim Goetze wrote:
 
->> it seems params == 0 when you're calling snd_pcm_hw_refine.
->Hello,
->
->Sorry but there is no codeline like snd_pcm_hw_refine in the example.
->I will send you the file as an attachment.
+> with all respect, i think you could have tried a little harder to find
+> the error.
 
-in your file:
+There is a prominent link on
+http://www.alsa-project.org/documentation.php3#0.9doc
 
-  if ((playback_handle = snd_pcm_open (&playback_handle, "default", 
-	SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+Howto use the ALSA API - Paul Davis has also written a brief explanation. 
+http://www.op.net/~pbd/alsa-audio.html#captureex
 
-snd_pcm_open returns 0 on success, *not* the pcm handle. have you
-tried reading the docs yet ;) and haven't you wondered why you pass
-the address of 'playback_handle' to snd_pcm_open()?
+You will find there:
 
-gcc warns you about this:
+ if ((capture_handle = snd_pcm_open (argv[1], SND_PCM_STREAM_CAPTURE, 0)) <0) {
+         fprintf (stderr, "cannot open audio device %s\n", argv[1]);
+                 exit (1);
+ }
 
-$ gcc -c how1.c 
-how1.c: In function `main':
-how1.c:11: warning: assignment makes pointer from integer without a
-cast
+and many other errors.
 
-and if you had endeavoured to read the sources of alsa-lib, you'd 
-have discovered that (alsa-lib/src/pcm/pcm.c):
+While examples are the best for of developers documentation, broken examples
+are the worst form of misinformation.
 
-int snd_pcm_hw_params_any(snd_pcm_t *pcm, snd_pcm_hw_params_t *params)
-{
-  _snd_pcm_hw_params_any(params);
-  return snd_pcm_hw_refine(pcm, params);
-}
+I have written about a week ago to pbd@users.sourceforge.net, no answer yet.
 
-with all respect, i think you could have tried a little harder to find
-the error.
-
-tim
+Best regards,
+--
+Tomasz Motylewski
 
 
 
