@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Hardware interface constant for Bluetooth
-Date: Mon, 8 Nov 2004 13:18:32 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411081305260.2162@pnote.perex-int.cz>
-References: <1099877050.6896.70.camel@pegasus>  <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
- <1099915428.6896.107.camel@pegasus>
+Subject: Re: Support for the Bluetooth subband codec (SBC)
+Date: Mon, 8 Nov 2004 13:40:07 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411081326500.2162@pnote.perex-int.cz>
+References: <1099878354.6896.80.camel@pegasus>  <Pine.LNX.4.58.0411081155020.2162@pnote.perex-int.cz>
+ <1099915747.6896.113.camel@pegasus>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1099915428.6896.107.camel@pegasus>
+In-Reply-To: <1099915747.6896.113.camel@pegasus>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,33 +23,12 @@ List-Id: alsa-devel@alsa-project.org
 
 On Mon, 8 Nov 2004, Marcel Holtmann wrote:
 
-> this is a little bit tricky. Besides the native support for transporting
-> PCM data over a Bluetooth SCO channel, the headset/handsfree profile
-> uses a RFCOMM channel (serial port emulation) for additional settings.
-> On this channel they use AT commands and actually I don't wanna put a AT
-> parser into the kernel. It is in somekind possible, but I still think
-> that it does not belong there, because it is profile specific and a
-> Bluetooth profile is an application and applications should run in user
-> space. On the other hand you still need to create that SCO channel from
-> user space with somekind of ioctl, because the kernel can't know when
-> this channel must be established. It depends on some AT commands that
-> are send over the RFCOMM channel.
-> 
-> So my plan is to write a kernel module that is reponsible for the SCO
-> audio traffic. This registers as a soundcard with the ALSA subsystem and
-> it also registers a Bluetooth HWDEP. There is no initial PCM device
-> registered with this soundcard. These are only added when a SCO channel
-> is opened from the peer side or requested through an ioctl on the HWDEP
-> interface. Besides this the HWDEP would also control the mixer settings,
-> because these are exchanged over the RFCOMM channel.
-> 
-> Do you think this makes sense?
+> I don't think that this is linear PCM, but actually I am no expert when
+> it comes to codec specific stuff. I would be great if you can take a
+> look at it and tell me what you think how we should support it.
 
-Yep, the management of PCM devices belongs into the hwdep API - except the
-mixer controls. You should map the possible mixer and other controls using
-the universal control API.
-
-The SNDRV_HWDEP_IFACE_BLUETOOTH definition was added to the ALSA CVS tree.
+I see - SBC is an audio compression. It should be implemented in alsa-lib 
+as you suggested.
 
 						Jaroslav
 
