@@ -1,14 +1,16 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: build error in pcm_native.c
-Date: Thu, 15 Jul 2004 22:09:21 +0400
+From: noreply@alsa-project.org
+Subject: [ALSA - lib 0000389]: random buffer snd_output_t issues
+Date: Thu, 15 Jul 2004 20:14:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407152209.21287@goldspace.net>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040715181456.CD3C519004@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12E32217
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 20:14:57 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id DC4671239C
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 20:14:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,23 +19,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Have tried to build drivers from current CVS and have got an error shown below.
-Must I supply some additional info?
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000389
+======================================================================
+Reported By:                Benjamin Otte
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Bug ID:                     389
+Category:                   general
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             07-15-2004 20:09 CEST
+Last Modified:              07-15-2004 20:14 CEST
+======================================================================
+Summary:                    random buffer snd_output_t issues
+Description: 
+There are several issues with using a snd_output_t acquired from
+snd_output_buffer_open(). These cause random segfaults because of
+writing/reading invalid memory.
+The attached patch fixes those issues.
 
-Andrew
+======================================================================
 
-==========================
-gcc -D__KERNEL__ -DMODULE=1 -I/wrk/cvs/alsa/alsa-driver/include  -I/lib/modules/2.4.26-lck1/build/include -O2 -mpreferred-stack-boundary=2 -march=i686 -D__SMP__ -DCONFIG_SMP -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix include  -DKBUILD_BASENAME=pcm_native   -c -o pcm_native.o pcm_native.c
-pcm_native.c: In function `snd_pcm_mmap_data_Rsmp_c77fab7a':
-pcm_native.c:3157: warning: passing arg 1 of `remap_page_range_Rsmp_69d01e73' makes integer from pointer without a cast
-pcm_native.c:3157: error: incompatible type for argument 4 of `remap_page_range_Rsmp_69d01e73'
-pcm_native.c:3157: error: too many arguments to function `remap_page_range_Rsmp_69d01e73'
-make[1]: *** [pcm_native.o] Error 1
+----------------------------------------------------------------------
+ Benjamin Otte - 07-15-2004 20:14 CEST 
+----------------------------------------------------------------------
+patch to fix the issues.
+These include:
+- snd_output_buffer_need might not resize the buffer to be big enough, if
+huge sizes are required.
+- calculating the needed buffer size does not take care of the terminating
+null byte vsprintf puts at the end. So in rare cases, the buffer is
+exactly one byte too small. Use vsnprintf instead to guard against these
+problems.
+- snd_output_buffer_print does not correct the size member for the number
+of bytes added.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-15-04 20:09 Benjamin Otte  New Bug                                      
+07-15-04 20:09 Benjamin Otte  File Added: test-overwrite.c                    
+07-15-04 20:14 Benjamin Otte  Bugnote Added: 0001438                       
+======================================================================
 
 
 -------------------------------------------------------
