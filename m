@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000787]: Headphone == Master if plugged
-Date: Fri, 7 Jan 2005 21:07:34 +0100
-Message-ID: <92b8b190e19e5adbaec6763af360c33e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Fri, 7 Jan 2005 22:41:53 +0100
+Message-ID: <4adf5b65c29029cf111346bbe04fe530@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3794D24B
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 21:07:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DCA532D0
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 22:41:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=787> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                Nafallo
+Reported By:                mr-k
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   787
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Ubuntu Linux 5.10 (hoary)
-Kernel Version:             2.6.9
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-06-2005 02:04 CET
-Last Modified:              01-07-2005 21:07 CET
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              01-07-2005 22:41 CET
 ======================================================================
-Summary:                    Headphone == Master if plugged
+Summary:                    Driver and all sound aplications hangs
 Description: 
-When I'm using headphones the master volume meter changes to headphones
-volume meter, making me unable to use gnome-hotkeys to turn the volume
-up/down (i.e. they change master that's inactivated by headphones).
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
+
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 18:21 
+ mr-k - 01-01-05 22:21 
 ----------------------------------------------------------------------
-Isn't it nice to have separate volume controls for different outputs ;)
-
-ATM, I'm not sure which fix (or implemention) would be the right way.
-We can use the soft-volume control, or bind both volumes in the driver,
-and hide the headphone volume.
+I've installed alsa 1.0.7a on 2.6.10 and I think that everything is good.
+I'm not sure yet. But on 2.6.9 with this version of driver I had problems.
 
 ----------------------------------------------------------------------
- Nafallo - 01-07-05 21:07 
+ mr-k - 01-07-05 22:41 
 ----------------------------------------------------------------------
-I would vote for binding them together, with or without hiding (risc of
-confusing existing users).
+I have 1.0.8rc1 and the same problem. I was thinking that now everytjing is
+good but after 2 or 3 days of testing i have the same symptoms. Now, I'm
+makeing kernel with sysrq. Maybe it's not an alsa problem ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-06-05 02:04 Nafallo        New Issue                                    
-01-06-05 02:04 Nafallo        Distribution              => Ubuntu Linux 5.10
-(hoary)
-01-06-05 02:04 Nafallo        Kernel Version            => 2.6.9           
-01-06-05 02:13 Nafallo        Issue Monitored: Nafallo                     
-01-07-05 18:21 tiwai          Note Added: 0003109                          
-01-07-05 21:07 Nafallo        Note Added: 0003121                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
 ======================================================================
 
 
