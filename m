@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Tue, 18 Jan 2005 08:09:33 +0100
-Message-ID: <6b873dd145543cd3717916b9acfc0c06@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000574]: bad sound reproduction
+Date: Tue, 18 Jan 2005 08:09:45 +0100
+Message-ID: <26183b9bbaf23a18facf57af224f2805@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB74222D
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 08:09:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93F4222D
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 08:09:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,40 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=574> 
 ======================================================================
-Reported By:                feixm
+Reported By:                nicola
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   490
+Issue ID:                   574
 Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               linuxfromscratch, everything compiled from original
-sources
-Kernel Version:             2.6.8.1
+Distribution:               fedora core 2
+Kernel Version:             kernel 2.6.5-1.358
 ======================================================================
-Date Submitted:             09-08-2004 21:16 CEST
+Date Submitted:             10-09-2004 15:03 CEST
 Last Modified:              01-18-2005 08:09 CET
 ======================================================================
-Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Summary:                    bad sound reproduction
 Description: 
-Hello,
+Sound isn't reproduced rigth way, sound play and stop, play and stop. I
+can't hear a fluid sound, the only way to hear sound is moving continously
+the mouse. 
+I can't hear system sounds, totem (and xine based programs) doesn't
+reproduce fluid sounds, while mplayer and helix can (but sometimes stream
+is shifted on).
 
-when playing any audio file from my new Acer TravelMate 2000, the sound is
-very choppy. I tried playing using xmms, mplayer and others. From lspci I
-see, it is an ATI IXP 150. I understand that this bugreport alone won't
-help you guys, so if I can give any more info, pls let me know.
-
-When playing movies with mplayer, I see lots of messages like:
-
-alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
-0%
-alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
-0%
-
-These appear even more where skipping back and forward in the movie.
-
-I found, that playing movies through SDL helps a little, but sound is
-still choppy and cannot be listened to.
 ======================================================================
 
 ----------------------------------------------------------------------
- rounin - 01-18-05 07:56 
+ rounin - 01-18-05 07:55 
 ----------------------------------------------------------------------
-The same issue occurs in Fedora Core 3, on the hp/compaq nx9110 laptop.
-Turning off acpi was suggested in another thread, but it seems like a bad
-choice on a laptop.
+The same issue occurs on the HP/compaq nx9110 laptop. Turning off ACPI is
+obviously not really an option.
 
 ----------------------------------------------------------------------
  rounin - 01-18-05 08:09 
@@ -80,13 +67,13 @@ Booting with pci=noacpi seems to be working though.
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 21:16 feixm          New Issue                                    
-09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
-everything compiled from original sources
-09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
-01-18-05 07:56 rounin         Note Added: 0003242                          
-01-18-05 07:59 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003245                          
+10-09-04 15:03 nicola         New Issue                                    
+10-09-04 15:03 nicola         Distribution              => fedora core 2   
+10-09-04 15:03 nicola         Kernel Version            => kernel 2.6.5-1.358
+10-11-04 12:10 tiwai          Note Added: 0002074                          
+01-18-05 07:55 rounin         Note Added: 0003241                          
+01-18-05 07:56 rounin         Issue Monitored: rounin                      
+01-18-05 08:09 rounin         Note Added: 0003246                          
 ======================================================================
 
 
