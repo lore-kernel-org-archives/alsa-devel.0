@@ -1,11 +1,14 @@
 From: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
-Subject: snd_pcm_commit asserts
-Date: Fri, 11 Jun 2004 11:30:21 +0200 (CEST)
+Subject: Re: snd_pcm_commit asserts
+Date: Fri, 11 Jun 2004 12:15:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1BYiMf-0006Oc-00@mailer.emlix.com>
+Message-ID: <E1BYj3t-0001eU-00@mailer.emlix.com>
+References: <Pine.LNX.4.58.0406111146060.1785@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=iso8859-15
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0406111146060.1785@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,48 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hello!
+On Fri, 11 Jun 2004, Jaroslav Kysela wrote:
 
-Using alsa 1.0.4 the following problem occurs.
+> On Fri, 11 Jun 2004, Nicolas H=FCppelsh=E4user wrote:
+>
+> > Hello!
+> >
+> > Using alsa 1.0.4 the following problem occurs.
+> >
+> > If in between a snd_pcm_mmap_begin and snd_pcm_mmap_commit a xrun occur=
+ed
+> > I'm not (always) able to do a successful commit.
+> >
+> > If in XRUN state the snd_pcm_mmap_commit returns error code -32 (broken
+> > pipe). Getting this I do xrun recovery with bringing alsa into state
+> > PREPARED and repeating the snd_pcm_mmap_commit call. Some times this ma=
+y
+> > succeed but most of the time it fails again, this time with an assertio=
+n:
+> >
+> > pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset =3D=3D *pcm->appl.pt=
+r %
+> > pcm->buffer_size' failed.
+>
+> Did you call snd_pcm_mmap_begin() after xrun recovery again?
 
-If in between a snd_pcm_mmap_begin and snd_pcm_mmap_commit a xrun occured
-I'm not (always) able to do a successful commit.
+No I did not.  If I need to it takes me to the following questions:
 
-If in XRUN state the snd_pcm_mmap_commit returns error code -32 (broken
-pipe). Getting this I do xrun recovery with bringing alsa into state
-PREPARED and repeating the snd_pcm_mmap_commit call. Some times this may
-succeed but most of the time it fails again, this time with an assertion:
+(1) Does this mean in case of an xrun my mmap region got "unmapped"?
 
-pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset == *pcm->appl.ptr %
-pcm->buffer_size' failed.
+(2) Why does my second snd_pcm_mmap_commit call not fail every time then
+    but only "most of the time"?
 
-Another approach to prevent the first failing commit (the one returning
-broken pipe error) is to check immediately before calling snd_pcm_commit
-the state and ensure to be either in RUNNING state or in PREPARED state
-respectively. So if the XRUN occured after snd_pcm_mmap_begin and before
-calling snd_pcm_mmap_commit alsa is in state PREPARED when doing the
-commit.  Sometimes this works, sometimes the snd_pcm_mmap_commit call
-throws again
+(3) The mmap region obtained via the "re-begin" - does it match the region
+    previously obtained --- is it the same as before?
 
-pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset == *pcm->appl.ptr %
-pcm->buffer_size ' failed.
+(4) In playback case - do I have to rewrite the data?
 
-Nevertheless the data provided to snd_pcm_mmap_commit is always the same
-and corresponds to the data obtained by the mmap_begin call.
+(5) What happens to the application frame pointer in xrun case?
 
-The problem appears in playback and capture mode.
-
-Viele Gruesse / best regards
-	Nicolas Hueppelshaeuser
---
-nicolas hueppelshaeuser, emlix gmbh, http://www.emlix.com,
-
-emlix - your embedded linux partner
-
+Thanks in advance
+=09Nicolas
 
 
 
