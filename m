@@ -1,15 +1,14 @@
-From: Frank Neumann <beachnase@web.de>
-Subject: Re: Rawmidi mystery
-Date: Thu, 6 Feb 2003 23:00:37 +0100
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
+Date: Thu, 6 Feb 2003 23:10:34 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18gu3K-0000Hj-00@smtp.web.de>
-References: <E18gVVU-0007zl-00@smtp.web.de>
-	<Pine.HPX.4.33n.0302061000020.17923-100000@studcom.urz.uni-halle.de>
+Message-ID: <20030206231034.36902.qmail@web40607.mail.yahoo.com>
+References: <20030206154054.3b9ad91d.sebastian_kapfer@web.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0302061000020.17923-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <20030206154054.3b9ad91d.sebastian_kapfer@web.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,57 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Sebastian Kapfer <sebastian_kapfer@web.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+ --- Sebastian Kapfer <sebastian_kapfer@web.de> wrote:
+> I can find a use for stdio FD's
+> in the new process either. The exec'd process can't
+> even know which FD corresponds to which file.
 
-Hi again list,
-Clemens Ladisch <clemens@ladisch.de> wrote:
+I'm assuming from the context of your message that you
+meant "CAN'T find a use ... either". But the whole
+point of a general purpose API (which is what libc is
+and presumably is what ALSA aspires to have) is to
+support *ALL* possible uses, whether you can imagine
+them or not.
 
-[..]
-> > No, I checked that. The M3r sends active sensing (0xfe), but I filtered that out.
-> > In the data I get the only MIDI bytes > 0x7f are the F0 at the start and the
-> > 0xF7 at the very end. Also, I think a SysEx message cannot be interrupted by
-> > any other message, right?
-> 
-> Realtime messages can interrupt any other message, but it's unlikely that
-> your device would send one.
+The API does not *need* to set the FD_CLOEXEC flag,
+and so it should not. It is the height of arrogance to
+assume that something has no use simply because you
+can't imagine using it.
 
-Oh..yes, you're right. I just looked it up in the MIDI spec. Wow. I wonder
-how many MIDI parsers are out there that do not handle this correctly :-).
+Chris
 
-> > I checked that - no overruns during the whole transfer.
-> 
-> Maybe some bytes have been ignored. Please try the following patch:
 
-[patch removed]
-
-No, that's not it. The resulting number of bytes was _smaller_ than expected,
-so if there had been active sensing bytes, they would have enlarged the
-file size. Also, I checked the stream and found no bytes > 0x7f between
-F0 and F7.
-
-> It may be possible that your program waits too long before starting to
-> read data. (If some bytes come in before your first call to
-> rawmidi_read(), they're simply ignored.)
-> Please try removing the drain() in line 58.
-
-And YES, that did the trick! Thanks a lot, Clemens. Looks like the drain()
-takes a lot longer than I'd have expected (my thought was that it would
-return right after the last "command" bytes have been sent out, and that
-the incoming stream would be held by the buffer (4096 bytes, right) for
-a little while, so I didn't expect any losses there.
-
-I find this a little odd - especially since it was not the _beginning_ of
-the stream that is missing, but a couple of bytes a little later. But, what
-the heck - it works now, I learnt something - thanks! :-)
-
-Greetings,
-Frank
-
-PS: I checked with gettimeofday(): The snd_rawmidi_drain() takes about 
-47-49ms on my system..quite long, huh? I mean, the command sequence is
-just 7 bytes, that's about 2.24ms of "raw" MIDI transfer time..
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
