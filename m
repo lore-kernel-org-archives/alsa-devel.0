@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000480]: Bluetooth Headset Profile Feature request
-Date: Fri,  3 Sep 2004 05:51:12 +0200 (CEST)
+Subject: [ALSA - driver 0000460]: Oops on loading the es18xx module
+Date: Fri,  3 Sep 2004 05:12:41 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903035112.3C04E2D0C0@server.perex-int.cz>
+Message-ID: <20040903031241.A8F7B2D0BD@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 801FB20E
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 05:51:12 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DBD11C1
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 05:12:41 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,38 +20,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000480
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000460
 ======================================================================
-Reported By:                CTAC
-Assigned To:                Clemens Ladisch
+Reported By:                twhitehead
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     480
-Category:                   USB - usb-audio
-Reproducibility:            N/A
-Severity:                   feature
+Bug ID:                     460
+Category:                   ISA - es18xx
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian SID
+Kernel Version:             2.6.8.1 (from kernel.org)
 ======================================================================
-Date Submitted:             09-03-2004 05:51 CEST
-Last Modified:              09-03-2004 05:51 CEST
+Date Submitted:             08-21-2004 21:48 CEST
+Last Modified:              09-03-2004 05:12 CEST
 ======================================================================
-Summary:                    Bluetooth Headset Profile Feature request
+Summary:                    Oops on loading the es18xx module
 Description: 
-I think that it will be really cool to have in ALSA possibility to connect
-to a bluetooth headset and create a "Virtual Sound Card" that can be used
-in different applications - from mplayer/xmms to video/voice conferencing
-and VOIP.
+Loading the es18xx module immediately (and always) results in an "Unable to
+handle kernel paging request at virtual address 00000000000000b0" message.
+ The usage count then sticks at one and applications are not able to open
+the device files.
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 09-01-2004 23:05 CEST 
+----------------------------------------------------------------------
+Tried 1.0.6a?  How about compiling with CONFIG_SND_DEBUG?
+
+----------------------------------------------------------------------
+ twhitehead - 09-03-2004 05:12 CEST 
+----------------------------------------------------------------------
+-That was 1.0.6a (view advanced -> product version -- was that the correct
+field for that?).
+-Compiling with CONFIG_SND_DEBUG produces no additional output.
+-The same applies for CONFIG_SND_DEBUG_MEMORY and CONFIG_SND_DEBUG_DETECT.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-03-04 05:51 CTAC           New Bug                                      
+08-21-04 21:48 twhitehead     New Bug                                      
+08-21-04 21:48 twhitehead     Distribution              => Debian SID      
+08-21-04 21:48 twhitehead     Kernel Version            => 2.6.8.1 (from kernel.org)
+08-21-04 21:51 twhitehead     Bug Monitored: twhitehead                    
+09-01-04 23:05 tiwai          Bugnote Added: 0001679                       
+09-03-04 05:12 twhitehead     Bugnote Added: 0001686                       
 ======================================================================
 
 
