@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
-Date: Sun, 28 Nov 2004 10:51:27 +0100
-Message-ID: <977d3c34aa217f00bf31641d43b11639@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000645]: azx driver is a bit broken
+Date: Sun, 28 Nov 2004 12:39:47 +0100
+Message-ID: <40592c93113b9c4e8c1dfa43b671722f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D3ED253
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 10:51:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCBBC1E4
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 12:39:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=645> 
 ======================================================================
-Reported By:                jborges
-Assigned To:                tiwai
+Reported By:                russell
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   644
-Category:                   PCI - cmipci
+Issue ID:                   645
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
-3.2.3
-Kernel Version:             Kernel 2.4.25-klg
+Status:                     new
+Distribution:               Debian/Ubuntu
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             11-12-2004 00:09 CET
-Last Modified:              11-28-2004 10:51 CET
+Date Submitted:             11-12-2004 16:58 CET
+Last Modified:              11-28-2004 12:39 CET
 ======================================================================
-Summary:                    CMI8738 - Line-in as bass conflicts with line-as
-rear.
+Summary:                    azx driver is a bit broken
 Description: 
-I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
-CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
-Maxtor Ultra Dma Hard Disk.
+The azx driver doesn't work well on the hardware which I have. It pretty
+much doesn't work at all in OSS emulation mode. The following patch
+improves its stability on my machine enormously (although it is still not
+100%), and makes OSS emulation work nicely. As a side effect, the code is
+simplified, and to my fairly untrained eyes seems a bit more efficient.
 
-Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
+There are also a number of fixes in this patch which make the driver work
+more like my understanding of the Intel "High Definition Audio
+Specification Revision 1.0" document, and my limited understanding of the
+ALSA system. These include:
 
-This Linux installation works in a dual-boot with windows xp.
+ - ALSA buffer size now matches the Cyclic Buffer Length (length of entire
+buffer)
+ - ALSA period size now matches size of each BDL, the number of BDLs are
+properly set, and the BDLEs are not changed during playback (as suggested
+in the azx spec)
 
-The sound works fine (all 6 channels respond very well)under windows xp or
-98.
+The #define'd STREAM_REST_BIT was renamed to STREAM_RESET_BIT (because
+that's what it is).
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+This is a patch to azx.c only, and is against the current CVS version
+(1.11).
 
-Trying to configure my sound to work I noticed some problems with
-alsamixer:
+I have not done *ANY* work on the capture side of things -- most of my
+diffs for output can probably be translated almost directly for input.
 
-1 - As I can see, there is a conflict for the output. I can't see Line-In
-been used to output as bass and the same Line-In used to output as rear
-(L/R).
+There are some other issues which should be addressed in this driver. Off
+the top of my head:
+ - Will pci_set_dma_mask() be needed if the card is not capable of 64 bit
+addressing? Perhaps.
+ - The mixer code in 1.0.7rc2 causes a crash on my system, I have pointed
+this out to Clemens Ladisch in email. I will work on this problem soon if
+nobody else has the time. Commenting out the mixer initialisation code is
+working well for me at the moment :)
+ - The driver still does not work 100%. When my system is very idle, I get
+repeated sections of sound. I used to get a LOT of static, but with my
+changes it now just sounds like ALSA is never updating the buffer. I'm
+completely baffled by this, any suggestions for me to try, or hints on
+debugging this sort of behaviour would be appreciated!
 
-2 - I think Line-In would be used to output as Rear (L/R) and Mic to
-output as Bass/Center.
-
-What is happening is that: when one uses a 6 channel system there is no
-sound in the conflicted Line-In as bass and Mic as center. The little
-sound that goes there is squeezed from Line-In as rear. The sound in bass
-and center is full of noise. Impossible to listen.
-
-I took some snapshots (2) to show you what I'm talking about. Please take
-a look on them in the attached files.
-
-Julio Borges
-Rio de Janeiro - Brazil
+And one issue which I am unclear on, what does the fifo_size field in the
+snd_pcm_hardware_t struct actually define?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 19:40 
+ tiwai - 11-27-04 19:32 
 ----------------------------------------------------------------------
-I see that both of them are enabled.  And amixer output shows that both are
-enabled, too.
+I'm rewriting the driver code heavily for the time being.
+The code from Realtek will be merged there, too, so the support on
+ALC880/260 should be improved.  Will check your patch, too.
 
-Forget '[mono]' in the output of amixer.  It means only that the mixer
-volume/switch has no invididual left/right controls.
+About the DMA mask, no, it's not needed.  The chip supports 64bit - that
+is, it accepts any physical address in 64bit.
 
 ----------------------------------------------------------------------
- jborges - 11-28-04 10:51 
+ pforai - 11-28-04 12:39 
 ----------------------------------------------------------------------
-I seems that I made a mistake in my last reply. I wrote something and
-attached a new picture. The picture is there but nothing went togheter.
-Maybe I forgot to push the add note button. Sorry about that.
-What I wanted to tell you is: in the new picture you can see more clearly
-that line-in as bass and line-in as rear are not enabled. There is no bars
-on them and neither the doted lines above the empty bars. The samething
-happen with 3d control and mic as.
+@tiwai:
 
-Again, sorry.
+when can we expact to see a working snd_azx ;) ?
+
+no working sound at all makes me go crazy! :D
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-04 00:09 jborges        New Issue                                    
-11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
-          
-11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
-Brazilian flavor of Knoppix) with kde 3.2.3
-11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
-11-18-04 18:16 tiwai          Note Added: 0002455                          
-11-18-04 19:04 jborges        Note Added: 0002458                          
-11-18-04 19:40 tiwai          Note Added: 0002463                          
-11-20-04 23:25 jborges        File Added: sound-cm8738-alsamixer.png            
-       
-11-28-04 10:51 jborges        Note Added: 0002621                          
+11-12-04 16:58 russell        New Issue                                    
+11-12-04 16:58 russell        File Added: azx.c.diff                       
+11-12-04 16:58 russell        Distribution              => Debian/Ubuntu   
+11-12-04 16:58 russell        Kernel Version            => 2.6.8.1         
+11-12-04 17:30 russell        Note Added: 0002399                          
+11-15-04 22:28 Grazy          Issue Monitored: Grazy                       
+11-23-04 21:53 footcow        Note Added: 0002531                          
+11-27-04 16:04 pforai         Note Added: 0002615                          
+11-27-04 16:06 pforai         Note Edited: 0002615                         
+11-27-04 19:32 tiwai          Note Added: 0002617                          
+11-28-04 12:39 pforai         Note Added: 0002622                          
 ======================================================================
 
 
