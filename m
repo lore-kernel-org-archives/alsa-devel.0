@@ -1,13 +1,15 @@
-From: Vanessa J. Smith <mukesh@acadia.net>
-Subject: Popular soft - wholesale price
-Date: Wed, 22 Sep 2004 14:38:14 +0000
+From: Iain Kennedy <iain@psand.net>
+Subject: Re: Re: hdspmixer issues
+Date: Wed, 22 Sep 2004 15:46:41 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <9da301c4a0b1$f80fcd23$60c87be0@acadia.net>
+Message-ID: <Pine.LNX.4.58.0409221545340.2696@tallow.psand.net>
+References: <Pine.LNX.4.58.0409202101350.2974@tallow.psand.net>
+ <s5hk6uoylxb.wl@alsa2.suse.de>
+Reply-To: iain@psand.net
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_D11CC84D.07FF58AA"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hk6uoylxb.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,92 +21,50 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+On Tue, 21 Sep 2004, Takashi Iwai wrote:
 
-------=_NextPart_000_0000_D11CC84D.07FF58AA
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_95DAABB5.C110F30A"
+> At Mon, 20 Sep 2004 21:09:18 +0100 (BST),
+> Iain Kennedy wrote:
+> >
+> > > > I"ve been messing with hdsp (again :-) and found out that my hdspmixer
+> > > > has very oddly behaving sound meters. While the input (2nd row)
+> > > > appears to be more or less ok (the yellow peak things kind of fly all
+> > > > over the place and often drop off below green lines or even completely
+> > > > dissapear), the analog outputs as well as combined monitoring output
+> > > > (front 1/4" phono jack on the multiface) only occassionally spike with
+> > > > a line input (usually only one channel). I am wondering why this is so
+> > > > since the audio is definitely working ok, but the monitoring of the
+> > > > outputs simply isn"t working (at least not visually).
+> > >
+> > > i"ve been experiencing similar spikes on the analog outputs as ico
+> > > described. since we had a somehow similar problem with screwed up pci
+> > > cycles that was caused by incorrect initialisation of the cardbus briges
+> > > on our machines, i somehow doubt that it"s related to the problem we
+> > > had.
+> >
+> > > cheers...
+> >
+> > I've been experiencing lack of/sporadic metering on hdspmixer too..
+> > I'm running Debian testing with kernel 2.6.8 (same effect with 2.6.3),
+> > with both the debian alsa packages and a locally compiled latest alsa
+> > version...
+> >
+> > I had no such problem using 2.4.xx series kernels, although I was using a
+> > pre-1.06 version of the alsa drivers..
+>
+> Are you using ppc?  I found a bug in hdsp driver that it doesn't
+> handle big-endian correctly in the metering mmap.
+> Could you try the CVS version?
+>
+>
+> Takashi
+>
 
+I'm using intel architecture... (Inspiron 8500 with 2GHz P4 M)
 
-------=_NextPart_001_0001_95DAABB5.C110F30A
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+I've tried the CVS version, and still get the same results.
 
-Access all the software imaginable for extremely low prices!
-Our software is 2-10 times cheaper than sold by our competitors.
-
-A few examples:
-
-$80 Windows XP Professional 
-$120 Microsoft Office 2003 Professional
-$100 Adobe Photoshop 8.0/CS
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)
-$150 Adobe Acrobat 6.0 Professional
-$20 Red Hat Linux 7.3
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And lots more... To view full list of products go:
-
-Mirror 1: http://www.softsale.ws
-Mirror 2: http://www.decasoft.org
-
-Sincerely,
-Vanessa Smith
-
-
-_____________________________________________________ 
-To change your mail preferences, go here: http://www.softsale.ws/uns.htm
-_____________________________________________________ 
-
-
-------=_NextPart_001_0001_95DAABB5.C110F30A
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-<HTML>
-<BODY>
-<CENTER>
-<TABLE cellSpacing=0 cellPadding=0 width=600 align=center border=0>
-  <TBODY>
-  <TR>
-    <TD>
-Get all the popular software you need for less!<br>
-Our software is 2-10 times cheaper than sold by our competitors.<br><br>
-
-A few examples:<br><br>
-
-$80 Windows XP Professional<br>
-$120 Microsoft Office 2003 Professional<br>
-$100 Adobe Photoshop 8.0/CS<br>
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)<br>
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)<br>
-$150 Adobe Acrobat 6.0 Professional<br>
-$20 Red Hat Linux 7.3<br><br>
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And lots more... To visit us go:<br><br>
-
-Mirror 1: <A href="http://www.softsale.ws">http://www.softsale.ws</A><br>
-Mirror 2: <A href="http://www.decasoft.org">http://www.decasoft.org</A><br><br>
-
-Best regards,<br>
-Vanessa J. Smith<br><br><br>
-
-
-_____________________________________________________ <br>
-To be taken off future campaigns, go here: <A href="http://www.softsale.ws/uns.htm">http://www.softsale.ws/uns.htm</A><br>
-_____________________________________________________ 
-
-<P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
-
-
-------=_NextPart_001_0001_95DAABB5.C110F30A--
-
-
-
-------=_NextPart_000_0000_D11CC84D.07FF58AA--
-
+Iain
 
 
 -------------------------------------------------------
