@@ -1,12 +1,24 @@
-From: scwry <scwry@lgmy.com>
-Subject: =?WINDOWS?B?eHNhbWjE+taqtcDC8KO/?=
-Date: Sat, 13 Nov 2004 09:13:36 +0900
-Message-ID: <E1CSlrz-0000ZW-SD@sc8-sf-mx2.sourceforge.net>
-Reply-To: ccfzn@yahoo.com
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: The ALSA Situation
+Date: Fri, 12 Nov 2004 22:15:01 -0300
+Message-ID: <1100308501.2337.54.camel@localhost>
+References: <200411102113.iAALDLUN001061@localhost.localdomain>
+	 <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
+	 <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
+	 <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
+	 <s5his8cfiot.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
+	 <s5hhdnwfgbz.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+	 <s5hekizfo0n.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
+	 <20041112230617.41c5073e@mango.fruits.de>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--=_eZEHEe_002_3570_qFYjkX.KE1m9Y"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20041112230617.41c5073e@mango.fruits.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,121 +28,141 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Florian Schmidt <mista.tapas@gmx.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Hi,
 
-----=_eZEHEe_002_3570_qFYjkX.KE1m9Y
-Content-Type: text/plain; charset="GB2312"
-Content-Transfer-Encoding: base64
+On Fri, 2004-11-12 at 23:06 +0100, Florian Schmidt wrote:
+> On Fri, 12 Nov 2004 07:50:58 -0800 (PST) 
+> > My arguments have really been against blocking. And to some degree an 
+> > argument against people thinking it's _good_ to set individual parameters. 
+> 
+> Historically seen there's a long tradition for sound applications to choose
+> their own parameters as different applications serve vastly different
+> purposes and thus imply different paramaters to be used.
+
+Nowadays, with so many different hardware around (USB, PCI, ISA,
+firewire, etc), it may even happen that two soundcards have mutually
+exclusive settings, in other words, you may not able to find a period
+number and period size setting that will work on both. Forget about
+trying some period setup that will work on every soundcard, even those
+still not invented. That is absolutely  nonsense in my opinion. This bad
+assumption should be put to an end as soon as possible, if not things
+will (they actually are now) very messy, in regard of soundcard
+parameter selection.
+
+By now, the only solution i can think of, is doing some measurements at
+startup, to determine the feasible period size/count bounds, without
+xruns.
+
+> A low latency realtime effects box program will need completely different
+> periodsize and periodcount settings than a program without realtime needs
+> like a highly reliable harddisc recorder. The former will use a very small
+> periodsize and a periodcount of 2 (or the minimum available by the hw), the
+> latter will use the opposite (large periodsizes and a high periodcount).
+
+I agree. But again, this is highly hardware dependant, and some setting
+may work splendid on your computer, but maybe wont on mine. Even using
+the same soundcard, because even the system bus characteristics may
+influence a lot.
+
+> The need for software mixing is somewhat orthogonal to this, as it enforces
+> a particular set of settings on all programs using this software mixing
+> device. The software mixing device might still allow the programs to use
+> their own set of parameters, but this would require some sort of
+> conversion/translation (and of course a program, using a periodsize/count
+> smaller than the ones the software mixing device uses to communicate with
+> the hw, doesn't gain anything by doing so).
+
+Application should not need to care about buffer setup. If they do, the
+chance to fail is very high; in other words: flaky.
+Sometimes things are not optimal, but its better to be sure that it will
+work without xruns.
+
+> For compatibility issues this translation/conversion is a must and since
+> ALSA aims to provide full compatibility for OSS apps, the software mixing
+> and conversion must be available to the OSS emulation layer as well.
+> 
+> The current "ALSA situation" looks like follows (correct me people if i talk
+> BS):
+> 
+> 1. ALSA infrastructure kernel modules (pcm, seq, ctl, other voodoo stuff)
+> 2. ALSA driver modules (using 1.)
+> 3. ALSA OSS emulation modules (using 2. used directly by OSS apps)
+> 4. ALSA-lib (using 2. used by ALSA apps)
+> 5. ALSA-oss-lib (using 4. LD_PRELOAD hack to make OSS apps use ALSA-lib)
+> 
+> ALSA does provide software mixing and conversion routines. But these reside
+> in ALSA-lib, thus to make use of them systemwide, both ALSA apps and OSS
+> apps need to go through ALSA-lib. This is a natural thing for ALSA apps as
+> it was designed this way. For OSS apps one needs to use the ALSA-oss-lib
+> (5]), which is a hack and doesn't work with all OSS apps, as there is no way
+> to LD_PRELOAD symbols which are not resolved at runtime (excuse my possibly
+> wrong terminology).
+> 
+> IMHO it would be better to have the software mixing and conversion code in a
+> place where the ALSA OSS emulation modules can make use of them. I don't
+> know how feasible it is to call userspace stuff from the kernel space, but i
+> can imagine it's rather difficult. Thus the software mixing and conversion
+> stuff should live in the kernel.
+> 
+> I'm not arguing against having plugin functionality in ALSA-lib per se.
+> There's many uses for this (effects, routing between alsa apps), but i think
+> the fundamental mixing/conversion stuff is really needed in the kernel.
+> 
+> So how to add this functionality to ALSA with the least effort and breakage?
+> Personally i think the following is the best approach:
+> 
+> 1. ALSA infrastructure kernel modules (pcm, seq, ctl, other voodoo stuff) 
+> 2. ALSA driver modules (using 1. one instance for every real soundcard driver) 
+> 3. ALSA virtual soundcard modules (using 2. sw mixing plus conversion for 2.) 
+> 4. ALSA OSS emulation modules (using 2 or 3. used directly by OSS apps) 
+> 5. ALSA-lib (using 2 or 3. used by ALSA apps) 
+> 
+> The ALSA virtual soundcard module (3.) would look to ALSA-lib or to the ALSA
+> OSS emulation modules just like a normal soundcard. When used it "opens" the
+> underlying ALSA driver module and provides software mixing and conversion by
+> allowing umlimited open's and arbitrary parameters to all applications using
+> it either through the OSS emulation modules or ALSA-lib.
+> 
+> Actually thanks to the design of ALSA, this is really all that needs to be
+> done to provide software mixing to all OSS apps and to all ALSA apps. The
+> distribution/user would only have to make sure that the virtual soundcard
+> module is loaded for the card and that both OSS emu modules and ALSA-lib use
+> it as default. For professional users neeeddng direct access to the hardware
+> they still have the option of using the real ALSA driver (as long as it's not
+> in use by the virtual soundcard module of course).
+> 
+> Sadly i have no idea about how difficult it would be to code up such a
+> virtual soundcard module, but i suppose some of the
+> resampling/mixing/conversion code in ALSA-lib can be reused. I have never
+> attempted to program a module, so i leave judgement about this idea to the
+> gurus :)
+> 
+> What other ways to intergrate this into the ALSA structure are there? And
+> how much effort do they take? In the end it all comes down to developer
+> time. I own a hardware mixing capable soundcard, so i can happily live with
+> the current ALSA state, but IMHO this is a very important thing missing for
+> the completely positive ALSA experience. ALSA has improved the situation for
+> a serious linux musician/audio user tremendously over OSS (which was really
+> a crutch). The final missing building block is providing an equally positive
+> experience to the laptop user with his crappy soundcard needing bleeps and
+> music at the same time..
+
+Imagine, you have a virtual soundcard module, that mixes together all
+the streams you want... How do you make use of it ? Who decides which
+hardware stream is going to used ? Who decides if a application is
+granted a hardware stream or takes part of the virtual device ? 
+
+IMHO, ALSA requires a resource manager. And before someone starts
+hacking any shit, please let us design something well done.
 
 
-----=_eZEHEe_002_3570_qFYjkX.KE1m9Y
-Content-Type: text/html; charset="GB2312"
-Content-Transfer-Encoding: base64
+-- 
+Manuel Jander
+Electronic Engineer
 
-PGh0bWw+DQoNCjxib2R5IGxhbmc9WkgtQ04gbGluaz1ibHVlIHZsaW5rPWJsdWUgc3R5bGU9J3Rh
-Yi1pbnRlcnZhbDoyMS4wcHQ7dGV4dC1qdXN0aWZ5LQ0KdHJpbToNCnB1bmN0dWF0aW9uJz4NCg0K
-PHA+DQo8YSANCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96dmVlYmUu
-cmNicHVndnpyZi5wYnovdG8vNC8xMS8xMC9uNzE0MDkNCjEuaHRtIg0KdGFyZ2V0PSJfYmxhbmsi
-PsjVPCFtPrG+PCE5PrqjPCFNPtPyPCFuPreiPCFxPs/WPCFTPrK7PCFMPsP3PCFtPsexPCFIPr2i
-PCEyPqGhPCFMPsjVPCFDPsyoPCFkPr30PCFNPtXFKLTzLbzNLdSqKTwvYT4NCjwvcD4NCg0KPHA+
-DQo8YQ0KaHJlZj0iaHR0cHM6Ly93d3cxLmhlc2hhbjE4LmNvbS9kbS91Z2djL2pqai5lcmF6dmFv
-bmIucGJ6L2V6by9uZWd2cHlyZi8yMDA0LzExLw0KMTAvMzMxMzYuaHRtbCINCnRhcmdldD0iX2Js
-YW5rIj7B9TwhZz67qjwhUj7H5TwhcD7JzzwhOD69qzwhZj6y7jwhUj614zwhZj6w0Twhcj69rVjD
-8Twhdz7SrTwhNz7LwDwhWT6jqDwhNj7NvDwhZT6jqSjIyy3D8S2xqCk8L2E+DQo8L3A+DQoNCjxw
-Pg0KPGENCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy9qamouZXJhenZh
-b25iLnBiei9lem8vbmVndnB5cmYvMjAwNC8xMS8NCjEwLzMzMTM1Lmh0bWwiDQp0YXJnZXQ9Il9i
-bGFuayI+va08IWs+wt48IVE+uro8IWU+1LQ8IUY+0vU8IXk+xLE8IUc+xsY8IWk+svogufk8ITM+
-sq48IVc+0Ns8IVo+s/Y8IWc+tq88IW8+x7E8IWo+y648IXE+zac8IVc+vsg8IUU+vN08IWo+o6g8
-IVI+tuA8IWw+zbw8ITQ+o6koyMstw/EtsagpPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJo
-dHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9uYi5wYnovZXpvL25l
-Z3ZweXJmLzIwMDQvMTEvDQoxMC8zMzEzMS5odG1sIg0KdGFyZ2V0PSJfYmxhbmsiPrq6PCFjPtS0
-PCFlPqG4PCFEPrGpPCE2PsLSPCE1PqG5PCFBPrflPCFtPrvYPCFZPsK3PCE4PteqINbQPCFVPtHr
-PCFWPsjnPCFqPrrOPCFtPrSmPCF2PtbOPCFUPsLePCFjPrjJPCFDPrG4PCFjPsrcPCFrPrnYPCFx
-PteiKMjLLcPxLbGoKTwvYT4NCjwvcD4NCg0KPHA+DQo8YQ0KaHJlZj0iaHR0cHM6Ly93d3cxLmhl
-c2hhbjE4LmNvbS9kbS91Z2djL2pqai54bmFtdWJhdHRoYi5wYnovYXJqZi9uZWd2cHlyZi80LzEx
-Lw0KOC83NTEyMy5odG1sIg0KdGFyZ2V0PSJfYmxhbmsiPsi6PCFOPtbaMTXN8nZzubI8IWw+vvw8
-IXA+0rs8IVA+uPY8IW8+yqY8IXM+o78ov7Qt1tAtufopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpo
-cmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9uYi5wYnov
-ZXpvL25lZ3ZweXJmLzIwMDQvMTEvDQoxMC8zMzEzOC5odG1sIg0KdGFyZ2V0PSJfYmxhbmsiPrTz
-PCE5PsK9PCF6Pr38PCFzPsC0PCFFPrHkPCExPruvPCFPPr6qPCFWPsjLPCFYPqOhPCFXPrzNPCF0
-Ps6vPCFGPsrQPCFpPs6vPCFrPsOsPCE1Ps23PCFCPta4PCF2Ps/yPCFpPqGwNjEwobE8IU4+o6g8
-IWo+zbw8IVg+o6koyMstw/EtsagpPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczov
-L3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvenZlZWJlLnJjYnB1Z3Z6cmYucGJ6L3RvLzQvMTEv
-MTAvbjcxMzIzDQowLmh0bSINCnRhcmdldD0iX2JsYW5rIj7GyDwhaT66pjwhOD63qCvC1iu5pjwh
-aT6xuzwhTT6/2CC4yjwhTT7L4DwhZT7KoTwhMT7OrzwhTT7K6TwhWT68xzwhVj7U3jwheT6xyDwh
-OT7RxzwhMj65+jwhcD69+zwhYT6z9jwhUz6+syi08y28zS3Uqik8L2E+DQo8L3A+DQoNCjxwPg0K
-PGENCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy9qamouZXJhenZhb25i
-LnBiei9lem8vbmVndnB5cmYvMjAwNC8xMS8NCjEwLzMzMTMzLmh0bWwiDQp0YXJnZXQ9Il9ibGFu
-ayI+1tA8ITQ+xM88IXA+uqM8IWE+1fIr0bk8IXo+t6grwtYruaY8IWI+1f48IWQ+st88IUs+vLQ8
-IXo+vas8ITY+t6I8IW4+yfo8IUw+1tg8IVE+tPM8ITU+seQ8IWE+u68oyMstw/EtsagpPC9hPg0K
-PC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2Mv
-ampqLnhuYW11YmF0dGhiLnBiei9hcmpmL25lZ3ZweXJmLzQvMTEvDQo0Lzc0ODgzLmh0bWwiDQp0
-YXJnZXQ9Il9ibGFuayI+ubI8ITQ+svo8ITM+wew8IWQ+0OQ8IU4+w8c8ITQ+tcQ8IUw+y708IWs+
-yfo8IUQ+u+4ov7Qt1tAtufopPC9hPiA8L3A+DQoNCjxwPg0KPGENCmhyZWY9Imh0dHBzOi8vd3d3
-MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96dmVlYmUucmNicHVndnpyZi5wYnovdG8vNC8xMS85L243
-MTI2NjkNCi5odG0iDQp0YXJnZXQ9Il9ibGFuayI+yrc8IWY+tO88IWc+o7o8IU4+uro8IXY+1LQ8
-IVo+1OI8IUI+0/Y8IXA+1b0g1tA8IUk+ubI8ITk+xfY8IWU+yc88IVA+wcs8IXQ+09A8IXA+yfo8
-IW0+waY8ITk+wb8otPMtvM0t1KopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczov
-L3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLnhuYW11YmF0dGhiLnBiei9hcmpmL25lZ3Zw
-eXJmLzQvMTEvDQo3Lzc1MDUxLmh0bWwiDQp0YXJnZXQ9Il9ibGFuayI+va1Yw/E8IWI+yc88IVE+
-uqM8ITE+w/w8IW4+we48ITQ+y8A8IWY+ytgguqM8IUY+xM88IXg+yqE8IXU+zq88IVg+yuk8IXQ+
-vMc8IXM+tfc8IWs+tvg8IUU+srs8IVg+tq8ov7Qt1tAtufopPC9hPg0KPC9wPg0KDQo8cD4NCjxh
-DQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9uYi5w
-YnovZXpvL25lZ3ZweXJmLzIwMDQvMTEvDQo5LzMzMTI5Lmh0bWwiDQp0YXJnZXQ9Il9ibGFuayI+
-va08IXU+stk8ITI+1908IWE+zuU8ITA+tPM8IXQ+vvw8IWM+x/g8IXA+uOM8IU8+xNo8ITI+wtIg
-yc88IXg+uqM8IUY+vfQ8ITA+vLE8IUw+sbg8IXU+1b08IUg+t8A8IVQ+tbw8IXY+ta8oyMstw/Et
-sagpPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29t
-L2RtL3VnZ2MvampqLnhuYW11YmF0dGhiLnBiei9hcmpmL25lZ3ZweXJmLzQvMTEvDQo1Lzc0OTA1
-Lmh0bWwiDQp0YXJnZXQ9Il9ibGFuayI+9qY8IVc+xa48IUI+ytQ8ITU+tKk8IW0+xNo8IUM+0sI8
-IUs+yrE8IXM+1OI8IVU+tb08IWk+ytY8IWk+u/o8IW0+zbU8IVA+xcQgwuM8IVQ+1dU8IU0+yc88
-IUs+zfg8IWQ+0N88IUY+yOg8IUM+xNE8IUI+tbEov7Qt1tAtufopPC9hPg0KPC9wPg0KDQo8cD4N
-CjxhDQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9u
-Yi5wYnovZXpvL25lZ3ZweXJmLzIwMDQvMTEvDQo5LzMzMTI1Lmh0bWwiDQp0YXJnZXQ9Il9ibGFu
-ayI+xNo8IU4+xLs8IXo+o6E8ITc+wt48IXk+uMk8ITY+1vc8ITQ+tq88ITc+x+s8IUc+1b0gva08
-IWI+0qo8IUQ+wK08IWk+uvo8IWM+0rs8IXY+v+k8IUU+tvk8IUQ+y8AoyMstw/EtsagpPC9hPg0K
-PC9wPg0KDQo8cD4NCjxhIA0KaHJlZj0iaHR0cHM6Ly93d3cxLmhlc2hhbjE4LmNvbS9kbS91Z2dj
-L3p2ZWViZS5yY2JwdWd2enJmLnBiei90by80LzExLzkvbjcxMjI2Ng0KLmh0bSINCnRhcmdldD0i
-X2JsYW5rIj7W0DwhdT7R6zwhaD7BvTwhVz7SqjwhMD7UsTwhOD64sDwhcz7LxDwhVj60qDwhZz7V
-2TwhTz699DwhbD68sTwhRD674TwhUj7S6Si08y28zS3Uqik8L2E+DQo8L3A+DQoNCjxwPg0KPGEN
-CmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96dmVlYmUucmNicHVndnpy
-Zi5wYnovdG8vNC8xMS85L243MTIyNDMNCi5odG0iDQp0YXJnZXQ9Il9ibGFuayI+0+A8IU4+u6o8
-IVE+o7o8IUg+uro8ITU+1LQ8IWw+v6o8IXM+x7k8IWk+wcs8IUs+o6EgztI8IXQ+1eY8IXc+tcQ8
-IVY+t988ITE+xa08IWU+wcs8IWk+o6EotPMtvM0t1KopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpo
-cmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvenZlZWJlLnJjYnB1Z3Z6cmYu
-cGJ6L3RvLzQvMTEvOS9uNzEyMzQwDQouaHRtIg0KdGFyZ2V0PSJfYmxhbmsiPrrTPCFvPsTPPCF4
-Pr25PCFCPtf3PCFSPsz6PCFnPsK3PCFuPsfFPCF4PreiPCFpPsn6PCFrPsGsPCE5Pru3PCFuPrGs
-PCF0PtWoKLTzLbzNLdSqKTwvYT4NCjwvcD4NCg0KPHA+DQo8YQ0KaHJlZj0iaHR0cHM6Ly93d3cx
-Lmhlc2hhbjE4LmNvbS9kbS91Z2djL3p2ZWViZS5yY2JwdWd2enJmLnBiei90by80LzExLzEwL243
-MTM2MA0KNC5odG0iDQp0YXJnZXQ9Il9ibGFuayI+wao8IWs+sO48IW4+zag8IU0+0bY8IXA+zq88
-IUk+1LE8IUk+u+E8IXc+0Ps8IXc+srw8IXo+vas8IUo+udw8IXI+z708IVc+u6U8ITY+wao8IWU+
-zfg8ITc+tec8IWw+u7AotPMtvM0t1KopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRw
-czovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvenZlZWJlLnJjYnB1Z3Z6cmYucGJ6L3RvLzQv
-MTEvMTAvbjcxMzE0DQoyLmh0bSINCnRhcmdldD0iX2JsYW5rIj6wojwhcz7ArTwhdT63qDwhcD7M
-2DwhcD638jwhRD7IyyCwrjwhZz7Hrjwhcj6yuzwhTj7SqjwhUj7IqCi08y28zS3Uqik8L2E+DQo8
-L3A+DQoNCjxwPg0KPGENCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96
-dmVlYmUucmNicHVndnpyZi5wYnovdG8vNC8xMS8xMC9uNzEzODUNCjEuaHRtIg0KdGFyZ2V0PSJf
-YmxhbmsiPqG4PCFKPtbQPCFVPrn6PCFrPtX9PCFjPsb4PCFaPs34PCFUPqG5PCFyPsSqPCE1PsP7
-PCE3PrG7PCFFPrnYILi6PCFIPtTwPCFSPsjLPCFDPsnPPCEyPrfDPCFCPs7ePCExPtCnKLTzLbzN
-LdSqKTwvYT4NCjwvcD4NCg0KPHA+IDxmb250IHNpemU9NSBjb2xvcj0iIzgwMDBmZiI+PGENCmhy
-ZWY9Imh0dHBzOi8vd3d3My5oZXNoYW4xOC5jb20vZG0vdWdnYy95dm9lbmVsLnp2YXR1aHYuYmV0
-L3BuZ3J0YmVsLzMyLDk1LDEuaHQNCm0idGFyZ2V0PSJfYmxhbmsiPg0KxPo8IVA+1qo8IW0+tcA8
-IXM+wvA8IXA+o788L3A+PGZvbnQgc2l6ZT01IGNvbG9yPVJlZD4NCrTTMTk5OcTqN9TCPCFSPtbB
-MjAwNMTqMTHUwjwhMD6jrDwhaT68xjY0uPY8IW0+1MI8ITQ+xto8IXM+vOQ8ITI+o6w8Zm9udCBz
-aXplPTYgY29sb3I9RnVjaHNpYT65sjExMTPD+zxmb250IA0Kc2l6ZT01IGNvbG9yPVJlZD63qG/C
-1m+5pm/RpzwhZD7UsTwhUj6xuzwhQj7GyC26pi3Wwi3LwDwhOD6hozwvcD4NCtDUPCFxPrHwPCFi
-PrHIPCFHPsD9PCFxPqO6PCFzPsWuPCFiPqO6NTczyMs8IVM+o6w8IUg+1bw1MS43MSWjuzwheD7E
-0DwhQT6jujUzMMjLPCFHPqOsPCFzPtW8NDcuODMlOyDOtDwhZT7WqjogNcjLPCFYPqOsPCE4PtW8
-MC40NSWhozwvcD4NCrG7PCEyPrqmPCFsPtbCPCE4PsvAPCFuPsqxPCFUPrXEPCE0Psa9PCFCPr75
-PCFOPsTqPCFOPsHkPCE5PqO6NDbL6jwhZj6juzwhMz7Frjwhdz7Q1DwhVj7GvTwhMT6++TwhVj7E
-6jwhdT7B5DwhTD6jujQ3y+o8ITU+o7s8IWg+xNA8IWs+0NQ8IWc+xr08IVY+vvk8IUE+xOo8IWg+
-weQ8IUE+o7o0NMvqPCFZPqGjPC9wPg0Kxr08IXA+vvk8ITg+o7o8Zm9udCBzaXplPTYgY29sb3I9
-RnVjaHNpYT4xN8jLL9TCPCE0PqGjPC9wPjwvYT48L3A+PC9mb250Pg0KDQoNCjwvYm9keT4NCg0K
-PC9odG1sPg0Kag0K
-
-----=_eZEHEe_002_3570_qFYjkX.KE1m9Y--
 
 
 -------------------------------------------------------
