@@ -1,14 +1,14 @@
-From: Mark Knecht <markknecht@comcast.net>
-Subject: Re: No /dev/snd/seq?
-Date: Wed, 27 Aug 2003 18:19:07 -0700
+From: Ray Heasman <nurf@spamcop.net>
+Subject: Re: Firewire Audio Support
+Date: 27 Aug 2003 18:26:24 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1062033547.1475.16.camel@Wizard.knechthome.com>
-References: <1062033229.1475.14.camel@Wizard.knechthome.com>
+Message-ID: <1062033984.4389.328.camel@maze.mythral.org>
+References: <2689281.1062002361328.JavaMail.nobody@wamui09.slb.atl.earthlink.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1062033229.1475.14.camel@Wizard.knechthome.com>
+In-Reply-To: <2689281.1062002361328.JavaMail.nobody@wamui09.slb.atl.earthlink.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +17,43 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: ametts2@mindspring.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK, so modprobe snd-seq fixed this. I suppose this should be in
-modules.conf?
+Hi,
 
-Thanks,
-Mark
+On Wed, 2003-08-27 at 09:39, ametts2@mindspring.com wrote:
+> I have a MOTU 828 -- are there any efforts underway to support FireWire (IEEE-1394), multi-channel audio devices under ALSA?  
+> 
 
-On Wed, 2003-08-27 at 18:13, Mark Knecht wrote:
-> What causes this? What should have installed or created /dev/snd/seq?
-> 
-> (RME HDSP 9652) MIDI does work using /dev/midi00
-> 
-> Thanks,
-> Mark
-> 
-> bash-2.05b$ rosegardensequencer 
-> kbuildsycoca running...
-> rosegardensequencer: Registering with DCOP server
-> rosegardensequencer: created plugin manager
-> MappedAudioPluginManager::discoverPlugins - discovering plugins
-> Rosegarden 4-0.9 - AlsaDriver - alsa-lib version 0.9.6
-> cannot connect to jack server
-> cannot connect to default JACK server
-> ALSA lib seq_hw.c:446:(snd_seq_hw_open) open /dev/snd/seq failed: No
-> such file or directory
-> rosegardensequencer: RosegardenSequencer - started OK
-> rosegardensequencer: seq.c:875: snd_seq_query_next_client: Assertion
-> `seq && info' failed.
-> bash-2.05b$ Mutex destroy failure: Device or resource busy
-> 
-> 
-> bash-2.05b$ ls /dev/snd/
-> controlC0  hwC0D0  midiC0D0  midiC0D1  pcmC0D0c  pcmC0D0p  timer
-> bash-2.05b$ 
+I have successfully streamed audio to ISO61883 complaint devices from
+Linux. I used a slightly hacked 1394 video kernel module to do so. This
+was back when the alsa documentation was non-existent, and I decided I
+didn't have enough time to write an alsa version. (I was using it to
+test a prototype firewire link layer chip, so actual OSS or ALSA support
+was superfluous )
+
+One thing I do know though, is that the first MOTU boxes were not
+ISO61883 compliant in any way. They used their own proprietary format.
+I had a look at one with a 1394 bus analyser, and it looked easy enough
+to figure out.
+
+> If so, please tell me where to find more info!
+
+I'm afraid you now know as much as I do. The only reason I chirped up
+was that if someone needs help figuring out the format, or has questions
+about on-the-wire formats for 61883 or mLAN devices, I can help. If
+nothing else, I have a firewire bus analyser.
+
+Have you looked here? : http://www.linux1394.org/amdtp.html
+
+It looks like they are doing it the way I did - simple user-land access
+to an interface that gives you raw access to the bus.
+
+Cheers,
+Ray
+
 
 
 
