@@ -1,32 +1,32 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: alsa-driver will not compile with kernel 2.6.9-rc2-mm4-S7
-Date: Fri, 01 Oct 2004 20:12:10 -0400
+Subject: io_remap_page_range (was Re: [Alsa-devel] alsa-driver will not
+	compile with kernel  2.6.9-rc2-mm4-S7)
+Date: Fri, 01 Oct 2004 20:51:08 -0400
 Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <1096675930.27818.74.camel@krustophenia.net>
+Message-ID: <1096678268.27818.84.camel@krustophenia.net>
+References: <1096675930.27818.74.camel@krustophenia.net>
+	 <32868.192.168.1.8.1096677269.squirrel@192.168.1.8>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S266870AbUJBAMM@vger.kernel.org>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: linux-kernel <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S266914AbUJBAvQ@vger.kernel.org>
+In-Reply-To: <32868.192.168.1.8.1096677269.squirrel@192.168.1.8>
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-At first I thought my build was incorrect, but I reproduced this error
-with a clean build and ALSA CVS from today:
+On Fri, 2004-10-01 at 20:34, Rui Nuno Capela wrote:
+> Lee Revell wrote:
+> Good grief! I'm having this too, and I was desperate thinking I was the
+> only one, and ultimately offering the blame to gcc 3.4.1 which is what I'm
+> test-driving now on my laptop (Mdk 10.1c).
+> 
+> Now I remember that -mm4 has some issue about remap_page_range kernel
+> symbol being renamed to something else, which is breaking the build of
+> outsider modules (i.e. not the ones bundled under the kernel source tree).
+> Or so it seems.
 
-  CC [M]  /home/rlrevell/cvs/alsa/alsa-driver/kbuild/../acore/pcm_native.o
-/home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3202:57: macro "io_remap_page_range" requires 5 arguments, but only 4 given
-/home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c: In function `snd_pcm_lib_mmap_iomem':
-/home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3200: error: `io_remap_page_range' undeclared (first use in this function)
-/home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3200: error: (Each undeclared identifier is reported only once
-/home/rlrevell/cvs/alsa/alsa-driver/acore/pcm_native.c:3200: error: for each function it appears in.)
-make[3]: *** [/home/rlrevell/cvs/alsa/alsa-driver/kbuild/../acore/pcm_native.o] Error 1
-make[2]: *** [/home/rlrevell/cvs/alsa/alsa-driver/kbuild/../acore] Error 2
-make[1]: *** [_module_/home/rlrevell/cvs/alsa/alsa-driver/kbuild] Error 2
-make[1]: Leaving directory `/home/rlrevell/kernel-source/linux-2.6.9-rc2-mm4-S7'
-make: *** [compile] Error 2
-
-I am not sure if this is an ALSA issue or -mm4.  I suspect -mm4 because
--mm3-S6 worked.  The VP patch does not seem to be involved.
+Looking through my archives I cannot find a report of this exact issue,
+but you are probably right.  Looks like ALSA drivers need to be updated.
 
 Lee
