@@ -1,14 +1,13 @@
-From: vollmer.philipp@t-online.de (Philipp Vollmer)
-Subject: Re: Alsa Programming Examples
-Date: Sat, 8 Jun 2002 09:26:25 +0200
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: cs4281 - only 2 periods supported?
+Date: Sat, 8 Jun 2002 18:46:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206080926.25082.do1ypv@linux>
-References: <Pine.LNX.4.21.0206080040150.784-100000@summer.quitte>
+Message-ID: <Pine.LNX.4.21.0206081818030.7067-100000@mailserver.intern.bfad.de>
+References: <Pine.LNX.4.21.0205291832440.11512-200000@mailserver.intern.bfad.de>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_10MDYB0ZIHUHN7SHD4BF"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.21.0206080040150.784-100000@summer.quitte>
+In-Reply-To: <Pine.LNX.4.21.0205291832440.11512-200000@mailserver.intern.bfad.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,71 +16,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: twoller@crystal.cirrus.com, alsa-devel@lists.sourceforge.net, peter wachtendorf <pew@bfad.de>, arip@bfad.de, Pekka.Pessi@nokia.com
 List-Id: alsa-devel@alsa-project.org
 
 
---------------Boundary-00=_10MDYB0ZIHUHN7SHD4BF
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+I have seen that alsa-driver-0.9.0rc1 cs4281.c driver supports only 2 periods.
 
-> it seems params =3D=3D 0 when you're calling snd_pcm_hw_refine.
-Hello,
+There exists an unofficial patch for alsa-driver-0.5.12a done by
+Pekka.Pessi@nokia.com. I have seen that some parts of it are included in
+0.9.0rc1, some are obsolete, but the limit of only 2 periods is not fixed in
+0.9.0rc1 (playback). 
 
-Sorry but there is no codeline like snd_pcm_hw_refine in the example.
-I will send you the file as an attachment.
+Especially snd_cs4281_start_new_dma(cs4281_t *chip, cs4281_dma_t *dma) and
+changes to the interrupt handler are not in 0.9.0rc1 (and I believe also not in
+CVS).
 
-Best regards=20
+I am trying to backport it now, but it seems some interfaces have changed.
 
-Philipp Vollmer
-vollmer.philipp@t-online.de
---------------Boundary-00=_10MDYB0ZIHUHN7SHD4BF
-Content-Type: text/x-csrc;
-  charset="iso-8859-1";
-  name="how1.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="how1.c"
+For exaple what the "pointer" function should return?
 
-      #include <stdlib.h>
-      #include <alsa/asoundlib.h>
-      
-      main (int argc, char *argv[])
-      {
-           int i;
-           char buf[4096];
-           snd_pcm_t *playback_handle;
-           snd_pcm_hw_params_t *hw_params;
+I do not understand the following code in alsa-kernel/core/pcm_lib.c:
 
-           if ((playback_handle = snd_pcm_open (&playback_handle, "default", SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
-                 fprintf (stderr, "cannot open audio device %s\n", argv[1]);
-                 exit (1);
-           }
-	   // snd_pcm_open (&playback_handle, pcm_name, SND_PCM_STREAM_PLAYBACK, 0)
-           
-           snd_pcm_hw_params_malloc (&hw_params);
-           snd_pcm_hw_params_any (playback_handle, hw_params);
-           snd_pcm_hw_params_set_access (playback_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED);
-           snd_pcm_hw_params_set_format (playback_handle, hw_params, SND_PCM_FORMAT_S16_LE);
-           snd_pcm_hw_params_set_rate_near (playback_handle, hw_params, 44100, 0);
-	 //snd_pcm_hw_params_set_rate_near(playback_handle, hw_params, 44100, 0);
-           snd_pcm_hw_params_set_channels (playback_handle, hw_params, 2);
-           snd_pcm_hw_params (playback_handle, hw_params);
-           snd_pcm_hw_params_free (hw_params);
+    new_hw_ptr = runtime->hw_ptr_base + pos;
+        
+    hw_ptr_interrupt = runtime->hw_ptr_interrupt + runtime->period_size;
+        
+    delta = hw_ptr_interrupt - new_hw_ptr;
+    if (delta > 0) {
+        if (delta < runtime->buffer_size / 2) {
+            snd_printd("Unexpected hw_pointer value (stream = %i, delta: -%ld,
+max jitter = %ld): wrong interrupt acknowledge?\n", substream->stream,
+(long) delta, runtime->buffer_size /
+2);                                                                                   return
+0;
+        }               
+        runtime->hw_ptr_base += runtime->buffer_size;
+        if (runtime->hw_ptr_base == runtime->boundary)
+            runtime->hw_ptr_base = 0;
+        new_hw_ptr = runtime->hw_ptr_base + pos;
+    }           
+    runtime->status->hw_ptr = new_hw_ptr;
+    runtime->hw_ptr_interrupt = new_hw_ptr - (runtime->hw_ptr_base + pos) %
+runtime->period_size;                                     
 
-           snd_pcm_prepare (playback_handle);
+Why is runtime->buffer_size the whole buffer or the period size? What is in
+bytes, what in frames? Is there any function/field giving size of a single
+frame in bytes?
 
-           for (i = 0; i < 10; ++i) {
-                   snd_pcm_writei (playback_handle, buf, sizeof (buf));
-		  //snd_pcm_writei (playback_handle, buf, nframes);
-           }
-
-           snd_pcm_close (playback_handle);
-           exit (0);
-     }
+Best regards,
+--
+Tomasz Motylewski
 
 
---------------Boundary-00=_10MDYB0ZIHUHN7SHD4BF--
 
 
 _______________________________________________________________
