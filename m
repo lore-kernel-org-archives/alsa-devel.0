@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000480]: Bluetooth Headset Profile Feature request
-Date: Fri,  3 Sep 2004 09:46:01 +0200 (CEST)
+Subject: [ALSA - driver 0000443]: OSS emulation and nonblocking write to /dev/dsp
+Date: Sun, 29 Aug 2004 12:26:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903074601.A77FC2D0C0@server.perex-int.cz>
+Message-ID: <20040829102655.8F72D39006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 042572A0
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 09:46:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC9EA24D
+	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2004 12:26:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,45 +22,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been ASSIGNED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000480
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000443
 ======================================================================
-Reported By:                CTAC
-Assigned To:                
+Reported By:                serge
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     480
-Category:                   USB - usb-audio
-Reproducibility:            N/A
-Severity:                   feature
+Bug ID:                     443
+Category:                   CORE OSS - pcm
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             09-03-2004 05:51 CEST
-Last Modified:              09-03-2004 09:46 CEST
+Date Submitted:             08-15-2004 12:19 CEST
+Last Modified:              08-29-2004 12:26 CEST
 ======================================================================
-Summary:                    Bluetooth Headset Profile Feature request
+Summary:                    OSS emulation and nonblocking write to /dev/dsp
 Description: 
-I think that it will be really cool to have in ALSA possibility to connect
-to a bluetooth headset and create a "Virtual Sound Card" that can be used
-in different applications - from mplayer/xmms to video/voice conferencing
-and VOIP.
+When you open '/dev/dsp' in nonblocking mode (O_NONBLOCK) and write too
+much data to it, it seems that write operation always returns success and
+pretends that all data was written. But calls to ioctl(oss_fd,
+SNDCTL_DSP_GETOSPACE, &bufinfo) start returning weird information. Test
+program that reproduces the bug is attached.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-03-2004 09:46 CEST 
+ serge - 08-26-2004 19:54 CEST 
 ----------------------------------------------------------------------
-There is an experimental patch at
-<http://www.dcs.gla.ac.uk/~jp/snd-bt-sco/>.
+Just tested and reproduced the same problem on 'snd-intel8x0' (nforce2
+chipset), so this is not 'snd-via82xx' specific (KT133A chipset). Please
+anybody replace the summary of this bug with 'OSS emulation & nonblocking
+write to /dev/dsp'.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-03-04 05:51 CTAC           New Bug                                      
-09-03-04 09:46 Clemens LadischBugnote Added: 0001688                       
-09-03-04 09:46 Clemens LadischAssigned To              Clemens Ladisch =>  
-09-03-04 09:46 Clemens LadischStatus                   assigned => new     
+08-15-04 12:19 serge          New Bug                                      
+08-15-04 12:19 serge          File Added: oss-bug.cpp                      
+08-15-04 12:26 serge          Bug Monitored: serge                         
+08-26-04 19:54 serge          Bugnote Added: 0001635                       
+08-27-04 14:01 Clemens Ladischsummary                  OSS emulation on 'snd-via82xx' & nonblocking write to /dev/dsp => OSS emulation and nonblocking write to /dev/dsp
+08-29-04 12:26 perex          Assigned To               => perex           
+08-29-04 12:26 perex          Status                   new => assigned     
 ======================================================================
 
 
