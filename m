@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000525]: Sound does not work
-Date: Fri, 24 Sep 2004 12:26:57 +0200 (CEST)
+Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
+Date: Fri, 24 Sep 2004 12:28:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924102657.DC6D52A003@server.perex-int.cz>
+Message-ID: <20040924102850.E58DD2A003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 34017175
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:26:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A45F217
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 12:28:51 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,71 +22,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000525
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
 ======================================================================
-Reported By:                ao314
+Reported By:                pharm
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     525
-Category:                   PCI - intel8x0
-Reproducibility:            random
+Bug ID:                     523
+Category:                   PCI - via82xx
+Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8
+Distribution:               Debian unstable
+Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
 ======================================================================
-Date Submitted:             09-23-2004 10:00 CEST
-Last Modified:              09-24-2004 12:26 CEST
+Date Submitted:             09-22-2004 22:48 CEST
+Last Modified:              09-24-2004 12:28 CEST
 ======================================================================
-Summary:                    Sound does not work
+Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
 Description: 
-Sometimes, after the computer has been off for a while the sound refuses to
-work. Rebooting a couple of times seems to "fix" it.
+I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
+appears to work, at least stereo analog out does for certain) there are
+two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
+recognise these -- mplayer complains about the lack of IEC958 mixer
+entries if I try to use the hwac3 output, and if I point the 
+alsa output at any of the list of hardware outputs I get nothing from the
+digital amp -- it doesn't appear to get any signal.
+
+Assuming I'm not doing something dumb, is there anything else I should
+try? I've tried all the ac97_quirk options.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:16 CEST 
+ tiwai - 09-23-2004 18:25 CEST 
 ----------------------------------------------------------------------
-What is the exact behavior, "refuses to work" ?
+Could you try the attached patch?
+(Note that it's totally untested.)
 
 ----------------------------------------------------------------------
- ao314 - 09-24-2004 12:18 CEST 
+ pharm - 09-23-2004 22:09 CEST 
 ----------------------------------------------------------------------
-Basically there is no sound and the stuff I've tried fiddling around with
-won't get the sound back including:
-1. reinstalling alsa drivers
-2. trying to set sound levels - both with alsamixer - which complains no
-device found and the little volume control in the bottom right - which
-can't be set
-3. Alsaconf, can't find any soundcards at the end even though it seems to
-correctly determine I have an nForce. 
-The only thing that works is reseting the computer.
+What am I looking for? It seems to detect OK:
+/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+
+but there's no sound output :( (unless I've fouled up the mixer -- will
+check again)
+
+Is there stuff I can twiddle to see what works? I'll have a spelunk
+through the patch, but I'm not familiar with the alsa internals
+unfortunately...
 
 ----------------------------------------------------------------------
- tiwai - 09-24-2004 12:26 CEST 
+ tiwai - 09-24-2004 12:03 CEST 
 ----------------------------------------------------------------------
-I guess the interrupt was diabled when this happens because unprocessed
-interrupts are detected.  Check the kernel message.
+What about th spdif output with the patch?
+(make sure to use 1.0.7rc, not 1.0.6a)
 
-Did you try 1.0.7rc1?
+----------------------------------------------------------------------
+ pharm - 09-24-2004 12:28 CEST 
+----------------------------------------------------------------------
+Ah. Think I may have applied it to 1.0.6a. Will retest!
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 10:00 ao314          New Bug                                      
-09-23-04 10:00 ao314          Distribution              => Fedora Core 2   
-09-23-04 10:00 ao314          Kernel Version            => 2.6.8           
-09-23-04 14:29 ao314          Bug Monitored: ao314                         
-09-23-04 18:16 tiwai          Bugnote Added: 0001827                       
-09-24-04 12:07 ao314          Bug End Monitor: ao314                       
-09-24-04 12:18 ao314          Bugnote Added: 0001873                       
-09-24-04 12:18 ao314          File Added: amixer.out                       
-09-24-04 12:18 ao314          File Added: dmesg.out                        
-09-24-04 12:19 ao314          File Added: lspci.out                        
-09-24-04 12:19 ao314          File Added: modprobe.out                     
-09-24-04 12:26 tiwai          Bugnote Added: 0001876                       
+09-22-04 22:48 pharm          New Bug                                      
+09-22-04 22:48 pharm          Distribution              => Debian unstable 
+09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
+09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
+09-23-04 22:09 pharm          Bugnote Added: 0001851                       
+09-24-04 09:28 pharm          Bug Monitored: pharm                         
+09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
+09-24-04 12:28 pharm          Bugnote Added: 0001877                       
 ======================================================================
 
 
