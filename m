@@ -1,16 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Re: bug tracking?
-Date: Wed, 21 May 2003 01:16:28 +0900
+Date: Tue, 20 May 2003 12:46:02 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3ECA54DC.1000707@boosthardware.com>
-References: <s5h3cjgfuwn.wl@alsa2.suse.de> <Pine.LNX.4.44.0305151112200.9877-100000@pnote.perex-int.cz> <s5hznloeej6.wl@alsa2.suse.de> <3EC3680A.60904@boosthardware.com> <s5hy918e5hq.wl@alsa2.suse.de> <3EC98C71.4090904@boosthardware.com> <s5hbrxxd7ww.wl@alsa2.suse.de> <Pine.LNX.4.50-xtra.0305201645001.6471-100000@yme.mo.himolde.no>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200305201649.SAA06156@alsa.alsa-project.org>
+References: <Pine.LNX.4.50-xtra.0305201645001.6471-100000@yme.mo.himolde.no>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA05992
-	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 18:40:58 +0200
+Received: from mail09.voicenet.com (mail09.voicenet.com [207.103.0.43])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id SAA06156
+	for <alsa-devel@alsa-project.org>; Tue, 20 May 2003 18:49:41 +0200
+In-reply-to: Your message of "Tue, 20 May 2003 16:51:56 +0200."
+             <Pine.LNX.4.50-xtra.0305201645001.6471-100000@yme.mo.himolde.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,47 +18,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
+To: Erik Inge Bols <knan@mo.himolde.no>
 Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Erik Inge Bols=F8 wrote:
+>every bug, log any discussion on that mailing list as related to that
+>bug... and add anyone seen in CC: to the same mailing list. Don't
+>remember the bug system's name right now, sorry.
+>
+>But it strikes me as an elegant way of doing it.
 
->=20
-> I tend to disagree. Logging in on a website is an annoyance.
+the upcoming ardour bugzilla will be primarily controlled (for
+submissions) by using a script that the user runs on their machine. it
+collects a lot of information about their h/w and s/w configuration,
+tars that all up with their report, and emails it to the bugzilla
+database. the relevant info is extracted from the tarfile, entered
+into the bug system, and associated with the tarfile so we can look at
+it later it we need to. they don't login, but they do need to go
+online at some point. thats all ...
 
-I feel the same way too. The only time I login these days Is for=20
-business related stuff or when I'm buying something. Otherwise I tend=20
-not to bother.
-
-> Providing a
-> valid email address for the followup discussion, however, is perfectly
-> acceptable. Some bug tracking systems create ephemeral mailing lists fo=
-r
-> every bug, log any discussion on that mailing list as related to that
-> bug... and add anyone seen in CC: to the same mailing list. Don't
-> remember the bug system's name right now, sorry.
->=20
-> But it strikes me as an elegant way of doing it.
->=20
-
-But possibly over compensation. However your footer says everything.
-
-
---=20
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Being on stage with the band in front of crowds shouting, "Get off! No!=20
-We want normal music!", I think that was more like acting than anything=20
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
-
+--p
 
 
 -------------------------------------------------------
