@@ -1,14 +1,12 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Understanding duplicated Mixer Devices
-Date: Sat, 13 Dec 2003 14:47:44 +0100
+From: Amaury Jacquot <sxpert@esitcom.org>
+Subject: experience with Creative MP3+ usb
+Date: Sat, 13 Dec 2003 20:12:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312131447.45085.c.esken@cityweb.de>
+Message-ID: <3FDB64A9.7060009@esitcom.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,24 +19,25 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
+I am using a Creative Labs MP3+ usb sound device.
+mobo is VIA EPIA 800, USB is UHCI
+Alsa is 1.0rc2
 
-I have a question regarding "duplicated" Mixer devices. I see in various mixer 
-application, that my CS46xx soundcard has 2 "Master", "PCM", "CD", "Mic", "3D 
-Control Center" and several more devices with the same name.
+The things works great, it's not even muted on startup (huh ?)
+I am running a home built music player using gstreamer 0.7.2 (source 
+available on request). Using the oss emulation layer
 
-On the other hand, there is only 1 "Surround", 1 "Headphone", and so on.
+now, for the issues.
+everytime I close the sound device, I get the following
 
-So what is the purpose of the duplicated devices? I don't want to make it too 
-complicated, so lets start with "Master".
-- The first "Master" is controlling Front volume
-- The second "Master" does not seem to controll anything
-- The "Surround" item is controlling Rear volume
+"usb_control/bulk_msg: timeout"
 
-Some hint in the right direction would be nice,
-   Chris
+any has an explanation ?
+can it be avoided ?
 
-PS: Currently I am wildly guessing, that the "unused" devices will get useful 
-in the case when some special routing is done.
+sincerely
+Amaury
+
 
 
 -------------------------------------------------------
