@@ -1,17 +1,18 @@
-From: Duncan Sands <duncan.sands@math.u-psud.fr>
-Subject: kernel 2.5.6: devfs could not append to parent
-Date: Fri, 8 Mar 2002 18:02:11 +0100
-Message-ID: <E16jNky-0000OC-00@baldrick>
+From: Kevin Conder <kconder@interaccess.com>
+Subject: Re: ALSA vs OSS/free
+Date: Fri, 08 Mar 2002 14:21:17 -0600 (CST)
+Message-ID: <Pine.GSO.3.96.1020308131428.14407A-100000@yin.interaccess.com>
+Reply-To: kevin@kevindumpscore.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Received: from mel-rto1.wanadoo.fr (smtp-out-1.wanadoo.fr [193.252.19.188])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA28607
-	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 18:03:07 +0100
-Received: from duncan by baldrick with local (Exim 3.34 #1 (Debian))
-	id 16jNky-0000OC-00
-	for <alsa-devel@alsa-project.org>; Fri, 08 Mar 2002 18:02:12 +0100
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Received: from chimta04 (chimta04.algx.net [216.99.233.79])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA31749
+	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 21:21:36 +0100
+Received: from yin.interaccess.com (yin.interaccess.com [207.208.45.69])
+ by chimmx04.algx.net (iPlanet Messaging Server 5.1 (built May  7 2001))
+ with SMTP id <0GSO003I58JHET@chimmx04.algx.net> for
+ alsa-devel@alsa-project.org; Fri, 08 Mar 2002 14:21:17 -0600 (CST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,19 +21,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-While booting kernel 2.5.6 I get the following error:
+> > > Kai Vehmanen wrote on Thu, 07 Mar 2002 05:41:34 -0800:
+> > >
+> > > Why is ALSA the better alternative?
+> > > Have I missed some important points?
+> >
+> > Kevin Conder wrote:
+> > 
+> >         OSS has one crucial advantage over ALSA: documentation!
+> > Perhaps one day ALSA will have something like the Programmer's Guide
+> > to OSS. Check it out at http://www.opensound.com/pguide/
+>
+> Daniel Caujolle-Bert:
+>
+>        And this is a nice troll.
 
-devfs_register(midi): could not append to parent, err: -17
+	A troll is an email that is posted to elicit a huge amount of
+responses. (Example: What is the best audio editor?) I don't think my
+email was a troll. I'm amazed that it even got this response.
 
-NB:
+	Kai was asking if he missed some important points. I think
+documentation is an important point. I didn't imagine that it would
+be so controversial.
 
-0 [card0          ]: CS46xx - Sound Fusion CS46xx
-                     Sound Fusion CS46xx at 0xda800000/0xda000000, irq 5
+>       Do you want to write this documentation, i guess developper 
+> team will help you.
 
-Duncan.
+	I have helped in small ways, wherever I can. I've helped with the
+ALSA HOWTO and other projects. Unfortunately, I could never get ALSA 0.9.x
+to compile so I'm still using 0.5 for now.
+
+	As far getting help from the developer team, they weren't very
+patient about my compilation problems... I've posted other requests like
+re-opening the alsa-doc mailing list that have been ignored. I don't mean
+any offense to the ALSA developers, I realize that they're really busy
+right now. 
+
+	So I'm waiting for things to stabilize, that's why I said "one
+day..."
+
+>        I'm amazed how some people are so strong with their mouth !
+
+	This sentence is very confusing but I think it's supposed to be a
+personal attack. I really don't know what to do at this point... Would
+changing my message to "ALSA is missing something like The Programmer's
+Guide to OSS" be better?
+
+
+-- Kevin Conder, kevin@kevindumpscore.com
+
+
+
 
 _______________________________________________
 Alsa-devel mailing list
