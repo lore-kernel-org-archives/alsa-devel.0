@@ -1,19 +1,21 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
+From: Justin Cormack <justin@street-vision.com>
 Subject: Re: hdsp driver status
-Date: Fri, 4 Jul 2003 15:18:10 +0200 (CEST)
+Date: 04 Jul 2003 16:03:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <35616.217.128.161.242.1057324690.squirrel@www.undata.org>
+Message-ID: <1057331014.10858.87.camel@lotte>
 References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
-        <3F044FF5.2010602@boosthardware.com>
-        <3F0456A5.9000600@boosthardware.com>
-        <1057252106.7192.61.camel@lotte>
-        <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
-        <1057322609.7193.65.camel@lotte>
+	<3F044FF5.2010602@boosthardware.com> <3F0456A5.9000600@boosthardware.com>
+	<1057252106.7192.61.camel@lotte>
+	<32866.81.50.18.84.1057263312.squirrel@www.undata.org>
+	<1057322609.7193.65.camel@lotte>
+	<35616.217.128.161.242.1057324690.squirrel@www.undata.org>
+	<1057325373.10858.77.camel@lotte>
+	<35748.217.128.161.242.1057327134.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1057322609.7193.65.camel@lotte>
+In-Reply-To: <35748.217.128.161.242.1057327134.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,48 +24,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: justin@street-vision.com
-Cc: thomas@undata.org, pshirkey@boosthardware.com, alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>, alsa list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->> > you mean 0xb? I have one that works on 0.9.0rc5, but wont work on
->> 0.9.4/todays cvs.
->>
->> That's surprising. Does the matrix mixer work with 0.9.0rc5 ?
->
-> Yes its fine. But I though it was only the 9652 that had a matrix mixer
-> problem...
->
-> Justin
->
+On Fri, 2003-07-04 at 14:58, Thomas Charbonnel wrote:
+> > And the driver is 0.9.0rc6 not 5, and it is patched to add 0xb (unless
+> > that was in 0.9.0rc6 but not 5). And the matrix mixer does work (just
+> > rechecked, which took a little while as the machine is in another
+> > country...)
+> 
+> Ok, thanks for your help. Could you then try the latest driver with this
+> patch applied to hdsploader. It forces the upload of the true and tested
+> old firmware. What bothers me is that if RME insists so much on flashing
+> the cards when upgrading driver, it must be that something changes in the
+> way the hardware is accessed. I remember something was broken when I tried
+> the 0xb card, but can't remember what. It could be the metering stuff I
+> was debugging then. At that time we were waiting for the new firmware
+> files from RME, and I expected it would solve the problem.
 
-I've just had a look at the 0.9.0rc5 driver code. Either your card is not
-a 0xb version, either you're using a patched 0.9.0rc5:
+ok, will try on Monday/Tuesday when I am in same country as the card as
+it is easier. I have a 0xa here that I will test over the weekend.
 
-(from the snd_hdsp_create() function)
+> Did you drop the alsa-dev CC on purpose ?
 
-        switch (rev & 0xff) {
-        case 0xa:
-                /* hdsp_initialize_firmware() will reset this */
-                hdsp->card_name = "RME Hammerfall DSP";
-                break;
-
-        default:
-                return -ENODEV;
-        }
-
-
-
-If you patched your driver (e.g. adding a 0xb case to the rev switch) then
-this means the rev 0xb cards can work with the old firmware, which
-surprises me a lot. I remember trying once a rev 0xb card a couple of
-months ago. I used it in combination with my 0xa card to test Adat and
-S/PDIF external sync. I forced it to initialize with the old firmware, but
-IIRC the matrix mixer was broken.
-
-Thomas
-
-
+No, accident...
 
 
 
