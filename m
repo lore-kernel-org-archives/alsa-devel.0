@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: RE: Dma query
-Date: Thu, 26 Feb 2004 12:26:51 +0100 (CET)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Attempts on the ESS-1869 card
+Date: Thu, 26 Feb 2004 12:16:18 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402261219320.13076@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F29026@DBDE01>
+Message-ID: <403DE392.8070808@superbug.demon.co.uk>
+References: <20040226045441.11593.qmail@web60804.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F29026@DBDE01>
+In-Reply-To: <20040226045441.11593.qmail@web60804.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,44 +17,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: tsw@johana.com
+Cc: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 26 Feb 2004, Gupta, Kshitij wrote:
+Looks like a Sound Blaster compatible.
+Try
+modprobe snd-sb16 enable=1 isapnp=0 port=0x0220 mpu_port=0x330 irq=5 
+dma8=1 dma16=5
 
-> hi ,
-> 	That's correct the pages will be in whole meory space and I will be
-> using snd_pcm_lib_preallocate_pages_for_all api for allocating the space.
-> There are some DMA apis (for our dma framework) like 
+Cheers
+James
+
+
+Tom Watson wrote:
+> Ah, a new card to try...
+> This time it is an Ensonic ESS-1869 that is built into an older Compaq
+> laptop (Armada 3500).  When I put in the "setup" disk, it reports that
+> the sound card has the following I/O stuff:
+> IRQ 5
+> DMA 1
+> DMA 5
+> ports at 0x0220 thru 0x022F   (16 ports)
+> ports at 0x0388 thru 0x038B   (4 ports)
+> ports at 0x0330 thru 0x0331   (2 ports)
+> some other port range at 0x0250 thru 0x0257   (8 ports).
 > 
-> set_dma_transfer_params(srcaddr, destaddr, mode ...)
+> In reading the driver I see that "port" reserves 16, "fm_port" reserves
+> 4, and "mpu_port" reserves 2.
 > 
-> Now I need to call this API whenever the transmit for one of the buffers is
-> complete.  Or is it like, these things should be done just once upfront.
-> But that means we need n channels if we want n buffers to be ring buffers. 
+> Being a "nice guy" I attempt to load the module with insmod, and the
+> file "modules.conf" has:
+> ...
+> alias snd-card-0 snd-es18xx
+> options snd-es18xx id="first" enable=1 dma1=1 dma2=5 irq=5 port=0x220 \
+>    fm_port=0x338 mpu_port=0x330
+> ...
+> 
+> But all is not well as I get an error upon doing an insmod:
+> .../es18xx.c:2256: ESS AudioDrive ES18xx soundcard not found or device
+> busy.
+> 
+> Am I missing something simple to get this thing working??  From the
+> look of things, I should have all the stuff working.  I even attempted
+> to try an ISAPNP, but that didn't appear to work either.
+> 
+> Any better ideas from the group.
+> 
+> ...Thanks
+> 
+> =====
 
-The ALSA midlevel expects if trigger callback is called, then the data
-starts the transfer from the allocated ring buffer (which is filled by the
-ALSA midlevel code or application - mmap mode). It's not necessary that
-ring buffer is continous from the physical memory perspective, but it must
-be continuous from the user space perspective (using MMU and page
-mapping).
-
-Then after one period transfer is finished, you need to call
-period_elapsed() callback from the interrupt to notify ALSA midlevel code
-about this situation and continue with the DMA transfer (next period).  
-Note that the pointer callback must give the actual pointer in the ring
-buffer at this point.
-
-I hope this helps.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
