@@ -1,12 +1,16 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: gmplayer error with ALSA output plugin
-Date: Sun, 25 Jul 2004 18:18:37 -0400
+Subject: Re: [Alsa-user] Lockups with KDE 3.3.0 Beta 2 and Audigy 2 ZS
+Date: Sun, 25 Jul 2004 19:07:15 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090793916.14951.107.camel@mindpipe>
+Message-ID: <1090796834.719.14.camel@mindpipe>
+References: <200407251639.02671.jlp@holodeck1.com>
+	 <200407252119.53700.jlp@holodeck1.com> <1090784215.14951.66.camel@mindpipe>
+	 <200407260049.41454.jlp@holodeck1.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200407260049.41454.jlp@holodeck1.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,26 +19,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jure Repinc <jlp@holodeck1.com>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-When I select the 'ALSA 0.9.x/1.0.x' option for audio output in
-gmplayer, the sound seems to work, but I get tons of popup windows with
-this error:
+On Sun, 2004-07-25 at 18:49, Jure Repinc wrote:
 
-alsa-control: mixer attach /dev/mixer: no such file or directory
+> I tried with CVS compile but computer stil locks :(
+> Anything else I could try?
 
-As a result I am forced to use OSS emulation mode, which causes latency
-problems due to its use of ioctl().  /dev/mixer exists and is writable
-by the user.  In fact when using OSS emulation mode this is the mixer
-device used.  Is this just a bug in gmplayer?
+Hmm, I did not see the part about your having a 64-bit system.  I
+believe there are places in the driver (pci/emu10k1/emufx.c) where a
+pointer is stored in an FX8010 GPR, which are 32 bits.  Someone on
+alsa-devel might know better, I will cc that list.
 
-I am using debian unstable, here is where I got the gmplayer packages:
-
-deb ftp://ftp.nerim.net/debian-marillat unstable main
-
-deb http://dept-info.labri.fr/~danjean/debian unstable main
-deb-src http://dept-info.labri.fr/~danjean/debian unstable main
+Meanwhile, you should file a bug report with the ALSA bug tracker.
 
 Lee
 
