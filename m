@@ -1,15 +1,15 @@
 From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: Re: Alsa sequencer port type flags
-Date: Wed, 10 Dec 2003 13:11:22 +0000
+Subject: Re: ALSA sequencer event types?
+Date: Wed, 10 Dec 2003 13:23:28 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312101311.22675.cannam@all-day-breakfast.com>
-References: <200312101113.52566.david.garcia@iua.upf.es> <3FD70734.6060502@boosthardware.com> <200312101335.39428.dgarcia@iua.upf.es>
+Message-ID: <200312101323.28101.cannam@all-day-breakfast.com>
+References: <Pine.HPX.4.33n.0312100827410.3830-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312101335.39428.dgarcia@iua.upf.es>
+In-Reply-To: <Pine.HPX.4.33n.0312100827410.3830-100000@studcom.urz.uni-halle.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,49 +19,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Garcia Garzon <dgarcia@iua.upf.es>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 10 Dec 2003 12:35 pm, David Garcia Garzon wrote:
-> [...]
-> Each port has also the type bitmasks defined as follows:
-> SND_SEQ_PORT_TYPE_SPECIFIC Hardware specific port
-> SND_SEQ_PORT_TYPE_MIDI_GENERIC Generic MIDI device
-> SND_SEQ_PORT_TYPE_MIDI_GM General MIDI compatible device
-> [etc]
+On Wednesday 10 Dec 2003 7:38 am, Clemens Ladisch wrote:
+> Chris Cannam wrote:
+> > Is there any documentation for the squillions of
+> > interesting-looking event types defined in snd_seq_event_type?
+>
+> The source.
 
-I am absolutely not an expert on this, but it's very similar to a 
-question I've asked before on this list so I'll summarise my 
-understanding of it and hope for corrections.
+Ah.
 
-These flags indicate what sorts of sequencer events the port expects 
-to be able to handle.  The fact that they refer to types of event 
-rather than what the port does with those events seems to be quite an 
-important distinction: for example, a port setting TYPE_SYNTH is 
-saying nothing about whether it handles MIDI events or implements a 
-MIDI synth, it's only saying that it can handle the direct synthesis 
-class of event.  Equally it appears that an application should not 
-necessarily set TYPE_APPLICATION unless it expects 
-application-specific events, and so on.
+> > I'm particularly intrigued by the SND_SEQ_EVENT_INSTR_* types
+> > which look suspiciously like they might be intended for something
+> > useful such as enabling soft-synths or samplers to report on
+> > their available program or patch sets.  Are they?
+>
+> Yes, they are exactly that, i.e., _intended_ for something useful.
 
-For my purposes, the upshot was that I could not rely on these flags 
-to find out what sort of application was implementing the port; I had 
-hoped to test for soft synths with TYPE_SYNTH and TYPE_APPLICATION, 
-for example, and that proved not to be possible.
+Ah.
 
-> - Are they merely informative?
+So in the hypothetical situation where a soft synth application really 
+wanted to be able to tell the world of ALSA sequencer clients about 
+what instruments, controllers etc it had available, it would have to 
+use some other communication layer than the ALSA sequencer?
 
-I think so.  I'm just not sure who the information is for.
-
-> - Will Alsa coerce or enhance the port usage depending on that
-> type?
-
-I don't think so.
-
-> - Can the user see that information in any way?
-
-I don't know.  I don't think it would be terribly useful though.
+I had always assumed that was the case, but then I just thought I 
+might not have been paying enough attention to all those other wacky 
+event types.  I guess the fact that they're not used within ALSA 
+doesn't mean they wouldn't be delivered to any client that decided to 
+use them for its own nefarious purposes?  I suppose one could define 
+a simple protocol for something like the above based on the existing 
+unused instrument event types, or the existing user-defined event 
+types... but how would you then discover whether or not a client 
+supported that protocol?
 
 
 Chris
