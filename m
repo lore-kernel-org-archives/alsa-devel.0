@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] fix ymfpci port parameter handling
-Date: Thu, 23 Oct 2003 09:37:44 +0200 (METDST)
+From: Zinx Verituse <zinx@epicsol.org>
+Subject: Re: patch, and other via82xx (VT8235) capture problems
+Date: Sat, 25 Oct 2003 09:31:59 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310230935090.295-100000@studcom.urz.uni-halle.de>
+Message-ID: <20031025143159.GA1176@bliss>
+References: <20031023044843.GA19701@bliss> <s5hznfr99zs.wl@alsa2.suse.de> <20031024010502.GA22833@bliss> <s5h8yna93qz.wl@alsa2.suse.de> <20031024205918.GA29951@bliss>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20031024205918.GA29951@bliss>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,60 +17,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Oct 24, 2003 at 03:59:18PM -0500, Zinx Verituse wrote:
+> On Fri, Oct 24, 2003 at 03:14:44PM +0200, Takashi Iwai wrote:
+> > At Thu, 23 Oct 2003 20:05:02 -0500,
+> > Zinx Verituse wrote:
+> > > 
+> > > Any ideas on the problem with me not being able to record
+> > > if the Input Source is set to Mic?
+> > > 
+> > > arecord records when it's set to Line (as it was forced, before),
+> > > and does playback as well..
+> > > 
+> > > When it's set to Mic, I get no playback from a Mic (and I'm not
+> > > wanting to hook up powered output in to the jack when it's set
+> > > to Mic), but I suspect it's still Line-in, and the register
+> > > being twiddled isn't right, or needs some more setup.
+> > > 
+> > > arecord waits a bit, then gives the error I mentioned:
+> > > arecord: pcm_read:1110: read error: Input/output error
+> > > 
+> > > dmesg says nothing :/
+> > > 
+> > > If nothing else, the settings do have to do with the actual
+> > > capture sources (idx 0 vs. idx 1), because when I set idx 0
+> > > to mic, it can't record, but idx 1 can, and when I set idx 1
+> > > to mic, it can't record, but idx 0 can.  When both are set
+> > > to mic, neither can record.
+> > 
+> > sorry, could you elaborate this?  i'm confused.
+> > did you try hw:0,0 and hw:0,1, right?
+> > 
+> 
+> Yeah, hw:0,0 fails when Input Source idx 0 is set to Mic,
+> and hw:0,1 fails when Input Source idx 1 is set to Mic.
+> 
+> > 
+> > Takashi
+> > 
+> 
 
-- fix detection of omitted (default) joystick_port parameter
-- make fm_port and mpu_port handling consistent with joystick_port
+I have more to report on this issue:
+When I was recording with 'Line' selected as the 'Input Source',
+'Mic' was the selected recording device, and 'Line' was completely
+silent.  Also, I have noticed that if I'm playing something on
+hw:0,0, then hw:0,1 fails like recording does.  However, if I try
+to play two things to hw:0,0, it works.  And if I try to play
+something to hw:0,1 while hw:0,0 is closed, it also works.
 
-
-Index: alsa-kernel/pci/ymfpci/ymfpci.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ymfpci/ymfpci.c,v
-retrieving revision 1.29
-diff -u -r1.29 ymfpci.c
---- alsa-kernel/pci/ymfpci/ymfpci.c	14 Oct 2003 13:59:21 -0000	1.29
-+++ alsa-kernel/pci/ymfpci/ymfpci.c	23 Oct 2003 07:14:43 -0000
-@@ -44,10 +44,10 @@
- static int index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
- static int enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
--static long fm_port[SNDRV_CARDS];
--static long mpu_port[SNDRV_CARDS];
-+static long fm_port[SNDRV_CARDS] = { [0 ... SNDRV_CARDS-1] = -1 };
-+static long mpu_port[SNDRV_CARDS] = { [0 ... SNDRV_CARDS-1] = -1 };
- #ifdef SUPPORT_JOYSTICK
--static long joystick_port[SNDRV_CARDS];
-+static long joystick_port[SNDRV_CARDS] = { [0 ... SNDRV_CARDS-1] = -1 };
- #endif
- static int rear_switch[SNDRV_CARDS];
-
-@@ -128,18 +128,18 @@
- 	legacy_ctrl2 = 0x0800;	/* SBEN = 0, SMOD = 01, LAD = 0 */
-
- 	if (pci_id->device >= 0x0010) { /* YMF 744/754 */
--		if (fm_port[dev] <= 0) {
-+		if (fm_port[dev] < 0) {
- 			fm_port[dev] = pci_resource_start(pci, 1);
- 		}
--		if (fm_port[dev] > 0 &&
-+		if (fm_port[dev] >= 0 &&
- 		    (fm_res = request_region(fm_port[dev], 4, "YMFPCI OPL3")) != NULL) {
- 			legacy_ctrl |= YMFPCI_LEGACY_FMEN;
- 			pci_write_config_word(pci, PCIR_DSXG_FMBASE, fm_port[dev]);
- 		}
--		if (mpu_port[dev] <= 0) {
-+		if (mpu_port[dev] < 0) {
- 			mpu_port[dev] = pci_resource_start(pci, 1) + 0x20;
- 		}
--		if (mpu_port[dev] > 0 &&
-+		if (mpu_port[dev] >= 0 &&
- 		    (mpu_res = request_region(mpu_port[dev], 2, "YMFPCI MPU401")) != NULL) {
- 			legacy_ctrl |= YMFPCI_LEGACY_MEN;
- 			pci_write_config_word(pci, PCIR_DSXG_MPU401BASE, mpu_port[dev]);
-
-
+-- 
+Zinx Verituse
 
 
 -------------------------------------------------------
