@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
-Date: Wed, 9 Feb 2005 12:44:29 +0100
-Message-ID: <a617f494956cabd0c1228f03e866f702@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000895]: Es1968 driver seems not to support full duplex mode
+Date: Wed, 9 Feb 2005 13:00:44 +0100
+Message-ID: <5a773faad9293ca43757b865ccb07827@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2ED61D0
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 12:44:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0AFD1E6
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 13:00:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,62 +21,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=895> 
 ======================================================================
-Reported By:                hamishtpb
-Assigned To:                karsten
+Reported By:                woweil
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   885
-Category:                   USB - usb-usx2y
+Issue ID:                   895
+Category:                   PCI - es1968
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.4.28-Gentoo-r5
+Distribution:               Debian
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             02-06-2005 05:57 CET
-Last Modified:              02-09-2005 12:44 CET
+Date Submitted:             02-09-2005 13:00 CET
+Last Modified:              02-09-2005 13:00 CET
 ======================================================================
-Summary:                    usx2y is unsupported in v 1.08 builds
+Summary:                    Es1968 driver seems not to support full duplex mode
 Description: 
-Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
-when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
-compile went smoothly.
+When I tried a talk with the application "skype", I recognized that the
+soundcard solo-1 was not in full duplex mode. Every time when I have
+connection, there is a gread banging. The other part of the talk hears the
+banging too. A conversation is impossible, because no word can be
+recognized.
+
+After that I tried an installation with Windows 2000. The software worked
+well and a conversation is possible without problems. So I suppose, that
+the duplexmode is not possible with the driver.
+
+I use a Thinkpad 390X
 ======================================================================
-
-----------------------------------------------------------------------
- hamishtpb - 02-09-05 12:23 
-----------------------------------------------------------------------
-Ah. I had tried using Gentoo's portage to install with no cards (it dies
-during compile in portage when no cards specified - probably due to
-another parameter in the portage script- possibly not important for now?)
-but I had not tried manually with no cards! I just tried and the compile
-was fine  BUT - the usx2y module does not appear to compile and I still
-cannot get 1.0.8 to work with Tascam :(
-
-----------------------------------------------------------------------
- hamishtpb - 02-09-05 12:44 
-----------------------------------------------------------------------
-Additional to last bit: The compile error when using portage with no cards
-specified is known on the Gentoo bugs area - something to do with pcxhi
-compile fails (whatever that is? I can't find a card with that name :-/ ).
-I don't know if this is relevant but I thought I would post just in case.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 05:57 hamishtpb      New Issue                                    
-02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
-02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
-02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
-02-06-05 15:53 hamishtpb      Note Added: 0003525                          
-02-09-05 11:55 tiwai          Note Added: 0003545                          
-02-09-05 12:23 hamishtpb      Note Added: 0003549                          
-02-09-05 12:44 hamishtpb      Note Added: 0003551                          
+02-09-05 13:00 woweil         New Issue                                    
+02-09-05 13:00 woweil         Distribution              => Debian          
+02-09-05 13:00 woweil         Kernel Version            => 2.6.9           
 ======================================================================
 
 
