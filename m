@@ -1,9 +1,9 @@
 From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Subject: Re: opening alsa pcm device for input/output on specific channels
-Date: Thu, 6 Jun 2002 16:24:54 +0100
+Date: Thu, 6 Jun 2002 17:09:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001e01c20d6e$6beb46a0$0400a8c0@martijn>
-References: <200206061341.g56DfbH16112@post2.fast.net>
+Message-ID: <004201c20d74$84dabb90$0400a8c0@martijn>
+References: <200206061455.g56EtjH07853@post2.fast.net>
 Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -11,8 +11,8 @@ Content-Type: text/plain;
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA14159
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 16:26:02 +0200
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA14878
+	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 17:09:56 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,20 +25,36 @@ To: Paul Davis <pbd@op.net>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> you do it using ~/.asoundrc to define a PCM device that has the
-> channel characteristics you want.
+> >> correct. i know you love EASI
+> >
+> >is it that obvious? :)
+> >
+> >perhaps if more people like it, it would make sense porting
+> >it to linux...
 >
-> next, you'll be asking how. that's the part i can't help you with. the
-> archives have some examples, and there are several people on the list who
-> can tell you.
+> much less sense than porting ASIO, i'm afraid. there are very few
+> programs for win/macos that use EASI, but lots that use ASIO, and an
+> ASIO layer would make porting the audio side of such programs much
+> easier.
+>
+> personally, i don't like either of them very much, which is partly why
+> i wrote JACK.
 
-aha, so the idea is that an application can only open a device with a number
-of channels and the user uses the configuration file to map channels? there
-is no way for an aaplication to open a device for output on specific
-channels
-, perhaps using a channel mask as in EASI?
+ok. you are now using: ALSA kernel -> ALSA lib -> JACK.
+that's not too different from: kernel driver -> EASI or ASIO plugin -> JACK
+i think the difference between ALSA and EASI/ASIO is that the latter have
+device dependant code in both user space and kernel. i think this is a
+cleaner
+solution. i have not yet looked into ASIO much, but perhaps porting it would
+make sense also. both EASI and ASIO plugins could use the same low level
+kernel driver. is there a reason why this has not been done. licensing
+perhaps?
+
+do you agree that having a device specific user space plugin has advantages
+over a generic kernel driver interface?
 
 --martijn
+
 
 
 
