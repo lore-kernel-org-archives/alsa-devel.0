@@ -1,17 +1,17 @@
 From: "Rui Nuno Capela" <rncbc@rncbc.org>
 Subject: Re: [ardour-dev] Re: Tascam US-224/428 MMC: Work in
      progress...
-Date: Wed, 28 Jul 2004 20:56:25 +0100 (WEST)
+Date: Wed, 28 Jul 2004 21:03:40 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32925.192.168.1.5.1091044585.squirrel@192.168.1.5>
-References: Your message of "Wed, 28 Jul 2004 12:53:22 EDT."            
+Message-ID: <32930.192.168.1.5.1091045020.squirrel@192.168.1.5>
+References: Your message of "Wed, 28 Jul 2004 17:24:37 BST."            
+    <63176.195.245.190.93.1091031877.squirrel@195.245.190.93>
     <200407281653.i6SGrMZn032601@localhost.localdomain>
-    <200407281735.i6SHZo1N003338@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200407281735.i6SHZo1N003338@localhost.localdomain>
+In-Reply-To: <200407281653.i6SGrMZn032601@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,28 +21,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net, ardour-dev <ardour-dev@lists.ardour.org>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, ardour-dev <ardour-dev@lists.ardour.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Paul,
+Hi Paul, everyone,
 
->>> If only ardour would actually send that missed MMC-Play command,
->>
->>It will be fixed in CVS by the end of the day.
 >
-> ahem. libs/ardour/session_transport.cc:740
+>>I guess that's most likely due to something as a race condition between
+>>ardour and us428control: by turning the jog wheel a MMC-Locate command
 >
-> so, it already does attempt to send this, but only if it has been
-> requested via the options dialog.
+> I have no experience of wheels that send Locate. The wheel on the d8b
+> sends either Shuttle or Step commands. I have no idea how a wheel that
+> sends Locate is supposed to work, for precisely the reason you mention.
 >
 
-I have come across that line, that's why I said it was supposed to send
-that MMC-DeferredPlay, but it doesn't actually do so.
+Shame on me. As a matter of fact, I've have no experience either, at all
+:) It seems that my MMC jog wheel implementation is most probably a
+complete mistake. I'm an idiot, spank me ;)
 
-Surely I've always checked that MIDI/'Send MMC' option on the options
-dialog. Is there any other option you're referring to?
+I'll try the MMC-Step/Shuttle route instead of that miserable MMC-Locate
+wheel hack.
 
-Cheers!
+Stay tuned...
 -- 
 rncbc aka Rui Nuno Capela
 rncbc@rncbc.org
