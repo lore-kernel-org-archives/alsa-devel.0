@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Mon, 6 Dec 2004 20:54:00 +0100
-Message-ID: <8d6f8e6a0704f12cdf3ba4399b1ea429@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000704]: low input levels
+Date: Mon, 6 Dec 2004 20:56:24 +0100
+Message-ID: <e5306cb8b529e42bca378a648d4c82d3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4C92176
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:54:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7EC92FA
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:56:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,44 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
 ======================================================================
-Reported By:                henkie_
+Reported By:                spamatica
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   617
-Category:                   PCI - cs46xx
+Issue ID:                   704
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               SuSE 9.0
-Kernel Version:             2.4.26
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-30-2004 18:20 CEST
-Last Modified:              12-06-2004 20:53 CET
+Date Submitted:             12-03-2004 21:46 CET
+Last Modified:              12-06-2004 20:56 CET
 ======================================================================
-Summary:                    Front / rear out of sync
+Summary:                    low input levels
 Description: 
-When using the config specified below the sound gets out of sync (front and
-rear sound) in xmms. The higher cpu-usage is the faster the sound goes
-out-of-sync. When using mplayer in combo with this config, cpu usage goes
-up, and the image of the movie halts but sound keeps playing. Without this
-config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
-In alsa <1.0  the front and rear sound was duplicated, is it possible to
-reimplement that behaviour again?
-
-pcm.ch40dup {
-        type route
-        slave.pcm surround40
-        slave.channels 4
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.0.2 1
-        ttable.1.3 1
-}
+As was noted recently on Linx audio user. It seems atleast the DELTA cards
+(I've got a Delta 44) have too low input level. Others reported that it
+differs when running the same card in windows. Myself I run it exclusively
+in Linux and have found that recording external signals I have to turn the
+volume for the external (pro) equipment, to max to get a reasonably high
+signal.
 ======================================================================
 
 ----------------------------------------------------------------------
- darkbrain - 12-04-04 15:08 
+ tiwai - 12-06-04 20:56 
 ----------------------------------------------------------------------
-The patch for alsa-kernel works well, but the patch for alsa-lib seems to
-have some problem my xine doesn't play with surround40 nor surround41
-devices. I will   do a deeper test later. Tnx
-
-----------------------------------------------------------------------
- tiwai - 12-06-04 20:53 
-----------------------------------------------------------------------
-Could you try another one (config2.diff)?
-
-The patches are already merged into ALSA CVS, BTW.
+Are "IPGA Analog Capture Volume" adjusted properly?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-30-04 18:20 henkie_        New Issue                                    
-10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
-10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
-11-10-04 12:43 tiwai          Note Added: 0002368                          
-11-10-04 22:37 henkie_        Note Added: 0002379                          
-11-29-04 15:13 darkbrain      Note Added: 0002636                          
-12-02-04 00:53 darkbrain      Note Added: 0002672                          
-12-02-04 02:02 henkie_        Note Added: 0002673                          
-12-02-04 12:17 tiwai          Note Added: 0002678                          
-12-02-04 14:32 lemoncurry     Note Added: 0002680                          
-12-02-04 14:55 tiwai          Note Added: 0002681                          
-12-02-04 14:55 tiwai          File Added: cs46xx-front-dup.diff                 
-  
-12-02-04 14:56 tiwai          File Added: cs46xx-front-dup-config.diff          
-         
-12-02-04 15:53 lemoncurry     Note Added: 0002685                          
-12-02-04 19:18 tiwai          Note Added: 0002688                          
-12-04-04 15:08 darkbrain      Note Added: 0002716                          
-12-06-04 20:53 tiwai          Note Added: 0002733                          
+12-03-04 21:46 spamatica      New Issue                                    
+12-06-04 20:56 tiwai          Note Added: 0002734                          
 ======================================================================
 
 
