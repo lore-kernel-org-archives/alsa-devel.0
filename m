@@ -1,17 +1,14 @@
-From: Juan Linietsky <coding@reduz.com.ar>
-Subject: Alsa MIDI device description extension proposal.
-Date: Fri, 22 Mar 2002 22:16:29 -0300
+From: Dave Andruczyk <djandruczyk@yahoo.com>
+Subject: Lockups with emu10k1 on mandrake 8.2
+Date: Fri, 22 Mar 2002 18:54:04 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020322221629.57fa7159.coding@reduz.com.ar>
+Message-ID: <20020323025404.37190.qmail@web14106.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Received: from john.anime.com.ar ([64.113.39.216])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA14528
-	for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2002 02:15:06 +0100
-Received: from server (c00lius@OL16-140.fibertel.com.ar [24.232.140.16])
-	by john.anime.com.ar (8.9.3/8.9.3) with SMTP id VAA24611
-	for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2002 21:14:46 -0400
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
+Received: from web14106.mail.yahoo.com (web14106.mail.yahoo.com [216.136.172.136])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id DAA15584
+	for <alsa-devel@alsa-project.org>; Sat, 23 Mar 2002 03:54:10 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,89 +20,63 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have a proposal in mind, which should make much easier for programs to use the devices in a less-blind way, and standarize patch naming and device descriptions. I think it would be great if authors of existing apps have the chance to modify their programs to take advantage of this, saving us both users and programmers a lot of effort.
-
-I really think this is a very important issue that hasnt been addressed,
-And, if no one is interested in workig on this, I'd like to work on this myself, so i'll have the chance to learn.
 
 
-----Proposal follows----
+After managing to get alsa 0.9beta 12 compiled and install on a fresh ins=
+tall
+of mandrake 8.2,  loading worked fine.  running alsamixer in an xterm and
+trying to unmute the channels,  alsamixer locked hard, couldn't move, cou=
+ldn't
+quit,  hard lock for that APP ONLY.  Tried loading gmix (it worked on 8.1=
+ with
+a 2.4.16-xfs kernel with no problems).  as soons as gmix loaded the syste=
+m
+locked solid, no mouse, nothing.  onlypower off would cure it..
 
-Basically, the idea is this, since midi is by default a 1-way protocol, there's no standard way to retrieve info from a device, this means that if we do have a midi port, we have no standard way to know which banks does it have or the names of the patches. The only work around to this, in midi sequencing programs is to create propertary (to the program itself) files describing the patch layout. This is very annoying when we, for example, use some external synth and we have to create all the sample definitions for a program, or when we use a soundfont and we have to manually create the definitions to each instrument, when it comes in the soundfont itself
-Or if we use some random sofstynth and we get to create some a sound
-or bank, we have to yet again recreate the instrument definitions for
-our sequencing apps.
 
-To avoid this instrument naming madness, i propose to add an extension
-to both the alsa user interface, driver interface, and sequencer client inerface which could work this way:
+upon power up part of the FS was hosed. (/etc/modules.conf was scrambled
+leading to a whole host of issues.).  Not trusting the FS state, I reinst=
+alled
+again.   Tried OSS driver provided with the syetm (no compiling necessary=
+).=20
+Works great,  no lockups..
 
-from the program side:
+Are there issues with ALSA 0.9beta12 and the 2.4.18 kernel,  or more
+specifically the Mandrake 8.2 2.4.18 kernel??
 
--ability to poll the midi port for amount of banks and their parameters (or default bank if no banks). 
--ability to poll for patch names in a bank
--ability to poll the midi port for rynth channels/patches (default is channel 10, i know, but some synths use channel 16 or more than one rynth channel), or to poll if a certain patch number is a rythm patch (some synths use a certain patch number for the drums)
--ability to poll for changes in the devices (or a callback manybe?) so they can be retrieved and updated
--ability to poll DEFAULT VALUES of patches (such as controller values, poly/mono, portamento, sustain, expression, volume etc) which the patch
-sets to when selected. This is extremely useful in external synth modules/keyboards.
+I'm currently stuck with OSS, but I want to be using ALSA..   Does anyone=
+ have
+any suggestions?
 
-from driver/synth client side:
+HW info:
+Tyan Tiger MP Dual processor athlon 1.2 Ghz  MP's
+512MB DDR 266Mhz, PC2100 RAM
+NVIDIA Geforce4 MX440 Video(with NVIDIA's 1.0-2808 driver)
+Symbios 53c1010-33 Ultra 3 scsi controller
+Sound Blaster Live Value.
 
--if the driver supports it (such as, for exampe, a sblive or sbawe, opl3 (sbi loading), or alike, or a sequencer client which can hold the patch names itself, such as timidity, saturno, iiwusynth, smurf, etc then the driver itself will take care of answering the client request.
--if the driver doesnt support this, (for example, an external midi uart)
- then it should be possible to create a STANDARD instrument definition file for this device, which alsa-lib will take care of, like for example:
+System ran completely stable on Mandrake 8.1 wiht a custom built 2.4.16-x=
+fs
+kernel (clean 2.4.16 + xfs 1.02 patch) with ALSA 0.9beta 12
 
-djleet@myworkstation:/etc/alsa/definitions$ vi my_trance_machine.def
+System locks up immediately on using ALSA's OSS emulation (gmix) mixer, a=
+nd
+causes alsamixer to freeze solid upon running with Mandrakes 8.2's kernel
+(2.4.18 + whatever vendor applied patches)
 
-device {
-
-	name = " r0x0r tranc3m4chine "
-	port = "MIDI 0-1"
-
-}
-
-bank {
-
-	name = "rezocool phasers"
-
-	msb = 31
-	lsb = 22
-
-	patch_1 = " super acid pad "
-	patch_2 = " cool juicy 303 thing "
-        patch_2_control_default = 55,20
-	patch_3 = " temple of doom "
-
-}
-
-bank {
-
-	name "basses"
-
-	msb = 32
-	lsb = 22
-
-	patch_1 = " super six poles filtered FM bass "
-	patch 2 = " pick bass "
-
-}
-
-etc.
+No core dumps, only lockups.  :(
 
 
 
----
 
-This should basically avoid us users and programmers to do all this work from the sequencer program side, and also ending up with a hundred of incompatible formats.
+=3D=3D=3D=3D=3D
+Dave J. Andruczyk
+Enterprise Resource Providers
 
-
-As I said before, this would be extensions to the current ALSA sequencer
-system, so I think nothing should become incompatible with the current
-alsa version.
-
-
-thanks for reading this!
-
-Juan Linietsky
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Movies - coverage of the 74th Academy Awards=AE
+http://movies.yahoo.com/
 
 _______________________________________________
 Alsa-devel mailing list
