@@ -1,12 +1,13 @@
-From: Mardy <mardy@users.sourceforge.net>
-Subject: [Application] OPL3 with hwdep
-Date: Sun, 12 Jan 2003 20:01:51 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [Application] OPL3 with hwdep
+Date: Sun, 12 Jan 2003 20:12:53 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030112190151.GA2057@pupilla>
+Message-ID: <Pine.LNX.4.33.0301122010400.611-100000@pnote.perex-int.cz>
+References: <20030112190151.GA2057@pupilla>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20030112190151.GA2057@pupilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Mardy <mardy@users.sourceforge.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I want to make a simple OPL3 beeper, but I'm stuck with
-snd_hwdep_open(), I just don't know what string I should call it with.
+On Sun, 12 Jan 2003, Mardy wrote:
 
-pupilla:~$ cat /proc/asound/cards 
-0 [CARD_0         ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
-                     C-Media PCI CMI8738-MC6 (model 55) at 0xb800, irq 9
-pupilla:~$ cat /proc/asound/hwdep 
-00-00: OPL3 FM
-pupilla:~$ cat /proc/asound/devices 
-  0: [0- 0]: ctl
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 26: [0- 2]: digital audio capture
- 17: [0- 1]: digital audio playback
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  4: [0- 0]: hardware dependent
-  1:       : sequencer
- 33:       : timer
+> I want to make a simple OPL3 beeper, but I'm stuck with
+> snd_hwdep_open(), I just don't know what string I should call it with.
 
-I've tried lots of combinations, but it always fail... :-(
+hw:# (where # is your card number or string identification), it is usually 
+'hw:0'; or the more simple way is to pass 'default' string as hwdep name
 
--- 
-Saluti,
-    Mardy
-http://castellina.org/interlingua
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
