@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000792]: alsa fails to initialize after UDEV is installed
-Date: Mon, 10 Jan 2005 15:03:39 +0100
-Message-ID: <549abcef08d4bcc01f6e97856b18af7f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000796]: Behavior of LED on mute button
+Date: Mon, 10 Jan 2005 14:59:25 +0100
+Message-ID: <a5a38bf9bcf8c2dadc38f1ecc9d20ce2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 32702294
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 15:03:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4190B164
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 14:59:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=792> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=796> 
 ======================================================================
-Reported By:                sluce
-Assigned To:                
+Reported By:                kempokaraterulz
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   792
-Category:                   alisp
+Project:                    ALSA - driver
+Issue ID:                   796
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-08-2005 04:12 CET
-Last Modified:              01-10-2005 15:03 CET
+Date Submitted:             01-09-2005 02:26 CET
+Last Modified:              01-10-2005 14:59 CET
 ======================================================================
-Summary:                    alsa fails to initialize after UDEV is installed
+Summary:                    Behavior of LED on mute button
 Description: 
-I'm really running 1.0.7 but that wasn't an option above.
-The kernel reports that it finds my CMI8330 card and alsa says:
-pnp: the driver 'cmi8330' has been registered
-pnp: match found with the PnP device '01:01.00' and the driver 'cmi8330'
-pnp: match found with the PnP device '01:01.03' and the driver 'cmi8330'
-pnp: Device 01:01.00 activated.
-pnp: Device 01:01.03 activated.
-ALSA sound/isa/sb/sb_common.c:130: SB [0x220]: DSP chip found, version =
-4.13
-
-I am unable to use the sound card.  KDE is configured to use alsa but is
-unable to open the sound device.
-
-I'll happily provide more information if you tell me what you want to see.
+On my laptop, there is this little blue LED on the mute button, muting  /
+unmuting the sound doesnt have any effect on this LED currently, if i
+unload the sound module the LED turns on, and if i reload the sound module
+it turns back off. Since the sound driver turns the light on when being
+unloaded, my (possibly incorrect) guess is that this would be a fairly
+easy thing to implement properly, or at least allow control of the light
+through the proc interface or something. 
 ======================================================================
 
 ----------------------------------------------------------------------
- sluce - 01-08-05 23:35 
+ tiwai - 01-10-05 14:59 
 ----------------------------------------------------------------------
-I've uploaded 792.txt which contains much of the config information.  I
-can't see that alsa is creating the sound devices but I'm not sure I'm
-looking in the correct place since UDEV is different.
+First, try ALSA 1.0.8rc2.
 
-----------------------------------------------------------------------
- tiwai - 01-10-05 15:03 
-----------------------------------------------------------------------
-Did you try the latest ALSA 1.0.8rc2?
+Is the mute LED turned on/off when you change "External Amplifier" mixer
+switch?
+If so, use ac97_quirk=mute_led option.  If this fixes the problem, let me
+know the output of lspci -nv and the name of your mobo/machine to enable
+the quirk as default.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 04:12 sluce          New Issue                                    
-01-08-05 18:43 sluce          Issue Monitored: sluce                       
-01-08-05 18:44 sluce          Issue End Monitor: sluce                     
-01-08-05 23:34 sluce          File Added: 792.txt                          
-01-08-05 23:35 sluce          Note Added: 0003131                          
-01-10-05 15:03 tiwai          Note Added: 0003136                          
+01-09-05 02:26 kempokaraterulzNew Issue                                    
+01-10-05 14:59 tiwai          Note Added: 0003135                          
 ======================================================================
 
 
