@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000334]: EMU10K1, capturing audio is impossible
-Date: Mon, 30 Aug 2004 12:04:56 +0200 (CEST)
+Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
+Date: Wed,  1 Sep 2004 02:15:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040830100456.B3A663B024@server.perex-int.cz>
+Message-ID: <20040901001542.F23573F018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 044CF232
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 12:05:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 406392A5
+	for <alsa-devel@alsa-project.org>; Wed,  1 Sep 2004 02:15:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,97 +20,112 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000334
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
 ======================================================================
-Reported By:                netslayer
-Assigned To:                pzad
+Reported By:                babayaga
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     334
-Category:                   PCI - emu10k1
+Bug ID:                     476
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.7rc love-sources
-Resolution:                 not a bug
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             06-13-2004 23:30 CEST
-Last Modified:              08-30-2004 12:04 CEST
+Date Submitted:             08-31-2004 01:01 CEST
+Last Modified:              09-01-2004 02:15 CEST
 ======================================================================
-Summary:                    EMU10K1, capturing audio is impossible
+Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
 Description: 
-I have an Audigy (EMU10K2 -- on EMU10K1 drivers). It has worked perfectly
-in 0.9.8, and in 1.0.x I can playback audio fine, but capturing seems
-impossible.
-
-In 0.9.8 I was able to select a capture source in alsamixer by selecting
-it with the space bar. The source had "---" areas above it that meant it
-had the capture ability. In 1.0.x that whole functionality is gone, and I
-see no more way to capture audio. 
-
-I have all my sources up to 100%, and when I plug in an audio to source
-into LINE IN on the Audigy, I hear nor can record anything. If I unmute
-LINE IN in alsamixer, then I hear pass through audio, which I don't want.
-I want to be able to record it, but not hear it through a pass through. 
-
-I know several people with this problem, and I myself have a few of these
-cards dedicated to MythTV PVR boxes, and this problem makes it impossible
-to upgrade ALSA... It's been 6 months since I tried this, and since nobody
-reported it, I thought I would. 
+Please, see the full report at
+http://qa.mandrakesoft.com/show_bug.cgi?id=10859
 ======================================================================
 
 ----------------------------------------------------------------------
- netslayer - 06-14-2004 01:38 CEST 
+ tiwai - 08-31-2004 12:27 CEST 
 ----------------------------------------------------------------------
-Just to clarify, I figured out that recording audio off of LINE IN does
-work. However, there is no way of recording audio with LINE muted, so as
-not to hear the pass through. I want to be able to record, just like in
-0.9.8 from the LINE IN, without having to actually listen to the pass
-through audio when it is unmuted.
+Above all, try the latest ALSA driver.
+If still not work, try dxs_support=2 module option for snd-via82xx.
+Also, ac97_quirk=1 module option might help in such a case.
+
+Make sure that the volume is unmuted and adjusted.  Attach
+/etc/asound.state for debugging if the above doesn't work.
+Also, don't load via82cxx_audio module at the same time.
+You set it as sound-slot-0 in /etc/modprobe.conf, which might
+cause conflicts.
 
 ----------------------------------------------------------------------
- pzad - 06-14-2004 08:19 CEST 
+ babayaga - 08-31-2004 20:16 CEST 
 ----------------------------------------------------------------------
-ALSA 0.9.8 uses as ADC AC97, ALSA 1.0.x uses philips ADC (windows drivers
-uses philips ADC too and works similiar to alsa 1.0.x).
-If you want capture Line In:
--unmute and set Line In volume
--unmute and set volume for Analog Mix Capture Volume
--mute (set volume to 0) for Analog Mix Playback Volume, if don't waqnt to
-listen line in while recording.
+Tried that all - in vain. Attaching new conf-files, maybe, I am missing
+smth?
+Version of snd-via82xx is as supplied with kernel 2.6.8 (2.6.8.1-2mdk more
+exactly) I do not know how to get the version otherwise...
+What else can I do?
+Thanks!
 
 ----------------------------------------------------------------------
- pzad - 08-06-2004 15:01 CEST 
+ babayaga - 09-01-2004 02:15 CEST 
 ----------------------------------------------------------------------
-Helped this ???
+When the parameters were added to /etc/modprobe.conf also after restarting
+sound I have got the following message:
+Loading mixer settings /usr/sbin/alsactl: set_control:805: warning: name
+mismatch (Input Source Select/IEC958 Output Switch) for control https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000045
+/usr/sbin/alsactl: set_control:807: warning: index mismatch (1/0) for
+control https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000045
+/usr/sbin/alsactl: set_control:892: bad control.45.value type
+                                                                [FAILED]
 
-----------------------------------------------------------------------
- pzad - 08-30-2004 12:04 CEST 
-----------------------------------------------------------------------
-Not response for 2 weeks.
+Could that be a reason?
+
+Hardware:
+[root@oka etc]# lspci
+00:00.0 Host bridge: VIA Technologies, Inc. VT8377 [KT400/KT600 AGP] Host
+Bridge (rev 80)
+00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
+00:06.0 Multimedia audio controller: Yamaha Corporation: Unknown device
+1000
+00:0b.0 Ethernet controller: Broadcom Corporation NetXtreme BCM5788
+Gigabit Ethernet (rev 03)
+00:0e.0 FireWire (IEEE 1394): VIA Technologies, Inc. IEEE 1394 Host
+Controller (rev 46)
+00:0f.0 RAID bus controller: VIA Technologies, Inc. VIA VT6420 SATA RAID
+Controller (rev 80)
+00:0f.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
+00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81)
+00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81)
+00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81)
+00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 81)
+00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 86)
+00:11.0 ISA bridge: VIA Technologies, Inc. VT8237 ISA bridge [K8T800
+South]
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+01:00.0 VGA compatible controller: ATI Technologies Inc Radeon RV250 If
+[Radeon 9000] (rev 01)
+01:00.1 Display controller: ATI Technologies Inc Radeon RV250 [Radeon
+9000] (Secondary) (rev 01)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-04 23:30 netslayer      New Bug                                      
-06-13-04 23:30 netslayer      Distribution              => Gentoo          
-06-13-04 23:30 netslayer      Kernel Version            => 2.6.7rc love-sources
-06-14-04 01:38 netslayer      Bugnote Added: 0001305                       
-06-14-04 08:19 pzad           Bugnote Added: 0001306                       
-06-28-04 09:15 pzad           Status                   new => assigned     
-06-28-04 09:15 pzad           Assigned To               => pzad            
-08-06-04 15:01 pzad           Bugnote Added: 0001540                       
-08-06-04 15:02 pzad           Description Updated                          
-08-06-04 15:02 pzad           Steps to Reproduce Updated                    
-08-06-04 15:02 pzad           Additional Information Updated                    
-08-06-04 15:02 pzad           Status                   assigned => feedback
-08-30-04 12:04 pzad           Bugnote Added: 0001667                       
-08-30-04 12:04 pzad           Resolution               open => not a bug   
-08-30-04 12:04 pzad           Status                   feedback => resolved
+08-31-04 01:01 babayaga       New Bug                                      
+08-31-04 12:27 tiwai          Bugnote Added: 0001670                       
+08-31-04 20:10 babayaga       File Added: asound.state                     
+08-31-04 20:11 babayaga       File Added: modprobe.conf                    
+08-31-04 20:11 babayaga       File Added: modules.conf                     
+08-31-04 20:16 babayaga       Bugnote Added: 0001674                       
+09-01-04 02:15 babayaga       Bugnote Added: 0001676                       
 ======================================================================
 
 
