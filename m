@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000889]: wrong routings of channels for 5.1 ICH5-Onboard-Card
-Date: Wed, 9 Feb 2005 16:57:25 +0100
-Message-ID: <117a252fece93875b74c65cacaa61432@bugtrack.alsa-project.org>
+Date: Wed, 9 Feb 2005 17:11:06 +0100
+Message-ID: <565128d72cadbb62d1f57c071f6513b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 950E0262
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 16:57:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54D6826B
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:11:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=889> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - lib
 Issue ID:                   889
@@ -34,10 +34,12 @@ Category:                   mixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             02-08-2005 13:18 CET
-Last Modified:              02-09-2005 16:57 CET
+Last Modified:              02-09-2005 17:11 CET
 ======================================================================
 Summary:                    wrong routings of channels for 5.1 ICH5-Onboard-Card
 Description: 
@@ -56,16 +58,15 @@ The submitter reports that the sound output goes to the wrong places
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 02-09-05 16:13 
-----------------------------------------------------------------------
-0 [ICH5           ]: ICH4 - Intel ICH5
-                     Intel ICH5 with ALC655 at 0xfa101000, irq 17
-
-----------------------------------------------------------------------
  tiwai - 02-09-05 16:57 
 ----------------------------------------------------------------------
 It seems that ICH4/5/6 sets the slot 3/4/7/8/6/9 for L/R/SL/SR/C/LFE as
 well as codecs.  OK, let's remove the routing in ICH4.conf.
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 17:11 
+----------------------------------------------------------------------
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -75,6 +76,10 @@ Date Modified  Username       Field                    Change
 02-09-05 12:34 jdthood        Note Added: 0003550                          
 02-09-05 16:13 jdthood        Note Added: 0003554                          
 02-09-05 16:57 tiwai          Note Added: 0003555                          
+02-09-05 17:11 tiwai          Status                   new => resolved     
+02-09-05 17:11 tiwai          Resolution               open => fixed       
+02-09-05 17:11 tiwai          Assigned To               => tiwai           
+02-09-05 17:11 tiwai          Note Added: 0003556                          
 ======================================================================
 
 
