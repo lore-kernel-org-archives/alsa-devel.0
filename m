@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000451]: Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
-Date: Tue, 9 Nov 2004 16:31:30 +0100
-Message-ID: <ef04f5a07294b70713cb5c328afdfe3f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000482]: alsa.m4 AM_PATH_ALSA broken with libraries starting with m
+Date: Tue, 9 Nov 2004 16:32:51 +0100
+Message-ID: <3a7ca8102edb6311cc551210a06a561a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BEF02A9
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:31:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5E5BB2B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:32:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=451> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=482> 
 ======================================================================
-Reported By:                cuardin
-Assigned To:                perex
+Reported By:                nate
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   451
-Category:                   alsactl
+Project:                    ALSA - lib
+Issue ID:                   482
+Category:                   general
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-18-2004 10:00 CEST
-Last Modified:              11-09-2004 16:31 CET
+Date Submitted:             09-05-2004 22:26 CEST
+Last Modified:              11-09-2004 16:32 CET
 ======================================================================
-Summary:                    Corruption in /etc/asound.state causes alsa to hang
-when restoring mixer levels during reboot.
+Summary:                    alsa.m4 AM_PATH_ALSA broken with libraries starting
+with m
 Description: 
-If the file /etc/asound.state is corrupted, for example due to a
-file-system corruption after a hard-reboot, the boot process will halt
-when attempting to restore the mixer settings. Pressing Ctrl-C will resume
-the boot process. 
+The macro for checking the path of the alsa lib is broken.  If the existing
+LIBS includes any libraries that start with 'm', they are clobbered:
 
-Upon shutdown, the process will halt when attempting to store mixer
-settings requiring a hard reboot.
+56: 	  LIBS=`echo $LIBS | sed 's/-lm//'`
+57:   	  LIBS=`echo $LIBS | sed 's/-ldl//'`
+58:  	  LIBS=`echo $LIBS | sed 's/-lpthread//'`
+59: 	  LIBS=`echo $LIBS | sed 's/ //'`
+60:       LIBS="$ALSA_LIBS $LIBS"
 
-A work-around is to delete the offending file. 
+There should be a better way of accomplishing this.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 09-08-04 18:44 
+ tiwai - 09-08-04 17:17 
 ----------------------------------------------------------------------
-This patch (included in CVS) fixes your problem:
+We can simply remove these sed replacements.  It's nothing but an
+optimization...
 
-Index: conf.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf.c,v
-retrieving revision 1.69
-diff -u -r1.69 conf.c
---- conf.c      25 Feb 2004 11:24:29 -0000      1.69
-+++ conf.c      8 Sep 2004 16:41:59 -0000
-@@ -813,6 +813,7 @@
-        case '}':
-        case '[':
-        case ']':
-+       case '\\':
-                return LOCAL_UNEXPECTED_CHAR;
-        case '\'':
-        case '"':
+----------------------------------------------------------------------
+ tiwai - 09-16-04 12:00 
+----------------------------------------------------------------------
+Removed these sed lines on cvs.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 10:00 cuardin        New Issue                                    
-08-18-04 10:00 cuardin        File Added: asound.state                     
-08-19-04 04:54 eradicator     Issue Monitored: eradicator                    
-09-08-04 18:44 perex          Status                   new => resolved     
-09-08-04 18:44 perex          Resolution               open => fixed       
-09-08-04 18:44 perex          Assigned To               => perex           
-09-08-04 18:44 perex          Note Added: 0001739                          
-11-09-04 16:31 tiwai          Status                   resolved => closed  
+09-05-04 22:26 nate           New Issue                                    
+09-08-04 17:17 tiwai          Note Added: 0001735                          
+09-16-04 12:00 tiwai          Status                   new => resolved     
+09-16-04 12:00 tiwai          Resolution               open => fixed       
+09-16-04 12:00 tiwai          Assigned To               => tiwai           
+09-16-04 12:00 tiwai          Note Added: 0001770                          
+11-09-04 16:32 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
