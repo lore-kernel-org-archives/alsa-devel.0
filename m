@@ -1,20 +1,13 @@
-From: GCZ <geeceezee@free.fr>
+From: William <walsac3@liam2.demon.co.uk>
 Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 19:07:32 +0200
+Date: Tue, 10 Aug 2004 18:16:12 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411900D4.7090806@free.fr>
-References: <200408100636.i7A6aMAo030159@www4.pobox.sk>	 <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi>	 <4118ED57.50302@free.fr> <1092155904.861.3.camel@mindpipe>
-Reply-To: geeceezee@free.fr
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200408101716.SAA04883@liam2.demon.co.uk>
+References: <1092155904.861.3.camel@mindpipe>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EEEF3110
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 19:07:33 +0200 (MEST)
-Received: from [192.168.1.21] (auteuil-3-82-66-93-25.fbx.proxad.net [82.66.93.25])
-	by postfix4-2.free.fr (Postfix) with ESMTP id 7825F1BBB13
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 19:07:32 +0200 (CEST)
+Received: from liam2.demon.co.uk (liam2.demon.co.uk [158.152.170.203])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B41B2110
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 19:15:07 +0200 (MEST)
 In-Reply-To: <1092155904.861.3.camel@mindpipe>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,33 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Lee Revell <rlrevell@joe-job.com>, geeceezee@free.fr
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Lee Revell wrote:
-
+> GCZ wrote:
+>> Should I refrain from playing UT2004 just because Nvidia's drivers,
+>> which work beautifully, are closed-source? Should I refrain from
+>> playing Quake 3 because ALSA doesn't work with it?
+> 
 > No, this is why ALSA provides OSS emulation, so every legacy app doesn't
-> have to be recoded.  For gaming you should use the closed-source Nvidia
-> drivers and ALSA's OSS emulation.  I don't think anyone can make a
+> have to be recoded.
 
-Which doesn't work on my setup. I posted a message on alsa-user I think, 
-and I don't remember exactly what error message I got, but I think it 
-had something to do with mmap. Nobody replied to my message. At one 
-point, going through so many documents, ML posts, Q&A's, trial and error 
-steps just to make it work isn't worth it, if no improvement comes out 
-of it. If Takashi is indeed interested in my feedback, at least it will 
-be productive.
+One big problem is that some parts of ALSA's OSS emulation have been buggy
+for a long time, especially its /dev/sequencer emulation:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=28
+[First reported August 2002, present since before Alsa 0.9.0]
 
-By the way, while drivers themselves need improvements in some cases 
-(such as mine), I cannot stress enough that the user experience must be 
-improved as well. The configuration file is cryptic to me - and that's 
-just one example.
-
-> serious argument that Nvidia should open source their drivers, they
-> shouldn't have to disclose their IP just to have their devices work in
-> Linux, and you know what you are getting when you buy the hardware.
-
-I'm glad to read that. Let's not get into zealotry.
+William
 
 
 -------------------------------------------------------
