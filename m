@@ -1,12 +1,14 @@
-From: =?gb2312?q?Roc=20Wu?= <cooloney@yahoo.com.cn>
-Subject: An driver error when I using aplay!
-Date: Fri, 4 Jun 2004 17:13:03 +0800 (CST)
+From: Adam Tla/lka <atlka@pg.gda.pl>
+Subject: Re: Alsa and dmix
+Date: Fri, 4 Jun 2004 13:17:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040604091303.19549.qmail@web15207.mail.bjs.yahoo.com>
+Message-ID: <20040604111724.GD11182@sunrise.pg.gda.pl>
+References: <200406012111.i51LBcv5018979@sunrise.pg.gda.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200406012111.i51LBcv5018979@sunrise.pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,68 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Matthias Sauppe <matthias.sauppe@gmx.de>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks:
+On Tue, Jun 01, 2004 at 11:04:18PM +0200, Matthias Sauppe wrote:
+> I tried various configurations of alsa, but couldn't run both xmms and
+> Quake. Could you please give me a hint how you managed that? I didn't
+> find any useful information with Google :/
+I must generate patch for latest ALSA CVS sources but I have no time for
+it now.
+But meantime you can download my version of aoss-lib which seems
+to work with ALSA-1.0.5 too:
 
-I compiled the alsa-utils. Then I run the aplay on my
-board like this:
+ http://www.pg.gda.pl/~atlka/_O_/alsa-20040302-aoss.tgz
 
-# ./aplay -t wav -f U8 -r 22050 alarm.wav
-Playing WAVE 'alarm.wav' : Unsigned 8 bit, Rate 22050
-Hz, Mono
-ALSA lib
-pcm_plug.c:727:(snd_pcm_plug_hw_refine_schange) Unable
-to find an usable access for 'default'
-aplay: set_params:832: Sample format non available
+Try: configure; make; make install 
 
-And the kernel driver will dump out the message as
-below:
-Badness in aaci_pcm_close at sound/arm/aaci.c:404
-[<c012ead0>] (aaci_pcm_close+0x0/0x90) from
-[<c011333c>] (snd_pcm_release_file+0
-x58/0x8c)
- r5 = C03852BC  r4 = C03CDC88
-[<c01132e4>] (snd_pcm_release_file+0x0/0x8c) from
-[<c0113764>] (snd_pcm_release+
-0x8c/0x110)
- r7 = C03852BC  r6 = C7BF8820  r5 = C0388A00  r4 =
-C0388B18
-[<c01136d8>] (snd_pcm_release+0x0/0x110) from
-[<c0061e1c>] (__fput+0x58/0x138)
- r7 = C7DEB1E8  r6 = C7FF5260  r5 = C7AFD7FC  r4 =
-C7BF8820
-[<c0061dc4>] (__fput+0x0/0x138) from [<c0060824>]
-(filp_close+0x84/0x90)
- r7 = 00000001  r6 = C7FEAA00  r5 = 00000000  r4 =
-C7BF8820
-[<c00607a0>] (filp_close+0x0/0x90) from [<c002e700>]
-(put_files_struct+0x8c/0xe8
-)
- r6 = 00000004  r5 = 00000001  r4 = C7FEAA00
-[<c002e674>] (put_files_struct+0x0/0xe8) from
-[<c002f314>] (do_exit+0x188/0x398)
- r7 = 00000100  r6 = C00169C0  r5 = C0390360  r4 =
-C00169A0
-[<c002f18c>] (do_exit+0x0/0x398) from [<c002f55c>]
-(next_thread+0x0/0x28)
- r7 = 00000001  r6 = 00000001  r5 = 402DDE10  r4 =
-402DDE10
-[<c002f544>] (sys_exit+0x0/0x18) from [<c001e300>]
-(ret_fast_syscall+0x0/0x2c)
+I tested it with quake1, quake2, quake3, bzflag, JavaSoundDemo, mozilla,
+xmms, mpg123 and it seems to work.
+Of course it is not perfect and has bugs for sure.
 
-Please give me some hints about the problem.
+For example ShogoDemo disables sound after playing part of
+starting song. If I start it with ALSA_OSS_DEBUG I get SDL sound timeout
+error:
+write(7, 0x80c8660, 16384) -> 16384Orig enter SELECT nfds: 8, timeout: 10.000000wfds: 00000001
+Changed enter SELECT nfds: 9, timeout: 10.000000
+rfds: 000000001
+wfds: 000000000
+Changed exit SELECT nfds: 9, timeout: 10.000000
+rfds: 000000001
+wfds: 000000000
+Orig exit SELECT nfds: 8, timeout: 10.000000
+wfds: 00000000
+SDL: Audio timeout - buggy audio driver? (disabled)
 
-Thanks a lot
-Best Regards
+CHANGES: OSS buffer size is fixed - if you take a look at OSS doc you
+should notice that an app could get buffer size and num of fragments
+before setting dsp params and after that operation they cannot change.
+ALSA can change its buffer size while we change sound format or speed
+so it is not compatible with OSS behaviour in this case.
+OSS mixer calls on opened dsp stream are not emulated so far because
+of problem with determining proper mixer element. Also in dmix case
+we have no virtual mixer.
 
-
-
-_________________________________________________________
-Do You Yahoo!? 
-œ”” œ‰Ã´–°£ø—≈ª¢µÁ” ◊‘÷˙¿©»›£°
-http://cn.rd.yahoo.com/mail_cn/tag/10m/*http://cn.mail.yahoo.com/event/10m.html
+Regards
+-- 
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
