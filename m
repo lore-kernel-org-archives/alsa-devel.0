@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Mark Knecht <markknecht@comcast.net>
 Subject: Re: snd-rme9652 fails
-Date: Mon, 22 Dec 2003 13:43:27 +0100 (CET)
+Date: Mon, 22 Dec 2003 04:58:21 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312221340010.8959@pnote.perex-int.cz>
+Message-ID: <1072097901.1852.9.camel@Wizard.knechthome.com>
 References: <200312221238.hBMCcqlt015332@dhin.linuxaudiosystems.com>
+	 <Pine.LNX.4.58.0312221340010.8959@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312221238.hBMCcqlt015332@dhin.linuxaudiosystems.com>
+In-Reply-To: <Pine.LNX.4.58.0312221340010.8959@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,52 +18,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Sergey Vlasov <vsu@altlinux.ru>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Dec 2003, Paul Davis wrote:
-
-> i'm a bit late to the party, but ...
+On Mon, 2003-12-22 at 04:43, Jaroslav Kysela wrote:
+> > how did this code imply a duplicate control? removing it is
+> > *wrong*, utterly wrong. it is an important control for some purposes.
 > 
-> >> > --- rme9652.c.ORIGINAL	Thu Dec 18 23:43:36 2003
-> >> > +++ rme9652.c	Thu Dec 18 23:45:12 2003
-> >> > @@ -1618,7 +1618,6 @@
-> >> >  RME9652_SPDIF_RATE("IEC958 Sample Rate", 0),
-> >> >  RME9652_ADAT_SYNC("ADAT1 Sync Check", 0, 0),
-> >> >  RME9652_ADAT_SYNC("ADAT2 Sync Check", 0, 1),
-> >> > -RME9652_ADAT_SYNC("ADAT3 Sync Check", 0, 2),
-> >> >  RME9652_TC_VALID("Timecode Valid", 0),
-> >> >  RME9652_PASSTHRU("Passthru", 0)
-> >> >  };
-> >> 
-> >> Yes, duplicated controls ARE NOT ALLOWED NOW. Applied. Thanks.
+> It seems that this control is available only for 9652 not for 9632 
+> version. The same control was used and defined twice for 9652 while with 
+> 9632 was probably useless:
 > 
-> how did this code imply a duplicate control? removing it is
-> *wrong*, utterly wrong. it is an important control for some purposes.
 
-It seems that this control is available only for 9652 not for 9632 
-version. The same control was used and defined twice for 9652 while with 
-9632 was probably useless:
+9632 or 9636? Doesn't the 9632 use a different driver? (snd-hdsp?)
 
-....
+I reported a bug long ago about the /proc file system for the Hammerfall
+Light (9636) showing ADAT3 for sync instead of spdif. Maybe this is
+related?
 
-static snd_kcontrol_new_t snd_rme9652_adat3_check =
-RME9652_ADAT_SYNC("ADAT3 Sync Check", 0, 2);
-
-....
-
-       if (rme9652->ss_channels == RME9652_NCHANNELS)
-               if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_rme9652_adat3_check, rme9652))) < 0)
-                       return err;
-
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
