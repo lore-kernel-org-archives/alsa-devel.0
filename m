@@ -1,17 +1,13 @@
-From: Dominique Dumont <domi.dumont@free.fr>
-Subject: Re: 1.0.6rc1 packages
-Date: Thu, 05 Aug 2004 22:38:22 +0200
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: [ANN] AudioScience HPK version 2.88 released
+Date: Thu, 05 Aug 2004 16:56:01 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87y8kt48xt.fsf@free.fr>
-References: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
+Message-ID: <20040805165606.19381.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix4-1.free.fr (postfix4-1.free.fr [213.228.0.62])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFB2B220
-	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 22:38:42 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz> (Jaroslav
- Kysela's message of "Wed, 4 Aug 2004 20:51:08 +0200 (CEST)")
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,27 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: eblennerhassett@audioscience.com
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela <perex@suse.cz> writes:
+See the release notes and get the tarball from here
+http://www.audioscience.com/internet/download/linux.htm
 
-> 	the 1.0.6rc1 ALSA packages are available for testing.
+Many updates to specific card features, plus support for Linux kernel 2.6.x.
 
-Compiles fine with debian's kernel 2.6.7.
 
-So far:
-- PCM spdif on intel8x0 and nforce2 is working fine
-- AC3 spdif on nforce2 (ALC650F) is still not working (No change wrt
-  1.0.4. See bug 411 [1] for details)
-- PCM spdif on emu10k1 (SBlive digital live 5.1) is severily distorted
-  when playing musing. Speech is fine. (BTW, why has the spdif device
-  changed from hw:0,3 to hw:0,2 ? )
+Also on the same page can be found the patch for alsa 1.0.5a 
+(I know, I'm lagging behind)
 
-HTH
+regards
 
-[1] https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000411
+Eliot Blennerhassett
+AudioScience Inc.
+
+
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
