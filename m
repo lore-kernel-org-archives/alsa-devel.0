@@ -1,13 +1,12 @@
-From: "TG Kang" <tg@egosys.net>
+From: Peter Zubaj <pzad@pobox.sk>
 Subject: Re: looking for developer/s
-Date: Mon, 2 Aug 2004 21:00:05 +0900
+Date: Mon, 2 Aug 2004 14:12:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <00ae01c47888$401e7600$174d10ac@tg>
-References: <007001c46acf$fc79ed00$174d10ac@tg>	<s5h4qnt5ytq.wl@alsa2.suse.de>	<005d01c47824$9411b240$174d10ac@tg> <s5h8ycxu8xm.wl@alsa2.suse.de> <410E1D54.8060705@superbug.demon.co.uk>
+Message-ID: <200408021212.i72CC6lB018573@www1.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: base64
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,55 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: tg@egosys.net
+Cc: alsa-devel@lists.sourceforge.net, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-SGksDQoNCj4gPiBBcyBtZW50aW9uZWQgYmVmb3JlLCBQcm9kaWd5Ny4xIGlzIGFscmVhZHkgc3Vw
-cG9ydGVkIGluIHNvbWUgbGV2ZWwgYnkNCj4gPiBpY2UxNzI0IGRyaXZlci4gIElmIHlvdSBmaW5k
-IGFueSBsYWNraW5nIGZlYXR1cmVzLCBwbGVhc2UgbGV0IHVzDQo+ID4ga25vdy4gIFdpdGggYSBu
-ZWNlc3NhcnkgZGF0YXNoZWV0IG9yIHNhbXBsZSBkcml2ZXIgY29kZXMsIHdlIGNhbiBmaXgNCj4g
-PiB0aGUgZXhpc3RpbmcgZHJpdmVyLiAgQWxzbywgaWYgeW91IGhhdmUgc2ltaWxhciBwcm9kdWN0
-cyAoZS5nLiBiYXNlZA0KPiA+IG9uIHRoZSBzYW1lIGNoaXBzZXQpLCBpdCB3b3VsZCBiZSBlYXN5
-IHRvIHBvcnQgaXQuICBUaGUgaWNlMTcxMi1iYXNlZA0KPiA+IGNhcmRzIHdvdWxkbid0IGJlIHRv
-byBoYXJkIHRvIHN1cHBvcnQsIHRvby4gIE0tQXVkaW8gYW5kIFRlcnJhdGVjDQo+ID4gYm9hcmRz
-IGFyZSBzdXBwb3J0ZWQgYXMgd2VsbC4NCj4gPiANCj4gPiBGaXJlV2lyZSBpcyBiZWNvbWluZyBu
-b3cgYSAnaG90IHRoZW1lJy4gIEN1cnJlbnRseSwgc29tZSBwZW9wbGUgc2VlbQ0KPiA+IHdvcmtp
-bmcgb24gdGhpcyBidXQgb24gZGlmZmVyZW50IHByb2R1Y3RzLiAgSUlSQywgRGFuaWVsIFdhZ25l
-ciBhbmQNCj4gPiBUaG9tYXMgQ2hhcmJvbm5lbCBnZXQgaW52b2x2ZWQuICBQbGVhc2UgbGV0IHVz
-IGtub3cgaWYgYW55IG90aGVyDQo+ID4gcGVvcGxlIGFyZSB3b3JraW5nLCB0b28uICBJJ2QgbGlr
-ZSB0byBrZWVwIHRoZSBkaXNjdXNzaW9uIG92ZXINCj4gPiBmaXJld2lyZSBzdXBwb3J0IGFzIG9w
-ZW4gYXMgcG9zc2libGUuDQoNCldlIGFscmVhZHkgdGFsa2VkIHRvIG9uZSBvZiB0aG9zZSB5b3Ug
-YXJlIG1lbnRpb25pbmcuDQpBbmQsIGFzIHNhaWQgb24gdGhlIGluaXRpYWwgcG9zdGluZywgbm90
-IG9ubHkgdGhlIHR3byBwcm9kdWN0cyBhcmUgb24gdGhlIGxpc3QuDQogDQo+ID4gDQo+ID4gVVNC
-IGF1ZGlvIGlzIGFscmVhZHkgc3VwcG9ydGVkIC0tIHdoZW4gdGhlIGRldmljZSBmb2xsb3dzICpy
-ZWFsbHkqIFVTQg0KPiA+IGF1ZGlvL21pZGkgc3BlYywgaXQgc2hvdWxkIHdvcmsgYXMgaXQgaXMu
-ICBJZiBhbnkgdmVuZG9yLXNwZWNpZmljDQo+ID4gd29ya2Fyb3VuZCBpcyBuZWVkZWQsIHdlIG5l
-ZWQgdG8gYWRkIGEgcXVpcmsgZW50cnkuICBJZiBhIGZpcm13YXJlIGlzDQo+ID4gbmVlZGVkLCB0
-aGUgcHJvYmxlbSB3aWxsIGJlIG11Y2ggaGFyZGVyLi4uDQo+ID4gDQo+ID4gDQo+ID4gUmVnYXJk
-aW5nIHRoZSBzdXBwb3J0IGZyb20gRWdvc3lzIC0gaG93IHdlbGwgaXMgaXQgc3VwcG9zZWQgdG8g
-YmU/DQo+ID4gQ2FuIHdlIGdldCB0aGUgZnVsbCBkYXRhc2hlZXQsIGFuZC9vciBXaW4vTWFjIGRy
-aXZlciBjb2Rlcz8NCj4gPiBIb3cgYWJvdXQgdGhlIHRlc3QgaGFyZHdhcmU/DQoNCkF0IGZpcnN0
-LCBvbmNlIHdlIGZpbmQgZGV2ZWxvcGVyKHMpIHdobyBpcyB3b3JraW5nIG9uIG9yIHdpbGxpbmcg
-dG8gd29yayBvbiB3cml0aW5nIGRyaXZlciBmb3Igb3VyIHByb2R1Y3QsIHRoZSBkYXRhc2hlZXQg
-YXMgd2VsbCBhcyB0aGUgdGVzdCBoYXJkd2FyZSB3aWxsIGJlIG9mZmVyZWQuDQpUaGF0J3MgdGhl
-IHdheSB3ZSBjaG9vc2UgaG93IHRvIG9mZmVyIGRhdGFzaGVldHMgYW1vbmcgdGhlIHBvc3NpYmxl
-IHdheXMuDQoNCj4gPiANCj4gPiANCj4gPiB0aGFua3MsDQo+ID4gDQo+ID4gLS0NCj4gPiBUYWth
-c2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+IEFMU0EgRGV2ZWxvcGVyIC0gd3d3LmFsc2EtcHJvamVj
-dC5vcmcNCj4gPiANCj4gDQo+IE15IFF1ZXN0aW9ucyBhcmUgdGhlIHNhbWUgYXMgVGFrYXNoaSdz
-LiBUaGUgYmVzdCBpbml0aWFsIHN1cHBvcnQgdGhhdCANCj4gRWdvc3lzIGNvdWxkIGdpdmUgdGhl
-IGxpbnV4IGNvbW11bml0eSBpcyB0aGUgcHVibGlzaGluZyBvZiBkYXRhc2hlZXRzLg0KPiBZb3Ug
-c2VlbSB0byBrZWVwIG9mZmVyaW5nICJzdXBwb3J0IiBidXQgbmV2ZXIgYWN0dWFsbHkgZGVsaXZl
-ciBhbnkgDQo+IGFuc3dlcnMgdG8gb3VyIHF1ZXN0aW9ucywgb3IgYW55IGRhdGFzaGVldHMuDQo+
-IA0KDQpTYW1lIGFzIGFib3ZlLg0KVGhhdCdzIHdoeSB3ZSBwb3N0ZWQgdGhpcyBtZXNzYWdlICJs
-b29raW5nIGZvciBkZXZlbG9wZXIiLg0KDQpXZSBhcmUgb3BlbiB0byBhbnkgcXVlc3Rpb24gb3Ig
-c3VnZ2VzdGlvbi4NCg0KVGhhbmtzIGFuZCByZWdhcmRzLA0KDQoNClRHDQogDQovKg0KICogICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIA0KICogS2FuZywgVGFlZ29vDQogKg0KICogUiZEIGRl
-cHQuIC8gU29mdHdhcmUgRW5naW5lZXINCiAqDQogKiBFZ28gU3lzdGVtcyBJbmMuICAgICAgICAg
-ICAgICAgICAgDQogKg0KICogU2VvdWwsIEtvcmVhLg0KICoNCiAqIFQ6ICs4Mi0yLTIxNjQtOTgz
-Mg0KICoNCiAqIHd3dy5lc2ktcHJvLmNvbSANCiAqIHd3dy5hdWRpb3RyYWsubmV0DQogKiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICANCiAqLw0KDQo=
+Then, try to get Takashi Iwai :-)
 
+
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
+alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
+somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
