@@ -1,14 +1,10 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Re: [linux-audio-dev] initial (incomplete) version of ALSA Audio API tutorial
-Date: Thu, 21 Mar 2002 20:58:19 -0500
+From: ard@waikato.ac.nz
+Subject: Concurrent access to sound device (speak freely and games)
+Date: 22 Mar 2002 16:06:43 +1200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200203220158.UAA13237@renoir.op.net>
-References: <Pine.GSO.3.96.1020321171553.1775D-100000@yin.interaccess.com>
-Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA25757
-	for <alsa-devel@alsa-project.org>; Fri, 22 Mar 2002 02:58:30 +0100
-In-Reply-To: Your message of "Thu, 21 Mar 2002 17:28:04 CST."
-             <Pine.GSO.3.96.1020321171553.1775D-100000@yin.interaccess.com>
+Message-ID: <udvk7s59rfw.fsf@area.cc.waikato.ac.nz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,26 +13,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: kevin@kevindumpscore.com
-Cc: linux-audio-dev@music.columbia.edu, alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> (the term "PCM" is OK once you get into this
->> stuff, but ...). 
->
->	How about adding PCM to your Terminology section then?
 
-Done.
+Hello folks.
 
->> The following document represents it current state. I
->> would like to ask for feedback even though it is very incomplete.
->
->	What is the license for this documentation and its examples?
+The Windows users surrounding me are asking why I can't run "talkie" apps
+such as Speakfreely and Openh323 at the same time as Quake3, Wolfenstein,
+etc.  "Windows can do it" is a pretty difficult argument to counter, and
+they bring it up whenever we're having one of those discussions about the
+relative merits of the two OSs.  You know the ones.
 
-the code is GPL. the text, i am not sure about at this time. i will at
-least add a copyright message for now. 
 
---p
+RTCW blocks when opening "/dev/dsp".  The FAQ is fairly belligerent about
+what to do, so I gave this a try:
+
+    echo "wolf.x86 0 0 non-block" > /proc/asound/card0/pcm0p/oss
+
+After that Wolf doesn't block on the open, but receives EBUSY and runs
+without sound.
+
+SDL addressed this by mixing all connections.  Is there a way to present
+OSS-emulated ALSA audio devices to applications so that they think they
+have exclusive access?
+
+I sure hope so.
+
+-- 
+_________________________________________________________________________
+Andrew Donkin                                      Hamilton,  New Zealand
 
 _______________________________________________
 Alsa-devel mailing list
