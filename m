@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
-Date: Fri, 13 Aug 2004 02:03:44 +0200 (CEST)
+Subject: [ALSA - driver 0000437]: Problem with the spec file
+Date: Fri, 13 Aug 2004 09:56:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040813000344.743DB1102F@server.perex-int.cz>
+Message-ID: <20040813075622.5B5941102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8063289
-	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 02:03:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A81D11BD
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 09:56:22 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6B1A017A69
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 09:56:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,54 +23,43 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000437
 ======================================================================
-Reported By:                snaketails
+Reported By:                croiset
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     435
-Category:                   PCI - intel8x0
+Bug ID:                     437
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             2.4.7-10
 ======================================================================
-Date Submitted:             08-12-2004 02:50 CEST
-Last Modified:              08-13-2004 02:03 CEST
+Date Submitted:             08-13-2004 09:56 CEST
+Last Modified:              08-13-2004 09:56 CEST
 ======================================================================
-Summary:                    No current support for the ICH6R & ALC880 devices
+Summary:                    Problem with the spec file
 Description: 
-As this is a new mobo, there is no driver configuration that supports this
-newer buss interface devices, so there is no sound from the mobo.
-The inability for the mobo to run SATA under Linux is not an issue here,
-as I am using the SiS SATA driver, only issue is sound
+There is a problem the spec file generated with the configure.
+
+you might replace this line in alsa-driver.spec.in :
+/lib/modules/*/kernel/*
+by :
+/lib/modules/*/misc/*
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 08-12-2004 07:32 CEST 
-----------------------------------------------------------------------
-I think in ALSA 1.0.6rc2 is driver for HD audio (azx module). Try it.
-
-----------------------------------------------------------------------
- snaketails - 08-13-2004 02:03 CEST 
-----------------------------------------------------------------------
-Thank you, but I am currently using "Compiled-in" ALSA support.
-I guess I will have to remove the Alsa support from the Kernel to be able
-to compile? I may look at doing this, this weekend.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-04 02:50 snaketails     New Bug                                      
-08-12-04 02:50 snaketails     Distribution              => Gentoo          
-08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
-08-12-04 07:32 pzad           Bugnote Added: 0001551                       
-08-13-04 02:03 snaketails     Bugnote Added: 0001560                       
+08-13-04 09:56 croiset        New Bug                                      
+08-13-04 09:56 croiset        Kernel Version            => 2.4.7-10        
 ======================================================================
 
 
