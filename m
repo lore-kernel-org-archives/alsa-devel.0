@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000982]: Sound output locked at 48khz (lower freqs play faster, sound higher)
-Date: Sat, 12 Mar 2005 12:49:55 +0100
-Message-ID: <809c7b26fe2aacf26f011dd29dcd5878@bugtrack.alsa-project.org>
+Date: Sat, 12 Mar 2005 12:51:02 +0100
+Message-ID: <fd7c23e536be7c329262b7fa05a4a1ab@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 22975153
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 12:49:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9433F153
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 12:51:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been UPDATED.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=982> 
 ======================================================================
 Reported By:                Minami Manami
-Assigned To:                
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   982
@@ -34,12 +34,14 @@ Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
 Date Submitted:             03-12-2005 12:19 CET
-Last Modified:              03-12-2005 12:49 CET
+Last Modified:              03-12-2005 12:51 CET
 ======================================================================
 Summary:                    Sound output locked at 48khz (lower freqs play
 faster, sound higher)
@@ -54,39 +56,15 @@ samples per second.
 ======================================================================
 
 ----------------------------------------------------------------------
- Minami Manami - 03-12-05 12:27 
-----------------------------------------------------------------------
-Turns out that dmesg didn't just say that... it also said:
-Via 686a/8233/8235 audio driver 1.9.1-ac4-2.5
-via82cxxx: Six Channel Audio available
-PCI: Setting latency timer of device 000:00:11.5 to 64
-ac97_codec: AC97 Audio Codec, id: ALG16 (ALC200/200P)
-via82cxxx: board https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 at
-0x1400, IRQ 9
-Then the rest follows.
-
-In make menuconfig, the following options were enabled:
-Device Drivers > Sound > ALSA > 
-Sequencer Support
-OSS Mixer API
-OSS PCM API
-OSS Sequencer API
-Device Drivers > Sound > ALSA > Generic Devices
-Dummy (/dev/null) soundcard
-Device Drivers > Sound > ALSA > PCI Devices
-VIA 82C686A/B, 8233/8235 AC97 Controller
-Device Drivers > Sound > OSS > 
-VIA 82C686 Audio Codec
-EDIT: This issue has existed since.... ALSA 1.0.6 and earlier, when I
-tried out the 2.6.8 kernels to the 2.6.10, and now the 2.6.11.
-
-
-
-----------------------------------------------------------------------
  pzad - 03-12-05 12:35 
 ----------------------------------------------------------------------
 I think, this is not alsa problem, because you are not using alsa - you are
 using oss driver (via82cxxx is oss driver).
+
+----------------------------------------------------------------------
+ perex - 03-12-05 12:51 
+----------------------------------------------------------------------
+Yes, we cannot solve bugs in OSS code, move to ALSA at first...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +76,10 @@ Date Modified  Username       Field                    Change
 03-12-05 12:49 perex          Project                  ALSA - firmware => ALSA -
 driver
 03-12-05 12:49 perex          Category                  => PCI - via82xx   
+03-12-05 12:51 perex          Status                   new => resolved     
+03-12-05 12:51 perex          Resolution               open => not an issue
+03-12-05 12:51 perex          Assigned To               => perex           
+03-12-05 12:51 perex          Note Added: 0003897                          
 ======================================================================
 
 
