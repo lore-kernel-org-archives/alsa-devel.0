@@ -1,16 +1,13 @@
-From: Richard Bown <bownie@bownie.com>
-Subject: Re: sequencing ALSA ports and clients
-Date: Wed, 10 Apr 2002 17:40:30 +0100
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: Re: RE: UDA1341TS (iPAQ H3X00) sound driver for ALSA
+Date: Wed, 10 Apr 2002 18:45:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204101643.AFH98801@msgdirector1.onetel.net.uk>
-References: <200204101341.AFH83147@msgdirector1.onetel.net.uk> <s5hit6zlhmx.wl@alsa2.suse.de>
-Reply-To: bownie@bownie.com
+Message-ID: <Pine.BSF.4.44.0204101837280.13966-100000@fest.stud.fee.vutbr.cz>
+References: <s5hhemjlhdp.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hit6zlhmx.wl@alsa2.suse.de>
+In-Reply-To: <s5hhemjlhdp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,37 +16,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "Hicks, Jamey" <Jamey.Hicks@compaq.com>, Nicolas Pitre <nico@cam.org>, alsa-devel@lists.sourceforge.net, Linux-arm-kernel@lists.arm.linux.org.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 10 Apr 2002, Takashi Iwai wrote:
 
-Takashi Iwai wrote:
+> > > > I would prefer that the ALSA driver for the iPAQ have a
+> > > different name
+> > > > than the OSS driver for the iPAQ, since they have different
+> > > interfaces.
+> > > > How about h3600-alsa?
+> > >
+> > > No.  Please pick a relevant name.  H3600 is not the only
+> > > device with an UDA1341 out there.
+> >
+> > The alsa driver mentioned is iPAQ specific.  It would be useful to restructure it in the way the other SA11x0/UDA134x driver is structured.
+>
+> the alsa modules have "snd-" prefix, so they don't conflict with
+> others anyway.
+>
+> IMO, if the driver is iPAQ specific, i prefer a simple name such as
+> snd-ipaq or snd-ipaq-h3x00.  if a part of the driver will be shared by
+> others, then we can split it to a lowlevel module with a proper device
+> name.
 
-> what do you mean exactly "full polyphony"?
+Hmm ,I expected comments to driver quality and behavior, not to its
+name :).
 
-I just meant getting your hands on the full polyphony of the synth.
-Now I've realised that the sequencer interface (sensibly) treats the
-on-board synth like any other MIDI device.
+This is first public release of the driver. UDA1341TS specific part is
+placed in "snd-uda1341" module and should be ARM-independent. The rest is
+placed in snd-h3600-uda1341. There you could find H3x00 specific parts
+same as a bit of SA1100 DMA code. The SA1100 DMA stuff could be moved into
+independent module (like sa1100-audio in OSS), but it's just "few lines"
+of code now.
 
-> it's not difficult at all to reimplement the driver to allow
-> multi-notes-on-a-channel, but i don't think it's common.
+The driver could be structuded better of course, but I don't have any
+other ARM and/or UDA1341 device to be able to exactly select parts which
+are common.
 
-No, that's fine.  I got a good reply from Matthias on LAD about the same
-subject and as I said to him I think I'm still suffering under the old OSS
-delusion that synth devices were still somehow "special" and the application
-had to deal with its own voice allocations.  I was looking for a complicated
-explanation to the behaviour I was seeing in my undoubtedly buggy code!
+This first release is intended for basic functionality tests. I think,
+there is enough time to discuss final names of modules.
 
-It took me so long to get my head around that OSS synth idea that I'm having
-trouble letting go.
+Bye
 
-> four ports are provided to support more than 16 channels.
+--
 
-This is good stuff.  It all makes sense now.
-
-Thanks,
-R
--- 
-http://www.all-day-breakfast.com/rosegarden
-http://www.bownie.com
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 tomas.kasparek@[seznam.cz,volny.cz]
+	 linux@fit.vutbr.cz
+	student FIT VUT Brno
