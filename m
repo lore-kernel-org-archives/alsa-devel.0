@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000634]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
-Date: Sun, 7 Nov 2004 21:28:52 +0100
-Message-ID: <9a8edafd2ded640b1c9c922f080b468d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000635]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
+Date: Sun, 7 Nov 2004 21:41:50 +0100
+Message-ID: <0acc4b01df7623734b38e01e974f652f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2720B2C5
-	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 21:28:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2745823E
+	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 21:41:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,13 +24,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=634> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=635> 
 ======================================================================
 Reported By:                betak
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   634
+Issue ID:                   635
 Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
@@ -39,8 +39,8 @@ Status:                     new
 Distribution:               Fedora Core 2
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-07-2004 21:28 CET
-Last Modified:              11-07-2004 21:28 CET
+Date Submitted:             11-07-2004 21:41 CET
+Last Modified:              11-07-2004 21:41 CET
 ======================================================================
 Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
 converters and GPIO not ready (0x1)
@@ -63,10 +63,10 @@ Can you help me to setup this modem driver  ? How can I create /dev/modem
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-07-04 21:28 betak          New Issue                                    
-11-07-04 21:28 betak          File Added: alsa.txt                         
-11-07-04 21:28 betak          Distribution              => Fedora Core 2   
-11-07-04 21:28 betak          Kernel Version            => 2.6.9           
+11-07-04 21:41 betak          New Issue                                    
+11-07-04 21:41 betak          File Added: alsa.txt                         
+11-07-04 21:41 betak          Distribution              => Fedora Core 2   
+11-07-04 21:41 betak          Kernel Version            => 2.6.9           
 ======================================================================
 
 
