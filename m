@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: control info.
-Date: Thu, 26 Sep 2002 11:29:54 +0900
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: USB Audio/Midiman - partial success
+Date: Thu, 26 Sep 2002 09:47:50 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D927122.2000904@boosthardware.com>
-References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>	<s5hvg5jwgvk.wl@alsa2.suse.de>	<3D7912A2.1000908@boosthardware.com> <s5hy9abzefz.wl@alsa2.suse.de> <3D8C277C.2070808@boosthardware.com> <3D9090D6.6010402@boosthardware.com> <3D924CD9.9010503@boosthardware.com> <3D925B2F.9060704@boosthardware.com>
+Message-ID: <Pine.HPX.4.33n.0209260943040.4746-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.31.0209252301320.29794-100000@lorien.wv.mentorg.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <Pine.LNX.4.31.0209252301320.29794-100000@lorien.wv.mentorg.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,24 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: "Pikus, Fedor" <fedor_pikus@mentorg.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Where can I get a list of the available controls for each module?
+Fedor G. Pikus wrote:
+> On Wed, 25 Sep 2002, Takashi Iwai wrote:
+> > At Tue, 24 Sep 2002 20:03:54 -0700 (PDT),
+> > Fedor G. Pikus <fedorp@wv.mentorg.com> wrote:
+> > >
+> > > > then the complete callback is called properly but likely
+> > > > snd_pcm_period_elapsed() is not called.
+> > >
+> > > That's right, it's not called:
+> > > for (i = 0; i < urb->number_of_packets; i++) {
+> > >         cp = (unsigned char *)urb->transfer_buffer + urb->iso_frame_desc[i].offset;
+> > >         if (urb->iso_frame_desc[i].status) /* active? hmm, skip this */
+> > >                 continue;
+> >
+> > could you check what value is stored in the status field?
+> > i guess some negative value, which represents an error.
+> Always -75.
 
-I would like to add this to the online docs.
+-75 = -EOVERFLOW = babble
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+I think this indicates that the device sends more data than the driver
+expects. Probably the transfer buffer size is calculated for some lower
+sample rate?
 
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
+
+HTH
+Clemens
 
 
 
