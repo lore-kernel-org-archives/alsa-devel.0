@@ -1,13 +1,25 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Mon, 21 Feb 2005 19:57:46 +0100
-Message-ID: <8ed59cf0ac0decd5c4cb29100d7c05ad@bugtrack.alsa-project.org>
+From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Subject: [PATCH 3/5] emu10k1 SB Live: Master volume and front channels via
+ fxbus 8,9
+Date: Mon, 21 Feb 2005 20:45:07 +0100
+Message-ID: <421A3A43.90309@glocalnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DDDA1147
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 19:57:46 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------060709090306070408020505"
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B1B615A
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 20:45:09 +0100 (MET)
+Received: from mulder.hem.za.org (unknown [84.217.26.207])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id ECA7E57F53
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 20:45:08 +0100 (MET)
+Received: from skinner.hem.za.org ([192.168.0.2])
+	by mulder.hem.za.org with esmtp (Exim 4.34)
+	id 1D3JUR-0000a2-TU
+	for alsa-devel@alsa-project.org; Mon, 21 Feb 2005 20:45:07 +0100
+Received: from localhost ([127.0.0.1])
+	by skinner.hem.za.org with esmtp (Exim 4.34)
+	id 1D3JUR-0001aR-Pn
+	for alsa-devel@alsa-project.org; Mon, 21 Feb 2005 20:45:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,79 +32,81 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------060709090306070408020505
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
-======================================================================
-Reported By:                1g0R
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   848
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.8-ac8
-======================================================================
-Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              02-21-2005 19:57 CET
-======================================================================
-Summary:                    Intel HDA (C-Media 9880) SPDIF Out
-Description: 
-When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
-output signal on SPDIF (Coax).
-I try:
-aplay -D hw:0,1 (<--digital out) else.wav
-the command run normally, but no output on spdif out.the same with xmms
-(with ALSA, on hw:0,1).
+front_fx.patch:
 
-======================================================================
+Adds left and right front channel inputs using fxbus 8 and 9 and "Front" 
+playback and capture controls.
 
-----------------------------------------------------------------------
- 1g0R - 02-19-05 19:51 
-----------------------------------------------------------------------
-Thanks tiwai, i will try it.
+Signed-Off-By: Mikael Magnusson <mikma@users.sourceforge.net>
 
-Have a nice day.
-Best regards:
-1g0R
+--------------060709090306070408020505
+Content-Type: text/x-patch;
+ name="front_fx.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="front_fx.patch"
 
-----------------------------------------------------------------------
- 1g0R - 02-21-05 19:57 
-----------------------------------------------------------------------
-Hi,
+diff -u alsa-kernel/pci/emu10k1/emufx.c alsa-kernel/pci/emu10k1/emufx.c
+--- alsa-kernel/pci/emu10k1/emufx.c	21 Feb 2005 13:34:04 -0000
++++ alsa-kernel/pci/emu10k1/emufx.c	21 Feb 2005 13:34:24 -0000
+@@ -934,8 +934,8 @@
+ 	return err;
+ }
+ 
+-#define SND_EMU10K1_GPR_CONTROLS	43
+-#define SND_EMU10K1_INPUTS		10
++#define SND_EMU10K1_GPR_CONTROLS	46
++#define SND_EMU10K1_INPUTS		12
+ #define SND_EMU10K1_PLAYBACK_CHANNELS	8
+ #define SND_EMU10K1_CAPTURE_CHANNELS	4
+ 
+@@ -1489,7 +1489,7 @@
+ 
+ 	strcpy(icode->name, "SB Live! FX8010 code for ALSA v1.2 by Jaroslav Kysela");
+ 	ptr = 0; i = 0;
+-	/* we have 10 inputs */
++	/* we have 12 inputs */
+ 	playback = SND_EMU10K1_INPUTS;
+ 	/* we have 6 playback channels and tone control doubles */
+ 	capture = playback + (SND_EMU10K1_PLAYBACK_CHANNELS * 2);
+@@ -1513,6 +1513,8 @@
+ 	OP(icode, &ptr, iMACINT0, GPR(7), C_00000000, FXBUS(FXBUS_PCM_LFE), C_00000004);
+ 	OP(icode, &ptr, iMACINT0, GPR(8), C_00000000, C_00000000, C_00000000);	/* S/PDIF left */
+ 	OP(icode, &ptr, iMACINT0, GPR(9), C_00000000, C_00000000, C_00000000);	/* S/PDIF right */
++	OP(icode, &ptr, iMACINT0, GPR(10), C_00000000, FXBUS(FXBUS_PCM_LEFT_FRONT), C_00000004);
++	OP(icode, &ptr, iMACINT0, GPR(11), C_00000000, FXBUS(FXBUS_PCM_RIGHT_FRONT), C_00000004);
+ 
+ 	/* Raw S/PDIF PCM */
+ 	ipcm->substream = 0;
+@@ -1659,6 +1661,21 @@
+ 	VOLUME_ADD(icode, &ptr, playback + 5, 7, gpr);
+ 	snd_emu10k1_init_mono_control(controls + i++, "LFE Digital Playback Volume", gpr++, 100);
+ 
++	/* Front Playback Volume */
++	for (z = 0; z < 2; z++)
++		VOLUME_ADD(icode, &ptr, playback + z, 10 + z, gpr + z);
++	snd_emu10k1_init_stereo_control(controls + i++, "Front Playback Volume", gpr, 100);
++	gpr += 2;
++
++	/* Front Capture Volume + Switch */
++	for (z = 0; z < 2; z++) {
++		SWITCH(icode, &ptr, tmp + 0, 10 + z, gpr + 2);
++		VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
++	}
++	snd_emu10k1_init_stereo_control(controls + i++, "Front Capture Volume", gpr, 0);
++	snd_emu10k1_init_mono_onoff_control(controls + i++, "Front Capture Switch", gpr + 2, 0);
++	gpr += 3;
++
+ 	/*
+ 	 *  Process inputs
+ 	 */
 
-how can i remove ",v" from the end of filename?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-25-05 15:28 1g0R           New Issue                                    
-01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
-01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
-01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
-01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
-01-28-05 02:56 nc             Issue Monitored: nc                          
-01-28-05 03:07 nc             Note Added: 0003423                          
-01-28-05 19:01 1g0R           Note Added: 0003434                          
-02-04-05 15:02 tiwai          Note Added: 0003507                          
-02-04-05 19:36 1g0R           Note Added: 0003514                          
-02-04-05 19:41 tiwai          Note Added: 0003515                          
-02-05-05 06:06 mab            Issue Monitored: mab                         
-02-05-05 08:46 1g0R           Note Added: 0003518                          
-02-14-05 22:27 1g0R           Note Added: 0003612                          
-02-14-05 22:28 1g0R           Note Added: 0003613                          
-02-18-05 18:55 tiwai          Note Added: 0003658                          
-02-19-05 19:51 1g0R           Note Added: 0003670                          
-02-21-05 19:57 1g0R           Note Added: 0003683                          
-======================================================================
-
-
+--------------060709090306070408020505--
 
 
 -------------------------------------------------------
