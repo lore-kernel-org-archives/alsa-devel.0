@@ -1,13 +1,16 @@
-From: "David E. Storey" <dave@tamos.net>
-Subject: Re: dsnoop
-Date: Fri, 16 May 2003 20:59:19 -0400 (EDT)
+From: Javier Conti <av@labcc.ch>
+Subject: Re: Fix for dell inspiron 8100 maestro3
+Date: Sat, 17 May 2003 03:58:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0305162052380.26455@grue.tamos.net>
-References: <E19Gmd1-00018k-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <200305170358.33252.av@labcc.ch>
+References: <200305161632.46562.av@labcc.ch> <s5hhe7vdjgc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19Gmd1-00018k-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <s5hhe7vdjgc.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,40 +19,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 16 May 2003 17:01, Takashi Iwai wrote:
+> are you sure that the patch is correct?
+> your patch adds the same vendor an device id with the existing
+> inspiron 8000 (1028:00a4).
 
-When I don't specify a duration, it writes a frame of audio and
-terminates. Not terribly useful. Not sure if this is the normal mode of
-operation, but it doesn't meet my criteria for sure. I need to be able to
-record indefinitely. (which, of course, depends on storage capacity.)
+I'm not sure. As stated in my previous posting, I'm not a developer. The only 
+thing I'm sure of, is that without that patch, I can't use irda and the 
+soundcard together, with this patch, I can.
 
-d!
+I suppose the FIXME tag is there because nobody in the alsa team has a dell 
+inspiron 8100 to test the driver on. If this is the case, and if my patch is 
+not correct (which is more than possible) I'd be happy to cooperate to test 
+other solutions (maybe someone could tell me how to spot the right device 
+id?).
 
-On Fri, 16 May 2003, Paul Davis wrote:
+Having to reboot with a soundless kernel just to update my calendar and 
+addressbook is very frustrating...
 
-> >Would anyone be so kind as to offer up an example of using dsnoop? I'd
-> >like to use jack to perform all kinds on monitoring on a device and use
-> >an alsa app, namely arecord, to do the actual recording. I've tried
-> >using the jack plugin and while it works, when I hit CTRL-C on arecord
-> >to stop recording, it pretty much halts jack.
->
-> just as a matter of interest, why not use the jack capture client?
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by: If flattening out C++ or Java
-> code to make your application fit in a relational database is painful,
-> don't do it! Check out ObjectStore. Now part of Progress Software.
-> http://www.objectstore.net/sourceforge
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
+Thanks, Javier
+-- 
+Javier Conti - Labcc
+Tel: +41(0)91 690 0703
+Fax: +41(0)91 690 0702
+
 
 
 -------------------------------------------------------
