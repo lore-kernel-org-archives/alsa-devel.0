@@ -1,15 +1,19 @@
-From: Andy Wingo <wingo@pobox.com>
-Subject: Alsa module configuration
-Date: Fri, 30 Aug 2002 00:26:48 -0400
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: HDSP CardBus + Toshiba Satellite : found magic patch !
+Date: 30 Aug 2002 13:54:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020830002648.H1816@cebreiro.nc.rr.com>
-References: <3D6EE68D.44C094B8@localnet.com>
+Message-ID: <1030708500.7462.12.camel@satellite.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3D6EE68D.44C094B8@localnet.com>
+Received: from mel-rto3.wanadoo.fr (smtp-out-3.wanadoo.fr [193.252.19.233])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA08190
+	for <alsa-devel@alsa-project.org>; Fri, 30 Aug 2002 13:56:38 +0200
+Received: from mel-rta7.wanadoo.fr (193.252.19.61) by mel-rto3.wanadoo.fr (6.5.007)
+        id 3D49FC7D00B8DEBD for alsa-devel@alsa-project.org; Fri, 30 Aug 2002 13:56:00 +0200
+Received: from satellite.undata.org (193.252.186.224) by mel-rta7.wanadoo.fr (6.5.007)
+        id 3D6EE7BA00037929 for alsa-devel@alsa-project.org; Fri, 30 Aug 2002 13:56:00 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,48 +22,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey alsa kernel wizards,
+After several weeks of active struggle I finally identified my problem !
+The CardBus Hdsp wasn't correctly configured by kernel/pcmcia-cs. It got
+an IRQ but no I/O port. Furthermore lspci -M reported a strange
+"crossing error" while enumerating the buses. The problem, as Paul had
+stated, was a kernel issue : the kernel did not handle correctly certain
+types of intel PCI bridges (among which the 82801xx series that can be
+found on my Toshiba Satellite 3000-514 laptop).
+A patch from Ivan Kokshaysky for the latest stable kernel (2.4.19) can
+be found here:
+http://groups.google.fr/groups?hl=fr&lr=&ie=UTF-8&selm=20020816194825.A7086%40jurassic.park.msu.ru&rnum=2
 
-Is there any way we can get rid of this?
+It's a great day for me, as I can now definitively trash away my windows partition...
+Thanks Ivan, and of course thank you Paul !
 
-On Thu, 29 Aug 2002, frank pirrone wrote to linux-audio-user:
+Thomas
 
-> *** grab the Alsa 0.9.0rc3 tarball and compile it
-> *** Configure /etc/modules.conf as follows:
-> 
-> # ALSA native device support
-> alias char-major-116 snd
-> options snd snd_major=116 snd_cards_limit=1
-> alias snd-card-0 snd-cs4236
-> options snd-cs4236 snd_id="Crystal Audio" snd_index=0 snd_isapnp=1
-> # OSS/Free compatibility setup
-> alias char-major-14 soundcore
-> alias sound-service-0-0 snd-mixer-oss
-> alias sound-service-0-1 snd-seq-oss
-> alias sound-service-0-3 snd-pcm-oss
-> alias sound-service-0-8 snd-seq-oss
-> alias sound-service-0-12 snd-pcm-oss
-> alias sound-slot-0 snd-card-0
 
-It just struck me how every alsa install has to do this. I am not a
-kernel wiz, but it would be so much nicer if (somehow) this just worked:
-
-alias snd-card-0 snd-cs4236
-
-And maybe an options line with the snd_id or something. But it seems
-that these are the only crucial pieces of information. I know, I know,
-alsaconf is supposed to help. Still. Is there any way this can be
-simpler?
-
-Just wondering, yo.
-
-wingo.
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This sf.net email is sponsored by: OSDN - Tired of that same old
+cell phone?  Get a new here for FREE!
+https://www.inphonic.com/r.asp?r=sourceforge1&refcode1=vs3390
