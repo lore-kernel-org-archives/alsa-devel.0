@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 18:17:59 +0100
-Message-ID: <58df12d5a6719a9294a3622d7da58db8@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 18:38:50 +0100
+Message-ID: <2cc35420814c5e4d2a407251606ccd24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D991229B
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 18:17:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7378829B
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 18:38:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 18:17 CET
+Last Modified:              12-26-2004 18:38 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -54,22 +54,6 @@ driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
 successful in all other regards install of Fedora FC3.
 
 ======================================================================
-
-----------------------------------------------------------------------
- misnagid - 12-26-04 18:07 
-----------------------------------------------------------------------
-Could ArtsD be causing this proble?  I see notes about the latest ArtsD
-being buggy but that downfrading to older version didn't help.
-
-G-d, I really don't know what to here.  What should I di regarding this
-ArtsD thing?  Nothing?  I am getting no sounds at all right now, whether
-it be KDE sounds, applications sounds, sounds from playback of whatever
-kinds of mucic files, gurnischt!  Nothing!
-
-Could use you help I admit!
-
-Thanks,
-Jerry
 
 ----------------------------------------------------------------------
  misnagid - 12-26-04 18:17 
@@ -87,6 +71,16 @@ putzin around and I really dont like bothering you either.  Sorry!!!
 Yours,
 Jerr
 
+----------------------------------------------------------------------
+ misnagid - 12-26-04 18:38 
+----------------------------------------------------------------------
+If I were to pay you for support, I would have no problem with that if it
+would help to get this card up and working fast.  Or a newer upper scale
+card is fine too like the Audigy 4 Pro, or whatever you think best.  I am
+just trying to help us both out here, I appreciate your help a lot!!
+
+Jerr
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -100,6 +94,7 @@ Date Modified  Username       Field                    Change
 12-26-04 17:47 misnagid       Note Added: 0002939                          
 12-26-04 18:07 misnagid       Note Added: 0002940                          
 12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
 ======================================================================
 
 
