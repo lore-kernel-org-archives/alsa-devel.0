@@ -1,15 +1,12 @@
-From: James Wright <james@jigsawdezign.com>
-Subject: Re: Moving from OSS to ALSA
-Date: Sun, 11 Jan 2004 21:39:24 +0000
+From: Gustavo Guillermo <gustavo@compunauta.com>
+Subject: [REPORT as said in via82xx.c] ad1980 Asus A7V8X-X Working
+Date: Mon, 12 Jan 2004 06:12:04 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040111213924.742eb657.james@jigsawdezign.com>
-References: <20040111181311.7726a5b5.james@jigsawdezign.com>
-	<200401111828.i0BISvRO025390@dhin.linuxaudiosystems.com>
+Message-ID: <20040112.6120400.1307345935@linux.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO_8859-15
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200401111828.i0BISvRO025390@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,72 +15,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, gus_est_prgms@yahoo.com
 List-Id: alsa-devel@alsa-project.org
 
+I'm use via82xx module for ad1980 Asus A7V8X-X with option dxs_support=3D=
+1=20
+and weird sounds gets out, master channel volume seems to be Surround,=20
+and VIA DXS (first one) needs to be at 75% to hear full volume, other=20
+positions doesn't work.
 
-   Ultimately i think with ALSA we could do away with the concept of calling update_jsound() in the game loop and instead use asyncrosnous mode and use update_jsound() as my callback function? Although i'd need to get ALSA to call update_jsound() when we are in our last period, so we can write another one ahead... any ideas?  
+PCM sound from whatever is a little bit weird because conversion to 48k,=
+=20
+but just fine, if we use arts, we can set sampling to 48k and everything=
+=20
+is perfect.
 
-   In the meantime can i not use  snd_pcm_avail_update() to determine if we need to write a period ahead?;
+I will try to modify, by my self surround by master channel from=20
+via82xx.c, but when I finish the read of documentation of api (I'm newbe=
+)
 
-  avail = snd_pcm_avail_update(pcm_handle);
-  if (avail >= (buffer_size - period_size)){ 
-      mix_sound(MIXBUFFER, period_size);   // mix a period wirth of channels
-      ret = snd_pcm_writen(pcm_handle, (void *) &MIXBUFFER, period_size); // write it
-  }
-
-  
-
-
-Many Thanks,
-James 
-
-
-On Sun, 11 Jan 2004 13:28:57 -0500
-Paul Davis <paul@linuxaudiosystems.com> wrote:
-
-> >   I am currently looking into rewriting our current OSS sound routines to nat
-> >ive ALSA, as it seems OSS will invariably be phased out now that the ALSA driv
-> >er is distrubuted with the Linux kernel, plus ALSA seems to have a great numbe
-> >r of benefits for us. 
-> >
-> >  Our current sound routines perform software sound sample mixing for use in g
-> >ames. All the  mixing and transfers happen in a non-blocking function called u
-> >pdate_jsound() which we call every 1/60th of a second in our main game loop. W
-> >e find the total size of the hardware ring buffer and use MMAP writes to it. W
-> >e effectively break the ring buffer into 1024 byte "fragments", and always kee
-> >p one whole fragment ahead to ensure no underruns. We do this by the follwing:
-> 
-> best method:
-> -----------
-> 1) set the avail_min s/w parameter to the period size
-> 2) call poll on the file descriptor(s) returned from
->    snd_pcm_poll_descriptors(). when you return from poll,
->    you know you have at least one period of data ready (possibly
->    more, so you need to check).
-> 3) use snd_pcm_mmap_*() to handle mmap access. ALSA
->    doesn't provide simple access to mmap'ped buffers 
->    because this could not work for some classes of
->    ALSA devices.
-> 
-> survey the source of JACK (jackit.sf.net) for some ideas.
-> 
-> however, that probably won't work so well for you it doesn't integrate
-> into your "game loop". for that, use snd_pcm_delay() to find out the
-> gap between the application (s/w) pointer and the hardware pointer,
-> then use the snd_pcm_mmap_*() calls from there.
-> 
-> its a lot more complex under ALSA. but thats because ALSA provides a
-> lot of things that OSS does not, and doing everything via the simple
-> system call interface that OSS uses makes it impossible to provide
-> them "appropriately".
-> 
-> if you were writing software for musicians and studios rather than
-> games and consumer media apps, check out JACK for a different, simpler
-> and more powerful API (that uses ALSA internally).
-> 
-> --p
-> 
+Best regards.
 
 
 -------------------------------------------------------
