@@ -1,15 +1,13 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: [patch] patch_cm9880.c to support multi-channel
-Date: Fri, 25 Mar 2005 01:53:06 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6C6@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
+Date: Thu, 24 Mar 2005 20:13:32 +0100
+Message-ID: <598ceaf84c9a8c94d4e8f0e30a67b9e2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
-Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE2C22A1
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 20:09:42 +0100 (MET)
-Content-Class: urn:content-classes:message
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7001E1D4
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 20:13:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,24 +21,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Summary: <fix multi-channel for model=3D=3Dfull>
-Signed-off-by: ChenLi Tien<cltien@cmedia.com.tw>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
+======================================================================
+Reported By:                Daniel
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1012
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   trivial
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-24-2005 19:15 CET
+Last Modified:              03-24-2005 20:13 CET
+======================================================================
+Summary:                    TI AC97 volume bit 5 sets bits 0-4
+Description: 
+Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
+bits.
+The Texas Instruments datasheet contains a footnote for the 5th and 13th
+bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
+"Special function volume settings. If bit is set, then the 5 volume bits
+implemented are set to all ones."
+check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
+results in bits 0-4 (8-12) set.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-24-05 19:44 
+----------------------------------------------------------------------
+Does the attached patch work?
+
+----------------------------------------------------------------------
+ Daniel - 03-24-05 20:13 
+----------------------------------------------------------------------
+Yes, it does.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-24-05 19:15 Daniel         New Issue                                    
+03-24-05 19:44 tiwai          Note Added: 0004196                          
+03-24-05 19:45 tiwai          File Added: ac97-res-check.diff                   
+
+03-24-05 20:13 Daniel         Note Added: 0004199                          
+======================================================================
 
 
-Hi,
-
-The patch_cm9880.c can't play side/C/B channels from front panel jacks. =
-I fixed it by adding select pin.
-
-I also added controls in the allout_init array. I wonder what this model =
-for because it is the same as basic_init except the line-in is used as =
-output in allout_init.
-
-I plan to add controls for 5/6 stacks ,  which lacks front panel but has =
-rear 5/6 jacks. Any idea?
-
-Sincerely,
-ChenLi Tien
 
 
 -------------------------------------------------------
