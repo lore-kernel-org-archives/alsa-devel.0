@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000428]: unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
-Date: Thu, 12 Aug 2004 11:54:00 +0200 (CEST)
+Date: Thu, 12 Aug 2004 12:06:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040812095400.60C703B005@server.perex-int.cz>
+Message-ID: <20040812100653.B51111102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4F5027D
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 11:54:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 238DA192
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 12:06:54 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CB946175BB
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 12:06:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +25,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000428
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000428
 ======================================================================
 Reported By:                svetljo
 Assigned To:                perex
@@ -38,7 +41,7 @@ Distribution:               Mandrake cooker
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             08-06-2004 21:15 CEST
-Last Modified:              08-12-2004 11:54 CEST
+Last Modified:              08-12-2004 12:06 CEST
 ======================================================================
 Summary:                    unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
 Description: 
@@ -85,6 +88,17 @@ sound/core/pcm_native.c:3067: warning: implicit declaration of function
 ----------------------------------------------------------------------
 Are you using 1.0.6rc2 sources? Lines does not match.
 
+----------------------------------------------------------------------
+ svetljo - 08-12-2004 12:06 CEST 
+----------------------------------------------------------------------
+it might be a bit earlier,
+or a bit later version i use cvs
+last changes were to:
+usb/usx2y/usbusx2yaudio.c
+pci/au88x0/
+
+but it's the same with 1.0.6-rc1 and a bit earlier versions
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -96,6 +110,7 @@ Date Modified  Username       Field                    Change
 08-12-04 11:35 perex          Bugnote Added: 0001553                       
 08-12-04 11:42 svetljo        Bugnote Added: 0001554                       
 08-12-04 11:54 perex          Bugnote Added: 0001555                       
+08-12-04 12:06 svetljo        Bugnote Added: 0001556                       
 ======================================================================
 
 
