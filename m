@@ -1,12 +1,14 @@
-From: Amaury Jacquot <sxpert@esitcom.org>
-Subject: kernel 2.6 bug
-Date: Thu, 18 Dec 2003 22:26:10 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: snd-rme9652 fails
+Date: Thu, 18 Dec 2003 23:52:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FE21B72.8090200@esitcom.org>
+Message-ID: <20031218225205.GA534@tuba.home>
+References: <3FE02BA2.8020900@emt.iis.fhg.de> <3FE1676C.40806@ifrance.com> <1071738574.2020.24.camel@localhost.localdomain> <1071777684.26967.5.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <1071777684.26967.5.camel@cmn37.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,106 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Patrice Tisserand <Patrice.Tisserand@ircam.fr>, Benouille <benouille@ifrance.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi
-I tried the 2.6 kernel today, and have a bug
+On Thu, Dec 18, 2003 at 12:01:24PM -0800, Fernando Pablo Lopez-Lezcano wrote:
+> > > I confirm this fact:
+> > > with kernel 2.4.23 and alsa 1.0rc2, the module snd-rme9652 can't be loaded
+> > > althought the "old"  rme digi 9652 is perfectly working with alsa 0.9.6
+> >
+> > I have found after a lot of printk that if I comment lines 1645 to 1648
+> > of rme9652.c, the driver could be load and I can play music with jMax ;)
+> > 
+> > Here are the part to comment:
+> > if (rme9652->ss_channels == RME9652_NCHANNELS)
+> >   if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_rme9652_adat3_check, rme9652))) < 0)
+> >      return err;
+> 
+> Did you by any chance printk what is the value of ss_channels? So that
+> the error can be corrected?
+> 
 
-using snd-usb-audio with the oss emulation I use a gstreamer based 
-player (I know, I could use alsasink) :D
+I don't have that hardware and I'm not absolutely sure here
+- but it looks like a bug for me.
 
-notes:
-* uhci USB
-* no modules support (everything in)
-* preemptible kernel on
+martin
 
-when preemptible is off, I only get the
 
-"cannot submit datapipe for urb <blah>" messages as shown below
-
-restarting the application gives sound again
-
-the application works in 2.4.23 with alsa 1.0.0-rc2
-
-I get the following trace :
-
-bad: scheduling while atomic!
-Call Trace:
-  [<c011bdea>] schedule+0x70a/0x710
-  [<c028ce43>] snd_pcm_oss_get_formats+0x23/0xc0
-  [<c011a206>] recalc_task_prio+0xb6/0x220
-  [<c011c0ec>] wait_for_completion+0x8c/0xf0
-  [<c011be40>] default_wake_function+0x0/0x20
-  [<c011be40>] default_wake_function+0x0/0x20
-  [<c0261871>] hcd_unlink_urb+0x1a1/0x2b0
-  [<c02a78e0>] snd_complete_urb+0x0/0xa0
-  [<c02615c0>] hcd_submit_urb+0x110/0x190
-  [<c026218a>] usb_unlink_urb+0x2a/0x30
-  [<c02a7ad8>] deactivate_urbs+0xb8/0xc0
-  [<c02a7d08>] snd_usb_pcm_trigger+0x58/0x60
-  [<c02963b9>] snd_pcm_do_stop+0x19/0x20
-  [<c0296002>] snd_pcm_action_single+0x22/0x50
-  [<c0296120>] snd_pcm_action+0xf0/0x100
-  [<c0296444>] snd_pcm_stop+0x14/0x20
-  [<c029ac9d>] snd_pcm_update_hw_ptr+0x13d/0x1e0
-  [<c029e785>] snd_pcm_lib_write1+0x5d5/0x5f0
-  [<c0292d41>] resample_expand+0x271/0x340
-  [<c0292dcf>] resample_expand+0x2ff/0x340
-  [<c029e812>] snd_pcm_lib_write+0x72/0xa0
-  [<c029e0f0>] snd_pcm_lib_write_transfer+0x0/0xc0
-  [<c028c090>] snd_pcm_oss_write3+0x50/0xb0
-  [<c0290721>] snd_pcm_plug_write_transfer+0x81/0xf0
-  [<c028c421>] snd_pcm_oss_write2+0xb1/0x130
-  [<c028c668>] snd_pcm_oss_write1+0x1c8/0x200
-  [<c0299aa7>] snd_pcm_kernel_playback_ioctl+0x27/0x30
-  [<c028e6c6>] snd_pcm_oss_write+0x36/0x50
-  [<c0152f6c>] vfs_write+0x9c/0x100
-  [<c015304d>] sys_write+0x2d/0x50
-  [<c01092f7>] syscall_call+0x7/0xb
-
-bad: scheduling while atomic!
-Call Trace:
-  [<c011bdea>] schedule+0x70a/0x710
-  [<c011a206>] recalc_task_prio+0xb6/0x220
-  [<c011c0ec>] wait_for_completion+0x8c/0xf0
-  [<c011be40>] default_wake_function+0x0/0x20
-  [<c011be40>] default_wake_function+0x0/0x20
-  [<c0261871>] hcd_unlink_urb+0x1a1/0x2b0
-  [<c02a78e0>] snd_complete_urb+0x0/0xa0
-  [<c02615c0>] hcd_submit_urb+0x110/0x190
-  [<c026218a>] usb_unlink_urb+0x2a/0x30
-  [<c02a7ad8>] deactivate_urbs+0xb8/0xc0
-  [<c02a7d08>] snd_usb_pcm_trigger+0x58/0x60
-  [<c02963b9>] snd_pcm_do_stop+0x19/0x20
-  [<c0296002>] snd_pcm_action_single+0x22/0x50
-  [<c0296120>] snd_pcm_action+0xf0/0x100
-  [<c0296444>] snd_pcm_stop+0x14/0x20
-  [<c029ac9d>] snd_pcm_update_hw_ptr+0x13d/0x1e0
-  [<c029e785>] snd_pcm_lib_write1+0x5d5/0x5f0
-  [<c0292d41>] resample_expand+0x271/0x340
-  [<c0292dcf>] resample_expand+0x2ff/0x340
-  [<c029e812>] snd_pcm_lib_write+0x72/0xa0
-  [<c029e0f0>] snd_pcm_lib_write_transfer+0x0/0xc0
-  [<c028c090>] snd_pcm_oss_write3+0x50/0xb0
-  [<c0290721>] snd_pcm_plug_write_transfer+0x81/0xf0
-  [<c028c421>] snd_pcm_oss_write2+0xb1/0x130
-  [<c028c668>] snd_pcm_oss_write1+0x1c8/0x200
-  [<c0299aa7>] snd_pcm_kernel_playback_ioctl+0x27/0x30
-  [<c028e6c6>] snd_pcm_oss_write+0x36/0x50
-  [<c0152f6c>] vfs_write+0x9c/0x100
-  [<c015304d>] sys_write+0x2d/0x50
-  [<c01092f7>] syscall_call+0x7/0xb
-
-cannot submit datapipe for urb 0, err = -22
-cannot submit datapipe for urb 0, err = -22
-cannot submit datapipe for urb 0, err = -22
-cannot submit datapipe for urb 1, err = -22
-cannot submit datapipe for urb 0, err = -22
-cannot submit datapipe for urb 1, err = -22
-cannot submit datapipe for urb 0, err = -22
-cannot submit datapipe for urb 1, err = -22
-
+--- rme9652.c.ORIGINAL	Thu Dec 18 23:43:36 2003
++++ rme9652.c	Thu Dec 18 23:45:12 2003
+@@ -1618,7 +1618,6 @@
+ RME9652_SPDIF_RATE("IEC958 Sample Rate", 0),
+ RME9652_ADAT_SYNC("ADAT1 Sync Check", 0, 0),
+ RME9652_ADAT_SYNC("ADAT2 Sync Check", 0, 1),
+-RME9652_ADAT_SYNC("ADAT3 Sync Check", 0, 2),
+ RME9652_TC_VALID("Timecode Valid", 0),
+ RME9652_PASSTHRU("Passthru", 0)
+ };
 
 
 -------------------------------------------------------
