@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000847]: alsa-tools 1.0.8 fail to compile on ppc64
-Date: Mon, 24 Jan 2005 21:11:09 +0100
-Message-ID: <2146b05a42ca55f24bd5bbf73aca6125@bugtrack.alsa-project.org>
+From: Brad Midgley <bmidgley@xmission.com>
+Subject: Re: alsa-lib plugin devel
+Date: Mon, 24 Jan 2005 13:08:25 -0700
+Message-ID: <41F555B9.3040608@xmission.com>
+References: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>	<41F522DE.30702@xmission.com>	<s5hk6q2u659.wl@alsa2.suse.de>	<1106585584.8058.61.camel@pegasus>	<s5hhdl6u52n.wl@alsa2.suse.de>	<1106587386.8058.69.camel@pegasus> <s5hmzuyend9.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B7AC212
-	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 21:11:10 +0100 (MET)
+In-Reply-To: <s5hmzuyend9.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Marcel Holtmann <marcel@holtmann.org>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=847> 
-======================================================================
-Reported By:                Markus Rothe
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - tools
-Issue ID:                   847
-Category:                   ac3dec
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-======================================================================
-Date Submitted:             01-24-2005 21:09 CET
-Last Modified:              01-24-2005 21:11 CET
-======================================================================
-Summary:                    alsa-tools 1.0.8 fail to compile on ppc64
-Description: 
-Hi,
+> Agreed, I/O plugin can set itself as the list candidate.
+> 
+> 
+>> In the case of a2dp the option
+>>"type a2dp" should result in asking the plugin if its devices (or maybe
+>>this device) are listed or not. An additional option looks for me like
+>>over-configuration.
+> 
+> 
+> Well, I think it's useful to have this as an option, too.
+> If you have your own favorite configuration, you can add it to the
+> list of supported devices.
+> The attribute should be off as default, of course.
 
-I'm just trying to compile alsa-tools 1.0.8 on my G5, which runs Gentoo
-Linux.
+This sounds great. It's your project, so I shouldn't jump in and do it 
+but let me know if you do want me to get in there. As long as you intend 
+to make this change, it makes the plugin development worthwhile from my 
+perspective. :)
 
-Here comes the output:
+One question... will the client need to change how they query for 
+devices? How much latitude do you have while keeping the api stable?
 
-checking for ALSA CFLAGS... 
-checking for ALSA LDFLAGS...  -lasound -lm -ldl -lpthread
-checking for libasound headers version >= 1.0.0... found.
-checking for snd_ctl_open in -lasound... yes
-configure: creating ./config.status
-config.status: creating Makefile
-config.status: executing depfiles commands
-if powerpc64-unknown-linux-gnu-gcc -DPACKAGE_NAME=\"\"
--DPACKAGE_TARNAME=\"\" -DPACKAGE_VERSION=\"\" -DPACKAGE_STRING=\"\"
--DPACKAGE_BUGREPORT=\"\" -DPACKAGE=\"cspctl\" -DVERSION=\"0.2.0\"
--DSTDC_HEADERS=1 -DHAVE_LIBASOUND=1  -I. -I.   -I/usr/include/fltk-1.1 
--mcpu=G5 -O3 -pipe -fsigned-char -mabi=altivec  -MT cspctl.o -MD -MP -MF
-".deps/cspctl.Tpo" \
-  -c -o cspctl.o `test -f 'cspctl.c' || echo './'`cspctl.c; \
-then mv -f ".deps/cspctl.Tpo" ".deps/cspctl.Po"; \
-else rm -f ".deps/cspctl.Tpo"; exit 1; \
-fi
-powerpc64-unknown-linux-gnu-gcc  -mcpu=G5 -O3 -pipe -fsigned-char
--mabi=altivec   -L/usr/lib/fltk-1.1  -lasound -lm -ldl -lpthread -o cspctl
- cspctl.o  -lasound -lm -ldl -lpthread
-cspctl.o(.toc+0xe8): undefined reference to
-`__invalid_size_argument_for_IOC'
-collect2: ld returned 1 exit status
-make: *** [cspctl] Error 1
-
-======================================================================
-
-----------------------------------------------------------------------
- Markus Rothe - 01-24-05 21:11 
-----------------------------------------------------------------------
-sorry, Category is wrong..
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-24-05 21:09 Markus Rothe   New Issue                                    
-01-24-05 21:10 Markus Rothe   Issue Monitored: Markus Rothe                    
-01-24-05 21:11 Markus Rothe   Note Added: 0003397                          
-======================================================================
-
-
+Brad
 
 
 -------------------------------------------------------
