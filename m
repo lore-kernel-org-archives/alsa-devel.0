@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 13:01:34 +0100
-Message-ID: <efacff963a5ab3f413435b70092102be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000597]: Audigy 2 Value detected
+Date: Wed, 24 Nov 2004 12:57:20 +0100
+Message-ID: <919096cf6d6715f135d921181163d530@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A03222AD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:01:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AEB292AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:57:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,113 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=597> 
 ======================================================================
-Reported By:                bons78
-Assigned To:                
+Reported By:                mohammed_imran
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   597
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.4.20-8
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 13:01 CET
+Date Submitted:             10-23-2004 08:59 CEST
+Last Modified:              11-24-2004 12:57 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    Audigy 2 Value detected
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+I have tried pzad's suggestion and added the PCI ID to the table along with
+some modifications (support to detect rev 8 and 0 as audigy 2)
+(emu->rev==0)..
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+RedHat Linux 9 reports the card having rev 0 do i added rev 0 support. Now
+it detects the card as an audigy 2, alsa mixer runs but no sound out put
+is given when i play sound using xmms/aplay/realplayer...perhaps some more
+modifications needed? or a new driver needed?
 
+Also: PCI ID for Audigy 2 card is not 1102:1008 as i saw in the forum
+reports but it is: 1102:0008 as listed by cat /proc/pci:
 
+ Bus  3, device   2, function  0:
+    Multimedia audio controller: PCI device 1102:0008 (Creative Labs) (rev
+0).
+      IRQ 12.
+      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=20.
+      I/O at 0xc800 [0xc83f].
 
+please correct me if i am wrong.
+
+Tested on RedHat Linux 9
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000596 Audigy 2 Value detected
+has duplicate       0000598 Audigy 2 Value detected
+has duplicate       0000599 Audigy 2 Value detected
+has duplicate       0000595 No support for Audigy 2 rev 8 (Audigy 2...
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 11-24-04 12:53 
+ tiwai - 11-10-04 12:50 
 ----------------------------------------------------------------------
-actually... wait... I goofed... I was really still using my patch instead
-of yours...
+Yes the file seems broken.  Tar stops in the middle of extraction.
 
-your patch is causing problems for me... from dmesg:
-snd_ioctl32: Unknown symbol __copy_in_user
-snd_ioctl32: Unknown symbol __copy_in_user
-snd_ioctl32: Unknown symbol __copy_in_user
-ioctl32(alsactl:26414): Unknown cmd fd(3) cmd(40045500){00} arg(efffea04)
-on /dev/snd/controlC0
-ioctl32(alsactl:26415): Unknown cmd fd(3) cmd(40045500){00} arg(efffea04)
-on /dev/snd/controlC1
-ioctl32(aconnect:26454): Unknown cmd fd(3) cmd(40045300){00} arg(efffecf4)
-on /dev/snd/seq
-
-I wonder why it's not liking copy_in_user...
+Please upload the patch instead of the whole driver tree codes...
 
 ----------------------------------------------------------------------
- eradicator - 11-24-04 13:01 
+ pzad - 11-24-04 12:57 
 ----------------------------------------------------------------------
-Ah... there's no EXPORT_SYMBOL(___copy_in_user) in 2.6.7...  Unfortunately
-sparc has stability issues with kernels >2.6.7, so most people are still
-running patched 2.6.7 kernels on sparc... I'll try it on 2.6.10_rc2, but
-this should really work with older kernels as well...
+Support was added to CVS. Thanks to James Courtier-Dutton.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
-11-24-04 13:01 eradicator     Note Added: 0002556                          
+10-23-04 08:59 mohammed_imran New Issue                                    
+10-23-04 08:59 mohammed_imran File Added: alsa-driver-1.0.6-mod.tar.bz2         
+          
+10-23-04 08:59 mohammed_imran Kernel Version            => 2.4.20-8        
+10-23-04 12:30 jcdutton       Note Added: 0002254                          
+11-10-04 12:50 tiwai          Note Added: 0002370                          
+11-10-04 12:52 tiwai          Relationship added       has duplicate 0000596
+11-10-04 12:53 tiwai          Relationship added       has duplicate 0000598
+11-10-04 12:53 tiwai          Relationship added       has duplicate 0000599
+11-24-04 12:40 pzad           Relationship added       has duplicate 0000595
+11-24-04 12:41 pzad           Relationship deleted     has duplicate 0000595
+11-24-04 12:42 pzad           Relationship added       has duplicate 0000595
+11-24-04 12:57 pzad           Status                   assigned => resolved
+11-24-04 12:57 pzad           Resolution               open => fixed       
+11-24-04 12:57 pzad           Note Added: 0002554                          
 ======================================================================
 
 
