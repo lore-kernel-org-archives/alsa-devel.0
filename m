@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
-Date: Tue, 9 Nov 2004 20:14:00 +0100
-Message-ID: <99e66a90b653598fe65c59e0bc9f2db8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
+Date: Tue, 9 Nov 2004 20:15:16 +0100
+Message-ID: <0dbb6c2add59d1ffd1b19da27b1e43ea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2EC8C2B4
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 20:14:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1ECCF2B4
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 20:15:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
 ======================================================================
-Reported By:                Luke-Jr
+Reported By:                mtempels
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   626
-Category:                   PPC - powermac
+Issue ID:                   623
+Category:                   PCI - cmipci
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Ubuntu Linux 4.10
+Kernel Version:             Linux bubbles 2.6.8.1-3-386
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
+2004 i686 GNU/Linux
 ======================================================================
-Date Submitted:             11-03-2004 15:14 CET
-Last Modified:              11-09-2004 20:14 CET
+Date Submitted:             11-02-2004 11:24 CET
+Last Modified:              11-09-2004 20:15 CET
 ======================================================================
-Summary:                    Oops on cat /dev/urandom > /dev/dsp
+Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
 Description: 
-Oops: kernel access of bad area, sig: 11
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
-tainted
-MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-DAR: D254203C, DSISR: 40000000
-TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
-GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
-00000B03
-GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
-00000000
-GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
-00000000
-GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
-00000B03
-NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
-LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
-Call trace:
- [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
- [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
- [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
- [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
- [c0058320] vfs_write+0x114/0x13c
- [c0058424] sys_write+0x4c/0x90
- [c00063a0] ret_from_syscall+0x0/0x44
-
+There is no way to control the output volume on the SPDIF/out on my CMI8738
+soundcard. It can just be switched on or off..
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 19:41 
+ tiwai - 11-09-04 19:18 
 ----------------------------------------------------------------------
-Could you try to comiple with the frame pointer?
-It's just to be sure, since the similar bug was fixed (avoided) by
-compiling with the frame pointer....
+It's not strange.  As I wrote, we need the signal attenuation in software
+(since the hardware doesn't do it).
+That's what Windows system does.
+
+The soltware volume control is not implemented on ALSA yet, but, in theory
+it's possible.  The question is how and who does it ;)
 
 ----------------------------------------------------------------------
- Luke-Jr - 11-09-04 20:14 
+ mtempels - 11-09-04 20:15 
 ----------------------------------------------------------------------
-Not sure how to do that. I'd rather not do anything outside of the normal
-.config stuff, if possible.
+I see..
+
+I wish i had the knowledge to do so.. Thanks for thw information!
+
+Cheers
+
+Matthijs
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 15:14 Luke-Jr        New Issue                                    
-11-09-04 18:51 tiwai          Note Added: 0002334                          
-11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
-11-09-04 19:41 tiwai          Note Added: 0002349                          
-11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
+11-02-04 11:24 mtempels       New Issue                                    
+11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
+11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
+2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
+12 12:41:57 BST 2004 i686 GNU/Linux
+11-09-04 18:56 tiwai          Note Added: 0002337                          
+11-09-04 19:01 mtempels       Note Added: 0002340                          
+11-09-04 19:18 tiwai          Note Added: 0002342                          
+11-09-04 20:15 mtempels       Note Added: 0002352                          
 ======================================================================
 
 
