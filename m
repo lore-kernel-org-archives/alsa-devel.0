@@ -1,12 +1,14 @@
-From: <jfm3@ouroboros-complex.org>
-Subject: bug in intel8x0 joystick/midi ?
-Date: Sat, 7 Jun 2003 10:21:36 -0700 (PDT)
+From: Jacek Blizinski <azidog@nyc.rr.com>
+Subject: Please help!
+Date: Sat, 7 Jun 2003 14:23:10 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <33175.24.225.156.130.1055006496.squirrel@webmail.ouroboros-complex.org>
+Message-ID: <200306071423.10875.azidog@nyc.rr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +20,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have intel8x0 on my mother board. There are headers for a joystick/midi
-port I'd like to use. I look in BIOS and find joystick io=201, midi
-io=330, and midi irq=10. I put this in modules.conf:
+I'm using a Mandrake 9.1 box with an Intel (intel8x0) card and KDE as my 
+desktop environment. Thanks for any help you can provide!
 
-options -k snd-intel8x0 index=0 mpu_port=330 joystick_port=201
+Problems:
+1. Doesnt do alsactl restore on startup
+2. On Flash, games and other apps, the sound lags about 2-3 seconds in any WM.
 
-snd-mpu401-uart gets loaded, but no midi ports appear. I notice in the
-source code to the driver three things.
+Here's my modules.conf:
+#########                    ALSA portion                    #############
+alias char-major-116 snd
+alias snd-card-0 snd-intel8x0
+# module options should go here                                          
+#                                                                       
+#########                   OSS/Free portion                 #############
+alias char-major-14 soundcore
+alias sound-slot-0 snd-0
+#                                                                       
+# card #1                                                               
+alias sound-service-0-0 snd-mixer-oss
+alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
+######################End Sound##########################
 
-1) There is no support for joystick_port=201, only 200?
 
-2) There is no way to tell the driver what irq is the mpu401.
+Heres the compilation script:
+#####################Start Script############################
+cd alsa-driver-0.9.4/
+make clean
+./configure --with-cards=intel8x0 --with-sequencer=yes --with-oss=yes 
+--with-isapnp=no;make;make install
+./snddevices
+chmod 666 /dev/dsp /dev/mixer /dev/sequencer /dev/midi
+cd ../alsa-lib-0.9.4/
+make clean
+./configure;make;make install
+cd ../alsa-utils-0.9.4/
+make clean
+./configure;make;make install
+cd ../alsa-oss-0.9.4/
+make clean
+./configure;make;make install
+######################End Script############################
 
-3) The setup routine doesn't seem to look for joystick and midi. I don't
-see the word "joystick" or "midi" in dmesg.
+Here are my KDE sound server options:
+__ARTS TAB__
+Start aRts server on KDE startup
+Run soundserver with realtime priority
+Autosuspend if idle for 60 secs
 
-I'm using the bleeding edge apt index from Planet CCRMA. ALSA 0.9.4. dmesg
-is pretty boring, but I'll send it along if you want.
-
-(jfm3)
-
-
-
+__SOUND I/O TAB__
+Enable full duplex operation
+Sound quality: 16 bits (high)
+Audio buffer size: 232 milliseconds (10 fragments with 4096 bytes)
 
 
 -------------------------------------------------------
