@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA docs
-Date: Tue, 30 Jul 2002 05:25:06 +0900
+Subject: Re: guitar + sblive + ardour + ladspa effects
+Date: Tue, 30 Jul 2002 05:31:50 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D45A4A2.5010602@boosthardware.com>
-References: <E17ZEzS-0001Sf-00@usw-sf-list1.sourceforge.net> <3D459394.80104@boosthardware.com>
+Message-ID: <3D45A636.4030000@boosthardware.com>
+References: <1027973318.10978.62.camel@insanity>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,38 +16,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: Bob Ham <node@users.sourceforge.net>
+Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Ardour Devel Mailing List <ardour-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->> Paul Davis wrote:
+Bob Ham wrote:
+> Hi all, 
+> 
+> This is what I want to do: guitar into the line input on the live drive,
+> that going into ardour, through a few ladspa effects, and out to the
+> speakers.  I can't seem to do this.  The only way I seem to be able to
+> get the input into ardour is to have it going through the speakers as
+> well so that both the input and the ladspa-processed output can be
+> heard.  I only want the ladspa-processed output.  Is this possible? 
+> 
+> I've had a search through the alsa-devel, alsa-user and ardour-devel
+> archives, as well as the alsa wiki and a google search.  I am yet to be
+> enlightened.  The SB-Live-mixer.txt is a probably a nice set of notes if
+> you're a driver writer, but I'm not. 
+> 
+> 
+>>name='Line LiveDrive Capture Volume',index=1
+>>name='Line LiveDrive Capture Volume',index=1
 >>
->> #!/usr/local/bin/perl
->>
->> while(<>) {
->>       if (/MODULE_PARM_DESC/) {
->>           @foo = split /[()]/;
->>               @bar = split (/,/, $foo[1], 2);
->>           $bar[1] =~ s/"//g;
->>               printf ("%-32s %s\n", $bar[0], $bar[1]);
->>           }
->> }
->>
->> add something to recurse through the source tree, and include the
->> module name and card name info, and you're pretty much done ...
->>
+>>This control is used to attenuate samples from left and right I2S ADC
+>>inputs (on the LiveDrive). The result samples are forwarded to the ADC
+>>capture FIFO (thus to the standard capture PCM device).
+> 
+> 
+> What's the ADC capture FIFO?  What's the standard capture PCM device? 
+> What have these to do with recording from hw:0,0?  Why is it that ardour
+> only seems to be able to hear the line input when I put up the volume on
+> "Line LiveDrive" and not "Line LiveDrive Capture"?  What is the
+> "Capture" device sitting in alsamixer?  What difference does the little
+> red "Capture" make above the sliders in alsamixer? 
+> 
+> If it's not possible to this with only the sblive, I have the
+> motherboard's "soundcard" as well but how do I get jackd to deal with
+> more that one bit of hardware?  
+> 
+> I hope somebody can help as I'm utterly confused.
+> 
+> Bob
+> 
 
-I tried the above but it didn't work for me by itself and I don't have 
-the insight at the moment to get it to. Thanks anyway because you jogged 
-my memory.
+Have a read of the arecord quicktoot
 
-I remembered that Jaroslav had given me a command a while ago (last 
-year) to get the  module options for each module.
+http://www.boosthardware.com/LAU/quicktoots
 
-modinfo $(modprobe -l snd-*) | cat > /art/code/alsa/modinfo
+That will give you some info about using alsamixer correctly.
 
-This returns a reasonably readable file. If I make a perl script to 
-parse that and print a more readable version then I have what I need for 
-now.
+While you are there might as well read the ardour howto also which could 
+(I hope) make things clearer for you. That's assuming you haven't done 
+so already.
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
