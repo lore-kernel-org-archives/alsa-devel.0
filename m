@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Scatter Gather
-Date: Mon, 01 Mar 2004 13:52:09 +0100 (MET)
+Subject: Re: setting ppq problems
+Date: Mon, 01 Mar 2004 14:02:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403010928390.5532-100000@studcom.urz.uni-halle.de>
-References: <1077905854.6881.28.camel@localhost>
+Message-ID: <Pine.HPX.4.33n.0403011354100.5532-100000@studcom.urz.uni-halle.de>
+References: <20040229230605.KRLK21160.tomts22-srv.bellnexxia.net@sympatico.ca>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1077905854.6881.28.camel@localhost>
+In-reply-to: <20040229230605.KRLK21160.tomts22-srv.bellnexxia.net@sympatico.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,33 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: jacqueslen@sympatico.ca
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Manuel Jander wrote:
-> AFAIK, it seems that when using a scatter gather buffer, not every
-> period is located inside of a page. ...
-> The problem is that a DMA transfer can not go accross 2 different pages.
-> On Aureal hardware, even on contiguous buffers this causes all sort of
-> odd problems. Each DMA chunk must be on the same page.
-> ...
-> That means that i would have to split each period that crosses a page
-> boundary into 2 DMA chunks, with all the complications involved because
-> of irregular sizes, offsets... ARghhh!
+jacqueslen@sympatico.ca wrote:
+> I'm trying to set my ppq on my queue, so I do this:
+>
+>     snd_seq_queue_tempo_t *qt;
+>     snd_seq_queue_tempo_alloca(&qt);
+>     snd_seq_queue_tempo_set_ppq(qt, ppq);
+>     return snd_seq_set_queue_tempo(seq, id, qt);
 
-Yes.  Every driver using SG must do this.  Look into bt87x.c or
-via82xx.c for examples.
+> that returns -22, what does that mean?
 
-> I could just leave the period size as a power of 2, on that way, a
-> period would never cross any page boundary, but most ALSA programs are
-> too picky to accept that kind of restrictions in most cases.
+snd_strerror(-22) = "Invalid argument"
 
-Devices like usb and ymfpci have a fixed period size, but their
-drivers emulate arbitrary period sizes.
+A snd_seq_queue_tempo_t container contains various parameters, so you
+should set all fields to valid values (or get the current values first
+with snd_seq_get_queue_tempo).
+
+> Also, where can I found out what the members of
+> snd_seq_queue_tempo_t are, I can't seem to find it anywhere!
+
+The snd_seq_get/set_queue_tempo_xxx functions are listed on this page:
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___seq_queue.html
 
 
-Regards,
+HTH
 Clemens
 
 
