@@ -1,15 +1,12 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
-Date: Tue, 13 Jul 2004 13:59:17 +0200
+Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
+Date: Tue, 13 Jul 2004 17:45:17 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1737346043ec7430db3b54abd41168c4@bugtrack.alsa-project.org>
+Message-ID: <b24c0d2114fe2b35564966c106cd6272@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 470C5224
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 13:59:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,51 +19,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0382
+0383
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                labra
-Assigned To:               =20
+Reported By:                Luke
+Assigned To:                pzad
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     382
-Category:                   PCI - ice1724
+Bug ID:                     383
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.26
+Status:                     assigned
+Distribution:              =20
+Kernel Version:            =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-13-2004 13:51 CEST
-Last Modified:              07-13-2004 13:59 CEST
+Date Submitted:             07-13-2004 17:45 CEST
+Last Modified:              07-13-2004 17:45 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    line in doesn't give stereo sound
+Summary:                    Audigy LS - Capturing from Mic and kernel oop=
+s
 Description:=20
-The line in-plug doesn't give stereo sound anymore. Before with alsamixer=
- I
-was able to get stereo sound from line in by using "H/W In 0" and "H/W IN
-1". Now only "H/W In 0" gives sound.
+I just updated my cvs repository and rebuilt the snd_audigyls module to
+check if my former reported bugs are fixed.
+Unfortunateley, my kernel oopsed once again.
+
+I tried to capture some voice of my mic with no success. Maybe I don't ge=
+t
+the explanation in the cvs log. I attached a screenshot to review my
+alsamixer settings. This is what I used to configure it:
+
+"The MIC and LINE IN use the AC97 chip.
+
+The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
+controlling CAPTURE. Then, instead of sending that output to the
+speakers, it sends it to the Philips 1361T ADC. This results in high
+quality ADC conversion.
+E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
+Set MASTER volume.
+There is a new control for "CAPTURE feedback into PLAYBACK". If one does
+not want any feedback, leave it at it's minimum."
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- labra - 07-13-2004 13:59 CEST=20
-----------------------------------------------------------------------
-The alsa-driver version with this feature/bug is 1.0.5a.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -74,13 +82,9 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-13-04 13:51 labra          New Bug                                    =
+07-13-04 17:45 Luke           New Bug                                    =
  =20
-07-13-04 13:51 labra          Distribution              =3D> Gentoo      =
-   =20
-07-13-04 13:51 labra          Kernel Version            =3D> 2.4.26      =
-   =20
-07-13-04 13:59 labra          Bugnote Added: 0001413                     =
+07-13-04 17:45 Luke           File Added: audigyoops                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
