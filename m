@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
-Date: Wed, 30 Mar 2005 18:08:24 +0200
-Message-ID: <64203a47796e2f165e01b932c5b84773@bugtrack.alsa-project.org>
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: seq24 not in aconnect or qjackctl
+Date: Wed, 30 Mar 2005 16:05:55 +0100
+Message-ID: <20050330150554.GA17648@palantir7.mph.eclipse.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4C3D229
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 18:08:24 +0200 (MEST)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,74 +15,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: seq24-users@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
-======================================================================
-Reported By:                yafrank
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1023
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.11-1.8_FC3
-======================================================================
-Date Submitted:             03-30-2005 14:25 CEST
-Last Modified:              03-30-2005 18:08 CEST
-======================================================================
-Summary:                    ens1371 pcm not work in 2.6.11 kernel
-Description: 
-I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
-2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
-kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
-noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
-alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
-Still, there is no sound and alsamixer doesn't show any pcm option.
-Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
-driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
-kernel module. And my /etc/modprobe.conf is this:
+I'm using seq24 0.6.2 with ALSA 1.0.9rc1 and jack 0.99.0-4.
+Problem I'm having is that seq24 does not show up in
+aconnect or qjackctl. At first I had no clue if/how it was
+connected. seq24 only showed up in /proc/asound/seq/clients.
+Still haven't found how to disconnect/reconnect seq24.
 
-alias snd-card-0 snd-ens1371
-alias sound-slot-0 snd-ens1371
-install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
-/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
-remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-ens1371
-alias usb-controller uhci-hcd
-alias net-pf-10 off
-alias ipv6 off
-alias eth0 8139too
+Any idea why I'm not seeing seq24? Some output below.
 
+Thanks,
+Martin
 
-======================================================================
+$ cat /proc/asound/seq/clients 
+Client info
+  cur  clients : 4
+  peak clients : 8
+  max  clients : 192
 
-----------------------------------------------------------------------
- tiwai - 03-30-05 18:08 
-----------------------------------------------------------------------
-First check whether the sound driver is properly loaded.  See
-/proc/asound/cards output.
-
-ALso, please elaborate the situation "no sound".  Can you open alsamixer? 
-Does aplay start (try -vv to show VU meter) ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-30-05 14:25 yafrank        New Issue                                    
-03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
-03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
-03-30-05 18:08 tiwai          Note Added: 0004266                          
-======================================================================
-
+Client   0 : "System" [Kernel]
+  Port   0 : "Timer" (Rwe-)
+  Port   1 : "Announce" (R-e-)
+    Connecting To: 63:0, 128:2[t:0]
+Client  62 : "Midi Through" [Kernel]
+  Port   0 : "Midi Through Port-0" (RWe-)
+    Connecting To: 128:1[t:0]
+    Connected From: 128:0
+Client  63 : "OSS sequencer" [Kernel]
+  Port   0 : "Receiver" (-we-)
+    Connected From: 0:1
+Client 128 : "seq24" [User]
+  Port   0 : "seq24 out" (r---)
+    Connecting To: 62:0
+  Port   1 : "seq24 in" (-w--)
+    Connected From: 62:0[t:0]
+  Port   2 : "seq24 in" (-w--)
+    Connected From: 0:1[t:0]
+  Input pool :
+    Pool size          : 200
+    Cells in use       : 0
+    Peak cells in use  : 2
+    Alloc success      : 9
+    Alloc failures     : 0
+$ aconnect -lo
+client 62: 'Midi Through' [type=kernel]
+    0 'Midi Through Port-0'
+        Connecting To: 128:1[real:0]
+        Connected From: 128:0
+$ aconnect -li
+client 0: 'System' [type=kernel]
+    0 'Timer           '
+    1 'Announce        '
+        Connecting To: 63:0, 128:2[real:0]
+client 62: 'Midi Through' [type=kernel]
+    0 'Midi Through Port-0'
+        Connecting To: 128:1[real:0]
+        Connected From: 128:0
 
 
 
