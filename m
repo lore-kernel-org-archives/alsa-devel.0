@@ -1,15 +1,15 @@
 From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Can't set 88.2/96kHz samplerate with Hammerfall
-Date: Thu, 4 Dec 2003 06:41:56 -0800
+Subject: RE: Wine failures with Alsa 1.0.0rc1
+Date: Thu, 4 Dec 2003 06:49:31 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGEECLECAB.mknecht@controlnet.com>
-References: <oprznunrgeq1sf88@mail.broadpark.no>
+Message-ID: <NDBBLGIKBJENLAMOLFHGIECOECAB.mknecht@controlnet.com>
+References: <s5hoeuoafc7.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <oprznunrgeq1sf88@mail.broadpark.no>
+In-Reply-To: <s5hoeuoafc7.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,26 +18,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> 
-> Whenever I try to activate double speed (88.2/96kHz) mode with my RME 
-> Hammerfall Lite (DIGI 9636), snd_pcm_hw_params fails with a 'Device or 
-> resource busy' message. This is with the number of channels set to 10, 
-> since the number of ADAT channels is halved. Is this a known 
-> defect of the 
-> Hammerfall driver?
-> 
-> Thanks
-> 
-> Arve Knudsen
+>
+> it's a very old symbol used only in ALSA 0.5.x.
+> most likely the detection code in wine is broken, typically checking
+> only SND_MINOR_VERSION and not checking SND_MAJOR_VERSION.
+> if so, the wine driver believes that it's a 0.5.x, since the minor
+> version is 0 now.
+>
+>
+> Takashi
 
->From the Hammerfall Light Alsa sound card page:
+Thanks Takashi. I'm running Codeweavers Crossover Office, so I'll pass this
+on to them first. Possibly I'll also try Transgaming's version of Wine which
+is likely newer and more up to date.
 
-Known bugs
-
-- 96kHz and 88.2kHz not accessible via PCM interface 
+- Mark
 
 
 
