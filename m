@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000858]: "amixer -h" exits with status 1
-Date: Mon, 31 Jan 2005 18:57:03 +0100
-Message-ID: <772b0978c6c10f040839f83bd3799c64@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
+Date: Mon, 31 Jan 2005 19:01:57 +0100
+Message-ID: <6bbca5f0f79ae93d156608cdd5ad6ce7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B89B231
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:57:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8FE17235
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 19:01:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=858> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                vapspwi
+Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   858
-Category:                   amixer
+Issue ID:                   849
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-29-2005 17:14 CET
-Last Modified:              01-31-2005 18:57 CET
+Date Submitted:             01-26-2005 20:15 CET
+Last Modified:              01-31-2005 19:01 CET
 ======================================================================
-Summary:                    "amixer -h" exits with status 1
+Summary:                    aplay apparently plays mono wav files using OSS, but
+plays stereo wav files using ALSA
 Description: 
-$ amixer -h > /dev/null
-$ echo $?
-1
-
-"-h" is a legal option (as claimed by the output of "amixer -h") so the
-exit status should be 0.
+Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
+aplay, the output is routed to all 26 playback channels of my HDSP 9652
+card (observed using hdspmixer).  Based on some web research, it appears
+that this is because aplay is using OSS to play the mono wav file.  When I
+play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
+output is routed only to playback channels 1 and 2 of the HDSP 9652,
+apparently because aplay is using ALSA to play the stereo wav file.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:57 
+ tiwai - 01-31-05 19:01 
 ----------------------------------------------------------------------
-Fixed on CVS.
+I guess you meant aplay instead of alsamixer?
+
+Anyway, aplay has nothing to do with OSS.  It can't.  Never ever.
+
+What is the problem?  The behavior to routing the channels depends on the
+configuration of "plug" layer.  As default, only first channels are copied
+except for mono stream.  You can change this policy in your ~/.asoundrc. 
+See the alsa-lib's reference.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-29-05 17:14 jdthood        New Issue                                    
-01-31-05 18:57 tiwai          Status                   new => resolved     
-01-31-05 18:57 tiwai          Resolution               open => fixed       
-01-31-05 18:57 tiwai          Assigned To               => tiwai           
-01-31-05 18:57 tiwai          Note Added: 0003453                          
+01-26-05 20:15 vapspwi        New Issue                                    
+01-26-05 20:16 vapspwi        Issue Monitored: vapspwi                     
+01-26-05 23:46 vapspwi        Issue End Monitor: vapspwi                    
+01-31-05 19:01 tiwai          Note Added: 0003455                          
 ======================================================================
 
 
