@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
-Date: Thu, 24 Feb 2005 22:06:34 +0100
-Message-ID: <d220cb75cbee1e94d6445b54ca0b0145@bugtrack.alsa-project.org>
+From: Ron Cococcia <ron.cococcia@request.com>
+Subject: Re: intel8x0 dual codec issue
+Date: Thu, 24 Feb 2005 17:10:53 -0500
+Message-ID: <421E50ED.2000906@request.com>
+References: <4208437B.3080207@request.com>	<s5h8y5w1g2b.wl@alsa2.suse.de>	<420BB2FC.6070502@request.com> <s5hoeerz9dv.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 10FD21FC
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 22:06:35 +0100 (MET)
+In-Reply-To: <s5hoeerz9dv.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,84 +16,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
-======================================================================
-Reported By:                segnini75
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   933
-Category:                   PCI - als4000
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Kanotix - Debian/sid
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-22-2005 14:08 CET
-Last Modified:              02-24-2005 22:06 CET
-======================================================================
-Summary:                    ALS4000 chipset dont sounds fine, the sound is too
-slow and dont play everything.
-Description: 
-The modconf info about snd-als4000 retuns:
+<snip>
 
-Jevus@box:~$ modinfo snd-als4000
-filename:      
-/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
-author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
-description:    Avance Logic ALS4000
-license:        GPL
-vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
-depends:       
-snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
-alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
-parm:           joystick_port:Joystick port address for ALS4000 soundcard.
-(0 = disabled)
-parm:           enable:Enable ALS4000 soundcard.
-parm:           id:ID string for ALS4000 soundcard.
-parm:           index:Index value for ALS4000 soundcard.
---------------------------------------------------------------------
-NOTE: This card works fine in windows
+> Given that overriding codecs with NCR becomes popular, it might be
+> nice to have a module option to specify the codecs as bitmask.
+> The below is a quick hack.
 
-Plase solve that problems (Note. Is not working on any version of ALSA
-drivers actually, all have same problem.
+I finally got a chance to try out the patch.  It oopsed, but it was one
+small change to make it work.  In intel8x0.c, in snd_intel8x0_hw_params,
+near the bottom it tries to "Force SPDIF setting", but on codec[0],
+instead of codec[chip->first_codec].  I made that small change and it
+hasn't crashed yet.
 
-Thanks!- Jesus Segnini
-======================================================================
+One noticeable difference is in the mixer control.  All controls in the
+mixer (alsamixer) are "Master 1", "PCM 1" (which is OK, I was seeing
+this before, and it would also have "Master" for the primary codec).
+The difference is that, besides having a "PCM 1" control, there is also
+a "PCM" control.  amixer scontrols shows:
 
-----------------------------------------------------------------------
- segnini75 - 02-22-05 17:16 
-----------------------------------------------------------------------
-The sound is slow, but when i move a window or run another aplications,
-sound good few seccond, is estrange :S
+Simple mixer control 'Master',1
+Simple mixer control 'Master Mono',1
+Simple mixer control 'Headphone',1
+Simple mixer control '3D Control - Center',1
+Simple mixer control '3D Control - Depth',1
+Simple mixer control '3D Control - Switch',1
+Simple mixer control 'PCM',0
+Simple mixer control 'PCM',1
+Simple mixer control 'Line',1
+Simple mixer control 'CD',1
+Simple mixer control 'Mic Boost (+20dB)',1
+Simple mixer control 'Mic Select',1
+Simple mixer control 'Mic',1
+Simple mixer control 'Video',1
+Simple mixer control 'Phone',1
+Simple mixer control 'IEC958',1
+Simple mixer control 'PC Speaker',1
+Simple mixer control 'Aux',1
+Simple mixer control 'Mono Output Select',1
+Simple mixer control 'Capture',1
+Simple mixer control 'Mix',1
+Simple mixer control 'Mix Mono',1
+Simple mixer control 'External Amplifier',1
 
+The "PCM" control limits are 0-255, where the "PCM 1" limits are 0-31
+(normal).  Adjusting both affects the output levels.
 
+Unfortunately, I am not versed well enough to figure out what is 
+happening with this.  Any hint as to where I might look 
+(pci/ac97/ac97_codec.c or similar)?
 
-----------------------------------------------------------------------
- tiwai - 02-24-05 22:06 
-----------------------------------------------------------------------
-It sounds like an interrupt problem.  Can you try to turn off ACPI once?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-22-05 14:08 segnini75      New Issue                                    
-02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
-02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
-02-22-05 17:15 segnini75      Note Added: 0003705                          
-02-22-05 17:16 segnini75      Note Edited: 0003705                         
-02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
-02-24-05 22:06 tiwai          Note Added: 0003728                          
-======================================================================
-
+Thanks,
+Ron
 
 
 
