@@ -1,12 +1,14 @@
-From: Wolfram Schlich <lists@wolfram.schlich.org>
-Subject: configure PDE detection seems to be broken
-Date: Mon, 13 Oct 2003 09:19:14 +0200
+From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+Subject: Re: unresolved symbol in "insmod snd-ens1371"
+Date: 13 Oct 2003 11:40:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031013071914.ALLYOURBASEAREBELONGTOUS.H27165@bla.fasel.org>
+Message-ID: <1066038016.3840.72.camel@localhost.localdomain>
+References: <002401c39096$0ac3bcc0$987ba8c0@Vectra>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <002401c39096$0ac3bcc0$987ba8c0@Vectra>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +17,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA-Devel mailinglist <alsa-devel@lists.sourceforge.net>
+To: "Frank H." <frankcch@comcast.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, 2003-10-12 at 09:54, Frank H. wrote:
+> Hi,
+>  
+> I have Linux PC with
+> OS: linux 9.0
+> sound card: Create Lab Sound blaster 16 PCI.
+> PC: Compaq Presario
+> Alsa driver: 0.9.7.a
+>  
+> Why there so many unresolved synbol when load the snd-ens1371
+> ("insmod snd-ens1371")?
+> Is there any mistakes during image buit?
+>  
+> I follow the procedures in this link
+>  
+> http://www.alsa-project.org/alsa-doc/doc-php/template.php3?company=Creative+Labs&card=Soundblaster+16+PCI&chip=ES1373&module=ens1371
+>  
+> form  http://www.alsa-project.org/,
+>  
+>  
+Hi, 
+insmod will only load the module given as parameter.
+So it will not load the module required by snd-ens1371.
+Please try: modprobe snd-send1371 instead.
+I think it will fix your problem.
 
-please have a look at this Gentoo Linux Bugzilla entry:
-
-	http://bugs.gentoo.org/show_bug.cgi?id=29965#c11
-
-The PDE detection of the configure script seems to be broken (switch
-lines 1033 and 1034 of configure.in to fix).
-Linux 2.4.23-pre7 does have a PDE function but it's not detected,
-thus, compilation fails.
+Bye.
 -- 
-Wolfram Schlich; Friedhofstr. 8, D-88069 Tettnang; +49-(0)178-SCHLICH
+Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+
 
 
 -------------------------------------------------------
