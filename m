@@ -1,13 +1,18 @@
-From: etienne <eyem@lalila.net>
-Subject: hdsp / pcmcia / multiface .... details
-Date: Thu, 22 Aug 2002 18:04:15 +1000
+From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Subject: Re: Re: [linux-audio-dev] midi events in jack callback / ALSA Sequencer
+Date: Thu, 22 Aug 2002 11:45:26 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D649AFF.4090005@lalila.net>
-Reply-To: eyem@lalila.net
+Message-ID: <003201c249c9$0b6ecc60$0400a8c0@martijn>
+References: <Pine.LNX.4.21.0208191748480.673-100000@summer.quitte> <002001c247ac$2259e960$0400a8c0@martijn> <20020820205028.GA2657@idefix.fvdpol.home.nl> <005701c248af$94d09710$0400a8c0@martijn> <20020821234823.GA18447@idefix.fvdpol.home.nl>
+Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA14282
+	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 11:49:38 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,147 +21,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Frank van de Pol <fvdpol@home.nl>, linux-audio-dev@music.columbia.edu, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+> > I don't want to support tempo (MIDI clock) scheduling in my MIDI API.
+This
+> > could be better handled in the application itself. Also, when slaved to
+MIDI
+> > clock
+> > it is no longer possible to send messages ahead of time, and not
+supporting
+> > this
+> > in the API makes that clear to the application programmer.
+>
+> The concept of the public available alsa timing queues allow outboard
+> applications to schedule events in a tempo locked fashion. Think of
+> applications like drum machines, appegiators, tempo delay etc. Of course
+you
+> might be using one big monolithic (cubase?) sequencer application which
+does
+> do everything you need....
 
-just thought I should give a few more details on the Hammerfall DSP + 
-multiface behaviour. (aplay works, but cant seem to get multiple channel 
-output)
+No, I like the concept of a lot of small applications. And I want those to
+be able
+to sync (slave) to MIDI clock.
 
-------------------------------------------------------
-modules.conf contains:
-alias char-major-116 snd
-alias sound-slot-0 snd-card-0
-alias snd-card-0 snd-hdsp
-options snd-hammerfall_mem snd_enable=1,1
-options snd-hdsp snd_id="hdsp"
+> Compare it to an external (outboard) drum machine you're using since
+> programming a pattern in it so user friendly (hence you end up being more
+> creative), and sync that from your favorite sequencer which has the tempo
+> map for your song.
 
-------------------------------------------------------
-I have no asound.conf or .asoundrc files configured
+For this, the sequencer is master and just sends the MIDI messages including
+MIDI clock to a scheduled UST queue. Timing will be as good as is possible
+with a MIDI clock slaved external instrument.
 
-------------------------------------------------------
- cat /proc/asound/pcm gives:
-00-00: RME Hammerfall DSP (Multiface) : RME Hammerfall DSP (Multiface) : 
-playback 1 : capture 1
+> Of course all of this could be done without a queue which supports tempo
+> scheduling, but then you'll need to emit MIDI Clock events and rely on
+> immediate processing.
 
-------------------------------------------------------
-ls /proc/asound/hdsp gives:
-hdsp  id  midi0  midi1  pcm0c  pcm0p
+Isn't that what will eventually happen using a tempo queue also?
 
-------------------------------------------------------
-cat /proc/asound/hdsp/hdsp gives:
-RME Hammerfall DSP (Multiface) (Card #1)
-Buffers: capture c0e00000 playback c0c00000
-IRQ: 11 Registers bus: 0xf5000000 VM: 0xe08d5000
-Control register: 0x100905c
-Status register: 0x12000000
-Status2 register: 0xffff0703
-FIFO status: 0
-MIDI1 Output status: 0xffffff00
-MIDI1 Input status: 0xffffff00
-MIDI2 Output status: 0xffffff00
-MIDI2 Input status: 0xffffff00
+> In case a soft synth (or other potentially high
+> latency device) is triggered from the MIDI Clock you loose the ability to
+> correct for this.
 
-Latency: 4096 samples (2 periods of 16384 bytes)
-Hardware pointer (frames): 0
-Passthru: no
-Line out: on
-Firmware version: 5
-Sync reference: Master/Master (chosen)
-Sample rate: 0
+I don't see how having a MIDI clock scheduled tree will help. When slaving
+to MIDI clock you cannot know when a future beat will occur, so a software
+synth salved to MIDI clock will behave just like a software synth in real
+time,
+i.e. it cannot compensate for its own latency. However, if the master sends
+the MIDI clock messages ahead of time, and for a sequencer application this
+is exactly what it would do, then the software synth can compensate for its
+latency and might even interpolate between clocks. This would not be
+possible
+having a tempo based queue since the UST of the messages in that queue are
+not known in advance, right?
 
-IEC958 input: Internal
-IEC958 output: Coaxial & ADAT1
-IEC958 quality: Consumer
-IEC958 emphasis: off
-IEC958 NonAudio: off
+> > > leaves room for events not defined in midi spec).
+> >
+> > ...I'm not sure that is a good idea. What kind of events?
+>
+> eg.
+>
+> - system events like announcements of topology changes
 
-IEC958 sample rate: Error flag set
+I'm thinking of handling these out-of-band.
 
-ADAT1: No Lock
-ADAT2: No Lock
+> - (N)RPNs as a 14 bit value instead of 2x 7bit
 
-------------------------------------------------------
-aplay -v sound/orgue1.wav gives: (and only plays in one channel)
+This I would like to solve by having the posibility of sending a short
+sequence
+of MIDI messages that are guaranteed to not be interleaved, e.g. 4 messages,
+two for setting the current (N)RPN and 2 for setting its value.
 
-Playing WAVE 'sound/orgue1.wav' : Signed 16 bit Little Endian, Rate 
-44100 Hz, Stereo
-Plug PCM: Route conversion PCM (sformat=S32_LE)
-Transformation table:
-0 <- 0
-1 <- 1
-2 <- none
-3 <- none
-4 <- none
-5 <- none
-6 <- none
-7 <- none
-8 <- none
-9 <- none
-10 <- none
-11 <- none
-12 <- none
-13 <- none
-14 <- none
-15 <- none
-16 <- none
-17 <- none
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 8192
-period_size  : 4096
-period_time  : 92879
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 4096
-xfer_align   : 4096
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Hardware PCM card 0 'Hammerfall DSP' device 0 subdevice -1
+> - SMF like meta data
 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_NONINTERLEAVED
-format       : S32_LE
-subformat    : STD
-channels     : 18
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 24
-buffer_size  : 8192
-period_size  : 4096
-period_time  : 92879
-tick_time    : 10000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 4096
-xfer_align   : 4096
-start_threshold  : 8192
-stop_threshold   : 8192
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Max peak (8192 samples): 08968 (0x2308) ######               27%
-Max peak (8192 samples): 09412 (0x24c4) ######               28%
-Max peak (8192 samples): 07178 (0x1c0a) #####                21%
-Max peak (8192 samples): 01246 (0x04de) #                    3%
+Is it really necessary to support karaoke :)
 
-etienne
+> - controls for current sequencer queue: tempo, position, etc.
+
+These aren't needed when a tempo queue isn't used.
+
+I think it is important to keep the API as simple as possible.
+
+--martijn
+
+
 
 
 
