@@ -1,15 +1,15 @@
-From: Paul Davis <pbd@op.net>
-Subject: hammerfall mem allocation planning
-Date: Thu, 9 May 2002 10:47:42 -0400
+From: Bob McElrath <mcelrath+alsa@bobmcelrath.net>
+Subject: cs46xx bug on alpha
+Date: Thu, 9 May 2002 10:30:05 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205091447.g49Elge01888@op.net>
+Message-ID: <20020509103005.C1503@draal.physics.wisc.edu>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="i7F3eY7HS/tUJxUd"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA28093
-	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 16:47:16 +0200
-Received: from unknown (HELO op.net) ([209.92.231.85]) (envelope-sender <pbd@op.net>)
-          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
-          for <alsa-devel@alsa-project.org>; 9 May 2002 14:47:13 -0000
+Resent-Message-Id: <200205091547.g49FlcQL019305@draal.physics.wisc.edu>
+Content-Disposition: inline
+Resent-To: alsa-devel@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,27 +18,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-i changed from the plan i outlined (that recent email was delayed
-from last night)
 
-i've put the h-dsp driver into the same directory as the rme9652
-driver, since they have to share the memory allocation module. the
-mem module is renamed (i've fixed alsasound to know about it too).
+--i7F3eY7HS/tUJxUd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-this seems much cleaner to me. it might even be possible to share some
-code between the two drivers this way, at some point.
+The cs46xx driver seems to compile, install, and load fine on alpha, and
+the mixer (alsamixer) appears to work fine.  When trying to play a .wav
+file with aplay though, I get this message repeatedly:
+    May  9 10:11:47 draal kernel: ALSA pcm_lib.c:116: Unexpected
+    hw_pointer value (stream =3D 0, delta: -2679, max jitter =3D 2756):
+    wrong interrupt acknowledge?
+Follwed by:
+    May  9 10:11:57 draal kernel: ALSA pcm_lib.c:1864: playback write
+    error (DMA or IRQ trouble?)
 
-jaroslav et alia - let me know if you have objections to this structure.
+My /proc/interrupts:
+  1:      19515          XT-PIC   keyboard
+  2:          0          XT-PIC   cascade
+  3:          0          XT-PIC   serial
+  8:   27950319             RTC  +timer
+ 10:      44924          XT-PIC   eth0
+ 12:      91482          XT-PIC   PS/2 Mouse
+ 14:       2221          XT-PIC  +ide0
+ 16:     115375       CABRIOLET   BusLogic BT-958
+ 17:      15103       CABRIOLET  +CS46XX
+ 18:          2       CABRIOLET  +mgacore
+ 19:          9       CABRIOLET   usb-uhci
+ 20:          0       CABRIOLET   isa-cascade
+ERR:          0
 
-for those who care, the driver is in a strange state. it basically
-works - you can record with it, play with the control settings, check
-the level meters, etc. what you can't do is get any sound out of the
-thing, even in passthru mode :(
+My /proc/dma:
+ 4: cascade
 
---p
+This is kernel 2.4.17 with a Hercules Game Theater XP.
+
+I get the same behavior with a GUS PnP that I have (interwave driver)
+except that the interrupt count in /proc/interrupts is never
+incremented.  (This card works fine with the OSS driver though)
+
+Any ideas?
+
+P.S. I'm surprised to see many more channels in alsamixer than I thought
+the OSS driver supported.  Does the alsa driver really do 3D and support
+all the extra inputs on this card?  (YAY!)
+
+Cheers,
+-- Bob
+
+Bob McElrath (mcelrath+alsa@bobmcelrath.net)
+Univ. of Wisconsin at Madison, Department of Physics
+
+--i7F3eY7HS/tUJxUd
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iEYEARECAAYFAjzalf0ACgkQjwioWRGe9K2usQCgsbcxxj3EP5O8pTFho4GUVXMS
+2EMAoL+0dhrz6sP8GCnNjJsmEx3rxpRG
+=vSYp
+-----END PGP SIGNATURE-----
+
+--i7F3eY7HS/tUJxUd--
+
 
 _______________________________________________________________
 
