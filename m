@@ -1,16 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000543]: Noisy sound, broken mixer with via8235 (driver regression)
-Date: Sun, 26 Sep 2004 02:27:11 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: emu10k1 multichannel playback design (was Re:
+	[PATCH] emu10k1: add interval timer support)
+Date: Sat, 25 Sep 2004 20:55:20 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926002711.72A3825018@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1096160120.3697.35.camel@krustophenia.net>
+References: <Pine.LNX.4.58.0409241546570.2289@pnote.perex-int.cz>
+	 <200409241453.i8OErtVR029650@localhost.localdomain>
+	 <s5hk6uj3dko.wl@alsa2.suse.de> <1096059735.11589.45.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7CD0296
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 02:27:11 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 823F425D20
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 02:27:11 +0200 (MEST)
+In-Reply-To: <1096059735.11589.45.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,130 +20,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2004-09-24 at 17:02, Lee Revell wrote:
+> Anyway I will probably start with whatever is easier to get working. 
+> This will actually not be a huge patch, and I certainly don't want to
+> design a new API.  I am just running through some more complex use cases
+> that I know work on Windows to verify I am on the right track.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000543
-======================================================================
-Reported By:                obsidian
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     543
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.8-1-k7
-======================================================================
-Date Submitted:             09-25-2004 23:15 CEST
-Last Modified:              09-26-2004 02:27 CEST
-======================================================================
-Summary:                    Noisy sound, broken mixer with via8235 (driver regression)
-Description: 
-Sound is "shimmery" or "staticky" - noticeably bad. Mixer "master volume"
-has no effect. "PCM volume" cannot be adjusted. "DXS https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001" volume has an
-effect but not "correct" - i.e. zero != silent. I do get the message (at
-boot): 
+OK, hopefully I am on the right track.
 
-via82xx: Assuming DXS channels with 48k fixed sample rate.
-         Please try dxs_support=1 or dxs_support=4 option
-         and report if it works on your machine.
+Here's a normal stereo interleaved pcm being opened.  The L and R voices
+have the same start and end addresses because it's interleaved, and the
+extra voice is silent, it loops generating the period interrupts.  Here
+16 periods per buffer are used.
 
-This is a big prob. on this particular machine, which is supposed to
-connect to the stereo and play mp3s, among other things.
+init voice - master 1 extra 1 start_addr 0x1000 end_addr 0x2000
+init voice - master 1 extra 0 start_addr 0x1000 end_addr 0x11000
+init voice - master 0 extra 0 start_addr 0x1000 end_addr 0x11000
 
-Sound works normally outside Linux, and in Linux 2.4 with some Alsa 0.9.*.
-But with Linux 2.6 and alsa 1.0.5/6, bleah.
+Here is the multichannel device being opened.  I split the buffer up
+into 16 chunks, and allocate a voice for each:
 
-I have been googling and troubleshooting all day. Here's what I've already
-tried:
+pcm_channel_alloc: voices=16
+in snd_emu10k1_efx_playback_prepare - start_addr 0x1000 end_addr 0x11000
+init voice - master 1 extra 0 start_addr 0x1000 end_addr 0x2000
+init voice - master 1 extra 0 start_addr 0x2000 end_addr 0x3000
+init voice - master 1 extra 0 start_addr 0x3000 end_addr 0x4000
+Unable to handle kernel NULL pointer dereference at virtual address 00000010
+ printing eip:
 
-dxs_support=1, 2, 3 and 4 
+Looks good, until it Oops'es.  This is because currently the voice
+allocator only handles one or two voices at a time, it blows up as soon
+as I go to initialize the third voice.  I am working on this.
 
-This makes zero difference, so I thought I might be doing it wrong; I
-tried it in modprobe.conf, modprobe.d/sound, and manually as an argument
-to modprobe, i.e. "modprobe snd-via82xx dxs_support=1", also with both
-rmmod'ing all alsa-related modules and rebooting altogether. 
+Lee
 
-Is there any way to tell if a dxs_support or other argument has been acted
-on? It really felt like they were all ignored. I could never get that
-original message to happen anytime but at boot, not matter what I did.
-modprobe -v did show an "insmod" line with the parameter(s) on it,
-though.
-
-ac97_quirk=0,1,2,3,4
-
-No effect.
-
-Various kernel boot parameters, both alone and in combination with the
-above:
-
-noapic, nolapic, acpi=off, and pci=noacpi.
-
-No effect. (BTW, I am currently running with all 4.) 
-
-Frustrating, because it seemed from searching a great many people have the
-exact same problem I do, but none of the many, varying "worked for me"
-answers have helped me.
-
-I'm a developer, somewhat kernel-savvy, and at your disposal. What do we
-try first?
-======================================================================
-
-----------------------------------------------------------------------
- obsidian - 09-26-2004 01:09 CEST 
-----------------------------------------------------------------------
-Still no solution, but there are new details.
-
-By loading snd-via82xx from /etc/modules, and putting the driver options
-on the line in that file, I was finally able to get them to take effect
-(i.e. items available in the mixer would change, 48k message wouldn't
-display, etc). I ran through the tests again (rebooting every time) with
-different values of dxs_settings and ac97_quirk. 
-
-ac97_quirk seemed to have no effect anyway.
-
-By varying dxs_settings I observed dxs volume controls disappearing from
-alsamixer with some values. Otherwise everything was the same ("shimmery"
-sound, master volume ignored, etc) and so this only had the effect of
-making it impossible to influence the volume altogether.
-
-----------------------------------------------------------------------
- obsidian - 09-26-2004 01:24 CEST 
-----------------------------------------------------------------------
-One more thing: I observed this in alsamixer. Surprised it hasn't popped up
-in too many other places, but I noticed that the chip (CM9739) correlates
-exactly with the same mixer issues I'm having:
-
-Card: VIA 8235
-Chip: C-Media Electronics CMI9739
-
-See:
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg10120.html
-
-This doesn't overlap with sound quality issues, however.
-
-----------------------------------------------------------------------
- obsidian - 09-26-2004 02:27 CEST 
-----------------------------------------------------------------------
-I upgraded to the current BIOS. No effect.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-25-04 23:15 obsidian       New Bug                                      
-09-25-04 23:15 obsidian       Distribution              => Debian Sarge    
-09-25-04 23:15 obsidian       Kernel Version            => 2.6.8-1-k7      
-09-26-04 01:09 obsidian       Bugnote Added: 0001913                       
-09-26-04 01:24 obsidian       Bugnote Added: 0001914                       
-09-26-04 02:27 obsidian       Bugnote Added: 0001915                       
-======================================================================
 
 
 -------------------------------------------------------
