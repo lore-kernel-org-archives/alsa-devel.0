@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: 1.0.5rc1 release
-Date: Tue, 25 May 2004 14:26:33 +0200 (METDST)
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: Re: PCM Params
+Date: Tue, 25 May 2004 13:41:24 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405251417220.6093-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040525124124.40022.qmail@web25104.mail.ukl.yahoo.com>
+References: <200405251142.i4PBgLP0010364@dhin.linuxaudiosystems.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200405251142.i4PBgLP0010364@dhin.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,27 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+To: Paul Davis <paul@linuxaudiosystems.com>, ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> Please, report (especially compilation) problems.
+ --- Paul Davis <paul@linuxaudiosystems.com> wrote: >
+>Hi ,
+> >i'm trying to change the fragment size that the
+> alsa
+> >driver is capturing/playing out. It's currently set
+> at
+> >32 msecs(256 bytes).
+> >They are set in the runtime structure...
+> >   runtime->period_max ...etc
+> >Could anybody tell me which file these parameters
+> are
+> >set in the alsa-driver directory?
+> 
+> you should be using
+> snd_pcm_hw_params_set_period_size()
 
-depmod: *** Unresolved symbols in
-/lib/modules/2.4.26/kernel/sound/isa/wavefront/snd-wavefront.o
-depmod:         errno
 
-The open/close/read system calls are implemented as inline functions
-which change errno which isn't exported from the kernel.
+Does this mean that i can change the period size
+without recompiling the driver?
+Im am not developing an ALSA application myself, just
+trying to change the pcm parameters.
+snd_pcm_hw_params_set_period_size()...looks like a
+function call included in a user written ALSA
+application??
+Excuse me if this is a stupid questions but,How do I
+use this function call in my case to change the driver
+period??
+Brian.
 
-We could reintroduce the dummy definition of errno for older kernels,
-or use filp_* calls (like sound_firmware.c).
+
+> 
+>  
 
 
-Regards,
-Clemens
-
-
+	
+	
+		
+____________________________________________________________
+Yahoo! Messenger - Communicate instantly..."Ping" 
+your friends today! Download Messenger Now 
+http://uk.messenger.yahoo.com/download/index.html
 
 
 -------------------------------------------------------
