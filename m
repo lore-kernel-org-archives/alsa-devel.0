@@ -1,11 +1,10 @@
-From: Jussi Laako <jussi.laako@kolumbus.fi>
-Subject: Re: ALSA vs OSS/free
-Date: Sat, 09 Mar 2002 18:53:26 +0200
-Message-ID: <3C8A3E06.AEE781F1@kolumbus.fi>
-References: <Pine.GSO.3.96.1020308131428.14407A-100000@yin.interaccess.com> <3C896AB5.68DBD5EC@club-internet.fr>
+From: Samuel S Chessman <chessman@tux.org>
+Subject: alsa-driver/core hwdep patch
+Date: Sat, 9 Mar 2002 15:50:47 -0500 (EST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.30.0203091541080.697-100000@gwyn.tux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,24 +13,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: segfault@club-internet.fr
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Caujolle-Bert wrote:
-> 
->         The main fact is 4Front is a commercial society, they ship
-> binary only drivers. I think there are many people working in this
-> society, and some are probably working on the documentation.
+I made the latest CVS and sbawe failed to insmod.  Tracking down the
+missing definition led me to hwdep.o, which is from alsa-kernel/core
+Adding the hwdep.o to the Makefile corrects the insmod failure.
 
-This "society" consist of two people (AFAIK)...
+Please let me know if I misunderstand. I am making in alsa-driver which
+includes the ../../alsa-kernel/core/Makefile so that looks like where hwdep
+should be added.
 
+--- /u01/alsa/alsa-cvs/alsa-kernel/core/Makefile        Sat Mar  9 09:37:13 2002
++++ alsa-kernel/core/Makefile   Sat Mar  9 15:38:47 2002
+@@ -79,8 +79,8 @@
+ obj-$(CONFIG_SND_OPTI92X_CS4231) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
+ obj-$(CONFIG_SND_OPTI93X) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
+ obj-$(CONFIG_SND_SB8) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
+-obj-$(CONFIG_SND_SB16) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o
+-obj-$(CONFIG_SND_SBAWE) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o
++obj-$(CONFIG_SND_SB16) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
++obj-$(CONFIG_SND_SBAWE) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
+ obj-$(CONFIG_SND_ES968) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o
+ obj-$(CONFIG_SND_WAVEFRONT) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
+ obj-$(CONFIG_SND_ALS4000) += snd-pcm.o snd-timer.o snd.o snd-rawmidi.o snd-hwdep.o
 
-	- Jussi Laako
 
 -- 
-PGP key fingerprint: 161D 6FED 6A92 39E2 EB5B  39DD A4DE 63EB C216 1E4B
-Available at PGP keyservers
+   Sam Chessman                                               chessman@tux.org
+    First do what's necessary, then what's possible, finally the impossible.
 
 
 _______________________________________________
