@@ -1,16 +1,14 @@
-From: Fred Gleason <fredg@salemradiolabs.com>
-Subject: Re: AudioScience driver
-Date: Tue, 24 Jun 2003 23:23:15 -0400
+From: cliffw@easystreet.com
+Subject: Re: usb-audio - kernel oops 2.5.72
+Date: Tue, 24 Jun 2003 20:41:40 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306242323.15168.fredg@salemradiolabs.com>
-References: <20030623221451.6728.h005.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <200306250341.h5P3fepX005345@oldred.easystreet.com>
+References: <tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030623221451.6728.h005.c012.wm@mail.icqmail.com.criticalpath.net>
-Content-Disposition: inline
+In-Reply-To: Message from Takashi Iwai <tiwai@suse.de>
+   of "Tue, 24 Jun 2003 11:54:51 +0200." <s5hk7bbx0k4.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,64 +17,105 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: cliffw@easystreet.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 24 June 2003 01:14, Eliot Blennerhassett wrote:
+> At Mon, 23 Jun 2003 23:54:46 -0700,
+> cliffw@easystreet.com wrote:
+> > 
+> > > At Sun, 22 Jun 2003 20:45:09 -0700,
+> > > cliffw@easystreet.com wrote:
+> > > > 
+> > > > 
+> > > > Am attempting to get linux-2.5.72 + snd-usb-audio happening.
+> > > > Results have been poor. Machine is VIA C3, ALSA + jack working 
+> > > > fine with the built-in via audio. Tried various kernels, 
+> > > > real ugly failures with 2.5.70, also have tried 2.5.72-mm2. 
+> > > 
+> > > i fixed a bug in usb-audio driver on the cvs now.
+> > > there are some calls of functions which may call schedule() in the
+> > > spinlock.
+> > > 
+> > > please try the cvs version.
+> > Am attempting, so far compile errors in serialmidi....am
+> > getting the whole tree now. 
+> 
+> you don't need alsa-driver tree to compile the ALSA on 2.5.x (unless
+> you use the drivers in it).  the codes in alsa-kernel tree are ready
+> for 2.5 kernel.  that is, copy the files and directories to 2.5 tree
+> and build the modules there.
+> 
+> it would be nice to have a simple sync script for that...
 
-> I have attached a patch against alsa-driver-0.9.4
-> But I'm not sure if this is the desired form, or whether I have located the
-> driver in the correct part of the tree.
+Well, if you want simple, i can do that :)
+This appears to be working for me....(i wait for the compile, again)
 
-I've tried building things with the patch, and have some questions:
+---------------------------------
+alsa.cvs.copy
+-----------------------------
+#!/bin/sh
+# A very simple script to copy alsa-kernel cvs where i want it
 
-1)  Your directions tell me to execute a './cvsconfigure' command (at the root 
-of the ALSA source tree).  There is no such command in the 0.9.4 tree (at 
-least in the tarball).  Does this patch require use of a checked-out CVS 
-tree?
+if [ ! $1 ]; then
+        echo "Need arg for destination directory"
+        exit 1
+        fi
 
-2)  What is the name of the module that this should generate?  'snd-asihpi' is 
-coming up as not found.
+if [ -e $1 ]; then
+        DEST=$1
+else
+        echo "Destination $1 doesn't appear to exist"
+        exit 1
+fi
 
-3)  What is the exact relationship between the ALSA module and 'asihpi'?  Does 
-one need to be loaded for the other to work?  Exactly what is dependent upon 
-what?  An example 'modules.conf' setup would be very helpful here!
+HERE=`pwd`
+BASE=`basename $HERE`
+echo $HERE $BASE
+if [ $BASE != "alsa-kernel" ]; then
+        echo "Must execute me inside alsa-kernel!"
+        exit 1
+        fi
 
+echo "Copying alsa-kernel cvs to $DEST"
 
-> This driver depends on a module external to ALSA (asihpi, (GPL), available
-> from our website).  I couldn't figure out how to add a driver specific
-> include path, so  I made a symbolic link across to the (only one) header
-> file.
+# I could be really cute here and copy globs, but
+# That Would Not Be Safe
+# So, we'll be slow, simple and careful
+# CHANGE these lists if needed
 
-I'd like to propose that the "standard" location of the HPI header henceforth 
-be:
+SOUNDDIRS="drivers isa parisc ppc usb arm i2c pci scripts sparc core oss 
+pcmcia synth"
+SOUNDFILES="last.c  sound_core.c  sound_firmware.c Makefile Kconfig"
 
-	/usr/include/hpi/hpi.h
+#Copy the Documentation to the Documentation
 
-Then, applications need only do:
+cp -r Documentation/* ${DEST}/Documentation/
 
-#include <hpi/hpi.h>
+# Copy the include files to include/sound
 
-for things to work.  I've been using this layout in my own apps for some time 
-now.  While we're at it, perhaps we could add an install rule for this into 
-the makefile for hpklinux (and one for libhpi.a >> /usr/lib as well).  This 
-would have the added benefit of getting strange symlinks out of the ALSA 
-source tree.  :)
+cp -r include/* ${DEST}/include/sound
 
-Cheers!
+for i in $SOUNDDIRS
+do
+        cp -r ${i}/* ${DEST}/sound/${i}/
+done
+for i in $SOUNDFILES
+do
+        cp ${i} ${DEST}/sound/${i}
+done
 
+exit 0
+-------------------------
+end
 
-|-------------------------------------------------------------------------|
-|      Frederick F. Gleason, Jr.      |         Salem Radio Labs          |
-|       Voice: 1-(540)-341-2880       |      87 Lee Highway, Suite 11     |
-|        FAX: 1-(540)-341-7176        |        Warrenton, VA 20188        |
-|-------------------------------------------------------------------------|
-|   Some people call them "cars" or "trucks"; I call them "dimensional    |
-|   transmogrifiers" because they change three-dimensional cats into      |
-|   two-dimensional ones.                                                 |
-|                                         -- F. Frederick Skitty          |
-|-------------------------------------------------------------------------|
+cliffw
+
+> 
+> 
+> Takashi
+> 
+
 
 
 
