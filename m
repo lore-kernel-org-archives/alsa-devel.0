@@ -1,16 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: New mixer api.
-Date: Sun, 9 Nov 2003 09:00:44 +0100 (CET)
+Subject: RE: Interrupt-driven (or callback/handler?), Full-duplex
+ (simultaneous capture/playback) without using JACK
+Date: Sun, 9 Nov 2003 09:37:49 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0311090900150.3073@pnote.perex-int.cz>
-References: <3FAD7A33.3020106@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.53.0311090927040.3073@pnote.perex-int.cz>
+References: <000001c3a67a$93b5ec20$264440ab@roboserv1>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA16725
-	for <alsa-devel@alsa-project.org>; Sun, 9 Nov 2003 09:00:50 +0100
-In-Reply-To: <3FAD7A33.3020106@superbug.demon.co.uk>
+In-Reply-To: <000001c3a67a$93b5ec20$264440ab@roboserv1>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,18 +17,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: Ryan Cassidy <rcassidy@stanford.edu>
+Cc: 'Paul Davis' <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 8 Nov 2003, James Courtier-Dutton wrote:
+On Sat, 8 Nov 2003, Ryan Cassidy wrote:
 
-> Hi,
+> > the ALSA PCM API doesn't have "handlers". it doesn't provide any kind
+> > of callback mechanism. what it does do is to provide a poll(2)
+> > interface, allowing callback-like mechanisms to be built around it
+> > (like JACK).
+> >
 >
-> I saw cvs checkins for a mixer interface with dB levels. Is this useable
-> yet?
+> Will snd_async_add_pcm_handler() not do the trick?  It says
+> "asynchronous," which doesn't sound like what I want, but the "handler"
+> part sounds promising :).
+>
+> If that doesn't work, it's sort of a bummer that ALSA doesn't offer a
+> callback-mechanism for simultaneous audio i/o, non?  This means that to
+> get "what I want" (i.e. allowing my program to do useful work while
+> waiting for new audio samples), I need to use snd_pcm_wait() and fork
+> off an extra process to do the "useful work," right?
 
-Nope. It's work in progress. I will announce when it's useable.
+Yes, snd_async_add_pcm_handler() might help you and it works. It's
+originated in the interrupt handler. But please note that the handler is
+in the unix style signal callback thus there are many restrictions (you
+should avoid to do most of syscalls in this code etc.).
+
+But for mmaped access and the standard ALSA transfer mechanism (use only
+snd_pcm_avail_update() to get the right position) it is the fast way to
+create an interrupt based handlers in the applications.
+
+For the synchronization: You must do it in your application. We work with
+two diferrent streams and although the streams are hardware synchronized,
+there might be some buffering issues (FIFOs) so the playback and capture
+pointers do not match exactly. So the best way is to obtain the current
+pointer using snd_pcm_avail_update() and compute how many frames you can
+process for the duplex operation (I mean for both streams).
+
+For a playback example, you might look to alsa-lib/test/pcm.c - see
+the async_callback() function contents.
 
 						Jaroslav
 
