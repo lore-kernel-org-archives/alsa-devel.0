@@ -1,11 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Why gameport port address as control?
-Date: Mon, 16 Jun 2003 09:24:36 +0200 (METDST)
+From: p z oooo <pzad@pobox.sk>
+Subject: EMU10K1 patch loader
+Date: Mon, 16 Jun 2003 09:38:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0306160909230.27784-100000@studcom.urz.uni-halle.de>
+Message-ID: <200306160738.JAA04309@www3.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,19 +19,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Both the ymfpci and ens1370 drivers use the control API to enable and
-select the address of the gameport. Using module parameters would have
-been somewhat easier.
+You can downoad it from http://pzwz.wz.cz
+No TRAM support yet (I am working on it).
 
-I don't really understand why this has been done. Is there any
-situation where the ability to change the gameport parameters at
-runtime is actually useful?
+Peter Zubaj
 
 
-Regards,
-Clemens
 
 
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
+ Fire V210 server v cenach uz od 125.000,- Sk bez DPH=0ANavstivte nas na ad=
+rese http://www.somi.sk/sun/lowend_servery.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
