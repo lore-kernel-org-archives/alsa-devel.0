@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: newbew question
-Date: Thu, 27 Jun 2002 16:07:31 +0200 (CEST)
+From: Kasper Souren <kasper@303.nu>
+Subject: Re: 1869 trouble with snd-es18xx
+Date: Thu, 27 Jun 2002 16:13:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0206271606180.545-100000@pnote.perex-int.cz>
-References: <20020627174200.29B7.RICHLIU@ite.techarea.org>
+Message-ID: <3D1B1D7A.4070602@303.nu>
+References: <200206271408.g5RE8VD25834@post2.fast.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020627174200.29B7.RICHLIU@ite.techarea.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +16,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Richard Liu <richliu@ite.techarea.org>
-Cc: ALSA-ML <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <pbd@op.net>, alsa devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 27 Jun 2002, Richard Liu wrote:
+Paul Davis wrote:
+>>Isn't there any option to use a 'virtual' ALSA device? Like snd-pcm-oss, but 
+>>then the other way around. snd-oss-pcm module? Then you could use ALSA with 
+>>a working OSS driver, and no working ALSA driver...
+> 
+> 
+> ALSA has a significantly different internal architecture than OSS. It
+> is not possible to use an OSS driver to support the ALSA "midlevel"
+> code.
 
-> Hi.
->    I have a question about how to porting ALSA device driver, 
-> Our company have a AC97 codec, and I want to write ALSA driver for this 
-> chip. I try to find ALSA website, but no document guide me how to 
-> write a new device driver, does anyone help me ?
+What kind of "midlevel" code?
 
-If you want to add a support for new AC97 codec, you don't need to write 
-whole driver. Simply add the codec specific code to 
-alsa-kernel/pci/ac97_codec.c or send me a datasheet. I'll do it.
+I meant an ALSA driver, that you can assign an OSS device. The "midlevel" 
+ALSA stuff can be handled by the ALSA driver, that just sends the audio data 
+to the OSS device.
 
-						Jaroslav
+greetz,
+Kasper
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
 
 
 
