@@ -1,13 +1,12 @@
-From: fmoraes@nc.rr.com
-Subject: [PATCH] emu10k1x.c updates
-Date: Sun, 27 Jun 2004 10:57:38 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000061]: Creative Audigy 2 NX (USB) not working
+Date: Sun, 27 Jun 2004 17:16:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1df18991deed72.1deed721df1899@southeast.rr.com>
-Reply-To: fmoraes@nc.rr.com
+Message-ID: <f2f8f2a47d3d2e82a992c7bc64ae35fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Boundary_(ID_kQdf4RtaflDfx9rxUTspQw)"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-language: en
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,1081 +15,1007 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---Boundary_(ID_kQdf4RtaflDfx9rxUTspQw)
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0061
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                Davin
+Assigned To:                Clemens Ladisch
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     61
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.2
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             02-14-2004 19:02 CET
+Last Modified:              06-27-2004 17:16 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    Creative Audigy 2 NX (USB) not working
+Description:=20
+While I've found a single success report of someone getting this device t=
+o
+work (http://www.qbik.ch/usb/devices/showdev.php?id=3D2375), the details =
+as
+to how he did it are sparse and I've recieved no e-mail reply. There are =
+a
+handful of reports of this device not working, and it is not listed in
+alsa-project.org's list of known sound cards. (as such, whether or not it
+is or is not supported lacks mention)
 
-- added capture support
-- added S/PDIF support (untested)
-- fixed interrupt bug when playing multiple channels
-- split channels into separate PCMs
-- documented some of the registers
+As far as I can tell, it does not work. The device will show up in
+alsamixer if one uses the snd-usb-audio. The first 'speaker 2' channel is
+muted by default, which APPEARS to be the 'front' speaker jack. Unmuting
+this channel makes the mute light on the device turn off.
 
-I will be looking at some of the other features found on the AudigyLS.
+Attempts to use this device with userland devices will fail, returning th=
+e
+program-specific "can't initialize audio" error. By increasing verbosity
+further, I found the exact error being returned by alsalib:
 
-Francisco
+"SNDRV_PCM_IOCTL_HW_PARAMS failed"
 
---Boundary_(ID_kQdf4RtaflDfx9rxUTspQw)
-Content-type: text/plain; NAME=alsa-driver.txt
-Content-transfer-encoding: 7BIT
-Content-disposition: attachment; filename=alsa-driver.txt
+On further investigation, messages are also appearing in the kernel
+message log, coinciding with these errors:
 
-Index: alsa-driver/pci/emu10k1/emu10k1x.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/pci/emu10k1/emu10k1x.c,v
-retrieving revision 1.3
-diff -u -r1.3 emu10k1x.c
---- alsa-driver/pci/emu10k1/emu10k1x.c	25 May 2004 12:22:31 -0000	1.3
-+++ alsa-driver/pci/emu10k1/emu10k1x.c	27 Jun 2004 14:28:06 -0000
-@@ -2,11 +2,18 @@
-  *  Copyright (c) by Francisco Moraes <fmoraes@nc.rr.com>
-  *  Driver EMU10K1X chips
-  *
-+ *  Parts of this code were adapted from audigyls.c driver which is
-+ *  Copyright (c) by James Courtier-Dutton <James@superbug.demon.co.uk>
-+ *
-  *  BUGS:
-  *    --
-  *
-  *  TODO:
-- *    --
-+ *    MIDI support
-+ *
-+ *  Chips (SB0200 model):
-+ *    - EMU10K1X-DBQ
-+ *    - STAC 9708T
-  *
-  *   This program is free software; you can redistribute it and/or modify
-  *   it under the terms of the GNU General Public License as published by
-@@ -74,10 +81,14 @@
- 						/* the relevant bits and zero to the other bits	*/
- #define IPR_CH_0_LOOP           0x00000800      /* Channel 0 loop                               */
- #define IPR_CH_0_HALF_LOOP      0x00000100      /* Channel 0 half loop                          */
-+#define IPR_CAP_0_LOOP          0x00080000      /* Channel capture loop                               */
-+#define IPR_CAP_0_HALF_LOOP     0x00010000      /* Channel capture half loop                          */
- 
- #define INTE			0x0c		/* Interrupt enable register			*/
- #define INTE_CH_0_LOOP          0x00000800      /* Channel 0 loop                               */
- #define INTE_CH_0_HALF_LOOP     0x00000100      /* Channel 0 half loop                          */
-+#define INTE_CAP_0_LOOP         0x00080000      /* Channel capture loop                               */
-+#define INTE_CAP_0_HALF_LOOP    0x00010000      /* Channel capture half loop                          */
- 
- #define HCFG			0x14		/* Hardware config register			*/
- 
-@@ -92,6 +103,33 @@
- 
- #define AC97ADDRESS		0x1e		/* AC97 register set address register (8 bit)	*/
- 
-+/********************************************************************************************************/
-+/* Emu10k1x pointer-offset register set, accessed through the PTR and DATA registers			*/
-+/********************************************************************************************************/
-+#define PLAYBACK_DMA_ADDR	0x04		/* Playback DMA addresss */
-+#define PLAYBACK_BUFFER_SIZE	0x05		/* Playback buffer size */
-+#define PLAYBACK_POINTER	0x06		/* Playback buffer pointer. Sample currently in DAC */
-+
-+/* Only one capture channel supported */
-+#define CAPTURE_DMA_ADDR	0x10		/* Capture DMA address */
-+#define CAPTURE_BUFFER_SIZE	0x11		/* Capture buffer size */
-+#define CAPTURE_POINTER		0x12		/* Capture buffer pointer. Sample currently in ADC */
-+
-+/* From 0x20 - 0x3f, last samples played on each channel */
-+
-+#define TRIGGER_CHANNEL         0x40            /* Trigger channel playback                     */
-+#define TRIGGER_CHANNEL_0       0x00000001      /* Trigger channel 0                            */
-+#define TRIGGER_CHANNEL_1       0x00000002      /* Trigger channel 1                            */
-+#define TRIGGER_CHANNEL_2       0x00000004      /* Trigger channel 2                            */
-+#define TRIGGER_CAPTURE         0x00000100      /* Trigger capture channel                      */
-+
-+#define ROUTING                 0x41            /* Setup sound routing ?                        */
-+#define ROUTING_FRONT_LEFT      0x00000001
-+#define ROUTING_FRONT_RIGHT     0x00000002
-+#define ROUTING_REAR_LEFT       0x00000004
-+#define ROUTING_REAR_RIGHT      0x00000008
-+#define ROUTING_CENTER_LFE      0x00010000
-+
- #define SPCS0			0x42		/* SPDIF output Channel Status 0 register	*/
- 
- #define SPCS1			0x43		/* SPDIF output Channel Status 1 register	*/
-@@ -122,6 +160,23 @@
- #define SPCS_NOTAUDIODATA	0x00000002	/* 0 = Digital audio, 1 = not audio		*/
- #define SPCS_PROFESSIONAL	0x00000001	/* 0 = Consumer (IEC-958), 1 = pro (AES3-1992)	*/
- 
-+#define SPDIF_SELECT		0x45		/* Enables SPDIF or Analogue outputs 0-Analogue, 0x700-SPDIF */
-+
-+/**
-+ * The hardware has 3 channels for playback and 1 for capture.
-+ *  - channel 0 is the front channel
-+ *  - channel 1 is the rear channel
-+ *  - channel 2 is the center/lfe chanel
-+ * Volume is controlled by the AC97 for the front and rear channels by
-+ * the PCM Playback Volume, Sigmatel Surround Playback Volume and 
-+ * Surround Playback Volume. The Sigmatel 4-Speaker Stereo switch affects
-+ * the front/rear channel mixing in the REAR OUT jack. When using the
-+ * 4-Speaker Stereo, both front and rear channels will be mixed in the
-+ * REAR OUT.
-+ * The center/lfe channel has no volume control and cannot be muted during
-+ * playback.
-+ */
-+
- #define chip_t emu10k1x_t
- 
- typedef struct snd_emu10k1x_voice emu10k1x_voice_t;
-@@ -164,6 +219,8 @@
- 	snd_pcm_t *pcm;
- 
- 	emu10k1x_voice_t voices[3];
-+	emu10k1x_voice_t capture_voice;
-+	u32 spdif_bits[3]; // SPDIF out setup
- 
- 	struct snd_dma_device dma_dev;
- 	struct snd_dma_buffer buffer;
-@@ -186,7 +243,26 @@
- 	.channels_max =		2,
- 	.buffer_bytes_max =	(32*1024),
- 	.period_bytes_min =	64,
--	.period_bytes_max =	(32*1024),
-+	.period_bytes_max =	(16*1024),
-+	.periods_min =		2,
-+	.periods_max =		2,
-+	.fifo_size =		0,
-+};
-+
-+static snd_pcm_hardware_t snd_emu10k1x_capture_hw = {
-+	.info =			(SNDRV_PCM_INFO_MMAP | 
-+				 SNDRV_PCM_INFO_INTERLEAVED |
-+				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				 SNDRV_PCM_INFO_MMAP_VALID),
-+	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
-+	.rates =		SNDRV_PCM_RATE_48000,
-+	.rate_min =		48000,
-+	.rate_max =		48000,
-+	.channels_min =		2,
-+	.channels_max =		2,
-+	.buffer_bytes_max =	(32*1024),
-+	.period_bytes_min =	64,
-+	.period_bytes_max =	(16*1024),
- 	.periods_min =		2,
- 	.periods_max =		2,
- 	.fifo_size =		0,
-@@ -235,16 +311,14 @@
- 	spin_unlock_irqrestore(&emu->emu_lock, flags);
+Feb 14 06:57:13 napalm 2:1:3 : invalid synch pipe
+Feb 14 06:57:13 napalm 2:1:1 : invalid synch pipe=20
+
+2:1:X bears little relevance I'm guessing, since I assume those to be the
+USB subdevice IDs.
+
+In short, I suspect this device does not work with the usb-audio driver a=
+s
+it currently stands.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ Davin - 02-14-2004 19:26 CET=20
+----------------------------------------------------------------------
+Err, let me be a little more specific on the error. Verbosity is a good
+thing.
+
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+
+----------------------------------------------------------------------
+ Davin - 02-15-2004 01:37 CET=20
+----------------------------------------------------------------------
+Ironicly enough, I recieved an e-mail from the person with success shortl=
+y
+after this. I was advised that I couldn't use the alsa drivers provided
+with the 2.6 kernel, and that I would need more current ones.
+
+I rebuilt my kernel (removing ALSA support entirely), built
+alsa-driver-1.0.2c with support for usb-audio and sequencer, and rebooted=
+.
+I'm running into a very, very strange problem:
+
+root@napalm root # modprobe snd_usb_audio
+FATAL: Error inserting snd_usb_audio
+(/lib/modules/2.6.2/kernel/sound/usb/snd-usb-audio.ko): Unknown symbol in
+module, or unknown parameter (see dmesg)
+root@napalm sound # dmesg | tail -5
+atkbd.c: This is an XFree86 bug. It shouldn't access hardware directly.
+atkbd.c: Unknown key released (translated set 2, code 0x7a on
+isa0060/serio0).
+atkbd.c: This is an XFree86 bug. It shouldn't access hardware directly.
+snd_usb_audio: Unknown symbol usb_get_device_descriptor
+snd_usb_audio: Unknown symbol usb_get_device_descriptor
+
+This is totally, totally bizarre in light of the following:
+root@napalm root # cd /usr/src/linux
+root@napalm linux # grep usb_get_device_descriptor *
+System.map:c03370d4 T usb_get_device_descriptor
+Binary file vmlinux matches
+root@napalm linux # cd usb
+bash: cd: usb: No such file or directory
+root@napalm linux # cd drivers/usb
+root@napalm usb # grep usb_get_device_descriptor */*
+Binary file core/built-in.o matches
+core/hub.c:             ret =3D usb_get_device_descriptor(dev,
+sizeof(dev->descriptor));
+Binary file core/hub.o matches
+core/message.c: * usb_get_device_descriptor() for USB_DT_DEVICE (not
+exported),
+core/message.c: * usb_get_device_descriptor - (re)reads the device
+descriptor
+core/message.c:int usb_get_device_descriptor(struct usb_device *dev,
+unsigned int size)
+Binary file core/message.o matches
+core/usb.c:             err =3D usb_get_device_descriptor(dev, 8);
+core/usb.c:     err =3D usb_get_device_descriptor(dev,
+sizeof(dev->descriptor));
+core/usb.h:extern int usb_get_device_descriptor(struct usb_device *dev,
+Binary file core/usb.o matches
+Binary file core/usbcore.o matches
+
+The symbol is obviously compiled into the kernel. I've always had USB
+support in my kernel, and I'm certain that I booted off of the kernel
+image without ALSA support.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-20-2004 18:37 CET=20
+----------------------------------------------------------------------
+usb_get_device_descriptor is obsolete in 2.6 kernels.
+
+This has been fixed in CVS.  Either get the latest CVS version of ALSA, o=
+r
+apply the following path by hand:=20
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/usb/usbaudio.c?r1=3D=
+1.77&r2=3D1.78&diff_format=3Dl
+(If you don't have an Extigy, you can simple remove the line from
+usbaudio.c)
+
+----------------------------------------------------------------------
+ Davin - 02-22-2004 00:41 CET=20
+----------------------------------------------------------------------
+Tried CVS alsa-driver/lib/utils, programs refused to play audio.
+
+Applied your suggested patch to alsa-driver 1.0.2c and switched to
+alsa-lib/utils 1.0.2, programs still refuse to play audio.
+
+Sample output from alsaplayer when running under the 1.0.2 (non-CVS
+setup):
+
+davin@napalm davin $ alsaplayer
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (11609 11610)
+PERIOD_SIZE: 512
+PERIOD_BYTES: 2048
+PERIODS: 16
+BUFFER_TIME: (185759 185760)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 1000
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 44100
+PERIOD_TIME: (23219 23220)
+PERIOD_SIZE: 1024
+PERIOD_BYTES: 4096
+PERIODS: 8
+BUFFER_TIME: (185759 185760)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 1000
+failed to configure output device...trying OSS
+
+(program locks up unkillable here)
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-24-2004 08:43 CET=20
+----------------------------------------------------------------------
+FORMAT: S16_LE
+CHANNELS: 2
+RATE: 44100
+
+It may be possible that the device doesn't support this particular sample
+format. Please look into /proc/asound/cardX/stream0 to determine the
+device capabilities.
+
+What happens when you run "aplay -v something.wav" (this should work in
+any case)?
+
+----------------------------------------------------------------------
+ Davin - 02-25-2004 02:39 CET=20
+----------------------------------------------------------------------
+All mixer channels unmuted and set to 87. Speaker volume is not at minimu=
+m.
+Speakers and card work in Windows. With the above said, running 'aplay -v
+chord.wav' returns silence and the following output. I've also included
+the contents of /proc/asound/card0/stream0.
+
+
+
+
+davin@napalm media $ aplay -v chord.wav
+Playing WAVE 'chord.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+aplay: set_params:875: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: (125011 125012)
+PERIOD_SIZE: (2756 2757)
+PERIOD_BYTES: (11024 11028)
+PERIODS: (2 3)
+BUFFER_TIME: (371519 371520)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 1000
+
+
+
+
+root@napalm media # cat /proc/asound/card0/stream0
+Creative Technology Ltd SB Audigy 2 NX at usb-0000:00:1d.7-2 : USB Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 44100
+  Interface 1
+    Altset 2
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 44100
+  Interface 1
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 4
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 5
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 6
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 7
+    Format: S16_LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 8
+    Format: S24_3LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 9
+    Format: S16_LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 10
+    Format: S24_3LE
+    Channels: 4
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 11
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 12
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 13
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 14
+    Format: S24_3LE
+    Channels: 6
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 15
+    Format: S16_LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 16
+    Format: S24_3LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 48000
+  Interface 1
+    Altset 17
+    Format: S16_LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+  Interface 1
+    Altset 18
+    Format: S24_3LE
+    Channels: 8
+    Endpoint: 1 OUT (ASYNC)
+    Rates: 96000
+
+Capture:
+  Status: Stop
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 32000
+  Interface 2
+    Altset 2
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 32000
+  Interface 2
+    Altset 3
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 44100
+  Interface 2
+    Altset 4
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 44100
+  Interface 2
+    Altset 5
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 48000
+  Interface 2
+    Altset 6
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 48000
+  Interface 2
+    Altset 7
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 96000
+  Interface 2
+    Altset 8
+    Format: S24_3LE
+    Channels: 2
+    Endpoint: 2 IN (NONE)
+    Rates: 96000
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-25-2004 10:09 CET=20
+----------------------------------------------------------------------
+> $ aplay -v chord.wav
+> Playing WAVE 'chord.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+> aplay: set_params:875: Unable to install hw params:
+
+The Audigy2NX does not support 22050 Hz.  In theory, the "default" should
+resample this file, but you probably have redefined this in your
+.asoundrc.
+
+Please try "aplay -Dplughw:0 -v chord.wav".
+
+----------------------------------------------------------------------
+ Davin - 02-26-2004 04:08 CET=20
+----------------------------------------------------------------------
+I have no .asoundrc, so that isn't the reason why. The following should
+look familiar:
+
+root@napalm media # aplay -Dplughw:0 -v chord.wav
+Playing WAVE 'chord.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+aplay: set_params:875: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: (125011 125012)
+PERIOD_SIZE: (2756 2757)
+PERIOD_BYTES: (11024 11028)
+PERIODS: (2 3)
+BUFFER_TIME: (371519 371520)
+BUFFER_SIZE: 8192
+BUFFER_BYTES: 32768
+TICK_TIME: 1000
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-26-2004 16:23 CET=20
+----------------------------------------------------------------------
+Just for testing, create a file .asoundrc in your home directory with the
+following contents:
+
+pcm.test {
+    type plug
+    slave.pcm "hw:0"
+    slave.rate 48000
+}
+
+and then try to run "aplay -D test  ..."
+
+----------------------------------------------------------------------
+ Davin - 02-26-2004 23:54 CET=20
+----------------------------------------------------------------------
+davin@napalm media $ cat ~/.asoundrc
+pcm.test {
+ type plug
+ slave.pcm "hw:0"
+ slave.rate 48000
  }
- 
--static int voice_alloc(emu10k1x_t *emu, emu10k1x_voice_t **rvoice)
-+static int voice_alloc(emu10k1x_t *emu, emu10k1x_voice_t **rvoice, int id)
- {
- 	emu10k1x_voice_t *voice;
--	int idx;
-+	int idx = id;
- 
- 	*rvoice = NULL;
--	for (idx = 0; idx < 3; idx ++) {
--		voice = &emu->voices[idx];
--		if (voice->use)
--			continue;
-+	voice = &emu->voices[idx];
-+	if (!voice->use) {
- 		voice->use = 1;
- 		*rvoice = voice;
- 		return 0;
-@@ -252,16 +326,16 @@
- 	return -ENOMEM;
- }
- 
--static int snd_emu10k1x_voice_alloc(emu10k1x_t *emu, emu10k1x_voice_t **rvoice)
-+static int snd_emu10k1x_voice_alloc(emu10k1x_t *emu, emu10k1x_voice_t **rvoice, int id)
- {
--	unsigned long flags;
-+  unsigned long flags;
- 	int result;
-   
- 	snd_assert(rvoice != NULL, return -EINVAL);
- 
- 	spin_lock_irqsave(&emu->voice_lock, flags);
-   
--	result = voice_alloc(emu, rvoice);
-+	result = voice_alloc(emu, rvoice, id);
- 
- 	spin_unlock_irqrestore(&emu->voice_lock, flags);
-   
-@@ -294,16 +368,16 @@
- static void snd_emu10k1x_pcm_interrupt(emu10k1x_t *emu, emu10k1x_voice_t *voice)
- {
- 	emu10k1x_pcm_t *epcm;
--  
-+
- 	if ((epcm = voice->epcm) == NULL)
- 		return;
- 	if (epcm->substream == NULL)
- 		return;
- #if 0
--	printk("IRQ: position = 0x%x, period = 0x%x, size = 0x%x\n",
--	       epcm->substream->runtime->hw->pointer(emu, epcm->substream),
--	       snd_pcm_lib_period_bytes(epcm->substream),
--	       snd_pcm_lib_buffer_bytes(epcm->substream));
-+	snd_printk("IRQ: position = 0x%x, period = 0x%x, size = 0x%x\n",
-+		   epcm->substream->ops->pointer(epcm->substream),
-+		   snd_pcm_lib_period_bytes(epcm->substream),
-+		   snd_pcm_lib_buffer_bytes(epcm->substream));
- #endif
- 	snd_pcm_period_elapsed(epcm->substream);
- }
-@@ -344,8 +418,10 @@
- 	emu10k1x_pcm_t *epcm = snd_magic_cast(emu10k1x_pcm_t, runtime->private_data, return -ENXIO);
- 
- 	if (! epcm->voice) {
--		if ((err = snd_emu10k1x_voice_alloc(epcm->emu, &epcm->voice)) < 0)
-+		if ((err = snd_emu10k1x_voice_alloc(epcm->emu, &epcm->voice, substream->pcm->device)) < 0)
- 			return err;
-+		epcm->voice->use = 1;
-+		epcm->voice->interrupt = snd_emu10k1x_pcm_interrupt;
- 		epcm->voice->epcm = epcm;
- 		epcm->voice->interrupt = snd_emu10k1x_pcm_interrupt;
- 	}
-@@ -383,11 +459,16 @@
- 	snd_emu10k1x_ptr_write(emu, 0x00, voice, 0);
- 	snd_emu10k1x_ptr_write(emu, 0x01, voice, 0);
- 	snd_emu10k1x_ptr_write(emu, 0x02, voice, 0);
--	snd_emu10k1x_ptr_write(emu, 0x04, voice, runtime->dma_addr);
--	snd_emu10k1x_ptr_write(emu, 0x05, voice, frames_to_bytes(runtime, runtime->buffer_size)<<16); // buffer size in bytes
--	snd_emu10k1x_ptr_write(emu, 0x06, voice, 0);
-+	snd_emu10k1x_ptr_write(emu, PLAYBACK_DMA_ADDR, voice, runtime->dma_addr);
-+	snd_emu10k1x_ptr_write(emu, PLAYBACK_BUFFER_SIZE, voice, frames_to_bytes(runtime, runtime->buffer_size)<<16); // buffer size in bytes
-+	snd_emu10k1x_ptr_write(emu, PLAYBACK_POINTER, voice, 0);
- 	snd_emu10k1x_ptr_write(emu, 0x07, voice, 0);
- 	snd_emu10k1x_ptr_write(emu, 0x08, voice, 0);
-+	unsigned int value = snd_emu10k1x_ptr_read(emu, ROUTING, 0);
-+	value |= 3 << (2*voice);
-+	if(voice == 2)
-+	  value |= 0x10000; // enable center/lfe channel this way
-+	snd_emu10k1x_ptr_write(emu, ROUTING, 0, value);
- 
- 	return 0;
- }
-@@ -402,14 +483,15 @@
- 	int channel = epcm->voice->number;
- 	int result = 0;
- 
--//	printk("trigger - emu10k1x = 0x%x, cmd = %i, pointer = %d\n", (int)emu, cmd, (int)substream->ops->pointer(substream));
-+//	snd_printk("trigger - emu10k1x = 0x%x, cmd = %i, pointer = %d\n", (int)emu, cmd, (int)substream->ops->pointer(substream));
-+
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		snd_emu10k1x_ptr_write(emu, 0x40, 0, snd_emu10k1x_ptr_read(emu, 0x40, 0)|(1<<channel));
-+		snd_emu10k1x_ptr_write(emu, TRIGGER_CHANNEL, 0, snd_emu10k1x_ptr_read(emu, TRIGGER_CHANNEL, 0)|(TRIGGER_CHANNEL_0<<channel));
- 		epcm->running = 1;
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
--		snd_emu10k1x_ptr_write(emu, 0x40, 0, snd_emu10k1x_ptr_read(emu, 0x40, 0) & ~(1<<channel));
-+		snd_emu10k1x_ptr_write(emu, TRIGGER_CHANNEL, 0, snd_emu10k1x_ptr_read(emu, TRIGGER_CHANNEL, 0) & ~(TRIGGER_CHANNEL_0<<channel));
- 		epcm->running = 0;
- 		break;
- 	default:
-@@ -432,14 +514,13 @@
- 	if (!epcm->running)
- 		return 0;
- 
--	//  printk("pointer: %08X %08X\n", 
--	//	 snd_emu10k1x_ptr_read(emu, 0x06, channel),
--	//	 snd_emu10k1x_ptr_read(emu, 0x12, channel));
--	ptr = bytes_to_frames(runtime, snd_emu10k1x_ptr_read(emu, 0x06, channel));
-+//	snd_printk("pointer: %08X\n", 
-+//		   snd_emu10k1x_ptr_read(emu, PLAYBACK_POINTER, channel));
-+	ptr = bytes_to_frames(runtime, snd_emu10k1x_ptr_read(emu, PLAYBACK_POINTER, channel));
- 	if (ptr >= runtime->buffer_size)
- 		ptr -= runtime->buffer_size;
- 
--	//	printk("ptr = 0x%x, buffer_size = 0x%x, period_size = 0x%x, bits=%d, rate=%d\n", ptr, (int)runtime->buffer_size, (int)runtime->period_size, (int)runtime->frame_bits, (int)runtime->rate);
-+//	snd_printk("ptr = 0x%x, buffer_size = 0x%x, period_size = 0x%x, bits=%d, rate=%d\n", ptr, (int)runtime->buffer_size, (int)runtime->period_size, (int)runtime->frame_bits, (int)runtime->rate);
- 	return ptr;
- }
- 
-@@ -455,6 +536,143 @@
- 	.pointer =     snd_emu10k1x_pcm_pointer,
- };
- 
-+/* open_capture callback */
-+static int snd_emu10k1x_pcm_open_capture(snd_pcm_substream_t *substream)
-+{
-+	emu10k1x_t *chip = snd_pcm_substream_chip(substream);
-+	emu10k1x_pcm_t *epcm;
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+
-+	epcm = snd_magic_kcalloc(emu10k1x_pcm_t, 0, GFP_KERNEL);
-+	if (epcm == NULL) {
-+		return -ENOMEM;
-+        }
-+	epcm->emu = chip;
-+	epcm->substream = substream;
-+  
-+	runtime->private_data = epcm;
-+	runtime->private_free = snd_emu10k1x_pcm_free_substream;
-+  
-+	runtime->hw = snd_emu10k1x_capture_hw;
-+
-+	return 0;
-+}
-+
-+/* close callback */
-+static int snd_emu10k1x_pcm_close_capture(snd_pcm_substream_t *substream)
-+{
-+	return 0;
-+}
-+
-+/* hw_params callback */
-+static int snd_emu10k1x_pcm_hw_params_capture(snd_pcm_substream_t *substream,
-+				      snd_pcm_hw_params_t * hw_params)
-+{
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1x_pcm_t *epcm = snd_magic_cast(emu10k1x_pcm_t, runtime->private_data, return -ENXIO);
-+
-+	if (! epcm->voice) {
-+		if (epcm->emu->capture_voice.use)
-+			return -1;
-+		epcm->voice = &epcm->emu->capture_voice;
-+		epcm->voice->epcm = epcm;
-+		epcm->voice->use = 1;
-+		epcm->voice->interrupt = snd_emu10k1x_pcm_interrupt;
-+	}
-+
-+	return snd_pcm_lib_malloc_pages(substream,
-+					params_buffer_bytes(hw_params));
-+}
-+
-+/* hw_free callback */
-+static int snd_emu10k1x_pcm_hw_free_capture(snd_pcm_substream_t *substream)
-+{
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+
-+	emu10k1x_pcm_t *epcm;
-+
-+	if (runtime->private_data == NULL)
-+		return 0;
-+	epcm = snd_magic_cast(emu10k1x_pcm_t, runtime->private_data, return -ENXIO);
-+
-+	if (epcm->voice) {
-+		epcm->voice->use = 0;
-+		epcm->voice->interrupt = NULL;
-+		epcm->voice->epcm = NULL;
-+		epcm->voice = NULL;
-+	}
-+
-+	return snd_pcm_lib_free_pages(substream);
-+}
-+
-+/* prepare capture callback */
-+static int snd_emu10k1x_pcm_prepare_capture(snd_pcm_substream_t *substream)
-+{
-+	emu10k1x_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	//	snd_printk("prepare: rate=%d, format=0x%x, channels=%d, buffer_size=%ld, period_size=%ld, frames_to_bytes=%d\n",runtime->rate, runtime->format, runtime->channels, runtime->buffer_size, runtime->period_size,  frames_to_bytes(runtime, 1));
-+	snd_emu10k1x_ptr_write(emu, CAPTURE_DMA_ADDR, 0, runtime->dma_addr);
-+	snd_emu10k1x_ptr_write(emu, CAPTURE_BUFFER_SIZE, 0, frames_to_bytes(runtime, runtime->buffer_size)<<16); // buffer size in bytes
-+	snd_emu10k1x_ptr_write(emu, CAPTURE_POINTER, 0, 0);
-+
-+	return 0;
-+}
-+
-+/* trigger_capture callback */
-+static int snd_emu10k1x_pcm_trigger_capture(snd_pcm_substream_t *substream,
-+				    int cmd)
-+{
-+	emu10k1x_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1x_pcm_t *epcm = snd_magic_cast(emu10k1x_pcm_t, runtime->private_data, return -ENXIO);
-+	int result = 0;
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		snd_emu10k1x_ptr_write(emu, TRIGGER_CHANNEL, 0, snd_emu10k1x_ptr_read(emu, TRIGGER_CHANNEL, 0)|TRIGGER_CAPTURE);
-+		epcm->running = 1;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		snd_emu10k1x_ptr_write(emu, TRIGGER_CHANNEL, 0, snd_emu10k1x_ptr_read(emu, TRIGGER_CHANNEL, 0) & ~(TRIGGER_CAPTURE));
-+		epcm->running = 0;
-+		break;
-+	default:
-+		result = -EINVAL;
-+		break;
-+	}
-+	return result;
-+}
-+
-+/* pointer_capture callback */
-+static snd_pcm_uframes_t
-+snd_emu10k1x_pcm_pointer_capture(snd_pcm_substream_t *substream)
-+{
-+	emu10k1x_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1x_pcm_t *epcm = snd_magic_cast(emu10k1x_pcm_t, runtime->private_data, return -ENXIO);
-+	snd_pcm_uframes_t ptr;
-+
-+	if (!epcm->running)
-+		return 0;
-+
-+	ptr = bytes_to_frames(runtime, snd_emu10k1x_ptr_read(emu, CAPTURE_POINTER, 0));
-+	if (ptr >= runtime->buffer_size)
-+		ptr -= runtime->buffer_size;
-+
-+	return ptr;
-+}
-+
-+static snd_pcm_ops_t snd_emu10k1x_capture_ops = {
-+	.open =        snd_emu10k1x_pcm_open_capture,
-+	.close =       snd_emu10k1x_pcm_close_capture,
-+	.ioctl =       snd_pcm_lib_ioctl,
-+	.hw_params =   snd_emu10k1x_pcm_hw_params_capture,
-+	.hw_free =     snd_emu10k1x_pcm_hw_free_capture,
-+	.prepare =     snd_emu10k1x_pcm_prepare_capture,
-+	.trigger =     snd_emu10k1x_pcm_trigger_capture,
-+	.pointer =     snd_emu10k1x_pcm_pointer_capture,
-+};
-+
- static unsigned short snd_emu10k1x_ac97_read(ac97_t *ac97,
- 					     unsigned short reg)
- {
-@@ -499,7 +717,7 @@
- 
- static int snd_emu10k1x_free(emu10k1x_t *chip)
- {
--	snd_emu10k1x_ptr_write(chip, 0x40, 0, 0);
-+	snd_emu10k1x_ptr_write(chip, TRIGGER_CHANNEL, 0, 0);
- 	// disable interrupts
- 	outl(0, chip->port + INTE);
- 	// disable audio
-@@ -545,8 +763,8 @@
- 		return IRQ_NONE;
- 
- 	mask = IPR_CH_0_LOOP|IPR_CH_0_HALF_LOOP;
-+	emu10k1x_voice_t *pvoice = chip->voices;
- 	for(i = 0; i < 3; i++) {
--		emu10k1x_voice_t *pvoice = chip->voices;
- 		if(status & mask) {
- 			if(pvoice->use && pvoice->interrupt)
- 				pvoice->interrupt(chip, pvoice);
-@@ -554,13 +772,20 @@
- 		pvoice++;
- 		mask <<= 1;
- 	}
-+	// capture interrupt
-+	if(status & (IPR_CAP_0_LOOP | IPR_CAP_0_HALF_LOOP)) {
-+		emu10k1x_voice_t *pvoice = &chip->capture_voice;
-+		if(pvoice->use && pvoice->interrupt)
-+			pvoice->interrupt(chip, pvoice);
-+	}
-+
- 	spin_lock(&chip->emu_lock);
- 	// acknowledge the interrupt if necessary
- 	outl(status, chip->port+IPR);
- 
- 	spin_unlock(&chip->emu_lock);
- 
--	//	printk(KERN_INFO "interrupt %08x\n", status);
-+//	snd_printk("interrupt %08x\n", status);
- 
- 	return IRQ_HANDLED;
- }
-@@ -577,22 +802,43 @@
- 	snd_pcm_t *pcm;
- 	snd_pcm_substream_t *substream;
- 	int err;
-+	int capture = 0;
-   
- 	if (rpcm)
- 		*rpcm = NULL;
--  
--	if ((err = snd_pcm_new(emu->card, "emu10k1x", device, 3, 0, &pcm)) < 0)
-+	if (device == 0)
-+	  capture = 1;
-+	
-+	if ((err = snd_pcm_new(emu->card, "emu10k1x", device, 1, capture, &pcm)) < 0)
- 		return err;
-   
- 	pcm->private_data = emu;
- 	pcm->private_free = snd_emu10k1x_pcm_free;
--  
--	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1x_playback_ops);
--	//  snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_emu10k1x_capture_ops);
-+	
-+	switch(device) {
-+	case 0:
-+	  snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1x_playback_ops);
-+	  snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_emu10k1x_capture_ops);
-+	  break;
-+	case 1:
-+	case 2:
-+	  snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1x_playback_ops);
-+	  break;
-+	}
- 
- 	pcm->info_flags = 0;
- 	pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
--	strcpy(pcm->name, "EMU10K1X");
-+	switch(device) {
-+	case 0:
-+	  strcpy(pcm->name, "EMU10K1X Front");
-+	  break;
-+	case 1:
-+	  strcpy(pcm->name, "EMU10K1X Rear");
-+	  break;
-+	case 2:
-+	  strcpy(pcm->name, "EMU10K1X Center/LFE");
-+	  break;
-+	}
- 	emu->pcm = pcm;
- 
- 	for(substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; 
-@@ -604,15 +850,13 @@
- 							 32*1024, 32*1024)) < 0)
- 			return err;
- 
--	/*
--	  for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream; 
--	  substream; 
--	  substream = substream->next)
--	  snd_pcm_lib_preallocate_pages(substream, 
--	  SNDRV_DMA_TYPE_DEV, 
--	  snd_dma_pci_data(emu->pci), 
--	  64*1024, 64*1024);
--	*/
-+	for (substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream; 
-+	     substream; 
-+	     substream = substream->next)
-+		snd_pcm_lib_preallocate_pages(substream, 
-+					      SNDRV_DMA_TYPE_DEV, 
-+					      snd_dma_pci_data(emu->pci), 
-+					      32*1024, 32*1024);
-   
- 	if (rpcm)
- 		*rpcm = pcm;
-@@ -637,7 +881,7 @@
- 		return err;
- 	if (pci_set_dma_mask(pci, 0x0fffffff) < 0 ||
- 	    pci_set_consistent_dma_mask(pci, 0x0fffffff) < 0) {
--		printk(KERN_ERR "error to set 28bit mask DMA\n");
-+		snd_printk(KERN_ERR "error to set 28bit mask DMA\n");
- 		return -ENXIO;
- 	}
-   
-@@ -656,7 +900,7 @@
- 	if ((chip->res_port = request_region(chip->port, 8,
- 					     "My Chip")) == NULL) { 
- 		snd_emu10k1x_free(chip);
--		printk(KERN_ERR "cannot allocate the port\n");
-+		snd_printk("cannot allocate the port\n");
- 		return -EBUSY;
- 	}
- 
-@@ -664,7 +908,7 @@
- 			SA_INTERRUPT|SA_SHIRQ, "EMU10K1X",
- 			(void *)chip)) {
- 		snd_emu10k1x_free(chip);
--		printk(KERN_ERR "cannot grab irq\n");
-+		snd_printk("cannot grab irq\n");
- 		return -EBUSY;
- 	}
- 	chip->irq = pci->irq;
-@@ -683,10 +927,10 @@
- 	pci_read_config_byte(pci, PCI_REVISION_ID, (char *)&chip->revision);
- 	pci_read_config_dword(pci, PCI_SUBSYSTEM_VENDOR_ID, &chip->serial);
- 	pci_read_config_word(pci, PCI_SUBSYSTEM_ID, &chip->model);
--	printk(KERN_INFO "Model %04x Rev %08x Serial %08x\n", chip->model,
--	       chip->revision, chip->serial);
-+	snd_printk("Model %04x Rev %08x Serial %08x\n", chip->model,
-+		   chip->revision, chip->serial);
- 
--	outl(0, chip->port + INTE);
-+	outl(0, chip->port + INTE);	
- 
- 	for(ch = 0; ch < 3; ch++) {
- 		chip->voices[ch].emu = chip;
-@@ -708,29 +952,34 @@
- 	 *  P                 = 0     (Consumer)
- 	 */
- 	snd_emu10k1x_ptr_write(chip, SPCS0, 0,
-+			       chip->spdif_bits[0] = 
- 			       SPCS_CLKACCY_1000PPM | SPCS_SAMPLERATE_48 |
- 			       SPCS_CHANNELNUM_LEFT | SPCS_SOURCENUM_UNSPEC |
- 			       SPCS_GENERATIONSTATUS | 0x00001200 |
- 			       0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT);
- 	snd_emu10k1x_ptr_write(chip, SPCS1, 0,
-+			       chip->spdif_bits[1] = 
- 			       SPCS_CLKACCY_1000PPM | SPCS_SAMPLERATE_48 |
- 			       SPCS_CHANNELNUM_LEFT | SPCS_SOURCENUM_UNSPEC |
- 			       SPCS_GENERATIONSTATUS | 0x00001200 |
- 			       0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT);
- 	snd_emu10k1x_ptr_write(chip, SPCS2, 0,
-+			       chip->spdif_bits[2] = 
- 			       SPCS_CLKACCY_1000PPM | SPCS_SAMPLERATE_48 |
- 			       SPCS_CHANNELNUM_LEFT | SPCS_SOURCENUM_UNSPEC |
- 			       SPCS_GENERATIONSTATUS | 0x00001200 |
- 			       0x00000000 | SPCS_EMPHASIS_NONE | SPCS_COPYRIGHT);
- 
--	snd_emu10k1x_ptr_write(chip, 0x41, 0, 0x70f); // ???
--	snd_emu10k1x_ptr_write(chip, 0x45, 0, 0);
-+	snd_emu10k1x_ptr_write(chip, SPDIF_SELECT, 0, 0x700); // disable SPDIF
-+	// verify the next line
-+	snd_emu10k1x_ptr_write(chip, ROUTING, 0, 0x10000); // routing
- 
- 	outl(HCFG_LOCKSOUNDCACHE|HCFG_AUDIOENABLE, chip->port+HCFG);
- 
- 	snd_emu10k1x_intr_enable(chip, (INTE_CH_0_LOOP|INTE_CH_0_HALF_LOOP) |
--				 ((INTE_CH_0_LOOP|INTE_CH_0_HALF_LOOP) << 1) |
--				 ((INTE_CH_0_LOOP|INTE_CH_0_HALF_LOOP) << 2));
-+				 ((INTE_CH_0_LOOP|INTE_CH_0_HALF_LOOP)<<1) |
-+				 ((INTE_CH_0_LOOP|INTE_CH_0_HALF_LOOP)<<2) |
-+				 (INTE_CAP_0_LOOP|INTE_CAP_0_HALF_LOOP));
- 
- 	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL,
- 				  chip, &ops)) < 0) {
-@@ -750,30 +999,195 @@
- 	int i;
- 
- 	snd_iprintf(buffer, "Registers:\n\n");
--	for(i = 0; i < 0x40; i+=4) {
-+	for(i = 0; i < 0x20; i+=4) {
- 		spin_lock_irqsave(&emu->emu_lock, flags);
- 		value = inl(emu->port + i);
- 		spin_unlock_irqrestore(&emu->emu_lock, flags);
- 		snd_iprintf(buffer, "Register %02X: %08lX\n", i, value);
- 	}
- 	snd_iprintf(buffer, "\nRegisters\n\n");
--	for(i = 0; i < 0x50; i++) {
-+	for(i = 0; i <= 0x48; i++) {
- 		value = snd_emu10k1x_ptr_read(emu, i, 0);
--		value1 = snd_emu10k1x_ptr_read(emu, i, 1);
--		value2 = snd_emu10k1x_ptr_read(emu, i, 2);
--		snd_iprintf(buffer, "%02X: %08lX %08lX %08lX\n", i, value, value1, value2);
-+		if(i < 0x10 || (i >= 0x20 && i < 0x40)) {
-+			value1 = snd_emu10k1x_ptr_read(emu, i, 1);
-+			value2 = snd_emu10k1x_ptr_read(emu, i, 2);
-+			snd_iprintf(buffer, "%02X: %08lX %08lX %08lX\n", i, value, value1, value2);
-+		} else {
-+			snd_iprintf(buffer, "%02X: %08lX\n", i, value);
-+		}
- 	}
- }
- 
-+static void snd_emu10k1x_proc_reg_write(snd_info_entry_t *entry, 
-+					snd_info_buffer_t *buffer)
-+{
-+	emu10k1x_t *emu = snd_magic_cast(emu10k1x_t, entry->private_data, 
-+					 return);
-+        char line[64];
-+        unsigned int reg, channel_id , val;
-+        while (!snd_info_get_line(buffer, line, sizeof(line))) {
-+                if (sscanf(line, "%x %x %x", &reg, &channel_id, &val) != 3)
-+                        continue;
-+		
-+                if ((reg < 0x49) && (reg >=0) && (val <= 0xffffffff) 
-+		    && (channel_id >=0) && (channel_id <= 2) )
-+			snd_emu10k1x_ptr_write(emu, reg, channel_id, val);
-+        }
-+}
-+
- static int __devinit snd_emu10k1x_proc_init(emu10k1x_t * emu)
- {
- 	snd_info_entry_t *entry;
- 	
--	if(! snd_card_proc_new(emu->card, "emu10k1x_regs", &entry))
-+	if(! snd_card_proc_new(emu->card, "emu10k1x_regs", &entry)) {
- 		snd_info_set_text_ops(entry, emu, 1024, snd_emu10k1x_proc_reg_read);
-+		entry->c.text.write_size = 64;
-+		entry->c.text.write = snd_emu10k1x_proc_reg_write;
-+		entry->private_data = emu;
-+	}
-+	
-+	return 0;
-+}
-+
-+static int snd_emu10k1x_shared_spdif_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
-+	uinfo->count = 1;
-+	uinfo->value.integer.min = 0;
-+	uinfo->value.integer.max = 1;
- 	return 0;
- }
- 
-+static int snd_emu10k1x_shared_spdif_get(snd_kcontrol_t * kcontrol,
-+					snd_ctl_elem_value_t * ucontrol)
-+{
-+	emu10k1x_t *emu = snd_kcontrol_chip(kcontrol);
-+
-+	ucontrol->value.integer.value[0] = (snd_emu10k1x_ptr_read(emu, SPDIF_SELECT, 0) == 0x700) ? 0 : 1;
-+
-+        return 0;
-+}
-+
-+static int snd_emu10k1x_shared_spdif_put(snd_kcontrol_t * kcontrol,
-+					snd_ctl_elem_value_t * ucontrol)
-+{
-+	emu10k1x_t *emu = snd_kcontrol_chip(kcontrol);
-+	unsigned int val;
-+	int change = 0;
-+
-+	val = ucontrol->value.integer.value[0] ;
-+
-+	if (val) {
-+		// enable spdif output
-+		snd_emu10k1x_ptr_write(emu, SPDIF_SELECT, 0, 0x000);
-+	} else {
-+		// disable spdif output
-+		snd_emu10k1x_ptr_write(emu, SPDIF_SELECT, 0, 0x700);
-+	}
-+        return change;
-+}
-+
-+static snd_kcontrol_new_t snd_emu10k1x_shared_spdif __devinitdata =
-+{
-+	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name =		"Analog/Digital Output Jack",
-+	.info =		snd_emu10k1x_shared_spdif_info,
-+	.get =		snd_emu10k1x_shared_spdif_get,
-+	.put =		snd_emu10k1x_shared_spdif_put
-+};
-+
-+static int snd_emu10k1x_spdif_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+	return 0;
-+}
-+
-+static int snd_emu10k1x_spdif_get(snd_kcontrol_t * kcontrol,
-+                                 snd_ctl_elem_value_t * ucontrol)
-+{
-+	emu10k1x_t *emu = snd_kcontrol_chip(kcontrol);
-+	unsigned int idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
-+
-+	ucontrol->value.iec958.status[0] = (emu->spdif_bits[idx] >> 0) & 0xff;
-+	ucontrol->value.iec958.status[1] = (emu->spdif_bits[idx] >> 8) & 0xff;
-+	ucontrol->value.iec958.status[2] = (emu->spdif_bits[idx] >> 16) & 0xff;
-+	ucontrol->value.iec958.status[3] = (emu->spdif_bits[idx] >> 24) & 0xff;
-+        return 0;
-+}
-+
-+static int snd_emu10k1x_spdif_get_mask(snd_kcontrol_t * kcontrol,
-+				      snd_ctl_elem_value_t * ucontrol)
-+{
-+	ucontrol->value.iec958.status[0] = 0xff;
-+	ucontrol->value.iec958.status[1] = 0xff;
-+	ucontrol->value.iec958.status[2] = 0xff;
-+	ucontrol->value.iec958.status[3] = 0xff;
-+        return 0;
-+}
-+
-+static int snd_emu10k1x_spdif_put(snd_kcontrol_t * kcontrol,
-+                                 snd_ctl_elem_value_t * ucontrol)
-+{
-+	emu10k1x_t *emu = snd_kcontrol_chip(kcontrol);
-+	unsigned int idx = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id);
-+	int change;
-+	unsigned int val;
-+
-+	val = (ucontrol->value.iec958.status[0] << 0) |
-+	      (ucontrol->value.iec958.status[1] << 8) |
-+	      (ucontrol->value.iec958.status[2] << 16) |
-+	      (ucontrol->value.iec958.status[3] << 24);
-+	change = val != emu->spdif_bits[idx];
-+	if (change) {
-+		snd_emu10k1x_ptr_write(emu, SPCS0 + idx, 0, val);
-+		emu->spdif_bits[idx] = val;
-+	}
-+        return change;
-+}
-+
-+static snd_kcontrol_new_t snd_emu10k1x_spdif_mask_control =
-+{
-+	.access =	SNDRV_CTL_ELEM_ACCESS_READ,
-+        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
-+        .name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,MASK),
-+	.count =	3,
-+        .info =         snd_emu10k1x_spdif_info,
-+        .get =          snd_emu10k1x_spdif_get_mask
-+};
-+
-+static snd_kcontrol_new_t snd_emu10k1x_spdif_control =
-+{
-+        .iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
-+        .name =         SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT),
-+	.count =	3,
-+        .info =         snd_emu10k1x_spdif_info,
-+        .get =          snd_emu10k1x_spdif_get,
-+        .put =          snd_emu10k1x_spdif_put
-+};
-+
-+static int __devinit snd_emu10k1x_mixer(emu10k1x_t *emu)
-+{
-+        int err;
-+        snd_kcontrol_t *kctl;
-+        snd_card_t *card = emu->card;
-+
-+	if ((kctl = snd_ctl_new1(&snd_emu10k1x_spdif_mask_control, emu)) == NULL)
-+		return -ENOMEM;
-+	if ((err = snd_ctl_add(card, kctl)))
-+		return err;
-+	if ((kctl = snd_ctl_new1(&snd_emu10k1x_shared_spdif, emu)) == NULL)
-+		return -ENOMEM;
-+	if ((err = snd_ctl_add(card, kctl)))
-+		return err;
-+	if ((kctl = snd_ctl_new1(&snd_emu10k1x_spdif_control, emu)) == NULL)
-+		return -ENOMEM;
-+	if ((err = snd_ctl_add(card, kctl)))
-+		return err;
-+
-+        return 0;
-+}
-+
- static int __devinit snd_emu10k1x_probe(struct pci_dev *pci,
- 					const struct pci_device_id *pci_id)
- {
-@@ -802,16 +1216,29 @@
- 		snd_card_free(card);
- 		return err;
- 	}
-+	if ((err = snd_emu10k1x_pcm(chip, 1, NULL)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+	if ((err = snd_emu10k1x_pcm(chip, 2, NULL)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
- 
- 	if ((err = snd_emu10k1x_ac97(chip)) < 0) {
- 		snd_card_free(card);
- 		return err;
- 	}
- 
-+	if ((err = snd_emu10k1x_mixer(chip)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
-+
- 	snd_emu10k1x_proc_init(chip);
- 
--	strcpy(card->driver, "Dell SB Live");
--	strcpy(card->shortname, "EMU10K1X");
-+	strcpy(card->driver, "EMU10K1X");
-+	strcpy(card->shortname, "Dell Sound Blaster Live!");
- 	sprintf(card->longname, "%s at 0x%lx irq %i",
- 		card->shortname, chip->port, chip->irq);
- 
-@@ -840,7 +1267,7 @@
- 
- // pci_driver definition
- static struct pci_driver driver = {
--	.name = "Emu10k1x",
-+	.name = "EMU10K1X",
- 	.id_table = snd_emu10k1x_ids,
- 	.probe = snd_emu10k1x_probe,
- 	.remove = __devexit_p(snd_emu10k1x_remove),
 
---Boundary_(ID_kQdf4RtaflDfx9rxUTspQw)
-Content-type: text/plain; NAME=alsa-lib.txt
-Content-transfer-encoding: 7BIT
-Content-disposition: attachment; filename=alsa-lib.txt
+davin@napalm media $ aplay -D test chord.wav
+Playing WAVE 'chord.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+aplay: set_params:875: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: 125000
+PERIOD_SIZE: (2756 2757)
+PERIOD_BYTES: (11024 11028)
+PERIODS: (2 3)
+BUFFER_TIME: (341315 341316)
+BUFFER_SIZE: 7526
+BUFFER_BYTES: 30104
+TICK_TIME: 1000
 
-Index: alsa-lib/src/conf/cards/EMU10K1X.conf
-===================================================================
-RCS file: alsa-lib/src/conf/cards/EMU10K1X.conf
-diff -N alsa-lib/src/conf/cards/EMU10K1X.conf
---- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ alsa-lib/src/conf/cards/EMU10K1X.conf	27 Jun 2004 14:54:05 -0000
-@@ -0,0 +1,169 @@
-+#
-+# Configuration for the EMU10K1X chip
-+#
-+
-+<confdir:pcm/front.conf>
-+
-+EMU10K1X.pcm.front.0 {
-+	@args [ CARD  ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 0
-+}	
-+
-+<confdir:pcm/rear.conf>
-+
-+EMU10K1X.pcm.rear.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 1
-+}	
-+
-+<confdir:pcm/center_lfe.conf>
-+
-+EMU10K1X.pcm.center_lfe.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type hw
-+	card $CARD
-+	device 2
-+}	
-+
-+<confdir:pcm/surround40.conf>
-+
-+EMU10K1X.pcm.surround40.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type multi
-+	slaves [
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.EMU10K1X.pcm.front.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.EMU10K1X.pcm.rear.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+	]
-+	bindings [
-+		{ slave 0 channel 0 }
-+		{ slave 0 channel 1 }
-+		{ slave 1 channel 0 }
-+		{ slave 1 channel 1 }
-+	]
-+}
-+
-+<confdir:pcm/surround41.conf>
-+<confdir:pcm/surround50.conf>
-+<confdir:pcm/surround51.conf>
-+
-+EMU10K1X.pcm.surround51.0 {
-+	@args [ CARD ]
-+	@args.CARD {
-+		type string
-+	}
-+	type multi
-+	slaves [
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.EMU10K1X.pcm.front.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.EMU10K1X.pcm.rear.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+		{
-+			pcm {
-+				@func concat
-+				strings [
-+					"cards.EMU10K1X.pcm.center_lfe.0:CARD=" $CARD
-+				]
-+			}
-+			channels 2
-+		}
-+	]
-+	bindings [
-+		{ slave 0 channel 0 }
-+		{ slave 0 channel 1 }
-+		{ slave 1 channel 0 }
-+		{ slave 1 channel 1 }
-+		{ slave 2 channel 0 }
-+		{ slave 2 channel 1 }
-+	]
-+}
-+
-+<confdir:pcm/iec958.conf>
-+
-+EMU10K1X.pcm.iec958.0 {
-+	@args [ CARD AES0 AES1 AES2 AES3 ]
-+	@args.CARD {
-+		type string
-+	}
-+	@args.AES0 {
-+		type integer
-+	}
-+	@args.AES1 {
-+		type integer
-+	}
-+	@args.AES2 {
-+		type integer
-+	}
-+	@args.AES3 {
-+		type integer
-+	}
-+	type hooks
-+	slave.pcm {
-+		type hw
-+		card $CARD
-+		device 0
-+	}
-+	hooks.0 {
-+		type ctl_elems
-+		hook_args [
-+			{
-+				name "Analog/Digital Output Jack"
-+				lock true
-+				preserve true
-+				value 0
-+			}
-+			{
-+				name "IEC958 Playback Default"
-+				index 0
-+				lock true
-+				preserve true
-+				value [ $AES0 $AES1 $AES2 $AES3 ]
-+			}
-+		]
-+	}
-+}
-Index: alsa-lib/src/conf/cards/Makefile.am
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/conf/cards/Makefile.am,v
-retrieving revision 1.22
-diff -u -r1.22 Makefile.am
---- alsa-lib/src/conf/cards/Makefile.am	18 Jun 2004 14:29:03 -0000	1.22
-+++ alsa-lib/src/conf/cards/Makefile.am	27 Jun 2004 14:54:05 -0000
-@@ -13,6 +13,7 @@
- 	CMI8738-MC6.conf \
- 	CS46xx.conf \
- 	EMU10K1.conf \
-+	EMU10K1X.conf \
- 	ENS1370.conf \
- 	ENS1371.conf \
- 	FM801.conf \
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-01-2004 18:43 CET=20
+----------------------------------------------------------------------
+What does "aplay -Dtest -v chord.wav" say?
 
---Boundary_(ID_kQdf4RtaflDfx9rxUTspQw)--
+----------------------------------------------------------------------
+ Davin - 03-01-2004 19:51 CET=20
+----------------------------------------------------------------------
+Exactly the same.
+
+I've switched to kernel 2.6.3 on advisory from the person I know who has
+his Audigy 2 NX working in Linux. (2.6.3 has updates from alsa-driver CVS=
+)
+This test was run using 2.6.3's kernel driver, as opposed to the patched
+2.0.1c I used per your suggestion - the results are the same.
+
+I'm going to ask him what versions of alsa-lib and alsa-utils he's using.
+
+
+davin@napalm media $ aplay -Dtest -v chord.wav
+Playing WAVE 'chord.wav' : Signed 16 bit Little Endian, Rate 22050 Hz,
+Stereo
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+aplay: set_params:875: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: 125000
+PERIOD_SIZE: (2756 2757)
+PERIOD_BYTES: (11024 11028)
+PERIODS: (2 3)
+BUFFER_TIME: (341315 341316)
+BUFFER_SIZE: 7526
+BUFFER_BYTES: 30104
+TICK_TIME: 1000
+
+----------------------------------------------------------------------
+ Davin - 03-01-2004 19:53 CET=20
+----------------------------------------------------------------------
+I still have the compiled version of the alsa-driver instance I was using=
+.
+Let me know if you want me to switch back. (I'm expecting it)
+
+----------------------------------------------------------------------
+ Davin - 03-01-2004 20:02 CET=20
+----------------------------------------------------------------------
+Pardon, when I said 2.0.1c I meant 1.0.2c.
+
+----------------------------------------------------------------------
+ Davin - 03-01-2004 20:27 CET=20
+----------------------------------------------------------------------
+The 2.6.3 CVS sources have the same problem, it's looking like. Let me kn=
+ow
+if it ever gets to the point where you'd prefer direct machine access, I
+have no problem giving you a temp root password over a more secure
+medium.
+
+> Same here
+
+On Mon, 1 Mar 2004, Davin Boling wrote:
+>> Just out of curiousity, what version of alsa-lib and alsa-utils are
+you
+>> using in conjunction with 2.6.3? I'm using 1.0.2 instances of each.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-02-2004 17:01 CET=20
+----------------------------------------------------------------------
+> (snd_pcm_hw_hw_params) Invalid argument
+> RATE: 22050
+
+It seems ALSA tries to make the hardware play at 22 kHz although your
+device doesn't support this.  In theory, the "plug" plugin should
+automatically convert the sample rate.
+
+This may be a bug in the driver.  Please try the 1.0.3 packages.
+
+(my e-mail address is clemens@ladisch.de)
+
+----------------------------------------------------------------------
+ Davin - 03-03-2004 05:01 CET=20
+----------------------------------------------------------------------
+Updated alsa-driver/lib/utils to 1.03. Same ol' story.
+
+----------------------------------------------------------------------
+ Davin - 03-03-2004 05:08 CET=20
+----------------------------------------------------------------------
+Now that I'm starting to get a feel for what you're testing for...
+
+Cache fill:  0.00% (0 bytes)    MPEG-PS file format detected.
+VIDEO:  MPEG1  320x240  (aspect 1)  30.00 fps    0.0 kbps ( 0.0 kbyte/s)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Opening audio decoder: [mp3lib] MPEG layer-2, layer-3
+MP3lib: init layer2&3 finished, tables done
+AUDIO: 44100 Hz, 2 ch, 16 bit (0x10), ratio: 24000->176400 (192.0 kbit)
+Selected audio codec: [mp3] afm:mp3lib (mp3lib MPEG layer-2, layer-3)
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Opening video filter: [pp]
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Opening video decoder: [mpegpes] MPEG 1/2 Video passthrough
+VDec: vo config request - 320 x 240 (preferred csp: Mpeg PES)
+[PP] Using external postprocessing filter, max q =3D 6.
+Could not find matching colorspace - retrying with -vop scale...
+Opening video filter: [scale]
+The selected video_out device is incompatible with this codec.
+VDecoder init failed :(
+Opening video decoder: [libmpeg2] MPEG 1/2 Video decoder v2.0
+libmpeg2: Using MMXEXT for IDCT transform
+libmpeg2: Using MMXEXT for motion compensation
+VDec: vo config request - 320 x 240 (preferred csp: Planar YV12)
+[PP] Using external postprocessing filter, max q =3D 6.
+VDec: using Planar YV12 as output csp (no 0)
+Movie-Aspect is undefined - no prescaling applied.
+VO: [xv] 320x240 =3D> 320x240 Planar YV12
+Selected video codec: [mpeg12] vfm:libmpeg2 (MPEG 1 or 2 (libmpeg2))
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Checking audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
+AF_pre: af format: 2 bps, 2 ch, 44100 hz, little endian signed int
+AF_pre: 44100Hz 2ch Signed 16-bit (Little-Endian)
+SDL: Samplerate: 44100Hz Channels: Stereo Format Signed 16-bit
+(Little-Endian)
+SDL: using alsa audio driver
+ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
+failed: Invalid argument
+gmplayer: pcm.c:1004: snd_pcm_drain: Assertion `pcm->setup' failed.
+
+Note how the problem exists even if the output is 44100, a supported
+format.
+
+----------------------------------------------------------------------
+ Davin - 03-03-2004 05:12 CET=20
+----------------------------------------------------------------------
+(unless of course it's trying to play this 44kHz stream at 22, I realize
+that my last statement overlooked that fact)
+
+I'm setting a temp root password and e-mailing it to you, I think this
+could be solved much faster if you had hands-on access in this case.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-04-2004 14:31 CET=20
+----------------------------------------------------------------------
+Well, it wasn't some wrong sample format at all.  Somehow I had forgotten
+about the "invalid synch pipe" message.
+
+The error is caused by bugs in the firmware of the device.  I have change=
+d
+the driver to work around this.
+
+It seems recording generates too much data, please check if the captured
+data has the correct sample rate and format.
+
+BTW: did you install the latest firmware update for this device?
+
+----------------------------------------------------------------------
+ Davin - 03-04-2004 15:17 CET=20
+----------------------------------------------------------------------
+I'm assuming you mean the latest Creative Labs supplied firmware update,
+since I'm clueless as to how the alsa-firmware package gets used!
+
+At any rate, yes, I am using the latest firmware from Creative. The most
+recent drivers provided by Creative (Dec 23) include an automatic firmwar=
+e
+update for the device. I installed these drivers in Windows before
+attempting to get the device working in Linux.
+
+I should find out what version of the firmware the person who has the
+device working already is using - it's quite possible that the latest
+firmware actually introduces the bug in question.
+
+Thanks for all of your help and patience in the meantime. Where do I find
+the patch you've made? I'll test it once I get home from work and if all
+goes well we can wrap this bug up.
+
+----------------------------------------------------------------------
+ Davin - 03-04-2004 15:39 CET=20
+----------------------------------------------------------------------
+Nevermind on 'where' to find the patch, snooping around in
+/root/.bash_history on your own system is a perfectly legitimate practice=
+.
+O:) Making a copy of your modified usb-audio.c, though for all I know it'=
+s
+hit CVS already.
+
+Still need to test the actual speaker output and possible recording quirk
+you mentioned, I'm not home from work yet.
+
+----------------------------------------------------------------------
+ Davin - 03-04-2004 16:31 CET=20
+----------------------------------------------------------------------
+> I'm using the latest (that I know of) firmware
+
+Very strange. When I get home I'll see if I can find a revision identifie=
+r
+and find what his is. Failing that, I have no idea why mine exhibits this
+bug and his does not.
+
+----------------------------------------------------------------------
+ Davin - 03-04-2004 18:30 CET=20
+----------------------------------------------------------------------
+You weren't the only one who forgot some important info. The guy I've bee=
+n
+having a correspondance with shared this info with me in a previous
+e-mail:
+
+> Did you have any luck yet? With the 2.6.3-rc3 it works much better...
+One
+> thing I definitely discovered is that you need to make it avoid
+running(or
+> trying) to run at 480mbps thats where I get the invalid synch pipe. If
+I
+> move it to a 12mbps port it works fine.
+
+I assumed when I originally read this that it was working for him despite
+the invalid synch pipe message, but I don't think this is the case now. I
+think this explains the difference in behavior.
+
+----------------------------------------------------------------------
+ Davin - 03-05-2004 01:13 CET=20
+----------------------------------------------------------------------
+Well, it was a step in the right direction anyway. But no go. Sound does
+hit the speakers, but playing any of the basic windows .wav files does no=
+t
+return the proper audio. Typically a single sound, though nothing high
+frequency or similarly harmful to the ears...of the ones I've tried so fa=
+r
+anyway.
+
+Root password is still the same, but I don't know what you can do now
+since you don't have a way of hearing what I do.
+
+Well, no, that's not true. I do have another sound card I could connect. =
+I
+could run the speaker output of the USB device into the PCI's input. That
+way you could capture the sound and tell whether or not it's working.
+
+Sound like a plan? Unless you have a better suggestion, of course.
+
+----------------------------------------------------------------------
+ Davin - 03-05-2004 06:52 CET=20
+----------------------------------------------------------------------
+Didn't have enough time to figure out how to to recording in Linux with
+what little time I had tonight. You're welcome to toy around anyway if
+you'd like, I just never got to a point where I could directly hear the
+USB device through the audio-in of the other audio device.
+
+Just so you know, device 0 is an on-board audio chip that I re-enabled. I
+have a cable connecting the speaker output of the Audigy 2 NX (device 1)
+to the audio input of device 0. Should theoreticly be enough for you to
+make recordings of the NX's actual speaker output.
+
+I have the weekend off, so if you'd like to set aside a specific block of
+time I'd be more than happy to work with you directly. (no matter how
+insane the hour might be in my local timezone)
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-05-2004 13:42 CET=20
+----------------------------------------------------------------------
+I think both the playback and capture problems are caused by the fact tha=
+t
+the driver calculates frame numbers based on USB 1.1 speeds.  I'll have t=
+o
+review the driver code.  (there won't be any results before next week)
+
+----------------------------------------------------------------------
+ nilsr - 03-16-2004 21:39 CET=20
+----------------------------------------------------------------------
+I tried the highspeed patch on a stock 2.6.3 kernel where it applies
+cleanly. Trying to play a S16LE_48000 .wav file with aplay results in
+the kernel message
+
+drivers/usb/host/ehci-hcd.c: no split iso support yet
+cannot submit datapipe for urb 0, err =3D -38
+
+That appears to be a different message from the one reported earlier.
+There is commented out in linux-2.6.3/drivers/usb/host/ehci-hcd.c
+that should enable a different response, but I did not try to enable that=
+.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-18-2004 09:00 CET=20
+----------------------------------------------------------------------
+> no split iso support yet
+
+You tried to play to a full speed device through a high speed hub.  This
+will be supported in 2.6.5.
+
+Try to connect the device directly to your computer.
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-18-2004 09:09 CET=20
+----------------------------------------------------------------------
+The highspeed.patchfile file was an old version that wouldn't work, I've
+uploaded the new one.
+
+----------------------------------------------------------------------
+ nilsr - 03-18-2004 21:29 CET=20
+----------------------------------------------------------------------
+Ok, plugging the audigy directly into the computer did work and aplay
+made a nice sound. Thanks for the tip.
+
+The computer hang hard however, when I did a cat
+/proc/asound/card0/stream0, which was just at the end of playing, came at
+the wrong time I suppose.
+
+I'll try the new highspeed patch now, and I also
+got a patch that is supposed to support split iso for ehci.
+
+----------------------------------------------------------------------
+ Davin - 03-29-2004 00:56 CEST=20
+----------------------------------------------------------------------
+Sorry for the delay, I should be getting back to this by tomorrow evening=
+.
+
+----------------------------------------------------------------------
+ Davin - 04-23-2004 21:45 CEST=20
+----------------------------------------------------------------------
+Life gets busy sometimes, what can I say.
+
+At any rate, I'm going to be reinstalling Linux from scratch this evening
+to address some concerns of mine about possible file corruption. Somethin=
+g
+related to hotplug + usbaudio had been giving my system immense trouble
+while I was troubleshooting the below problem, and my resulting audio
+problems may be a result of running on an installation with ~30 unclean
+uses of the reset button. (definately compiling MagicSysRq in next time)
+
+I'll post a followup once I've got the new install up and running.
+
+----------------------------------------------------------------------
+ micmac - 06-27-2004 17:16 CEST=20
+----------------------------------------------------------------------
+Hello,
+
+I'm an owner of one of these cards since yesterday, too. So maybe I can
+provide useful infos for devs that do not have these cards in order to
+squash some bugs or whatever.
+I have Gentoo running on an Acer Laptop. The Laptop offers USB2 and it's
+working great. The setup looks like this. The USB soundcard is plugged
+into the lappy and an optical SPDIF cable is the connection between
+soundcard and my Yamaha Receiver. The kernel is gentoo-dev-sources-2.6.7.
+I have alsa-lib/alsa-utils-1.0.5 installed. The card sounded bad in the
+beginning when playing 44.1kHz MP3s, while the 48kHz sound from DVD
+sounded good. I circumvent that problem with an .asoundrc (which I attach=
+)
+that I found in some forum. So it is not from me but it works.
+Ok. So... when starting the lappy I always had to use alsamixer to change
+the status from Speaker2 and DigitalIn from 'off' to 'on'. After that it
+would work ok. But it's not funny that you have to do that every time you
+restart. So I went looking for info on the net and found that some users
+said they have more success with this card after upgrading it's firmware.
+So I took the long way and made a backup of my drives, installed windows,
+installed the drivers of the soundcard that came with it on a cdrom, then
+installed another driver upgrade from the net. This upgraded the firmware
+of the drive. After that I used my backup to get my linux back into the
+box. Afterwards I was pleased to see that now I don't have to toggle
+between on/off anymore to use the card. I could say it works ok now. The
+only thing that bothers me a little is that I can't raise/lower the volum=
+e
+say with xmms. XMMS's mixer device setting allows me to chose from
+"speaker", "speaker" and "speaker" (no joke). None of them works.=20
+
+What would be nice to have?
+
+For starters:
+
+- a way to update this darn firmware without installing/using Windows
+
+For all:
+
+- a way to lower/raise volume in applications like xmms
+- changes to the snd-usb-audio modules that it recognises the NX properly
+and sets sampling to 48kHz as default. So the .asoundrc file would become
+obsolete (in order to have the card work right from the start to honor
+user friendly behaviour :)
+
+Thanks for reading!
+
+Best regards
+Sebastian
+
+P.S.: I'd do nearly anything. So if you devs need info just say so. I'll
+be checking this site from now on from time to time.
+Bye
+Sebastian
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+02-14-04 19:02 Davin          New Bug                                    =
+ =20
+02-14-04 19:26 Davin          Bugnote Added: 0000240                     =
+ =20
+02-14-04 19:27 Davin          Bug Monitored: Davin                       =
+ =20
+02-15-04 01:37 Davin          Bugnote Added: 0000241                     =
+ =20
+02-20-04 18:37 Clemens LadischBugnote Added: 0000276                     =
+ =20
+02-22-04 00:41 Davin          Bugnote Added: 0000288                     =
+ =20
+02-24-04 08:43 Clemens LadischBugnote Added: 0000300                     =
+ =20
+02-25-04 02:39 Davin          Bugnote Added: 0000308                     =
+ =20
+02-25-04 10:09 Clemens LadischBugnote Added: 0000311                     =
+ =20
+02-25-04 10:12 Clemens LadischBug Monitored: Clemens Ladisch             =
+      =20
+02-26-04 04:08 Davin          Bugnote Added: 0000331                     =
+ =20
+02-26-04 16:23 Clemens LadischBugnote Added: 0000354                     =
+ =20
+02-26-04 23:54 Davin          Bugnote Added: 0000377                     =
+ =20
+03-01-04 18:43 Clemens LadischBugnote Added: 0000412                     =
+ =20
+03-01-04 19:51 Davin          Bugnote Added: 0000421                     =
+ =20
+03-01-04 19:53 Davin          Bugnote Added: 0000422                     =
+ =20
+03-01-04 20:02 Davin          Bugnote Added: 0000423                     =
+ =20
+03-01-04 20:27 Davin          Bugnote Added: 0000425                     =
+ =20
+03-02-04 17:01 Clemens LadischBugnote Added: 0000442                     =
+ =20
+03-03-04 05:01 Davin          Bugnote Added: 0000449                     =
+ =20
+03-03-04 05:08 Davin          Bugnote Added: 0000450                     =
+ =20
+03-03-04 05:12 Davin          Bugnote Added: 0000451                     =
+ =20
+03-04-04 14:31 Clemens LadischBugnote Added: 0000478                     =
+ =20
+03-04-04 15:17 Davin          Bugnote Added: 0000480                     =
+ =20
+03-04-04 15:39 Davin          Bugnote Added: 0000481                     =
+ =20
+03-04-04 16:31 Davin          Bugnote Added: 0000483                     =
+ =20
+03-04-04 18:30 Davin          Bugnote Added: 0000486                     =
+ =20
+03-05-04 01:13 Davin          Bugnote Added: 0000494                     =
+ =20
+03-05-04 06:52 Davin          Bugnote Added: 0000496                     =
+ =20
+03-05-04 13:42 Clemens LadischBugnote Added: 0000503                     =
+ =20
+03-08-04 10:57 Clemens LadischFile Added: highspeed.patch                =
+   =20
+03-16-04 21:39 nilsr          Bugnote Added: 0000631                     =
+ =20
+03-17-04 20:43 nilsr          Bug Monitored: nilsr                       =
+ =20
+03-18-04 09:00 Clemens LadischBugnote Added: 0000637                     =
+ =20
+03-18-04 09:01 Clemens LadischFile Deleted: highspeed.patch              =
+     =20
+03-18-04 09:04 Clemens LadischFile Added: highspeed.patch                =
+   =20
+03-18-04 09:09 Clemens LadischBugnote Added: 0000638                     =
+ =20
+03-18-04 21:29 nilsr          Bugnote Added: 0000643                     =
+ =20
+03-29-04 00:56 Davin          Bugnote Added: 0000715                     =
+ =20
+04-23-04 21:45 Davin          Bugnote Added: 0000918                     =
+ =20
+06-27-04 17:02 micmac         File Added: .asoundrc                      =
+ =20
+06-27-04 17:16 micmac         Bugnote Added: 0001339                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
