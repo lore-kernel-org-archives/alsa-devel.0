@@ -1,18 +1,13 @@
-From: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Subject: Re: Creamware Noah, snd-usb-audio capable?
-Date: Tue, 10 Feb 2004 23:08:04 +0100
+From: p z oooo <pzad@pobox.sk>
+Subject: RE: emu10k1 polishing?
+Date: Wed, 11 Feb 2004 07:56:52 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1076450884.3640.10.camel@chief.local>
-References: <1076094393.2688.2.camel@chief.local>
-	 <200402070220.i172KFO4020802@dhin.linuxaudiosystems.com>
-	 <20040210165602.GC9524@fliwatut.scifi>
-	 <1076438161.2839.0.camel@chief.local>
-	 <20040210213617.GH10941@fliwatut.scifi>
+Message-ID: <200402110656.i1B6uqQI022408@www7.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040210213617.GH10941@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,33 +16,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: kouhia@nic.funet.fi
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+>What exactly happens when I record at sample rate 44100 Hz?
+>Does emu10k1 chip run at sample rate 44100 Hz as well?
+>(It is claimed that emu10k1 runs only at rate 48000 Hz.)
 
- Frank Barknecht wrote:
-> Well, others like Takashi or Clemens will be able to give better
-> answers,but I guess, it helps to get familiar with the USB-audio
-> specification. 
+>If emu10k1 runs at 48000 Hz, at what rate A/D converter runs?
+>If emu10k1 runs at 48000 Hz and Alsa at rate 44100 Hz, where the
+>sample rate conversion happens?
 
-I aggree, that might help.
+What I know:
+emu10k1 runs at 48000 Hz,
+A/D converter runs at 48000 Hz
+Sample rate conversion happens in hardware(in emu10k1).
+emu10k1 has many parts - wavetable synth, DSP, SRC, ...
 
-> I looked up the specification of usb-midi in
-> http://www.usb.org/developers/devclass_docs/midi10.pdf 
+>2. Alsamixer shows obscure names
+You could rename it in alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
+and send patch here.
 
-thank you for the link. A lot of other interesting documents are there
-as well.
+Peter Zubaj
 
-While one of my favourite interests is to getting deep in technical
-details, I'll diving in the specifications and report any success to the
-list.
 
-Hartmut 
-
--- 
-Hartmut Geissbauer <nwgbh@swissonline.ch>
-
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
