@@ -1,12 +1,10 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: Re: [announce] ALSA Patch Bay 0.1
-Date: Tue, 5 Mar 2002 12:11:49 +0100
-Message-ID: <20020305121149.504c631f.mdeboer@iua.upf.es>
-References: <1015020718.970.4.camel@insanity>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1015020718.970.4.camel@insanity>
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Re: Status of ALSA documentation?
+Date: Tue, 5 Mar 2002 16:56:20 +0200
+Message-ID: <20020305145620Z50770-778+2417@nic.funet.fi>
+References: <20020302130849.B47AE2757@sitemail.everyone.net>
+In-reply-to: <20020302130849.B47AE2757@sitemail.everyone.net> (message from
+	Patrick Shirkey on Sat, 2 Mar 2002 05:08:49 -0800 (PST))
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,26 +13,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Bob Ham <node@users.sourceforge.net>
+To: pshirkey@boosthardware.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>Here's the latest.
+>
+>http://www.boosthardware.com/LAU/alsa/index5-pd.html
 
-> I just completed version 0.1 of a very scrappy but functional gui midi
-> patch bay for alsa's seq api.  It's essentially just a graphical version
-> of aconnect.  It's available from:
+I liked better the version which had the explanation of the
+project. What were its problems? I.e., why it was taken off?
 
-I wrote one already a long time ago (though for alsa 0.5.x, but it should
-be easy to port)
+This new page is too wide. Could the title be broken to two lines?
+Then title's height would match the height of the logos.
 
-ftp://www.iua.upf.es/pub/mdeboer/aseqpatchbay-0.1.gif
+The search tool too makes the page wide. The search utility could be
+on its own subpage. How often you search the Alsa pages? The search
+page could also contain the site tree.
 
-ftp://www.iua.upf.es/pub/mdeboer/aseqpatchbay-0.1.tgz
+The text on the subpage links is not well readable, but I don't
+know what to do without making the text smaller.
 
-it has the same estetics as my alsamixergui (which I have a version for
-0.9.x., based on the latest CVS sources, I should make it available A.S.A.P)
+How about this layout:
 
-Maarten
+     logo1  two line title  logo2
+
+            subpage links
+
+  Two line explanation........and link to more information
+
+  Packages:                 News:
+
+  driver     short
+  <version>  explanation
+
+  library    short
+  <version>  explanation
+
+  utilities  short
+  <version>  explanation
+
+  tools      short
+  <version>  explanation
+
+  OSS Combat short
+  library    explanation
+  <version>
+
+Best regards,
+
+Juhana
 
 _______________________________________________
 Alsa-devel mailing list
