@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - utils 0000699]: [PATCH] Document --config option on alsaconf man page
-Date: Thu, 2 Dec 2004 08:58:32 +0100
-Message-ID: <b4faccd5b00c0157b3ab492c11259083@bugtrack.alsa-project.org>
+Date: Thu, 2 Dec 2004 09:03:57 +0100
+Message-ID: <d8d4e2d90fe29e04b999957036cfc724@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB2EA23A
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 08:58:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5A04323A
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 09:03:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             12-02-2004 08:57 CET
-Last Modified:              12-02-2004 08:58 CET
+Last Modified:              12-02-2004 09:03 CET
 ======================================================================
 Summary:                    [PATCH] Document --config option on alsaconf man
 page
@@ -55,6 +55,12 @@ Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 Oh, darn.  I just noticed that this fixed in 1.0.7.  Sorry -- please close
 this.
 
+----------------------------------------------------------------------
+ jdthood - 12-02-04 09:03 
+----------------------------------------------------------------------
+It would be helpful if the various ALSA man pages listed options in
+alphabetical order in the OPTIONS section.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -62,6 +68,7 @@ Date Modified  Username       Field                    Change
 12-02-04 08:57 jdthood        File Added:
 alsaconf_doc_config_20041202jdth1.patch                    
 12-02-04 08:58 jdthood        Note Added: 0002675                          
+12-02-04 09:03 jdthood        Note Added: 0002676                          
 ======================================================================
 
 
