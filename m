@@ -1,12 +1,15 @@
-From: Thomas Koenig <koenig.thomas@rheinmetall-de.com>
-Subject: aplay Problem Alsa 1.0.7rc2 Kernel 2.4.21-243-smp
-Date: Mon, 18 Oct 2004 11:02:49 +0200
+From: "Roger Villars" <roger.villars@fhso.ch>
+Subject: RE: Userspace ALSA Soundcard
+Date: Mon, 18 Oct 2004 11:05:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <417386B9.4020608@rheinmetall-de.com>
+Message-ID: <MEMPHISwlYX83anJIlZ0000000d@Memphis.stud.so.fhnw.ch>
+References: <416FC9B8.6020308@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <416FC9B8.6020308@superbug.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,145 +18,169 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Peter Lienig <lienig@rheinmetall-de.com>
+To: 'James Courtier-Dutton' <James@superbug.co.uk>
+Cc: 'Takashi Iwai' <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi James!
 
-When we tried  Alsa 1.0.7rc2 on a 2.4.21-243-smp 64-Bit Linux Box aplay=20
-will not play Sounds.
+> pcm_jack lets alsa-lib talk to the jackd daemon.
+> So, you implement your own bluez daemon, and then implement a 
+> plugin for alsa-lib that talks to it.
+> 
+> You just need to think of the problem slighly differently.
+> If you look at any standard alsa application, it does:
+> open()
+> set_params()
+> read_write_samples()
+> close()
+> 
+> With an alsa-lib plugin, at the open() step, it could talk to 
+> the bluez daemon, and see if the bluez connections are up, 
+> and if so, allow the open, otherwise, fail the open() call.
 
-Same Kernel in 32-Bit Alsa 1.0.6a work fine.
-Compiling Alsa 1.0.6a with 64-Bit dose not work so we take Alsa 1.0.7rc2=20
-where compiling seemd to be ok.
+Ahh! That makes things a bit clearer!
 
-Play play /usr/share/sounds/alsa/test.wav (osslibs) work but when we try=20
-to aplay a sound we got:
+First I need to say, that the whole bluetooth stuff with blueZ is
+not a problem for me. I now how to do this. There is enough sample 
+code around. 
 
-sider11-s1 /home/vtssim> aplay -D c56 /usr/share/sounds/alsa/test.wav
-Playing WAVE '/usr/share/sounds/alsa/test.wav' : Signed 16 bit Little=20
-Endian, Rate 44100 Hz, Stereo
-aplay: set_params:910: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: NONE
-PERIOD_TIME: (74285 74286)
-PERIOD_SIZE: (392911 392912)
-PERIOD_BYTES: (1571644 1571648)
-PERIODS: (2 3)
-BUFFER_TIME: (148594 148595)
-BUFFER_SIZE: 785951
-BUFFER_BYTES: 3143804
-TICK_TIME: 0
+> The current ALSA API does not allow for more complicated 
+> audio devices. 
+> You have to use extra other apis to implement what you want.
+> e.g. A headset with volume up/down buttons. The buttons 
+> arrive via the kernel input/events api, and the sound goes via ALSA.
+> 
+> For an application to use a bluetooth headset, the 
+> application will first have to talk to the bluetooth api to 
+> set up the bluetooth specific connections, and then once 
+> bluetooth is set up, it would open an ALSA device in order to 
+> send sound to the device.
 
-Just for Info:
+OK, let's recapitulate:
 
-sider11-s1 /home/vtssim> aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: Phase88 [TerraTec Phase88], device 0: ICE1712 multi [ICE1712 mult=
-i]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Phase88 [TerraTec Phase88], device 1: ICE1712 consumer [ICE1712=20
-consumer]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: Phase88 [TerraTec Phase88], device 2: ICE1712 consumer (DS)=20
-[ICE1712 consumer (DS)]
-  Subdevices: 6/6
-  Subdevice #0: subdevice #0
-  Subdevice #1: subdevice #1
-  Subdevice #2: subdevice #2
-  Subdevice #3: subdevice #3
-  Subdevice #4: subdevice #4
-  Subdevice #5: subdevice #5
+The application (in this case my deamon) first opens a bluetooth
+connection to my headset with BlueZ.
 
+It then opens an ALSA device and "takes" the audio stream from blueZ and
+gives it to the ALSA device.
 
-sider11-s1 /home/vtssim> cat /proc/cpuinfo
-processor       : 0
-vendor_id       : AuthenticAMD
-cpu family      : 15
-model           : 5
-model name      : AMD Opteron(tm) Processor 246
-stepping        : 10
-cpu MHz         : 1991.475
-cache size      : 1024 KB
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 1
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge=20
-mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext lm=20
-3dnowext 3dnow
-bogomips        : 3915.77
-TLB size        : 1088 4K pages
-clflush size    : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management: ts fid vid ttp
+Any linux application can now receive and send audio data over this device
+from and to the headset.
 
-processor       : 1
-vendor_id       : AuthenticAMD
-cpu family      : 15
-model           : 5
-model name      : AMD Opteron(tm) Processor 246
-stepping        : 10
-cpu MHz         : 1991.475
-cache size      : 1024 KB
-fpu             : yes
-fpu_exception   : yes
-cpuid level     : 1
-wp              : yes
-flags           : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge=20
-mca cmov pat pse36 clflush mmx fxsr sse sse2 syscall nx mmxext lm=20
-3dnowext 3dnow
-bogomips        : 3981.31
-TLB size        : 1088 4K pages
-clflush size    : 64
-address sizes   : 40 bits physical, 48 bits virtual
-power management: ts fid vid ttp
+But... what ALSA device should I open?
 
+I don't want to use the soundcard of my system because perhaps in other PCs 
+there won't be a soundcard. 
 
-Same Kernel in 32-Bit Alsa work fine. But when we change to 64-Bit=20
-aplay  has Problems:
+A headset can be regarded as a soundcard. It has a speaker and a microphone.
+So I need an ALSA device that IS my headset but I don't want to write a
+kernel driver
+for that. 
 
-sider11-s1 /home/vtssim> aplay -D c56 /usr/share/sounds/alsa/test.wav
-Playing WAVE '/usr/share/sounds/alsa/test.wav' : Signed 16 bit Little=20
-Endian, Rate 44100 Hz, Stereo
-aplay: set_params:910: Unable to install hw params:
-ACCESS:  RW_INTERLEAVED
-FORMAT:  S16_LE
-SUBFORMAT:  STD
-SAMPLE_BITS: 16
-FRAME_BITS: 32
-CHANNELS: 2
-RATE: NONE
-PERIOD_TIME: (74285 74286)
-PERIOD_SIZE: (392911 392912)
-PERIOD_BYTES: (1571644 1571648)
-PERIODS: (2 3)
-BUFFER_TIME: (148594 148595)
-BUFFER_SIZE: 785951
-BUFFER_BYTES: 3143804
-TICK_TIME: 0
+Is this the moment where the plugin could come in action? If I call the
+snd_pcm_open()
+function in my deamon, can the plugin "create" a new device? Is this what
+pcm_jack is
+doing?
 
-Please Reply to lienig@rheinmetall-de.com
+> 
+> 
+> 
+> Roger Villars wrote:
+> > Thanks for your answer!
+> > 
+> > I looked at pcm_jack a bit closer and it seems to be some sort of 
+> > plugin for ALSA. Actually, this is not exactly what I need. 
+> I thought 
+> > about something like this:
+> > 
+> > int main(......)
+> > {
+> > 	create a new soundcard
+> > 	connect to the headset using blueZ
+> > 	while(true) {
+> > 		get the audio stream from blueZ
+> > 		give the audio stream to the soundcard
+> > 		same thing, other direction
+> > 	}
+> > 	remove the soundcard
+> > }
+> > 
+> > (programming could be so easy ;-) )
+> > 
+> > That's why I mentioned the deamon. With this, I can use the headset 
+> > with the program running in the background without the need 
+> to change 
+> > any kernel stuff. But it seems to me that ALSA is not made for this.
+> > So it would be very complicated, don't you think?
+> > 
+> > Roger
+> > 
+> > -----Original Message-----
+> > From: alsa-devel-admin@lists.sourceforge.net
+> > [mailto:alsa-devel-admin@lists.sourceforge.net] On Behalf 
+> Of Takashi 
+> > Iwai
+> > Sent: Thursday, October 14, 2004 5:36 PM
+> > To: Roger Villars
+> > Cc: alsa-devel@lists.sourceforge.net
+> > Subject: Re: [Alsa-devel] Userspace ALSA Soundcard
+> > 
+> > At Thu, 14 Oct 2004 09:32:52 +0200,
+> > Roger Villars wrote:
+> > 
+> >>
+> >>Hello
+> >>
+> >>I'm new to the ALSA Framework and I'm trying to program a "virtual" 
+> >>soundcard for a Bluetooth Headset that is running completely in 
+> >>userspace. No kernel modules or something.
+> >>
+> >>You should only start a deamon program and then every ALSA beware 
+> >>program can "see" a new Soundcard.
+> > 
+> > 
+> > Even the daemon wouldn't needed, I guess.
+> > Well, the mixer might be problematic in some cases.
+> > 
+> > 
+> >>First Question: Do you think this is possible?
+> > 
+> > 
+> > Yes.
+> > 
+> > 
+> >>Second Question: How?
+> > 
+> > 
+> > A good question :)  There is no real documentation for this.
+> > As you wrote below, jack_pcm.c is the best example to rerfer to.
+> > 
+> > 
+> >>I heard that there is a file called pcm_jack.c in ALSA that 
+> is doing 
+> >>exactly what I need. But as I'm new to ALSA I don't know 
+> how and where 
+> >>in the code it is doing it.
+> >>
+> >>Would be nice if somebody can give me some Know-how. 
+> > 
+> > 
+> > Basically, you need to write dozen of callbacks for each pcm 
+> > operation.  The most cryptical part is the PCM configuration.
+> > The PCM layer calls hw_params, hw_refine, and sw_params 
+> callbacks for 
+> > querying and setting up the proper configuration.
+> > 
+> > 
+> > Takashi
+> > 
+> > 
+> 
+> 
+> 
 
---=20
-mit freundlichen Gr=FC=DFen
-
-Thomas Koenig
-Rheinmetall Defence Electronics GmbH
-Simulation Division
-Br=FCggeweg 54
-D-28309 Bremen
-Tel. : +49/421/457-4184
-Fax  : +49/421/457-3578
-email: koenig.thomas@rheinmetall-de.com
 
 
 
