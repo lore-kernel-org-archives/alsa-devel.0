@@ -1,15 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: How to put 16bit none audio PCM data stream into
- a 32bit none audio S/P-DIF transport stream?
-Date: Thu, 10 Apr 2003 18:43:53 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] standard control names for the rme96
+Date: Thu, 10 Apr 2003 21:02:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E95AD59.30900@superbug.demon.co.uk>
-References: <20030408140230.GA1987@ulima.unil.ch> <E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net> <s5hn0j1q97r.wl@alsa2.suse.de> <20030408164241.GA4253@ulima.unil.ch> <3E933167.6010300@superbug.demon.co.uk> <3E93F74C.20607@superbug.demon.co.uk> <20030409110606.GD14489@ulima.unil.ch> <3E944F52.3040406@superbug.demon.co.uk>
+Message-ID: <20030410190218.GA6650@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="+QahgC5+KEYLbs62"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E944F52.3040406@superbug.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +15,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gregoire Favre <greg@ulima.unil.ch>
+To: torger@ludd.luth.se, rv@robertvetter.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
 
-> Well, I have downloaded
-> http://www.skwmedia.com/media/diatonis/ac3/diatonis_last_summer_rain_ac3_256kbps.zip
->
-> It says that the files available before have been removed because they 
-> appeared to be corrupt.
-> My it is a corrupt file you are working with.
->
-> Cheers
-> James
->
->
->
-To help you. In order to play this ac3 file, unzip it and you will get a 
-.wav file.
-Then use this command to send it to the SPDIF socket in non-audio 
-passthru mode for your external AC3 decoder to recognise.
-aplay -D "iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2" a.wav
-
-Where "a.wav" is the name of the .WAV file.
-
-Cheers
-James
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 
+Hi,
+
+here is a patch for the Digi96 driver "alsa-kernel/pci/rme96.c" against
+latest CVS. It will change the "Clock Mode" switch to standard names.
+The standards are defined in alsa-kernel/Documentation/ControlNames.txt and
+that one is labeled there as "Sample Clock Source".
+
+My machine compiles fine with this patch, but I have no rme96 card for
+trying it out. 
+
+IMO this patch is necessary to keep the new rmedigicontrol as simple as
+possible.... 
+
+
+martin
+
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="rme96_controlnames.diff"
+
+--- alsa-kernel/pci/rme96.c.ORIGINAL	Thu Apr 10 20:08:28 2003
++++ alsa-kernel/pci/rme96.c	Thu Apr 10 20:19:30 2003
+@@ -806,10 +806,12 @@
+ {
+ 	switch (mode) {
+ 	case RME96_CLOCKMODE_SLAVE:
++	        /* AutoSync */ 
+ 		rme96->wcreg &= ~RME96_WCR_MASTER;
+ 		rme96->areg &= ~RME96_AR_WSEL;
+ 		break;
+ 	case RME96_CLOCKMODE_MASTER:
++	        /* Internal */
+ 		rme96->wcreg |= RME96_WCR_MASTER;
+ 		rme96->areg &= ~RME96_AR_WSEL;
+ 		break;
+@@ -1861,15 +1863,15 @@
+ 		snd_iprintf(buffer, "  sample format: 16 bit\n");
+ 	}
+ 	if (rme96->areg & RME96_AR_WSEL) {
+-		snd_iprintf(buffer, "  clock mode: word clock\n");
++		snd_iprintf(buffer, "  sample clock source: word clock\n");
+ 	} else if (rme96->wcreg & RME96_WCR_MASTER) {
+-		snd_iprintf(buffer, "  clock mode: master\n");
++		snd_iprintf(buffer, "  sample clock source: internal\n");
+ 	} else if (snd_rme96_getinputtype(rme96) == RME96_INPUT_ANALOG) {
+-		snd_iprintf(buffer, "  clock mode: slave (master anyway due to analog input setting)\n");
++		snd_iprintf(buffer, "  sample clock source: autosync (internal anyway due to analog input setting)\n");
+ 	} else if (snd_rme96_capture_getrate(rme96, &n) < 0) {
+-		snd_iprintf(buffer, "  clock mode: slave (master anyway due to no valid signal)\n");
++		snd_iprintf(buffer, "  sample clock source: autosync (internal anyway due to no valid signal)\n");
+ 	} else {
+-		snd_iprintf(buffer, "  clock mode: slave\n");
++		snd_iprintf(buffer, "  sample clock source: autosync\n");
+ 	}
+ 	if (rme96->wcreg & RME96_WCR_PRO) {
+ 		snd_iprintf(buffer, "  format: AES/EBU (professional)\n");
+@@ -2094,7 +2096,7 @@
+ static int
+ snd_rme96_info_clockmode_control(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
+ {
+-	static char *texts[3] = { "Slave", "Master", "Wordclock" };
++	static char *texts[3] = { "AutoSync", "Internal", "Word" };
+ 	
+ 	uinfo->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
+ 	uinfo->count = 1;
+@@ -2417,7 +2419,7 @@
+ },
+ {
+         .iface =        SNDRV_CTL_ELEM_IFACE_PCM,
+-	.name =         "Clock Mode",
++	.name =         "Sample Clock Source",
+ 	.info =         snd_rme96_info_clockmode_control, 
+ 	.get =          snd_rme96_get_clockmode_control,
+ 	.put =          snd_rme96_put_clockmode_control
+
+--+QahgC5+KEYLbs62--
 
 
 -------------------------------------------------------
