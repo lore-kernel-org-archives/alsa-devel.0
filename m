@@ -1,8 +1,8 @@
 From: "John S. Denker" <jsd@monmouth.com>
-Subject: hard crash when snd-ice1712 loads
-Date: Thu, 05 Dec 2002 06:52:45 -0500
+Subject: alsactl and alsamixer fail for extigy
+Date: Thu, 05 Dec 2002 06:57:48 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DEF3E0D.3040704@monmouth.com>
+Message-ID: <3DEF3F3C.10305@monmouth.com>
 References: <3DEF2ED7.7000808@monmouth.com> <3DEF3911.4060206@monmouth.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -21,28 +21,47 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
      ==== This is a slightly-updated clone of item
-     #648063 on the sourceforge bug/patch reporting
+     #636948 on the sourceforge bug/patch reporting
      system.  I'm moving it to here (the alsa-devel
      mailing list) at the request of Jaroslav. ====
 
-hard crash when snd-ice1712 loads
+     It is also a duplicate of something I sent a
+     few minutes ago with the wrong Subject: line.
+     Sorry!
 
-Using snd-ice1712 under rc6 (but not rc3) I observe:
 
-    init.d/alsasound start
-Starting sound driver: snd-ice1712 done
+When talking to Extigy on the USB bus:
 
-... and that's all she wrote.
+    alsactl -f /tmp/foo store
+alsactl: get_control:202: Cannot read control'2,0,0,Digital In Playback 
+Source,0': Invalid argument
+alsactl: get_control:202: Cannot read control '2,0,0,3D Stereo Extender 
+Switch,0': Invalid argument
+alsactl: get_control:202: Cannot read control '2,0,0,Up Down Switch,0': 
+Invalid argument
+alsactl: get_control:202: Cannot read control '2,0,0,Up Down Mode 
+Select,0': Invalid argument
 
-The kernel crashes, hard.  It won't respond to
-ctrl-alt-delete.  The num-lock light won't respond to
-num-lock key.  (These symptoms are often associated with a
-tight loop with the interrupts disabled.)
+    alsactl -f /tmp/foo restore
+alsactl: set_control:976: Cannot write control '2:0:0:Digital In 
+Playback Source:134521100' : Invalid argument
+alsactl: set_control:976: Cannot write control '2:0:0:3D Stereo Extender 
+Switch:134521100' : Invalid argument
+alsactl: set_control:976: Cannot write control '2:0:0:Up Down 
+Switch:134521100' : Invalid argument
+alsactl: set_control:976: Cannot write control '2:0:0:Up Down Mode 
+Select:134521100' : Invalid argument
 
-It is interesting to note that this card works fine under
-rc3.  Unfortunately there has been a drastic rearrangement
-of the code, so it won't be a simple matter of using diff
-to highlight the differences.
+I modified alsactl to mke the foregoing errors non-fatal. That allowed
+me to progress far enough to discover other errors, as reported a few
+minutes ago.
+
+Alsamixer also dies with "invalid argument".
+
+I suspect this is a driver bug (as opposed to a utils bug) because I
+suspect the driver is misinforming the utils as to what controls it
+offers.
+
 
 
 
