@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
-Date: Mon, 31 Jan 2005 18:57:31 +0100
-Message-ID: <81d071c497f96f862c66de5f03067217@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000858]: "amixer -h" exits with status 1
+Date: Mon, 31 Jan 2005 18:57:03 +0100
+Message-ID: <772b0978c6c10f040839f83bd3799c64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A55A231
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:57:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B89B231
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:57:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,65 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=858> 
 ======================================================================
-Reported By:                jeffgus
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   779
-Category:                   PCI - emu10k1
+Project:                    ALSA - utils
+Issue ID:                   858
+Category:                   amixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-ac16
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-03-2005 05:50 CET
+Date Submitted:             01-29-2005 17:14 CET
 Last Modified:              01-31-2005 18:57 CET
 ======================================================================
-Summary:                    SPDIF audio is broken up... stutters
+Summary:                    "amixer -h" exits with status 1
 Description: 
-I was previously able to send ac3 audio via the coaxial output to an
-external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
-(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
-out right.  It's all broken up.  The light on the amp blinks.  The light
-comes on when it decodes a segment of audio then goes out with silence.
+$ amixer -h > /dev/null
+$ echo $?
+1
 
-The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
-caused the problem (upgrade to 2.6?).
-
+"-h" is a legal option (as claimed by the output of "amixer -h") so the
+exit status should be 0.
 ======================================================================
-
-----------------------------------------------------------------------
- jeffgus - 01-30-05 06:53 
-----------------------------------------------------------------------
-This issue can now be closed.  The problem seemed to go away after I
-finally got around to installing alsa 1.0.8 this evening.
 
 ----------------------------------------------------------------------
  tiwai - 01-31-05 18:57 
 ----------------------------------------------------------------------
-OK, closing now.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 05:50 jeffgus        New Issue                                    
-01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
-01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
-01-07-05 02:22 chutzimir      Note Added: 0003100                          
-01-07-05 02:32 chutzimir      Issue Monitored: chutzimir                    
-01-07-05 11:10 jeffgus        Note Added: 0003101                          
-01-07-05 11:15 jeffgus        Note Edited: 0003101                         
-01-30-05 06:53 jeffgus        Note Added: 0003440                          
+01-29-05 17:14 jdthood        New Issue                                    
 01-31-05 18:57 tiwai          Status                   new => resolved     
 01-31-05 18:57 tiwai          Resolution               open => fixed       
 01-31-05 18:57 tiwai          Assigned To               => tiwai           
-01-31-05 18:57 tiwai          Note Added: 0003454                          
+01-31-05 18:57 tiwai          Note Added: 0003453                          
 ======================================================================
 
 
