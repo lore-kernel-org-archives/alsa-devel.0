@@ -1,13 +1,13 @@
-From: "Robert Rozman" <rozman@fri.uni-lj.si>
-Subject: Bluetooth headset support already in alsa ?
-Date: Fri, 12 Mar 2004 11:42:29 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: RE: FW: DMA producer/consumer
+Date: Fri, 12 Mar 2004 12:42:36 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <01c901c4081e$bf139830$fbf7a8c0@Lapitopi>
+Message-ID: <Pine.LNX.4.58.0403121240380.2696@pnote.perex-int.cz>
+References: <F509E6111989D311B63700805FA761DA09F290B4@DBDE01>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <F509E6111989D311B63700805FA761DA09F290B4@DBDE01>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,25 +16,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: "Gupta, Kshitij" <kshitij@ti.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Fri, 12 Mar 2004, Gupta, Kshitij wrote:
 
-I remember some time ago someone contributed link to older patch (for Alsa
-0.6 or 0.9) for headset driver to be included in official Alsa.
+> hi,
+> 	:) maps almost perfectly ...thanx a lot.  Only other doubt I had
+> was, why are we always getting underruns in case of ARM (as Russell also
+> pointed out that there are some cache coherency problems), but I am not able
+> to map cache coherency problems to the underruns we are getting.  We are
+> getting underruns consistently, even with very small period size (about 1k).
 
-Has anyone solved that or should I apply somewhere ?
+I think that the problem must be somewhere else. Check the input data to 
+the OSS layer. If you use OSS emulation, then the coherency problem does 
+not exist, because appl_ptr and hw_ptr is updated only from the kernel 
+space.
 
-I'd like to use bluetooth headset I've got...
+						Jaroslav
 
-The driver is in here:
-http://www.dcs.gla.ac.uk/~jp/snd-bluez-sco/
-
-Regards,
-
-Robert.
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
