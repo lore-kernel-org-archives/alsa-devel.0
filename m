@@ -1,19 +1,13 @@
-From: Allan Klinbail <allank@labyrinth.net.au>
-Subject: Re: MTP-AV problems (Re: intel8x0 sequencer & MTP-AV) - success
-Date: 16 Feb 2003 20:58:23 +1100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: S/PDIF on AD1980 patch
+Date: Sun, 16 Feb 2003 13:39:18 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045389509.6765.21.camel@littlewolf2.littlewolf>
-References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
-	<s5h3cn5ino4.wl@alsa2.suse.de>
-	<1044273602.2013.6.camel@littlewolf2.littlewolf>
-	<s5hheb8l05o.wl@alsa2.suse.de>
-	<1045193186.10268.392.camel@littlewolf2.littlewolf>
-	<s5h4r77jdmm.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0302161338430.1060-100000@pnote.perex-int.cz>
+References: <1045265537.3e4d7c8203055@webmail2.namezero.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4r77jdmm.wl@alsa2.suse.de>
+In-Reply-To: <1045265537.3e4d7c8203055@webmail2.namezero.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,68 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
+To: Jaroslaw Sobierski <fycio@gucio.com>
+Cc: "tiwai@suse.de" <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Okay Finally I am very very happy.. 
+On Fri, 14 Feb 2003, Jaroslaw Sobierski wrote:
 
-SO far I have only been able to test output (need to setup MIDI hardware
-again after a gig) 
-
->From output using MusE CVS version. 
-
-I have been able to send MIDI output to:
-
-individual ports 
-multiple ports relaying different information... 
-timecode... MIDI CLOCK, worked , MMC still to be tested
-
-I did not get a good SMPTE lock and the time display on the MTP-AV only
-aligned itself properly on stop.. (typical when a sync lock isn't
-established properly) both the PC and the MTP-AV were set to a SMTPE
-rate of 25 frames per second. 
-
-(I remember we once tested this with a commandline app, I don't have
-them anymore .. do you still have them or links to them and we can check
-with that rather than MusE as SMPTE probably isn't fully implemented
-yet) 
-
-
-One glitch I noticed was that the driver seemed to send the note
-information to all ports when the sequence I had only sent to one of the
-MTPAV ports... When I assigned a second to a different port it began
-behaving correctly.
-
-This is all however fantastic progress. 
-
-cheers
-
-Allan 
-
-
-
-
-
-On Fri, 2003-02-14 at 22:38, Takashi Iwai wrote:
-> Hi Allan,
 > 
-> At 14 Feb 2003 14:26:19 +1100,
-> Allan Klinbail wrote:
-> > 
-> > The device stopped seeing all messages when attempts at sending MIDI
-> > output to more than one port occured.(this is where the initialisation
-> > SYSEX probably comes into play)  
+> Here's the patch I promised. I had some trouble compiling the CVS version
+> (not the drivers but libs, still don't know why), but I supplemented with
+> libs compiled from the tarball (rc7) and it worked. Anyway - I created two
+> controls - a simple switch ( the "Link" ) and an enum ("Source") first
+> was simple yet fully functional and had the adventage of being modifiable
+> via alsamixer, which an enum isn't. The second control is more elegant
+> (based on a similar control for the YMF753), but needs much more code
+> and cannot be used in alsamixer (or I don't know how to do it). Works
+> fine via amixer controls though. Anyway, it doesn't make sense to add
+> both (although they do work simultanously), so I leave it up to alsa
+> vetrans maintaining the CVS tree to decide which solution is better.
 > 
-> this problem may have been fixed (not perfect but works in most
-> cases) on cvs recently.   if you have time, please try the cvs
-> version.
-> 
-> 
-> ciao,
-> 
-> Takashi
+> According to Analog Devices specs this patch should work for all 1980
+> series chips, namely 41445370 (ad1980-that's the one I test for),
+> 41445371 (ad1980A) and 41445374 (ad1980B). But since I can't test the
+> other ones - I left it at that.
 
+Send us unified diff, please. It's more readable to verify the contents.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
