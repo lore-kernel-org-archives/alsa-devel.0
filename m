@@ -1,80 +1,149 @@
-From: "Martin J. Bligh" <mbligh@aracnet.com>
-Subject: Re: OSS sound emulation broken between 2.6.0-test2 and test3
-Date: Sat, 27 Dec 2003 16:27:11 -0800
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <3160000.1072571230@[10.10.2.4]>
-References: <1080000.1072475704@[10.10.2.4]> <1072479167.21020.59.camel@nosferatu.lan>  <1480000.1072479655@[10.10.2.4]> <1072480660.21020.64.camel@nosferatu.lan>  <1640000.1072481061@[10.10.2.4]> <1072482611.21020.71.camel@nosferatu.lan>  <2060000.1072483186@[10.10.2.4]> <1072500516.12203.2.camel@duergar>  <8240000.1072511437@[10.10.2.4]> <1072523478.12308.52.camel@nosferatu.lan> <1072525450.3794.8.camel@wires.home.biz>  <1960000.1072550125@[10.10.2.4]> <1072555431.12308.471.camel@nosferatu.lan> <1072557893.6994.5.camel@nosferatu.lan>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
-In-Reply-To: <1072557893.6994.5.camel@nosferatu.lan>
-Content-Disposition: inline
-To: azarah@nosferatu.za.org
-Cc: Edward Tandi <ed@efix.biz>, perex@suse.cz, alsa-devel@lists.sourceforge.net, Linux Kernel Mailing Lists <linux-kernel@vger.kernel.org>, Rob Love <rml@ximian.com>, Andrew Morton <akpm@osdl.org>, Stan Bubrouski <stan@ccs.neu.edu>, Henrik Storner <henrik-kernel@hswn.dk>
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: intel ICH sample rate
+Date: Sat, 27 Dec 2003 16:09:29 -0500
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200312272109.hBRL9TVD031711@dhin.linuxaudiosystems.com>
+References: <Pine.LNX.4.58.0312272046580.25504@pnote.perex-int.cz>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Sat, 27 Dec 2003 20:49:50 +0100."
+             <Pine.LNX.4.58.0312272046580.25504@pnote.perex-int.cz>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK, I chose to just back out the wholefrag stuff - it doesn't seem to
-work. Presumably someone from the ALSA project will come up with a
-better fix than this, if not, I'll send this upstream. This should
-just fix it, without the need to do other stuff in userspace to work
-around it ... at least it does for me. 
+>yOn Sat, 27 Dec 2003, Paul Davis wrote:
+>
+>> >i've been getting my laptop with an ICH soundchip up to speed, and i
+>> >just noticed for the first time yesterday that ALSA fails to get the
+>> >speed to the rate that JACK requests. a quick google reveals that the
+>> >OSS drivers only support 1 h/w rate, but there are suggestions that
+>> >the ALSA driver works better. however, neither JACK nor alsaplayer can
+>> >set the rate on my card to 44.1kHz - its stuck at 48kHz.
+>> >
+>> >this is alsa 1.0.0rc2 from Planet CCRMA. any clues?
+>> 
+>> this is using the snd-intel8x0 module. the wiki page has alerted me to
+>> the ac97_clock option, but it seems ludicrous to have to rmmod &&
+>> modprobe the module just to switch rates ...
+>
+>The ac97_clock option is for situation when another master clock crystal
+>than standard one is used by hardware vendor. You cannot change the real
+>rate with this option.
+>
+>It seems that your AC97 codec does not support VRA (variable rate) so it 
+>is capable only 48kHz or we have a bug somewhere.
+>
+>Can you send me contents of /proc/asound/card0/codec97* files?
 
-This is the way the world was in -test2, and maybe it should have stayed 
-like that - the new feature seems to me to default wholefrag off, where
-it was on before. Patch is also in 2.6.0-mjb2, which I'll release in a bit.
+i am entirely willing to believe that it can only do 48kHz. its a
+laptop (HP Pavilion), well known for having crapola audio interfaces
+and relying on s/w to make things work. here's the codec97* file
+(below).
 
-M.
+meanwhile, i have found that the plughw layer doesn't work with JACK
+anymore. it appears that any attempt to set the period size fails. any
+ideas about that?
 
-diff -urpN -X /home/fletch/.diff.exclude 610-alsa_100rc2/include/sound/pcm_oss.h 620-force_wholefrag/include/sound/pcm_oss.h
---- 610-alsa_100rc2/include/sound/pcm_oss.h	Mon Nov 17 18:29:43 2003
-+++ 620-force_wholefrag/include/sound/pcm_oss.h	Sat Dec 27 14:50:15 2003
-@@ -31,7 +31,6 @@ struct _snd_pcm_oss_setup {
- 		     direct:1,
- 		     block:1,
- 		     nonblock:1,
--		     wholefrag:1,
- 		     nosilence:1;
- 	unsigned int periods;
- 	unsigned int period_size;
-diff -urpN -X /home/fletch/.diff.exclude 610-alsa_100rc2/sound/core/oss/pcm_oss.c 620-force_wholefrag/sound/core/oss/pcm_oss.c
---- 610-alsa_100rc2/sound/core/oss/pcm_oss.c	Sat Dec 27 14:50:08 2003
-+++ 620-force_wholefrag/sound/core/oss/pcm_oss.c	Sat Dec 27 14:50:15 2003
-@@ -814,9 +814,8 @@ static ssize_t snd_pcm_oss_write1(snd_pc
- 			buf += tmp;
- 			bytes -= tmp;
- 			xfer += tmp;
--			if (substream->oss.setup == NULL || !substream->oss.setup->wholefrag ||
--			    runtime->oss.buffer_used == runtime->oss.period_bytes) {
--				tmp = snd_pcm_oss_write2(substream, runtime->oss.buffer, runtime->oss.buffer_used, 1);
-+			if (runtime->oss.buffer_used == runtime->oss.period_bytes) {
-+				tmp = snd_pcm_oss_write2(substream, runtime->oss.buffer, runtime->oss.period_bytes, 1);
- 				if (tmp <= 0)
- 					return xfer > 0 ? (snd_pcm_sframes_t)xfer : tmp;
- 				runtime->oss.bytes += tmp;
-@@ -2195,7 +2194,7 @@ static void snd_pcm_oss_proc_read(snd_in
- 	snd_pcm_oss_setup_t *setup = pstr->oss.setup_list;
- 	down(&pstr->oss.setup_mutex);
- 	while (setup) {
--		snd_iprintf(buffer, "%s %u %u%s%s%s%s%s%s\n",
-+		snd_iprintf(buffer, "%s %u %u%s%s%s%s%s\n",
- 			    setup->task_name,
- 			    setup->periods,
- 			    setup->period_size,
-@@ -2203,7 +2202,6 @@ static void snd_pcm_oss_proc_read(snd_in
- 			    setup->direct ? " direct" : "",
- 			    setup->block ? " block" : "",
- 			    setup->nonblock ? " non-block" : "",
--			    setup->wholefrag ? " whole-frag" : "",
- 			    setup->nosilence ? " no-silence" : "");
- 		setup = setup->next;
- 	}
-@@ -2270,8 +2268,6 @@ static void snd_pcm_oss_proc_write(snd_i
- 				template.block = 1;
- 			} else if (!strcmp(str, "non-block")) {
- 				template.nonblock = 1;
--			} else if (!strcmp(str, "whole-frag")) {
--				template.wholefrag = 1;
- 			} else if (!strcmp(str, "no-silence")) {
- 				template.nosilence = 1;
- 			}
+--p
+
+0-0/0: Conexant id 30
+
+Capabilities     : -reserved1- -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : No 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=2 AMAP DSA=0 SPDIF
+Extended status  : PRL PRK PRJ PRI SPCV SPDIF=7/8
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+Extended modem ID: codec=0 LIN1
+Modem status     : PRA(GPIO)
+Line1 rate       : 48000Hz
+0:00 = 0152
+0:02 = 0404
+0:04 = 9f1f
+0:06 = 0000
+0:08 = 0000
+0:0a = 8000
+0:0c = 0000
+0:0e = 801f
+0:10 = 9f1f
+0:12 = 0303
+0:14 = 0000
+0:16 = 0000
+0:18 = 0404
+0:1a = 0101
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 0a04
+0:2a = 7c10
+0:2c = bb80
+0:2e = 0000
+0:30 = 0000
+0:32 = bb80
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 2824
+0:3c = 0001
+0:3e = 0100
+0:40 = bb80
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0030
+0:4e = ffff
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0600
+0:5e = 8001
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0000
+0:6e = 0000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0000
+0:76 = 0000
+0:78 = 0000
+0:7a = 8004
+0:7c = 4358
+0:7e = 5430
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: IBM Linux Tutorials.
+Become an expert in LINUX or just sharpen your skills.  Sign up for IBM's
+Free Linux Tutorials.  Learn everything from the bash shell to sys admin.
+Click now! http://ads.osdn.com/?ad_id=1278&alloc_id=3371&op=click
