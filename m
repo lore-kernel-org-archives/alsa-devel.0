@@ -1,16 +1,14 @@
-From: Pavel Machek <pavel@suse.cz>
-Subject: Re: 2.6.10-mm1: oops during swsusp in ac97 support
-Date: Tue, 4 Jan 2005 22:27:02 +0100
-Message-ID: <20050104212702.GA1456__37679.589194204$1104874959$gmane$org@elf.ucw.cz>
-References: <20050103182842.GA1420@elf.ucw.cz> <s5h4qhxgnl9.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Tue, 4 Jan 2005 22:38:22 +0100
+Message-ID: <73b452e1024e1e29cc98ac129c8103fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from amd.ucw.cz (gprs215-128.eurotel.cz [160.218.215.128])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69E702BD
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 22:27:11 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5h4qhxgnl9.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7334261
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 22:38:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,30 +18,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: kernel list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-> > I have via82xx soundcard, and since 2.6.10-mm1, I get an oops in
-> > snd_ac97_resume. Does 
-> 
-> What happened exactly? :)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+======================================================================
+Reported By:                wzzrd
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   mixer
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              01-04-2005 22:38 CET
+======================================================================
+Summary:                    Master volume only controls front output (emu10k1)
+Description: 
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-During suspend, at one point devices are resumed. I get NULL pointer
-dereference during that phase.
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+related to          0000172 Master volume control only controls fro...
+======================================================================
 
-I'll mail you a screenshot in a private mail. I just hope you'll be
-able to decipher it, it is pretty hard to read. (If not let me know, I
-think I can read most of it but no numbers).
+----------------------------------------------------------------------
+ pzad - 01-04-05 22:30 
+----------------------------------------------------------------------
+Audigy is OK - this was fixed in past.
 
-2.6.10-mm1 is broken, 2.6.10-currentbk is not.
+SB Live is worse, because there is not one signal path from analog inputs
+to front speakers, but two (audigy has only one).
 
-								Pavel
--- 
-People were complaining that M$ turns users into beta-testers...
-...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
+If you are interested in fixing this, I can send you how SB Live alsa
+mixer looks now and how it should look after.
+
+This will fix - partially "master" control (this bug repport), spdif
+volume controls (for digital speakers) (another bug report) and signal
+distortion when using bass and treble controls (another bug report).
+
+----------------------------------------------------------------------
+ rlrevell - 01-04-05 22:38 
+----------------------------------------------------------------------
+Yes, please send me this info, and I'll try to fix the driver.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
