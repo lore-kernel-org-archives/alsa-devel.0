@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000559]: 64 Bit Drivers for Analog Devices SoundMax
-Date: Sat,  2 Oct 2004 15:08:59 +0200 (CEST)
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: alsa-driver will not compile with kernel
+     2.6.9-rc2-mm4-S7
+Date: Sat, 2 Oct 2004 16:10:53 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041002130859.4A78F3200A@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <32802.192.168.1.8.1096729853.squirrel@192.168.1.8>
+References: <1096675930.27818.74.camel@krustophenia.net>
+    <20041002134732.7c38d39e@mango.fruits.de>
+Mime-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF416242
-	for <alsa-devel@alsa-project.org>; Sat,  2 Oct 2004 15:08:59 +0200 (MEST)
+In-Reply-To: <20041002134732.7c38d39e@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,53 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Florian Schmidt wrote:
+>
+> Hmm, i have no problems compiling the alsa drivers included with the
+> kernel [yes, i'm on mm4-S7]..
+>
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000559
-======================================================================
-Reported By:                sandy bodell
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     559
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Suse
-Kernel Version:             2.6.5-7.108
-======================================================================
-Date Submitted:             10-02-2004 13:46 CEST
-Last Modified:              10-02-2004 15:08 CEST
-======================================================================
-Summary:                    64 Bit Drivers for Analog Devices SoundMax
-Description: 
-Are there any 64 bit drivers available anywhere for this chipset?
+It's not about the regular modules in kernel source tree. Those are built
+OK here too. We're talking about building the alsa-kernel + alsa-driver
+tandem from ALSA CVS.
 
-Thanks
-======================================================================
+Cheers.
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
-----------------------------------------------------------------------
- Clemens Ladisch - 10-02-2004 15:08 CEST 
-----------------------------------------------------------------------
-When compiled with a 64 bit kernel, the drivers are 64 bit, too.
-
-The driver for your device is snd-intel8x0 or snd-via82xx or snd-atiixp,
-depending on your chipset.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-02-04 13:46 sandy bodell   New Bug                                      
-10-02-04 13:46 sandy bodell   Distribution              => Suse            
-10-02-04 13:46 sandy bodell   Kernel Version            => 2.6.5-7.108     
-10-02-04 15:08 Clemens LadischBugnote Added: 0002006                       
-======================================================================
 
 
 -------------------------------------------------------
