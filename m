@@ -1,12 +1,12 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Midiman Quattro USB drivers
-Date: Thu, 15 Aug 2002 17:38:55 +0900
+Subject: Re: new alsa docs.
+Date: Thu, 15 Aug 2002 17:56:34 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5B689F.3060109@boosthardware.com>
-References: <004d01c243f0$b9f8af50$a6ed3b42@eclipse>
+Message-ID: <3D5B6CC2.5040304@boosthardware.com>
+References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D591A58.11ABEA9@ladisch.de> <3D591F57.1060601@boosthardware.com> <200208141801.11087.plcl@telefonica.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,36 +16,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Eric Griffis <egriffis@netconcentric.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Eric Griffis wrote:
-> Hello, people. I've been lurking on this list for a few months and, now 
-> that I have a local linux machine to develop on, am going to horn in and 
-> ask silly questions from time to time.
->  
-> A month or two ago, I recall a thread regarding attempts to get driver 
-> specs for the m-audio quattro usb. Considering that my quattro is my 
-> primary audio device, and I am not fond of dual booting just to use it 
-> (the windows ASIO drivers are terrible), I am very interested in 
-> developing good drivers for this thing. Has anyone succeeded in getting 
-> the driver specs?
->  
-> About when that quattro thread was floating around, I met a beta tester 
-> for Midiman. He was looking into getting the specs for me and has since 
-> disappeared. I live about 10 blocks from their headquarters and have 
-> done business with them before (network wiring bids and computer sales 
-> and such), so maybe I should look up the owners business card and start 
-> snooping. I just wanted to check if the specs were public yet or not.
->  
+Pedro Lopez-Cabanillas wrote:
+> El Mar 13 Ago 2002 17:01, Patrick Shirkey escribió:
+> 
+>>Clemens Ladisch wrote:
+>>
+>>>I didn't bother to report USB MIDI devices - until now:
+>>
+>>Thanks. I'm collecting them for now until I or Dan get the energy to add
+>>them to the matrix.
+> 
+> 
+> The "usb generic" instructions for USB-MIDI devices is a copy of the Midiman 
+> MidisportNxN page. This is very inaccurate and confusing, as many devices 
+> (e.g. the Roland/Edirol ones) aren't EZ-USB devices and don't need/accept the 
+> ezusbmidi firmware at all. Please, remove the ezusbmidi references from the 
+> generic usb-midi page.
+> 
+
+Currently I am trying to maintain as few pages as possible so the 
+generic instructions access exactly the same data as ezusb devices. 
+However I have made the ezusb instructions more recognisable.
+
+If this is still too confusing then I will have to add another variable 
+for all ezusb devices. I would rather not as it means one more little 
+thing to remember. I will add a note on the matrix for these cards below.
 
 
-this card is working now. If you look in the docs via the sound card 
-matrix you can ifnd out how to install it. there is even a working 
-asoundrc so that you can use all four channels at one time.
-
-Midi is untested but should work because it is a midisport.
+> On the other hand, this device is reported by Clemens:
+>  Steinberg        http://www.steinberg.net/
+>     USB-2-MIDI       http://www.steinberg.net/products/ae/hardware/usb2midi/
+> It is another EZ-USB based device, and needs the ezusbmidi firmware to work. 
+> You can safely copy the Midisport page for it.
+> 
+> I would like to insist again about including "EZ-USB" in the chipset column 
+> for  these devices: 
+> 	Midiman Midisport NxN
+> 	Midiman USB Keystations: 
+> http://www.midiman.net/products/midiman/keystations.php
+> 	Steinberg USB-MIDI-2 adaptor:
+> http://www.steinberg.net/products/ae/hardware/usb2midi/
+> 
+> For the "chipset" column you can put here EZ-USB (or "Cypress AN2131XX") 
+> http://www.cypress.com/products/datasheet.cfm?partnum=AN2131SC
+> 
+> This chipset is widely used in USB peripherals, not only MIDI ones, and it is  
+> related to Intel 8051 chip. The firmware loader (fxload) for this chipset is 
+> included in linux-hotplug: http://linux-hotplug.sourceforge.net/
+> And SDCC (Small Device C Compiler) is a GPL tool that can be used to build 
+> firmware drivers: http://sdcc.sourceforge.net/
+> 
+> Regards,
+> Pedro
+> 
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by: Dice - The leading online job board
+> for high-tech professionals. Search and apply for tech jobs today!
+> http://seeker.dice.com/seeker.epl?rel_code=31
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
 
 
 
