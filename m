@@ -1,13 +1,12 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: documentation - yeah right!
-Date: Wed, 21 May 2003 19:52:46 +0300 (EEST)
+Date: Wed, 21 May 2003 13:03:54 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305211934470.19955-100000@ecabase.localdomain>
+Message-ID: <E19IWu2-0006NQ-00@sc8-sf-list1.sourceforge.net>
 References: <20030521115921.B793@loki.cs.umass.edu>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030521115921.B793@loki.cs.umass.edu>
+In-reply-to: Your message of "Wed, 21 May 2003 11:59:21 EDT."
+             <20030521115921.B793@loki.cs.umass.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,52 +19,115 @@ To: Richard Cochran <cochran@cs.umass.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 21 May 2003, Richard Cochran wrote:
+>Unfair, perhaps, yet true. Getting alsa to work with a 2.4.x kernel
+>today is not exactly easy.
 
-> Unfair, perhaps, yet true. Getting alsa to work with a 2.4.x kernel
-> today is not exactly easy.
+would you like the two people who work on ALSA to write documentation,
+or to work on this aspect of things?
 
-It's not that hard either, but yes, it could be easier.
-But this is true for practically all kernel subsystems
-that are not yet part of the standard kernel. And for 
-a reason. ALSA developers cannot change how the Linux 
-kernel development works.
+>I don't agree that OSS conversion would have to be in the kernel. You
+>could simply pipe all of your audio through sox using simple shell
+>commands! Clunky, yes, but it would work.
 
-> I don't know what "plug_hw" is or what it provides. I would _love_ to
-> read about it. I would like to know what is impossible with OSS that
-> is easy with Alsa, specifically.
+clunky? i thought you were interested in serious audio programming!
 
-We'd all love to, but someone has to write it. If you can't
-live without better documentation, and don't want or cannot
-help, then I guess you just have to come back later when
-it's ready. I'd say once ALSA is bundled by all the major
-distros (some of them already do), we'll see more documentation.
+>More to the point, I can imagine a user library to provide:
+>
+>  write_conversion(int fd, //open file descriptor
+>                   void* buf, //samples to write
+>                   int buflen, //length of buffer
+>                   sometype fmtin, //format of buffer
+>                   sometype fmtout, //desired conversion
+>                   sometype alg //desired conversion algorithm
+>                   );
+>
+>  read_conversion() //you get the idea
 
-This is just the same with all kernel subsystems. Very few kernel
-subsystems (or specific features/modules) have very detailed architecture
-descriptions available, although most of them have some docs (usually at
-least a HOWTO). Even fewer have these docs _before_ they are included to
-stable kernel.
+i don't think you don't get the point. this means that you are now
+required to use these calls, rather than write() and read(), unless
+you first query the device to see what it can do (for example, my
+favorite interfaces support *only* 24-in-32-bit non-interleaved
+samples. why should you have to know this? why not just write the same
+code regardless of what the hardware can do? thats what ALSA allows
+for. 
 
-Comparing to OSS is not entirely fair, as the architecture
-document you are talking about documents the commercial 
-OSS API, not the OSS/kernel API. It's mostly the same, but
-not all OSS kernel drivers behave as the commercial OSS 
-drivers, so it's not really the same (for instance the
-everlasting problem with different ways to implement full-duplex).
+also, you seemed to like the idea of using read and write, and now
+you're already moving away from it. where you'll end up with this
+approach is probably going to be a lot like snd_pcm_read() and
+snd_pcm_write() (although be sure to consider how to handle
+interleaved and non-interleaved samples, writing to just one channel, etc).
 
-> Mixing can be done using a fifo. It would not be hard to shadow the
+>Mixing can be done using a fifo. 
 
-Simply does not work nor scale if you want low latency and support
-multichannel configurations. See the numerous discussions during the last
-four to five years here, linux-audio-dev and other related mailing lists.
-For real solutions, see ALSA's dmix feature (check mailing list arhives)
-and/or JACK (http://jackit.sf.net).
+no disrespect intended, but you are obviously new to audio
+programming. FIFO's hold 5kB of data, which for a 26 channel interface
+using 32 bit samples is about 0.5msecs worth of audio. even my
+carefully tuned system could not possibly use such a model.
 
+>				  It would not be hard to shadow the
+>OSS ioctl with similar library routines for apps that need to mix with
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+ah, shadowing again. so you end up with snd_pcm_ioctl() ... but what
+ioctl calls are there? why should you even care? you have data to
+write, you should write it, and let someone/something else care about
+the low level details.
+
+>other apps (like desktop beeps and so forth). Serious audio apps
+>probably want exclusive DSP access, anyhow.
+
+see http://jackit.sf.net/apps. these are all serious audio apps and
+when they use JACK, none of them even know whether there a real audio
+interface involved. you can run any number of them at once (within
+system-imposed limits).
+
+>> it already has provided it. it offers generic ways to do things that
+>> were simply impossible or at best very tricky with OSS. the plug_hw
+>> layer in ALSA has no equivalent for OSS, anywhere.
+>
+>Where is this 'it'. Where can I read the document?
+
+"it" is ALSA. and there is no such document.
+
+>Yes, sometimes you need to go back to the drawing board. I cannot say
+>whether Alsa needs this or not. I do find that "ever adapting" the old
+>code to new problems eventually finds a limit.
+
+precisely, and thats OSS problem, not ALSA's. ALSA has been
+significantly redesigned twice during its development, with much more
+change than OSS has seen in its entire life. is that a good feature of
+OSS? perhaps, but for most of us, we'd prefer useful functionality
+from a capable API, even if we've had to wait for a couple of years to
+get it.
+
+>If we have a good, standard, user library, then everyone will use it!
+
+not necessarily. none of my audio apps use ALSA at all. they all route
+via JACK ....
+
+>> its the overall design of OSS that is the problem - the quality of
+>> the drivers is generally very good.
+>
+>Really? Why does not i810 offer duplex audio, then?
+
+i said the OSS drivers were generally very good.
+
+>> > Howto use the ALSA API - Paul Davis has also written a brief explanation.
+>> > http://www.op.net/~pbd/alsa-audio.html
+>> 
+>> this link is not broken. it points to the new location (my ISP changed).
+>
+>I followed the link to the new location, but I could not locate "Howto
+>use the ALSA API". 
+
+your browser should have taken you there. unfortunately, there was a
+bug in the script that converted all my old HTML documents to the
+redirect docs, and i no longer can access files at www.op.net, so the
+final link that appears to go to the document doesn't go directly there.
+
+if you did go there (http://equalarea.com/paul/alsa-audio.html), then
+we i guess disagree on what a "brief explanation" is.
+
+--p
 
 
 
