@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Thu, 6 Jan 2005 18:14:46 +0100
-Message-ID: <40e66019b5583e6d84b6c6ec077763be@bugtrack.alsa-project.org>
+Date: Thu, 6 Jan 2005 19:43:12 +0100
+Message-ID: <8e423f08a5a63e27597682e9083a9f7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5B2422A3
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 18:14:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAB43319
+	for <alsa-devel@alsa-project.org>; Thu,  6 Jan 2005 19:43:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              01-06-2005 18:14 CET
+Last Modified:              01-06-2005 19:43 CET
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,14 +54,15 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 10-20-04 00:38 
+ rlrevell - 01-06-05 18:27 
 ----------------------------------------------------------------------
-Still broken in kernel 2.6.9 as well.
+Just to be sure, is it still broken with ALSA CVS?
 
 ----------------------------------------------------------------------
- Quietti - 01-06-05 18:14 
+ Quietti - 01-06-05 19:43 
 ----------------------------------------------------------------------
-Still broken in kernel 2.6.10 as well.
+I never try CVS, so I cannot say.  I only test stable Linux 2.6 release
+kernels.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +79,8 @@ vanilla.
 09-08-04 06:32 Quietti        Note Added: 0001726                          
 10-20-04 00:38 Quietti        Note Added: 0002209                          
 01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
 ======================================================================
 
 
