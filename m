@@ -1,16 +1,11 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: Re: alsa-kernel oss part warnings
-Date: Thu, 06 Mar 2003 15:44:24 +0200
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: HDSP + multiface "freezing" patch
+Date: 06 Mar 2003 17:53:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E6750B8.865E772@srr.ro>
-References: <Pine.LNX.4.44.0303052153400.17739-100000@pnote.perex-int.cz>
+Message-ID: <1046969583.1338.3.camel@satellite.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="=-ZC/F1yCWe8stbSJzYbGw"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dingo.srr.ro ([212.54.107.183])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA11164
-	for <alsa-devel@alsa-project.org>; Thu, 6 Mar 2003 14:45:07 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,65 +14,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 2.2.23 kernel I get a lot of warnings  like : 
-They don't seem to be serious, thougth I'd mention it. 
+--=-ZC/F1yCWe8stbSJzYbGw
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-------------------------------------------------------------------------------------
-gcc -D__KERNEL__ -DMODULE=1
--I/serve/install/alsa-cvs/alsa-driver/include  -I/usr/src/linux/include
--O2 -march=i586 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD 
--DKBUILD_BASENAME=rate   -c -o rate.o rate.c
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:
-In function `resample_expand':
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:73:
-warning: `S1' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:73:
-warning: `S2' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:74:
-warning: `src' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:74:
-warning: `dst' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:75:
-warning: `channel' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:76:
-warning: `src_step' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:76:
-warning: `dst_step' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:77:
-warning: `src_frames1' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:77:
-warning: `dst_frames1' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:
-In function `resample_shrink':
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:161:
-warning: `S1' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:161:
-warning: `S2' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:162:
-warning: `src' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:162:
-warning: `dst' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:164:
-warning: `src_step' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:164:
-warning: `dst_step' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:165:
-warning: `src_frames1' might be used uninitialized in this function
-/serve/install/alsa-cvs/alsa-driver/include/../alsa-kernel/core/oss/rate.c:165:
-warning: `dst_frames1' might be used uninitialized in this function
+We were searching a vicious bug, but it was a trivial one...
+Applies on top of Paul's patch version II.
+
+Thomas
 
 
--- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
+
+--=-ZC/F1yCWe8stbSJzYbGw
+Content-Disposition: attachment; filename=hdsp_missing_break.patch
+Content-Type: text/plain; name=hdsp_missing_break.patch; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
+
+--- hdsp.c.orig	2003-03-05 19:23:52.000000000 +0100
++++ hdsp.c	2003-03-06 17:47:44.000000000 +0100
+@@ -3002,9 +3002,9 @@
+ 			case 0xa:
+ 			case 0x64:
+ 				firmware_ptr = (u32 *) multiface_firmware;
++				break;
+ 			default:
+ 				firmware_ptr = (u32 *) multiface_firmware_rev11;
+-				break;
+ 			}
+ 		}
+ 		
+
+--=-ZC/F1yCWe8stbSJzYbGw--
+
 
 
 -------------------------------------------------------
