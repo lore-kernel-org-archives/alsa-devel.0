@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000645]: azx driver is a bit broken
-Date: Tue, 23 Nov 2004 21:53:36 +0100
-Message-ID: <7b448ef859d7a03243a76ca72feb420f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
+Date: Tue, 23 Nov 2004 21:54:02 +0100
+Message-ID: <6fa0260fd394b7969b084a166ce01918@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BB952AB
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:53:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 327C72AB
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:54:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,108 +24,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=645> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=552> 
 ======================================================================
-Reported By:                russell
+Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   645
+Issue ID:                   552
 Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               Debian/Ubuntu
+Distribution:               Debian
 Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             11-12-2004 16:58 CET
-Last Modified:              11-23-2004 21:53 CET
+Date Submitted:             09-30-2004 01:29 CEST
+Last Modified:              11-23-2004 21:54 CET
 ======================================================================
-Summary:                    azx driver is a bit broken
+Summary:                    FATAL: Error inserting snd_azx
 Description: 
-The azx driver doesn't work well on the hardware which I have. It pretty
-much doesn't work at all in OSS emulation mode. The following patch
-improves its stability on my machine enormously (although it is still not
-100%), and makes OSS emulation work nicely. As a side effect, the code is
-simplified, and to my fairly untrained eyes seems a bit more efficient.
+Impossible to make running the AZX Alsa driver on my PC, ASUS P5GD2 Premium
+motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03) integrated sound.
 
-There are also a number of fixes in this patch which make the driver work
-more like my understanding of the Intel "High Definition Audio
-Specification Revision 1.0" document, and my limited understanding of the
-ALSA system. These include:
-
- - ALSA buffer size now matches the Cyclic Buffer Length (length of entire
-buffer)
- - ALSA period size now matches size of each BDL, the number of BDLs are
-properly set, and the BDLEs are not changed during playback (as suggested
-in the azx spec)
-
-The #define'd STREAM_REST_BIT was renamed to STREAM_RESET_BIT (because
-that's what it is).
-
-This is a patch to azx.c only, and is against the current CVS version
-(1.11).
-
-I have not done *ANY* work on the capture side of things -- most of my
-diffs for output can probably be translated almost directly for input.
-
-There are some other issues which should be addressed in this driver. Off
-the top of my head:
- - Will pci_set_dma_mask() be needed if the card is not capable of 64 bit
-addressing? Perhaps.
- - The mixer code in 1.0.7rc2 causes a crash on my system, I have pointed
-this out to Clemens Ladisch in email. I will work on this problem soon if
-nobody else has the time. Commenting out the mixer initialisation code is
-working well for me at the moment :)
- - The driver still does not work 100%. When my system is very idle, I get
-repeated sections of sound. I used to get a LOT of static, but with my
-changes it now just sounds like ALSA is never updating the buffer. I'm
-completely baffled by this, any suggestions for me to try, or hints on
-debugging this sort of behaviour would be appreciated!
-
-And one issue which I am unclear on, what does the fifo_size field in the
-snd_pcm_hardware_t struct actually define?
 ======================================================================
 
 ----------------------------------------------------------------------
- russell - 11-12-04 17:30 
+ footcow - 11-23-04 21:48 
 ----------------------------------------------------------------------
-OK, maybe I lied about the OSS thing. I had some other changes in the file
-which highly increased the total buffer size -- it seems like esd requests
-a really small buffer, hence the differences I saw between playing
-directly through ALSA and playing through OSS. My "OSS problem" seems to
-just be the same as the ALSA problem I'm seeing - repeated chunks of sound
-if the system is idle - but at a much worse scale, since the sound card is
-interrupting a lot more often because of the smaller buffer and periods.
-
-My patch still does fix up crackles and noises on the line, the fact that
-interrupts seem to be being missed or something like that has not changed
-though.
+You can close this ... only a reboot trouble ...
+Sorry.
 
 ----------------------------------------------------------------------
- footcow - 11-23-04 21:53 
+ rlrevell - 11-23-04 21:54 
 ----------------------------------------------------------------------
-I'm surprising that you get anything ... for me look at :
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666
-I have no sound, no mixer nothing with the azx driver ...
-
-What exact hardware have you got ?
-I have a : Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition
-Audio Controller (rev 03)
-
-Could you have a solution to help me ?
+Does this mean the azx driver is working well for you?  Currently we don't
+have much feedback because the driver is so new.  If it works well then it
+should be pushed into the kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-04 16:58 russell        New Issue                                    
-11-12-04 16:58 russell        File Added: azx.c.diff                       
-11-12-04 16:58 russell        Distribution              => Debian/Ubuntu   
-11-12-04 16:58 russell        Kernel Version            => 2.6.8.1         
-11-12-04 17:30 russell        Note Added: 0002399                          
-11-15-04 22:28 Grazy          Issue Monitored: Grazy                       
-11-23-04 21:53 footcow        Note Added: 0002531                          
+09-30-04 01:29 footcow        New Issue                                    
+09-30-04 01:29 footcow        Distribution              => Debian          
+09-30-04 01:29 footcow        Kernel Version            => 2.6.8.1         
+11-23-04 21:48 footcow        Note Added: 0002529                          
+11-23-04 21:54 rlrevell       Note Added: 0002532                          
 ======================================================================
 
 
