@@ -1,14 +1,12 @@
-From: "Mirabella, Mathew J" <Mathew.Mirabella@team.telstra.com>
-Subject: Audigy 2 issues and alsa freezing.
-Date: Fri, 28 Mar 2003 12:18:12 +1000
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Mono to stereo ?
+Date: Thu, 27 Mar 2003 21:46:20 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <73388857A695D31197EF00508B08F2980A00EEA7@ntmsg0131.corpmail.telstra.com.au>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <E18yjnp-0000ZA-00@sc8-sf-list1.sourceforge.net>
+References: <3E83BE0E.4070406@embedded.cl>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+In-reply-to: Your message of "Thu, 27 Mar 2003 23:14:22 -0400."
+             <3E83BE0E.4070406@embedded.cl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,31 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "J. Scott Amort" <jsamort@telus.net>, alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>, sound-list list <sound-list@redhat.com>
-Cc: emacspeak list <emacspeak@cs.vassar.edu>
+To: Manuel Jander <mjander@embedded.cl>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>>>When an application opens a mono substream, the sound has to
+>>>be sent to one channel only or must the low level driver
+>>>transparently convert it to stereo ?
+>>>    
+>>>
+>>
+>>one channel only.
+>>
+>>in ALSA, low level drivers do not do any kind of format
+>>conversion. that is accomplished (if necessary) by code running in
+>>user-space, typically part of alsa-lib. the low level driver simply
+>>advertises the capabilities of the hardware, provides ways to use
+>>those capabilities, and lets the midlevel code and alsa-lib do the rest.
+>>  
+>>
+>
+>...but, if you are doing mono playback, your sound driver has to setup
+>your soundcard to playback on both channels the same mono channel. The 
+>Vortex
+>driver (still not in the main branch) for example splits the mono signal 
+>on its internal
+>mixer into 2 identical signals which are feed one into each CODEC channels.
 
-I installed the alsa stuff from cvs and was able to get sound from the =
-audigy 2, but only from the rear and sub woofer ports, and also from the =
-digital port, but not from the 3rd analog port on the back (left and =
-right front).  Is there a setting to make alsa work for a 2 speaker =
-system?
+that's a driver author's design decision. if the "hw" PCM device is
+opened with a single channel, it would be equally valid to play on one
+channel only. if the h/w can't handle that, it should not
+advertise itself to be capable of mono operation. IMHO.
 
-As for getting sound, it seems ok except for the following:
-1.  lots of pops and scratchy sounds when the sound changes.
-2.  the sound stops completely after a few seconds.
-
-btw: what i am doing is using ibm via voice outloud (a text to speech =
-synth) with emacspeak (an audio interface to emacs).
-
-also btw:  i seem to have had some slightly better luck with the emu10k1 =
-drivers from cvs from
-http://sourceforge.net/projects/emu10k1
-http://sourceforge.net/cvs/?group_id=3D44773
-Rather than alsa,=20
-
-Thanks for any help.
+--p
 
 
 
