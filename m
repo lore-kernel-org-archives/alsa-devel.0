@@ -1,12 +1,16 @@
-From: Friedrich.Ewaldt@gmx.de
-Subject: copy plugin, connecting output-input (virtual soundcard with connected out->in)
-Date: Tue, 13 Aug 2002 14:16:40 +0200 (MEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Opti 931: Med931 ver.2.0
+Date: Tue, 13 Aug 2002 15:05:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <13809.1029241000@www8.gmx.net>
+Message-ID: <3D59042A.60BB8CFB@ladisch.de>
+References: <20020813101600.YKOU12516.fep06-svc.mail.telepac.pt@[127.0.0.1]>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA21861
+	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2002 15:05:50 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,52 +19,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: hugo.ferreira@mail.telepac.pt
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Patrick,
-
-> There is a plugin called copy in the pcm plugins docs. Have a read.
+hugo.ferreira@mail.telepac.pt wrote:
+> > > 1. How may I compile/make and install just the modules that I am 
+> > > interested in (--with-card ?)
+> > 
+> > You can use --with-cards or edit a file in the root directory of the alsa
+> > kernel source. sorry, can't remember the name and I'm not on my home
+> > computer right now.
 > 
-> http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_plugins.html#pcm_plugins
+> You mean I can do a "./cvscompile --with-cards=snd-opti93x" ?
+> 
+> > Seems like I did "make modules" and "make modules
+> > install" just like
+> 
+> I'll try this and see what happens. Takashi said
+> a "make install" would suffice though.
 
-I did a lot of tests and experiments with the copy plugin (everything that
-came into my mind) but had no success in getting sound from an ALSA output
-device to an input device. Besides, I have some problems using the copy plugin
-with some applications (e.g. brutefir). I get a "file descriptor in bad state"
-error when brutefir calls snd_pcm_start. (you'll find further description od
-this problem at
-http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg04080.html
-)
-Do you know what I should do to get this running?
+I'm using the following commands to compile and install the USB MIDI
+driver:
 
-One question to the ALS experts: 
-Is there (or would it be a big deal to write one) some kind of virtual
-soundcard device I could use? I'm thinking of some virtual "card" I could write
-audio data to (say, to an ALSA "output device" of this virtual card) and
-capture this data by using the "input device" of this virtual card. 
+~/alsa-driver/usb# make snd-usb-midi.o
+~/alsa-driver/usb# cp snd-usb-midi.o /lib/modules/2.4.18/kernel/sound/usb/
 
-*From an application point of view, this should look like a real soundcard
-with a cable connecting the output(s) to the input(s).*
+(modify file/directory names appropriately)
 
-(The virtual card would indicate always free buffers to the application
-using it and would just move 2 pointers to get the input and output streams
-synchronized. Or something similar -- or something completely different. Sorry, I
-don't know ;-) )
+This only works if the package already had been installed, and if the
+changes only affect one module, but this seems to be just what you want
+to do.
 
-Or -- is there any other solution to simulate a card with connected
-out-/inputs?
-Something like a software version of a hardware audio patch panel would be
-quite interesting for many others, I think.
 
-Many thanks in advace for any help,
-fritz_e
-
--- 
-GMX - Die Kommunikationsplattform im Internet.
-http://www.gmx.net
-
+HTH
+Clemens
 
 
 -------------------------------------------------------
