@@ -1,13 +1,14 @@
-From: Jesse Chappell <jesse@essej.net>
+From: d <dieb13@klingt.org>
 Subject: Re: Problems with HDSP Multiface+CardBus
-Date: Thu, 12 Jun 2003 13:24:47 -0400
+Date: Thu, 12 Jun 2003 20:03:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <cd0c7150ee2ca9bc60925c63d149d3a5@essej.net>
-References: <200306121915.31285.Jaakko.Prattala@Helsinki.FI>
+Message-ID: <3EE8C06B.1090003@klingt.org>
+References: <cd0c7150ee2ca9bc60925c63d149d3a5@essej.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200306121915.31285.Jaakko.Prattala@Helsinki.FI>
+In-Reply-To: <cd0c7150ee2ca9bc60925c63d149d3a5@essej.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,30 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?= <Jaakko.Prattala@Helsinki.FI>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Jesse Chappell <jesse@essej.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaakko =?iso-8859-15?q?Pr=E4tt=E4l=E4?= wrote on Thu, 12-Jun-2003:
 
- > Maybe this is just because I don't know how to use the
- > mixer... What I did was
- >  # /sbin/modprobe snd-hdsp line_outs_monitor=1; hdsploader
- >  # for i in $(seq 18); do amixer cset name=Chn,index=$i 32768; done;
- >  # amixer cset numid=5 26,26,32768
- >  # amixer cset numid=5 27,27,32768
- >  # aplay ...
- > Isn't this supposed to give me something through the
- > headphones?
- 
-I didn't do the line_outs_monitor=1, but I did the amixer stuff
-like that, and it worked.  But a word of warning if you do get sound going
-eventually: 32768 for the LineOut(headphone) port is *way* too
-hot for headphones plugged directly in.  I had to crank it down to 4000 
-to get a sane maximum volume.  You don't want to damage your headphones
-or your ears.....
 
-jlc
+Jesse Chappell wrote:
+>  But a word of warning if you do get sound going
+> eventually: 32768 for the LineOut(headphone) port is *way* too
+> hot for headphones plugged directly in.  I had to crank it down to 4000 
+> to get a sane maximum volume.  You don't want to damage your headphones
+> or your ears.....
+
+that's interresting. 32767 has always been fine for me (on headphones 
+just like on line-outs), and all descriptions about the mixer-matrix say 
+32767 means 0db. even sinewaves with 0db are loud but not distorted on 
+my headphones...
+
+btw: does anybody have a "complete" description of the possibilities for
+amixer -c 1 cset numid=XYZ ???
+
+thanks&regards
+d13b
+
 
 
 
