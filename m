@@ -1,15 +1,14 @@
-From: MAILER-DAEMON@ns2.kpnqwest.ro (Mail Delivery System)
-Subject: Undelivered Mail Returned to Sender
-Date: Wed, 10 Nov 2004 13:13:30 +0200 (EET)
-Message-ID: <20041110111330.7229BB8B@ns2.kpnqwest.ro>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000623]: No volume control on SPDIF on cmedia CMI8738-MC6
+Date: Wed, 10 Nov 2004 12:13:35 +0100
+Message-ID: <bb7039962e05f5ca9c9cb73aff4ee3e9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-	boundary="9CC4F1221.1100085210/ns2.kpnqwest.ro"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ns2.kpnqwest.ro (mx2.gtstelecom.ro [193.226.128.2])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2819232
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:13:45 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9165B232
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:13:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,88 +21,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message.
 
---9CC4F1221.1100085210/ns2.kpnqwest.ro
-Content-Description: Notification
-Content-Type: text/plain
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=623> 
+======================================================================
+Reported By:                mtempels
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   623
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Linux 4.10
+Kernel Version:             Linux bubbles 2.6.8.1-3-386
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct 12 12:41:57 BST
+2004 i686 GNU/Linux
+======================================================================
+Date Submitted:             11-02-2004 11:24 CET
+Last Modified:              11-10-2004 12:13 CET
+======================================================================
+Summary:                    No volume control on SPDIF on cmedia CMI8738-MC6
+Description: 
+There is no way to control the output volume on the SPDIF/out on my CMI8738
+soundcard. It can just be switched on or off..
+======================================================================
 
-This is the Postfix program at host ns2.kpnqwest.ro.
+----------------------------------------------------------------------
+ mtempels - 11-10-04 10:12 
+----------------------------------------------------------------------
+Hi ChenLi,
 
-I'm sorry to have to inform you that the message returned
-below could not be delivered to one or more destinations.
+That sound exactly like the thing i'd want :) It's ok, i just need to
+control volume on my PCM/Stereo Stream..
 
-For further assistance, please send mail to <postmaster>
+Is it hard for me to implement this myself?
 
-If you do so, please include this problem report. You can
-delete your own text from the message returned below.
+Cheers
 
-			The Postfix program
+Matthijs
 
-<motor@primatv.ro>: connect to 193.22.141.240[193.22.141.240]: Connection timed
-    out
+----------------------------------------------------------------------
+ tiwai - 11-10-04 12:13 
+----------------------------------------------------------------------
+The volume attenuation is easy but the difficult thing is to do in the
+right way.  Doing this in the kernel context is a bad idea (although we
+already have such a code in the oss emulation module, but it's exceptional
+- I'd love to get rid of that if allowed).
 
---9CC4F1221.1100085210/ns2.kpnqwest.ro
-Content-Description: Delivery error report
-Content-Type: message/delivery-status
-
-Reporting-MTA: dns; ns2.kpnqwest.ro
-Arrival-Date: Fri,  5 Nov 2004 12:22:00 +0200 (EET)
-
-Final-Recipient: rfc822; motor@primatv.ro
-Action: failed
-Status: 4.0.0
-Diagnostic-Code: X-Postfix; connect to 193.22.141.240[193.22.141.240]:
-    Connection timed out
-
---9CC4F1221.1100085210/ns2.kpnqwest.ro
-Content-Description: Undelivered Message
-Content-Type: message/rfc822
-Content-Transfer-Encoding: 7bit
-
-Received: from compuserve.com (S010600036d13d874.cg.shawcable.net [24.64.102.198])
-	by ns2.kpnqwest.ro (Postfix) with SMTP id 9CC4F1221
-	for <motor@primatv.ro>; Fri,  5 Nov 2004 12:22:00 +0200 (EET)
-Date: Sat, 06 Nov 2004 01:37:55 +0000
-From: Alsa-devel <alsa-devel@alsa-project.org>
-Subject: September specials : Motor
-To: Motor <motor@primatv.ro>
-References: <F8B120K7A0801L2E@primatv.ro>
-In-Reply-To: <F8B120K7A0801L2E@primatv.ro>
-Message-ID: <0397GC49A996D2D4@alsa-project.org>
-Reply-To: Aly1jo2 <aly1jo2@mailcity.com>
-MIME-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: quoted-printable
-
-<html><body>
-Hi Motor<BR>
-Our software prices are few times cheaper than in any other <I>'cheap'</I=
-> shop!<BR><BR>
-Examples:<BR><BR>
-$5O <I>Wind0ws XP Pr0fessional</I><BR>
-$5O <I>Wind0ws 2OOO Professi0nal</I><BR>
-$6O <I>Ad0be Ph0t0shop 7.0</I><BR>
-$6O <I>Ahead Ner0 6.3 P0werpack</I><BR>
-$6O <I>Mirc0soft 0ffice 2OO2 Pr0fessional</I><BR>
-<B><I><font color=3Dred>$8O Wind0ws XP PrOfessional + 0ffice XP PrOfessio=
-nal</font></I></B><BR>
-And many more...<BR><BR>
-<a href=3D"http://RIM.kbagbafb.info/?yh4D4P2ULCFXk22"><B><font color=3Dre=
-d>CLICK HERE TO SEE WHAT WE HAVE NOW !</font></B></a>
-<BR><BR>
-Sincerely,<BR>
-George
-</body></html>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-02-04 11:24 mtempels       New Issue                                    
+11-02-04 11:24 mtempels       Distribution              => Ubuntu Linux 4.10
+11-02-04 11:24 mtempels       Kernel Version            => Linux bubbles
+2.6.8.1-3-386 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Oct
+12 12:41:57 BST 2004 i686 GNU/Linux
+11-09-04 18:56 tiwai          Note Added: 0002337                          
+11-09-04 19:01 mtempels       Note Added: 0002340                          
+11-09-04 19:18 tiwai          Note Added: 0002342                          
+11-09-04 20:15 mtempels       Note Added: 0002352                          
+11-10-04 03:56 cltien         Note Added: 0002355                          
+11-10-04 03:59 cltien         Note Added: 0002356                          
+11-10-04 10:12 mtempels       Note Added: 0002359                          
+11-10-04 12:13 tiwai          Note Added: 0002366                          
+======================================================================
 
 
-
-
-
-
-
-
---9CC4F1221.1100085210/ns2.kpnqwest.ro--
 
 
 -------------------------------------------------------
