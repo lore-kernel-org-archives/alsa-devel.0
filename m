@@ -1,11 +1,11 @@
 From: Alexander Samad <alex@samad.com.au>
 Subject: Re: [PATCH] emu10k1 multichannel support
-Date: Thu, 20 Jan 2005 09:16:39 +1100
-Message-ID: <20050119221638.GC14030@samad.com.au>
+Date: Thu, 20 Jan 2005 09:19:04 +1100
+Message-ID: <20050119221903.GD14030@samad.com.au>
 References: <1106091073.24484.60.camel@krustophenia.net> <20050119195154.GR27550@samad.com.au> <1106169110.3050.9.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="oTHb8nViIGeoXxdp"
+	protocol="application/pgp-signature"; boundary="n2Pv11Ogg/Ox8ay5"
 Return-path: <alsa-user-admin@lists.sourceforge.net>
 Content-Disposition: inline
 In-Reply-To: <1106169110.3050.9.camel@krustophenia.net>
@@ -23,31 +23,24 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.n
 List-Id: alsa-devel@alsa-project.org
 
 
---oTHb8nViIGeoXxdp
+--n2Pv11Ogg/Ox8ay5
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
 Hi
 
-applied the patch and the config is slightly different now I can see
-device=20
-card 0: Audigy2Value [Sound Blaster Audigy2_Value], device 3: emu10k1
-[EMU10K1 multichannel EFX]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Sorry to bug you, but I used aplay -v on plughw0,3 and I saw that I
+have the 16 channels, I think the problem is I can't move it into
+digital output ????
 
 
-but I can not play any sounds at all nor can I pass through ac3.  I have
-a live  card in there that was working and then removed it and replaced
-it with the audigy2 played with the mixer and then tried the ac3 pass
-through and no luck.
+plus how do I set it to 96Khz not 48 ???
 
-the amp still shows it up as analog PCM !
+
+Thanks
 
 Alex
-
-
 
 On Wed, Jan 19, 2005 at 04:11:49PM -0500, Lee Revell wrote:
 > On Thu, 2005-01-20 at 06:51 +1100, Alexander Samad wrote:
@@ -64,7 +57,7 @@ On Wed, Jan 19, 2005 at 04:11:49PM -0500, Lee Revell wrote:
 >=20
 >=20
 
---oTHb8nViIGeoXxdp
+--n2Pv11Ogg/Ox8ay5
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 Content-Disposition: inline
@@ -72,12 +65,12 @@ Content-Disposition: inline
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQFB7txGkZz88chpJ2MRAl6WAKDR+Y5kCplrnYDot0Wy7hy08oEQdACfQEme
-4utybikC9eM5KO8dyXbhJ1I=
-=ZtRs
+iD8DBQFB7tzXkZz88chpJ2MRAraeAJ9hhTnRPHjECqLlIDeqzHAmfsd5owCcDCM/
+AjCi7ZCxByVXixrNpHylw2k=
+=4WQ5
 -----END PGP SIGNATURE-----
 
---oTHb8nViIGeoXxdp--
+--n2Pv11Ogg/Ox8ay5--
 
 
 -------------------------------------------------------
