@@ -1,14 +1,15 @@
-From: David van Hoose <davidvh@cox.net>
-Subject: Re: ALSA 0.9.3+ is not working
-Date: Mon, 02 Jun 2003 08:23:37 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: aplay: pcm_write:1025: write error &	SNDRV_PCM_IOCTL_PREPAREfailed:device or resource busy
+Date: Mon, 2 Jun 2003 06:41:12 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EDB41C9.80801@cox.net>
-References: <Pine.HPX.4.33n.0306021233330.26812-100000@studcom.urz.uni-halle.de>
+Message-ID: <NDBBLGIKBJENLAMOLFHGIELHCFAB.mknecht@controlnet.com>
+References: <s5hadd0pwcu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0306021233330.26812-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <s5hadd0pwcu.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,42 +18,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> David van Hoose wrote:
-> 
->>Sound card is onboard SiS7012 AC'97 (CMI9739A)
->>0.9.2 works perfectly.
->>0.9.3a Sound through CD-ROM (Plays CDs) No sound through OSS apps.
-> 
-> 
-> Does playing sounds with aplay work?
+Takashi,
+   While I find this interesting, it doesn't address the problem. I sent a
+bunch of information and data in the last two emails. Have I sent what you
+need? Are you able to make any assessment about why aplay will not work with
+this this sound chip on my Asus motherboard?
 
-Just noticed the following lines in my /var/log/messages. Maybe they'll 
-help.
+With best regards,
+Mark
 
-ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer value 
-(stream = 0, delta: -1105, max jitter = 4456): wrong interrupt acknowledge?
-ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer value 
-(stream = 0, delta: -1096, max jitter = 4456): wrong interrupt acknowledge?
-ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer value 
-(stream = 0, delta: -1090, max jitter = 4456): wrong interrupt acknowledge?
-ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer value 
-(stream = 0, delta: -1086, max jitter = 4456): wrong interrupt acknowledge?
-ALSA ../alsa-kernel/core/pcm_lib.c:156: Unexpected hw_pointer value 
-(stream = 0, delta: -1114, max jitter = 4456): wrong interrupt acknowledge?
+> -----Original Message-----
+> From: alsa-devel-admin@lists.sourceforge.net
+> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Takashi Iwai
+> Sent: Monday, June 02, 2003 4:12 AM
+> To: Mark Knecht
+> Cc: Alsa-Devel
+> Subject: Re: [Alsa-devel] aplay: pcm_write:1025: write error &
+> SNDRV_PCM_IOCTL_PREPAREfailed:device or resource busy
+>
+>
+> At 29 May 2003 21:43:39 -0700,
+> Mark Knecht wrote:
+> >
+> > Sorry this is a bit long. Mostly just data. I hope it helps figure this
+> > out. Sort of strange that the chip is identified in one place as a
+> > VIA8233 and in another place as a VIA8235....
+>
+> in fact, both VIA8233 and 8235 have the same PCI ID.  that's why lspci
+> shows the same name (while 8235 has the revision 0x50).
+>
+>
+> Takashi
+>
+>
+> -------------------------------------------------------
+> This SF.net email is sponsored by: eBay
+> Get office equipment for less on eBay!
+> http://adfarm.mediaplex.com/ad/ck/711-11697-6916-5
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+>
 
-The messages seem to come in groups.
-
-I also found this in another messages file. I think from 2.5.70-bk6.
-Jun  1 17:08:02 aeon kernel: ALSA ../alsa-kernel/core/pcm_lib.c:143: 
-BUG: stream = 1, pos = 0x22d0, buffer size = 0x22d0, period size = 0x45a
-
-Thanks,
-David
 
 
 
