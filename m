@@ -1,15 +1,16 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Hammerfall DSP System Problems
-Date: Wed, 11 Jun 2003 07:15:34 -0700
+From: Anders Torger <torger@ludd.luth.se>
+Subject: Re: problems with rme digi96/8
+Date: Wed, 11 Jun 2003 16:15:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGAEEHCHAB.mknecht@controlnet.com>
-References: <20030611064511.GA551@always.joy.eth.net>
+Message-ID: <200306111615.56664.torger@ludd.luth.se>
+References: <1054808252.7022.8.camel@duff> <200306111548.19324.torger@ludd.luth.se> <1055340198.1390.58.camel@duff>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="us-ascii"
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030611064511.GA551@always.joy.eth.net>
+In-Reply-To: <1055340198.1390.58.camel@duff>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +19,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Joshua N Pritikin <vishnu@pobox.com>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, frankgaetano@collegeclub.com, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Gorm David Lai <lai@daimi.au.dk>
+Cc: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > so I think
-> > I'm almost set to be able to try this stuff out again.
->
-> For what it's worth, i had problems with alsa 0.9.4 & SMP.  i think
-> there are some spinlock changes that aren't very well debugged yet.
-> On the other hand, alsa 0.9rc7 seems fairly stable.  i've gotten
-> some lockups, but i've also used jack for 4-5 hours without any
-> problem.
+On Wednesday 11 June 2003 16.03, Gorm David Lai wrote:
+> Thanks for the advice, though it still doesn't work.
+> It seems to play, and sets the right sync on the mixing console. The
+> console just doesn't get any input.
+> Do I have to unmute the card anywhere?
 
-Well, I found last night that if I removed Alsa and then rebuilt it, that as
-long as I didn't power down 0.9.4-rc1 stayed up and I could see my card even
-after a warm boot, but again, after a cold boot Alsa no longer recognized
-the card.
+Note that my example uses /dev/zero (zero input) so it should be silent. 
+Put something with sound in it instead of /dev/zero.
 
-So, my new strategy is that every morning, as I brew my tea, I now do:
+No, you shouldn't need to unmute the card (if you are not using analog 
+output), the digital output is just digital, no volume control for it 
+exists. A classical mistake is of course to connect ADAT input to ADAT 
+input, but I suppose you have checked that.
 
-emerge -C alsa-driver alsa-utils alsa-tools
-ACCEPT_KEYWORDS="~x86" emerge alsa-driver alsa-utils alsa-tools
-
-and then warm boot to get the driver to find the card. I still don't get
-sound, but at least my CPU knows the card is there.
-
-I guess life is good when you finally know how to cope with it! ;-)
-
-Mark
-
+/Anders
 
 
 
