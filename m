@@ -1,13 +1,13 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: alsa-driver, make 3.79, cvscompile
-Date: Thu, 20 Mar 2003 10:20:53 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Typo in configure.in : dummy sequencer
+Date: Thu, 20 Mar 2003 09:28:50 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E7979E5.C5FC9BF6@srr.ro>
-References: <3E784A3C.133F177B@srr.ro> <s5h7kavtwzs.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0303200928390.1318-100000@pnote.perex-int.cz>
+References: <3E797921.410C8222@srr.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3E797921.410C8222@srr.ro>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,28 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Andrei Boros <andrei@srr.ro>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 20 Mar 2003, Andrei Boros wrote:
 
-I got make 3.79 installed, hopefully the sequencer module problems will
-be solved, but I get a tiny error that didn't appear before when runing
-cvscompile :
+> make: Nothing to be done for `all-deps'.
+> autoconf: Undefined macros:
+> configure.in:797:  AC_DEFINE_CONFIG_SND_SEQ_DUMMY)
+> 
+> Should read : AC_DEFINE(CONFIG_SND_SEQ_DUMMY)
 
-I updated the cvs tree, did a make clean, deleted Makefile, then ran
-./cvscompile.
-This is the first line it outputs:
-make: *** No rule to make target `all-deps'.  Stop.
+I have this line in my tree:
 
-Then the configure script starts and runs fine apparently. 
+AC_DEFINE(CONFIG_SND_SEQ_DUMMY_MODULE)
 
+						Jaroslav
 
--- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
