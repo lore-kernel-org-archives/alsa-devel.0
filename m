@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000576]: PCM device number wrong for iec958 on emu10k1
-Date: Mon, 11 Oct 2004 10:12:13 +0200 (CEST)
+Date: Mon, 11 Oct 2004 10:55:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041011081213.14CD711030@server.perex-int.cz>
+Message-ID: <20041011085559.350B611030@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 722F22C4
-	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 10:12:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB9261C7
+	for <alsa-devel@alsa-project.org>; Mon, 11 Oct 2004 10:55:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000576
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000576
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
@@ -36,7 +36,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             10-09-2004 18:23 CEST
-Last Modified:              10-11-2004 10:12 CEST
+Last Modified:              10-11-2004 10:55 CEST
 ======================================================================
 Summary:                    PCM device number wrong for iec958 on emu10k1
 Description: 
@@ -69,7 +69,7 @@ versions. See the following mini-patch:
         hooks.0 {
                 type ctl_elems
 									
-This may probably the same as bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0274951.
+This may probably the same as bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0274951.
 
 Best Regards,
 Martin (L)
@@ -96,11 +96,17 @@ You should use same alsa-driver (in kernel) and alsa-lib version. Your
 versions are diffrent. You probably have old alsa-driver (1.0.4) and new
 alsa-lib (> 1.0.4).
 
+----------------------------------------------------------------------
+ jdthood - 10-11-2004 10:55 CEST 
+----------------------------------------------------------------------
+Thanks for the tip.  I will ask the bug submitters for version information.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-09-04 18:23 jdthood        New Bug                                      
 10-11-04 10:12 pzad           Bugnote Added: 0002071                       
+10-11-04 10:55 jdthood        Bugnote Added: 0002072                       
 ======================================================================
 
 
