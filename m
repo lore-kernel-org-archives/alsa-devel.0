@@ -1,11 +1,11 @@
-From: Ludovic Drolez <ludovic.drolez@freealter.com>
-Subject: Unable to handle kernel paging request with an SB16Pro
-Date: Thu, 14 Aug 2003 17:21:32 +0200
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: No support for 128kHz sample rate ?
+Date: Thu, 14 Aug 2003 17:19:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F3BA8FC.2080908@freealter.com>
+Message-ID: <34050.193.253.230.179.1060874341.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,84 +18,14 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi !
+Hi,
 
-I've been using alsa 0.5.x without lots of problems (I always had to
-disable isapnp code manually) but now, with alsa 0.9.6 it's another
-story...
+I'm currently working on the hdsp 9632 driver. This card supports sample
+rates up to 192kHz, including 128kHz and 176.4kHz. The problem is 128kHz
+sample rate seems to have been omited in <sound/pcm.h>. How am I supposed
+to deal with this ?
 
-I use an unpatched Debian kernel (2.4.21-1-k6), I've got an SB16 Pro
-'Not PNP', and when I make my 'modprobe snd-sb16', I get an oops:
-
-Aug 12 20:35:30 red kernel: isapnp: Scanning for PnP cards...
-Aug 12 20:35:30 red kernel: isapnp: No Plug & Play device found
-Aug 12 20:35:30 red kernel: Unable to handle kernel paging request at
-virtual ad
-dress fffffffc
-Aug 12 20:35:30 red kernel:  printing eip:
-Aug 12 20:35:30 red kernel: c0115280
-Aug 12 20:35:30 red kernel: *pde = 00001063
-Aug 12 20:35:30 red kernel: *pte = 00000000
-Aug 12 20:35:30 red kernel: Oops: 0000
-Aug 12 20:35:30 red kernel: CPU:    0
-Aug 12 20:35:30 red kernel: EIP:    0010:[__wake_up+32/96]    Tainted: P
-Aug 12 20:35:30 red kernel: EFLAGS: 00010003
-Aug 12 20:35:30 red kernel: eax: c2fba7c0   ebx: 00000000   ecx:
-00000001   edx:
-  00000003
-Aug 12 20:35:30 red kernel: esi: c2fba7c0   edi: 00000003   ebp:
-c3e33ea8   esp:
-  c3e33e94
-Aug 12 20:35:30 red kernel: ds: 0018   es: 0018   ss: 0018
-Aug 12 20:35:30 red kernel: Process modprobe (pid: 6238,
-stackpage=c3e33000)
-Aug 12 20:35:30 red kernel: Stack: 00000001 00000286 00000004 00000001
-c2fba7d4
-c2fba600 cbd44b7f 00000004
-Aug 12 20:35:30 red kernel:        00000001 c2fba7d4 c2fba600 20000000
-cbd869e0
-cbd874c4 00000004 cbd863f7
-Aug 12 20:35:30 red kernel:        c2fba600 00000004 00000001 cbd86f20
-00000001
-00000004 0000ffff 0000ffff
-Aug 12 20:35:30 red kernel: Call Trace:
-[hci_usb:__insmod_hci_usb_S.data_L216
-+18763487/12151073]
-[hci_usb:__insmod_hci_usb_S.data_L216+19033408/11881152] [hc
-i_usb:__insmod_hci_usb_S.data_L216+19036196/11878364]
-[hci_usb:__insmod_hci_usb_
-S.data_L216+19031895/11882665]
-[hci_usb:__insmod_hci_usb_S.data_L216+19034752/11
-879808]
-Aug 12 20:35:30 red kernel:
-[hci_usb:__insmod_hci_usb_S.data_L216+19033210/118
-81350] [sys_init_module+1139/1504]
-[hci_usb:__insmod_hci_usb_S.data_L216+1903450
-4/11880056] [hci_usb:__insmod_hci_usb_S.data_L216+19030976/11883584]
-[system_cal
-l+51/64]
-Aug 12 20:35:30 red kernel:
-Aug 12 20:35:30 red kernel: Code: 8b 53 fc 8b 02 85 c7 75 17 8b 1b 39
-f3 75 f1 f
-f 75 f0 9d 8d
-
-Any the module is stuck during initialization:
-
-    snd-sb16                6056   1  (initializing)
-
-In my modules.conf I have 'options -k snd-sb16 port=0x220 isapnp=0'
-
-Any idea, patch available ? Is there an option to get more debug ?
-
-Cheers,
-
-
-    Ludo.
-
-
--- 
-http://www.palmopensource.com       - The PalmOS Open Source Portal
-http://www.drolez.com      - Personal site - Linux and PalmOS stuff
+Thomas
 
 
 
