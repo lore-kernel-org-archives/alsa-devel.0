@@ -1,16 +1,14 @@
-From: Sebastian Benoit <benoit-lists@fb12.de>
-Subject: Re: Juli@-Card and hanging process snd-ak4114/0
-Date: Tue, 15 Mar 2005 18:24:01 +0100
-Message-ID: <20050315172423.GA92383@mail.webmonster.de>
-References: <20050310170354.GH78387@mail.webmonster.de> <Pine.LNX.4.58.0503101812250.1733@pnote.perex-int.cz> <20050315164817.GA86246@mail.webmonster.de> <Pine.LNX.4.58.0503151755530.21135@pnote.perex-int.cz>
+From: "random.bits" <random.bits@rogers.com>
+Subject: Re: Re: alsa driver, repeat playback of buffer contents
+Date: Tue, 15 Mar 2005 13:49:02 -0500
+Message-ID: <200503151349.02376.random.bits@rogers.com>
+References: <200503141530.20339.random.bits@rogers.com> <200503142014.37841.mark@vuenyx.com> <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="T4sUOijqQbZv57TR"
-Received: from mail.webmonster.de (datasink.webmonster.de [194.162.162.209])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id BE3A41A9
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 18:24:01 +0100 (MET)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0503151755530.21135@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,48 +19,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I started to follow up on Jaroslav's  advice. 
 
---T4sUOijqQbZv57TR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I am opening the "hw" pcm device using snd_pcm_open in 
+order to address the base hardware.
 
-Jaroslav Kysela(perex@suse.cz) on 2005.03.15 17:56:37 +0000:
-> > I am willing to test more. Is someone working on the mixer code?
->=20
-> And what does not work exactly? You should have volume controls.
-> Use alsamixer for reference...
+I use "snd_pcm_hw_params_get_buffer" to determine the 
+buffer size (which I presume is the hardware ring 
+buffer). If I map to this buffer and then fill it with 
+the sound exactly, then commit it, it just plays once. 
+I put my process into wait state by using sleep(1) 
+calls. 
+How can I get the hardware to continue to play using 
+the data in the ring buffer?
 
-Okay, should have expected that.
+Thanks,
+Mark
 
-The volume controls don't do anything. Maybe i just don't undestand the way
-they should work. I'll look further into this tommorow.
+On Tuesday 15 March 2005 02:49, Jaroslav Kysela wrote:
+> On Mon, 14 Mar 2005, Mark Cannon wrote:
+> > How can I send down a short PCM stream, and have
+> > the hardware repeat it until told to stop?
+>
+> You must always copy the data to right place in the
+> ring buffer unless the sound fragment has not exact
+> (or multiple) size of ring buffer.
+>
+> 						Jaroslav
+>
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SUSE Labs
 
-/B.
---=20
-Sebastian Benoit <benoit-lists@fb12.de>
-My mail is GnuPG signed -- Unsigned ones are bogus -- http://www.gnupg.org/
-GnuPG 0xD777DBA7 2003-09-10 D02B D0E0 3790 1AA1 DA3A  B508 BF48 87BF D777 D=
-BA7
-
-Oxymoron #657: Independent Financial Advisor
-
---T4sUOijqQbZv57TR
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.0 (FreeBSD)
-
-iD8DBQFCNxpHv0iHv9d326cRAkNzAJ9iNHXJD0T6T+QqWKQSpWHSI9ynkQCeNzW/
-bdurkVg3ugbOfcnVY4+hJMM=
-=QuKq
------END PGP SIGNATURE-----
-
---T4sUOijqQbZv57TR--
 
 
 -------------------------------------------------------
