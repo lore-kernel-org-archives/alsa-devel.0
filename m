@@ -1,12 +1,13 @@
-From: Kovalyev Sergey <randoman@list.ru>
-Subject: Re: Repost about fm801 tea575x_tuner in 2.6 kernels
-Date: Thu, 17 Feb 2005 23:13:04 +0600
-Message-ID: <4214D0A0.1010902@list.ru>
-References: <4211C5E9.5010708@list.ru> <Pine.LNX.4.58.0502151115120.1756@pnote.perex-int.cz> <421209B6.3090103@list.ru> <Pine.LNX.4.58.0502151819500.1756@pnote.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000915]: When compiled with SND_HWDEP enabled, the intel8x0 driver is no longer able to share an IRQ with other devices
+Date: Thu, 17 Feb 2005 18:18:08 +0100
+Message-ID: <4242093e4d8f3a83c15b1268502c13bd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.58.0502151819500.1756@pnote.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7333423D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 18:18:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,41 +17,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello, Jaroslav Kysela!
 
->On Tue, 15 Feb 2005, Kovalyev Sergey wrote:
->
->  
->
->>>Nope. This message is only warning and completely harmless. The driver
->>>should work. This patch will remove the warning:
->>>
->>> 
->>>
->>>      
->>>
->>Hm...
->>Under 2.4.x kernels I used this command:
->>modprobe snd_fm801 tea575x_tuner=2
->>Now, under 2.6, it says that "2" is invalid valut into syslog:
->>kernel: snd_fm801: `2' invalid for parameter `tea575x_tuner'
->>So, I trying to use
->>modprobe snd_fm801 tea575x_tuner=1.
->>Seems that all ok, even fm says that all ok,
->>    
->>
->
->The radio chip cannot be detected. Here is the patch which will fix
->the module parameter (and use tea575x_tuner=2 as for 2.4):
->
->  
->
-Big big thanks! Radio works now!
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=915> 
+======================================================================
+Reported By:                Jochen
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   915
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10-gentoo-r7
+======================================================================
+Date Submitted:             02-17-2005 10:17 CET
+Last Modified:              02-17-2005 18:18 CET
+======================================================================
+Summary:                    When compiled with SND_HWDEP enabled, the intel8x0
+driver is no longer able to share an IRQ with other devices
+Description: 
+On my System an intel8x0 card and a Intel PRO Wireless 2200BG card share
+irq5 which works perfectly with SND_HWDEP.
 
-\\RandoMan
+I recently enabled SND_HWDEP for another audio driver. since then all
+commands the ipw2200 driver issues to the wlan card time out, the audio
+driver however is still working.
+
+Since I didn't change the ipw2200 driver but only an alsa related option,
+I guess it's an alsa bug
+======================================================================
+
+----------------------------------------------------------------------
+ Jochen - 02-17-05 10:56 
+----------------------------------------------------------------------
+I forgot to add, the other sound-card is the bluetooth-alsa project
+snd-bt-sco driver. I'm pretty sure however that this is not related to
+this module, because it doesn't need to be loaded to reproduce the wrong
+behaviour
+
+----------------------------------------------------------------------
+ tiwai - 02-17-05 18:18 
+----------------------------------------------------------------------
+What do you mean "compile with SND_HWDEP" ?
+It's a reverse-selection entry and you can't choose it explicitly...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-17-05 10:17 Jochen         New Issue                                    
+02-17-05 10:17 Jochen         Distribution              => Gentoo          
+02-17-05 10:17 Jochen         Kernel Version            => 2.6.10-gentoo-r7
+02-17-05 10:56 Jochen         Note Added: 0003627                          
+02-17-05 18:18 tiwai          Note Added: 0003629                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
