@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [linux-audio-dev] Alsa /dev/sequencer stuff
-Date: Tue, 20 May 2003 00:47:41 -0400
+From: Florin Andrei <florin@andrei.myip.org>
+Subject: Re: Audigy2 Status/Help
+Date: 19 May 2003 21:53:01 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19HywJ-0002tc-00@sc8-sf-list1.sourceforge.net>
-References: <000201c31e86$6cacf0f0$ac1f830a@ICO>
+Message-ID: <1053406381.32376.37.camel@rivendell.home.local>
+References: <2265a01c31e41$44429e70$2c00740a@cableone.net>
+Reply-To: alsa-devel@lists.sourceforge.net
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 20 May 2003 00:15:19 EDT."
-             <000201c31e86$6cacf0f0$ac1f830a@ICO>
+In-Reply-To: <2265a01c31e41$44429e70$2c00740a@cableone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,38 +18,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-dev@music.columbia.edu
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->In my app (RTMix) I will be soon implementing multiple midi-input device
->opens, so that the app can be controlled from as many of the midi
->controllers simultaneously as possible. One way of devising this was to
->design a separate thread for every open device (using raw midi /dev/midi
->etc., although I will be re-implementing that to use ALSA devices
->directly). 
+According to this thread...
 
-although i've been a big advocate of using raw midi ports in the past,
-i've pretty swung around on this issue. i think you should use the
-ALSA sequencer API instead. that way you can connect applications to
-each other, rather than just applications to h/w. same thinking as
-JACK in this regard.
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06264.html
 
->	    However, this might not be the most elegant way of doing
->this, so what I was wondering is how does the /dev/sequencer correspond
->to this issue? I mean, does it work the same way like addressing the raw
->midi ports, are the message formats the same, and most importantly does
->one SINGULAR /dev/sequencer encompass all of the midi ports that are
->currently available?
+...Audigy2 Platinum (not EX) is partially supported. I've got a message
+recently from the person who initiated that thread saying that, in a
+later version, ALSA also started to support the line-1 out that didn't
+work before.
 
-no, just one port. the OSS sequencer /dev/sequencer is only a
-scheduler - it has no routing capabilities at all.
+According to same source, MIDI input is still broken.
 
-the ALSA sequencer (/dev/snd/seq etc.) is a multiplexer/demultiplexer,
-and handles both scheduling and routing, and covers all available h/w
-ports and registered s/w clients.
+I have no idea if EX is supported at all.
 
-don't leave home without it :)
+On Mon, 2003-05-19 at 13:00, maniacdavid@cableone.net wrote:
+>  I have an Audigy2 Platinum eX. I have been trying to get the alsa card to recognize it. I have been compiling the 2.5 kernel and 2.4 kernel tons of times to see if anything would work. I still can not get it to work. I can get the emu10k1-cvs drivers to work right away. I really need ALSA because I'm going to be doing a lot of audio editing with jack applications.
+> 
+> I would like to know if there is ANY Audigy2 support in the drivers? I go through the source code and there were references to "Audigy2".  Has anyone got this working and with what version (reg., plat, plat. ex)?
+> 
+> I use 2.4.20-ac2 kernel. (although I have tried 2.5.69 and 2.4.20vanilla).  I think what I have kind of noticed is that it all comes back to the ac97 stuff. I have been using the latest alsa-driver-0.9.3a(and b) as well as tried the alsa-drive-0.9.2. The kernel has compiled in sound and no oss. (I have tried sound as a module as well).
+> It seems like other people get it working but maybe that's because they have just a regular audigy2 and not the eX.
+> 
+> When I "modprobe snd-emu10k1" I get the following:
+> 
+> /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: init_module: No such device
+> Hint: insmod errors can be caused by incorrect module parameters, including invalid IO or IRQ parameters.
+> You may find more information in syslog or the output from dmesg
+> /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o failed
+> /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod snd-emu10k1 failed
+> 
+> This is from /var/log/everything/current (dmesg):
+> 
+> [kernel] EMU10K1/Audigy soundcard not found or device busy
+> [kernel] ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2046: AC'97 0:0 does not respond - RESET
+> [kernel] EMU10K1/Audigy soundcard not found or device busy
+> [kernel] devfs_mk_dir(snd): using old entry in dir: c1c175c0 ""
+> [kernel] devfs_register(snd/controlC0): could not append to parent, err: -17
+> [kernel] devfs_register(snd/timer): could not append to parent, err: -17
+> [kernel] ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2046: AC'97 0:0 does not respond - RESET
+> [kernel] EMU10K1/Audigy soundcard not found or device busy
+> 
+> David
+> maniacdavid@cableone.net
+> 
+> 
+> -------------------------------------------------------
+> This SF.net email is sponsored by: ObjectStore.
+> If flattening out C++ or Java code to make your application fit in a
+> relational database is painful, don't do it! Check out ObjectStore.
+> Now part of Progress Software. http://www.objectstore.net/sourceforge
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Florin Andrei
+
+http://florin.myip.org/
+
 
 
 -------------------------------------------------------
