@@ -1,13 +1,14 @@
-From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Subject: Re: static alsa-lib is not working
-Date: Thu, 18 Apr 2002 08:47:25 +0200 (CEST)
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: ALSA homepage redesign
+Date: Thu, 18 Apr 2002 09:34:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.BSF.4.44.0204180846290.74102-100000@fest.stud.fee.vutbr.cz>
-References: <Pine.LNX.4.33.0204180845110.526-100000@pnote.perex-int.cz>
+Message-ID: <20020418093450.13c415c5.mdeboer@iua.upf.es>
+References: <20020418060011.EEE042757@sitemail.everyone.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0204180845110.526-100000@pnote.perex-int.cz>
+In-Reply-To: <20020418060011.EEE042757@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: pshirkey@boosthardware.com
+Cc: kotau@firstlinux.net, alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 18 Apr 2002, Jaroslav Kysela wrote:
+Hello Patrick, 
 
-> On Wed, 17 Apr 2002, Kasparek Tomas wrote:
+Looks very nice.
 
-> Have you read the alsa-lib/INSTALL file?
->
-> Compilation of static library
-> -----------------------------
->
-> If you would like to use the static ALSA library, you need to use these
-> options for the configure script:
->
->         ./configure --enable-shared=no --enable-static=yes
->
-> Unfortunately, due to bug in the libtool script, the shared and static
-> library cannot be built together.
+Am I correctly assuming that you will be the maintainer of the ALSA pages
+from now on?
 
-Hmm I did not, I sorry of disturbing you :(
+Could you add the following alsa 0.9 applications I wrote:
 
-Thanks
+http://www.iua.upf.es/~mdeboer/projects/tapiir/
 
---
+http://www.iua.upf.es/~mdeboer/projects/aconnectgui/
 
-	Tomas Kasparek (sioux, xkaspa06)
- 	 tomas.kasparek@[seznam.cz,volny.cz]
-	 linux@fit.vutbr.cz
-	student FIT VUT Brno
+http://www.iua.upf.es/~mdeboer/projects/alsamixergui/
+
+Thanks,
+
+Maarten
