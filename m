@@ -1,15 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Sun, 26 Sep 2004 23:00:27 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
+Date: Mon, 27 Sep 2004 05:20:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409270300.i8R30Ro1016070@localhost.localdomain>
-References: <41574105.8090804@pg.gda.pl>
+Message-ID: <20040927032052.702A914028@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from out008.verizon.net (out008pub.verizon.net [206.46.170.108])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4A1C2D4
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 05:00:36 +0200 (MEST)
-In-reply-to: Your message of "Mon, 27 Sep 2004 00:21:57 +0200."
-             <41574105.8090804@pg.gda.pl>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1BBD2D4
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 05:20:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,74 +16,154 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->First of all in OSS GETOPTR call returns hw_ptr and number of bytes 
->processed by device so xrun detection is not a problem! The number of 
->bytes value wraps after about an hour but this is not the case.
 
-no, thats not the type of wrapping that matters. suppose the h/w
-buffer is 4096 frames in size. suppose that a rogue PCI driver or
-device prevents receipt of an interrupt for an entire buffer's worth
-of time, maybe even longer. looking at the value of the h/w ptr by
-itself doesn't tell you anything about whether there is an xrun. you
-have to constantly monitor the *expected* time of the next interrupt
-along with the *expected* position of the h/w ptr in order to
-establish if there was an xrun or not (at least for the class of xruns
-caused by this kind of delay).
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+======================================================================
+Reported By:                ramendik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     505
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               RH-based
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-19-2004 10:03 CEST
+Last Modified:              09-27-2004 05:20 CEST
+======================================================================
+Summary:                    SPDIF sound distorted on non-48000 rates
+Description: 
+I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
+P4P800). It has an analog output and an SPDIF output.When I play 48Khz
+files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
+sound on the SPDIF output is audibly distorted. The analog output is OK.
 
->Comparing previous values with the obtained one xrun detection is easy.
->You can even use a GETODELAY call if you don't want to calculate it.
->So your arguments about OSS are just not true.
+I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
+and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
+2.6.7 kernels. So apparently it's present across several versons of ALSA.
 
-user-space is not in a position to determine this, because the
-interrupt handler is the only place where the value of the h/w ptr can
-be reliably determined (even though on many cards, there are other
-ways and times as well).
+======================================================================
 
->OK but we could simply emulate this in a kernel driver with continous 
->memory buffer and copying from it to real hw device period by period.
->We could modify data which is not sent to the hw device. Latency could 
->be as small as 1-1.5 of period size. With small enough periods it could 
->be a quite nice solution. It should be in kernel to obtain proper 
->scheduling and memory locking. An app using this approach may be a 
->normal app because it could modify data with a few samples after current
->playing position (minimal delay is one period) and write big chunks of data.
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 18:37 CEST 
+----------------------------------------------------------------------
+Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
+Also, check the IEC958 status bits (run iecset) during playback of
+44.1kHz samples.
 
-ALSA and the entire kernel development team have spent the last 5
-years moving things *out* of kernel space. forget ALSA - you will have
-a very, very hard time explaining to the kernel crew why this is
-actually a good idea.
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:50 CEST 
+----------------------------------------------------------------------
+Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
+apparently this is the bug. Here is the full result:
 
-moreover, you are completely forgetting that the non-hw PCM devices
-that i've mentioned where this "contiguous buffer" doesn't necessarily
-exist are *in user space*. the kernel knows nothing about them.
+# iecset
+Mode: consumer
+Data: audio
+Rate: 48000 Hz
+Copyright: protected
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
 
->Also old or proprietary closed source apps will never work correctly 
->using this approach under big system load or when switching big apps
->- rescheduling and swapping effects will broke sound stream processing 
->and will make cracling and noises.
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:52 CEST 
+----------------------------------------------------------------------
+I have uploaded both files from /proc/asound/card0/codec97#0/ .
 
-this is entirely orthogonal.
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:58 CEST 
+----------------------------------------------------------------------
+BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
+them on 48000.
 
->> if you decide you don't want this "overwrite data previously written"
->> functionality, then there is nothing in the existing ALSA API that
->> will cause you any problems. if you believe that the kernel will never
->> screw up scheduling, ignore snd_pcm_avail() and go with your
->> assumptions. if you don't care about xrun detection, ignore
->> snd_pcm_forward() and it should work fine.
->I need this functionality and xrun detection too. This is a multiuser, 
->multitasking system so I can't assume that schedulling is always
->on time. Generally nobody can assume this.
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 20:06 CEST 
+----------------------------------------------------------------------
+How about the attached patch (it's already applied to CVS).
 
-but you haven't offered any information about what you propose to do
-with the fact that scheduling may go wrong or that an xrun may
-happen. the information that ALSA provides appears completely useless
-to you. it seems to me that all you want to know is the delta between
-the hw ptr and the appl ptr, plus the ability to write "behind" the
-appl ptr.
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 22:16 CEST 
+----------------------------------------------------------------------
+Unfortunately the patch did NOT help. The distortion is in place, and when
+a 44100 Hz file is played (using mplayer), iecset still shows a 48000 Hz
+sample rate.
+
+----------------------------------------------------------------------
+ tiwai - 09-24-2004 12:14 CEST 
+----------------------------------------------------------------------
+What shows /proc/asound/cards entry?  If it's ICH4, ICH5 or ESB,
+try hw:0,2 PCM for SPDIF output.
+
+----------------------------------------------------------------------
+ tiwai - 09-24-2004 12:16 CEST 
+----------------------------------------------------------------------
+Oh, hw:0,2 might be incorrect.  Please check /proc/asound/pcm
+and choose the "IEC958" device.
+
+----------------------------------------------------------------------
+ ramendik - 09-24-2004 23:42 CEST 
+----------------------------------------------------------------------
+/proc/asound/cards:
+
+0 [ICH5           ]: ICH - Intel ICH5
+                     Intel ICH5 at 0xfebff400, irq 11
+
+/proc/asound/pcm:
+
+00-00: Intel ICH : Intel ICH5 : playback 1 : capture 1
+00-01: Intel ICH - MIC ADC : Intel ICH5 - MIC ADC : capture 1
+00-02: Intel ICH - MIC2 ADC : Intel ICH5 - MIC2 ADC : capture 1
+00-03: Intel ICH - ADC2 : Intel ICH5 - ADC2 : capture 1
+00-04: Intel ICH - IEC958 : Intel ICH5 - IEC958 : playback 1
+
+When I try alsaplayer -d hw:0,2 myfile.wav , it just says "no such
+device". The same with 0,1 and 0,3.
+
+But when I try with hw:0,4 , a strange thing happens. The file does not
+start to play, alsaplayer reacts to any button presses (with the mouse) by
+requesting a new filename. BUT, iecset shows 44100 Hz now - and this
+happens both when the played file is 44100 Hz and when it is 48000 Hz! I
+have tried setting the rate back to 48000 Hz with iecset, then running
+alsaplayer -d hw:0,4 myfile.wav again ; and iecset showed 44100 Hz again!
+
+----------------------------------------------------------------------
+ ramendik - 09-27-2004 05:20 CEST 
+----------------------------------------------------------------------
+The strange behaviour with hw:0,4 happens both with and without the patch
+that is attached here...
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-04 10:03 ramendik       New Bug                                      
+09-19-04 10:03 ramendik       Distribution              => RH-based        
+09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
+09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
+09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
+09-23-04 19:51 ramendik       File Added: ac97#0-0                         
+09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
+09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
+09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
+09-23-04 20:06 tiwai          Bugnote Added: 0001846                       
+09-23-04 20:06 tiwai          File Added: intel-spdif-fix.dif                    
+09-23-04 22:16 ramendik       Bugnote Added: 0001852                       
+09-24-04 12:14 tiwai          Bugnote Added: 0001871                       
+09-24-04 12:16 tiwai          Bugnote Added: 0001872                       
+09-24-04 23:42 ramendik       Bugnote Added: 0001906                       
+09-27-04 05:20 ramendik       Bugnote Added: 0001931                       
+======================================================================
 
 
 -------------------------------------------------------
