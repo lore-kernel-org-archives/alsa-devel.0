@@ -1,12 +1,14 @@
-From: Jason McMullan <jmcmullan@linuxcare.com>
-Subject: VIA 8233 - Record works, playback nil.
-Date: Mon, 13 May 2002 14:39:02 -0400
+From: Adrian Bunk <bunk@fs.tum.de>
+Subject: ALSA .text.exit compile errors in 2.5.14-dj2
+Date: Thu, 9 May 2002 13:26:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020513183902.GA13557@jmcmullan.evillabs.net>
+Message-ID: <acqdom$e2q$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from hermes.fachschaften.tu-muenchen.de (hermes.fachschaften.tu-muenchen.de [129.187.176.19])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id NAA25070
+	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 13:31:36 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,81 +17,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: Linux Kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-  I have a VIA 8233 based motherboard (AOpen AK77 Pro(A) 133)
-which is based off of the VIA KT266 chipset pair.
+while trying to compile a non-modular 2.5.14-dj2 kernel I got the
+following ALSA-related .text.exit errors at the final linking:
 
-  Anyhow, here's my problem. I can record all I want with
-either 0.5.12a or 0.9.0r1, and I get interrupts, valid data,
-etc.
- 
-  However, I can't play it back. I get no interrupt hits 
-(I've checked /proc/interrupts) on playback. At all. I've
-tried ALSA 0.5, ALSA 0.9, OSS, etc. To no avail.
 
-  Needless to say, "It works great under Windows!".
+<--  snip  -->
 
-  Any help would be appreciated. Or, even better, a pointer
-to the VIA 8233 specs so I can fix this on my own...
+...
+sound/sound.o: In function `snd_card_es968_probe':
+sound/sound.o(.text.init+0x22222): undefined reference to `local symbols
+in discarded section .text.exit'
+sound/sound.o: In function `alsa_rme9652_mem_init':
+sound/sound.o(.text.init+0x2b78a): undefined reference to `local symbols
+in discarded section .text.exit'
+sound/sound.o(.data+0x36fd4): undefined reference to `local symbols in
+discarded section .text.exit'
+...
 
-------------- /proc/interrupts -----------------------------
-           CPU0       
-  0:     273115          XT-PIC  timer
-  1:          1          XT-PIC  keyboard
-  2:          0          XT-PIC  cascade
-  5:         71          XT-PIC  VIA8233
-  8:          1          XT-PIC  rtc
-  9:          0          XT-PIC  acpi
- 10:      19697          XT-PIC  usb-uhci, usb-uhci, eth0
- 14:      17213          XT-PIC  ide0
- 15:          6          XT-PIC  ide1
-NMI:          0 
-LOC:     273072 
-ERR:         35
-MIS:          0
+<--  snip  -->
 
-------------- /proc/asound/cards -----------------------
-0 [card0          ]: VIA8233 - VIA 8233
-                     VIA 8233 at 0xe000, irq 5
+The problems are
 
-------------- lspci -xxx -------------------------------
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. AC97 Audio Controller (rev 40)
-00: 06 11 59 30 01 00 10 02 40 00 01 04 00 00 00 00
-10: 01 e0 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 d4 11 60 53
-30: 00 00 00 00 c0 00 00 00 00 00 00 00 05 03 00 00
-40: 01 cc 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-c0: 01 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00
-d0: 01 00 02 00 00 00 00 00 00 00 00 00 00 00 00 00
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+In sound/isa/sb/es968.c:
+snd_card_es968_probe isn't __exit (more exactly it's __init) but it calls
+snd_card_es968_free that is __exit
 
--------------- lspci -vvv ---------------------------
-00:11.5 Multimedia audio controller: VIA Technologies, Inc. AC97 Audio Controller (rev 40)
-        Subsystem: Analog Devices: Unknown device 5360
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 5
-        Region 0: I/O ports at e000 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+In sound/pci/rme9652/rme9652_mem.c:
+alsa_rme9652_mem_init isn't __exit (more exactly it's __init) but it calls
+rme9652_free_buffers that is __exit
+
+
+I'm not sure whether removing the __exit is the right solution or whether
+there's a better solution.
+
+
+cu
+Adrian
 
 -- 
-Jason McMullan, Senior Linux Consultant
-Linuxcare, Inc. 412.432.6457 tel, 412.656.3519 cell
-jmcmullan@linuxcare.com, http://www.linuxcare.com/
-Linuxcare. Putting open source to work.
+
+You only think this is a free country. Like the US the UK spends a lot of
+time explaining its a free country because its a police state.
+								Alan Cox
+
 
 _______________________________________________________________
 
