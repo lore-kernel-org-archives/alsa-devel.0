@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000239]: add mmap control/status ioctl for architectures with no cache coherent mapping
-Date: Fri, 24 Sep 2004 13:32:18 +0200 (CEST)
+Subject: [ALSA - driver 0000388]: pci ali5451 suspend/resume
+Date: Fri, 24 Sep 2004 13:33:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924113218.88CA6101DE@server.perex-int.cz>
+Message-ID: <20040924113353.067F8101DE@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDFCC288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:32:18 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 8E3A326204
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:32:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59FDA263
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:35:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,43 +22,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000239
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000388
 ======================================================================
-Reported By:                perex
-Assigned To:                perex
+Reported By:                Nemaru
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     239
-Category:                   CORE - pcm
+Bug ID:                     388
+Category:                   PCI - ali5451
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             04-27-2004 11:46 CEST
-Last Modified:              09-24-2004 13:32 CEST
+Date Submitted:             07-15-2004 07:24 CEST
+Last Modified:              09-24-2004 13:33 CEST
 ======================================================================
-Summary:                    add mmap control/status ioctl for architectures with no cache coherent mapping
+Summary:                    pci ali5451 suspend/resume
 Description: 
-Add ioctls to synchronize PCM control/status structures
-between the kernel and user space.
+Please ignore, if you are the already solved problem.
+
+It is the problem of Kernel-2.6.7 ali5451 sound driver
+& suspend/resume.
+
+ali_suspend/ali_resume of ali5451 driver has not set
+card->power_state.
+Therefore, resume processing is not performed by the
+following codes.
+power->state should be set up in pci/ali5451.c?
+or
+power->state should be set up in core/init.c (and core/control.c)?
+by snd_power_change_state().
+
+-----------------------------------------------------------
+sound/core/init.c
+snd_card_pci_resume(struct pci_dev *dev)
+{
+    .....
+    if (card->power_state == SNDRV_CTL_POWER_D0)
+        return 0;
+-----------------------------------------------------------
+
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 05-23-2004 11:59 CEST 
+ tiwai - 07-15-2004 11:22 CEST 
 ----------------------------------------------------------------------
-Implemented.
+Thanks, I fixed the code on CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-27-04 11:46 perex          New Bug                                      
-05-23-04 11:59 perex          Bugnote Added: 0001179                       
-05-23-04 11:59 perex          Resolution               open => fixed       
-05-23-04 11:59 perex          Status                   assigned => resolved
-09-24-04 13:32 tiwai          Status                   resolved => closed  
+07-15-04 07:24 Nemaru         New Bug                                      
+07-15-04 11:22 tiwai          Bugnote Added: 0001425                       
+07-15-04 11:22 tiwai          Assigned To               => tiwai           
+07-15-04 11:22 tiwai          Resolution               open => fixed       
+07-15-04 11:22 tiwai          Status                   new => resolved     
+09-24-04 13:33 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
