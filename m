@@ -1,13 +1,15 @@
-From: "Thad Dickens" <thaddickens_ug@telecom.lt>
-Subject: Order Rolex or other Swiss watches online
-Date: Wed, 27 Oct 2004 12:06:11 -0500
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000604]: sound loop problem
+Date: Wed, 27 Oct 2004 21:07:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a80c01c4bc47$cba37b1d$0bde43be@isy.liu.se>
+Message-ID: <576683a80a0da3d65c265975337a3bb6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C29C2A2
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 21:07:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +18,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=604> 
+======================================================================
+Reported By:                chomwitt
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   604
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               slackware10
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             10-26-2004 01:29 CEST
+Last Modified:              10-27-2004 21:07 CEST
+======================================================================
+Summary:                    sound loop problem
+Description: 
+i get a sound loop which gets correctet only 
+while moving the mouse!
+======================================================================
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+----------------------------------------------------------------------
+ chomwitt - 10-27-04 21:07 
+----------------------------------------------------------------------
+i haven't installed gnome,kde etc,so i dont have esound or alike.
+i removed the usb "mouse" modules from the kernel but 
+the problem remains.
+Its strange that will moving the usb mouse
+the sound-loop (playing the first 0,2sec of a sound file endlessly )
+stops andyou can hear the next 0.2sec and the next 0.2 ... as long as you
+move the usb mouse.While mouving the touchpad mouse the sound loop doesnt
+break.
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-26-04 01:29 chomwitt       New Issue                                    
+10-26-04 01:29 chomwitt       Distribution              => slackware10     
+10-26-04 01:29 chomwitt       Kernel Version            => 2.6.7           
+10-27-04 21:07 chomwitt       Note Added: 0002280                          
+======================================================================
 
-Visit us: http://www.roiex.com/rep/rolx/
-
-Best regards,
-Hilton Jones
-
-
-No thanks: http://roiex.com/z.php
 
 
 
