@@ -1,12 +1,14 @@
-From: Horacio de Oro <horacio@trimaxcba.com>
-Subject: Mixer problem with VT8233/A/8235/8237 AC97 Audio Controller (rev
- 60)
-Date: Sat, 22 Jan 2005 00:54:40 -0300
-Message-ID: <41F1CE80.1080302@trimaxcba.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
+Date: Sat, 22 Jan 2005 06:23:57 +0100
+Message-ID: <33ee850b5ff83e2d0a3dbae85471ddce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A4031DF
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2005 06:23:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,116 +18,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I've a problem with the mixer of my sound card. It never has worked fine.
 
-I run 'aumix', the /dev/mixer is opened fine:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
+======================================================================
+Reported By:                fermier
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   736
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Mandrake 10.1 Offficial
+Kernel Version:             2.3.8.1-12mdk
+======================================================================
+Date Submitted:             12-20-2004 07:40 CET
+Last Modified:              01-22-2005 06:23 CET
+======================================================================
+Summary:                    modprobe snd-azx still gives segmentation fault
+Description: 
+After having read the other errors reported for the CMI9880 sound chip and
+that the CVS version has been fixed, I downloaded the latest CVS version
+of the alsa-driver.  ./configure and make seem to complete without errors.
+ After a make install a modprobe snd-azx still gives a segmentation fault
+just like the normal tarred ball install and the previous CVS gave.  After
+a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
+becomes a zombie process the same is true for modprobe -r snd or modprobe
+-r snd-azx
+======================================================================
 
-horacio@corralito-ng:~$ lsof  /dev/mixer
-COMMAND    PID    USER   FD   TYPE DEVICE SIZE NODE NAME
-mixer_app  859 horacio   34u   CHR   14,0      5239 /dev/mixer0
-aumix     1869 horacio    3u   CHR   14,0      5239 /dev/mixer0
+----------------------------------------------------------------------
+ tiwai - 01-21-05 21:05 
+----------------------------------------------------------------------
+I guess it's not the problem of ALSA.
+Or somewhat wrong compile option is passed.
 
-I can change any volume control (for example: "CD"). While I move the 
-control, I can hear the volume goes UP and DOWN, but I can't change the 
-"main" volume, and I can't change the "PCM" volume (this control are on 
-"top").
+Does it happen when you load snd-dummy?  I guess yes.
 
-Something like this happens with "Gnome Volume Control", but with this 
-application, I do can move "Volume" and "PCM" controls of the 
-application, but the volume of the music doesn't chage (this time, I've 
-checked this listeting some mp3 from xmms, mpg123, and totem).
+Anyway I have no idea.
 
-My motherboard is a MSI KT6 Delta, with Debian unstable, kernel 
-2.6.11-rc1. I've tested this with some version of Mandrake (version 10.0 
-IIRC) and Knoppix, and the same happens with those distros.
+----------------------------------------------------------------------
+ fermier - 01-22-05 06:23 
+----------------------------------------------------------------------
+Yes, I can confirm that modprobe snd-dummy also gives a segmentation fault.
+ When I installed the driver for the network card that comes as part of
+the motherboard this did not give this kind of error though.  What compile
+option could be wrong?
 
-As you can see, this isn't a "permission" problem. I think this isn't a 
-kernel configuration related problem. The sound card works very well, 
-the problem is the mixer.
+This is really a pity, because sound is the only thing left that I need to
+get to work on this PC.
 
-Thanks in advance!
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-04 07:40 fermier        New Issue                                    
+12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
+Offficial
+12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
+12-20-04 08:31 rlrevell       Note Added: 0002868                          
+12-20-04 13:04 fermier        Note Added: 0002871                          
+12-20-04 13:05 fermier        Note Added: 0002872                          
+12-20-04 14:27 tiwai          Note Added: 0002873                          
+12-20-04 15:35 fermier        Note Added: 0002877                          
+12-20-04 15:38 tiwai          Note Added: 0002878                          
+12-20-04 16:01 fermier        Note Added: 0002879                          
+12-20-04 16:05 tiwai          Note Added: 0002881                          
+12-20-04 16:06 tiwai          Note Added: 0002882                          
+12-20-04 16:23 fermier        Note Added: 0002884                          
+12-20-04 16:34 tiwai          Note Added: 0002885                          
+12-20-04 17:32 fermier        Note Added: 0002889                          
+12-20-04 17:40 tiwai          Note Added: 0002891                          
+12-20-04 18:10 fermier        Note Added: 0002893                          
+01-20-05 19:18 tiwai          Note Added: 0003334                          
+01-21-05 13:10 fermier        Note Added: 0003346                          
+01-21-05 21:05 tiwai          Note Added: 0003356                          
+01-22-05 06:23 fermier        Note Added: 0003372                          
+======================================================================
 
-Horacio
-
-PS: These outputs could be usefull:
-
-
-
-#~ lspci
-
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8377 [KT400/KT600 
-AGP] Host Bridge (rev 80)
-0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8237 PCI Bridge
-0000:00:0a.0 Ethernet controller: Linksys NC100 Network Everywhere Fast 
-Ethernet 10/100 (rev 11)
-0000:00:0b.0 Ethernet controller: Broadcom Corporation BCM4401 100Base-T 
-(rev 01)
-0000:00:0f.0 IDE interface: VIA Technologies, Inc. 
-VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06)
-0000:00:10.0 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
-1.1 Controller (rev 81)
-0000:00:10.1 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
-1.1 Controller (rev 81)
-0000:00:10.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
-1.1 Controller (rev 81)
-0000:00:10.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 
-1.1 Controller (rev 81)
-0000:00:10.4 USB Controller: VIA Technologies, Inc. USB 2.0 (rev 86)
-0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8237 ISA bridge 
-[K8T800 South]
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc. 
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-0000:01:00.0 VGA compatible controller: nVidia Corporation NV34 [GeForce 
-FX 5200] (rev a1)
-
-#~ lspci -n
-0000:00:00.0 0600: 1106:3189 (rev 80)
-0000:00:01.0 0604: 1106:b198
-0000:00:0a.0 0200: 1317:0985 (rev 11)
-0000:00:0b.0 0200: 14e4:4401 (rev 01)
-0000:00:0f.0 0101: 1106:0571 (rev 06)
-0000:00:10.0 0c03: 1106:3038 (rev 81)
-0000:00:10.1 0c03: 1106:3038 (rev 81)
-0000:00:10.2 0c03: 1106:3038 (rev 81)
-0000:00:10.3 0c03: 1106:3038 (rev 81)
-0000:00:10.4 0c03: 1106:3104 (rev 86)
-0000:00:11.0 0601: 1106:3227
-0000:00:11.5 0401: 1106:3059 (rev 60)
-0000:01:00.0 0300: 10de:0322 (rev a1)
-
-#~ lsmod
-Module                  Size  Used by
-snd_pcm_oss            53344  0
-snd_mixer_oss          20096  2 snd_pcm_oss
-8250                   23876  0
-serial_core            22528  1 8250
-snd_via82xx            22432  2
-snd_ac97_codec         77088  1 snd_via82xx
-snd_pcm                92488  4 snd_pcm_oss,snd_via82xx,snd_ac97_codec
-snd_timer              24772  1 snd_pcm
-snd_page_alloc         10180  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         7488  1 snd_via82xx
-snd_rawmidi            23968  1 snd_mpu401_uart
-snd                    54308  9 
-snd_pcm_oss,snd_mixer_oss,snd_via82xx,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi
-soundcore               9440  2 snd
-(...)
-
-#~ cat /proc/asound/cards
-0 [V8237          ]: VIA8237 - VIA 8237
-                      VIA 8237 with CMI9739 at 0xd800, irq 22
-
-
-#~ cat /proc/asound/devices
-  17: [0- 1]: digital audio playback
-  25: [0- 1]: digital audio capture
-  16: [0- 0]: digital audio playback
-  24: [0- 0]: digital audio capture
-   0: [0- 0]: ctl
-  33:       : timer
 
 
 
