@@ -1,13 +1,13 @@
-From: Florin Andrei <florin@andrei.myip.org>
-Subject: limits
-Date: 06 Jun 2004 00:03:50 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: EMU10K1 and the extra voice
+Date: Sun, 6 Jun 2004 12:38:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1086505430.2578.16.camel@rivendell.home.local>
-Reply-To: alsa-devel@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.58.0406061234350.1780@pnote.perex-int.cz>
+References: <20040605125936.GA3478@lost.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040605125936.GA3478@lost.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,22 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Chris Purnell <cjp@lost.org.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-What's the max number of cards in a system that can be used by ALSA
-simultaneously?
-What's the max number of MIDI ports that's supported by ALSA?
-What are other similar limits?
+On Sat, 5 Jun 2004, Chris Purnell wrote:
 
-The answers to the questions above - are they in the docs?
-If yes, where? (i couldn't find anything related)
+> For PCM playback the EMU10K1 driver is allocating an extra voice.
+> This is somewhat wastefull and I kind of need all 64 voices.
+> Is appears to be using it to generate the period interrupts.
+> Does anyone know what it would take to rewrite the driver to
+> not need this extra voice?
 
--- 
-Florin Andrei
+I'm not sure, if it's possible in a simple way. The extra voice is
+required to do the proper interrupt acknowledge. If I remember correctly,
+the interrupts are going faster than voice position otherwise.
 
-http://florin.myip.org/
+Anyway, it wouldn't be a big problem to update driver and create a new 
+(ONE!) PCM device with multiple mixed channels (up to 63).
 
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
