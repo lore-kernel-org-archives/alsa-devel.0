@@ -1,17 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: 24-bit 3byte formats
-Date: Wed, 18 Dec 2002 13:07:55 +0100 (CET)
+From: Mark Knecht <markknecht@attbi.com>
+Subject: Re: alsasound init script (Re: possible
+	problems	with	rc6 aplay )
+Date: 18 Dec 2002 05:11:36 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0212181305200.550-100000@pnote.perex-int.cz>
+Message-ID: <1040217097.1370.7.camel@Godzilla>
+References: <E18O7m1-0002AU-00@sc8-sf-list1.sourceforge.net>
+	<1040096816.3766.16.camel@Godzilla> <s5hpts0sy4k.wl@alsa2.suse.de>
+	<1040153770.5622.86.camel@cmn37.Stanford.EDU>
+	<s5h1y4fwqne.wl@alsa2.suse.de>  <s5hznr3vanh.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA22762
-	for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2002 13:08:00 +0100
-Received: from pnote.perex-int.cz ([192.168.105.2])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA04144
-	for <alsa-devel@alsa-project.org>; Wed, 18 Dec 2002 13:07:56 +0100
+In-Reply-To: <s5hznr3vanh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,21 +21,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, Paul Davis <paul@linuxaudiosystems.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 2002-12-18 at 03:17, Takashi Iwai wrote:
+> At Wed, 18 Dec 2002 11:46:45 +0100,
+> I wrote:
+> > 
+> > > It would be better to make the alsasound script more robust (and
+> > > independent of the startup order) and able to deal with partially loaded
+> > > modules, so instead of just checking for the /proc/asound directory it
+> > > would actually see what modules are already loaded and only load those
+> > > that are not. It does not look too easy, it seems that /proc/asound does
+> > > not provide a list of loaded modules (rather a list of cards that are
+> > > not associated with module names). 
+> >  
+> > agreed.  a scenario i can imagine now is that the script just takes a
+> > look at /proc/asound/cards and checks the numbers at the first column.
+> > this should correspond to the card indices which have been already
+> > loaded.  then the script will try to load the modules snd-card-X but
+> > skip the numbers listed in the above...
+> > i'll try to rewrite as this way.
+> 
+> after reconsideration: it would be much simpler to create a new proc
+> file which shows the modules already loaded.
+> 
+I was wondering what would happen in this process if someone had two r
+three identical USB devices, like the MidiMan 2X2? OR also two identical
+cards like the RME HDSP 9652?
 
-	it is possible with latest changes in CVS use 24-bit 3byte 
-formats (at least for playback direction). I've fixed remaining bugs in 
-driver/library/aplay.
+It is important that the system recognize the same hardware as the same
+sound device every time the machine booted, and whether the machine is
+warm or cold booted. 
 
-						Jaroslav
+The name I'm seeing linked in /dev/sound are possibly a bit too generic,
+being just '2X2' and 'DSP'.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Just a thought.
+
 
 
 
