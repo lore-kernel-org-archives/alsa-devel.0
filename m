@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Thomas Charbonnel <thomas@undata.org>
 Subject: Re: HDSP driver update
-Date: Mon, 07 Apr 2003 08:56:03 -0400
+Date: 07 Apr 2003 15:07:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E192W6j-0005hU-00@sc8-sf-list1.sourceforge.net>
-References: <1049715111.2616.27.camel@satellite.undata.org>
+Message-ID: <1049720707.1447.3.camel@satellite.undata.org>
+References: <E192VvZ-0000Px-00@dardilly>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "07 Apr 2003 13:31:52 +0200."
-             <1049715111.2616.27.camel@satellite.undata.org>
+In-Reply-To: <E192VvZ-0000Px-00@dardilly>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,23 +17,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Here's the long awaited hdsp driver update, sorry for the delay. No file
 
-and just to make it clear, yes, i'm in favor of this update. it
-(sh|w)ouldn't matter anyway, but thomas has done some really great
-work here. even so, one question:
+> >The card won't work until the firmware is uploaded with the hdspload
+> >tool. 
+> 
+> am i right in thinking that this means that the driver will load, but
+> the card won't actually work?
 
->The card won't work until the firmware is uploaded with the hdspload
->tool. 
+The driver will load but only the hwdep interface will be created.
+The only way to interact with the card is through the defined hwdep
+ioctls. After the firmware is uploaded, all the remaining interfaces are
+created (midi, pcm, ctl), and the card is fully functional.
 
-am i right in thinking that this means that the driver will load, but
-the card won't actually work?
 
---p
 
 
 -------------------------------------------------------
