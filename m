@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem in alsaconf
-Date: Fri, 5 Dec 2003 14:19:11 +0100 (CET)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Can't set 88.2/96kHz samplerate with Hammerfall
+Date: Fri, 05 Dec 2003 14:57:25 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312051418410.20863@pnote.perex-int.cz>
-References: <20031204234839.GB4760@steinchen.winterberg.local>
- <Pine.LNX.4.58.0312050934240.12693@pnote.perex-int.cz> <20031205104232.GB2792@salstar.sk>
+Message-ID: <XFMail.20031205145725.pochini@shiny.it>
+References: <oprzphu41uq1sf88@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031205104232.GB2792@salstar.sk>
+In-Reply-To: <oprzphu41uq1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,54 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Jan ONDREJ (SAL)" <ondrejj@salstar.sk>
-Cc: Sebastian Stein <seb.stein@hpfsc.de>, alsa-devel@lists.sourceforge.net
+To: Arve Knudsen <aknuds-1@broadpark.no>
+Cc: alsa-devel@lists.sourceforge.net, Mark Knecht <mknecht@controlnet.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 5 Dec 2003, Jan ONDREJ (SAL) wrote:
 
-> On Fri, Dec 05, 2003 at 09:35:29AM +0100, Jaroslav Kysela wrote:
-> > On Fri, 5 Dec 2003, Sebastian Stein wrote:
-> > 
-> > > I'm not sure who is the current maintainer of the alsaconf shell script in
-> > > the alsa-utils-1.0.0rc1 package, so I'm sending this mail to all of you!
-> > > 
-> > > On startup I can see a message saying:
-> > > 
-> > > /usr/bin/alsaconf: line 29: [: too many arguments
-> > > /usr/bin/alsaconf: line 31: [: too many arguments
-> > 
-> > It does not happen with:
-> > 
-> > GNU bash, version 2.05b.0(1)-release (i586-suse-linux)
-> > and
-> > grep (GNU grep) 2.5.1
-> > 
-> > Perhaps, you don't have grep installed?
-> 
-> Please, replace "!=" to "-ne" on these lines.
-> It is more compatible with all "test" or "[" programs.
-> It is also compatilble with GNU bash's internal test function.
-> 
-> > > Also, there is another problem with finding the alsasound script
-> > > ($rcalsasound). On my distro it can be found under
-> > > /etc/rc.d/inet.d/alsasound. Maybe a better approach then fixed path would
-> > 
-> > Added new path. Thanks.
-> 
-> Fine. :)
-> 
-> Please move alsaconf from /usr/bin to /usr/sbin.
-> Alsaconf is usable only for root. User don't need it.
+> Actually, I'm not completely opposed to the idea. But I am totally
+> clueless when it comes to writing device drivers, and would have no
+> idea where to start.
 
-Fixed and recreated new alsa-utils-1.0.0rc2 package. Thanks.
+Start here: http://www.alsa-project.org/documentation.php3#Driver
 
-						Jaroslav
+You don't have to start writing the driver from scratch. You only
+have to fix the current driver so you can also select 96KHz from
+the PCM interface. The API is not difficult to learn.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> Do you know if RME were forthcoming with specs?
+
+I asked for infos one year ago, but they just said no.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
