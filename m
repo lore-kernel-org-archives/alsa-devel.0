@@ -1,14 +1,16 @@
-From: HighEnergyParticle <highenergyparticle@attbi.com>
-Subject: Echoaudio driver hangs on Darla24
-Date: Tue, 13 May 2003 21:26:54 -0500
+From: Florin Andrei <florin@andrei.myip.org>
+Subject: Re: An offer to help from a Linux Device Driver
+	engineer
+Date: 13 May 2003 20:58:04 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305132126.54463.highenergyparticle@attbi.com>
+Message-ID: <1052884684.6767.17.camel@rivendell.home.local>
+References: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
+Reply-To: alsa-devel@lists.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,21 +22,23 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I downloaded ALSA 0.9.3 and echo generic driver and 0.5.10.  Built with gcc 3.2.2 on 2.4.20-gentoo kernel.
+On Tue, 2003-05-13 at 11:21, John Hubbard wrote:
+> Hello,
+>     May I help the ALSA project, by building device drivers for anything that is not yet supported?  I am a device driver engineer looking to gain experience with Linux Audio, and to advance my knowledge in this area.  I definitely have an ulterior motive (to enhance my resume) but I also happen to love composing on my SY-85 synthesizer in my spare time, so this is not as unnatural as it sounds...
+> 
+>     My first idea was to find an unsupported sound card, purchase one, and provide ALSA support for it.  However, after lurking on this mailing list for a few days, I see that you all  have been busy, and it may actually be difficult to find an unsupported card.
 
-modprobe snd-echoaudio don't give out any error. 
+Another option might be to clean up an existing driver that "sort of
+works". For example: SBLive, Audigy and Audigy2 are almost ok, most of
+the functions are supported, but... either digital CD input does not
+work on SBLive Value, or MIDI input does not work on Audigy2 Platinum,
+etc. It would be nice to have at least a few good cards 100% supported.
 
-But after start the Emixer, the X-Window went blank. I can kill the X-Window with Ctrl-Alt-BS. This is when the Echo Darla24 in a PCI slot that share IRQ with Radeon AGP card.
+-- 
+Florin Andrei
 
-Moved Darla24 to a slot that has it's own IRQ, now start the Emixer would completely freeze up the whole system. I had to use the hardware reset button.
+http://florin.myip.org/
 
-I tried with both APIC mode and convention IRQ, disabled ACPI, and PnP OS. Still the same thing.
-
-I'm running a Athlon XP, on KT400 chipset. Tried the built-in Via AC97 codec driver snd-via82xx works fine.
-
-I've sent this email a few days ago before I subscribe. Which is now waiting for aproval. I appologize for duplicate In case that email ever gets posted.
-
-David
 
 
 -------------------------------------------------------
