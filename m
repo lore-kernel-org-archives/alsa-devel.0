@@ -1,13 +1,14 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: backwards incompatible ALSA api change?
-Date: Wed, 11 Sep 2002 13:36:36 -0700
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Why do I get broken pipe on write to a pcm in state
+ PREPARED?
+Date: Wed, 11 Sep 2002 23:52:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200209112036.NAA19154@cmn29.stanford.edu>
-References: <Pine.LNX.4.33.0209112221180.607-100000@pnote.perex-int.cz>
-Mime-Version: 1.0 (NeXT Mail 3.3 v148.2.1)
-Content-Type: text/plain
+Message-ID: <Pine.LNX.4.21.0209112346580.598-100000@summer.quitte>
+References: <200209111904.g8BJ49005923@d1o87.telia.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0209112221180.607-100000@pnote.perex-int.cz>
+In-Reply-To: <200209111904.g8BJ49005923@d1o87.telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +17,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>, Takashi Iwai <tiwai@suse.de>, "Jackit-devel@lists.sourceforge.net" <Jackit-devel@lists.sourceforge.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Anders Torger <torger@ludd.luth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > Correct me if I'm wrong but bumping the library version number
-> > from .so.2 to .so.3 with api changes would also enable orderly
-> > migration _if_ the interface between the library and the
-> > drivers does not change. I would be able to have both a .so.2
-> > and a .so.3 in the system, so that old, not yet converted
-> > programs would work fine and new programs using the .so.3
-> > library would also work. Eventually, when all programs are
-> > updated and recompiled to use .so.3, the .so.2 could be just
-> > erased and would be history. Am I dreaming?
+Anders Torger wrote:
+
 >
-> Nope. I'll do that (it's already on my HDD), but I'll have to change more
-> snd_pcm_hw_params_* functions to unify the access and let recognize
-> the error code to applications.
+>On Wednesday 11 September 2002 20.48, you wrote:
+>> On Wed, 11 Sep 2002, Anders Torger wrote:
+>> > I use a RME9652 hammerfall with two periods (the hardware is that
+>> > way).
+>> >
+>> > I watch a file descriptor associated to the output with select(),
+>> > when it gets ready for writing, I write data to the pcm with
+>> > snd_pcm_writen(). In the beginning, the state of the pcm is
+>> > PREPARED.
+>> >
+>> > What I would expect then, is that the file descriptor is ready for
+>> > writing until the two periods has been filled with data, and then
+>> > select will block (output buffers full, sound card not running).
+>> > But instead, when the two periods is filled with data, select()
+>> > still returns and says that the file descriptor is ready for
+>> > writing, but when calling snd_pcm_writen(), it returns -EPIPE. The
+>> > pcm state is still PREPARED.
+>> >
+>> > What is wrong? Is it me (probably), or is it alsa?
+>>
+>> You should also check for POLLERR. I'm not sure, that it's necessary
+>> to return POLLOUT together with POLLERR in that case. Anyway,
+>> application should check for POLLERR at first and then write data.
+>
+>I'm sorry, I don't understand, what would be the error in the above
+>case? I just want to watch the file descriptor for writing, and expect
+>that it will be triggered when there is available space in the output
+>buffer to write to, or, if there is an error, for example broken pipe.
+>But how could it be broken pipe if the pcm is in state PREPARED? It has
+>never been put into RUNNING.
+>
+>The problem here is that the output buffer is full, the pcm is not
+>RUNNING, but the file descriptor gets triggered anyway. When can that
+>happen?
 
-Great, thanks a lot. It'd be helpful if you could you post a
-small message to alsa-dev when you are done with that change
-in cvs. Then I can try to get a build that has the "backwards
-compatibility" old library and start migrating applications as
-they become "aware" of the new library.
+we had a hauntingly similar discussion about this a few months ago,
+maybe a year. iirc everybody considered the pcm behaviour broken,
+except for the alsa coders. 
 
--- Fernando
+seeing that you come to the same conclusion makes me again vote 
+for changing this behaviour to 'poll/select blocks until running'.
+
+tim
+
 
 
 -------------------------------------------------------
