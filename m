@@ -1,15 +1,13 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Re: au8830 - front / rear channels swapped after
-	first play and Surround40
-Date: Wed, 16 Mar 2005 20:57:40 -0400
-Message-ID: <1111021060.3239.20.camel@localhost>
-References: <42312D3F.2010201@netvigator.com>
-	 <1110545886.3216.12.camel@localhost>  <1110676678.13277.7.camel@mindpipe>
-Reply-To: mjander@users.sourceforge.net
+From: Pavel Vondricka <wanthalf@centrum.cz>
+Subject: Novation X-Station: mostly success, but...
+Date: Thu, 17 Mar 2005 00:56:29 +0100
+Message-ID: <200503170056.29280.wanthalf@centrum.cz>
+Reply-To: wanthalf@centrum.cz
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1110676678.13277.7.camel@mindpipe>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,32 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Lee,
+Hi,
+I can confirm, that my X-Station works with Clemens Ladisch's patch. I got the 
+last version of the files announced here by Clemens from his site and 
+replaced those in my kernel gentoo-dev 2.6.10 and recompiled it.
+The MIDI connection seems to work in both directions - at least the basics I 
+have tried. 
+(Why is the sound volume of my softsynth so low, when the velocity reported is 
+the same as in the "loud" midi files?)
 
-On Sat, 2005-03-12 at 20:17 -0500, Lee Revell wrote:
-> On Fri, 2005-03-11 at 09:58 -0300, Manuel Jander wrote:
-> > Take a look at
-> > http://galadriel.mat.utfsm.cl/~mjander/aureal/techdoc/techpaper.html
-> > and au8830.pdf in the same folder.
-> 
-> Looks like this chipset has a wavetable synth.  And I noticed some
-> references to a driver on the openvortex list.  Would it be possible for
-> ALSA to support it?
+However, I have problems with the "standard compliant" audio part: I can play 
+sounds through the device, but I cannot capture them. No wonder: the mixer 
+seems to have no effect on the device. There are just a few controls anyway: 
+bass, treble, mic volume, speaker volume, aso. - nothing seems to have any 
+effect when playing a sound through the device, just hardware volume knobs on 
+it :-).
+When playing, the sound is not clean all the time, there are some clicks from 
+time to time. Maybe a problem of the computer?
 
-Of course, but there are some unresolved hardware issues. The WaveTable
-helper hardware is very similar to the trident Wavetable helper
-hardware. It does not interpret MIDI directly, but at least does some
-effect processing in hardware. If i just had some time to spend on
-this ... Grrr !!
+Regards,
+Pavel
 
-Best Regards
 -- 
-Manuel Jander
-Electronic Engineer
-
+###########################################################################
+# mailto:wanthalf@centrum.cz 
+# ICQ:143159880 
+# Jabber:wanthalf@jabber.cz
+###########################################################################
 
 
 -------------------------------------------------------
