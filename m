@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000998]: access to second playback hangs
-Date: Wed, 6 Apr 2005 12:49:37 +0200
-Message-ID: <1d214ff0195c34c6e01dea0306e17a39@bugtrack.alsa-project.org>
+From: Andy Robinson <andy@seventhstring.com>
+Subject: Re: Memory allocation and the "prealloc" procfile
+Date: Wed, 06 Apr 2005 13:03:39 +0100
+Message-ID: <1112789019.6835.30.camel@andys_dellm60.ss82amr.net>
+References: <20050405192033.6B8A88993B@sc8-sf-spam1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14C6E230
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 12:49:38 +0200 (MEST)
+In-Reply-To: <20050405192033.6B8A88993B@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,71 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+> Message: 3
+> Date: Tue, 05 Apr 2005 19:16:39 +0200
+> From: Takashi Iwai <tiwai@suse.de>
+> To: Andy Robinson <andy@seventhstring.com>
+> Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+> Subject: Re: [Alsa-devel] Memory allocation and the "prealloc" procfile
+> 
+> At Mon, 04 Apr 2005 10:03:37 +0100,
+> Andy Robinson wrote:
+> > 
+> > I'm using Mandrake 10.1 on a DELL Precision M60.
+> > Soundcard is Intel 82801DB-ICH4
+> > ALSA version 1.0.6
+> > 
+> > By default, /proc/asound/card0/pcm0p/sub0/prealloc contains the number
+> > 64 and SNDCTL_DSP_GETOSPACE reports a total of 16k bytes output space
+> > available. If I
+> > echo 128 >/proc/asound/card0/pcm0p/sub0/prealloc
+> > then SNDCTL_DSP_GETOSPACE reports a total of 32k bytes.
+> > 
+> > My question is, what is the rest of the "prealloc" memory being used
+> > for? And how can I change the amounts used for whatever other purposes,
+> > so as to get a bigger SNDCTL_DSP_GETOSPACE buffer? It's not such a
+> > problem for me but one of my users reports that with a 128k "prealloc",
+> > he still gets only 4k from SNDCTL_DSP_GETOSPACE. Is it perhaps an ALSA
+> > version issue?
+> 
+> It might be.  It's worth to try the latest ALSA version, anyway.
+> 
+> If you want a bigger buffer, you can call SNDCTL_DSP_SETFRAGMENT ioctl
+> to specify the fragments and its size explicitly.
+> Takashi
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
-======================================================================
-Reported By:                allefant
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   998
-Category:                   PCI - es1938
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-6
-======================================================================
-Date Submitted:             03-19-2005 00:16 CET
-Last Modified:              04-06-2005 12:49 CEST
-======================================================================
-Summary:                    access to second playback hangs
-Description: 
-This is haunting my since about half a year, since I got this card. Every
-time the second playback device is accessed, there's a complete hardware
-freeze. Disabling the second playback device makes it work. I know, this
-isn't the best report, since I didn't compile the latest version and did
-not much testing (no fun getting constant HW freezes) - but anyway, I
-thought I report it here, maybe my workaround can help someone who googles
-for this problems at least (or, maybe someone can give me even a hint how
-to fix it).
-======================================================================
+I will try a later ALSA version and see what happens.
 
-----------------------------------------------------------------------
- allefant - 04-06-05 12:34 
-----------------------------------------------------------------------
-Wait, ignore what I just said. Rejoiced too soon. I get the same HW freeze
-as before. I actually couldn't reproduce it yesterday when I wrote the
-above - but today I switched on the computer, started bmp, had it playing
-for a while, then started another application with sound - and boom..
-total HW freeze :| Going now to apply my workaround patch from above
-again. (I also have another card with the intel HDA driver btw, in case
-you wonder why I'm using such an old card as es1938 still.. but with that
-I get no volume control. *sigh*)
+But I'm still curious to know, what is all
+that /proc/asound/card0/pcm0p/sub0/prealloc
+memory used for? I specify 128k but only get a 32k buffer reported by
+SNDCTL_DSP_GETOSPACE (and one of my users gets only 4k of buffer) ...
+where is the rest going? AFAIK this prealloc file relates only to
+playback and only to one specific stream.
 
-----------------------------------------------------------------------
- allefant - 04-06-05 12:49 
-----------------------------------------------------------------------
-Hm, should I re-submit it as bug for 1.0.9rc2? I can't figure out how to
-change the version field..
+SNDCTL_DSP_SETFRAGMENT doesn't help - it can change the way the buffer
+is divided into fragments but will not increase the total
+SNDCTL_DSP_GETOSPACE buffer size (e.g. it can give you twice as many
+fragments, of half the size).
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-19-05 00:16 allefant       New Issue                                    
-03-19-05 00:16 allefant       Distribution              => Debian sid      
-03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
-04-06-05 00:30 allefant       Note Added: 0004344                          
-04-06-05 12:34 allefant       Note Added: 0004345                          
-04-06-05 12:49 allefant       Note Added: 0004346                          
-======================================================================
+This problem doesn't just affect me, it affects users of my software.
+Therefore I would be happier if I could find some tweak to ALSA's
+configuration to fix this. I consider it more user-friendly for me to
+say to them "tweak this configuration file" rather than "you must
+install a later ALSA version".
 
+Regards,
+Andy Robinson, Seventh String Software, www.seventhstring.com
 
 
 
