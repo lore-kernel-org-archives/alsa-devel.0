@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0001032]: 1.0.9rc2 causes mplayer -ao alsa to crash on startup
-Date: Tue, 5 Apr 2005 21:08:33 +0200
-Message-ID: <b5b4f44b0a244eafa5e64909198f28c6@bugtrack.alsa-project.org>
+Date: Tue, 5 Apr 2005 21:17:41 +0200
+Message-ID: <10e6687793f8271d1b8b7b5805cf8b51@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F385E244
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 21:08:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A53E2244
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 21:17:41 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             04-02-2005 16:10 CEST
-Last Modified:              04-05-2005 21:08 CEST
+Last Modified:              04-05-2005 21:17 CEST
 ======================================================================
 Summary:                    1.0.9rc2 causes mplayer -ao alsa to crash on startup
 Description: 
@@ -62,6 +62,11 @@ an "Ensoniq 5880 AudioPCI" (es1371), but it seems to happen with most
 hardware. http://bugs.gentoo.org/show_bug.cgi?id=87099 is about the same
 issue.
 
+----------------------------------------------------------------------
+ rlrevell - 04-05-05 21:17 
+----------------------------------------------------------------------
+Please try ALSA CVS.  This bug should be fixed.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -69,6 +74,7 @@ Date Modified  Username       Field                    Change
 04-02-05 16:10 bero           File Added: alsa-lib-mplayer.patch                
    
 04-05-05 21:08 Toph           Note Added: 0004340                          
+04-05-05 21:17 rlrevell       Note Added: 0004341                          
 ======================================================================
 
 
