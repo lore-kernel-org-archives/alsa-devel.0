@@ -1,15 +1,14 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: hdsp driver status
-Date: Wed, 9 Jul 2003 06:49:52 +0200 (CEST)
+From: Warren Turkal <wturkal@cbu.edu>
+Subject: combining the maestro drivers
+Date: Wed, 9 Jul 2003 00:34:46 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <38311.81.50.18.94.1057726192.squirrel@www.undata.org>
-References: <34975.81.51.161.173.1057484037.squirrel@www.undata.org>
-        <616961442ecc34a5866fa42a79757331@essej.net>
+Message-ID: <200307090034.46843.wturkal@cbu.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <616961442ecc34a5866fa42a79757331@essej.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,40 +17,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jesse@essej.net
-Cc: thomas@undata.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Is there any work being done to join up some of the common stuff (defines seem 
+to be functionally identical in a lot of the ESS pci drivers) in the ESS 
+drivers?
 
-> I can use amixer to set up things as per usual, and jack starts
-> normally.  However, I get no sound whatsoever.
->
-> Loading the firmware via Windows, rebooting, and setting up the card
-> identically with amixer *does* yield sound.
->
-> So it looks like some critical parts for proper communication
-> to the multiface need the proper firmware to work with the rev
-> 0xb interface.
->
-> Back to trying to load the proper rev11 firmware, it looks like
-> some part of the communication protocol must have changed, or
-> the multiface_firmware_rev11.dat is corrupt.  I wonder if there
-> is any way to verify it.
->
-> jlc
-
-I did exactly the same test yesterday on a friend's rev 11 card. In fact
-there is sound, but all messed up. I got sound on output 3 from
-playback_15, on output 12 from playback_11, on output 9 from playback_3. I
-could check too that strictly nothing happens with the new firmware, which
-leads me to same conclusions. I'm trying to contact RME on this issue, the
-problem being I do not have Paul's contact address. I sent a mail
-yesterday to Matthias Carstens who's well known to all RME forum readers
-and I'm waiting for an answer.
-
-Thomas
-
-
+Warren
+-- 
+Treasurer, GOLUM, Inc.
+http://www.golum.org
 
 
 
