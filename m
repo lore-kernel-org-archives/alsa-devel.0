@@ -1,13 +1,10 @@
 From: Nicolas Pitre <nico@cam.org>
-Subject: Re: new ALSA driver for audio on the ARM PXA2xx platform
-Date: Wed, 26 Jan 2005 10:20:39 -0500 (EST)
-Message-ID: <Pine.LNX.4.61.0501261004410.16341@localhost.localdomain>
-References: <Pine.LNX.4.61.0501251624470.16341@localhost.localdomain>
- <s5hfz0o5vf4.wl@alsa2.suse.de>
+Subject: [RFC] add bus driver model support for ad hoc AC97 drivers
+Date: Wed, 26 Jan 2005 11:26:06 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0501261051150.16341@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfz0o5vf4.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,78 +14,174 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 26 Jan 2005, Takashi Iwai wrote:
 
-> Hi Nicolas,
-> 
-> At Tue, 25 Jan 2005 16:33:40 -0500 (EST),
-> Nicolas Pitre wrote:
-> > 
-> > 
-> > This patch adds two modules: one for generic PCM support on PXA2xx and 
-> > another to interface with the AC97 link on the PXA2xx.  Eventually 
-> > additional modules could be written to use the PCM module with SSP or 
-> > I2S audio ports.
-> > 
-> > Signed-off-by: Nicolas Pitre <nico@cam.org>
-> 
-> Thanks, the code looks nice.
-
-Thanks.
-
-> > Index: linux-2.6/sound/arm/pxa2xx-pcm.c
-> (snip)
-> > +static const snd_pcm_hardware_t pxa2xx_pcm_hardware = {
-> > +	.info			= SNDRV_PCM_INFO_MMAP |
-> > +				  SNDRV_PCM_INFO_MMAP_VALID |
-> > +				  SNDRV_PCM_INFO_INTERLEAVED |
-> > +				  SNDRV_PCM_INFO_PAUSE,
-> 
-> Don't forget SNDRV_PCM_INFO_RESUME if the driver supports PM.
-
-Well, I initially had problems with it (the code was too ugly for my 
-taste).  And since aplay appears to restart the stream anyway I decided 
-to revisit it later.
-
-> > +	.formats		= SNDRV_PCM_FMTBIT_S16_LE,
-> > +	.period_bytes_min	= 32,
-> > +	.period_bytes_max	= 8192 - 32,
-> 
-> I suppose this 32 is fifo size?  If so, you don't have to count it
-> here.  The period size defines the size of DMA interrupt period.
-> (The fifo_size isn't used in the driver currently.)
-
-It really has to be 8192 - 32 since the maximum DMA size is actually 
-8191 and problems occur if things aren't rounded to the FIFO size.
-
-> > +static void pxa2xx_pcm_dma_irq(int dma_ch, void *dev_id, struct pt_regs *regs)
-> > +{
-> > +	snd_pcm_substream_t *substream = dev_id;
-> > +	struct pxa2xx_runtime_data *rtd = substream->runtime->private_data;
-> > +	int dcsr;
-> > +
-> > +	dcsr = DCSR(dma_ch);
-> > +	DCSR(dma_ch) = dcsr & ~DCSR_STOPIRQEN;
-> > +
-> > +	if (dcsr & DCSR_ENDINTR) {
-> > +		snd_pcm_period_elapsed(substream);
-> > +	} else {
-> > +		printk( KERN_ERR "%s: DMA error on channel %d (DCSR=%#x)\n",
-> > +			rtd->params->name, dma_ch, dcsr );
-> 
-> You can call here snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN) to
-> notify the buffer over/underrun.
-
-Well there should never be any error at that level even if a hardware 
-xrun occurs.  This is mainly to display something if ever anything 
-really odd happens..
+I would like to know what people think of the following patch.  It 
+allows for a codec on an AC97 bus to be shared with other drivers which 
+are completely unrelated to audio.  It registers a new bus type, and 
+whenever a codec instance is created then a device for it is also 
+registered with the driver model using that bus type.  This allows, for 
+example, to use the extra features of the UCB1400 like the touchscreen 
+interface and the additional GPIOs and ADCs available on that chip for 
+battery monitoring.  I have a working UCB1400 touchscreen driver here 
+that simply registers with the driver model happily working alongside 
+with audio features using this.
 
 
-Nicolas
+Index: linux-2.6/sound/pci/ac97/ac97_bus.c
+===================================================================
+--- /dev/null
++++ linux-2.6/sound/pci/ac97/ac97_bus.c
+@@ -0,0 +1,80 @@
++/*
++ * Linux driver model AC97 bus interface
++ *
++ * Author:	Nicolas Pitre
++ * Created:	Jan 14, 2005
++ * Copyright:	(C) MontaVista Software Inc.
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ */
++
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/device.h>
++#include <linux/string.h>
++
++#include <sound/driver.h>
++#include <sound/core.h>
++#include <sound/ac97_codec.h>
++
++
++static int ac97_bus_match(struct device *dev, struct device_driver *drv)
++{
++	return (strncmp(drv->name, dev->bus_id, BUS_ID_SIZE) == 0);
++}
++
++static int ac97_bus_suspend(struct device *dev, pm_message_t state)
++{
++	int ret = 0;
++
++	if (dev->driver && dev->driver->suspend) {
++		ret = dev->driver->suspend(dev, state, SUSPEND_DISABLE);
++		if (ret == 0)
++			ret = dev->driver->suspend(dev, state, SUSPEND_SAVE_STATE);
++		if (ret == 0)
++			ret = dev->driver->suspend(dev, state, SUSPEND_POWER_DOWN);
++	}
++	return ret;
++}
++
++static int ac97_bus_resume(struct device *dev)
++{
++	int ret = 0;
++
++	if (dev->driver && dev->driver->resume) {
++		ret = dev->driver->resume(dev, RESUME_POWER_ON);
++		if (ret == 0)
++			ret = dev->driver->resume(dev, RESUME_RESTORE_STATE);
++		if (ret == 0)
++			ret = dev->driver->resume(dev, RESUME_ENABLE);
++	}
++	return ret;
++}
++
++struct bus_type ac97_bus_type = {
++	.name		= "ac97",
++	.match		= ac97_bus_match,
++	.suspend	= ac97_bus_suspend,
++	.resume		= ac97_bus_resume,
++};
++
++static int __init ac97_bus_init(void)
++{
++	return bus_register(&ac97_bus_type);
++}
++
++subsys_initcall(ac97_bus_init);
++
++static void __exit ac97_bus_exit(void)
++{
++	bus_unregister(&ac97_bus_type);
++}
++
++module_exit(ac97_bus_exit);
++
++EXPORT_SYMBOL(ac97_bus_type);
++
++MODULE_LICENSE("GPL");
+Index: linux-2.6/sound/pci/ac97/Makefile
+===================================================================
+--- linux-2.6.orig/sound/pci/ac97/Makefile
++++ linux-2.6/sound/pci/ac97/Makefile
+@@ -12,7 +12,7 @@
+ snd-ak4531-codec-objs := ak4531_codec.o
+ 
+ # Toplevel Module Dependency
+-obj-$(CONFIG_SND_AC97_CODEC) += snd-ac97-codec.o
++obj-$(CONFIG_SND_AC97_CODEC) += snd-ac97-codec.o ac97_bus.o
+ obj-$(CONFIG_SND_ENS1370) += snd-ak4531-codec.o
+ 
+ obj-m := $(sort $(obj-m))
+Index: linux-2.6/sound/pci/ac97/ac97_codec.c
+===================================================================
+--- linux-2.6.orig/sound/pci/ac97/ac97_codec.c
++++ linux-2.6/sound/pci/ac97/ac97_codec.c
+@@ -1039,6 +1039,8 @@
+ {
+ 	if (ac97) {
+ 		snd_ac97_proc_done(ac97);
++		if (ac97->dev.bus)
++			device_unregister(&ac97->dev);
+ 		if (ac97->bus) {
+ 			ac97->bus->codec[ac97->num] = NULL;
+ 			if (ac97->bus->shared_type) {
+@@ -2110,6 +2112,12 @@
+ 		snd_ac97_free(ac97);
+ 		return err;
+ 	}
++	ac97->dev.bus = &ac97_bus_type;
++	ac97->dev.parent = ac97->bus->card->dev;
++	ac97->dev.platform_data = ac97;
++	strncpy(ac97->dev.bus_id, snd_ac97_get_short_name(ac97), BUS_ID_SIZE);
++	if ((err = device_register(&ac97->dev)) < 0)
++		return err;
+ 	*rac97 = ac97;
+ 
+ 	if (bus->shared_type) {
+Index: linux-2.6/include/sound/ac97_codec.h
+===================================================================
+--- linux-2.6.orig/include/sound/ac97_codec.h
++++ linux-2.6/include/sound/ac97_codec.h
+@@ -26,6 +26,7 @@
+  */
+ 
+ #include <linux/bitops.h>
++#include <linux/device.h>
+ #include "pcm.h"
+ #include "control.h"
+ #include "info.h"
+@@ -508,6 +509,7 @@
+ 		} ad18xx;
+ 		unsigned int dev_flags;		/* device specific */
+ 	} spec;
++	struct device dev;
+ };
+ 
+ /* conditions */
+@@ -580,4 +582,7 @@
+ int snd_ac97_pcm_close(struct ac97_pcm *pcm);
+ int snd_ac97_pcm_double_rate_rules(snd_pcm_runtime_t *runtime);
+ 
++/* for ad hoc drivers... */
++extern struct bus_type ac97_bus_type;
++
+ #endif /* __SOUND_AC97_CODEC_H */
 
 
 -------------------------------------------------------
