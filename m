@@ -1,16 +1,13 @@
-From: Christian Esken <c.esken@cityweb.de>
+From: Benny Sjostrand <gorm@cucumelo.org>
 Subject: Re: cs64xx distortion (GameTheater XP)
-Date: Sat, 18 Jan 2003 12:15:35 +0100
+Date: Sat, 18 Jan 2003 17:06:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301181215.35808.c.esken@cityweb.de>
-References: <200301162027.57458.c.esken@cityweb.de> <3E272320.2070008@gmx.de>
+Message-ID: <3E297B71.3010106@cucumelo.org>
+References: <200301160014.11787.c.esken@cityweb.de> <3E273C33.9050905@cucumelo.org> <200301181213.56670.c.esken@cityweb.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E272320.2070008@gmx.de>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,47 +16,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Christian Esken <c.esken@cityweb.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Thursday 16 January 2003 22:24 schrieben Sie:
-> Christian Esken wrote:
-> >Takashi Iwai wrote:
-> >>Christian Esken wrote:
-> >>>I wonder what the status of the cs64xx distortion problem is.
-> >>>I tested the 2003-01-14.tar.bz2 snapshot with my GameThaeter 7.1 XP
-> >>>and it still shows those heavy distortions on analog output.
-> >>
-> >>well, it looks like you passed external_amp=1 option to the module,
-> >>which you don't need usually.
-> >>
-> >>anyway, try the attached patch (and without external_amp=1 option).
-> >>it will clean up the amplifier controls.
-> >
-> >Tried it. Unfortunately the patch does not help. Probably the distortion
-> >is slightly less, but still the soundcard is basically unusable.
-> >
-> >I removed the external_amp=1 and reloaded the driver - and I sure that
-> >actually the new driver got loaded.
 >
-> Does the sound quality improve if you lower the volume of PCM and/or
-> master? If so, does reloading the cs46xx module (or restarting alsa) help?
+>
+>I don't buy this opinion! Measurements published in sound card tests show
+>a pretty good sound quality.
+>  
+>
+Thoose review usually compares the Hercules GTXP with the Sounblaster 
+Audigy with breakout box. But about personal soundcard opinions is 
+something I think we should discuss outside this mailinglist ...
 
-Lowering helps, but the sound is still very very bad.
+>But apart from that: The sound quality in Linux has NOTHING to do with
+>the capabilities of the card (as it has no problems under Windwos):
+>- Sound quality of the card: good (or fair or whatever you like)
+>
+We dont't known what kind of dirty is hack's possibly could be 
+implemented  in the Windows driver to compensate the bad sound. We know 
+that the DSP is able to do much more that actually is done in the Linux 
+driver, reverb effects, delay, band pass filters, mp3 decoding etc. For 
+example what about having a light reverb effect on front speakers, and a 
+little bit more reverb on rear speakers + some delay, and let's limit 
+the volume controls a little bit to get rid of the a possible 
+distorcion, and some few band pass filters. Do you think that would 
+improve the sound quality ?
 
+What actually Hercules sells is more SW than HW, there is about three 
+version of the Hercules GTXP 5.1, 6.1, 7.1 The the only difference 
+between theese cards seems to be the delivered SW (which you probably 
+never will use under Linux)
 
-> Try
-> /etc/init.d/alsa force-restart
-> as root or
-> modprobe -r snd-cs46xx
-> modprobe snd-cs46xx
-> as root.
+I dont discard posibility that there's something specific about the GTXP 
+hw, that we dont know and we should know that could improve sound, but I 
+believe that this posibilty is very small.
 
-Reloading the module does not help.
-I also tried the "mute-unmute-CD-volume" thing, but this does not help at all.
+>- Sound quality under Linux: very very very very bad.
+>  
+>
+It's possible to get good sound quality under Linux with the GTXP, if 
+you use an external amplifier, some options that I can mention:
+- External receiver with digital in, using the SPDIF output
+- External receiver using the analog inputs, using the un-amplified 
+outputs from the GTXP
+­ - Use any kind of active speakers (speakers with it's own amplifier 
+built-in)
 
-Chris
+Just dont rely to much  on the soundcard amplifier.
 
+>So if this problem is a known issue, sholdn't there be a hint in the
+>Alsa Sound Card Matrix. I don't blame anybody (except perhaps
+>CS), but I think others should be warned on possible problems.
+>
+>  
+>
+If we think that this is a problem in the driver that can be fixed in 
+the driver.
+
+/Benny
 
 
 
