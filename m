@@ -1,13 +1,13 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: snd_ prefix for module options
-Date: 12 Oct 2002 12:22:25 -0500
+From: Albert Jongkit Wong <awong@cs.washington.edu>
+Subject: Re: ppc usb-audio problems
+Date: Sat, 12 Oct 2002 02:55:38 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <878z13efn2.fsf@sulphur.joq.us>
-References: <Pine.LNX.4.33.0210121055200.1975-100000@pnote.perex-int.cz>
+Message-ID: <20021012025021.H21894-100000@fiji.cs.washington.edu>
+References: <s5hk7kpchz3.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0210121055200.1975-100000@pnote.perex-int.cz>
+In-Reply-To: <s5hk7kpchz3.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,27 +16,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, Peter L Jones <peter@drealm.org.uk>, Karsten Wiese <annabellesgarden@yahoo.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-> On 11 Oct 2002, Jack O'Quin wrote:
+> ah, perhaps xmms alsa plugin doesn't care the endianess.
+> if so, it's a bug of alsa output plugin.
 
-> > Are you saying that the "snd_" prefix violates standard Linux
-> > kernel rules for device driver options?  Did the kernel developers
-> > request this change?
+I started hacking at the code.  It looks like the xmms alsa plugin is fine 
+(if a bit messy).  However, it looks like their mpg123 input plugin is 
+always output big-endian data even when it says it is outputing the native 
+format data...hrm...  I'm not sure if that was intentional or not.  In 
+either case, it's their bug so I'm bugging them about it now.
+ 
+> hmm, most likely the same reason.
+> esd requests big-endian formats (as native machine format), which are
+> not supported on usb devices.
+> try to use the pcm 'plughw:0,0' instead of 'hw:0,0'.
+> (well, iirc, there is a bug in esound alsa output.  the command-line
+>  option is never passed as the device...)
 
-Jaroslav Kysela <perex@perex.cz> writes:
+I tried esd -d plughw:0,0 and it worked over here.  Is it more proper to
+communicate to alsa through plughw rather than hw?  It sounds like this
+interface is the smarter way to go...  I'm hesitating before suggesting 
+this to esound or mplayer since I'd rather not suggest something wrong.
 
-> Well, they had objections but not major to disallow inclusion of
-> ALSA to 2.5.  I think that it would be good to follow standard
-> kernel rules in this case.
+Thanks for helping me with this problem.  My system's working great now. 
+:)
 
-I agree.
--- 
-  Jack O'Quin
-  Austin, Texas, USA
+-Albert
+
 
 
 -------------------------------------------------------
