@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000988]: No errors, but no sound output
-Date: Thu, 17 Mar 2005 00:06:35 +0100
-Message-ID: <242460cb00088496cd394fa17edae176@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: Using hardware timers for the ALSA sequencer
+Date: Wed, 16 Mar 2005 20:21:13 -0400
+Message-ID: <1111018873.3239.1.camel@localhost>
+References: <1110845236.15588.23.camel@mindpipe>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43ED71A6
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 00:06:35 +0100 (MET)
+In-Reply-To: <1110845236.15588.23.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,70 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
-======================================================================
-Reported By:                madCoder
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   988
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.11-gentoo-r2
-======================================================================
-Date Submitted:             03-14-2005 00:35 CET
-Last Modified:              03-17-2005 00:06 CET
-======================================================================
-Summary:                    No errors, but no sound output
-Description: 
-Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
-upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
-1.0.8, and now I get no sound at all.  There are no error messages, the
-kernel modules are loaded properly and appear to be working fine.  Playing
-a file in XMMS, the spectrum analyzer shows that it should be playing
-sound, but I get nothing from the speakers.
+At least the aureal vortex has a high resolution hardware timer too. So
+if this leads to some code to support hardware timers, i would suggest
+something useable for other hardware too.
 
-I've already checked that all the mixer channels are unmuted and turned
-up, including DAC.  I know I'm not the only one, nor is this chipset the
-only one, that has had this problem, so is it something in the core that
-is causing all these problems, or are there just that many chipsets that
-have suddenly developed the inability to produce sound?
+Best Regards
 
-lsmod, lspci, and /proc output are attached in Additional Info
-======================================================================
+Manuel J. 
 
-----------------------------------------------------------------------
- tiwai - 03-16-05 12:56 
-----------------------------------------------------------------------
-Please attach /etc/asound.state, too.
-
-----------------------------------------------------------------------
- madCoder - 03-17-05 00:06 
-----------------------------------------------------------------------
-Sorry, knew I was forgetting something.  asound.state is attached as a file
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-14-05 00:35 madCoder       New Issue                                    
-03-14-05 00:35 madCoder       Distribution              => gentoo          
-03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
-03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
-03-16-05 12:56 tiwai          Note Added: 0003950                          
-03-17-05 00:05 madCoder       File Added: asound.state                     
-03-17-05 00:06 madCoder       Note Added: 0003973                          
-======================================================================
-
+On Mon, 2005-03-14 at 19:07 -0500, Lee Revell wrote:
+> Hey,
+> 
+> The emu10k1 timer thread reminded me of an idea I had.
+> 
+> Currently the ALSA sequencer always uses the system timer by default.
+> If your sound cards timer is supported by ALSA (emu10k1 and ymfpci),
+> this provides 50-100x better resolution.  But in order to get the ALSA
+> sequencer to use it you have to use the seq_default_timer_*  options
+> (which BTW I had never heard of on the list, I stumbled across them
+> reading the source).
+> 
+> How hard would it be to get the sequencer to prefer the hardware timer
+> by default and fall back to the system timer otherwise?  Probably would
+> not be noticeable for a MIDI keyboard, but for applications like sending
+> MIDI clock/MTC, the system timer resolution can be inadequate.
+> 
+> Would this be a good idea?
+> 
+> Lee
+> 
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> SF email is sponsored by - The IT Product Guide
+> Read honest & candid reviews on hundreds of IT Products from real users.
+> Discover which products truly live up to the hype. Start reading now.
+> http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+-- 
+Manuel Jander
+Electronic Engineer
 
 
 
