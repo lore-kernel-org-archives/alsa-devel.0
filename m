@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Wed, 19 Jan 2005 15:46:38 +0100
-Message-ID: <a3cdbbc17a11771bc8ff5f6302f39948@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
+Date: Wed, 19 Jan 2005 15:17:21 +0100
+Message-ID: <4160e414dd8e1d97f4890ecd8b66b33e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87489212
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:46:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF57926D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:17:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,76 +24,93 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
 ======================================================================
-Reported By:                1g0R
+Reported By:                feixm
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   822
-Category:                   PCI - azx
+Issue ID:                   490
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC3
-Kernel Version:             2.6.10-ac8
+Status:                     assigned
+Distribution:               linuxfromscratch, everything compiled from original
+sources
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-19-2005 15:46 CET
+Date Submitted:             09-08-2004 21:16 CEST
+Last Modified:              01-19-2005 15:17 CET
 ======================================================================
-Summary:                    CMI9880 (IHDA) alsamixer no controll
+Summary:                     Choppy sound when playing on Acer TravelMate 2000
 Description: 
-The compile went fine.
-I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
-I cant raise the trigger.
-No SPDIF out.
+Hello,
+
+when playing any audio file from my new Acer TravelMate 2000, the sound is
+very choppy. I tried playing using xmms, mplayer and others. From lspci I
+see, it is an ATI IXP 150. I understand that this bugreport alone won't
+help you guys, so if I can give any more info, pls let me know.
+
+When playing movies with mplayer, I see lots of messages like:
+
+alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
+0%
+alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
+0%
+
+These appear even more where skipping back and forward in the movie.
+
+I found, that playing movies through SDL helps a little, but sound is
+still choppy and cannot be listened to.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 15:16 
+ feixm - 01-18-05 22:47 
 ----------------------------------------------------------------------
-Hmm I don't understand what's exactly your problem.  Please elaborate a bit
-more what you did and what didn't work.
-
-You started xmms with ALSA output plugin, and changed the volume in xmms? 
-In xmms ALSA output plugin, you can choose (plugin's) software volume or
-not.  If the soft volume is chosen, it's the task of xmms plugin and it
-doesn't change the mixer outside.
-Also, you can choose whether Master or PCM mixer is used.  CMI9880 has no
-Master volume but only PCM.
+I don't think that MPlayer is to be blamed, as I've tested this behaviour
+with XMMS and others. I'll test with latest 1.0.8 release and post an
+update.
 
 ----------------------------------------------------------------------
- 1g0R - 01-19-05 15:46 
+ feixm - 01-19-05 15:17 
 ----------------------------------------------------------------------
-I can change the volume only in alsaplayer.
-A cant change in alsamixer,kmix,xmms.(PCM and MASTER)
+Today I recompiled my Alsa-driver installation with latest 1.0.8. Now
+mplayer can play movies with no problems for few minutes and then sound
+stops for about a second with almost 100 of lines like:
+
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+alsa-play: xrun of at least 0,019 msecs. resetting stream
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+alsa-play: xrun of at least 0,016 msecs. resetting stream
+ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+alsa-play: xrun of at least 0,016 msecs. resetting stream
+
+Last two lines are always something like:
+
+alsa-space: xrun of at least 1,753 msecs. resetting stream
+alsa-space: xrun of at least 1,169 msecs. resetting stream
+
+Then it continues to play normally, just after next few minutes exactly
+the same thing happens again.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 19:06 1g0R           New Issue                                    
-01-16-05 19:06 1g0R           Distribution              => FC3             
-01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
-01-17-05 15:05 tiwai          Status                   new => resolved     
-01-17-05 15:05 tiwai          Resolution               open => not an issue
-01-17-05 15:05 tiwai          Assigned To               => tiwai           
-01-17-05 15:05 tiwai          Note Added: 0003235                          
-01-17-05 15:05 tiwai          Assigned To              tiwai =>            
-01-17-05 16:43 1g0R           Status                   resolved => feedback
-01-17-05 16:43 1g0R           Resolution               not an issue => reopened
-01-17-05 16:43 1g0R           Note Added: 0003238                          
-01-17-05 16:43 1g0R           Assigned To               => tiwai           
-01-18-05 14:01 1g0R           Note Added: 0003249                          
-01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
-01-18-05 17:57 tiwai          Note Added: 0003254                          
-01-19-05 13:33 1g0R           Note Added: 0003264                          
-01-19-05 14:25 tiwai          Note Added: 0003265                          
-01-19-05 14:36 1g0R           Note Added: 0003272                          
-01-19-05 14:40 tiwai          Note Added: 0003275                          
-01-19-05 14:59 1g0R           Note Added: 0003280                          
-01-19-05 15:16 tiwai          Note Added: 0003281                          
-01-19-05 15:46 1g0R           Note Added: 0003289                          
+09-08-04 21:16 feixm          New Issue                                    
+09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
+everything compiled from original sources
+09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
+01-18-05 07:56 rounin         Note Added: 0003242                          
+01-18-05 07:59 rounin         Issue Monitored: rounin                      
+01-18-05 08:09 rounin         Note Added: 0003245                          
+01-18-05 11:32 tiwai          Note Added: 0003247                          
+01-18-05 21:25 rlrevell       Note Added: 0003260                          
+01-18-05 22:47 feixm          Note Added: 0003261                          
+01-19-05 15:17 feixm          Note Added: 0003282                          
 ======================================================================
 
 
