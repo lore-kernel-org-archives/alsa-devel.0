@@ -1,10 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echoaudio cleanup
-Date: Sun, 13 Feb 2005 21:46:12 +0100
-Message-ID: <20050213214612.5eddf224.pochini@shiny.it>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: upmixing line in - emu10k1 sb live 5.1
+Date: Sun, 13 Feb 2005 16:31:37 -0500
+Message-ID: <1108330297.25912.11.camel@krustophenia.net>
+References: <5edc2c9309dcc338399014c07df92a2d@yahoo.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <5edc2c9309dcc338399014c07df92a2d@yahoo.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,322 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: David Thompson <dwhthompson@yahoo.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2005-02-13 at 15:07 +0000, David Thompson wrote:
+> I am currently running VDR on my linux 2.6.8, SuSE 9.2 box running alsa 
+> 1.0.6 and would like to upmix the 2 channel dvb audio to analogue 5.1 
+> from my ttpci premium card that is fed into my soundblaster live 5.1 
+> soundcard via the line in port using the emu10k1 driver.
+> 
+> Before I used a ttusb budget device with vdr xine and got used to the 
+> 5.1 upmixed audio which xine upmixed!
+> 
+> Anyone know how to do this?  Have looked in vain thus far for a 
+> solution ..  Do I need to write a audio filter for this - and if so can 
+> anyone point me in the direction of a how to or sample file to do this?
 
-- Trivial cleanup: move some duplicated defines into echoaudio.h
+It should just work.  If you set "Line In Volume" and "Line In Capture
+Volume" to 100% then you should hear the line in on all the 5.1
+channels.
 
+Does it not work this way for you?
 
+Lee
 
-Signed-off-by: Giuliano Pochini <pochini@shiny.it>
-
-diff -du alsa-driver_orig/pci/echoaudio/darla20.c alsa-driver/pci/echoaudio/darla20.c
---- alsa-driver_orig/pci/echoaudio/darla20.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/darla20.c	Sun Feb 13 21:08:00 2005
-@@ -35,17 +35,6 @@
- #define BX_DIGITAL_IN	10	/* 0 */
- #define BX_NUM		10
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-diff -du alsa-driver_orig/pci/echoaudio/darla24.c alsa-driver/pci/echoaudio/darla24.c
---- alsa-driver_orig/pci/echoaudio/darla24.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/darla24.c	Sun Feb 13 21:08:00 2005
-@@ -39,17 +39,6 @@
- #define BX_DIGITAL_IN	10	/* 0 */
- #define BX_NUM		10
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-diff -du alsa-driver_orig/pci/echoaudio/echoaudio.h alsa-driver/pci/echoaudio/echoaudio.h
---- alsa-driver_orig/pci/echoaudio/echoaudio.h	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/echoaudio.h	Sun Feb 13 21:08:00 2005
-@@ -288,6 +288,17 @@
- #define PIPE_STATE_STARTED	2	// Pipe has been started
- #define PIPE_STATE_PENDING	3	// Pipe has pending start
- 
-+/* Number of channels */
-+#define NUM_PIPES		PX_NUM
-+#define NUM_PIPES_OUT		(PX_ANALOG_IN - PX_ANALOG_OUT)
-+#define NUM_PIPES_IN		(PX_NUM - PX_ANALOG_IN)
-+#define NUM_BUSSES_OUT		(BX_ANALOG_IN - BX_ANALOG_OUT)
-+#define NUM_BUSSES_IN		(BX_NUM - BX_ANALOG_IN)
-+#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
-+#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
-+#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
-+#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
-+
- 
- /* Debug initialization */
- #if (CONFIG_SND_DEBUG)
-diff -du alsa-driver_orig/pci/echoaudio/gina20.c alsa-driver/pci/echoaudio/gina20.c
---- alsa-driver_orig/pci/echoaudio/gina20.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/gina20.c	Sun Feb 13 21:08:00 2005
-@@ -39,17 +39,6 @@
- #define BX_DIGITAL_IN	12	/* 2 */
- #define BX_NUM		14
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-diff -du alsa-driver_orig/pci/echoaudio/gina24.c alsa-driver/pci/echoaudio/gina24.c
---- alsa-driver_orig/pci/echoaudio/gina24.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/gina24.c	Sun Feb 13 21:08:00 2005
-@@ -46,18 +46,6 @@
- #define BX_NUM		26
- 
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
--
- #include <sound/driver.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-diff -du alsa-driver_orig/pci/echoaudio/gina3g.c alsa-driver/pci/echoaudio/gina3g.c
---- alsa-driver_orig/pci/echoaudio/gina3g.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/gina3g.c	Sun Feb 13 21:08:00 2005
-@@ -48,18 +48,6 @@
- #define BX_NUM		24
- 
- 
--/* Number of channels */
--#define NUM_PIPES		PX_NUM
--#define NUM_PIPES_OUT		(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN		(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT		(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN		(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
--
- #include <sound/driver.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-diff -du alsa-driver_orig/pci/echoaudio/indigo.c alsa-driver/pci/echoaudio/indigo.c
---- alsa-driver_orig/pci/echoaudio/indigo.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/indigo.c	Sun Feb 13 21:08:00 2005
-@@ -38,18 +38,6 @@
- #define BX_NUM		2
- 
- 
--/* Number of channels */
--#define NUM_PIPES		PX_NUM
--#define NUM_PIPES_OUT		(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN		(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT		(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN		(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
--
- #include <sound/driver.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-diff -du alsa-driver_orig/pci/echoaudio/indigodj.c alsa-driver/pci/echoaudio/indigodj.c
---- alsa-driver_orig/pci/echoaudio/indigodj.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/indigodj.c	Sun Feb 13 21:08:00 2005
-@@ -38,18 +38,6 @@
- #define BX_NUM		4
- 
- 
--/* Number of channels */
--#define NUM_PIPES		PX_NUM
--#define NUM_PIPES_OUT		(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN		(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT		(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN		(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
--
- #include <sound/driver.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-diff -du alsa-driver_orig/pci/echoaudio/indigoio.c alsa-driver/pci/echoaudio/indigoio.c
---- alsa-driver_orig/pci/echoaudio/indigoio.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/indigoio.c	Sun Feb 13 21:08:00 2005
-@@ -39,18 +39,6 @@
- #define BX_NUM		4
- 
- 
--/* Number of channels */
--#define NUM_PIPES		PX_NUM
--#define NUM_PIPES_OUT		(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN		(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT		(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN		(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
--
- #include <sound/driver.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-diff -du alsa-driver_orig/pci/echoaudio/layla20.c alsa-driver/pci/echoaudio/layla20.c
---- alsa-driver_orig/pci/echoaudio/layla20.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/layla20.c	Sun Feb 13 21:23:44 2005
-@@ -44,17 +44,6 @@
- #define BX_DIGITAL_IN	20	/*  2 */
- #define BX_NUM		22
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-diff -du alsa-driver_orig/pci/echoaudio/layla24.c alsa-driver/pci/echoaudio/layla24.c
---- alsa-driver_orig/pci/echoaudio/layla24.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/layla24.c	Sun Feb 13 21:08:00 2005
-@@ -46,17 +46,6 @@
- #define BX_DIGITAL_IN	24	/* 8 */
- #define BX_NUM		32
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-diff -du alsa-driver_orig/pci/echoaudio/layla3g.c alsa-driver/pci/echoaudio/layla3g.c
---- alsa-driver_orig/pci/echoaudio/layla3g.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/layla3g.c	Sun Feb 13 21:08:00 2005
-@@ -47,18 +47,6 @@
- #define BX_NUM		32
- 
- 
--/* Number of channels */
--#define NUM_PIPES		PX_NUM
--#define NUM_PIPES_OUT		(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN		(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT		(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN		(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
--
- #include <sound/driver.h>
- #include <linux/delay.h>
- #include <linux/init.h>
-diff -du alsa-driver_orig/pci/echoaudio/mia.c alsa-driver/pci/echoaudio/mia.c
---- alsa-driver_orig/pci/echoaudio/mia.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/mia.c	Sun Feb 13 21:08:00 2005
-@@ -44,17 +44,6 @@
- #define BX_DIGITAL_IN	6	/* 2 */
- #define BX_NUM		8
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-diff -du alsa-driver_orig/pci/echoaudio/mona.c alsa-driver/pci/echoaudio/mona.c
---- alsa-driver_orig/pci/echoaudio/mona.c	Sun Feb 13 21:17:04 2005
-+++ alsa-driver/pci/echoaudio/mona.c	Sun Feb 13 21:08:00 2005
-@@ -43,17 +43,6 @@
- #define BX_DIGITAL_IN	18	/* 8 */
- #define BX_NUM		26
- 
--/* Number of channels */
--#define NUM_PIPES	PX_NUM
--#define NUM_PIPES_OUT	(PX_ANALOG_IN - PX_ANALOG_OUT)
--#define NUM_PIPES_IN	(PX_NUM - PX_ANALOG_IN)
--#define NUM_BUSSES_OUT	(BX_ANALOG_IN - BX_ANALOG_OUT)
--#define NUM_BUSSES_IN	(BX_NUM - BX_ANALOG_IN)
--#define NUM_ANALOG_BUSSES_OUT	(BX_DIGITAL_OUT - BX_ANALOG_OUT)
--#define NUM_ANALOG_BUSSES_IN	(BX_DIGITAL_IN - BX_ANALOG_IN)
--#define NUM_DIGITAL_BUSSES_OUT	(NUM_BUSSES_OUT - NUM_ANALOG_BUSSES_OUT)
--#define NUM_DIGITAL_BUSSES_IN	(NUM_BUSSES_IN - NUM_ANALOG_BUSSES_IN)
--
- 
- #include <sound/driver.h>
- #include <linux/delay.h>
-
-
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
