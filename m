@@ -1,11 +1,11 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sat, 1 Jan 2005 20:35:26 +0100
-Message-ID: <20050101193526.94B44350@alsa.alsa-project.org>
+Date: Sat, 1 Jan 2005 21:51:32 +0100
+Message-ID: <20050101205133.32C252E0@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94B44350
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 20:35:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 32C252E0
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 21:51:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,7 +20,7 @@ List-Id: alsa-devel@alsa-project.org
 
 Audigy2 Value - SB0400 card
 Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <99045b84ed8c2c96e22b159b8dffff2c@bugtrack.alsa-project.org>
+Message-ID: <02c14c3acd1cab7290f7a914957f9e2d@bugtrack.alsa-project.org>
 X-Priority: 3
 X-Mailer: PHPMailer [version 1.72]
 MIME-Version: 1.0
@@ -46,7 +46,7 @@ Distribution:               1.08rc1
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-01-2005 20:35 CET
+Last Modified:              01-01-2005 21:51 CET
 ======================================================================
 Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
 (12/30/2004)
@@ -68,17 +68,19 @@ xmms cannot find sound card.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 01-01-05 18:44 
-----------------------------------------------------------------------
-Are you *sure* you pushed F4 in alsamixer and set all of the capture
-controls to maximum?
-
-----------------------------------------------------------------------
  pzad - 01-01-05 20:35 
 ----------------------------------------------------------------------
 Set "Analog Mix" slider - best set it to 100 %
 You can control volumes by "Line In" and "Aux" slider - make sure, they
 are unmuted.
+
+----------------------------------------------------------------------
+ hodgesw - 01-01-05 21:51 
+----------------------------------------------------------------------
+Every device that alsamixer will let me set 
+i have set to  100%.
+Mic work fine as do the speaker-test and kde configuator.
+Cdplay fails and tvtime (with  defaults) fail
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -90,6 +92,7 @@ Date Modified  Username       Field                    Change
 01-01-05 16:13 hodgesw        Note Added: 0003032                          
 01-01-05 18:44 rlrevell       Note Added: 0003033                          
 01-01-05 20:35 pzad           Note Added: 0003035                          
+01-01-05 21:51 hodgesw        Note Added: 0003036                          
 ======================================================================
 
 
