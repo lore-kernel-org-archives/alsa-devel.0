@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Tue, 15 Feb 2005 10:08:59 +0100
-Message-ID: <8e9f790a741bdd12df4fd4ae6690dfc1@bugtrack.alsa-project.org>
+Date: Tue, 15 Feb 2005 10:32:09 +0100
+Message-ID: <0e817e3ac8761018e1f561eb1b7f87f4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 23060278
-	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2005 10:09:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DFC9278
+	for <alsa-devel@alsa-project.org>; Tue, 15 Feb 2005 10:32:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Kernel Version:             # uname -a<br />
 Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
 Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              02-15-2005 10:08 CET
+Last Modified:              02-15-2005 10:32 CET
 ======================================================================
 Summary:                    Can't get nm256 up & running
 Description: 
@@ -115,13 +115,6 @@ Saving the mixer setup used for this in /var/lib/alsa/asound.state.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-14-05 19:46 
-----------------------------------------------------------------------
-isapnp=0 seems missing.  Check "/sbin/modinfo snd-cs4232" whether isapnp
-module option exists.  If yes, try the module option
-snd-cs4232 port=0x530 cport=0x538 dma1=1 dma2=0 irq=5 isapnp=0
-
-----------------------------------------------------------------------
  Jean-Louis Crouzet - 02-15-05 10:08 
 ----------------------------------------------------------------------
 Hi,
@@ -175,6 +168,67 @@ today until you have something more accurate than my emprical way to
 check.
 JL
 
+----------------------------------------------------------------------
+ Jean-Louis Crouzet - 02-15-05 10:32 
+----------------------------------------------------------------------
+I also tried this with cs4232 not snd_cs4232, shall I change my BIOS
+settings and again which parm correspond to what?
+
+hp900:~# modinfo cs4232
+filename:       /lib/modules/2.6.8jlcv38/kernel/sound/oss/cs4232.ko
+description:    CS4232 based soundcard driver
+author:         Hannu Savolainen, Paul Barton-Davis
+license:        GPL
+vermagic:       2.6.8jlcv38 PENTIUMII gcc-3.3
+depends:        uart401,sound,ad1848
+alias:          pnp:dCSC0100*
+alias:          pnp:dCSC0000*
+alias:          pnp:dGIM0100*
+parm:           bss:Enable Bose Sound System Support (default 0)
+parm:           isapnp:Enable ISAPnP probing (default 1)
+parm:           synthirq:Maui WaveTable IRQ
+parm:           synthio:Maui WaveTable base I/O port
+parm:           mpuirq:MPU 401 IRQ
+parm:           mpuio:MPU 401 base address
+parm:           dma2:16 bit DMA for AD1848 chip
+parm:           dma:8 bit DMA for AD1848 chip
+parm:           irq:IRQ for AD1848 chip
+parm:           io:base I/O port for AD1848
+hp900:~# alsaconf -L logfile -p cs4232 io=0x220 dma=1 dma2=0 irq=5
+isapnp=0
+Usage: /etc/init.d/alsa {start [CARD]|stop [CARD]|restart
+[CARD]|force-unload|force-reload|suspend|resume}
+FAILED
+hp900:~# cat logfile
+Starting alsaconf: Tue Feb 15 10:36:47 CET 2005
+cs4232 port=0x530 cport=0x538 dma1=1 dma2=0 irq=5
+cs4232 port=0x534 cport=0x538 dma1=1 dma2=0 irq=5
+cs4232 port=0x530 cport=0x210 dma1=1 dma2=0 irq=5
+cs4232 port=0x534 cport=0x210 dma1=1 dma2=0 irq=5
+cs4232 port=0x530 cport=0xf00 dma1=1 dma2=0 irq=5
+cs4232 port=0x534 cport=0xf00 dma1=1 dma2=0 irq=5
+hp900:~# modinfo ad1848
+filename:       /lib/modules/2.6.8jlcv38/kernel/sound/oss/ad1848.ko
+license:        GPL
+vermagic:       2.6.8jlcv38 PENTIUMII gcc-3.3
+depends:        sound
+hp900:~# modinfo sound
+filename:       /lib/modules/2.6.8jlcv38/kernel/sound/oss/sound.ko
+license:        GPL
+description:    OSS Sound subsystem
+author:         Hannu Savolainen, et al.
+vermagic:       2.6.8jlcv38 PENTIUMII gcc-3.3
+depends:        soundcore
+hp900:~# modinfo soundcore
+filename:       /lib/modules/2.6.8jlcv38/kernel/sound/soundcore.ko
+description:    Core sound module
+author:         Alan Cox
+license:        GPL
+alias:          char-major-14-*
+vermagic:       2.6.8jlcv38 PENTIUMII gcc-3.3
+depends:
+hp900:~#
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -190,6 +244,7 @@ Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
 02-14-05 19:46 tiwai          Note Added: 0003605                          
 02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
+02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
 ======================================================================
 
 
