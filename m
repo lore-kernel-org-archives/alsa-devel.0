@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: MIDI port names
-Date: Thu, 20 Feb 2003 09:55:18 +0100 (CET)
+From: Jaroslaw Sobierski <fycio@gucio.com>
+Subject: Re: S/PDIF on AD1980 patch
+Date: Thu, 20 Feb 2003 01:01:52 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302200953350.1266-100000@pnote.perex-int.cz>
-References: <200302200046.18193.plcl@telefonica.net>
+Message-ID: <1045731712.3e549980214db@webmail.namezero.com>
+References: <1045497687.3e5107575caeb@webmail3.namezero.com> <s5hheb1h6cy.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200302200046.18193.plcl@telefonica.net>
+In-Reply-To: <s5hheb1h6cy.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +17,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Clemens Ladisch <clemens@ladisch.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Feb 2003, Pedro Lopez-Cabanillas wrote:
+Quoting Takashi Iwai <tiwai@suse.de>:
 
-> On Wednesday 19 February 2003 14:51, Takashi Iwai wrote:
-> > there is the name field for each rawmidi substream, and the sequencer
-> > looks up this string.
-> >
-> > this reminds me the former patch by Clemens, and i've forgotten to
-> > check this issue until now.  sorry.
-> >
-> > i modified the sequencer part (and mpu401_uart) on the cvs so that the
-> > sequencer retrieves the rawmidi name string if the substream name is
-> > not defined. 
+> At Mon, 17 Feb 2003 08:01:27 -0800,
+> Jaroslaw Sobierski wrote:
+> > 
+> > 
+> > Another question though. I still cannot get the AC3 pass-through to work.
+> > I assume the spdif source must be set to AC-Link (which is hw-reset default
 > 
-> But Clemens' patch (attached is a slightly modified version) was not for port 
-> names but for client names, from "External MIDI x" to the more meaningful 
-> rawmidi name. I think that this is what some people is requesting, and makes 
-> things easier for large studio setups when some applications, like kaconnect, 
-> show client names but not port names. Please, apply.
+> > anyway), and I figure all other stuff should be set by alsa (like
+> Category
+> > Code, etc.). I have no problem with AC3 on emu10k1, so I guess mplayer is
+> > requesting correct stream params from alsa. Yet on AC97 I can't get it to
+> 
+> > work (amp keeps indicating a PCM stream). Any suggestions what to look
+> for?
+> 
+> hmm.. ICH4 has a separate SPDIF channel and it looks like we don't use
+> this properly.  that is, SPDIF is routed via the normal slot 3/4.
+> perhaps we should route the spdif via slot 10/11 (in GLOB_CNT bit
+> 30:31 to 1:1), and set SPSA to the corresponding value.
+> the definition of iec958 in ICH.conf should be rewritten, too...
+The default configuration for ad1980 is to use slots 7/8. 3/4 is not
+the best choice since the DACs are set to this by default. I don't
+think ICH4 has anything to do with this, I downloaded the specs a while
+ago only to realize that it just gives you access to the ac97 regs and
+that's it. There's practically nothing to configure on the south bridge
+itself.
 
-I don't agree with this patch. kaconnect or other applications might 
-simply parse the string and if matches - get the real name over the 
-control interface. Otherwise, it is not clear, that the port is equal to
-a rawmidi device.
+> 
+> anyway,  can you check whether the register 0x3a is set correctly when
+> mplayer tries to play ac3?
+> 
+Yes and no :-). I dumped all ac97 regs from /proc and was going to send
+you teh list, but they did not change at all between PCM and ac3. I later
+discovered, quite by accident, that for some reason ac3 is never routed
+to the ac97 codec - when I choose the hwac3 option the stream always
+goes to emu10k1 (and plays correctly over its spdif), even though I 
+explicitly specify "hw:1". I have to try unloading the modules for emu and 
+see what happens then. But this seems anyway a bug. Unless the ICH driver
+declares no possibilty to create open ac3 stream and alsa falls back on
+the default card? 
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+--------------
+Fycio (J.Sobierski)
+ fycio@gucio.com
 
 
 -------------------------------------------------------
