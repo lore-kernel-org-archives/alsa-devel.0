@@ -1,46 +1,75 @@
-From: David =?iso-8859-15?Q?G=F3mez?= <david@pleyades.net>
-Subject: Re: Error with snd_pc_sw_params in pcm.c
-Date: Mon, 8 Nov 2004 21:25:08 +0100
-Message-ID: <20041108202508.GA3365@fargo>
-References: <20041105215534.GA28584@fargo> <Pine.HPX.4.33n.0411081841120.16893-100000@studcom.urz.uni-halle.de>
+From: Christian Kujau <evil@g-house.de>
+Subject: Re: Oops in 2.6.10-rc1
+Date: Mon, 08 Nov 2004 21:31:57 +0100
+Message-ID: <418FD7BD.2060403@g-house.de>
+References: <418D7959.4020206@g-house.de> <20041107130553.M49691@g-house.de>	 <418E4705.5020001@g-house.de>	 <Pine.LNX.4.58.0411070831200.2223@ppc970.osdl.org>	 <20041107182155.M43317@g-house.de> <418EB3AA.8050203@g-house.de>	 <Pine.LNX.4.58.0411071653480.24286@ppc970.osdl.org>	 <418F6E33.8080808@g-house.de>	 <84144f0204110810444400761f@mail.gmail.com>	 <20041108190040.GC27386@kroah.com> <84144f02041108111816dc0b3a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0411081841120.16893-100000@studcom.urz.uni-halle.de>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-sound-owner@vger.kernel.org>
+In-Reply-To: <84144f02041108111816dc0b3a@mail.gmail.com>
+Sender: linux-sound-owner@vger.kernel.org
+To: Pekka Enberg <penberg@gmail.com>
+Cc: Greg KH <greg@kroah.com>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Linus Torvalds <torvalds@osdl.org>, alsa-devel@lists.sourceforge.net, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens ;),
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-On Nov 08 at 06:44:39, Clemens Ladisch wrote:
-> David Gómez wrote:
-> > madplay-0.15.2b
-> >
-> > ALSA lib pcm.c:826:(snd_pcm_sw_params) snd_pcm_sw_params:
-> > params->avail_min problem for start_threshold
+Pekka Enberg schrieb:
+> Hi,
 > 
-> This is a bug in madplay, it has tried to set inconsistent parameters.
+> On Mon, 8 Nov 2004 11:00:40 -0800, Greg KH <greg@kroah.com> wrote:
+> 
+>>But 2.6.10-rc1-bk15 does have the problem?
+>>
+>>Trying to figure out where the issue is...
 
-I'll report it then to madplay authors, thanks for your help ;)
+i could use the -bk snapshots too, but since i am using bk myself (i try),
+i think we can narrow it down a bit more.
 
--- 
-David Gómez                                      Jabber ID: davidge@jabber.org
+> 
+> No, -bk14 is just the kernel I am running right now (I haven't tried
+> -bk15) and I haven't had the problem. I cannot reproduce the oops _at
+> all_ which is why I suspect it's his hardware. I included my lspci and
+> dmesg output because we have similar (but not exactly the same)
+> setups.
+
+i've put an lspci output here:
+http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/lspci-v.txt
+http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/lspci-vv.txt
+
+i do not suspect hw problems *yet*, because kernel up to 2.6.9 (tracking
+bk) do not show this behaviour.
+
+> FWIW, I've asked Christian for an obdump of the kernel to see if I can
+
+will show up in a couple of minutes here:
+http://www.nerdbynature.de/bits/prinz/2.6.10-rc1/objdump-d_a1.2463.txt.bz2
+
+this is from the vmlinux from a "bk undo -a1.2463" kernel, IOW it still
+contains:
+
+ChangeSet@1.2463, 2004-11-04 17:07:16-08:00, torvalds@ppc970.osdl.org
+  Merge bk://kernel.bkbits.net/gregkh/linux/driver-2.6
+  into ppc970.osdl.org:/home/torvalds/v2.6/linux
 
 
--------------------------------------------------------
-This SF.Net email is sponsored by:
-Sybase ASE Linux Express Edition - download now for FREE
-LinuxWorld Reader's Choice Award Winner for best database on Linux.
-http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
+thank you for the hints,
+Christian.
+
+PS: should we i un'CC linux-sound and alsa-devel, now we are sure it's a
+pci thing?
+- --
+BOFH excuse #228:
+
+That function is not currently supported, but Bill Gates assures us it
+will be featured in the next upgrade.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFBj9e9+A7rjkF8z0wRAregAJ9TyK5Mt00CFmCcgA1pOKmzvIxv2QCg0OBi
+/9eNZ41Kp2GAOg4J5l0QR8E=
+=OkFI
+-----END PGP SIGNATURE-----
