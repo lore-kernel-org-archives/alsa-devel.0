@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000992]: no supported card
-Date: Wed, 6 Apr 2005 18:40:10 +0200
-Message-ID: <bacdf691a07ed91511b09459a8fffefc@bugtrack.alsa-project.org>
+Date: Wed, 6 Apr 2005 18:40:24 +0200
+Message-ID: <8bb0fdbe259374de0bd9084f8c8a1432@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE8E1205
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 18:40:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 796E3205
+	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 18:40:24 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
@@ -35,7 +35,7 @@ Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               
 Kernel Version:             2.4
 ======================================================================
@@ -78,6 +78,7 @@ Date Modified  Username       Field                    Change
 04-06-05 18:15 rav0r          Note Added: 0004347                          
 04-06-05 18:16 rav0r          Note Added: 0004348                          
 04-06-05 18:40 jcdutton       Note Added: 0004349                          
+04-06-05 18:40 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
