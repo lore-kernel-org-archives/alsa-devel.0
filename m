@@ -1,97 +1,60 @@
-From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Re: [2.6.3] snd_intel8x0: playing to fast
-Date: Thu, 11 Mar 2004 17:17:55 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xvflbwe6k.fsf@kth.se>
-References: <20040310212125.GA17864@dreamland.darkstar.lan> <yw1xfzcgxsmh.fsf@kth.se>
- <20040311152835.GA22576@dreamland.darkstar.lan>
+From: Alexander Nyberg <alexn@telia.com>
+Subject: Badness in remove_proc_entry called from snd_via82xx_remove
+	(2.6.4-mm)
+Date: Thu, 11 Mar 2004 18:38:16 +0100
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1079026696.810.26.camel@boxen>
+References: <20040204203426.GA1841@miriel.finwe.eu.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <20040204203426.GA1841@miriel.finwe.eu.org>
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Luca <kronos@people.it> writes:
+This happens at shutdown when alsa is to be closed with kernel 2.6.4-mm.
+I'm running debian sid, snd_via82xx compiled as module.
+Happens also on 2.6.4-rc2-mm1, I can try on more kernels as well if it
+is not a clear case.
 
-> Il Wed, Mar 10, 2004 at 11:08:22PM +0100, M?ns Rullg?rd ha scritto: 
->> *This message was transferred with a trial version of CommuniGate(tm) Pro*
->> Luca <kronos@people.it> writes:
->> 
->> > Hi,
->> > I'm using linux 2.6.3 with alsalib 1.0.2c. When using alsa output plugin
->> > of XMMS or mplayer the song is played too fast. Using OSS emulation
->> > works fine.
->> >
->> > This is from bootlog:
->> >
->> > intel8x0_measure_ac97_clock: measured 49482 usecs
->> > intel8x0: clocking to 48000
->> 
->> Make sure the programs are using device "default" or "plughw:0,0" (or
->> whatever device numbers you like).  If the programs can't be persuaded
->> to do that they are buggy.  
->
-> mplayer is using hw:0,0.
 
-Bug.
+I slapped a printk on these just before the badness:
+de->subdir->name = "id", de->name = "card0"
 
-> alsa-init: requested format: 44100 Hz, 2 channels, Signed 16-bit (Little-Endian)
-> alsa-init: compiled for ALSA-1.0.3
-> alsa-init: soundcard set to hw:0
-> alsa-init: pcm opend in block-mode
-> alsa-init: chunksize set to 1024
-> alsa-init: current val=16, fragcount=16
-> alsa-init: got buffersize=65536
-> alsa9: 44100 Hz/2 channels/4 bpf/65536 bytes buffer/Signed 16 bit Little Endian
->
-> It doens't like plugwh:0,0:
->
-> alsa-init: requested format: 44100 Hz, 2 channels, Signed 16-bit (Little-Endian)
-> alsa-init: compiled for ALSA-1.0.3
-> alsa-init: soundcard set to plughw
-> alsa-init: pcm opend in block-mode
-> alsa-init: unable to set periodsize: Invalid argument
-
-Bug.
-
-> Btw, mplayer from CVS (checked out today) works nicely with -ao alsa1x:
->
-> alsa-init: requested format: 44100 Hz, 2 channels, Signed 16-bit (Little-Endian)
-> alsa-init: compiled for ALSA-1.0.3
-> alsa-init: got device=0, subdevice=0
-> alsa-init: 1 soundcard found, using: hw:0,0
-> alsa-init: pcm opened in block-mode
-> alsa-init: chunksize set to 1024
-> alsa-init: fragcount=16
-> alsa-init: got buffersize=65536
-> alsa1x: 48000 Hz/2 channels/4 bpf/65536 bytes buffer/Signed 16 bit Little Endian
-> ...
-> [resample] Changing sample rate to 48000Hz
-> [resample] Changing sample rate to 48000Hz
-> [resample] Using linear interpolation.
->
-> So my sound card accept sound only at 48000Hz but old mplayer didn't
-> notice that alsa-lib doesn't accept its request for 44100Hz. Correct?
-
-So it seems.
-
--- 
-Måns Rullgård
-mru@kth.se
+Badness in remove_proc_entry at fs/proc/generic.c:667
+Call Trace:
+[<c016fb5a>] remove_proc_entry+0x13a/0x1a0
+[<e083a6fb>] snd_info_unregister+0x3b/0x70 [snd]
+[<e083a231>] snd_info_card_free+0x31/0x60 [snd]
+[<e0838b67>] snd_card_free+0xd7/0x250 [snd]
+[<c015bfde>] destroy_inode+0x4e/0x50
+[<c015d0b5>] iput+0x55/0x80
+[<e08709c9>] snd_via82xx_remove+0x19/0x30 [snd_via82xx]
+[<c01a074b>] pci_device_remove+0x3b/0x40
+[<c01c4854>] device_release_driver+0x64/0x70
+[<c01c4880>] driver_detach+0x20/0x30
+[<c01c4aad>] bus_remove_driver+0x3d/0x80
+[<c01c4ec3>] driver_unregister+0x13/0x28
+[<c01a08e2>] pci_unregister_driver+0x12/0x20
+[<e08709ef>] alsa_card_via82xx_exit+0xf/0x13 [snd_via82xx]
+[<c012b5d1>] sys_delete_module+0x131/0x170
+[<c013e264>] sys_munmap+0x44/0x70
+[<c0249c4f>] syscall_call+0x7/0xb
 
 
 
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235 AC97 Audio Controller (rev 50)
+        Subsystem: ABIT Computer Corp.: Unknown device 1401
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 11
+        Region 0: I/O ports at e800 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
