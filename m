@@ -1,10 +1,10 @@
-From: nick mainsbridge <beatroot@optushome.com.au>
-Subject: Re: problems with 0.9.8 drivers and rme9652
-Date: 19 Nov 2003 03:05:05 +1100
+From: Garett Shulman <shulmang@colorado.edu>
+Subject: envy24 cant open more than one mixer channel
+Date: Tue, 18 Nov 2003 10:47:41 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1069171504.382.36.camel@datablender>
+Message-ID: <3FBA5B3D.8020705@colorado.edu>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,109 +18,143 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello,
-i'm having the same problems with my hammerfall digi9652 and
-alsa-driver-0.9.8 that were reported by Martin Dausel.
-i'm using kernel 2.4.22 SMP with capabilities and low latency patches on
-a dual pIII system.
-alsa-driver-0.9.7c works fine with the same system.
+Hello, I can't seem to open more than one mixer output device on my 
+envy24 card at a time. If one of the following apps is used with say 
+44channel1 and another of them tries to open 44channel2 I get the 
+following behavior.
 
-after compiling using --with-debug=detect or 'full' i only get the
-mysterious "Nov 19 02:37:02 datablender kernel: RME Digi9652/Digi9636:
-no cards found" in /var/log/messages.
+Fluidsynth gives the following error:
+ALSA lib pcm_hw.c:1055:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: 
+Device or resource busy
 
-anyway, here's some more useful(?) information;
+mplayer just blocks
 
-lspci -v
-00:00.0 Host bridge: VIA Technologies, Inc. VT82C693A/694x [Apollo
-PRO133x] (rev c4)
-        Flags: bus master, medium devsel, latency 16
-        Memory at e0000000 (32-bit, prefetchable) [size=64M]
-        Capabilities: [a0] AGP version 2.0
-        Capabilities: [c0] Power Management version 2
- 
-00:01.0 PCI bridge: VIA Technologies, Inc. VT82C598/694x [Apollo
-MVP3/Pro133x AGP] (prog-if 00 [Normal decode])
-        Flags: bus master, 66Mhz, medium devsel, latency 0
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
-        I/O behind bridge: 0000b000-0000bfff
-        Memory behind bridge: dbe00000-ddefffff
-        Prefetchable memory behind bridge: d7c00000-dbcfffff
-        Capabilities: [80] Power Management version 2
- 
-00:07.0 ISA bridge: VIA Technologies, Inc. VT82C686 [Apollo Super South]
-(rev 40)
-        Subsystem: VIA Technologies, Inc. VT82C686/A PCI to ISA Bridge
-        Flags: bus master, stepping, medium devsel, latency 0
-        Capabilities: [c0] Power Management version 2
- 
-00:07.1 IDE interface: VIA Technologies, Inc. VT82C586B PIPC Bus Master
-IDE (rev 06) (prog-if 8a [Master SecP PriP])
-        Flags: bus master, medium devsel, latency 32
-        I/O ports at ffa0 [size=16]
-        Capabilities: [c0] Power Management version 2
- 
-00:07.2 USB Controller: VIA Technologies, Inc. USB (rev 1a) (prog-if 00
-[UHCI])
-        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
-        Flags: bus master, medium devsel, latency 64, IRQ 10
-        I/O ports at d800 [size=32]
-        Capabilities: [80] Power Management version 2
- 
-00:07.3 USB Controller: VIA Technologies, Inc. USB (rev 1a) (prog-if 00
-[UHCI])
-        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
-        Flags: bus master, medium devsel, latency 64, IRQ 10
-        I/O ports at dc00 [size=32]
-        Capabilities: [80] Power Management version 2
- 
-00:07.4 SMBus: VIA Technologies, Inc. VT82C686 [Apollo Super ACPI] (rev
-40)
-        Flags: medium devsel, IRQ 5
-        Capabilities: [68] Power Management version 2
- 
-00:09.0 Multimedia audio controller: Xilinx, Inc. RME Digi9652
-(Hammerfall) (rev 03)
-        Flags: bus master, stepping, slow devsel, latency 64, IRQ 17
-        Memory at df000000 (32-bit, non-prefetchable) [size=16M]
- 
-00:0c.0 Ethernet controller: 3Com Corporation 3c905B 100BaseTX [Cyclone]
-(rev 30)
-        Subsystem: 3Com Corporation 3C905B Fast Etherlink XL 10/100
-        Flags: bus master, medium devsel, latency 64, IRQ 16
-        I/O ports at d400 [size=128]
-        Memory at deffff80 (32-bit, non-prefetchable) [size=128]
-        Expansion ROM at defc0000 [disabled] [size=128K]
-        Capabilities: [dc] Power Management version 1
- 
-01:00.0 VGA compatible controller: nVidia Corporation RIVA TNT2 Model 64
-(rev 15) (prog-if 00 [VGA])
-        Subsystem: Asustek Computer, Inc. AGP-V3800M
-        Flags: bus master, 66Mhz, medium devsel, latency 248, IRQ 16
-        Memory at dc000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at d8000000 (32-bit, prefetchable) [size=32M]
-        Expansion ROM at ddef0000 [disabled] [size=64K]
-        Capabilities: [60] Power Management version 1
-        Capabilities: [44] AGP version 2.0
+and xmms complains that it cant open the output device.
 
-modprobe snd-rme9652
-/lib/modules/2.4.22/kernel/sound/pci/rme9652/snd-rme9652.o: init_module:
-No such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.22/kernel/sound/pci/rme9652/snd-rme9652.o: insmod
-/lib/modules/2.4.22/kernel/sound/pci/rme9652/snd-rme9652.o failed
-/lib/modules/2.4.22/kernel/sound/pci/rme9652/snd-rme9652.o: insmod
-snd-rme9652 failed
+Any ideas are greatly appreciated. Here is my asound.conf, and my 
+mondules.conf alsa stuff is below that. I get the same behavior with or 
+without modules.conf entries for alsa. Also, I am only loading 
+snd-ice1712 not snd-pcm-oss or snd-seq-oss. Thanks a lot. -Garett
 
--- 
-nick mainsbridge <beatroot@optushome.com.au>
+pcm.delta44 {
+type hw
+card 0
+device 0
+}
+
+pcm.delta2496 {
+type hw
+card 1
+device 0
+}
+
+pcm.44channel1 {
+type plug
+ttable.0.0 1 # (monitor bedroom ...
+ttable.0.1 1 # (monitor bedroom ...
+slave.pcm delta44
+}
+
+pcm.44channel2 {
+type lpug
+ttable.0.2 1 # (studio monitor ...
+ttable.0.3 1 # (studio monitor ...
+slave.pcm delta44
+}
+
+pcm.44channel3 {
+type plug
+ttable.0.4 1 # (virtual ...
+ttable.0.5 1 # (virtual ...
+slave.pcm delta44
+}
+
+pcm.44channel4 {
+type plug
+ttable.0.6 1 # ...
+ttable.0.7 1 # ...
+slave.pcm delta44
+}
+pcm.44 channel5 {
+type plug
+ttable.0.8.1 # ...
+ttable.1.9 1 # ...
+slave.pcm delta44
+}
+
+pcm.44mon_mix {
+type plug
+ttable.0.10 1 # ...
+ttable.1.11 1 # ...
+slave.pcm delta44
+}
+
+pcm.multi_send {
+type plug
+ttable.0.0 1 # ...
+ttable.0.1 1 # ...
+ttable.0.4 1 # ...
+ttable.0.5 1 # ...
+ttable.0.6 1 # ...
+ttable.0.7 1 # ...
+slave.pcm delta44
+}
+
+pcm.2496channel1 {
+type plug
+ttable.0.0 1 # ...
+ttable.0.1 1 # ...
+slave.pcm delta2496
+}
+
+pcm.2496channel2 {
+type plug
+ttable.0.2 1 # ...
+ttable.0.3 1 # ...
+slave.pcm delta2496
+}
+
+pcm.2496channel3 {
+type plug
+ttable.0.4 1 # ...
+ttable.0.5 1 # ...
+slave.pcm delta2496
+}
+
+pcm.2496channel4 {
+type plug
+ttable.0.6 1 # ...
+ttable.0.7 1 # ...
+slave.pcm delta2496
+}
+
+pcm.2496_spdif {
+type plug
+ttable.0.8 1 # ...
+ttable.1.9 1 # ...
+slave.pcm delta2496
+}
+
+pcm.2496mon_mix {
+type plug
+ttable.0.10 1 # ...
+ttable.1.11 1 # ...
+slave.pcm delta2496
+}
+
+my modules.conf contains:
+
+# ALSA portion
+alias char-major-116 snd
+alias snd-card-0 snd-ice1712
+alias snd-card-1 snd-ice1712
+
+
 
 
 
 -------------------------------------------------------
-This SF. Net email is sponsored by: GoToMyPC
-GoToMyPC is the fast, easy and secure way to access your computer from
-any Web browser or wireless device. Click here to Try it Free!
-https://www.gotomypc.com/tr/OSDN/AW/Q4_2003/t/g22lp?Target=mm/g22lp.tmpl
+This SF.net email is sponsored by: SF.net Giveback Program.
+Does SourceForge.net help you be more productive?  Does it
+help you create better code?  SHARE THE LOVE, and help us help
+YOU!  Click Here: http://sourceforge.net/donate/
