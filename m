@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000474]: Compiling with -Wshadow generates warning messages with gcc-2.95
-Date: Tue, 31 Aug 2004 12:42:52 +0200 (CEST)
+Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
+Date: Tue, 31 Aug 2004 12:27:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040831104252.4D73D3F019@server.perex-int.cz>
+Message-ID: <20040831102736.624FB3F018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9B231C6
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 12:42:52 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BCC76267
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 12:27:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,61 +22,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000474
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
 ======================================================================
-Reported By:                erikd-alsa
+Reported By:                babayaga
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     474
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     476
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-30-2004 12:52 CEST
-Last Modified:              08-31-2004 12:42 CEST
+Date Submitted:             08-31-2004 01:01 CEST
+Last Modified:              08-31-2004 12:27 CEST
 ======================================================================
-Summary:                    Compiling with -Wshadow generates warning messages with gcc-2.95
+Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
 Description: 
-In file included from /usr/include/alsa/asoundlib.h:49,
-                 from alsa.c:3:
-/usr/include/alsa/pcm.h:535: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:536: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:537: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:538: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:539: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:1260: warning: declaration of `access' shadows
-global declaration
-/usr/include/alsa/pcm.h:1270: warning: declaration of `access' shadows
-global declaration
-In file included from /usr/include/alsa/asoundlib.h:52,
-                 from alsa.c:3:
-/usr/include/alsa/hwdep.h:142: warning: declaration of `index' shadows
-global declaration
-In file included from /usr/include/alsa/asoundlib.h:56,
-                 from alsa.c:3:
-/usr/include/alsa/seq.h:363: warning: declaration of `index' shadows
-global declaration
-
+Please, see the full report at
+http://qa.mandrakesoft.com/show_bug.cgi?id=10859
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-31-2004 12:42 CEST 
+ tiwai - 08-31-2004 12:27 CEST 
 ----------------------------------------------------------------------
-They are quite harmless, although it'd be better to be fixed.
+Above all, try the latest ALSA driver.
+If still not work, try dxs_support=2 module option for snd-via82xx.
+Also, ac97_quirk=1 module option might help in such a case.
+
+Make sure that the volume is unmuted and adjusted.  Attach
+/etc/asound.state for debugging if the above doesn't work.
+Also, don't load via82cxx_audio module at the same time.
+You set it as sound-slot-0 in /etc/modprobe.conf, which might
+cause conflicts.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-30-04 12:52 erikd-alsa     New Bug                                      
-08-31-04 12:42 tiwai          Bugnote Added: 0001672                       
+08-31-04 01:01 babayaga       New Bug                                      
+08-31-04 12:27 tiwai          Bugnote Added: 0001670                       
 ======================================================================
 
 
