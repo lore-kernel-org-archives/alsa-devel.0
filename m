@@ -1,14 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: trigger problems.
-Date: Wed, 14 Jul 2004 15:36:22 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: Re: ice1724: from 1.0.4 to 1.0.5a upgrading problem
+Date: Wed, 14 Jul 2004 17:49:42 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040714153622.pochini@shiny.it>
-References: <40F52C9D.60704@superbug.demon.co.uk>
+Message-ID: <200407141749.42615@goldspace.net>
+References: <200407141718.03846@goldspace.net> <s5h658qaf5b.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40F52C9D.60704@superbug.demon.co.uk>
+In-Reply-To: <s5h658qaf5b.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,46 +19,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi,
 
-On 14-Jul-2004 James Courtier-Dutton wrote:
-> I am writing a alsa driver for the audigyls and p16v.
-> The output on these sound cards can work in 1 of two ways.
-> 1) 1 substream with 8 channels, and one interrupt request per period.
-> For 5.1 output, we just use alsa.conf to map the user's application 
-> channels into the correct channels of the 8 channel substream.
+To tell the truth, have not understood the word "yet": just now (with 1.0.4)
+my receiver (as qjackctl) shows 96KHz (alsaplayer-jack-alsadriver-hw:0,1-spdif).
+Does it mean some redesign was done for this driver since 1.0.4?
 
-This is the simplest method of handling several channels, but you
-waste some of them.
+Andrew
 
+======= On Wednesday 14 July 2004 17:32, Takashi Iwai wrote: =======
+At Wed, 14 Jul 2004 17:18:03 +0400,
+Andrew Gaydenko wrote:
+> 
+> Hi,
+> 
+> After upgrading the driver from 1.0.4 to 1.0.5a I'm not able to start jack server
+> with 96000 rate for alsa driver. I use hw:0,1 device which is digital out in my
+> Terratek  Aureon Space 7.1. Instead of 96000, jack server starts with 48000. For
+> hw:0,0 the problem doesn't take place. Can anybody point me further direction to
+> resolve the problem?
 
-> 2) 4 substreams with 2 channels each.
-> For 5.1 output, we just use 3 substreams, front, rear, center_lfe.
-> The problem with this is that we then have a separate interrupt per
-> substream, resulting in 3 times more interrupts. The substreams are also
-> not in sample sync with each other, because the trigger for each
-> substream is executed one after the other, instead of in one go.
-
-You lose stereo image if the channels are out of sync. It also depends
-on how much they are. It's generally a bad thing.
-
-
-> So, because of this, I have a feature request for alsa-driver.
-> If a user app opens the sound device in such a way that a single stream 
-> from the app gets converted into multiple substreams to the same sound 
-> card hardware, can we have a single trigger call for all substreams.
-
-It's already possible. Grep the drivers sources for snd_pcm_set_sync()
-and snd_pcm_trigger_done().  Some of them already use that feature.
-Also, userspace must explicitly use it.  Have a look at the example
-program latency.c (alsa-tools ?)
+The digital out doesn't support 96kHz (yet)...
 
 
---
-Giuliano.
+...
+
+Takashi
 
 
 -------------------------------------------------------
