@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
-Date: Tue, 18 Jan 2005 16:49:41 +0100
-Message-ID: <637905eafbbfb1714135429228f1897b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
+Date: Tue, 18 Jan 2005 17:45:56 +0100
+Message-ID: <4f2404c38746ceabdd8924a5704c1bea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 02567248
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 16:49:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BAFB220
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 17:45:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   829
-Category:                   alisp
+Issue ID:                   824
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             01-17-2005 09:21 CET
-Last Modified:              01-18-2005 16:49 CET
+Date Submitted:             01-17-2005 08:58 CET
+Last Modified:              01-18-2005 17:45 CET
 ======================================================================
-Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
-`snd_config_get_pointer' from incompatible pointer type"
+Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
+mix_areas1() routine to your architecture..."
 Description: 
-Making all in alisp
+Making all in pcm
 [...]
-if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
--I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
--MP -MF ".deps/confmisc.Tpo" \
-  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
-then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
-else rm -f ".deps/confmisc.Tpo"; exit 1; \
+if /bin/sh ../../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include  -D__ppc__  -g -Wall -O2 -MT
+pcm_dmix.lo -MD -MP -MF ".deps/pcm_dmix.Tpo" \
+  -c -o pcm_dmix.lo `test -f 'pcm_dmix.c' || echo './'`pcm_dmix.c; \
+then mv -f ".deps/pcm_dmix.Tpo" ".deps/pcm_dmix.Plo"; \
+else rm -f ".deps/pcm_dmix.Tpo"; exit 1; \
 fi
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
-confmisc.c: In function `snd_func_private_pcm_subdevice':
-confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
-incompatible pointer type
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c -o confmisc.o >/dev/null 2>&1
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c  -fPIC -DPIC -o .libs/pcm_dmix.o
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas1':
+pcm_dmix.c:247: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:248: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:249: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas2':
+pcm_dmix.c:279: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:280: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:281: warning: use of cast expressions as lvalues is deprecated
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 11:26 
-----------------------------------------------------------------------
-Also on s390.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=s390&stamp=1105954179&file=log&as=raw
-for the full s390 build log.
-
-----------------------------------------------------------------------
- jdthood - 01-18-05 16:49 
+ jdthood - 01-18-05 16:48 
 ----------------------------------------------------------------------
 Also on mips.  See
 http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=mips&stamp=1106048896&file=log&as=raw
-for the full mips build log.
+for the full build log.
+
+----------------------------------------------------------------------
+ tiwai - 01-18-05 17:45 
+----------------------------------------------------------------------
+Well, should we disable dmix & co for these architectures?
+Then you'll get no more warnings.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:21 jdthood        New Issue                                    
-01-17-05 09:30 jdthood        Note Added: 0003224                          
-01-17-05 11:26 jdthood        Note Added: 0003233                          
-01-18-05 16:49 jdthood        Note Added: 0003251                          
+01-17-05 08:58 jdthood        New Issue                                    
+01-17-05 09:06 jdthood        Note Added: 0003222                          
+01-17-05 11:21 jdthood        Note Added: 0003230                          
+01-18-05 16:48 jdthood        Note Added: 0003250                          
+01-18-05 17:45 tiwai          Note Added: 0003253                          
 ======================================================================
 
 
