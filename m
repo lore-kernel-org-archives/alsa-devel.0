@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
-Date: Wed, 16 Feb 2005 20:39:29 +0100
-Message-ID: <bdcf661877e59c0d43c5eefcb4c718f1@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: upmixing line in - emu10k1 sb live 5.1
+Date: Wed, 16 Feb 2005 14:48:45 -0500
+Message-ID: <1108583326.29298.11.camel@krustophenia.net>
+References: <200502140720.j1E7JtHo012669@www4.pobox.sk>
+	 <1108412839.28815.2.camel@krustophenia.net>
+	 <42133645.6060304@glocalnet.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60628269
-	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2005 20:39:29 +0100 (MET)
+In-Reply-To: <42133645.6060304@glocalnet.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,81 +18,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2005-02-16 at 13:02 +0100, Mikael Magnusson wrote:
+> Lee Revell wrote:
+> > On Mon, 2005-02-14 at 08:20 +0100, Peter Zubaj wrote:
+> > 
+> >>Hi,
+> >>
+> >>AFAIK there is no way to upmix line in to 5.1 in alsa default config
+> >>for sb live.
+> >>
+> >>Audigy is diffrent.
+> >>
+> >>Maybe if you use ld10k1, this will do upmix (init_live script).
+> >>
+> > 
+> > 
+> > I am working on improving the default DSP config for the SBLive.  There
+> > are many problems with it, the lack of master volume being the worst.
+> > 
+> 
+> Nice, do you intend to separate the default and front pcm devices? 
+> Currently it isn't possible to play one sound on the front speakers and 
+> one sound on both front and rear speakers at the same time. My 
+> proposition is to use FX 8 and 9 for the front device, as on Audigy.
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
-======================================================================
-Reported By:                vaxen
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   914
-Category:                   PCI - nm256
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.9 2.6.10
-======================================================================
-Date Submitted:             02-16-2005 20:39 CET
-Last Modified:              02-16-2005 20:39 CET
-======================================================================
-Summary:                    nm256 causes kernel to hard freeze
-Description: 
-Hi, here is my specs:
+This is the basic idea, to make it more like the Audigy config.  There
+should be enough GPRs.
 
-Gateway solo 3300
-http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
-Audio chipset NM2200 interface to AC97 CODEC
+Sourceforge seems to be bouncing my mail with "550 Administrative
+Prohibition".  Let's see if this makes it.
 
-pegasos vaxen # lspci -tv
--[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
-      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
-      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
-Audio]
-      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
-      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
-      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
-      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
-      +-0a.0  Texas Instruments PCI1211
-      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
-      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
-
-I am using a custom patched kernel at
-http://morph-sources.sourceforge.net/?q=node/27 
-
-It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
-alsa-bk-2005-01-14.patch.
-
-I compiled the drivers into the kernel, the kernel hard freezes after
-displaying these message:
-nm256:found card signature in video RAM: 0x27ec00
-nm256:Mapping port 1 from 0x2709a0-0x27ec00
-I have to switch off the laptop as it does not respond to any inputs.
-
-I also tried compiling the drivers as modules, when I tried to modprobe
-snd-nm256, the kernel hard freezes without any warning message.
-
-I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
-like 2.6.10.
-
-I have not tried alsa 1.0.7 driver.
-
-Please let me know if you need more diagnostic information to fix this
-problem.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-16-05 20:39 vaxen          New Issue                                    
-02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
-======================================================================
+Lee
 
 
 
