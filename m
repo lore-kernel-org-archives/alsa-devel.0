@@ -1,16 +1,17 @@
-From: Thomas Charbonnel <thomas@undata.org>
+From: Mark Knecht <markknecht@attbi.com>
 Subject: Re: hdsp multiface pci.
-Date: 19 Jan 2003 17:07:45 +0100
+Date: 19 Jan 2003 08:23:11 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042992464.1649.55.camel@satellite.undata.org>
+Message-ID: <1042964591.10196.4.camel@Godzilla>
 References: <3E2A952E.6060305@boosthardware.com>
-	 <1042985569.1663.33.camel@satellite.undata.org>
-	 <3E2AC45F.3070601@boosthardware.com>
+	<1042985569.1663.33.camel@satellite.undata.org>
+	<3E2AC45F.3070601@boosthardware.com>
+	<1042992464.1649.55.camel@satellite.undata.org>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E2AC45F.3070601@boosthardware.com>
+In-Reply-To: <1042992464.1649.55.camel@satellite.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,97 +20,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: Patrick Shirkey <pshirkey@boosthardware.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-01-19 at 16:29, Patrick Shirkey wrote:
+On Sun, 2003-01-19 at 16:07, Thomas Charbonnel wrote:
+> 
+> So the "numid=5 26,26,16384" line says:
+> connect software output 1 (called "playback" in the above table) to line
+> out left, as the syntax of the call is input_source,output_source,value.
+> 
+Thomas,
+   I have possibly more than a passing interest in this subject as I use
+the HDSP 9652 card that Patrick mentioned and find this whole amixer
+language completely unfathomable.
 
-> Sorry I'm not fully grasping this. Why are 26 and 27 directly related to 
-> alsa_pcm:playback_1 and _2?
-> 
-> I thought from reading the notes on the hdsp page that pcm1 and pcm2 
-> would be numbers 0 and 1 not 26 and 27.
-> 
-> eg.
-> ======
-> Since the Multiface only have 18 i/o channels, the channel mapping in
-> the matrix mixer is different from the Digiface when operating at 48kHz
-> or lower.
-> 
-> input_source: 0-7 (analog), 16-23 (adat), 24-25 (spdif), 26-51 (playback)
-> output_source: 0-7 (analog), 16-23 (adat) 24-25 (spdif), 26-27 (line out)
-> ======
-> 
-> See how it says 0-7 (analog)?	
-> 
-> I haven't found an explanation for the following in the docs describing 
-> how to use the amixer app so could you please clarify this for me?
-> 
-> What is this line saying?
-> 
->    	numid=5 26,26,16384
-> 
-> something like:
-> 
-> connect 26 to 5 with a volume of 16384
-> 
-> 
+   In your quote above, could you outline what each parameter stands
+for?
 
-You have to understand that software outputs are not directly related to
-physical outputs. On simpler hardware, software and physical outputs can
-be considered the same. On the hdsp system, thanks to the internal
-matrix mixer, software outputs are totally abstracted from physical
-ones. On the multiface you have 18 software outputs, each of wich can be
-independently routed to any of the 18 physical outputs. For convenience,
-the hdsp linux driver's default behaviour is to have a 1:1 routing
-policy: each software output is by default routed to to corresponding
-hardware output.
-So the "numid=5 26,26,16384" line says:
-connect software output 1 (called "playback" in the above table) to line
-out left, as the syntax of the call is input_source,output_source,value.
+"numid=5 26,26,16384"
 
-> > 
-> >>or
-> >>  	numid=5 10,10,16384 <<<--- 10 appears to be line out id
-> >>
-> > 
-> > 
-> > What makes you say so ?
-> > 
+numid=5 - Is this a physical connection? A mixer input or output? An
+abstract number just used to keep track of things?
 
-> 
-> These are the id's in question:
-> 
-> numid=5,iface=PCM,name='Mixer'
->    ; type=INTEGER,access=rw---,values=3,min=0,max=65536,step=1
->    : values=16384,0,0
-> 
-> numid=10,iface=PCM,name='Line Out'
->    ; type=BOOLEAN,access=rw---,values=1
->    : values=on
-> 
-> numid=26,iface=PCM,name='Playback Peak',index=3
->    ; type=INTEGER,access=r----,values=2,min=0,max=0,step=0
->    : values=0,0
-> 
-> numid=27,iface=PCM,name='Playback RMS',index=3
->    ; type=INTEGER64,access=r----,values=1,min=0,max=0,step=0
->    : values=0
-> 
-> 
+26,26 - clearly Patrick and I were thinking that these two numbers
+related to specific hardware inputs and outputs, but apparently not.
 
-Here it looks like you're mixing up the amixer numid parameter number
-with the hdsp internal channel numbers.
-Numid 5 is the actual alsa matrix mixer control. Numid 10 is the global
-line out switch. Numid 26 and 27 are read only, and correspond to the
-internal peak and rms calculation the card does to provide a 0% CPU
-metering solution (to be used in the forthcoming HDSPMixer totalmix
-clone !...)
+16384 - a mixer volume?
 
-I hope this makes things clearer.
+Thanks in advance for helping.
 
-Thomas
+Cheers,
+Mark
 
 
 
