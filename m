@@ -1,12 +1,11 @@
-From: Nima Ghassemi <ngn928@web.de>
-Subject: alsa - 0.9.8 (and today's cvs - 16.11.2003) interwave problem.
-Date: Mon, 17 Nov 2003 17:04:11 +0100
+From: Jonathan Kraut <jak76@columbia.edu>
+Subject: Re: alsa-driver-0.9.8, jack, cmipci
+Date: Sun, 16 Nov 2003 12:18:37 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FB8F17B.3010505@web.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <E1ALQXV-0001IX-00@pintail.mail.pas.earthlink.net>
+References: <200311041710.hA4HANCG003420@oud.linuxaudiosystems.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200311041710.hA4HANCG003420@oud.linuxaudiosystems.com> 
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,58 +14,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi,
 
-there's some problem which I tracked down to
+On Tue, 04 Nov 2003 12:10:23 -0500, Paul Davis wrote:
+>>At Mon, 03 Nov 2003 14:41:51 -0500,
+>>Jonathan Kraut wrote:
+>>> 
+>>> 
+>>> Hello again.  Further research:
+>>> 
+>>> I tried an earlier version of jack (0.71.0) with alsa-driver-0.9.8, accessi
+>n
+>>g hw:0,2 via my .asoundrc. I get the same result as before, but in addition t
+>h
+>>is particular version of jackd tells me:
+>>> 
+>>> ...
+>>> Sorry. The PCM device "cmipci"doesn't support the same sample format for ca
+>p
+>>ture and playback.We cannot use this PCM device.
+>>> ...
+>>> 
+>>> and jackd quits.
+>>
+>>this is likely because the newer version of cmipci driver supports
+>>24bit SPDIF output, but no input yet...
+>
+>a reminder that for some time now, JACK supports the -P option which
+>limits it to playback only. useful if that's all you want and/or all
+>your hardware can do.
+>
+>--p
 
-~alsa-driver/sound/core/control.c
+well, using jack-0.90.0/alsa-driver-0.9.8 now seems to work just fine again for full duplex using jacks default (in other words i can capture off of spdif using hw:0, which didn't work with jack-0.80). so great! (btw playback using hw:0,2 still throws my system into the same weird state, but i can ignore that now). thanks for listening!  i guess jack capturing off of hw:0 was a jack issue, and jack playing back to hw:0,2 is an alsa-issue? (but i don't know very much, so i could be very wrong).
 
-int snd_ctl_add(snd_card_t * card, snd_kcontrol_t * kcontrol)
-{
-        snd_ctl_elem_id_t id;
-        unsigned int idx;
+btw sorry about the multiple posts before...got too cute with multiple email addresses.
 
-    snd_runtime_check(card != NULL && kcontrol != NULL, return -EINVAL);
-        snd_assert(kcontrol->info != NULL, return -EINVAL);
-        id = kcontrol->id;
-        down_write(&card->controls_rwsem);
-    if (_ctl_find_id(card, &id)) {
-                up_write(&card->controls_rwsem);
-                snd_ctl_free_one(kcontrol);
-                return -EBUSY;
-    }
-[...]
+thanks again.
 
-the problem lies in _ctl_find_id (card, &id). by commenting the if-block 
-out, everything (as well
-as the sound-card) works perfectly (as far as I could test it...).
+-j
 
-this is the error-message I get when I leave eveything as it is:
-----------------------------------------
-root@sipiyou :/tmp/alsa/alsa-driver> modprobe snd-interwave
-/lib/modules/2.4.22/kernel/sound/isa/gus/snd-interwave.o: init_module: 
-No such device
-Hint: insmod errors can be caused by incorrect module parameters, 
-including invalid IO or IRQ parameters
-/lib/modules/2.4.22/kernel/sound/isa/gus/snd-interwave.o: insmod 
-/lib/modules/2.4.22/kernel/sound/isa/gus/snd-interwave.o failed
-/lib/modules/2.4.22/kernel/sound/isa/gus/snd-interwave.o: insmod 
-snd-interwave failed
-----------------------------------------
-/etc/modules.conf:
-options snd-interwave index=0 id="GusPnP" enable=1 port=0x220 irq=11 
-dma1=5 dma2=7
-
-this is my config:
-- devfs
-- kernel 2.4.22
-- amd interwave (ultrasound pnp)
-
-
-Nima.
+--------
+Jonathan Kraut
+NYC
+jak76@columbia.edu
 
 
 -------------------------------------------------------
