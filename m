@@ -1,14 +1,12 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: Re: sblive 4ch output w/ jack - asoundrc magic?
-Date: Sat, 07 Feb 2004 11:56:31 +0100
+From: "Mathieu Rondonneau" <mathieu.rondonneau@polymtl.ca>
+Subject: snd_..._copy
+Date: Sat, 7 Feb 2004 12:59:32 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4024C45F.2050900@folkwang-hochschule.de>
-References: <40217B62.5020604@folkwang-hochschule.de> <s5had3xa7sa.wl@alsa2.suse.de>
+Message-ID: <003401c3edac$885efc30$c4f9cb18@win2K>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0031_01C3ED7A.3AE27AE0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5had3xa7sa.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,77 +15,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-takashi, many thanks for your helpful reply. i'm enjoying=20
-four-channel output with jack now :-D
+This is a multi-part message in MIME format.
 
-i have added your .asound hint to
+------=_NextPart_000_0031_01C3ED7A.3AE27AE0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-http://alsa.opensrc.org/index.php?page=3DSurroundSound
+Hi,
+I'm writing an ALSA driver using no pci or isa preallocation memory (i'm =
+using snd_pcm_lib_preallocate_pages_for_all).
+I've some questions according to the alsa mecanism to transfert datas.
+I'm using ALSA 0.9.6
 
-in the hope that other folks will find it useful.
+when i send a wav file to the /dev/audio0 file:=20
+dd if=3Dring.wav of=3D/dev/audio0
+=20
+In my ops function, i've added:
+snd_....._playback_copy(snd_pcm_substream_t *substream, int channel, =
+snd_pcm_uframes_t pos, void* src, snd_pcm_uframes_t count)
+1) Why the src pointer doesn't point to the data source (the ring.wav =
+data) when this function is called by ALSA.
 
+2) why the count parameter is always 200? is it possible to change this =
+offset in order to copy more data?
 
-best regards,
+3) it seams more complicated to manage memory than using pci or isa =
+preallocation.
+Could i use one of these structure ethen if i don't have ISA or PCI =
+bus/dma on my board?
 
-jo"rn
-
-Takashi Iwai wrote:
-> At Thu, 05 Feb 2004 00:08:18 +0100,
-> Joern Nettingsmeier wrote:
->=20
->>[crossposted to alsa-devel and jackit-devel]
->>
->>hi *!
->>
->>i'd like to use the rear outs of my sblive platinum with jack.
- >
-> there is already a standard definition for 4.0 output, "surround40".
-> so, something like below would be better:
->=20
-> 	ctl.jtest {
-> 		type hw
-> 		card 0
-> 	}
->=20
-> 	pcm.jtest {
-> 		type asym
-> 		playback.pcm {
-> 			# route for mmap workaround
-> 			type route
-> 			slave.pcm surround40
-> 			ttable.0.0 1
-> 			ttable.1.1 1
-> 			ttable.2.2 1
-> 			ttable.3.3 1
-> 		}
-> 		capture.pcm {
-> 			# 2 channels only
-> 			type hw
-> 			card 0
-> 		}
-> 	}
->=20
-> and run jack with -d jtest -i 2 -o 6 options.
->=20
->=20
-> Takashi
-
---=20
-"I never use EQ, never, never, never. I previously used to use mic
-positioning but I've even given up on that too."
-	- Jezar on http://www.audiomelody.com
+Thanks in advance.
+Mathieu Rondonneau
 
 
-Jo"rn Nettingsmeier
-Kurfu"rstenstr 49, 45138 Essen, Germany
-http://spunk.dnsalias.org (my server)
-http://www.linuxaudiodev.org (Linux Audio Developers)
+------=_NextPart_000_0031_01C3ED7A.3AE27AE0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>Hi,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm writing an ALSA driver using no pci =
+or isa=20
+preallocation memory (i'm using=20
+snd_pcm_lib_preallocate_pages_for_all).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I've some questions according to the =
+alsa mecanism=20
+to transfert datas.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I'm using ALSA 0.9.6</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>when i send&nbsp;a wav file&nbsp;to the =
+/dev/audio0=20
+file: </FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>dd if=3Dring.wav =
+of=3D/dev/audio0</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>In&nbsp;my ops&nbsp;function, i've =
+added:</DIV>
+<DIV>
+<DIV><FONT face=3DArial =
+size=3D2>snd_....._playback_copy(snd_pcm_substream_t=20
+*substream, int channel, snd_pcm_uframes_t pos, void* src, =
+snd_pcm_uframes_t=20
+count)</FONT></DIV></FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>1) Why the src pointer doesn't point to =
+the data=20
+source (the ring.wav data) when this function is called by =
+ALSA.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>2) why the count parameter is always =
+200?&nbsp;is=20
+it possible to change this offset in order to copy more =
+data?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>3) it seams more complicated to manage =
+memory than=20
+using&nbsp;pci or isa preallocation.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Could i use one of these structure =
+ethen if i don't=20
+have ISA or PCI bus/dma on my board?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Thanks in advance.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Mathieu Rondonneau</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
 
+------=_NextPart_000_0031_01C3ED7A.3AE27AE0--
 
 
 
