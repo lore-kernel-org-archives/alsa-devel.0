@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000604]: sound loop problem
-Date: Thu, 28 Oct 2004 02:17:56 +0200
+Date: Thu, 28 Oct 2004 02:22:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <19888be8e581308e29878159b58bea17@bugtrack.alsa-project.org>
+Message-ID: <50696d5d196b45ca7d1893f3f6497bde@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F91F2CA
-	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 02:17:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD1FC2CA
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 02:22:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -40,38 +40,13 @@ Distribution:               slackware10
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             10-26-2004 01:29 CEST
-Last Modified:              10-28-2004 02:17 CEST
+Last Modified:              10-28-2004 02:22 CEST
 ======================================================================
 Summary:                    sound loop problem
 Description: 
 i get a sound loop which gets correctet only 
 while moving the mouse!
 ======================================================================
-
-----------------------------------------------------------------------
- chomwitt - 10-28-04 02:14 
-----------------------------------------------------------------------
-this is output from dmesg.
-
-/root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec read
-timeout (reg 1c)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
-read timeout (reg 0)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
-read timeout (reg 3c)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
-read timeout (reg 1c)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
-read timeout (reg 0)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
-read timeout (reg 3c)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/atiixp.c:458: atiixp: codec
-read timeout (reg 1c)
-....... (many many lines like the above)
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/ac97/ac97_codec.c:1904:
-AC'97 2 does not respond - RESET
-ALSA /root/alsa-driver-1.0.6a/alsa-kernel/pci/ac97/ac97_codec.c:1912:
-AC'97 2 access is not valid [0xffffffff], removing mixer.
 
 ----------------------------------------------------------------------
  chomwitt - 10-28-04 02:17 
@@ -137,6 +112,36 @@ Hardware --------------------------------------------------
 00:14.5 Multimedia audio controller: ATI Technologies Inc SoundMAX
 Integrated Digital Audio
 
+----------------------------------------------------------------------
+ chomwitt - 10-28-04 02:22 
+----------------------------------------------------------------------
+some more information:
+
+ this is the /proc/interrupt
+
+0:    5757032          XT-PIC  timer
+  1:       2574          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  5:     100000          XT-PIC  ohci_hcd
+  9:          4          XT-PIC  acpi
+ 10:       9584          XT-PIC  ohci_hcd, yenta, yenta, ATI IXP
+ 11:          2          XT-PIC  ehci_hcd, ohci_hcd, ohci_hcd
+ 12:        601          XT-PIC  i8042
+ 14:      16262          XT-PIC  ide0
+ 15:         21          XT-PIC  ide1
+NMI:          0 
+LOC:    5757240 
+ERR:          0
+
+
+lspci | grep -i audio
+00:14.5 Multimedia audio controller: ATI Technologies Inc SoundMAX 
+Integrated Digital Audio
+
+
+(someone suggested to me to remove apic,acpi,hpet from kernel.
+i did that , recompiled , but the problem remained )
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -146,6 +151,7 @@ Date Modified  Username       Field                    Change
 10-27-04 21:07 chomwitt       Note Added: 0002280                          
 10-28-04 02:14 chomwitt       Note Added: 0002281                          
 10-28-04 02:17 chomwitt       Note Added: 0002282                          
+10-28-04 02:22 chomwitt       Note Added: 0002283                          
 ======================================================================
 
 
