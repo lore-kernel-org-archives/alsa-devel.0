@@ -1,16 +1,16 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: Re: snd-usb-usx2y 0.8.7 hwdep pcm oopses!
-Date: Wed, 15 Dec 2004 09:30:43 -0000 (WET)
-Message-ID: <42583.195.245.190.93.1103103043.squirrel@195.245.190.93>
-References: <64648.195.245.190.93.1103017646.squirrel@195.245.190.93>
-    <32821.192.168.1.5.1103069479.squirrel@192.168.1.5>
-    <32825.192.168.1.5.1103069843.squirrel@192.168.1.5>
-    <200412150215.42816.annabellesgarden@yahoo.de>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: snd-powermac produces only low quality dirty so
+Date: Wed, 15 Dec 2004 11:10:02 +0100 (CET)
+Message-ID: <XFMail.20041215111002.pochini@shiny.it>
+References: <20041214213549.GA22308@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="_=XFMail.1.4.7.Linux:20041215111002:3126=_"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200412150215.42816.annabellesgarden@yahoo.de>
+Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F66225D
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2004 11:10:08 +0100 (MET)
+In-Reply-To: <20041214213549.GA22308@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,76 +20,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Olaf Hering <olh@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Karsten,
+This message is in MIME format
+--_=XFMail.1.4.7.Linux:20041215111002:3126=_
+Content-Type: text/plain; charset=us-ascii
 
->> >>>>>>>
->> > Summary: return -EBUSY from snd_usX2Y_usbpcm_open(),
->> >   if the associated hwdep device is not opened.
->> >
->> > It now works as originally intended. Had forgotten a pair of
->> parenthesis.
->> >
->> > Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
->> > <<<<<<
->> >
->>
->> With this patch applied, I always get:
->>
->> ALSA lib pcm_hw.c:1172:(snd_pcm_hw_open) open /dev/snd/pcmC2D2p failed:
->> Device or resource busy
->>
->> either from jackd or aplay on hw:2,2. It doesn't matter whether
->> snd-usb-usx2y is loaded on index=1 or index=2. The resulty is *always*
->> resource busy.
->>
+
+On 14-Dec-2004 Olaf Hering wrote:
+
+> All 2.6 versions I tried so far produce only "dirty" low quality sound
+> when playing mp3 with xmms with either the alsa or oss plugin.
+> But it works as expected when I use dmasound_pmac and the liboss plugin.
 >
-> Thats "correct behaviour":
-> usx2y-wise hw:n,2 is only valid for "rawusb pcm". aplay talks "standard
-> pcm", so it cannot use hw:n,2 but only hw:n (or hw:n,0).
-> Technically,  snd_pcm_open() called for usx2y's hw:n,2 device will only
-> succeed, if the hwdep device n,1 is opened already.
-> Also then (hwdep device n,1 opened) snd_pcm_open() calls for usx2y's
-> hw:n,0 (or hw:n) will return -EBUSY.
-> In short:
-> hw:n is for "standard alsa pcm"
-> hw:n,2 is for "rawusb pcm" (currently only usable with jackd's usx2y
-> driver)
-> Does hw:n (without the ",2") work with aplay and jackd -d alsa?
->
+> Any ideas how to debug it?
 
-Yes,
+It seems that the chip is not happy with some period/buffer sizes.
+Someone was trying to find the right constraints to set for those
+parameters. Maybe the attached patch fixes it (untested).
 
-  jackd -d alsa -d hw:n ... works OK,
 
-but
 
-  jackd -d usx2y -d hw:n,2 ... returns a 'resource busy' condition.
+--
+Giuliano.
 
-Without the 0.8.7.1 patch, it works BUT iif n < 2; if n >= 2, I get the
-'hwdep' assertion failure on jackd; aplay crashes on either value of n.
+--_=XFMail.1.4.7.Linux:20041215111002:3126=_
+Content-Disposition: attachment; filename="pmac.patch"
+Content-Transfer-Encoding: none
+Content-Type: text/plain; charset=us-ascii; name=pmac.patch; SizeOnDisk=549
 
-With the patch applied, I always get the "resource busy" error on 'jackd
--d usx2y -d hw:n,2 ...' and on 'aplay -D hw:n,2 ...'.
+--- alsa-kernel/ppc/pmac.c__	Wed Dec 15 10:15:37 2004
++++ alsa-kernel/ppc/pmac.c	Wed Dec 15 10:37:15 2004
+@@ -538,6 +538,11 @@
+ 	runtime->private_data = rec;
+ 	rec->substream = subs;
+ 
++	if ((i = snd_pcm_hw_constraint_pow2(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE
+)) < 0)
++		return i;
++	if ((i = snd_pcm_hw_constraint_pow2(runtime, 0, SNDRV_PCM_HW_PARAM_BUFFER_SIZE
+)) < 0)
++		return i;
++
+ #if 0 /* FIXME: still under development.. */
+ 	snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+ 			    snd_pmac_hw_rule_rate, chip, rec->stream, -1);
 
-So, the sacred question is: How can I make jackd to work with the "rawusb"
-interface?
-
-Just a clueless question: does it need a newer version for the jackd usx2y
-backend driver? I'm still using your's original one you've ever posted.
-I've been maintaining it as a jack patch and can be found on my personal
-home server (http://www.rncbc.org/usx2y/jack-0.99.35-usx2y.patch.gz).
-
-Please, have a look and check if it still fits in.
-
-Cheers.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
+--_=XFMail.1.4.7.Linux:20041215111002:3126=_--
+End of MIME message
 
 
 -------------------------------------------------------
