@@ -1,14 +1,16 @@
-From: Roger E Critchlow Jr <rec@elf.org>
-Subject: Re: Help fix driver for YMF-744B on Toshiba Tecra 8100?
-Date: Thu, 19 Feb 2004 11:28:32 -0700
+From: Andrew Gaydenko <a@etver.com>
+Subject: Re: ice1724 controls meaning
+Date: Thu, 19 Feb 2004 22:02:33 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40350050.1040901@elf.org>
-References: <Pine.LNX.4.58.0402181132500.19312@laptop.localdomain>
+Message-ID: <200402192202.33147@goldspace.net>
+References: <200402162232.38240@goldspace.net> <200402181539.13804@goldspace.net> <1077141802.30615.9.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0402181132500.19312@laptop.localdomain>
+In-Reply-To: <1077141802.30615.9.camel@localhost>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,58 +20,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: "Mihai T. Lazarescu" <mihai@email.it>
 List-Id: alsa-devel@alsa-project.org
 
-As I mentioned back in December, I can get the alsa driver to
-work on my Tecra 8100 by reloading the alsa driver until it
-works.  This takes somewhere between 0 and 20 reloads.  Mihai
-has confirmed this behavior on his machine and also noted that
-the sound functional/nonfunctional state persists through a
-suspend/resume cycle.
+Gabriel,
 
-I've combined the reloading process with two different state
-scans to see if I could detect what is different between the
-working and non-working states of the ymfpci driver.
+Full the card controls list contains two ADC only (one stereo channel,
+if you want). So, I doubt it is possible to have more than one stereo
+analogue inputes. OTOH, the card has a digital CD input, which, if
+I understand well, is routed independantely from ADC source routing.
 
-The first state was the output of /sbin/lspci -vvxxxs 00:0c.0,
-and the second state was a concatenation of the file contents
-of every file found under /proc/asound/card0.
+Andrew
 
-In each case, I looped through 10 reloads of alsa, found the
-exact same machine state after each reload, but some of the
-reloaded states produced functional sound while others produced
-noise.
+======= On Thursday 19 February 2004 04:03, Gabriel Ebner wrote: =======
+...
+BTW, is there any way to get both CD and line mixed together at the same
+time or are they exlusive?
 
-Is there any other state information that I might look at to
-determine why an Alsa driver doesn't appear to be behaving
-deterministically?
+	Gabriel.
 
--- rec --
 
-Mihai T. Lazarescu wrote:
 
->Hello developers,
->
->I would like to try to fix the long standing bug of the ALSA
->driver for the Toshiba Tecra 8100 YMF-744B card.
->
->My experiences until now led, in the best of the cases,
->to sound with cracks and distortions, no matter the mixer
->settings (mostly if at boot time the OSS drivers are loaded,
->then rmmod them and insmod ALSA).  In the worst, only high
->pitch whistles with some cracks here and there (mostly if ALSA
->is loaded directly at boot).
->
->I am quite familiar with C, but not with ALSA internals.
->I'd like to try and debug this if someone is willing to direct
->me to what to look for.
->
->Thanks in advance!
->
->Mihai
->  
->
+-------------------------------------------------------
+SF.Net is sponsored by: Speed Start Your Linux Apps Now.
+Build and deploy apps & Web services for Linux with
+a free DVD software kit from IBM. Click Now!
+http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
 
 
 
