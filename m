@@ -1,13 +1,28 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Sudden ISA DMA problems
-Date: Sat, 16 Feb 2002 15:37:42 +0000 (GMT)
-Message-ID: <20020216153742.84853.qmail@web13106.mail.yahoo.com>
+From: Chris Rankin <cj.rankin@ntlworld.com>
+Subject: [PATCH] ISA DMA compiler warning fix
+Date: Sat, 16 Feb 2002 15:48:01 +0000 (GMT)
+Message-ID: <200202161548.g1GFm135014565@twopit.underworld>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Received: from web13106.mail.yahoo.com (web13106.mail.yahoo.com [216.136.174.151])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA26627
-	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2002 16:37:48 +0100
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Received: from mta06-svc.ntlworld.com (mta06-svc.ntlworld.com [62.253.162.46])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA26845
+	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2002 16:48:16 +0100
+Received: from wittsend.underworld ([80.0.71.165])
+          by mta06-svc.ntlworld.com
+          (InterMail vM.4.01.03.27 201-229-121-127-20010626) with ESMTP
+          id <20020216154803.GLZE7000.mta06-svc.ntlworld.com@wittsend.underworld>
+          for <alsa-devel@alsa-project.org>;
+          Sat, 16 Feb 2002 15:48:03 +0000
+Received: from twopit.underworld (root@twopit [192.168.0.2])
+	by wittsend.underworld (8.12.1/8.12.1) with ESMTP id g1GFm2M1027977
+	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2002 15:48:03 GMT
+Received: from twopit.underworld (chris@localhost [127.0.0.1])
+	by twopit.underworld (8.12.2/8.12.2) with ESMTP id g1GFm1b1014566
+	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2002 15:48:01 GMT
+Received: (from chris@localhost)
+	by twopit.underworld (8.12.2/8.12.1/Submit) id g1GFm135014565
+	for alsa-devel@alsa-project.org; Sat, 16 Feb 2002 15:48:01 GMT
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,45 +34,18 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--- pcm_memory.c.orig	Sat Feb 16 14:30:29 2002
++++ pcm_memory.c	Sat Feb 16 15:43:13 2002
+@@ -67,7 +67,7 @@
+ 	*addrp = isa_virt_to_bus(dma_area);
+ 	return dma_area;
+ }
+-static inline void *snd_malloc_isa_pages_fallback(size_t size, dma_addr_t *addrp, size_t *sizep, unsigned int flags)
++static inline void *snd_malloc_isa_pages_fallback(size_t size, dma_addr_t *addrp, unsigned long *sizep, unsigned int flags)
+ {
+ 	void *dma_area = snd_malloc_pages_fallback(size, flags, sizep);
+ 	*addrp = isa_virt_to_bus(dma_area);
 
-I saw from the CVS ChangeLog that ALSA is moving away
-from the deprecated virt_to_bus() to the new
-pci_allocate_consistent() system calls. Unfortunately,
-this is causing problems for my ISA DMA sound driver
-(CS4231 / MPU401 based). I have currently "fixed"
-things by #undef-ing the ISA_USE_PCI_ALLOC in
-core/pcm_memory.c. Once I do this, I get sound out of
-my speakers again.
-
-My soundcard also needs a DMA-able buffer so that it
-can upload its firmware. Previously, I used
-snd_malloc_pages(), and I tried changing this to
-snd_malloc_isa_pages(). However, you don't export this
-function, and even when I cut-and-pasted it into the
-source file, the firmware wouldn't upload until I used
-the virt_to_bus()-based compatibility version.
-
-It would probably be a good idea to export the
-following functions:
-
-snd_malloc_pci_pages()
-snd_malloc_isa_pages()
-snd_free_pci_pages()
-snd_free_isa_pages()
-
-Does anyone have any idea why
-pci_allocate_consistent() isn't working here, please?
-
-Cheers,
-Chris
-
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 _______________________________________________
 Alsa-devel mailing list
