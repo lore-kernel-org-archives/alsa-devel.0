@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
-Date: Mon, 22 Nov 2004 14:42:16 +0100
-Message-ID: <2a4ee3ac0cf9eff47a92bec6e54a2065@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000661]: starting an applicaiton trying to access sound device locks device exclusive
+Date: Mon, 22 Nov 2004 15:01:33 +0100
+Message-ID: <7fc991e8e5359dd9f0c493f2b2de107c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E99772B3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:42:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1177625E
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 15:01:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=661> 
 ======================================================================
-Reported By:                olivier55
+Reported By:                soloturn99
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   659
+Issue ID:                   661
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               mandrake 10.1
-Kernel Version:             2.6.8.1-10
+Status:                     resolved
+Distribution:               debian sid
+Kernel Version:             2.6.9
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-20-2004 22:25 CET
-Last Modified:              11-22-2004 14:42 CET
+Date Submitted:             11-21-2004 15:41 CET
+Last Modified:              11-22-2004 15:01 CET
 ======================================================================
-Summary:                    configure: error: Unsupported soundcard cs4236
+Summary:                    starting an applicaiton trying to access sound
+device locks device exclusive
 Description: 
-when i do : 
-./configure --with-cards=cs4236 --with-sequencer=yes
-
-i've this error : 
-configure: error: Unsupported soundcard cs4236
-
-my soundcard is a Crystal Audio CS4237 (cirrus logic)
-i have a laptop dell inspiron 8200
+an application should not be by default be allowed to take the sound device
+exlusively. if you start more than one applications, it should be possible
+to hear one of them or both, but the application must not block.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 14:42 
+ tiwai - 11-22-04 15:01 
 ----------------------------------------------------------------------
-Perhaps your kernel config doesn't support ISA?
+The default behavior of OSS emulation was already changed to non-blocking
+mode on CVS.
+
+But the ALSA native isn't not.  This behavior is explicitly written in the
+API reference.  It's not a bug at all.  Just use non-blocking mode to
+avoid it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-20-04 22:25 olivier55      New Issue                                    
-11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
-11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
-11-20-04 22:30 olivier55      Issue Monitored: olivier55                    
-11-20-04 22:30 olivier55      Issue End Monitor: olivier55                    
-11-22-04 14:42 tiwai          Note Added: 0002502                          
+11-21-04 15:41 soloturn99     New Issue                                    
+11-21-04 15:41 soloturn99     Distribution              => debian sid      
+11-21-04 15:41 soloturn99     Kernel Version            => 2.6.9           
+11-22-04 15:01 tiwai          Status                   assigned => resolved
+11-22-04 15:01 tiwai          Resolution               open => fixed       
+11-22-04 15:01 tiwai          Note Added: 0002506                          
 ======================================================================
 
 
