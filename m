@@ -1,11 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: [PATCH] Special AC97 patch for ASUS W1000/CMI9739 laptop.
-Date: Sun, 23 Jan 2005 16:14:04 +0000
-Message-ID: <41F3CD4C.6090506@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000824]: sparc, powerpc, hppa, alpha, ia64: "Please, recode mix_areas1() routine to your architecture..."
+Date: Sun, 23 Jan 2005 17:59:47 +0100
+Message-ID: <839e427e98fa2a00327a27319dbe1cb1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010003090401040600000905"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F241207
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2005 17:59:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,52 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010003090401040600000905
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-This patch fixes sound output on the ASUS W1000 laptop with the CMI9739 
-chip. It wrongly reports that it has a SPDIF in, when in fact we wish to 
-use the EAPD pin.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=824> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   824
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             01-17-2005 08:58 CET
+Last Modified:              01-23-2005 17:59 CET
+======================================================================
+Summary:                    sparc, powerpc, hppa, alpha, ia64: "Please, recode
+mix_areas1() routine to your architecture..."
+Description: 
+Making all in pcm
+[...]
+if /bin/sh ../../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H
+-I. -I. -I../../include -I../../include  -D__ppc__  -g -Wall -O2 -MT
+pcm_dmix.lo -MD -MP -MF ".deps/pcm_dmix.Tpo" \
+  -c -o pcm_dmix.lo `test -f 'pcm_dmix.c' || echo './'`pcm_dmix.c; \
+then mv -f ".deps/pcm_dmix.Tpo" ".deps/pcm_dmix.Plo"; \
+else rm -f ".deps/pcm_dmix.Tpo"; exit 1; \
+fi
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c  -fPIC -DPIC -o .libs/pcm_dmix.o
+pcm_dmix.c:221:2: warning: #warning Please, recode mix_areas1() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas1':
+pcm_dmix.c:247: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:248: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:249: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:253:2: warning: #warning Please, recode mix_areas2() routine to
+your architecture...
+pcm_dmix.c: In function `mix_areas2':
+pcm_dmix.c:279: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:280: warning: use of cast expressions as lvalues is deprecated
+pcm_dmix.c:281: warning: use of cast expressions as lvalues is deprecated
+ powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include
+-D__ppc__ -g -Wall -O2 -MT pcm_dmix.lo -MD -MP -MF .deps/pcm_dmix.Tpo -c
+pcm_dmix.c -o pcm_dmix.o >/dev/null 2>&1
 
-Signed off: James@superbug.demon.co.uk
+======================================================================
 
---------------010003090401040600000905
-Content-Type: text/plain;
- name="disable-spdif-in2.diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="disable-spdif-in2.diff.txt"
+----------------------------------------------------------------------
+ jdthood - 01-20-05 12:37 
+----------------------------------------------------------------------
+(For completeness...) also seen on arm and m68k
 
-Index: alsa-driver/alsa-kernel/pci/ac97/ac97_patch.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
-retrieving revision 1.70
-diff -u -r1.70 ac97_patch.c
---- alsa-driver/alsa-kernel/pci/ac97/ac97_patch.c	20 Jan 2005 11:43:19 -0000	1.70
-+++ alsa-driver/alsa-kernel/pci/ac97/ac97_patch.c	23 Jan 2005 16:04:31 -0000
-@@ -1916,6 +1916,15 @@
- 	/* FIXME: set up GPIO */
- 	snd_ac97_write_cache(ac97, 0x70, 0x0100);
- 	snd_ac97_write_cache(ac97, 0x72, 0x0020);
-+	/* Special exception for ASUS W1000/CMI9739. It does not have an SPDIF in. */
-+	if (ac97->pci &&
-+	     ac97->subsystem_vendor == 0x1043 &&
-+	     ac97->subsystem_device == 0x1843) {
-+		snd_ac97_write_cache(ac97, AC97_CM9739_SPDIF_CTRL,
-+			snd_ac97_read(ac97, AC97_CM9739_SPDIF_CTRL) & ~0x01);
-+		snd_ac97_write_cache(ac97, AC97_CM9739_MULTI_CHAN,
-+			snd_ac97_read(ac97, AC97_CM9739_MULTI_CHAN) | (1 << 14));
-+	}
- 
- 	return 0;
- }
+Arm build log:
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=arm&stamp=1106178900&file=log&as=raw
+m68k build log:
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=m68k&stamp=1106208530&file=log&as=raw
 
---------------010003090401040600000905--
+----------------------------------------------------------------------
+ jdthood - 01-23-05 17:59 
+----------------------------------------------------------------------
+> no atomic operations are implemented
+
+What would it take to implement them?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-17-05 08:58 jdthood        New Issue                                    
+01-17-05 09:06 jdthood        Note Added: 0003222                          
+01-17-05 11:21 jdthood        Note Added: 0003230                          
+01-18-05 16:48 jdthood        Note Added: 0003250                          
+01-18-05 17:45 tiwai          Note Added: 0003253                          
+01-18-05 17:59 jdthood        Note Added: 0003255                          
+01-18-05 18:01 tiwai          Note Added: 0003256                          
+01-20-05 12:37 jdthood        Note Added: 0003326                          
+01-23-05 17:59 jdthood        Note Added: 0003388                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
