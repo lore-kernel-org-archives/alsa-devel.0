@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000789]: With AZX Sound card
-Date: Mon, 14 Feb 2005 19:30:49 +0100
-Message-ID: <0373766404c8673bf530f1616361d579@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Mon, 14 Feb 2005 19:31:35 +0100
+Message-ID: <28916a6e5f2d8b119065eda706408918@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE763248
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:30:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 132A7248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:31:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,205 +23,77 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=789> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
 ======================================================================
-Reported By:                footcow
+Reported By:                FishB8
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   789
-Category:                   CORE - pcm
+Issue ID:                   705
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   block
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.10
-Resolution:                 duplicate
-Duplicate:                  666
+Distribution:               Gentoo
+Kernel Version:             2.6.9
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-07-2005 00:42 CET
-Last Modified:              02-14-2005 19:30 CET
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              02-14-2005 19:31 CET
 ======================================================================
-Summary:                    With AZX Sound card
+Summary:                    RME96 Driver crashes
 Description: 
-Since Alsa v1.0.8rc2 not in v1.0.7
-
-Alsa Start but in my dmesg I get :
-
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1872: BUG? (err >=
-0) (called from f8b19f16)
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
-snd_pcm_hw_constraints_complete failed
-
-I think it's under KDE when the ARTS server start ... then I have no sound
-unsing ALSA sound server neighter and OSS (same message when I switch the
-sound server under KDE, each time my dmesg).
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000666 Simply no sound ... no line ... no mixer
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 17:52 
+ corwin - 01-12-05 12:53 
 ----------------------------------------------------------------------
-Which card model do you have?  Show the output of /proc/asound/cards.
-Also, attach the content of /proc/asound/card0/codec* file.
+Confirmed. I'm using 2.6.10 with 1.0.8-rc2, and my RME96 is working well
+(ADAT and analog.)
 
 ----------------------------------------------------------------------
- footcow - 01-08-05 00:44 
+ tiwai - 01-12-05 15:05 
 ----------------------------------------------------------------------
-more /proc/asound/cards
-0 [HDA            ]: Azalia - ICH6 HDA
-                     ICH6 HDA at 0xcccf4000 irq 16
-
-less /proc/asound/card0/codec* 
-Codec: C-Media CMI9880
-Address: 0
-Vendor Id: 0x434d4980
-Subsystem Id: 0x0
-Revision Id: 0x90002
-Default PCM: rates 0x540, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-  PCM: rates 0x000, bits 0x00, types 0x5
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x96 0x96
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x94 0x94
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x0
-  Connection: 1
-     0x13
-Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01014010: Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x03
-Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01813000: Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x04
-Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01a19000: Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x05
-Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x081033f: IN OUT HP
-  Pin Default 0x01011014: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x02214000: HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x02a19000: Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0863: IN
-  Pin Default 0x19330000: CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01450000: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x41150000: Speaker at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01016012: Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01012016: Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals: 0x0f
+OK, resolved to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 00:42 footcow        New Issue                                    
-01-07-05 00:42 footcow        Distribution              => Debian          
-01-07-05 00:42 footcow        Kernel Version            => 2.6.10          
-01-07-05 17:52 tiwai          Note Added: 0003103                          
-01-08-05 00:44 footcow        Note Added: 0003124                          
-01-11-05 16:16 tiwai          Relationship added       duplicate of 0000666
-01-11-05 16:16 tiwai          Duplicate ID             0 => 666            
-01-11-05 16:16 tiwai          Status                   new => resolved     
-01-11-05 16:16 tiwai          Resolution               open => duplicate   
-01-11-05 16:16 tiwai          Assigned To               => tiwai           
-01-11-05 16:16 tiwai          Assigned To              tiwai =>            
-02-14-05 19:30 tiwai          Status                   resolved => closed  
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 12:30 martin         Note Added: 0002715                          
+12-04-04 17:56 FishB8         Note Added: 0002717                          
+12-04-04 19:21 FishB8         Note Added: 0002718                          
+12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
+12-07-04 18:44 tiwai          Note Added: 0002758                          
+12-07-04 23:06 FishB8         Note Added: 0002768                          
+12-08-04 12:08 tiwai          Note Added: 0002776                          
+12-09-04 00:22 FishB8         Note Added: 0002796                          
+12-09-04 11:22 tiwai          Note Added: 0002798                          
+12-12-04 20:04 martin         Note Added: 0002819                          
+12-12-04 23:35 FishB8         Note Added: 0002820                          
+12-13-04 19:28 martin         Note Added: 0002822                          
+12-15-04 06:09 FishB8         Note Added: 0002825                          
+12-15-04 20:06 martin         Note Added: 0002828                          
+12-16-04 18:27 tiwai          Note Added: 0002835                          
+01-12-05 02:46 FishB8         Note Added: 0003160                          
+01-12-05 12:53 corwin         Note Added: 0003162                          
+01-12-05 15:05 tiwai          Status                   new => resolved     
+01-12-05 15:05 tiwai          Resolution               open => fixed       
+01-12-05 15:05 tiwai          Assigned To               => tiwai           
+01-12-05 15:05 tiwai          Note Added: 0003167                          
+01-12-05 15:05 tiwai          Assigned To              tiwai =>            
+02-14-05 19:31 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
