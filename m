@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
-Date: Thu, 19 Aug 2004 19:10:57 +0200 (CEST)
+Subject: [ALSA - driver 0000439]: swsusp for maestro can work with a small patch
+Date: Thu, 19 Aug 2004 19:16:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040819171057.EDA1C1102F@server.perex-int.cz>
+Message-ID: <20040819171655.A9A4F1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DD4E214
-	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 19:10:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC280214
+	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 19:16:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,57 +20,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000382
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000439
 ======================================================================
-Reported By:                labra
-Assigned To:                
+Reported By:                lupien_c
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     382
-Category:                   PCI - ice1724
+Bug ID:                     439
+Category:                   PCI - maestro3
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               fedora core 2
+Kernel Version:             2.6.7 + acpi + swsusp2
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             07-13-2004 13:51 CEST
-Last Modified:              08-19-2004 19:10 CEST
+Date Submitted:             08-14-2004 11:27 CEST
+Last Modified:              08-19-2004 19:16 CEST
 ======================================================================
-Summary:                    line in doesn't give stereo sound
+Summary:                    swsusp for maestro can work with a small patch
 Description: 
-The line in-plug doesn't give stereo sound anymore. Before with alsamixer I
-was able to get stereo sound from line in by using "H/W In 0" and "H/W IN
-1". Now only "H/W In 0" gives sound.
+With the maestro3.c driver in kernel 2.6.7, suspend to disk would lock the
+driver. The module needed to manually be removed and reinstalled to
+produce sound again. With the patch attached it now works properly.
 ======================================================================
 
 ----------------------------------------------------------------------
- labra - 07-13-2004 13:59 CEST 
+ lupien_c - 08-15-2004 05:51 CEST 
 ----------------------------------------------------------------------
-The alsa-driver version with this feature/bug is 1.0.5a.
+I finally checked the latest alsa-driver-1.0.6rc2, and the patch is not
+needed anymore. The latest alsa-driver seems to work out of the box. But I
+wonder if the pci_set_master might still be needed on some platforms. (The
+pci state is saved and restored  by core/init).
 
 ----------------------------------------------------------------------
- tiwai - 08-19-2004 19:10 CEST 
+ tiwai - 08-19-2004 19:16 CEST 
 ----------------------------------------------------------------------
-Try 1.0.6a.  The capture source is chosen via 'Capture Source' control.
-There are two controls for left and right, index 0 and 1, respectively.
-
-Note that aureon on 1.0.6a has a bug that the master volume is
-inverted.  Set master 0 to get the max volume.
-(Already fixed on CVS version)
+I added pci_set_master() in resume callback (just to be sure :)
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 13:51 labra          New Bug                                      
-07-13-04 13:51 labra          Distribution              => Gentoo          
-07-13-04 13:51 labra          Kernel Version            => 2.4.26          
-07-13-04 13:59 labra          Bugnote Added: 0001413                       
-07-13-04 13:59 labra          Bug Monitored: labra                         
-08-19-04 19:10 tiwai          Bugnote Added: 0001591                       
+08-14-04 11:27 lupien_c       New Bug                                      
+08-14-04 11:27 lupien_c       File Added: maestro3.c.diff                    
+08-14-04 11:27 lupien_c       Distribution              => fedora core 2   
+08-14-04 11:27 lupien_c       Kernel Version            => 2.6.7 + acpi + swsusp2
+08-15-04 05:51 lupien_c       Bugnote Added: 0001566                       
+08-19-04 19:16 tiwai          Bugnote Added: 0001592                       
+08-19-04 19:16 tiwai          Resolution               open => fixed       
+08-19-04 19:16 tiwai          Status                   assigned => resolved
 ======================================================================
 
 
