@@ -1,14 +1,16 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: ALSA OSS MIDI emulation: input problems
-Date: Fri, 28 Mar 2003 08:58:47 +1030 (CST)
+From: Louis Garcia <louisg00@bellsouth.net>
+Subject: Re: Configuring ALSA in kernel-2.5
+Date: 27 Mar 2003 17:41:02 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303272228.h2RMSlJ13989@sprite.physics.adelaide.edu.au>
-References: <s5hvfy6nheu.wl@alsa2.suse.de>
+Message-ID: <1048804862.2591.10.camel@tiger>
+References: <1048788276.2474.3.camel@tiger>
+	 <20030327190215.GA25637@www.angio.com> <1048793663.2474.26.camel@tiger>
+	 <20030327193627.GA26072@www.angio.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvfy6nheu.wl@alsa2.suse.de> from "Takashi Iwai" at Mar 26, 2003 06:53:29 PM
+In-Reply-To: <20030327193627.GA26072@www.angio.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,56 +19,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+To: Stephen Hassard <steve@hassard.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > Now, when input occurs, Jazz++ needs to know the current time, which is very
-> > unlikely to be a multiple of 48 ticks.  Under nateive OSS it seems that
-> > before the NOTEON event (for example) OSS sends a TMR_WAIT_ABS event to
-> > update the application on the current time - the NOTEON event then follows
-> > and is assumed to have occurred at the "current time" which of course will
-> > be the time set by the TMR_WAIT_ABS event.
-> > 
-> > The problem as I see it is that the ALSA OSS emulation does not send this
-> > TMR_WAIT_ABS event - it only sends the NOTEON event.  Jazz gets this and
-> > without any TMR_WAIT_ABS to tell it otherwise, assumes that it occured at
-> > the "current" time - which is always a multiple of 48 ticks.
+I finally got sound working, thanks. Now if I can only get the modules
+to load at boot. Here is the sysinit script part that deals with sound.
+How can I modify it to load the alsa modules and oss compat modules?
+Oh also, gnome-volume-control does not seem to know that alsa is muted.
+Is their a way, possibly in /proc or /sys to unmute the sound?
+
+Thanks, --Lou
+
+# Load sound modules if and only if they need persistent DMA buffers
+if LC_ALL=C grep -q "options sound dmabuf=1" /etc/modules.conf
+2>/dev/null ; then
+  RETURN=0
+  alias=`/sbin/modprobe -c | awk '/^alias sound / { print $3 }'`
+  if [ -n "$alias" -a "$alias" != "off" ]; then
+      action $"Loading sound module ($alias): " modprobe sound
+      RETURN=$?
+  fi
+  alias=`/sbin/modprobe -c | awk '/^alias sound-slot-0 / { print $3 }'`
+  if [ -n "$alias" -a "$alias" != "off" ]; then
+      action $"Loading sound module ($alias): " modprobe sound-slot-0
+      RETURN=$?
+  fi
+fi
+
+
+
+
+On Thu, 2003-03-27 at 14:36, Stephen Hassard wrote:
+> Make sure you 
 > 
-> does the attached patch cure?
-> :
-> diff -u -r1.8 seq_oss_midi.c
-> --- alsa-kernel/core/seq/oss/seq_oss_midi.c	12 Mar 2003 11:26:20 -0000	1.8
-> +++ alsa-kernel/core/seq/oss/seq_oss_midi.c	26 Mar 2003 17:51:31 -0000
-> @@ -593,6 +593,7 @@
->  		break;
->  	}
->  	
-> +	snd_seq_oss_readq_put_timestamp(dp->readq, ev->time.tick, dp->seq_mode);
->  	snd_seq_oss_readq_put_event(dp->readq, &ossev);
->  
->  	return 0;
+> On Thu, Mar 27, 2003 at 02:34:23PM -0500, Louis Garcia wrote:
+> > Well that's my question. I'm running 2.5.66 on RH phoebe beta and need
+> > to find out what to choose in the config. I have build a kernel with:
+> 
+> You didn't mention if you're using devfsd or not. I'll assume that it's not working for you since 2.5.66 requires a new devfs daemon, which isn't available as binary for most distros.
+> 
+> The above being noted, make sure that you run ./snddevices to create the alsa devices in /dev ..
+> 
+> > < >     OSS PCM (digital audio) API
+> 
+> you need the above for digital audio (ie: /dev/dsp)
+> 
+> > These modules load ok when I modprobe. I think I have to install
+> > alsa-libs and the oss compat lib? The kernel documentation should be
+> > updated soon.
+> 
+> you don't need alsa-libs or the oss-compat lib for oss functionality .. the above should be enough ..
+> 
+> also, make sure that your user has permission to write to /dev/dsp.
+> 
+> you'll probably need a mixer to unmute the audio. alsa, by design, mutes all audio channels.
+> 
+> later,
+> Steve
 
-Ok.  Last night I investigated ev->time.tick.  Admittedly this was under
-0.90rc8b.  It transpires that ev->time.tick is *always* zero when the event
-is a NOTEON/NOTEOF, and therefore gives no timing information what-so-ever. 
-Thus the above patch does *not* fix the problem, at least under 0.90rc8b.
-
-I will grab the latest release today (0.9.2) and give that a go over the
-weekend in case this has been rectified since the later rc releases.  If
-not, we'll have to find some other way of getting at the timer info (either
-fixing ev->timer or perhaps formalising the rough hack I outlined in a
-previous email).
-
-Regards
-  jonathan
--- 
-* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
-*                    http://www.physics.adelaide.edu.au/~jwoithe            *
-***-----------------------------------------------------------------------***
-** "Time is an illusion; lunchtime doubly so"                              **
-*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
-*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
 
 
 -------------------------------------------------------
