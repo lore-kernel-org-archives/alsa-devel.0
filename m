@@ -1,11 +1,10 @@
-From: Marcel Holtmann <marcel@holtmann.org>
+From: Brad Midgley <bmidgley@xmission.com>
 Subject: Re: alsa-lib plugin devel
-Date: Mon, 24 Jan 2005 17:53:04 +0100
-Message-ID: <1106585584.8058.61.camel@pegasus>
-References: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>
-	 <41F522DE.30702@xmission.com>  <s5hk6q2u659.wl@alsa2.suse.de>
+Date: Mon, 24 Jan 2005 09:49:49 -0700
+Message-ID: <41F5272D.9060101@xmission.com>
+References: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>	<41F522DE.30702@xmission.com> <s5hk6q2u659.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <s5hk6q2u659.wl@alsa2.suse.de>
@@ -19,33 +18,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Brad Midgley <bmidgley@xmission.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Takashi,
 
+> We can create a new API to list up the available PCMs.
+> It will help applications, I guess.
+> 
 > The problem is that plugins which aren't bound to drivers like btsco
 > are hard to detect whether they really work in advance.
 > Do we need a probe callback for such a plugin?
 
-I don't think that this is needed. If people want to use a plugin to
-access a Bluetooth headset or headphone they need its address and at
-least put this in a configuration file. So adding something like
+I suppose there are problems listing things because the plugins behave 
+differently. I don't fully understand the problem.
 
-	pcm.aiptek {
-	        type a2dp
-	        bdaddr "00:0B:0D:50:12:10"
-	}
+But... it would be a big inconvenience for the user to be told to know 
+the device name or go look it up in .asoundrc and/or /etc/asound.conf. 
+The {linphone,xine,gnomemeeting} gui should be able to discover and list 
+the plugin devices.
 
-to their .asoundrc to connect to the Aiptek Bluetooth Headphone should
-be enough. However these devices should be present in the enumeration of
-the applications.
-
-Regards
-
-Marcel
-
-
+Brad
 
 
 -------------------------------------------------------
