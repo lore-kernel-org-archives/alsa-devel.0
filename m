@@ -1,15 +1,14 @@
-From: Karim Yaghmour <karim@opersys.com>
-Subject: Re: USB Audio problems
-Date: Thu, 20 Nov 2003 00:50:03 -0500
+From: R CHAN <rspchan@starhub.net.sg>
+Subject: Re: ALSA 1.0.0pre1 is released - intel8x0 is oopsing (2.6)
+Date: Thu, 20 Nov 2003 15:44:53 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FBC560B.7040104@opersys.com>
-References: <3FBBC461.1020006@opersys.com>
-Reply-To: karim@opersys.com
+Message-ID: <3FBC70F5.3060706@starhub.net.sg>
+References: <s5hn0as1hvn.wl@alsa2.suse.de> <1069291828.485.28.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FBBC461.1020006@opersys.com>
+In-Reply-To: <1069291828.485.28.camel@cmn37.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,170 +18,81 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Just tried ALSA CVS and 2.6.0-test9 current bk.
+CVS snd-intel8x0 is oopsing.
 
-Well, it seems that I'm going to have to answer my own self ... :)
+Unable to handle kernel NULL pointer dereference at virtual address 00000040
+  printing eip:
+e1a3a9e6
+*pde = 00000000
+Oops: 0000 [#1]
+CPU:    0
+EIP:    0060:[<e1a3a9e6>]    Not tainted
+EFLAGS: 00010202
+EIP is at snd_intel8x0_mixer+0x2b6/0x400 [snd_intel8x0]
+eax: 00000020   ebx: dd8ecc00   ecx: 00000008   edx: 00000080
+esi: dc13f4c0   edi: 00000001   ebp: 00000020   esp: dc137c74
+ds: 007b   es: 007b   ss: 0068
+Process modprobe (pid: 887, threadinfo=dc136000 task=dec572e0)
+Stack: dd8ecc00 00000080 e1a3f540 00000005 df678400 dda04a00 00000000 
+dd8ecc00
+        e1a3a710 00000000 c1549400 00000000 00000000 00000000 00000000 
+00000000
+        00000000 00000000 00000000 00000000 00000000 00000000 00000000 
+00000000
+Call Trace:
+  [<e1a3a710>] snd_intel8x0_mixer_free_ac97+0x0/0x20 [snd_intel8x0]
+  [<e1a3adc7>] snd_intel8x0_ich_chip_init+0x1d7/0x300 [snd_intel8x0]
+  [<e1a39290>] snd_intel8x0_codec_write+0x0/0xd0 [snd_intel8x0]
+  [<e1a39360>] snd_intel8x0_codec_read+0x0/0x110 [snd_intel8x0]
+  [<e1a3a700>] snd_intel8x0_mixer_free_ac97_bus+0x0/0x10 [snd_intel8x0]
+  [<e1a3bfea>] snd_intel8x0_probe+0x10a/0x280 [snd_intel8x0]
+  [<c016c531>] dput+0x31/0x220
+  [<c0202822>] pci_device_probe_static+0x52/0x70
+  [<c020287c>] __pci_device_probe+0x3c/0x50
+  [<c02028bc>] pci_device_probe+0x2c/0x50
+  [<c02428df>] bus_match+0x3f/0x70
+  [<c0242a0c>] driver_attach+0x5c/0xa0
+  [<c0242cd3>] bus_add_driver+0x93/0xb0
+  [<c024310f>] driver_register+0x2f/0x40
+  [<c0202aac>] pci_register_driver+0x5c/0x90
+  [<e195c013>] alsa_card_intel8x0_init+0x13/0x8e [snd_intel8x0]
+  [<c0135a09>] sys_init_module+0x119/0x230
+  [<c010b3d9>] sysenter_past_esp+0x52/0x71
 
-The following is what I've been able to find using additional tracing
-info. Also there's a fix for usbaudio.c.
+Code: 0f b7 40 20 0f b6 84 83 c8 02 00 00 c0 e0 06 08 c1 eb cb 80
 
-Basically, it's as I said before: the usbaudio driver uses URBs
-without even checking if they're in use or not. Surprisingly, it
-does this with one channel, but not the other. Here's what I get
-in the traces when I separated the events by channel:
-Channel A (the hex data is the value of *subs):
------------------------------------------------------------------------------------
-...
-Complete URB           11,242,322,467     0     48     Completing URB 3: 0xC1F6040C
-Complete URB           11,242,326,465     0     48     Completing URB 4: 0xC1F6040C
-Complete URB           11,242,330,493     0     48     Completing URB 0: 0xC1F6040C
-Complete URB           11,242,334,460     0     48     Completing URB 1: 0xC1F6040C
-Complete URB           11,242,338,640     126     48     Completing URB 2: 0xC1F6040C
-Start URB              11,242,338,945     126     45     Sending URB 0: 0xC1F6040C
-Start URB              11,242,339,159     126     45     Sending URB 1: 0xC1F6040C
-Start URB              11,242,339,342     126     45     Sending URB 2: 0xC1F6040C
-Start URB              11,242,339,495     126     45     Sending URB 3: 0xC1F6040C
-Abuse URB              11,242,339,617     126     45     Abusing URB 3: 0xC1F6040C
-Deactivate URB         11,242,356,553     126     50     Deactivating URB 0: 0xC1F6040C
-Complete URB           11,242,357,621     0     48     Completing URB 3: 0xC1F6040C
-Complete URB           11,242,357,834     0     48     Completing URB 4: 0xC1F6040C
-Complete URB           11,242,358,323     0     48     Completing URB 0: 0xC1F6040C
-Complete URB           11,242,358,933     0     48     Completing URB 1: 0xC1F6040C
-URB Active Mask        11,242,359,787     126     57     Active Mask NOT set for 1: 0xC1F6040C
-Deactivate URB         11,242,359,970     126     50     Deactivating URB 2: 0xC1F6040C
-Complete URB           11,242,360,611     0     48     Completing URB 2: 0xC1F6040C
-URB Active Mask        11,242,361,008     126     57     Active Mask NOT set for 3: 0xC1F6040C
-URB Active Mask        11,242,361,100     126     57     Active Mask NOT set for 4: 0xC1F6040C
-Start URB              11,242,362,442     126     45     Sending URB 0: 0xC1F6040C
-Start URB              11,242,362,656     126     45     Sending URB 1: 0xC1F6040C
-Start URB              11,242,362,839     126     45     Sending URB 2: 0xC1F6040C
-Start URB              11,242,362,991     126     45     Sending URB 3: 0xC1F6040C
-Start URB              11,242,363,144     126     45     Sending URB 4: 0xC1F6040C
-Complete URB           11,242,376,479     0     48     Completing URB 0: 0xC1F6040C
-Complete URB           11,242,380,477     0     48     Completing URB 1: 0xC1F6040C
-Complete URB           11,242,384,474     0     48     Completing URB 2: 0xC1F6040C
-Complete URB           11,242,388,472     0     48     Completing URB 3: 0xC1F6040C
-Complete URB           11,242,392,469     0     48     Completing URB 4: 0xC1F6040C
-...
------------------------------------------------------------------------------------
+Anything else you need to know?
 
-In this first channel, the deactivation function was never called at any
-point prior to sending being initiated. Hence, a URB already in use was
-reused without proper deactivation. Looking at the timestamps above, it
-is clear that when sending is initiated on URB 3, this one is in its 4ms
-playing period and would be interupted.
 
-Channel B:
------------------------------------------------------------------------------------
-...
-In the second channel, I had this:
-Complete URB           11,242,319,446     0     48     Completing URB 4: 0xC1F6058C
-Complete URB           11,242,323,474     0     48     Completing URB 0: 0xC1F6058C
-Complete URB           11,242,327,472     0     48     Completing URB 1: 0xC1F6058C
-Deactivate URB         11,242,330,767     126     50     Deactivating URB 0: 0xC1F6058C
-Complete URB           11,242,331,500     0     48     Completing URB 2: 0xC1F6058C
-Complete URB           11,242,331,713     0     48     Completing URB 0: 0xC1F6058C
-Deactivate URB         11,242,331,896     126     50     Deactivating URB 1: 0xC1F6058C
-Complete URB           11,242,332,537     0     48     Completing URB 1: 0xC1F6058C
-URB Active Mask        11,242,332,720     126     57     Active Mask NOT set for 2: 0xC1F6058C
-Deactivate URB         11,242,332,812     126     50     Deactivating URB 3: 0xC1F6058C
-Complete URB           11,242,333,514     0     48     Completing URB 3: 0xC1F6058C
-Deactivate URB         11,242,333,697     126     50     Deactivating URB 4: 0xC1F6058C
-Complete URB           11,242,334,643     0     48     Completing URB 4: 0xC1F6058C
-Start URB              11,242,335,833     126     45     Sending URB 0: 0xC1F6058C
-Start URB              11,242,336,047     126     45     Sending URB 1: 0xC1F6058C
-Start URB              11,242,336,199     126     45     Sending URB 2: 0xC1F6058C
-Start URB              11,242,336,382     126     45     Sending URB 3: 0xC1F6058C
-Start URB              11,242,336,535     126     45     Sending URB 4: 0xC1F6058C
-Complete URB           11,242,357,987     0     48     Completing URB 0: 0xC1F6058C
-Complete URB           11,242,358,628     0     48     Completing URB 1: 0xC1F6058C
-Complete URB           11,242,359,168     0     48     Completing URB 2: 0xC1F6058C
-Complete URB           11,242,361,557     126     48     Completing URB 3: 0xC1F6058C
-Complete URB           11,242,365,555     0     48     Completing URB 4: 0xC1F6058C
-Complete URB           11,242,369,522     0     48     Completing URB 0: 0xC1F6058C
-...
------------------------------------------------------------------------------------
-
-In no occurence did the second channel reuse a URB prior to deactivating it.
-Hence, there are no errors that ever occur on this channel.
-
-To make a long story short, the most important issue here is to check whether
-the URB is active before using it. If it is, then it must be unlinked first.
-
-Here's my modified start_urbs() function from usbaudio.c:
-static int start_urbs(snd_usb_substream_t *subs, snd_pcm_runtime_t *runtime)
-{
-     unsigned int i;
-     int err;
-
-     for (i = 0; i < subs->nurbs; i++) {
-         snd_assert(subs->dataurb[i].urb, return -EINVAL);
-         /* Deactivate URB prior to using it. K.Y. */
-         if (test_and_clear_bit(i, &subs->active_mask)) {
-             set_bit(i, &subs->unlink_mask);
-             usb_unlink_urb(subs->dataurb[i].urb);
-         }
-         if (subs->ops.prepare(subs, runtime, subs->dataurb[i].urb) < 0) {
-             snd_printk(KERN_ERR "cannot prepare datapipe for urb %d\n", i);
-             goto __error;
-         }
-     }
-     if (subs->syncpipe) {
-         for (i = 0; i < SYNC_URBS; i++) {
-             snd_assert(subs->syncurb[i].urb, return -EINVAL);
-             if (subs->ops.prepare_sync(subs, runtime, subs->syncurb[i].urb) < 0) {
-                 snd_printk(KERN_ERR "cannot prepare syncpipe for urb %d\n", i);
-                 goto __error;
-             }
-         }
-     }
-
-     subs->running = 1;
-     for (i = 0; i < subs->nurbs; i++) {
-         trace_std_formatted_event(event_start_urb, i,  (unsigned int) subs);
-         if ((err = usb_submit_urb(subs->dataurb[i].urb, GFP_KERNEL)) < 0) {
-             trace_std_formatted_event(event_abuse_urb, i,  (unsigned int) subs);
-             snd_printk(KERN_ERR "cannot submit datapipe for urb %d, err = %d\n", i, err);
-             goto __error;
-         }
-         set_bit(i, &subs->active_mask);
-         clear_bit(i, &subs->unlink_mask);
-     }
-     if (subs->syncpipe) {
-         for (i = 0; i < SYNC_URBS; i++) {
-             if ((err = usb_submit_urb(subs->syncurb[i].urb, GFP_KERNEL)) < 0) {
-                 snd_printk(KERN_ERR "cannot submit syncpipe for urb %d, err = %d\n", i, err);
-                 goto __error;
-             }
-             set_bit(i + 16, &subs->active_mask);
-         }
-     }
-     return 0;
-
-  __error:
-     // snd_pcm_stop(subs->pcm_substream, SNDRV_PCM_STATE_XRUN);
-     deactivate_urbs(subs, 0);
-     return -EPIPE;
-}
-
-Using this code, I haven't had any more errors at all.
-
-In order to use this, just remove all the trace_* functions. This new
-function just checks if a URB is already in use prior to using it and
-clears it. Also, it clears the unlink_mask after the call to
-usb_submit_urb in order for it to be "clearable" by deactivate_urbs().
-Without this last clear_bit(), URBs can only be cleared once by
-deactivate_urbs() and it takes a new init_substream_urbs() to set the
-entire mask back to 0. I don't see how this makes any sense.
-
-Feedback is welcome.
-
-Karim
--- 
-Author, Speaker, Developer, Consultant
-Pushing Embedded and Real-Time Linux Systems Beyond the Limits
-http://www.opersys.com || karim@opersys.com || 514-812-4145
+Fernando Pablo Lopez-Lezcano wrote:
+>>as you might have already seen on the web news page, we released
+>>1.0.0pre1 tarball.  This is intended for the wide tests before the
+>>official 1.0.0 release.  We planned to release 1.0.0 (hopefully) in
+>>this month, so please everyone test this version and give bug reports
+>>now.
+> 
+> 
+> Looks like somehow hdspmix and hdspconf did not make it to the
+> alsa-tools tarball (but they are there in CVS)....
+> -- Fernando
+> 
+> 
+> 
+> 
+> -------------------------------------------------------
+> This SF.net email is sponsored by: SF.net Giveback Program.
+> Does SourceForge.net help you be more productive?  Does it
+> help you create better code?  SHARE THE LOVE, and help us help
+> YOU!  Click Here: http://sourceforge.net/donate/
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
 
 
