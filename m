@@ -1,19 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Problem with www.alsa-project.org web site.
-Date: Tue, 10 Aug 2004 11:45:04 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Problem with www.alsa-project.org web site.
+Date: Tue, 10 Aug 2004 13:03:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4118A730.1050304@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0408101258560.1779@pnote.perex-int.cz>
+References: <4118A730.1050304@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D88E41F4
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 12:45:05 +0200 (MEST)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-35.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BuU7t-000DGp-0Z
-	for alsa-devel@alsa-project.org; Tue, 10 Aug 2004 10:45:05 +0000
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 467C71FE
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 13:06:51 +0200 (MEST)
+In-Reply-To: <4118A730.1050304@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,22 +19,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The real ALSA project web site is http://www.alsa-project.org/
+On Tue, 10 Aug 2004, James Courtier-Dutton wrote:
 
-There appears to now be a FAKE alsa project web site
-http://www.alsaproject.org/
+> The real ALSA project web site is http://www.alsa-project.org/
+> 
+> There appears to now be a FAKE alsa project web site
+> http://www.alsaproject.org/
+> 
+> The only difference being the "-" sign.
+> 
+> I think that in the intrests of users, we should fight to get ownership 
+> of alsaproject.org.
+> 
+> Any comments?
 
-The only difference being the "-" sign.
+Domain ID:D104190554-LROR
+Domain Name:ALSAPROJECT.ORG
+Created On:04-Apr-2004 16:44:16 UTC
+Last Updated On:04-Jun-2004 03:47:08 UTC
+Expiration Date:04-Apr-2005 16:44:16 UTC
+Sponsoring Registrar:R39-LROR
+Status:OK
+Registrant ID:B2E4E1A20136C3E2
+Registrant Name:Mr. Luigi Marruso  C.
+Registrant Organization:HobbyLeasing.com
+Registrant Street1:PO Box 103
+Registrant City:Asti
+Registrant Postal Code:14100
+Registrant Country:IT
+Registrant Email:domains@hobbyregistry.com
+Admin ID:B2E4E1A20136C3E2
+Admin Name:Mr. Luigi Marruso  C.
+Admin Organization:HobbyLeasing.com
+Admin Street1:PO Box 103
+Admin City:Asti
+Admin Postal Code:14100
+Admin Country:IT
+Admin Email:domains@hobbyregistry.com
+Tech ID:B2E4E1A20136C3E2
+Tech Name:Mr. Luigi Marruso  C.
+Tech Organization:HobbyLeasing.com
+Tech Street1:PO Box 103
+Tech City:Asti
+Tech Postal Code:14100
+Tech Country:IT
+Tech Email:domains@hobbyregistry.com
+Name Server:NS1.PROREDIRECT.COM
+Name Server:NS2.PROREDIRECT.COM
 
-I think that in the intrests of users, we should fight to get ownership 
-of alsaproject.org.
+It seems like that the ALSA project web name is used to increase adverts 
+for an Italian company.
 
-Any comments?
+						Jaroslav
 
-James
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
