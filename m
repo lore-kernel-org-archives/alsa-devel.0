@@ -1,15 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: .hw_free() while audio is running ??
-Date: Tue, 10 Aug 2004 11:14:27 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Troubleshoot soundcard positions
+Date: Tue, 10 Aug 2004 11:13:36 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040810111427.7815ec73.pochini@shiny.it>
-References: <20040808172946.43212219.pochini@shiny.it>
-	<Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
+Message-ID: <Pine.HPX.4.33n.0408101112230.7911-100000@studcom.urz.uni-halle.de>
+References: <BAY7-F14Orq8Dr4Guph000147fc@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
+In-reply-to: <BAY7-F14Orq8Dr4Guph000147fc@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,31 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: Roger Andreassen <randreas69@hotmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 8 Aug 2004 22:39:57 +0200 (CEST)
-Jaroslav Kysela <perex@suse.cz> wrote:
-
-> > The call sequence in the logs is:
-> >
-> > pcm_trigger (start)	- of two synced ss's
-> > pcm_hw_free (playback ss)
-> > Crash, nothing more in the logs :(
-> >
-> > trigger(stop) wasn't called before hw_free.
+Roger Andreassen wrote:
+> I have two Pinnacle PCTV Pro tuner cards and I've also the mobo cmipci
+> loaded along with the Live! Player, Slackware 10.0 running kernel 2.6.7,
+> Alsa 1-0.5 mandatory for running tweo tuners at once.
 >
-> You have an SMP machine? The hw_free is protected with the 
-> runtime->status->state checking, but the code is not protected with 
-> spinlock, so I suspect trouble here.
+> At that time my two tuners became dsp0 and dsp1, Live Player as dsp2 and the
+> C-Media sound as dsp3. What a nightmare.
+> ...
+> I've also looked into "index=" entries but the system doesn't react no
+> matter what I try.
 
-Yes, this is a dual processor, but I booted with maxcpus=1 and preempt is
-not enabled.
+The following entries in /etc/modprobe.conf should work:
+
+options snd-emu10k1 index=0
+options snd-cmipci index=1
+options snd-bt87x index=2,3
 
 
---
-Giuliano.
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
