@@ -1,10 +1,10 @@
-From: Ludwig Schwardt <schwardt@sun.ac.za>
-Subject: Multiple Delta 1010LT woes
-Date: Fri, 20 Feb 2004 17:51:10 +0200
+From: snookertb <snookertb@comcast.net>
+Subject: Compile errors with latest alsa releases
+Date: Fri, 20 Feb 2004 11:15:56 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40362CEE.8060907@sun.ac.za>
+Message-ID: <403632BC.20308@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,46 +18,74 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I am attempting to update the Sun JDS distro from alsa version 0.9.0 to 
+a later version which supports newer Intel sound chips. I get the 
+following errors in these two compiles. I ran versions 0.9.8 and 1.0.2c 
+and they produced the same errors.
 
-I'm playing around with the M-Audio (MidiMan) Delta 1010LT card. My plan 
-is to install three of them, synced via word clock, and record the 
-resulting 24 analog channels via JACK. I understand this requires some 
-.asoundrc magic.
+alsa-driver-1.0.2c compile error
 
-Questions:
+Error in both cases error is triggered because of the kernel version of 
+SJDS is 2.4.19-4GB. Is this alsa driver not supposed to be used with 
+older kernels?
 
-- Why does the card show up with 12 inputs under JACK? As far as I could 
-tell, the card has 8 analog ins and 2 spdif ins. Where are the extra two 
-inputs? Shouldn't the card then be a Delta 1210LT? :->
+In file included from 
+/home/tarpon/downloads/alsa-driver-1.0.2c/include/sound/driver.h:42,
+             from usbaudio.inc:6,
+             from usbaudio.c:1:
+/home/tarpon/downloads/alsa-driver-1.0.2c/include/adriver.h:295: 
+redefinition of `usb_make_path'
+/lib/modules/2.4.19-4GB/build/include/linux/usb.h:931: `usb_make_path' 
+previously defined here
+make[1]: *** [usbaudio.o] Error 1
+make[1]: Leaving directory `/home/tarpon/downloads/alsa-driver-1.0.2c/usb'
+make: *** [compile] Error 1
 
-- I've got the "plug" plugin in .asoundrc to select the first eight 
-channels, but this has latency issues. Is "multi" the right way to go?
+alsa-driver-0.9.8 compile error
 
-- Repeated attempts to create a working multi plugin have failed, based 
-on all the usual multicard snippets floating around on the Web. I have 
-only one Delta at the moment, so I've tried it alone and together with 
-the dummy soundcard (i.e. one slave or two in the plugin definition). Is 
-it OK to have only one card in multi?
+In file included from 
+/home/tarpon/downloads/alsa-driver-0.9.8/include/sound/driver.h:42,
+             from usbaudio.inc:2,
+             from usbaudio.c:1:
+/home/tarpon/downloads/alsa-driver-0.9.8/include/adriver.h:296: 
+redefinition of `usb_make_path'
+/lib/modules/2.4.19-4GB/build/include/linux/usb.h:931: `usb_make_path' 
+previously defined here
+make[1]: *** [usbaudio.o] Error 1
+make[1]: Leaving directory `/home/tarpon/downloads/alsa-driver-0.9.8/usb'
+make: *** [compile] Error 1
 
-In JACK I get the error:
-ALSA: no playback configurations available (Invalid argument)
+----------------------------------------------------------
 
-And with aplay and arecord I get:
-arecord: set_params:805: Broken configuration for this PCM: no 
-configurations available
+alsa-utils-1.0.2c compile error
 
-Takashi suggested in an old post (can't find it now) that it might have 
-something to do with the lopsided input/output channel count of the 
-ICE1712. Any suggestions how to get past it, if that's the case?
+Both versions error on undeclared identifier SND_CTL_READONLY
 
-I would really love to hear from anyone who managed to string two or 
-more ICE1712 cards together and used them successfully for recording 
-under JACK.
+alsactl.c: In function `get_controls':
+alsactl.c:483: `SND_CTL_READONLY' undeclared (first use in this function)
+alsactl.c:483: (Each undeclared identifier is reported only once
+alsactl.c:483: for each function it appears in.)
+make[1]: *** [alsactl.o] Error 1
+make[1]: Leaving directory 
+`/home/tarpon/downloads/alsa-utils-1.0.2/alsactl'
+make: *** [all-recursive] Error 1
 
-Thanks very much in advance,
+alsa-utils -0.9.8 compile error
 
-Ludwig Schwardt
+alsactl.c: In function `get_controls':
+alsactl.c:483: `SND_CTL_READONLY' undeclared (first use in this function)
+alsactl.c:483: (Each undeclared identifier is reported only once
+alsactl.c:483: for each function it appears in.)
+make[1]: *** [alsactl.o] Error 1
+make[1]: Leaving directory 
+`/home/tarpon/downloads/alsa-utils-0.9.8/alsactl'
+make: *** [all-recursive] Error 1
+
+
+Any help or guidance would be appreciated. If this is not the right 
+place to post this, please advise and point me to where to go for help.
+
+tb
 
 
 
