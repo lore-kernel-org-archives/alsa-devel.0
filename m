@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000720]: Audigy 2 NX: Digital recording produces silent wave files
-Date: Sat, 11 Dec 2004 09:02:22 +0100
-Message-ID: <7edb8ea35dc02ee9c688b2e3197ef335@bugtrack.alsa-project.org>
+From: Frans Ketelaars <ketelaars@wanadoo.nl>
+Subject: Re: Re: Re: SB Live! 24-bit (Frans Ketelaars)
+Date: Sat, 11 Dec 2004 11:59:50 +0100
+Message-ID: <200412111159.50518.ketelaars@wanadoo.nl>
+References: <ea6472360412101330560002a2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 747A5309
-	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2004 09:02:22 +0100 (MET)
+In-Reply-To: <ea6472360412101330560002a2@mail.gmail.com>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,51 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Friday 10 December 2004 22:30, Tony Senerchia wrote:
+> Thanks!
+>
+> I've seen this actually. The link you gave me:
+> http://alsa.opensrc.org/index.php?page=audigyls
+> doesn't work (permission denied).
+>
+> I understand that it is not fully supported (I'm willing to do what I
+> can and wait if necessary), but I don't know exactly what I need to
+> do to recompile. Which .diff file am I using to patch? Am I patching
+> the kernel directly? I compiled alsa-1.0.7, like I said- do I need to
+> try to compile the CVS?
+>
+> How do I go about patching the kernel (do I just need to search for
+> "alsa-kernel/alsa-***" like in the post from jdc? )
+>
+> Thanks so very much for all your help already- the alsa project has
+> done a lot for sound in Linux!!!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=720> 
-======================================================================
-Reported By:                suamor
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   720
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake Linux 10.1
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             12-11-2004 09:02 CET
-Last Modified:              12-11-2004 09:02 CET
-======================================================================
-Summary:                    Audigy 2 NX: Digital recording produces silent wave
-files
-Description: 
-Hi,
+Sorry, I just had found the post about your soundcard on alsa-user, I 
+don't know anything more about it. http://alsa.opensrc.org/ returns: 
+alsa.opensrc.org 
 
-When I connect an digital device (like a DAT) to the audigy NX I can hear
-the sound being played from the device. I can record using both arecord or
-an OSS
-compatible recording tool. Both tools produce wave files but they record
-nothing but silence.
+Transferring to new server, unavailable until 9th Dec 2004
 
-======================================================================
+Good luck!
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-11-04 09:02 suamor         New Issue                                    
-12-11-04 09:02 suamor         Distribution              => Mandrake Linux 10.1
-12-11-04 09:02 suamor         Kernel Version            => 2.6.8.1         
-======================================================================
-
+    -Frans
 
 
 
