@@ -1,8 +1,8 @@
-From: Bernhard Walle <bernhard.walle@gmx.de>
-Subject: XMMS will not proceed to the next song in a playlist of music files.
-Date: Sat, 16 Aug 2003 23:03:48 +0200
+From: Martin Langer <martin-langer@gmx.de>
+Subject: XILINX FPGA firmware loader
+Date: Sun, 17 Aug 2003 10:13:33 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030816210348.GA7287@mail1.bwalle.de>
+Message-ID: <20030817081333.GA971@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -18,31 +18,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I have the same bug as described here:
+Any documents available about downloading bitstreams into XILINX FPGA's?
 
-http://bugzilla.redhat.com/bugzilla/show_bug.cgi?id=75776
-
-XMMS doesn't play until the end of the file so that the next file in the
-playlist is not played. It are just a few 1/10 seconds so that you don't
-see this with large files but only with small files.
-
-It occurs on SuSE 8.1 and on Debian 3.0 with ALSA 0.9.4. I have a k7s5a
-board with onboard sound. If I use the kernel driver i810_audio, there's
-no problem with XMMS (but with RealPlayer so that I must use ALSA).
-
-Using the ALSA plugin in XMMS doesn't work here. A example file is at
-http://www.bwalle.de/temp/audacity/a.mp3 .
-
-So it seems to be a bug in the OSS emulation of ALSA.
+- vxloader uses it. Which XILINX chip is it?
+- RME uses XILINX FPGA's since years. I suppose hdsploader is for loading 
+  bits into such a Xilinx FPGA. 
+  Anybody there who saw a Xilinx FPGA on/in his hdsp card?
+  Which chip is there?
+- is miXart also Xilinx based?
+- and Tascam USx2x uses it and that's why they need firmware number two.
 
 
-Regards,
-Bernhard
-
--- 
-
+martin
 
 
 -------------------------------------------------------
