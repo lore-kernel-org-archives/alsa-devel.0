@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000889]: wrong routings of channels for 5.1 ICH5-Onboard-Card
-Date: Wed, 30 Mar 2005 08:53:10 +0200
-Message-ID: <bc869e7de0f92f6d069a38fe9f1548e0@bugtrack.alsa-project.org>
+Date: Wed, 30 Mar 2005 09:08:31 +0200
+Message-ID: <b041361563a0ad364db1c7357d23723d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40F08277
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 08:53:10 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BC101BB
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 09:08:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue is now in status NEW (again)
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=889> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             02-08-2005 13:18 CET
-Last Modified:              03-30-2005 08:53 CEST
+Last Modified:              03-30-2005 09:08 CEST
 ======================================================================
 Summary:                    wrong routings of channels for 5.1 ICH5-Onboard-Card
 Description: 
@@ -55,11 +55,6 @@ The submitter reports that the sound output goes to the wrong places
 
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-09-05 17:11 
-----------------------------------------------------------------------
-Fixed on CVS.
 
 ----------------------------------------------------------------------
  jdthood - 03-30-05 08:52 
@@ -93,6 +88,24 @@ was only able to test this with speaker-test.
 Gruß
    Klaus
 
+----------------------------------------------------------------------
+ jdthood - 03-30-05 09:08 
+----------------------------------------------------------------------
+Additional info:
+
+With the old kernel module and new drivers (sid) mostely all work
+correct. (1.0.7-2)
+"speaker-test -D plug:surround51 -c 6" is ok
+"speaker-test -c 6" not.
+
+With the newer kernel module the one channel is allways muted. (1.0.8-4)
+
+The test I did on the old kernel with the alpha packages. So there seems
+to be several issues with the routing.
+
+Gruß
+   Klaus
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -110,6 +123,7 @@ Date Modified  Username       Field                    Change
 03-30-05 08:52 jdthood        Resolution               fixed => reopened   
 03-30-05 08:52 jdthood        Note Added: 0004262                          
 03-30-05 08:53 jdthood        Status                   feedback => new     
+03-30-05 09:08 jdthood        Note Added: 0004263                          
 ======================================================================
 
 
