@@ -1,17 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: 0.9.0rc8 series
-Date: Tue, 4 Mar 2003 00:40:38 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: hdsp9652 note
+Date: Mon, 03 Mar 2003 22:22:33 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030303234038.GA498@tuba.home>
-References: <Pine.LNX.4.44.0303032051330.1135-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E18q2xV-0006Jv-00@sc8-sf-list1.sourceforge.net>
+References: <20030303204249.3b3d0b0f.m.ash@gmx.at>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.65.60])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA02179
-	for <alsa-devel@alsa-project.org>; Tue, 4 Mar 2003 00:35:40 +0100
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0303032051330.1135-100000@pnote.perex-int.cz>
+In-reply-to: Your message of "Mon, 03 Mar 2003 20:42:49 +0100."
+             <20030303204249.3b3d0b0f.m.ash@gmx.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,21 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+To: m <m.ash@gmx.at>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 03, 2003 at 08:56:07PM +0100, Jaroslav Kysela wrote:
-> 
-> 	we are going to release 0.9.0 final this week. The 0.9.0rc8 serie
-> is the last. I will release next 0.9.0rc8 package as soon as a serious bug
-> is fixed. Please, report us compilation problems and functional problems
-> to the alsa-devel mailing list. We will try to fix them ASAP.
-> 
+>I tried a hdsp9652 install this weekend and found out I had to add another cas
+>e line to get it recognised at all (instead of downgrading firmware).
+>
+>this seems to work for now ( although the driver claims that 
+>ALSA ../../alsa-kernel/pci/rme9652/hdsp.c:2935: I/O Box is a Digiface )
 
-...don't forget again (like rc7) to build a new alsa-oss package!
+i've already added this to my upcoming patch.
 
-martin
+its a new h/w rev-level for the hdsp9652.
+
+--p
 
 
 -------------------------------------------------------
