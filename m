@@ -1,12 +1,14 @@
-From: Richard Lemon <richard@clinicdesign.com.au>
-Subject: possible intel8x0 problem with nforce chip-set
-Date: 21 Oct 2003 13:18:39 +0930
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: creating/deleting MIDI events
+Date: Tue, 21 Oct 2003 09:36:44 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1066708119.13971.10.camel@baked.spud.com>
+Message-ID: <Pine.HPX.4.33n.0310210928580.2396-100000@studcom.urz.uni-halle.de>
+References: <3F93E3ED.8080807@emt.iis.fhg.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <3F93E3ED.8080807@emt.iis.fhg.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,56 +17,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Bernhard Gerlach <gerlacbd@emt.iis.fhg.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Bernhard Gerlach wrote:
+> How do create a pointer and allocate memory to variables of type
+> snd_seq_event to generate events by software? The function
+> snd_seq_create_event doesn't exist anymore...
 
-Hi Guys,
+Use a standard pointer, and malloc/calloc/whateveralloc.
+You can allocate events directly on the stack (without pointers), too.
 
-I have been using the alsa api for a while working on some multimedia
-stuff.
+> snd_seq_event * event;
+> snd_seq_event_input( handle, &event );
+>
+> This allocates memory, but how do I release it? The function
+> snd_seq_free_event is marked as deprecated and seems to be empty.
 
-I believe I have found a bug with the intel8x0 driver when running the
-nforce chip-set.
+The event lives in some internal buffer managed by the ALSA library.
+Simply don't do anything to free it.
 
-The problem appears to be an uninitialized variable type problem. The
-first time you call snd_pcm_mmap_begin() the channels are returned in
-their pairs in a random order. That is the rear channels may end up in
-the front or Center/LFE slots, etc, the channel order does not change
-from then on.
+The event buffer may be reused by the next snd_seq_event_input() call.
 
-I compiled up the pcm.c test code and tried that out. This shows the
-problem, only worse. If you change the generate_sine function to the
-following to pick out one pair of channels only.
 
-if ((chn == 2) || (chn == 3))
-	*samples[chn] = ires;
-else
-	*samples[chn] = 0;
-
-then call pcm with the following...
-./pcm -r 48000 -c 6 -m direct_noninterleaved
-
-I would expect silence from all but the rear pair. What we get is a
-sequencing of the audio through the 6 channels. It makes no difference
-which of the modes or rates I use.
-
-Am I just misusing the api or is this a bug?
-
-Here are the hardware specs.
-
-ShuttleX pc
-North bridge-Nvidia nForce2, South bridge-nVidia MCP-T
-Realtek ALC650 6 Ch, Support Digital SPDIF Output
-
-for more details on hardware.
-http://www.us.shuttle.com/specs_access.asp?pro_id=284
-
-running Mandrake Linux 9.0.
-
-I have tested several of the alsa releases and am currently using 0.9.6.
-
-Richard Lemon.
+HTH
+Clemens
 
 
 
