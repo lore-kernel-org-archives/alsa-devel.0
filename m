@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000912]: MORE Support for SB live 24bit
-Date: Fri, 25 Mar 2005 01:28:49 +0100
-Message-ID: <00b98359ef81c67ad14f4fe607cc125a@bugtrack.alsa-project.org>
+From: Patrick Mochel <mochel@digitalimplant.org>
+Subject: Re: 2.6.12-rc1-mm2
+Date: Thu, 24 Mar 2005 17:00:18 -0800 (PST)
+Message-ID: <Pine.LNX.4.50.0503241658360.29178-100000@monsoon.he.net>
+References: <20050324044114.5aa5b166.akpm@osdl.org> <1111682812.23440.6.camel@mindpipe>
+ <20050324121722.759610f4.akpm@osdl.org> <200503242331.46985.rjw@sisk.pl>
+ <42434E59.2060805@free.fr> <20050324154920.4e506d76.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1A132A2
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 01:28:49 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20050324154920.4e506d76.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,78 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Andrew Morton <akpm@osdl.org>
+Cc: Laurent Riffard <laurent.riffard@free.fr>, rjw@sisk.pl, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org, Greg KH <greg@kroah.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=912> 
-======================================================================
-Reported By:                hawes
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   912
-Category:                   PCI - ca0106
-Reproducibility:            N/A
-Severity:                   major
-Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
-Fixed in Version:           
-======================================================================
-Date Submitted:             02-16-2005 17:52 CET
-Last Modified:              03-25-2005 01:28 CET
-======================================================================
-Summary:                    MORE Support for SB live 24bit
-Description: 
-Im wishing there will be more support for the Sb live! 24bit card...
+On Thu, 24 Mar 2005, Andrew Morton wrote:
 
-I have it working right now using the cvs method. It has only limited
-funtion though.. no capture/recording, only stereo sound...etc....
+> Laurent Riffard <laurent.riffard@free.fr> wrote:
+> >
+> > hello,
+> >
+> > Same kinds of problem here. It depends on the removed module. I mean:
+> > "rmmod loop" or "rmmod pcspkr" works. But "rmmod snd_ens1371" or "rmmod
+> > ohci1394" hangs.
+> >
+> > Sysrq-T when rmmoding snd_ens1371 :
 
-Please help.....
+<snip>
 
-Hawes
-======================================================================
+> It looks like we're getting stuck in the wait_for_completion() in the new
+> klist_remove().
 
-----------------------------------------------------------------------
- jcdutton - 02-22-05 14:47 
-----------------------------------------------------------------------
-The current driver fully supports 5.1 Audio output. Just send 6 audio
-channels to the card and open it with "plug:surround51"
-Make sure that alsa-driver and alsa-lib versions match otherwise the
-config files in alsa-lib will not match the alsa-driver capabilities.
-
-Capture/recording cannot currently be supported. There is not datasheet
-regarding how to get them working, and also no one has reverse engineered
-the windows drivers enough to find out. Conclusion, support not expected
-any time soon.
-
-----------------------------------------------------------------------
- jcdutton - 03-25-05 01:28 
-----------------------------------------------------------------------
-Capture and Recording is not possible with the ca0106 group of sound cards.
-We don't have the documents needs to add capture support for the SB Live
-24bit sound card.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-16-05 17:52 hawes          New Issue                                    
-02-22-05 09:28 perex          Assigned To              perex => jcdutton   
-02-22-05 09:28 perex          Category                 0_compilation problem_!!!
-=> PCI - ca0106
-02-22-05 14:47 jcdutton       Note Added: 0003704                          
-02-22-05 16:35 hawes          Issue Monitored: hawes                       
-03-25-05 01:28 jcdutton       Status                   assigned => closed  
-03-25-05 01:28 jcdutton       Note Added: 0004205                          
-======================================================================
+D'oh! It's getting hung while waiting to remove the current node from the
+list (which it can't remove because it's being used). The patch below
+should fix it.
 
 
+	Pat
+
+
+===== drivers/base/dd.c 1.3 vs edited =====
+--- 1.3/drivers/base/dd.c	2005-03-21 12:25:04 -08:00
++++ edited/drivers/base/dd.c	2005-03-24 16:55:21 -08:00
+@@ -177,7 +177,7 @@
+
+ 	sysfs_remove_link(&drv->kobj, kobject_name(&dev->kobj));
+ 	sysfs_remove_link(&dev->kobj, "driver");
+-	klist_remove(&dev->knode_driver);
++	klist_del(&dev->knode_driver);
+
+ 	down(&dev->sem);
+ 	device_detach_shutdown(dev);
 
 
 -------------------------------------------------------
