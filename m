@@ -1,13 +1,14 @@
-From: Olivier Ricordeau <olivier.ricordeau@wanadoo.fr>
+From: drclaw@dogsolitude.org
 Subject: Re: [BUG] buggy ali5451 driver
-Date: Mon, 04 Nov 2002 15:45:40 +0100
+Date: Mon, 4 Nov 2002 06:20:35 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DC68814.6070700@wanadoo.fr>
-References: <m24raxpndj.fsf@vador.mandrakesoft.com> <s5hu1ixa0eu.wl@alsa2.suse.de> <3DC68350.2040208@wanadoo.fr>
+Message-ID: <20021104112035.GA14883@dogsolitude.org>
+References: <m24raxpndj.fsf@vador.mandrakesoft.com> <s5hu1ixa0eu.wl@alsa2.suse.de> <3DC68350.2040208@wanadoo.fr> <3DC68814.6070700@wanadoo.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3DC68814.6070700@wanadoo.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,25 +17,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Olivier Ricordeau wrote:
-> I can... if you explain me how to do this... A kernel option at boot 
-> time ?. Though I've used Linux for a few years, I'm quite a newbie 
-> regarding kernel stuffs.
+Try disabling "use dma by default" in the ide section.  If that then
+fixes the problem I have a patch that can get you dma back.  I've got an
+ali southbridge in my laptop as well and everything works fine.  
 
-Ok I've searched the web, and I've tried to boot my standard MDK kernel 
-with the "acpi=off", and it's the same: both "modprobe trident" and 
-"modprobe snd-ali5451" make the laptop freeze (I/O errors on hard drive).
-
--- 
-
-  -= *Olivier RICORDEAU* =-   |  ICQ: 65452304
-  Ing1 EPITA Millesime 2005   | Phone: 0686720852
-           olivier.ricordeau@wanadoo.fr
-          _Might the source be with you_
-
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 
 -------------------------------------------------------
