@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Wed, 16 Mar 2005 04:53:13 +0100
-Message-ID: <fb9175a69667cf7a5492374f3378e12c@bugtrack.alsa-project.org>
+Date: Wed, 16 Mar 2005 05:19:20 +0100
+Message-ID: <fbe9a7fd83c39e8888ebe46e6396ce40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48E7D21F
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 04:53:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C77CF227
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 05:19:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-16-2005 04:53 CET
+Last Modified:              03-16-2005 05:19 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,22 +100,6 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 03-16-05 04:06 
-----------------------------------------------------------------------
-Try commenting out the following lines in the probe function like this:
-
-/*
-	if ((err = snd_emu10k1x_midi(chip)) < 0) {
-		snd_card_free(card);
-		return err;
-	}
-*/
-
-Also, try putting some printf() calls after each block before that one so
-that we can track where it failed. I will add a better error handling
-soon.
-
-----------------------------------------------------------------------
  Q3Man - 03-16-05 04:53 
 ----------------------------------------------------------------------
 I went through and commented those lines out, recompiled and reinstalled.
@@ -137,6 +121,19 @@ apparent.
 So either its dying before it gets to those calls, or I have added them
 inappropriately. In any event, the commented out midi code doesn't appear
 to be the point of failure.
+
+----------------------------------------------------------------------
+ Q3Man - 03-16-05 05:19 
+----------------------------------------------------------------------
+Well, I have some more good news :)
+
+Just booted under knoppix 3.8. Aside from it detecting the card
+incorrectly and loading it with EMU10k1 (which didn't work anyway), when I
+modprobe'd snd-emu10k1x, it dies with the exact same error. 
+
+For a while I thought I had some weird setting in a config somewhere that
+was causing it to fail. I feel a bit more relieved that knoppix fails in
+the same way... although that still doesn't help me much :)
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -163,6 +160,7 @@ Date Modified  Username       Field                    Change
 03-16-05 03:32 Q3Man          Note Added: 0003930                          
 03-16-05 04:06 fmoraes        Note Added: 0003931                          
 03-16-05 04:53 Q3Man          Note Added: 0003932                          
+03-16-05 05:19 Q3Man          Note Added: 0003933                          
 ======================================================================
 
 
