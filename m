@@ -1,17 +1,17 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: Hammerfall DSP System Problems
-Date: 22 Jun 2003 12:36:35 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: future ALSA development
+Date: Sun, 22 Jun 2003 21:10:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1056310595.1790.2.camel@Wizard.knechthome.com>
-References: <E19PnrW-0005mQ-00@sc8-sf-list1.sourceforge.net>
-	 <Pine.LNX.4.53.0306120009030.1274@pi32.pi>
-	 <1055414777.1404.6.camel@tpdrh.niptron.com>
-	 <Pine.LNX.4.53.0306221053380.29109@pi32.pi>
+Message-ID: <Pine.LNX.4.44.0306222010030.1838-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.53.0306221053380.29109@pi32.pi>
+Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA28852
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jun 2003 21:11:01 +0200
+Received: from pnote.perex-int.cz (pnote.perex-int.cz [192.168.100.88])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id B9DC6BF
+	for <alsa-devel@alsa-project.org>; Sun, 22 Jun 2003 21:10:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,33 +20,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jesse Chappell <jesse@essej.net>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-06-22 at 07:57, Jesse Chappell wrote:
-> On Thu, 12 Jun 2003, D R Holsbeck wrote:
-> 
-> > The newer Alsa code (with the new HDSP firmware code), has some new
-> > device nodes, that dont get handled correctly if you are using the
-> > devfs. I havent worked it all out yet, but running the snddevices script
-> > will create them. Here is my list of my /dev/snd directory
-> > 
-> > Do you have all the device nodes setup? Especially the hwC*D* nodes? I
-> > had problems running the hdsploader at first, because these nodes are
-> > not being handled by the devfsd correctly.
-> 
-> No luck, running snddevices created the extra hw nodes but I got  
-> the same behavior when running hdsploader.  The only node I had 
-> before running the script was hwC1D0.
-> 
+Hello all,
 
-Are any of you DSP users having any luck with the MIDI interface? I'm
-finding it still drops lots of notes, which has so far stimied any
-possibilities of my doing soft synths using Linux.
+	here are my next goals for the ALSA library development (short 
+term). I invite all developers to comment these directions.
 
-Thanks,
-Mark
+* create ordinary pcm & mixer interfaces
+  - proposed headers are in current CVS
+    - alsa-lib/include/pcm_ordinary.h
+    - alsa-lib/include/mixer_ordinary.h
+  - intended applications are
+    - simple playback & recorders
+    - DVD players
+    - VoIP (and other audio conferencing) applications
+    - very simple mixer applications
+* investigate a lisp integration to the current configuration syntax
+  - we need to describe the relations between high level abstract
+    layer (ordinary mixer) and current universal controls (very lowlevel);
+    it seems that the simple configuration is not able to describe
+    these (in most cases) very complicated paths
+  - note that describing of these relations might be used also for
+    another mixer interfaces (simple mixer for example)
+  - I don't rely on lisp, but what another interpreter with function
+    definition has only 22kB binary (slisp-1.2 - i686)?
+* initiate a development of a graphical tool which will manage
+  the alsa configuration files (~/.asoundrc)
+  - we need a rapid development tool; I slowly became a fan of python and
+    Qt has rich number of widgets; python + PyQt seems to me a good idea
+  - using python requires to write a GPLed ALSA 0.9 -> python wrapper
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 
