@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Mon, 6 Dec 2004 20:59:36 +0100
-Message-ID: <b1f0422d5eba85b9e89d79c95d1584bc@bugtrack.alsa-project.org>
+From: "Gladys Lilly" <byvrhgovdxvzw@bisons.com>
+Subject: You will be blown away how fast and ea-sy this is
+Date: Mon, 06 Dec 2004 14:16:48 -0600
+Message-ID: <kxbtlzrrxznqammuubr@address.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+     boundary="--0-05-596-421-42427051313"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F8752FA
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:59:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +15,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-announce@alsa-project.org
+Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+----0-05-596-421-42427051313
+Content-Type: text/html; 
+Content-Transfer-Encoding: 7Bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
-======================================================================
-Reported By:                tigermb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   709
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              12-06-2004 20:59 CET
-======================================================================
-Summary:                    Recording doesnt work
-Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+<html>
+<body>
+<p>Dear Valued Customer,</p>
+<p>If you’re a customer who knows exactly what you need, right down to the 
+product name, then you already know you don’t need to see a doctor. So why would 
+you, when you already know you’re going to pay hefty retail prices to get what 
+you already know you need. <br>
+<br>
+The internet provides a brand new medium for people who want access to high 
+quality medication they can rely on, at enormous discounts.</p>
+<p>Please have a look here</p>
+<p><a href="http://bwzehy.116.habfewff.info">Press_Here</a></p>
+<p>Thank you, </p>
+<p>Gladys Lilly</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><a href="http://rvyffa.hbefasfe.info/bye/">no</a></p>
+</body>
+</html>
 
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
-======================================================================
 
-----------------------------------------------------------------------
- tiwai - 12-06-04 20:59 
-----------------------------------------------------------------------
-"Doesn't do anything" means that you get silent data?
-
-If so, it's likely a mixer configuration problem.
-Attach /etc/asound.state.
-
-Hint: don't forget to raise "Capture Volume", turn on "Capture Switch",
-and choose the appropriate "Capture Source".  Then, choose "Input1" for
-"Input Source Select" control.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
-12-06-04 20:59 tiwai          Note Added: 0002735                          
-======================================================================
+----0-05-596-421-42427051313--
 
 
 
