@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000998]: access to second playback hangs
-Date: Wed, 6 Apr 2005 12:34:06 +0200
-Message-ID: <4aa5ab38d3d9e3f9d731e88ee4a5f285@bugtrack.alsa-project.org>
+Date: Wed, 6 Apr 2005 12:49:37 +0200
+Message-ID: <1d214ff0195c34c6e01dea0306e17a39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25BC4230
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 12:34:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14C6E230
+	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 12:49:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian sid
 Kernel Version:             2.6.10-6
 ======================================================================
 Date Submitted:             03-19-2005 00:16 CET
-Last Modified:              04-06-2005 12:34 CEST
+Last Modified:              04-06-2005 12:49 CEST
 ======================================================================
 Summary:                    access to second playback hangs
 Description: 
@@ -55,12 +55,6 @@ to fix it).
 ======================================================================
 
 ----------------------------------------------------------------------
- allefant - 04-06-05 00:30 
-----------------------------------------------------------------------
-1.0.9rc2 fixes this. The bug can be closed, many thanks. (Now, if this just
-would find its way into the kernel quicker..)
-
-----------------------------------------------------------------------
  allefant - 04-06-05 12:34 
 ----------------------------------------------------------------------
 Wait, ignore what I just said. Rejoiced too soon. I get the same HW freeze
@@ -72,6 +66,12 @@ again. (I also have another card with the intel HDA driver btw, in case
 you wonder why I'm using such an old card as es1938 still.. but with that
 I get no volume control. *sigh*)
 
+----------------------------------------------------------------------
+ allefant - 04-06-05 12:49 
+----------------------------------------------------------------------
+Hm, should I re-submit it as bug for 1.0.9rc2? I can't figure out how to
+change the version field..
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -80,6 +80,7 @@ Date Modified  Username       Field                    Change
 03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
 04-06-05 00:30 allefant       Note Added: 0004344                          
 04-06-05 12:34 allefant       Note Added: 0004345                          
+04-06-05 12:49 allefant       Note Added: 0004346                          
 ======================================================================
 
 
