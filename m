@@ -1,14 +1,12 @@
-From: "Zierath Bernd" <B.Zierath@ebv.com>
-Subject: RE: AC3 passthru intel8x0 + cs4299
-Date: Fri, 28 Feb 2003 11:31:33 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] midi_voices
+Date: Fri, 28 Feb 2003 12:57:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <51420C40A341F14499B8C5A488BEDA5801B795@EXSRV02.int.ebv.com>
+Message-ID: <Pine.HPX.4.33n.0302281234530.8163-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,142 +18,179 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-here are my current config
+Isn't it really nice that there are ioctls and library functions to get/
+set the midi_voices property of sequencer ports?
 
-lspci -v
+Well, it would be, if ports actually had this property.  :o)
 
-00:1f.5 Multimedia audio controller: Intel Corp. 82801AA AC'97 Audio =
-(rev 02)
-        Subsystem: Siemens Nixdorf AG: Unknown device 0051
-        Flags: bus master, medium devsel, latency 0, IRQ 5
-        I/O ports at 2000 [size=3D256]
-        I/O ports at 1800 [size=3D64]
--------------
-0-0/0: Cirrus Logic CS4299 rev 4
 
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Crystal Semi 3D Stereo Enhancement
+Index: alsa-kernel/core/seq/seq_ports.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_ports.h,v
+retrieving revision 1.2
+diff -u -r1.2 seq_ports.h
+--- alsa-kernel/core/seq/seq_ports.h	30 Dec 2001 09:26:45 -0000	1.2
++++ alsa-kernel/core/seq/seq_ports.h	28 Feb 2003 10:35:06 -0000
+@@ -81,6 +81,7 @@
 
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=3D0 rev=3D0 AMAP DSA=3D0 VRA
-Extended status  : VRA
-PCM front DAC    : 48000Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Copyright Category=3D0x2 Generation=3D1 =
-Rate=3D48kHz E
-nabled
--------------
-0:00 =3D 1990
-0:02 =3D 1313
-0:04 =3D 1f1f
-0:06 =3D 001f
-0:08 =3D 0000
-0:0a =3D 001e
-0:0c =3D 001f
-0:0e =3D 005f
-0:10 =3D 1f1f
-0:12 =3D 1f1f
-0:14 =3D 1f1f
-0:16 =3D 1f1f
-0:18 =3D 1f1f
-0:1a =3D 0000
-0:1c =3D 0000
-0:1e =3D 0000
-0:20 =3D 2000
-0:22 =3D 0000
-0:24 =3D 0000
-0:26 =3D 000f
-0:28 =3D 0201
-0:2a =3D 0001
-0:2c =3D bb80
-0:2e =3D 0000
-0:30 =3D 0000
-0:32 =3D bb80
-0:34 =3D 0000
-0:36 =3D 0000
-0:38 =3D 0000
-0:3a =3D 0000
-0:3c =3D 0000
-0:3e =3D 0000
-0:40 =3D 0000
-0:42 =3D 0000
-0:44 =3D 0000
-0:46 =3D 0000
-0:48 =3D 0000
-0:4a =3D 0000
-0:4c =3D 0000
-0:4e =3D 0000
-0:50 =3D 0000
-0:52 =3D 0000
-0:54 =3D 0000
-0:56 =3D ffff
-0:58 =3D 0000
-0:5a =3D 0404
-0:5c =3D 0000
-0:5e =3D 0080
-0:60 =3D 0022
-0:62 =3D 0000
-0:64 =3D 0000
-0:66 =3D 0000
-0:68 =3D 8824
-0:6a =3D 0000
-0:6c =3D 0000
-0:6e =3D 0000
-0:70 =3D 0000
-0:72 =3D 0000
-0:74 =3D 0000
-0:76 =3D 0000
-0:78 =3D 007e
-0:7a =3D 0000
-0:7c =3D 4352
-0:7e =3D 5934
--------------
-Intel8x0
+ 	/* supported channels */
+ 	int midi_channels;
++	int midi_voices;
+ 	int synth_voices;
 
-Global control        : 0x00000002
-Global status         : 0x00000100
-AC'97 codecs ready    : primary
--------------
-0 [82801AAICH     ]: ICH - Intel 82801AA-ICH
-                     Intel 82801AA-ICH at 0x2000, irq 5
---------------
-  0: [0- 0]: ctl
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
- 33:       : timer
----------------
-pcm
-00-00: Intel ICH : Intel 82801AA-ICH : playback 1 : capture 1
----------------
+ } client_port_t;
+Index: alsa-kernel/core/seq/seq_ports.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/seq/seq_ports.c,v
+retrieving revision 1.12
+diff -u -r1.12 seq_ports.c
+--- alsa-kernel/core/seq/seq_ports.c	5 Feb 2003 11:07:51 -0000	1.12
++++ alsa-kernel/core/seq/seq_ports.c	28 Feb 2003 10:35:06 -0000
+@@ -351,6 +351,7 @@
 
-what I'm trying , change no audio bit to 1 reg 0x68 in ac97_codec.c =
-snd_ac97_spdif_default_put().
-but I get errors in
-intel8x0: clocking to 48000
-ALSA ../alsa-kernel/pci/intel8x0.c:521: codec_semaphore: semaphore is =
-not ready[0x1][0x100]
-ALSA ../alsa-kernel/pci/intel8x0.c:553: codec_read 0: semaphore is not =
-ready for register 0x56
+ 	/* information about supported channels/voices */
+ 	port->midi_channels = info->midi_channels;
++	port->midi_voices = info->midi_voices;
+ 	port->synth_voices = info->synth_voices;
 
-I try activate the SPSA control in snd_ac97_mixer_build() like cs4205.
+ 	return 0;
+@@ -372,6 +373,7 @@
 
-I also have no clue right now about the registers 0x30 and 0x34.=20
-0x34 is maybe Codec Write Semaphore Register
+ 	/* information about supported channels/voices */
+ 	info->midi_channels = port->midi_channels;
++	info->midi_voices = port->midi_voices;
+ 	info->synth_voices = port->synth_voices;
 
-CU
-Bernd Zierath
+ 	/* get subscriber counts */
+@@ -611,7 +613,7 @@
+ int snd_seq_event_port_attach(int client,
+ 			      snd_seq_port_callback_t *pcbp,
+ 			      int cap, int type, int midi_channels,
+-			      char *portname)
++			      int midi_voices, char *portname)
+ {
+ 	snd_seq_port_info_t portinfo;
+ 	int  ret;
+@@ -628,6 +630,7 @@
+ 	portinfo.type = type;
+ 	portinfo.kernel = pcbp;
+ 	portinfo.midi_channels = midi_channels;
++	portinfo.midi_voices = midi_voices;
+
+ 	/* Create it */
+ 	ret = snd_seq_kernel_client_ctl(client,
+Index: alsa-kernel/include/seq_kernel.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/include/seq_kernel.h,v
+retrieving revision 1.6
+diff -u -r1.6 seq_kernel.h
+--- alsa-kernel/include/seq_kernel.h	5 Feb 2003 11:07:52 -0000	1.6
++++ alsa-kernel/include/seq_kernel.h	28 Feb 2003 10:35:06 -0000
+@@ -174,7 +174,7 @@
+
+ /* port attach/detach */
+ int snd_seq_event_port_attach(int client, snd_seq_port_callback_t *pcbp,
+-			      int cap, int type, int midi_channels, char *portname);
++			      int cap, int type, int midi_channels, int midi_voices, char *portname);
+ int snd_seq_event_port_detach(int client, int port);
+
+ #endif /* __SOUND_SEQ_KERNEL_H */
+Index: alsa-kernel/drivers/opl3/opl3_oss.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/drivers/opl3/opl3_oss.c,v
+retrieving revision 1.9
+diff -u -r1.9 opl3_oss.c
+--- alsa-kernel/drivers/opl3/opl3_oss.c	5 Feb 2003 11:07:52 -0000	1.9
++++ alsa-kernel/drivers/opl3/opl3_oss.c	28 Feb 2003 10:35:06 -0000
+@@ -101,7 +101,7 @@
+ 							  SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC |
+ 							  SNDRV_SEQ_PORT_TYPE_MIDI_GM |
+ 							  SNDRV_SEQ_PORT_TYPE_SYNTH,
+-							  voices,
++							  voices, voices,
+ 							  name);
+ 	if (opl3->oss_chset->port < 0) {
+ 		snd_midi_channel_free_set(opl3->oss_chset);
+Index: alsa-kernel/drivers/opl3/opl3_seq.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/drivers/opl3/opl3_seq.c,v
+retrieving revision 1.10
+diff -u -r1.10 opl3_seq.c
+--- alsa-kernel/drivers/opl3/opl3_seq.c	5 Feb 2003 11:07:52 -0000	1.10
++++ alsa-kernel/drivers/opl3/opl3_seq.c	28 Feb 2003 10:35:06 -0000
+@@ -179,8 +179,10 @@
+ {
+ 	snd_seq_port_callback_t callbacks;
+ 	char name[32];
+-	int opl_ver;
++	int voices, opl_ver;
+
++	voices = (opl3->hardware < OPL3_HW_OPL3) ?
++		MAX_OPL2_VOICES : MAX_OPL3_VOICES;
+ 	opl3->chset = snd_midi_channel_alloc_set(16);
+ 	if (opl3->chset == NULL)
+ 		return -ENOMEM;
+@@ -204,7 +206,7 @@
+ 						      SNDRV_SEQ_PORT_TYPE_MIDI_GENERIC |
+ 						      SNDRV_SEQ_PORT_TYPE_MIDI_GM |
+ 						      SNDRV_SEQ_PORT_TYPE_SYNTH,
+-						      16,
++						      16, voices,
+ 						      name);
+ 	if (opl3->chset->port < 0) {
+ 		snd_midi_channel_free_set(opl3->chset);
+Index: alsa-kernel/isa/gus/gus_synth.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/isa/gus/gus_synth.c,v
+retrieving revision 1.9
+diff -u -r1.9 gus_synth.c
+--- alsa-kernel/isa/gus/gus_synth.c	5 Feb 2003 11:07:52 -0000	1.9
++++ alsa-kernel/isa/gus/gus_synth.c	28 Feb 2003 10:35:06 -0000
+@@ -197,7 +197,7 @@
+ 						   SNDRV_SEQ_PORT_TYPE_MIDI_GS |
+ 						   SNDRV_SEQ_PORT_TYPE_DIRECT_SAMPLE |
+ 						   SNDRV_SEQ_PORT_TYPE_SYNTH,
+-						   16,
++						   16, 0,
+ 						   name);
+ 	if (p->chset->port < 0) {
+ 		result = p->chset->port;
+Index: alsa-kernel/pci/trident/trident_synth.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/trident/trident_synth.c,v
+retrieving revision 1.9
+diff -u -r1.9 trident_synth.c
+--- alsa-kernel/pci/trident/trident_synth.c	25 Feb 2003 20:36:40 -0000	1.9
++++ alsa-kernel/pci/trident/trident_synth.c	28 Feb 2003 10:35:06 -0000
+@@ -909,7 +909,7 @@
+ 						   SNDRV_SEQ_PORT_TYPE_MIDI_GS |
+ 						   SNDRV_SEQ_PORT_TYPE_DIRECT_SAMPLE |
+ 						   SNDRV_SEQ_PORT_TYPE_SYNTH,
+-						   16,
++						   16, 0,
+ 						   name);
+ 	if (p->chset->port < 0) {
+ 		result = p->chset->port;
+Index: alsa-kernel/synth/emux/emux_seq.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/synth/emux/emux_seq.c,v
+retrieving revision 1.8
+diff -u -r1.8 emux_seq.c
+--- alsa-kernel/synth/emux/emux_seq.c	5 Feb 2003 11:07:53 -0000	1.8
++++ alsa-kernel/synth/emux/emux_seq.c	28 Feb 2003 10:35:06 -0000
+@@ -176,7 +176,8 @@
+ 	}
+
+ 	p->chset.port = snd_seq_event_port_attach(emu->client, callback,
+-						  cap, type, max_channels, name);
++						  cap, type, max_channels,
++						  emu->max_voices, name);
+
+ 	return p;
+ }
+
+
 
 
 -------------------------------------------------------
