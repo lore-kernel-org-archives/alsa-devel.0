@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
-Date: Mon, 3 Jan 2005 05:50:37 +0100
-Message-ID: <6bb71d3e8d2df0a0a0cc21f5109284ca@bugtrack.alsa-project.org>
+From: Gary Jones <nightbreed@verizon.net>
+Subject: alsa-tools/as10k1
+Date: Mon, 3 Jan 2005 04:19:57 -0500
+Message-ID: <200501030419.58228.nightbreed@verizon.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F8C0254
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 05:50:37 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
-======================================================================
-Reported By:                jeffgus
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   779
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-ac16
-======================================================================
-Date Submitted:             01-03-2005 05:50 CET
-Last Modified:              01-03-2005 05:50 CET
-======================================================================
-Summary:                    SPDIF audio is broken up... stutters
-Description: 
-I was previously able to send ac3 audio via the coaxial output to an
-external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
-(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
-out right.  It's all broken up.  The light on the amp blinks.  The light
-comes on when it decodes a segment of audio then goes out with silence.
+I am using Slackware 10 with Linux Kernel 2.6.10 and gcc 3.4.3-i686 and tried 
+to compile as10k1 in alsa-tools from CVS 1.0.8-rc1.
 
-The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
-caused the problem (upgrade to 2.6?).
+Normally when I try to compile I receive the a parse error like so:
+as10k1.c: 163: error: label at end of compound statement
 
-======================================================================
+from the 'parse_cli_args' function.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-05 05:50 jeffgus        New Issue                                    
-01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
-01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
-======================================================================
+In order to get it to compile I had to change:
+line 161. next_cli_args: in as10k1.c to next_cli_args:; <-- added the ; at the 
+end. After that it compiled correctly.
 
+I was wondering if this is a known issue or is it just me and I am missing 
+something with a normal compile.
 
+Regards
 
 
 -------------------------------------------------------
