@@ -1,16 +1,11 @@
-From: Marcus Andersson <054185595@telia.com>
-Subject: Re: ALSA Hammerfall DSP driver
-Date: Sun, 16 Jun 2002 21:02:49 +0200
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: forking in user-space; mmap refcounting bug in alsa-kernel
+Date: Mon, 17 Jun 2002 05:39:19 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D0CE0D9.EF6B78A3@telia.com>
-References: <200205261203.g4QC32328992@mailf.telia.com>
+Message-ID: <Pine.LNX.4.44.0206170454320.2887-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from maila.telia.com (maila.telia.com [194.22.194.231])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA01195
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jun 2002 20:57:03 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,55 +14,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Running the following test program with current ALSA-CVS and with Delta44
+as the soundcard, I always get a failure from
+alsa-lib/src/pcm/pcm_hw.c:snd_pcm_hw_hw_free():
 
-my Multiface now works. I am not quite sure exactly what I did right,
-but I suspect it is that I now load snd_hammerfall_mem at boot time. I
-suspect some kind of faulty state is introduced if snd_hammerfall_mem
-isn't loaded in the correct way. This is impossible to correct later by
-unloading all the alsa modules and start over. Maybe it can be made a
-little more fault tolerant.
+SYSERR("SNDRV_PCM_IOCTL_HW_FREE failed");
 
-By the way, thanks for the driver!
+... in kernel side, the following assertation fails in
+alsa-kernel/core/pcm_native.c:snd_pcm_release():
 
-Marcus
+snd_assert(!atomic_read(&substream->runtime->mmap_count), );
 
-Paul Davis wrote:
-> 
-> >> i know its mundane, but are you sure you have the cables hooked up
-> >> correctly?
-> >
-> >I booted windows to check the setup, and it works.
-> >
-> > you can set the passthru control
-> >>
-> >>            amixer cset name=Passthru 1
-> >>
-> >> and check that passthru is working OK.
-> >
-> >This doesn't work either.
-> 
-> OK, thats useful information. I wish I knew what it meant :) My best
-> guess right now is that its something to do with the channel mapping;
-> since the i/o configuration on the multiface is different, it may be
-> that i need to change something about how we address certain channels.
-> 
-> ># alsactl store 1
-> >alsactl: get_control:359: Unknown control type: 6
-> 
-> have you updated your alsa-utils and alsa-lib? there was a new control
-> type (64 bit integer) introduced for the H-DSP.
-> 
-> >At some point the 'MIDI STATE out' is lit and stays lit. I don't use
-> >MIDI. (I think, if not aplay tries to play a wav as midi.)
-> 
-> Do you have any idea at what point this happens?
-> 
-> --p
+After a long debug session I think I finally found the reason why this
+happens. When the forked child process exits, kernel will cleanup the mmap
+areas by calling snd_pcm_mmap_data_close(). As there are two processes,
+this gets called twice and substream->runtime->mmap_count goes to -1. When
+snd_pcm_release() finally gets called (following the user-space
+snd_pcm_close()), the assertion fails.
+
+The most harmful failure happens in pcm_native.c:snd_pcm_hw_free() where
+'if (atomic_read(&runtime->mmap_count)) {' fails, which means that device
+status is never resetted back to SNDRV_PCM_STATE_OPEN.
+
+As for the fix, well, it's already 5am so it's probably better for me to
+continue tomorrow. :) As a simple fix, I moved mmap_count decrease code to
+snd_pcm_hw_free(). This fixes all my test cases, but might break something
+else. Comments are welcome.
+
+Btw; running standard 2.4.17 kernel.
+
+--cut--
+#include <assert.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <alsa/asoundlib.h>
+
+int main(int argc, char* argv[])
+{
+  snd_pcm_t *handle;
+  snd_pcm_hw_params_t* hwparams;
+  int n, pid;
+
+  int err = snd_pcm_open(&handle, "default", 
+		         SND_PCM_STREAM_PLAYBACK, 
+			 SND_PCM_NONBLOCK);
+  assert(err == 0);
+
+  err += snd_pcm_hw_params_malloc(&hwparams);
+  err += snd_pcm_hw_params_any(handle, hwparams);
+  err += snd_pcm_hw_params(handle, hwparams);
+  assert(err == 0);
+
+  pid = fork();
+  if (pid == 0) { /* child */
+    fprintf(stderr, "child pid=%d.\n", getpid());
+    exit(1);
+  }
+  else { /* parent */
+    fprintf(stderr, "parent pid=%d.\n", getpid());
+    sleep(1);
+
+    snd_pcm_close(handle);
+  }
+}
+--cut---
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
+
 
 _______________________________________________________________
 
