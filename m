@@ -1,16 +1,13 @@
-From: "Sam" <4l8uie002@sneakemail.com>
-Subject: Re: Please add snd-ice1712 problem to "Known bugs"
-	page
-Date: Tue, 09 Sep 2003 20:59:13 -0700
+From: Antonio Willy Malara <behappy@maialone.com>
+Subject: alsa + iBook + iMic, endianness troubles
+Date: Wed, 10 Sep 2003 16:30:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2226-33676@sneakemail.com>
-References: <1630-86930@sneakemail.com>
-	 <20030909173727.GA20549@willow.seitz.com>
+Message-ID: <20030910143013.GA1981@Zeryn>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=ISO-8859-15
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030909173727.GA20549@willow.seitz.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,66 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2003-09-09 at 10:37, Ross Vandegrift wrote:
-> This is a feature!
-> 
-> envy24control does a much better job than just three settings - the volume
-> sliders in the Analog Volume tab lets you set it to any values, not just
-> three pre-chosen values.  Then, of course, you can mix different routes
-> with the sliders next to the level meters.  Between these, the volume
-> with ALSA is far more flexible than with Windows.  It just takes a bit
-> to get used to it.
+i use a Griffin Tech iMic on a iBook (G3 700mhz, 128mb ram) running 
+linux 2.4.20-ben9 and alsa 0.9.6, and i cannot use jack because it 
+tells that my soundcard don't support one of the two audioformat jack 
+can use..
 
-Oh, oh...  oh!  I see!
+i changed the snd_pcm_hw_params_set_format (handle, hw_params, 
+SND_PCM_FORMAT_S16) to _S16_BE and it passed that function, the program 
+was running but with a bunch of errors (obviously)
 
-I was feeling the sinking "I'm getting 90% of functionality with Linux
-because hardware companies don't see the light yet, sigh" and now it's
-been replaced with the less frequent feeling of "the Linux version does
-it better.  Yeah!"
+there's something i can do? i think that all usb-audio stuff is kinda 
+broken for all machines with endiannes != from intel's one
 
-Cool, thanks for setting me straight.  I brought down the analog signal
-to 110 (from 127) and it has improved the problem significantly, though
-not solved it completely.  I chose 110 by doing A/B comparisons with my
-DVD player to try to match the volume.  Unfortunately, there's still a
-slight buzzing/clicking sometimes with the Delta 44 that I don't hear
-from my Pioneer DVD player playing the same music, and it cost me less
-than the Delta 44.  :-(  I also don't hear the problem using the same
-source file through a Logitech DAC.
+wil
+---
 
-On Tue, 2003-09-09 at 00:44, Jaroslav Kysela wrote: 
-> I think that your problems are probably caused by underruns (system does
-> not deliver samples to the DMA buffer for your card in time). The analog
-> levels can be changed using alsamixer or envy24control (use analog
-> section). The driver fully supports your hardware and yes, it is difficult
-> to make reliable sound output for the ICE1712 chip with the standard linux
-> kernels. Look for lowlatency patches.
-
-Thanks for the suggestion; I've already tried both low latency and
-preemptible kernel patches.
-
-I noticed that the sound card was sharing an interrupt with three other
-devices, so I swapped PCI cards around until the sound card got its own
-IRQ.  This didn't help.
-
-The problem is subtle enough that if this were (for example) a Creative
-Labs sound card, I'd dismiss it.  It's the fact that I was trying to
-purchase my last sound card (get that part of my life "handled", like
-the guy in Fight Club with his sofa) that's causing me to be bothered by
-this.
-
-Though I'm no expert I'm guessing that because it's so subtle it's not a
-driver problem.  Perhaps when I get a paycheck again I'll play roulette
-and try a different high-end sound card.
-
-Thanks for your help and suggestions (and for writing these great
-drivers).
-
-Sam
-
-
+If you must ask what jazz is, you'll never know.
+                 -- Louis Armstrong
 
 
 -------------------------------------------------------
