@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Newbie driver prgrmmr
-Date: Sun, 14 Dec 2003 19:08:17 +0900
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: usb midi devices.
+Date: Sun, 14 Dec 2003 11:19:42 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDC3691.7060502@boosthardware.com>
-References: <1071253207.9962.6.camel@HPC-01.HPC>
+Message-ID: <20031214101942.GA920@tuba.home>
+References: <3FDC2E4A.2050105@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3FDC2E4A.2050105@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,43 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Coen Leermakers <crashmatrix@planet.nl>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Coen Leermakers wrote:
-> Hi all,
-> 
-> Does anyone here know where to find some good manuals and howto's on
-> driver programming? I myself have some programming experience, and want
-> to take this some further. Since I have a sound card which is not (yet)
-> compatible with ALSA, I decided the ALSA-Dev mailing list was to be my
-> staging ground :)
+On Sun, Dec 14, 2003 at 06:32:58PM +0900, Patrick Shirkey wrote:
+> Could someone send me a list of all the usbmidi devices that require 
+> firmware to be inserted. I am redesigning the docs for these cards.
 > 
 
-There is a detailed howto available via the documentation page.
+snd-usb-audio with MidiSport firmware loader:
+MidiSport 1x1, 2x2, 4x4, 8x8, KeyStation, Oxygen, Radium, Uno, and maybe
+MidiSport 2x4. (It's the latest list from http://usb-midi-fw.sf.net).
+
+snd-usb-usx2y with usx2yloader:
+Tascam US122, US224 ( 224 needs fw, but we have no driver:-( ), US428 
+
+And there are some other cards (Sonica, ...) which need a firmware download,
+but there's no linux loader available. 
 
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+martin
 
 
 -------------------------------------------------------
