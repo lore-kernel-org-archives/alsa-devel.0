@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Thu, 10 Mar 2005 15:01:21 +0100
-Message-ID: <741745dfbbca45633333e4fab1b6a794@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Thu, 10 Mar 2005 15:03:47 +0100
+Message-ID: <89dfd6a35ad1fd0049c01e62b5e958a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F392F1C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:01:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F6041C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 15:03:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,59 +23,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
 ======================================================================
-Reported By:                jnilles
-Assigned To:                
+Reported By:                fmoraes
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   963
+Issue ID:                   371
 Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE
-Kernel Version:             
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-10-2005 15:01 CET
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              03-10-2005 15:03 CET
 ======================================================================
-Summary:                    Sounc card is mute
+Summary:                    dmix does not work with snd-cs46xx driver
 Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
 ======================================================================
 
 ----------------------------------------------------------------------
- jnilles - 03-10-05 00:21 
+ tiwai - 03-09-05 18:37 
 ----------------------------------------------------------------------
-I did remove /etc/asound.state, ran alsaconf. No joy, just silence.
+Does it happen with the latest version, too?
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:01 
+ jdthood - 03-10-05 15:03 
 ----------------------------------------------------------------------
-More information is needed.  Are the correct modules loaded?  Have you
-set the mixer levels appropriately?  Please send:
+Does it help if you add:
 
-* the output of lsmod
-* the contents of /proc/asound/version and /proc/asound/cards
-* the output of lspci -v for the sound device
+    bindings {
+        0 0
+        1 1
+    }
+
+to the definition of the dmix device?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-03-09-05 18:53 tiwai          Note Added: 0003840                          
-03-10-05 00:21 jnilles        Note Added: 0003846                          
-03-10-05 15:01 jdthood        Note Added: 0003856                          
+07-09-04 15:59 fmoraes        New Issue                                    
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Status                   new => assigned     
+07-15-04 14:10 perex          Assigned To               => perex           
+03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-09-05 18:37 tiwai          Note Added: 0003830                          
+03-10-05 15:03 jdthood        Note Added: 0003857                          
 ======================================================================
 
 
