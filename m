@@ -1,17 +1,14 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: dsnoop, dshare and dmix plugins
-Date: 19 Mar 2003 12:51:51 -0800
+From: Jon Ellis <ashura666@mac.com>
+Subject: Re: Fwd: arecord bug?
+Date: Thu, 20 Mar 2003 07:46:49 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1048107111.8198.45.camel@cmn37.Stanford.EDU>
-References: <Pine.LNX.4.44.0303191801460.1351-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain
+Message-ID: <ABFF2500-5A5C-11D7-99E3-0003934489D0@mac.com>
+References: <s5hu1dzs9e6.wl@alsa2.suse.de>
+Mime-Version: 1.0 (Apple Message framework v551)
+Content-Type: text/plain; charset=ISO-2022-JP; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA25674
-	for <alsa-devel@alsa-project.org>; Wed, 19 Mar 2003 21:52:33 +0100
-In-Reply-To: <Pine.LNX.4.44.0303191801460.1351-100000@pnote.perex-int.cz>
+In-Reply-To: <s5hu1dzs9e6.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,23 +17,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Justin Cormack <justin@street-vision.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Sure. First example is for the dmix plugin and ice1712 (10 playback 
-> channels - last two are S/PDIF, so this configuration allows sharing of 
-> the S/PDIF jack):
-> 
-> pcm.dmix_spdif {
->         type dmix
->         ipc_key 5678293
+On Wednesday, March 19, 2003, at 11:45  PM, Takashi Iwai wrote:
 
-Hmm, sorry for my ignorance, but what does this number mean and where
-does it come from? (BTW, thanks for the examples!)
+> At Wed, 19 Mar 2003 22:35:17 +0900,
+> Jon Ellis wrote:
+>>
+>> i'll give it a try... my suspicion is that it wont work because it's
+>> the number of... er, frames (? I'm not sure i'm using the correct 
+>> names
+>> for things) that is overflowing size_t. I'd be happy to be wrong.
+>
+> it's the count in bytes.
+>
+> anyway, i fixed the relevant part on cvs.
+> now arecord allows you to capture the unlimited size in the raw mode.
+> i've not tested this yet (no time :)
 
--- Fernando
+I'll get on the testing part and let you know if i can fill my disk ;-)
 
+> also fixed a bug in the capture to stdout in WAV mode.
+> it's restricted to 32bit signed int due to the RIFF chunk.  it would
+> be possible to record longer than creating more chunks but arecord
+> doesn't do that (yet).
+
+Cool.
+
+お力添えありがとうございます。 :-)
+
+j.
 
 
 
