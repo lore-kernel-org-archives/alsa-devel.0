@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000687]: Cannot build gentoo-ebuild for 1.0.7
-Date: Sun, 28 Nov 2004 19:06:31 +0100
-Message-ID: <3dd15131f6254318fceb246c4670e91d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
+Date: Sun, 28 Nov 2004 18:41:30 +0100
+Message-ID: <645ab6912a4317dc73d71a8a0fbddade@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 570B5273
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 19:06:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 316C61C3
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 18:41:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=687> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
 ======================================================================
-Reported By:                m_wright
-Assigned To:                perex
+Reported By:                d637e16c5433737884c13889afdeaf34
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   687
-Category:                   0_compilation problem_!!!
+Issue ID:                   682
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   minor
+Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.9-ck2
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-28-2004 19:06 CET
-Last Modified:              11-28-2004 19:06 CET
+Date Submitted:             11-27-2004 00:59 CET
+Last Modified:              11-28-2004 18:41 CET
 ======================================================================
-Summary:                    Cannot build gentoo-ebuild for 1.0.7
+Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
 Description: 
-The gentoo ebuild for 1.0.7-r1 (basically 1.0.7) fails on linux kernel
-2.6.9-ck2 with the following errors:
+As it's impossible to use the alsamixer with the rme96 driver here's a
+small patch for it to make it work. (it's not from me, it's from undog
+#alsa on irc.freenode.org)
 
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:
-In function `snd_compat_vmalloc_to_page':
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:41:
-warning: implicit declaration of function `VMALLOC_VMADDR'
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
-warning: implicit declaration of function `pte_offset'
-/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
-warning: assignment makes pointer from integer without a cast
+This patch will break rmedigicontrol, so i made a small patch for
+rmedigicontrol that'll fix this, too.
+
+Adding is trivial, it's just editing 8 lines of source.
+
+
+Regards,
+Matthias
+
+PS: Added patch for rme96.c
 ======================================================================
+
+----------------------------------------------------------------------
+ martin - 11-28-04 18:41 
+----------------------------------------------------------------------
+The patch is similar to the one of bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=570
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 19:06 m_wright       New Issue                                    
-11-28-04 19:06 m_wright       Distribution              => Gentoo Linux    
-11-28-04 19:06 m_wright       Kernel Version            => 2.6.9-ck2       
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
+           
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
+           
+11-28-04 18:41 martin         Note Added: 0002628                          
 ======================================================================
 
 
