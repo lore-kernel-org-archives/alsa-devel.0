@@ -1,15 +1,14 @@
-From: Chris Share <cpsmusic@labyrinth.net.au>
-Subject: Re: Interested in having a go at coding an ALSA
-  driver
-Date: Wed, 12 Feb 2003 15:04:24 +1100
+From: Josh Buhl <uzs33d@uni-bonn.de>
+Subject: Re: aplay/arecord hang at 44100 Hz
+Date: Wed, 12 Feb 2003 10:01:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.1.1.6.0.20030212150401.00a5eec0@mail.labyrinth.net.au>
-References: <5.1.1.6.0.20030212142640.00aafb40@mail.labyrinth.net.au>
- <5.1.1.6.0.20030212142640.00aafb40@mail.labyrinth.net.au>
+Message-ID: <3E4A0D51.205@uni-bonn.de>
+References: <3E476DD8.7050907@uni-bonn.de>	<s5hu1fbcfyb.wl@alsa2.suse.de>	<3E49291E.7000307@uni-bonn.de> <s5hel6eoilm.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200302112051.01281.ljp@llornkcor.com>
+In-Reply-To: <s5hel6eoilm.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,69 +20,103 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, I'll check it out.
+Here's a backtrace from gdb:
 
-At 08:51 PM 2/11/03 -0700, ljp wrote:
->First thing might be to download the free book
->Linux Device Drivers, it's free.
->
->http://www.xml.com/ldd/chapter/book/
->
->
->
->
->On Tuesday February 11 2003 08:34 pm, Chris Share wrote:
-> > Hi Everyone,
-> >
-> > I'm an amateur programmer and musician (and technical writer) familiar with
-> > C/C++ programming on the Mac and PC. I've written a couple of apps that I'm
-> > currently distributing as shareware.
-> >
-> > After reading Sound On Sound Feb 2003 article on Linux and audio/MIDI I'm
-> > very interested in moving to this platform. I'm currently awaiting my
-> > Debian distribution at the moment.
-> >
-> > However, it appears that one of the current major drawbacks of Linux is the
-> > lack of ALSA soundcard drivers. I'm speaking here more about semi-pro and
-> > pro products. I currently use two soundcards:
-> >
-> > Yamaha SW1000
-> > Hoontech DSP24 Value
-> >
-> > I'd be interested in having a go a coding a driver for one of these.
-> >
-> > I've never done any kernal programming and feel a bit daunted by the task
-> > in front of me. Any suggestions on where to start would be much
-> > appreciated. I have downloaded quite a few articles on ALSA, etc. so that
-> > should keep me going for a while.
-> >
-> > Cheers,
-> >
-> > Chris Share
-> >
-> >
-> >
-> >
-> > -------------------------------------------------------
-> > This SF.NET email is sponsored by:
-> > SourceForge Enterprise Edition + IBM + LinuxWorld = Something 2 See!
-> > http://www.vasoftware.com
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->--
->My cat's a debugger....
->
->Potter, Lorn, "ljp"
->core member / Web Administrator
->Project OPIE- the Open Palmtop Integrated Environment
->http://opie.handhelds.org
->IRC: irc.freenode.net #opie #opie.de
->
->llornkcor@handhelds.org
->llornkcor@helixcommunity.org
+
+(gdb) run
+Starting program: 
+/home/josh/programs/debian/alsa-utils-0.9.0rc7/aplay/aplay ./track_01.wav
+[New Thread 16384 (LWP 1875)]
+Playing WAVE './track_01.wav' : Signed 16 bit Little Endian, Rate 44100 
+Hz, Stereo
+
+Program received signal SIGTSTP, Stopped (user).
+[Switching to Thread 16384 (LWP 1875)]
+0x401c7224 in ioctl () from /lib/libc.so.6
+(gdb) bt
+#0  0x401c7224 in ioctl () from /lib/libc.so.6
+#1  0x400947a8 in snd_seq_hw_ops () from /usr/lib/libasound.so.2
+#2  0x40057912 in snd_pcm_hw_refine () from /usr/lib/libasound.so.2
+#3  0x40055918 in snd_pcm_hw_param_set () from /usr/lib/libasound.so.2
+#4  0x40056058 in snd_pcm_hw_param_refine_multiple () from 
+/usr/lib/libasound.so.2
+#5  0x40063eb7 in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
+#6  0x40057698 in snd_pcm_hw_refine_slave () from /usr/lib/libasound.so.2
+#7  0x40064625 in _snd_pcm_rate_open () from /usr/lib/libasound.so.2
+#8  0x40057912 in snd_pcm_hw_refine () from /usr/lib/libasound.so.2
+#9  0x40054723 in snd_pcm_hw_param_set_first () from /usr/lib/libasound.so.2
+#10 0x40055d57 in snd_pcm_hw_param_set_near () from /usr/lib/libasound.so.2
+#11 0x4004fc4e in snd_pcm_hw_params_set_rate_near () from 
+/usr/lib/libasound.so.2
+#12 0x0804cdc7 in set_params () at aplay.c:800
+#13 0x0804f1b6 in playback_go (fd=7, loaded=0, count=4294967295, 
+rtype=2, name=0xbffffca0 "./track_01.wav")
+     at aplay.c:1686
+#14 0x0804f5d6 in playback (name=0xbffffca0 "./track_01.wav") at 
+aplay.c:1807
+#15 0x0804c092 in main (argc=2, argv=0xbffffb54) at aplay.c:514
+(gdb)
+
+
+
+
+Takashi Iwai wrote:
+> At Tue, 11 Feb 2003 17:47:26 +0100,
+> Josh Buhl wrote:
+> 
+>>Hi,
+>>
+>>
+>>>i guess it's a bug of either alsa-lib or aplay, not of the driver.
+>>>could you check at which user function the operation stops?
+>>>
+>>
+>>I'll be happy to provide any debugging info I can, but I'm not exactly 
+>>sure what you mean by which user function. The error occurs for both 
+>>user functions aplay and arecord, or do you mean something else?
+> 
+> 
+> please run aplay from gdb and break the operation to see what the
+> program is doing there.
+> 
+> or, a traditional debugging via printf() can be enough :)
+> 
+> 
+> Takashi
+> 
+> 
+> -------------------------------------------------------
+> This SF.NET email is sponsored by:
+> SourceForge Enterprise Edition + IBM + LinuxWorld = Something 2 See!
+> http://www.vasoftware.com
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+
+-- 
+"When you wake up in the morning, Pooh," said Piglet at last,
+"what's the first thing you say to yourself?"
+
+"What's for breakfast?" said Pooh.  "What do you say, Piglet?"
+
+"I say, 'I wonder what's going to happen exciting today?'" said Piglet.
+
+Pooh nodded thoughtfully.  "It's the same thing," he said.
+
+	-- A.A. Milne
+
+-----------------------------------------------------
+http://www.nyfairuse.org/
+
+WTO + WIPO = DMCA http://www.anti-dmca.org
+
+Innovation vs Patent Inflation http://swpat.ffii.org/
+
+120000 voices and 400 Firms against logic patents
+http://www.noepatents.org/
+-----------------------------------------------------
 
 
 
