@@ -1,13 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000541]: Tascam US-122 drivers fails with jackd
-Date: Sat, 25 Sep 2004 16:22:42 +0200 (CEST)
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: [Jackit-devel] usx2y jack driver
+Date: Sat, 25 Sep 2004 16:10:29 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925142242.704A02014F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <32983.192.168.1.5.1096125029.squirrel@192.168.1.5>
+References: <200409222228.38243.annabellesgarden@yahoo.de>
+    <32827.192.168.1.5.1096065064.squirrel@192.168.1.5>
+    <1096078552.1407.1.camel@krustophenia.net>
+    <200409251555.59384.annabellesgarden@yahoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C18FB217
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 16:22:42 +0200 (MEST)
+In-Reply-To: <200409251555.59384.annabellesgarden@yahoo.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,51 +20,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Lee Revell <rlrevell@joe-job.com>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Karsten Wiese wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000541
-======================================================================
-Reported By:                roswel
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     541
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             Linux 2.6.9-rc2
-======================================================================
-Date Submitted:             09-25-2004 16:11 CEST
-Last Modified:              09-25-2004 16:22 CEST
-======================================================================
-Summary:                    Tascam US-122 drivers fails with jackd
-Description: 
-When i start jackd everything seems allright, but if i try to play some
-audio through jack, like for example with alsaplayer or ardour, nothing
-happen.
-======================================================================
+> Lee Revell wrote:
+>>
+>> Maybe I am missing something.  Why does this device need a specific
+>> jack driver, as opposed to using the ALSA driver?  Wouldn't it be
+>> better to improve the ALSA driver so that it can be used with jack?
+>>
 
-----------------------------------------------------------------------
- karsten - 09-25-2004 16:22 CEST 
-----------------------------------------------------------------------
-Does alsaplayer work in alsa mode?
+One thing I'm sure as my ears can't lie: the generic jack_alsa driver
+crackles quite badly (no xruns however), the jack_usx2y don't. Period. :)
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-25-04 16:11 roswel         New Bug                                      
-09-25-04 16:11 roswel         Distribution              => Debian          
-09-25-04 16:11 roswel         Kernel Version            => Linux 2.6.9-rc2 
-09-25-04 16:12 roswel         Bug Monitored: roswel                        
-09-25-04 16:22 karsten        Bugnote Added: 0001910                       
-======================================================================
+>
+> Its usb's unableness to atomically handle power of 2 period sized data
+> chuncs, what led to:
+> This usx2y-alsa-jack driver pair uses a hardware dependant alsa-device
+> for mmaped pcm transport.
+> Advantage achieved:
+> 	The usb_hcd places reads/writes pcm data into dma-memory.
+> 	That memory is 	mmaped by jack's usx2y driver.
+> 	Jack's usx2y driver is the first/last to read/write pcm data.
+> 	Read/write is a combination of power of 2 period shaping and
+> 	  float/int conversation.
+> 	Compared to mainline alsa/jack we leave out power of 2 period
+>         shaping inside snd-usb-* which needs memcpy() and additional
+>         buffers.
+> 	As a side effect possible unwanted pcm-data coruption resulting
+>         of plain alsa's snd-usb-usx2y period shaping scheme falls away.
+> 	Result is sane jack operation at buffering schemes down to
+>         128frames, 2 periods.
+> 	plain usx2y alsa mode is able to achieve 64frames, 4periods, but
+>         only at the cost of easier triggered i.e. aeolus xruns (128 or
+>         256frames, 2periods works but is useless cause of crackling).
+>
+> New functionality would possibly be better integrated into mainlines at
+> more apropriate places. Target could be: jack mmaping power of 2 period
+> sized float-pcm buffers and letting alsa (snd-usb-lib - alsa-lib -
+> plugin) do power of 2 period shaping and float/int conversation.
+>
+> erm, but I'd rather make some sounds with this stuff before i dig into
+> that deeper. And there is still that ohci issue.
+>
+
+FYI, on my laptop, that OHCI issue is still a serious showstopper. I am
+collecting some log/trace data to file and append on alsa's bugtracker
+(bug #0000425).
+
+One thing I've noticed, but just related to VP, is that while having
+hardirq-preempt=1 and /proc/irq/10/ohci_hcd/threaded=1, the kernel doesn't
+crash when opening the PCM hw device (either via jackd or aplay). But
+still useless or zombie anyway. It does crash however when I unplug my
+US-224 (switch its power down).
+
+With hardirq-preempt=0 or /proc/irq/10/ohci_hcd/threaded=0, I get the same
+old bad behavior: a kernel oops somewhere on the ohci_irq handling, almost
+immediately when the PCM device is open (e.g. by jackd or aplay).
+
+If someone have an idea on how to dig on this, like some debugging
+silver-bullet :) I'll very thankful. Ingo Molnar has taught me the serial
+console method but, guess what, this is a post-modern laptop: it doesn't
+have a serial port. Duh?
+
+Cheers.
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
+
 
 
 -------------------------------------------------------
