@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000317]: Use a real SSL certificate issuer
-Date: Tue, 9 Nov 2004 16:40:02 +0100
-Message-ID: <410f04f599796b7283ffeb61e4baacae@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000526]: Kernel crash during the module snd-azx load
+Date: Tue, 9 Nov 2004 16:39:44 +0100
+Message-ID: <db7cb2241088be513b9b5752657e2abf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3E452B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:40:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D7D502B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:39:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,66 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=317> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=526> 
 ======================================================================
-Reported By:                sehh
-Assigned To:                perex
+Reported By:                Grazy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   317
-Category:                   OTHERS
-Reproducibility:            N/A
-Severity:                   feature
+Issue ID:                   526
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Debian
+Kernel Version:             2.6.8
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-31-2004 02:57 CEST
-Last Modified:              11-09-2004 16:40 CET
+Date Submitted:             09-23-2004 19:33 CEST
+Last Modified:              11-09-2004 16:39 CET
 ======================================================================
-Summary:                    Use a real SSL certificate issuer
+Summary:                    Kernel crash during the module snd-azx load
 Description: 
-I noticed that you use your own issued SSL certificate. Its
-wise to avoid the commercialised and blood-drinking root
-certificates which charge a fortune for a certification.
-
-There is one solution thought, there is a non-profit
-certificate authority which issues certificates free
-of charge. We've used them for many of our web sites
-with great success.
-
-The url is:
-
-http://www.cacert.org/
-
+The kernel crash during the load of the snd-azx.
+It is the recursive funtion set_mic_rp_wid_connection wich never end.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- sehh - 05-31-04 14:55 
+ tiwai - 09-28-04 23:20 
 ----------------------------------------------------------------------
-Superb!
-
-----------------------------------------------------------------------
- perex - 09-29-04 14:28 
-----------------------------------------------------------------------
-Once again, thanks. I've changed the certificate now. It works great.
+Thanks, applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-31-04 02:57 sehh           New Issue                                    
-05-31-04 11:50 perex          Status                   new => assigned     
-05-31-04 11:50 perex          Assigned To               => perex           
-05-31-04 11:53 perex          Note Added: 0001282                          
-05-31-04 14:55 sehh           Note Added: 0001283                          
-09-29-04 14:28 perex          Status                   assigned => resolved
-09-29-04 14:28 perex          Resolution               open => fixed       
-09-29-04 14:28 perex          Note Added: 0001971                          
-11-09-04 16:40 tiwai          Status                   resolved => closed  
+09-23-04 19:33 Grazy          New Issue                                    
+09-23-04 19:33 Grazy          File Added: patch_azx_discover.gz                 
+  
+09-23-04 19:33 Grazy          Distribution              => Debian          
+09-23-04 19:33 Grazy          Kernel Version            => 2.6.8           
+09-28-04 23:20 tiwai          Status                   new => resolved     
+09-28-04 23:20 tiwai          Resolution               open => fixed       
+09-28-04 23:20 tiwai          Assigned To               => tiwai           
+09-28-04 23:20 tiwai          Note Added: 0001960                          
+11-09-04 16:39 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
