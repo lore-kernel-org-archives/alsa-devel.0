@@ -1,13 +1,20 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000434]: System hang after playing
-Date: Fri, 20 Aug 2004 12:38:26 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Fri, 20 Aug 2004 12:58:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040820103826.7A1A91102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0408201229540.2211@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0408181538550.24798-100000@studcom.urz.uni-halle.de>
+ <1092842830.13603.3.camel@localhost.localdomain> <20040818181350.2b38e875@mango.fruits.de>
+ <Pine.LNX.4.58.0408181918160.1769@pnote.perex-int.cz>
+ <20040818201535.1f49a128@mango.fruits.de> <Pine.LNX.4.58.0408191050220.1779@pnote.perex-int.cz>
+ <20040819114831.187b00b0@mango.fruits.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D24DE281
-	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2004 12:38:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C70F32A1
+	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2004 13:06:37 +0200 (MEST)
+In-Reply-To: <20040819114831.187b00b0@mango.fruits.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,62 +23,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Florian Schmidt <mista.tapas@gmx.net>
+Cc: Shaya Potter <spotter@cs.columbia.edu>, Clemens Ladisch <clemens@ladisch.de>, Mauro Romano Trajber <trajber@terra.com.br>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 19 Aug 2004, Florian Schmidt wrote:
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000434
-======================================================================
-Reported By:                crsw
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     434
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora core 2
-Kernel Version:             2.6.7-1.494.2.2custom
-Resolution:                 fixed
-======================================================================
-Date Submitted:             08-11-2004 10:56 CEST
-Last Modified:              08-20-2004 12:38 CEST
-======================================================================
-Summary:                    System hang after playing
-Description: 
-After playing a sound file the system hang whitout any message. It hang
-even if you send a kill -1 signal to the process reproducing the sound
-file
-======================================================================
+> May i ask, why your planning to make this networked? I read some
+> articles about user space file systems [which get utilized
+> by kernel modules] a while back. I think that networking introduces
+> another layer of complexity. You think this is nessecary?
 
-----------------------------------------------------------------------
- tiwai - 08-19-2004 19:19 CEST 
-----------------------------------------------------------------------
-Can you get a trace via magic sysrq?
+It's more interesting development and as bonus we get remote audio 
+devices.
 
-----------------------------------------------------------------------
- crsw - 08-19-2004 22:01 CEST 
-----------------------------------------------------------------------
-I'v just installed alsa-lib 1.0.6.rc1.
-The problem is solved now.
+						Jaroslav
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-11-04 10:56 crsw           New Bug                                      
-08-11-04 10:56 crsw           Distribution              => Fedora core 2   
-08-11-04 10:56 crsw           Kernel Version            => 2.6.7-1.494.2.2custom
-08-11-04 10:56 crsw           Bug Monitored: crsw                          
-08-11-04 10:56 crsw           Bug End Monitor: crsw                        
-08-19-04 19:19 tiwai          Bugnote Added: 0001594                       
-08-19-04 22:01 crsw           Bugnote Added: 0001596                       
-08-20-04 12:38 tiwai          Resolution               open => fixed       
-08-20-04 12:38 tiwai          Status                   assigned => resolved
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
