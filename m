@@ -1,16 +1,15 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: Re: success (WAS: playback audio overwritten before it is sent to the card)
-Date: Tue, 30 Jul 2002 12:07:41 -0700 (PDT)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: my first usb-midi experiment ends with segmentation fault
+Date: Tue, 30 Jul 2002 23:42:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020730190741.6476.qmail@web11505.mail.yahoo.com>
-References: <s5hvg6x8dhi.wl@alsa2.suse.de>
+Message-ID: <20020730214227.GA523@tuba.home>
+References: <20020728213924.GA522@tuba.home> <3D469011.855453A7@ladisch.de> <200207301708.07066.plcl@telefonica.net> <3D46C107.2E108CEB@ladisch.de> <20020730181834.GA494@tuba.home>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web11505.mail.yahoo.com (web11505.mail.yahoo.com [216.136.172.37])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id VAA05233
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2002 21:07:44 +0200
-In-Reply-To: <s5hvg6x8dhi.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <20020730181834.GA494@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,29 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: clemens@ladisch.de, plcl@telefonica.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+On Tue, Jul 30, 2002 at 08:18:34PM +0200, Martin Langer wrote:
+> Bus 001 Device 002: ID 0a4d:008e  
+>   Language IDs: none (invalid length string descriptor bf; len=0)
+> Device Descriptor:
+>   bLength                18
 
-I have now the playout AND recording alright, thanks to your explanation. Now,
-I reset my pointers in prepare(), which makes pointer() return a value
-meaningful to the rest of the ALSA framework.
-
-A big THANK YOU!
-Guilhem.
-
-PS: Regarding ADPCM, I hope that we'll manage to get other bit rates in there -
-I will look into this at my return from holidays (2nd-12th of August). Then
-remains the problem of how one should distinguish different bit rates (I think
-of checking on the driver side the runtime->sample_bits).
+Ohhhhh, two lines of lsusb were missing in my mail. 
+It has to be so (with "string descriptor X invalid ..."):
 
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Health - Feel better, live better
-http://health.yahoo.com
+Bus 001 Device 002: ID 0a4d:008e  
+  Language IDs: none (invalid length string descriptor bf; len=0)
+string descriptor 1 invalid (bf bf; len=0)
+string descriptor 2 invalid (bf bf; len=0)
+Device Descriptor:
+  bLength                18
+  bDescriptorType         1
+  bcdUSB               1.00
+  bDeviceClass            1 Audio
+  bDeviceSubClass         0 
+  bDeviceProtocol         0 
+	      
 
 
 -------------------------------------------------------
