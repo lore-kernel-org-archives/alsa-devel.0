@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Fri, 3 Dec 2004 00:49:31 +0100
-Message-ID: <89e376c0c369d0d7ced6fd37c67b4e82@bugtrack.alsa-project.org>
+Date: Fri, 3 Dec 2004 00:55:31 +0100
+Message-ID: <315e18c3be78623303a8e2470c2a0dae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 97337275
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:49:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E589028A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:55:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-02-2004 02:56 CET
-Last Modified:              12-03-2004 00:49 CET
+Last Modified:              12-03-2004 00:55 CET
 ======================================================================
 Summary:                    Random beeps, ticks and clicks
 Description: 
@@ -80,17 +80,6 @@ downloading large amount of data with high transfer-rates.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-03-04 00:35 
-----------------------------------------------------------------------
-Can you provide a detailed hardware description including the motherboard
-chipset?   Is this an AMD64 or VIA KT266 based system?  There is a very
-similar, long standing bug report in the kX forums (Windows driver for
-emu10k*).  This was never really solved and the consensus seems to be
-buggy hardware.
-
-Maybe you have an extreme PCI latency setting or something.
-
-----------------------------------------------------------------------
  moonlite - 12-03-04 00:49 
 ----------------------------------------------------------------------
 0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
@@ -110,6 +99,97 @@ Anyway. The problem goes away as soon as i do a "rmmod 3c59x".
 So really. It has something to do with my networks-card and
 kernel-versions >2.4.19
 
+----------------------------------------------------------------------
+ moonlite - 12-03-04 00:55 
+----------------------------------------------------------------------
+Below is output from lspci -v (should give all latency-data)
+I have NO idea what an extreme latency setting would be.
+
+root@starbase /home/moonlite # lspci -v  
+0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333]
+        Flags: bus master, medium devsel, latency 0
+        Memory at e0000000 (32-bit, prefetchable)
+        Capabilities: [a0] AGP version 2.0
+        Capabilities: [c0] Power Management version 2
+
+0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
+KT266/A/333 AGP] (prog-if 00 [Normal decode])
+        Flags: bus master, 66Mhz, medium devsel, latency 0
+        Bus: primary=00, secondary=01, subordinate=01, sec-latency=0
+        Memory behind bridge: e6000000-e8ffffff
+        Prefetchable memory behind bridge: e4000000-e5ffffff
+        Capabilities: [80] Power Management version 2
+
+0000:00:0c.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 0a)
+        Subsystem: Creative Labs SBLive! 5.1 Digital Model SB0220
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 1
+
+0000:00:0c.1 Input device controller: Creative Labs SB Live! MIDI/Game
+Port (rev 0a)
+        Subsystem: Creative Labs Gameport Joystick
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at d400
+        Capabilities: [dc] Power Management version 1
+
+0000:00:0d.0 Ethernet controller: 3Com Corporation 3c905C-TX/TX-M
+[Tornado] (rev 74)
+        Subsystem: 3Com Corporation 3C905C-TX Fast Etherlink for PC
+Management NIC
+        Flags: bus master, medium devsel, latency 32, IRQ 10
+        I/O ports at d800
+        Memory at ea000000 (32-bit, non-prefetchable) [size=128]
+        Capabilities: [dc] Power Management version 2
+
+0000:00:11.0 ISA bridge: VIA Technologies, Inc. VT8233 PCI to ISA Bridge
+        Subsystem: VIA Technologies, Inc.: Unknown device 0000
+        Flags: bus master, stepping, medium devsel, latency 0
+        Capabilities: [c0] Power Management version 2
+
+0000:00:11.1 IDE interface: VIA Technologies, Inc.
+VT82C586A/B/VT82C686/A/B/VT823x/A/C PIPC Bus Master IDE (rev 06) (prog-if
+8a [Master SecP PriP])
+        Subsystem: VIA Technologies, Inc.
+VT82C586/B/VT82C686/A/B/VT8233/A/C/VT8235 PIPC Bus Master IDE
+        Flags: bus master, medium devsel, latency 32, IRQ 11
+        I/O ports at dc00 [size=16]
+        Capabilities: [c0] Power Management version 2
+
+0000:00:11.2 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1b) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Flags: bus master, medium devsel, latency 32
+        I/O ports at e000 [size=32]
+        Capabilities: [80] Power Management version 2
+
+0000:00:11.3 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1b) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Flags: bus master, medium devsel, latency 32, IRQ 255
+        I/O ports at e400 [size=32]
+        Capabilities: [80] Power Management version 2
+
+0000:00:11.4 USB Controller: VIA Technologies, Inc. VT82xxxxx UHCI USB 1.1
+Controller (rev 1b) (prog-if 00 [UHCI])
+        Subsystem: VIA Technologies, Inc. (Wrong ID) USB Controller
+        Flags: bus master, medium devsel, latency 32, IRQ 255
+        I/O ports at e800 [size=32]
+        Capabilities: [80] Power Management version 2
+
+0000:01:00.0 VGA compatible controller: Matrox Graphics, Inc. MGA G400 AGP
+(rev 04) (prog-if 00 [VGA])
+        Subsystem: Matrox Graphics, Inc. Millennium G400 MAX/Dual Head
+32Mb
+        Flags: bus master, medium devsel, latency 64, IRQ 255
+        Memory at e4000000 (32-bit, prefetchable)
+        Memory at e6000000 (32-bit, non-prefetchable) [size=16K]
+        Memory at e7000000 (32-bit, non-prefetchable) [size=8M]
+        Capabilities: [dc] Power Management version 2
+        Capabilities: [f0] AGP version 2.0
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -124,6 +204,7 @@ Date Modified  Username       Field                    Change
 12-03-04 00:23 moonlite       Note Deleted: 0002701                        
 12-03-04 00:35 rlrevell       Note Added: 0002703                          
 12-03-04 00:49 moonlite       Note Added: 0002704                          
+12-03-04 00:55 moonlite       Note Added: 0002705                          
 ======================================================================
 
 
