@@ -1,13 +1,14 @@
-From: Jody McIntyre <lad@modernduck.com>
-Subject: Re: Capturing audio and 1010lt
-Date: Wed, 26 Jan 2005 18:31:54 -0500
-Message-ID: <20050126233154.GJ18792@conscoop.ottawa.on.ca>
-References: <OFDAEF9790.06BB015E-ONC1256F95.003851E8@MarconiSelenia.com>
+From: Liam Girdwood <Liam.Girdwood@wolfsonmicro.com>
+Subject: Re: new ALSA driver for audio on the ARM PXA2xx
+	platform
+Date: Wed, 26 Jan 2005 15:43:26 +0000
+Message-ID: <1106754206.3998.1680.camel@cearnarfon>
+References: <Pine.LNX.4.61.0501251624470.16341@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <OFDAEF9790.06BB015E-ONC1256F95.003851E8@MarconiSelenia.com>
+In-Reply-To: <Pine.LNX.4.61.0501251624470.16341@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +18,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alberto.Pareto@seleniacomms.com
+To: Nicolas Pitre <nico@cam.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 26, 2005 at 11:33:39AM +0100, Alberto.Pareto@seleniacomms.com wrote:
+Hi Nicolas,
 
-> What I'm supposed to do to get 8 different captures? Maybe this can be done
-> only through the API and not with the standard tool installed with ALSA
-> (like arecord and aplay)?
-> Is this a limitation of the board?
+On Tue, 2005-01-25 at 21:33, Nicolas Pitre wrote:
+> This patch adds two modules: one for generic PCM support on PXA2xx and 
+> another to interface with the AC97 link on the PXA2xx.  Eventually 
+> additional modules could be written to use the PCM module with SSP or 
+> I2S audio ports.
 
-I've used ardour ( http://ardour.org/ ) to capture multiple streams from
-a Delta 1010 (not LT but the software's the same).  Once I got Ardour
-going and figured out how to use it, the capture Just Worked.  The thing
-is, there only is one capture device.  It just has 8 channels.  If you want
-to split them apart and send them to separate programs, use Jack
-( http://jackit.sourceforge.net/ ).  Of course, you'll then need to use
-Jack-enabled recording software instead of arecord.
+Patch applied cleanly to 2.6.11-rc2, but is missing
+include/asm-arm/arch-pxa/audio.h
 
-Jody
+Btw, I'll shortly be able to test with I2S and PCM codecs and I already
+have some changes for AC97 support. (I'll send them after I know they
+work)
 
-> 
-> Thanks for advices!!!
-> Alberto
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
-> Tool for open source databases. Create drag-&-drop reports. Save time
-> by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
-> Download a FREE copy at http://www.intelliview.com/go/osdn_nl
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+Liam
 
--- 
+
 
 
 -------------------------------------------------------
