@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: Re: devfs_remove() not present in linux 2.4.19
-Date: Sat, 23 Nov 2002 21:13:46 +0000 (GMT)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Re: Phase Reversal on Santa Cruz (cs46xx)
+Date: Mon, 25 Nov 2002 00:12:55 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021123211346.64077.qmail@web40612.mail.yahoo.com>
-References: <Pine.LNX.4.33.0211232146090.503-100000@pnote.perex-int.cz>
+Message-ID: <3DE0D057.7030707@superbug.demon.co.uk>
+References: <200211170056.11190.puetzk@iastate.edu> <200211172241.14373.puetzk@iastate.edu> <3DDD75AC.9030408@cucumelo.org> <200211220935.55174.puetzk@iastate.edu> <3DDEC512.7030108@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0211232146090.503-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,78 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: Kevin Puetz <puetzk@iastate.edu>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK, thanks. One minor point, though ;-):
+Just as a general point to note. We are not putting the audio card into AC3 mode.
+We might be doing "passthru mode" or "spdif non-audio", but never just AC3 mode.
+I help with the "xine" (a free media player http://xine.sf.net) that can play DVDs.
+DVDs have AC3 audio tracks and DTS audio tracks.
+xine uses "spdif non-audio" and "passthru mode" when used with alsa.
+It can therefore output AC3 and DTS tracks to an external decoder.
+Summary: -
+AC3 is the wrong term to use. "spdif passthru" is probably a better term to use, as the current "ac3_mode" 
+seems to imply that DTS audio might not work.
+Cheers
+James
 
-$ cvsalsa diff -u alsa-driver/acore/misc.c
-Index: alsa-driver/acore/misc.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/acore/misc.c,v
-retrieving revision 1.11
-diff -u -u -r1.11 misc.c
---- alsa-driver/acore/misc.c    23 Nov 2002 20:51:05
--0000      1.11
-+++ alsa-driver/acore/misc.c    23 Nov 2002 21:12:50
--0000
-@@ -6,7 +6,7 @@
- 
- #include <linux/devfs_fs_kernel.h>
- 
--void snd_compat_devfs_remove(const char *str, ...)
-+void snd_compat_devfs_remove(const char *fmt, ...)
- {
-        char buf[64];
-        va_list args;
 
-Cheers,
-Chris
 
- --- Jaroslav Kysela <perex@suse.cz> wrote: > On Sat,
-23 Nov 2002, [iso-8859-1] Chris Rankin
-> wrote:
-> 
-> > Hi,
-> > 
-> > I am having problems with the latest ALSA CVS
-> using
-> > Linux 2.4.19-SMP and devfs. Specifically:
-> > 
-> > # depmod -ae
-> > depmod: *** Unresolved symbols in
-> > /lib/modules/2.4.19/kernel/drivers/sound/snd.o
-> > depmod:         devfs_remove
-> 
-> Fixed. I forgot to commit code in alsa-driver
-> directory from my disc ;-(
-> 
-> 						Jaroslav
-> 
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
-> 
-> 
-> 
->
--------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
->
-https://lists.sourceforge.net/lists/listinfo/alsa-devel 
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+
 
 
 -------------------------------------------------------
