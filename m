@@ -1,13 +1,23 @@
-From: Mikhail Ramendik <mr@ramendik.ru>
-Subject: Compiling the newest code for testing?
-Date: Fri, 7 Jan 2005 05:25:45 +0300
-Message-ID: <200501070525.45603.mr@ramendik.ru>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: current CVS: compile error
+Date: 06 Jan 2005 18:16:11 -0800
+Message-ID: <1105064170.26216.102.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from smtp3.Stanford.EDU (smtp3.Stanford.EDU [171.67.16.138])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5586527B
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 03:16:16 +0100 (MET)
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by smtp3.Stanford.EDU (8.12.11/8.12.11) with ESMTP id j072GBoO025344
+	for <alsa-devel@alsa-project.org>; Thu, 6 Jan 2005 18:16:13 -0800
+Received: from cmn37.stanford.edu (cmn37.stanford.edu [171.64.197.186])
+	by cm-mail.stanford.edu (8.11.6/8.11.6) with ESMTP id j072GBH27532
+	for <alsa-devel@alsa-project.org>; Thu, 6 Jan 2005 18:16:11 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by cmn37.stanford.edu (8.12.8/8.12.5) with ESMTP id j072GBDJ026945
+	for <alsa-devel@alsa-project.org>; Thu, 6 Jan 2005 18:16:11 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,44 +27,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+I'm getting this error while building current CVS (one FC3):
 
-I would like to do some extensive testing of alsa on my Intel 865PE hardware 
-(notably the analog vs. SPDIF issues). I have done some bug reporting and 
-tested some fixes (thanks go to Takashi) in the past, but then fell out of 
-sync on kernel versions because of other kernel-related issues on my hardware 
-(now finally resolved).
+  CC [M] 
+/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/darla20.o
+  CC [M] 
+/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/cs46xx/dsp_spos_scb_lib.o
+In file included from
+/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/darla20.c:109:
+/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:
+In function `load_firmware':
+/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio.h:424:
+sorry, unimplemented: inlining failed in call to 'free_firmware':
+function body not available
+/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:544: sorry, unimplemented: called from here
+make[5]: ***
+[/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/darla20.o] Error
+1
+make[4]: *** [/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio]
+Error 2
+make[4]: *** Waiting for unfinished jobs....
 
-I would like to test the latest code, in order for this testing to be most 
-useful.
 
-But I really got lost in what is that newest code that I should test, and in 
-how I should get it to run. So I have some questions:
+-- Fernando
 
-- Which alsa code version is in the 2.6.10 kernel release? 
-(include/sound/version.h says 1.0.6, but there seem to be changelog entries 
-and factual changes even from 2.6.10-rc3...)
-
-- Which alsa kernel code should I run for testing? The 2.6.10-kernel version? 
-1.0.8rc2? CVS? 1.0.8rc2 plus some files from CVS [those related to i8x0]?
-
-- Is it OK to compile this kernel code by merely copying the relevant 
-directories (sound [except for sound/oss] and include/sound) from the alsa 
-tree into the kernel tree? I run an RPM-based system, and would like to keep 
-the existing approach to kernel building (full RPM rebuild) alive; it's slow 
-but reliable. 
-
-- Which alsa-lib and alsa-utils code should I be running? (I know how to 
-compile it using RPM, I just need to understand the version).
-
-And an i8x0-specific question: in the above-mentioned current code, should 
-output to hw:0,0 go only to analog, or to both analog and spdif? 
-
--- 
-Yours, Mikhail Ramendik
 
 
 
