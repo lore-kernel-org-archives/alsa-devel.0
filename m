@@ -1,14 +1,12 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: Patch/soundfont uploader, anyone?
-Date: Wed, 18 Sep 2002 01:52:13 +0300
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: ALSA email black hole is "alsa-project.org"?
+Date: Wed, 18 Sep 2002 00:41:02 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020918015213.A9311@sci.fi>
-References: <15751.42958.682396.612116@catskinner.nonet.update.uu.se>
+Message-ID: <20020917234102.62853.qmail@web40611.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <15751.42958.682396.612116@catskinner.nonet.update.uu.se>; from sverkerw@swipnet.se on Wed, Sep 18, 2002 at 12:08:14AM +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,22 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Sverker Wiberg <sverkerw@swipnet.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 18, 2002 at 12:08:14AM +0200, Sverker Wiberg wrote:
-> Currently, my itch with ALSA (0.9.0rc3-0.1) is that I can't find any
-> tool to upload patches (instruments, soundfonts) to my old GUS PnP
+Hi,
 
-But what would you do with that tool? ALSA doesn't support MIDI emulation
-on GUS. Only thing you can use at this time is the simple instuments for
-MOD playback.
+According to the ALSA web site, the mailing lists are
+on alsa-project.org. However, this mailing list is on
+lists.sourceforge.net. Could this explain why some of
+my posts have never appeared? If so, maybe the website
+could be updated?
 
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
+Cheers,
+Chris
+
+
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
