@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001015]: Static when not playing through the OSS Emulation
-Date: Fri, 25 Mar 2005 04:00:05 +0100
-Message-ID: <7a0004f88c80e5f865791f3c7b2f25f2@bugtrack.alsa-project.org>
+From: Greg KH <greg@kroah.com>
+Subject: Re: 2.6.12-rc1-mm2
+Date: Thu, 24 Mar 2005 22:05:34 -0800
+Message-ID: <20050325060534.GA8432@kroah.com>
+References: <20050324044114.5aa5b166.akpm@osdl.org> <1111682812.23440.6.camel@mindpipe> <20050324121722.759610f4.akpm@osdl.org> <200503242331.46985.rjw@sisk.pl> <42434E59.2060805@free.fr> <20050324154920.4e506d76.akpm@osdl.org> <Pine.LNX.4.50.0503241658360.29178-100000@monsoon.he.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BCEE291
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 04:00:05 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.50.0503241658360.29178-100000@monsoon.he.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +16,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Patrick Mochel <mochel@digitalimplant.org>
+Cc: Andrew Morton <akpm@osdl.org>, Laurent Riffard <laurent.riffard@free.fr>, rjw@sisk.pl, rlrevell@joe-job.com, alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Mar 24, 2005 at 05:00:18PM -0800, Patrick Mochel wrote:
+> 
+> On Thu, 24 Mar 2005, Andrew Morton wrote:
+> 
+> > Laurent Riffard <laurent.riffard@free.fr> wrote:
+> > >
+> > > hello,
+> > >
+> > > Same kinds of problem here. It depends on the removed module. I mean:
+> > > "rmmod loop" or "rmmod pcspkr" works. But "rmmod snd_ens1371" or "rmmod
+> > > ohci1394" hangs.
+> > >
+> > > Sysrq-T when rmmoding snd_ens1371 :
+> 
+> <snip>
+> 
+> > It looks like we're getting stuck in the wait_for_completion() in the new
+> > klist_remove().
+> 
+> D'oh! It's getting hung while waiting to remove the current node from the
+> list (which it can't remove because it's being used). The patch below
+> should fix it.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1015> 
-======================================================================
-Reported By:                wintermute77
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1015
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:              2.6.10-ck5
-======================================================================
-Date Submitted:             03-25-2005 04:00 CET
-Last Modified:              03-25-2005 04:00 CET
-======================================================================
-Summary:                    Static when not playing through the OSS Emulation
-Description: 
-I get crackling static coming in when sound is being output to my speakers
-(not when there is nothing playing) using the ice1724 driver with my
-M-Audio Revolution 7.2.  The problem appears to go away if I use OSS
-emulation, but of course this isn't desirable since I cannot use dmix in
-this case.
+Thanks, I've added this to my bk trees.
 
-I am using xmms and mplayer to produce the badness.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-25-05 04:00 wintermute77   New Issue                                    
-03-25-05 04:00 wintermute77   Distribution              => Gentoo          
-03-25-05 04:00 wintermute77   Kernel Version            =>  2.6.10-ck5     
-======================================================================
-
-
+greg k-h
 
 
 -------------------------------------------------------
