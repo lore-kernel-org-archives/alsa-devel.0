@@ -1,13 +1,12 @@
-From: tom burkart <alsa@aussec.com>
-Subject: Re: Fwd: via82xx problem
-Date: Fri, 4 Apr 2003 09:30:31 +1000 (EST)
+From: "J. Scott Amort" <jsamort@telus.net>
+Subject: 0.9.2 Unresolved symbol errors with RH
+Date: 03 Apr 2003 16:00:55 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304040927040.1119-100000@home.aussec.com>
-References: <20030403220725.GA14648@nubol.int.oskuro.net>
+Message-ID: <1049414455.4785.14.camel@work.baobobmusic.ca>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030403220725.GA14648@nubol.int.oskuro.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,25 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jordi Mallach <jordi@debian.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Today, Jordi Mallach wrote:
+Just to update, as has been posted on the user list - 0.9.0rc7 and later
+does not work on RH 8.1 beta or the now released 9 (I can confirm this,
+and also can confirm that 0.9.0rc6 DOES work on both).  It has been
+suggested that the conflict is with Redhat's kernel patches, as 0.9.2
+works with the official kernel 2.4.20, and/or that it is perhaps related
+to the new RedHat NPTL implementation and changes made to the alsa
+driver since 0.9.0rc6 (which works with this new POSIX implementation). 
+Can any developer confirm this, or perhaps narrow down where I should
+start working?  I'm not a stellar programmer, but since it doesn't
+appear that anyone else is taking this problem on (if anyone is, PLEASE
+let me/us know!), I figure I'd take a try, otherwise I'll be stuck with
+0.9.0rc6 forever!
 
-> When I try to tell alsa-xmms about hw:0,1 or hw:0,0, both cases show the
-> error: "snd_mixer_attach: no such file or directory". What mixer device
-Have you got the correct devices in /dev?
-Ok, may sound like a stupid question but I just found that in my devfs
-system not all needed devices show up - so until I can fix the real
-problem I am running the snddevices script at startup... Yukk...
+Regards,
 
-tom.
-Consultant
-
-AUSSEC    Phone: 61 4 1768 2202
-339 Blaxland Rd., Ryde NSW 2112
-Email: tom@aussec.com
+Scott 
 
 
 
