@@ -1,15 +1,13 @@
-From: "Sander van Leeuwen" <sandervl@xs4all.nl>
-Subject: Re: C-Media 8378 revision 37 & OPL3 midi
-Date: Fri, 19 Jul 2002 15:23:45 +0200 (CDT)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: quattro multi plugin.
+Date: Fri, 19 Jul 2002 22:56:15 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207191323.g6JDNOLL077610@smtpzilla1.xs4all.nl>
-References: <s5hn0soqa6z.wl@alsa2.suse.de>
-Reply-To: "Sander van Leeuwen" <sandervl@xs4all.nl>
+Message-ID: <3D381A7F.4090708@boosthardware.com>
+References: <3D37BBBA.7030308@boosthardware.com> <3D37D0FD.3090400@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0soqa6z.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,35 +16,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Jul 2002 12:33:08 +0200, Takashi Iwai wrote:
->> I have two cmedia cards; a revision 37 & 39. Everything
->> works well on the rev 39 card, but OPL3 midi is silent
->> on the rev37.
->> OPL3 initialization succeeds and there are no clear signs
->> of any problems. My first guess was that this revision
->> may have a difference (bug) with regards to the FM
->> volume. However, testing different mute & volume settings 
->> shows no improvement.
->Synth volume and switch?
-Both. I even manually changed the registers during playback.
+This is wierd. Using the exact same commands I cannot get jackd to load 
+now. The card still, ahem, works, cough, with a single pcm device.
 
->> Is this a know problem of the ALSA driver, a hardware bug or 
->> even a defective OPL3 part in this particular revision?
->the support of opl3 is bad on this driver.
-It's not bad at all as it is perfect on the rev 39 card.
-Well, at least in the driver I ported to OS/2. Don't know about the Linux version
-or even the latest code.
+----
+jackd  -v -d alsa -d q4
+jackd 0.37.1
+Copyright 2001-2002 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
 
->it works somehow on my mine (rev 037) but the sounds are weird.
->maybe another (undocumented) initialization step would be necessary.
-Too bad. Maybe I'll find out something soon. If I do, I'll send the results
-to this list.
+1068 waiting for signals
+creating alsa driver ... q4|1024|2|48000|swmon
+ALSA: no playback configurations available
+ALSA: cannot configure capture channel
+cannot load driver module alsa
+jack main caught signal 15
+----
 
-Sander
+This is after a reboot due to jackd hanging the machine after 
+accidentally loading the hw plugin after having semi success with the 
+code below.
+
+Patrick Shirkey wrote:
+> Ah that should be....
+> 
+> ----
+> pcm.quattro {
+>         type multi;
+> 
+>         slaves.a.pcm "hw:2,0";
+>         slaves.a.channels 3;
+> 
+> 
+>         bindings.0.slave a;
+>         bindings.0.channel 0;
+>         bindings.1.slave a;
+>         bindings.1.channel 1;
+>         bindings.2.slave a;
+>         bindings.2.channel 2;
+>     
+> }
+> 
+> ctl.quattro {
+>         type hw;
+>         card 0;
+> }
+> 
+> pcm.q4 {
+>         type route;
+>         slave.pcm "quattro";
+>         ttable.1.1 1;
+>         ttable.2.2 1;
+> 
+> }
+> 
+> ctl.q4 {
+>         type hw;
+>         card 2;
+> }
+> ----
+> 
+> When I run jackd I get this output though:
+> 
+> ----
+>  jackd -v -d alsa -d q4
+> jackd 0.37.1
+> Copyright 2001-2002 Paul Davis and others.
+> jackd comes with ABSOLUTELY NO WARRANTY
+> This is free software, and you are welcome to redistribute it
+> under certain conditions; see the file COPYING for details
+> 
+> 611 waiting for signals
+> creating alsa driver ... q4|1024|2|48000|swmon
+> new client: alsa_pcm, id = 1 type 1 @ 0x8067930 fd = 14
+> port alsa_pcm:in_1 buf shm key 0x164398c5 at offset 4096 bi = 0x8066d00
+> registered port alsa_pcm:in_1, offset = 4096
+> port alsa_pcm:in_2 buf shm key 0x164398c5 at offset 8192 bi = 0x8066d10
+> registered port alsa_pcm:in_2, offset = 8192
+> port alsa_pcm:in_3 buf shm key 0x164398c5 at offset 12288 bi = 0x8066d20
+> registered port alsa_pcm:in_3, offset = 12288
+> port alsa_pcm:in_4 buf shm key 0x164398c5 at offset 16384 bi = 0x8066d30
+> registered port alsa_pcm:in_4, offset = 16384
+> registered port alsa_pcm:out_1, offset = 0
+> registered port alsa_pcm:out_2, offset = 0
+> registered port alsa_pcm:out_3, offset = 0
+> registered port alsa_pcm:out_4, offset = 0
+> -- jack_rechain_graph():
+> client alsa_pcm: inprocess client, execution_order=0.
+> ALSA: poll time out polled for 45558.694314
+> driver wait function failed, exiting
+> telling signal thread that the engine is done
+> jack main caught signal 1
+> ----
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
