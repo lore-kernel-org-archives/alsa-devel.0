@@ -1,15 +1,16 @@
-From: Paul Davis <pbd@op.net>
+From: Dan Hollis <goemon@anime.net>
 Subject: Re: snd-rme9652_mem and the H-DSP
-Date: Mon, 13 May 2002 21:59:37 -0400
+Date: Mon, 13 May 2002 19:07:37 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205140158.g4E1wNT28027@post2.fast.net>
-References: <s5hlmao8i5z.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0205131907140.28622-100000@sasami.anime.net>
+References: <200205140158.g4E1wNT28027@post2.fast.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post2.fast.net (post2.fast.net [209.92.1.22])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA17860
-	for <alsa-devel@alsa-project.org>; Tue, 14 May 2002 03:58:32 +0200
-In-Reply-To: Your message of "Mon, 13 May 2002 12:18:48 +0200."
-             <s5hlmao8i5z.wl@alsa2.suse.de>
+Received: from sasami.anime.net (anime.net [63.172.78.150])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA17965
+	for <alsa-devel@alsa-project.org>; Tue, 14 May 2002 04:08:24 +0200
+In-Reply-To: <200205140158.g4E1wNT28027@post2.fast.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +19,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Paul Davis <pbd@op.net>
+Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->> Perhaps, we can use a more universal name like 'snd-pci-bigmem' or
->> something like that. Other hardware might require this (if I remember
->> correctly S3 SonicVibes cards also requires a big memory chunk for DLS
->> samples). We can move this module to /alsa-kernel/pci.
->
->yes.  ice1712 needs relatively big chunk, too.
->
->how about to add module options to specify the pci id and the required
->size for non-default cards?
+On Mon, 13 May 2002, Paul Davis wrote:
+> who shall we ask?
 
-not a bad idea. but before doing this, we should check with the
-appropriate kernel lieutenant. this seems to get rather close to the whole
-point of memory zones that have been in the kernel for a while now. it
-might be better to pursue a more generic kernel-level solution, rather
-an ALSA specific module.
+alan. he's been involved in this particular problem with the OSS drivers.
 
-who shall we ask?
+-Dan
+-- 
+[-] Omae no subete no kichi wa ore no mono da. [-]
 
---p
 
 _______________________________________________________________
 
