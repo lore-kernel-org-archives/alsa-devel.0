@@ -1,13 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: AW: usb quattro
-Date: Sat, 07 Sep 2002 06:13:38 +0900
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: example for how to use hwdep?
+Date: Fri, 6 Sep 2002 13:15:46 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D791A82.7040704@boosthardware.com>
-References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de> <s5hvg5jwgvk.wl@alsa2.suse.de> <3D7912A2.1000908@boosthardware.com>
+Message-ID: <20020906201546.95191.qmail@web11503.mail.yahoo.com>
+References: <20020906194926.38406.qmail@web11501.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from web11503.mail.yahoo.com (web11503.mail.yahoo.com [216.136.172.35])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id WAA20108
+	for <alsa-devel@alsa-project.org>; Fri, 6 Sep 2002 22:15:49 +0200
+In-Reply-To: <20020906194926.38406.qmail@web11501.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +19,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
+Hi,
 
-> 
-> I have actually managed to get a stream from alsaplayer through without 
-> a hang but the sound is choppy.
-> 
-> I will make a test signal  so you can hear what I am getting. It's 
-> similar to what was happening before the driver was fixed last time.
-> 
+I have implemented some hwdep support in a driver, and would like to test it
+from an app. As I couldn't find any example of hwdep use in an app either in
+the utils or on the mail archive, I figured maybe one of you could help and
+point me to some example in source code?
 
-Well I just noticed that the sound from native alsa apps is fscked to.
+Thanks,
+Guilhem.
 
-Here is a sample for you, it should be a pure sine wav but it's not quite.
 
-http://www.boosthardware.com/audio/sine-0907.wav
-
-I spose that fixing this might help jack or maybe not :)
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
-
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Finance - Get real-time stock quotes
+http://finance.yahoo.com
 
 
 -------------------------------------------------------
