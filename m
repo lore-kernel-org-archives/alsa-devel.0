@@ -1,14 +1,14 @@
-From: Apostolos Dimitromanolakis <apostolos@aei.ca>
-Subject: Re: Re: [PATCH] aureon.c - hpamp, adc/dac mute
-Date: Fri, 14 May 2004 17:43:40 -0400
+From: "Loc Ho" <loc@pacificconsultants.com>
+Subject: ALSA USB Audio Driver
+Date: Fri, 14 May 2004 14:46:48 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A53D8C.9030201@aei.ca>
-References: <40A4C012.8080004@gmx.at> <s5hn04bma09.wl@alsa2.suse.de>
+Message-ID: <D22B281CC561444AA27F7F6C6C9E3E6102F564@mtvs4.pcllc.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-7; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn04bma09.wl@alsa2.suse.de>
+Content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, chris_web@gmx.at
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Hm.. It seems then that after all that the Audiotrak Prodigy 7.1 is 
-identical to Terratec Aureon, except that the later has optical digital 
-IO instead of coaxial. The headphone function is also implemented in 
-Audiotrak Prodigy 7.1 driver. I used to think that it was a difference 
-between the Prodigy and Terratec Aureon. If everything else is the same 
-(i.e. wiring inside the card) then we can  merge the two drivers into 
-one since they are almost identical (prodigy.c and aureon.c).
-
-I also have a dump from the communication of the windows driver with the 
-AC97 codec of the card which is used for mixing the 4 internal 
-connectors (the communication is through a XIlinx programmable device 
-and so it was difficult to implement).  I believe that the dump can be 
-used to add the support of the AC97 to both Prodigy and Aureon. I will 
-do it sometime when I find time but if anyone is interested I can send 
-the dump.
-
-Cheers,
-Apostolos
+I am using the Linux 2.6.4 version of the ALSA (1.0.2c). Apparently, the =
+ALSA USB Audio driver doesn't cleanup properly when it is disconnected =
+while the streams are not closed. For example, perform a loop back =
+(record and playback) for 1 minute and then disconnect. If you =
+disconnect, there will be a bunch of error messages printed from the URB =
+call back (or retire_xxx) function. I don't believe that there is any =
+change in the ALSA USB Audio driver to handle this in the current =
+version Linux 2.6.6. Have any one tried this? Or, this only happens on =
+the ARM architecture? The fix that I made is to return an error code and =
+stop submitting URB if there is any error.
 
 
->At Fri, 14 May 2004 14:48:18 +0200,
->Christoph Haderer wrote:
->  
->
->>[1  <text/plain; us-ascii (7bit)>]
->>This patch adds a headphone amplifier control and the ability to mute 
->>the DAC (all channels at once) and the ADC channels. wm_adc_vol_put had 
->>to be changed a little bit because otherwise the ADC-mute bits would be 
->>overwritten when changing the ADC-gain. I have also modified 
->>wm_adc_mux_info; IMHO the *texts array was wrong before - the texts 
->>didn't match the recording source (tested with alsamixer).
->>This patch applies cleanly against the alsa source files that came with 
->>kernel 2.6.6-mm2.
->>    
->>
->
->  
->
-
+Thanks,
+Loc
 
 
 -------------------------------------------------------
