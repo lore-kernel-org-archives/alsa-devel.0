@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000998]: access to second playback hangs
-Date: Sat, 19 Mar 2005 00:16:57 +0100
-Message-ID: <196bd9eab0987ce87ea26b19741f5754@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000988]: No errors, but no sound output
+Date: Sat, 19 Mar 2005 00:16:22 +0100
+Message-ID: <409d2620a70332f9fa4ae9d62e3a2a30@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BBEF222D
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 00:16:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C513E22D
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 00:16:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,44 +21,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=998> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
 ======================================================================
-Reported By:                allefant
+Reported By:                madCoder
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   998
-Category:                   PCI - es1938
+Issue ID:                   988
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian sid
-Kernel Version:             2.6.10-6
+Distribution:               gentoo
+Kernel Version:             2.6.11-gentoo-r2
 ======================================================================
-Date Submitted:             03-19-2005 00:16 CET
+Date Submitted:             03-14-2005 00:35 CET
 Last Modified:              03-19-2005 00:16 CET
 ======================================================================
-Summary:                    access to second playback hangs
+Summary:                    No errors, but no sound output
 Description: 
-This is haunting my since about half a year, since I got this card. Every
-time the second playback device is accessed, there's a complete hardware
-freeze. Disabling the second playback device makes it work. I know, this
-isn't the best report, since I didn't compile the latest version and did
-not much testing (no fun getting constant HW freezes) - but anyway, I
-thought I report it here, maybe my workaround can help someone who googles
-for this problems at least (or, maybe someone can give me even a hint how
-to fix it).
+Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
+upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
+1.0.8, and now I get no sound at all.  There are no error messages, the
+kernel modules are loaded properly and appear to be working fine.  Playing
+a file in XMMS, the spectrum analyzer shows that it should be playing
+sound, but I get nothing from the speakers.
+
+I've already checked that all the mixer channels are unmuted and turned
+up, including DAC.  I know I'm not the only one, nor is this chipset the
+only one, that has had this problem, so is it something in the core that
+is causing all these problems, or are there just that many chipsets that
+have suddenly developed the inability to produce sound?
+
+lsmod, lspci, and /proc output are attached in Additional Info
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 03-18-05 18:19 
+----------------------------------------------------------------------
+Maybe the same bug as https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963
+?
+
+Try to turn on "External Amplifier" mixer switch.
+
+----------------------------------------------------------------------
+ madCoder - 03-19-05 00:16 
+----------------------------------------------------------------------
+Ok, I'll try that from the later kernel  (will respond after a reboot).
+What is the intended purpose of the External Amplifier switch?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-19-05 00:16 allefant       New Issue                                    
-03-19-05 00:16 allefant       Distribution              => Debian sid      
-03-19-05 00:16 allefant       Kernel Version            => 2.6.10-6        
+03-14-05 00:35 madCoder       New Issue                                    
+03-14-05 00:35 madCoder       Distribution              => gentoo          
+03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
+03-14-05 00:37 madCoder       Issue Monitored: madCoder                    
+03-16-05 12:56 tiwai          Note Added: 0003950                          
+03-17-05 00:05 madCoder       File Added: asound.state                     
+03-17-05 00:06 madCoder       Note Added: 0003973                          
+03-17-05 00:08 madCoder       Note Edited: 0003973                         
+03-18-05 18:19 tiwai          Note Added: 0004002                          
+03-19-05 00:16 madCoder       Note Added: 0004008                          
 ======================================================================
 
 
