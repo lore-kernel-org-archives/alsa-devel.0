@@ -1,7 +1,7 @@
 From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
 Subject: RE: CMI8768 patch
-Date: Thu, 24 Feb 2005 04:50:33 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D65C@cm-msg-02.cmedia.com.tw>
+Date: Thu, 24 Feb 2005 06:50:39 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D65D@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="big5"
@@ -20,15 +20,17 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I use alsa-driver and alsa-lib from cvs but alsa-util  from 1.0.8 =
-because I have problem
-conigure the alsa-util tree.
-
-My system is an i386 system (P4).
-
+Finally I got a clue.
+The FC3 install the alsa-lib (libasound.so.2.0.0) at /lib, while the =
+alsa-cvs and alsa-lib-1.0.8
+install it in /usr/lib, no wonder the softvol cannot run with it! =
+Finally I get PCM volume
+appear. Thanks for your help and sorry that it took me so long to =
+discover this.
 
 Sincerely,
 ChenLi Tien
+
 -----Original Message-----
 From:	Takashi Iwai [mailto:tiwai@suse.de]
 Sent:	2005/2/23 [=ACP=B4=C1=A4T] =A4W=A4=C8 05:42
