@@ -1,14 +1,12 @@
-From: "John S. Denker" <jsd@monmouth.com>
-Subject: Re: soundcard matrix: broken links etc.
-Date: Tue, 10 Dec 2002 23:05:57 -0500
+From: Mark Knecht <markknecht@attbi.com>
+Subject: HDSP 9652 - a couple of small (?) issues
+Date: 10 Dec 2002 20:42:32 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DF6B9A5.3010807@monmouth.com>
-References: <E18LQai-0006m2-00@sc8-sf-list1.sourceforge.net> <3DF62B82.4070700@boosthardware.com> <3DF66A89.5030403@monmouth.com> <3DF6A875.90107@boosthardware.com>
+Message-ID: <1039581753.1681.7.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18LQai-0006m2-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,39 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: goemon@anime.net, alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+Cc: PlanetCCRMA <planetccrma@ccrma.stanford.edu>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
+Hi,
+   I'm finding that I seem to have two problems with this new card:
 
-> >   http://www.alsa-project.org/~goemon/
+1) I am unable to turn down the volume with alsamixer. All the way up or
+down, the volume is always very loud. Has anyone else seen this? Is
+there some other tool which will actually control the volume?
 
-> How did you get access to it? 
+2) If I use alsamixer and set volume bars and then use 'alsactl store'
+to store the levels, if I use 'alsactl restore' the restore process
+always sets channel 0 back to 0. Other channels are restored at their
+saved levels. Is alsactl the right tool to use to accomplish this?
 
-Google.
+   I'm not at all clear who to report this to. Who works on alsactl and
+alsamixer?
 
-> This version is now deprecated. 
+Thanks,
+Mark
 
-Point taken.
-However, the apparently non-deprecated version
-   http://www.alsa-project.org/alsa-doc/
-contains almost as many broken links etc.
-Here's the summary:
 
-  Code Occurrences  What to do
-  200     1         There are broken fragments which must be fixed.
-  301     1         You should update the link.
-  302     28        Usually nothing.
-  401     4         The link is not public. You'd better specify it.
-  403     1         The link is forbidden! This needs fixing.
-  404     57        The link is broken. Fix it NOW!
-  405     1         The server does not allow HEAD requests.
-  500     37        Either the hostname is incorrect or ...
-
-Interested parties may grab the details from
-   http://www.av8n.net/~jsd/alsa/checked-links2.html
-   http://www.av8n.net/~jsd/alsa/checked-links2.html.gz
 
 
 
