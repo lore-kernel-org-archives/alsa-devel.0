@@ -1,12 +1,14 @@
-From: "Raul Brantley" <muyphciiuu@yahoo.com>
-Subject: Message subject
-Date: Sat, 11 Dec 2004 17:23:27 -0600
-Message-ID: <OHOTJMVEFPTDPAEMGQBEUEWFR@yahoo.com>
-Reply-To: "Raul Brantley" <muyphciiuu@yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Sun, 12 Dec 2004 00:58:53 +0100
+Message-ID: <a9bcdfbc7788e18d4cfd1194452337a1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--531151352474727"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF897217
+	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 00:58:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,76 +18,125 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 3ae14d9a.e34a11ea@alsa-project.org, abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----531151352474727
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
 
-The New 2005 United States Healthcare Database.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+======================================================================
+Reported By:                footcow
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   666
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              12-12-2004 00:58 CET
+======================================================================
+Summary:                    Simply no sound ... no line ... no mixer
+Description: 
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-This complete database includes all hospitals, nursing homes, 
-and physicians in the country.
-
-In a rapidly-changing industry, current healthcare information is an 
-invaluable resource to businesses and organizations.  The United States 
-Healthcare Database includes comprehensive information on more than 
-7,000 hospitals, 25,000 nursing homes and 400,000 doctors.  It is the 
-most extensive and reliable mailing list and database of key decision 
-makers in the health care market.
- 
-Each record is indexed by such features as name, address, phone and 
-fax. The database is available in Excel format on CD Rom.  It is 
-designed for mailing lists and merges.  The data can be selected by 
-state or other criteria such as type of practice. It can be used on 
-an unlimited basis.
-
-For the past 14 years, MedCom has maintained the most comprehensive 
-healthcare lists.  Our directories are 100% telephone verified and 
-updated every quarter. MedCom continues to hold the nation's most 
-extensive and reliable databases of key decision-makers in the health 
-care market.
- 
-Available exclusively on CD-Rom (Excel), the data can be used on an 
-unlimited basis. It is easily exportable to other programs for 
-mailing or faxing purposes.
-
-For a limited time, this extensive database is offered at an introductory =
-
-
-Price of $195 (reg. $745).
-
-To order, please print this e-mail, complete the information below and 
-fax it to 416-765-0029 (tel: 416-765-0028).
-
-NAME:
-    
-TITLE:
-
-ORGANIZATION:
-
-ADDRESS:
-
-CITY:
-
-STATE:
-
-POSTAL:
-
-TEL:
-
-FAX:
-
-EMAIL:
- 
-
-MedCom
-4410 Massachusettes Ave. NW, #201
-Washington, DC 20016
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
 
 
-----531151352474727--
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 12-11-04 17:40 
+----------------------------------------------------------------------
+The Oops with the Input is fixed in the very latest CVS.
+There is no h/w playback volume on this codec chip!
+
+To playback, make sure that you unmute the volume.  Press 'M' on the
+corresponding volume.  "PCM" controls only the front output, BTW.  It
+should be "Front", but named as "PCM" because many apps prefer this name.
+
+----------------------------------------------------------------------
+ footcow - 12-12-04 00:58 
+----------------------------------------------------------------------
+I have applied the last CVS.
+OK now no more Oops in Lines settings.
+
+But sorry I miss understand what you mean here :
+"To playback, make sure that you unmute the volume. Press 'M' on the
+corresponding volume."
+
+Under alsamixer ... Everything is unmute as you can see on my screenshot.
+I send you a new one because with this last release I have two new choice
+: Line-In As Surround and Mic As Center/LFE.
+
+Also what you mean with :
+"There is no h/w playback volume on this codec chip!"
+???
+No possibility to define the volume ??
+I'm under KDE ... if I run Kmix in the output form I have nothing, in the
+input form I have 2 capture option, and in the last option tab
+(interuptors), I can see all the option I see with alsamix (PCM, Surround,
+Centr, LFE etc.) ...
+
+So I still have no sound output for the moment !
+What can I give you to have more technical details ?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+======================================================================
+
 
 
 
