@@ -1,76 +1,81 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: ice1724 controls meaning
-Date: Mon, 16 Feb 2004 22:32:38 +0300
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402162232.38240@goldspace.net>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: M-Audio USB Quattro on 2.6.x
+Date: Mon, 16 Feb 2004 14:58:32 -0500 (EST)
+Sender: linux-usb-devel-admin@lists.sourceforge.net
+Message-ID: <Pine.LNX.4.44L0.0402161447220.1490-100000@ida.rowland.org>
+References: <1076956436.683.88.camel@puppeli>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="koi8-r"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <linux-usb-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1076956436.683.88.camel@puppeli>
+Errors-To: linux-usb-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:linux-usb-devel@lists.sourceforge.net>
+List-Help: <mailto:linux-usb-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/linux-usb-devel>,
+	<mailto:linux-usb-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=linux-usb-devel>
+To: Sampo Savolainen <v2@iki.fi>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, linux-usb-devel <linux-usb-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 16 Feb 2004, Sampo Savolainen wrote:
 
-Briefly: Will anybody be so kind to explain (or to give some links) to
-         understand ice1724 controls meaning?
+> lsusb works fine, and I can read /proc/bus/usb/devices very well.
+> Actually, lsbus and /proc/bus/usb still shows the Quattro, even after
+> disconnecting it.
+> 
+> Also something I forgot: The kernel won't find ANY usb device after
+> disconnecting, not even on another controller than the one that the
+> Quattro was attached to.
 
-Info: I have Terratec Aureon 7.1 Space. After some struggling with qamix 
-      and adding few lines to code, I'm able now to configure qamix to be
-      in synch with all alsamixer controls (the problem was with controls
-      which have the same "alsaname" and different indexes; I have added
-      "index" attribute to "element" element, and the problem was gone).
-      Now I'm slightly confused where to go now. If anybody will find a 
-      minute for comments, all controls are listed below.
+Both of those are signs that the sound driver is hung in its disconnect 
+routine.  You can verify this by doing a stack trace (Alt-SysRq-T) and 
+looking where the khubd thread is executing.
 
-With hope,
-Andrew
+> > There hasn't been much call for making the kernel allow out-of-spec
+> > altsetting numbers; the vast majority of devices seem to get this right.
+> > Maybe if enough people really want it, it will be added in.
+> 
+> I know of at least two "USB" soundcards that have this problem. At least
+> M-Audios Quattro and Audiophile. Probably both of them would work if
+> this patch would be applied to the kernel with a correction to the
+> snd_usb_audio driver. For us audiogeeks this would be wonderful news.
+> 
+> On the other hand. I do not know enough about linux-usb development. So
+> I don't know what kind of issues this patch could create.
+> 
+> I haven't asked around, so I do not know how many people need this, but
+> I have been in touch with at least three others who use this hardware on
+> Linux. I think I'm speaking for everyone (of us four...) when I say we
+> really, really, want this feature!
 
-=================== controls list =======================
-numid=1, iface=CARD,name='ICE1724 EEPROM'
+The person to convince is Greg KH <greg@kroah.com>, the overall maintainer 
+for the USB subsystem.  He monitors the USB-development list (although I 
+haven't seen much posted by him in a while; he must be busy with other 
+things).
 
-numid=2, iface=MIXER,name='Multi Track Internal Clock'
-numid=3, iface=MIXER,name='Multi Track Rate Locking'
-numid=4, iface=MIXER,name='Multi Track Rate Reset'
+> (Before I get really excited, this patch has to be tested more
+> strenuously before adding it in)
+> 
+> Meanwhile, I'll try to find someone on the alsa side to help me find the
+> problem in snd_usb_audio. Just to make sure, your opinion is that the
+> patch is fine and the problem is on the driver side?
 
-numid=5, iface=MIXER,name='H/W Playback Route'
-numid=6, iface=MIXER,name='H/W Playback Route',index=1
-...
-numid=12,iface=MIXER,name='H/W Playback Route',index=7
+I haven't studied it in detail.  The general idea is fine -- perhaps the
+implementation could be improved a bit.  The problem you are facing now is
+almost certainly in the sound driver.  Maybe just in its disconnect
+routine, maybe more widespread.
 
-numid=13,iface=MIXER,name='Multi Track Peak'
+But the real obstacle to adopting your patch is that it affects _every_ 
+USB device driver, since any USB device might have this issue of 
+mis-numbered altsettings.  You would have to go through every single 
+driver and make sure that it would work okay with the patch.  I expect 
+that several of them would need to be changed.
 
-numid=14,iface=MIXER,name='IEC958 Playback Route'
-numid=15,iface=MIXER,name='IEC958 Playback Route',index=1
+Alan Stern
 
-numid=16,iface=MIXER,name='IEC958 Output Switch'
-
-numid=17,iface=PCM,name='IEC958 Playback Default',device=1
-
-numid=18,iface=MIXER,name='IEC958 Playback Con Mask',device=1
-numid=19,iface=MIXER,name='IEC958 Playback Pro Mask',device=1
-
-numid=20,iface=MIXER,name='DAC Volume'
-numid=21,iface=MIXER,name='DAC Volume',index=1
-...
-numid=27,iface=MIXER,name='DAC Volume',index=7
-
-numid=28,iface=MIXER,name='Master Playback Volume'
-
-numid=29,iface=MIXER,name='ADC Volume'
-numid=30,iface=MIXER,name='ADC Volume',index=1
-
-numid=31,iface=MIXER,name='Capture Route'
 
 
 -------------------------------------------------------
@@ -78,3 +83,7 @@ SF.Net is sponsored by: Speed Start Your Linux Apps Now.
 Build and deploy apps & Web services for Linux with
 a free DVD software kit from IBM. Click Now!
 http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
+_______________________________________________
+linux-usb-devel@lists.sourceforge.net
+To unsubscribe, use the last form field at:
+https://lists.sourceforge.net/lists/listinfo/linux-usb-devel
