@@ -1,22 +1,13 @@
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: Re: [2.6 patch] OSS gameport fixes
-Date: Thu, 10 Mar 2005 10:36:57 -0500
-Message-ID: <d120d5000503100736212a9c87@mail.gmail.com>
-References: <20050304033215.1ffa8fec.akpm@osdl.org>
-	 <200503070941.59365.petkov@uni-muenster.de>
-	 <20050307215206.GH3170@stusta.de>
-	 <d120d50005030714126e345fe2@mail.gmail.com>
-	 <20050307230633.GJ3170@stusta.de> <20050309113217.GB21688@stusta.de>
-Reply-To: dtor_core@ameritech.net
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
+Date: Thu, 10 Mar 2005 16:44:38 +0100
+Message-ID: <0dbb3719acc880f4663843b3e11f8dff@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Received: from rproxy.gmail.com (rproxy.gmail.com [64.233.170.202])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E52F41B2
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:36:58 +0100 (MET)
-Received: by rproxy.gmail.com with SMTP id r35so581399rna
-        for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 07:36:57 -0800 (PST)
-In-Reply-To: <20050309113217.GB21688@stusta.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5E6E1C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:44:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,43 +17,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian Bunk <bunk@stusta.de>
-Cc: Borislav Petkov <petkov@uni-muenster.de>, perex@suse.cz, vojtech@suse.cz, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-input@atrey.karlin.mff.cuni.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Mar 2005 12:32:17 +0100, Adrian Bunk <bunk@stusta.de> wrote:
-> This patch adds dummy gameport_register_port, gameport_unregister_port
-> and gameport_set_phys functions to gameport.h for the case when a driver
-> can't use gameport.
-> 
-> This fixes the compilation of some OSS drivers with GAMEPORT=n without
-> the need to #if inside every single driver.
-> 
-> This patch also removes the non-working and now obsolete SOUND_GAMEPORT.
-> 
-> This patch is also an alternative solution for ALSA drivers with similar
-> problems (but #if's inside the drivers might have the advantage of
-> saving some more bytes of gameport is not available).
-> 
-> The only user-visible change is that for GAMEPORT=m the affected OSS
-> drivers are now allowed to be built statically (but they won't have
-> gameport support).
-> 
 
-Hi Adrian,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
+======================================================================
+Reported By:                kernel_bug
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   59
+Category:                   PCI - au88x0
+Reproducibility:            random
+Severity:                   major
+Priority:                   normal
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.6.2
+======================================================================
+Date Submitted:             02-13-2004 11:40 CET
+Last Modified:              03-10-2005 16:44 CET
+======================================================================
+Summary:                    On au8820 left and right channels are swapped
+Description: 
+In most cases, left and right channels are swapped. But in approx. 5% cases
+all OK. Looks like the matter is somewhere in byte alignment...
+======================================================================
 
-I have somewhat mixed feeling about the patch. Some solutions is
-definitely needed but I don't like allocating memory that will never
-be used. I think I would perfer #ifdefing gameport support is OSS
-modules, _if_ #ifdefs are out of line and not in the middle of code
-path.
+----------------------------------------------------------------------
+ jdthood - 03-10-05 15:31 
+----------------------------------------------------------------------
+> Channels are still swapped (always) when you are playing something
+> first time after loading modules.
 
-I'll let Vojtech decide which way he wants to go - he could probably
-apply the patch and then we could convert drivers one by one and kill
-the stubs later.
+Submitter: Is this bug still present?  Are the channels swapped just
+after the module is loaded?
 
--- 
-Dmitry
+----------------------------------------------------------------------
+ mjander - 03-10-05 16:44 
+----------------------------------------------------------------------
+AFAIK this bug was solved a long time ago. It was supposedly caused by a
+incorrect routing table initialization (bug found by Claudia). That fact,
+i guess, leaved some random routes interferening with other intentional
+routes.
+
+Did anyone still get this bug or may we close it ?
+
+Best Regards
+
+Manuel
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-04 11:40 kernel_bug     New Issue                                    
+02-21-04 15:40 kernel_bug     Note Added: 0000280                          
+03-02-04 02:56 Tim            Note Added: 0000429                          
+04-09-04 11:54 kernel_bug     Note Added: 0000774                          
+04-09-04 18:35 mjander        Note Added: 0000777                          
+04-17-04 18:59 mjander        Status                   assigned => closed  
+04-17-04 18:59 mjander        Note Added: 0000849                          
+04-26-04 17:04 kernel_bug     Status                   closed => feedback  
+04-26-04 17:04 kernel_bug     Resolution               open => reopened    
+04-26-04 17:04 kernel_bug     Note Added: 0000953                          
+04-26-04 23:27 mjander        Note Added: 0000956                          
+03-10-05 15:31 jdthood        Note Added: 0003866                          
+03-10-05 16:44 mjander        Note Added: 0003867                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
