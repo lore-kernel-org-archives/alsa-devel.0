@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Wed, 19 Jan 2005 18:36:48 +0100
-Message-ID: <e85218ea57fc5c21647b97e627b31efb@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: William <walsac3@orthoset.com>
+Subject: Re: [PATCH] emu10k1 multichannel support
+Date: Wed, 19 Jan 2005 18:20:40 GMT
+Message-ID: <200501191820.SAA13235@orthoset.com>
+References: <1106153966.3082.2.camel@krustophenia.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6D26424E
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:36:48 +0100 (MET)
+In-Reply-To: <1106153966.3082.2.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,66 +14,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+>
+> Ok, found the bug.  snd_emu10k1_voice_alloc now takes the number of
+> voices as the third parameter, previously it took 1 or 0 depending on
+> whether 1 or 2 voices were needed.
+> 
+> Does this fix the problem?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
-======================================================================
-Reported By:                jbrsubscribe
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   836
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-19-2005 18:36 CET
-======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
-Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
-======================================================================
+Actually I'm getting lots of these messages every time I play any
+MIDI files on the emu10k1 wavetable synth:
 
-----------------------------------------------------------------------
- tiwai - 01-19-05 18:36 
-----------------------------------------------------------------------
-It's not a bug.  The codec chip has really no playback volume control.
+Jan 19 18:11:00 linux kernel: first==last, number 1, next free 36!
+Jan 19 18:11:03 linux last message repeated 37 times
+Jan 19 18:11:41 linux kernel: first==last, number 1, next free 8!
+Jan 19 18:12:12 linux last message repeated 450 times
+Jan 19 18:13:08 linux last message repeated 847 times
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
-01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
-01-19-05 18:36 tiwai          Status                   new => resolved     
-01-19-05 18:36 tiwai          Resolution               open => not an issue
-01-19-05 18:36 tiwai          Assigned To               => tiwai           
-01-19-05 18:36 tiwai          Note Added: 0003311                          
-======================================================================
+The comments in your patch say this could be a "BUG (or not enough voices)!"
 
-
+William
 
 
 -------------------------------------------------------
-The SF.Net email is sponsored by: Beat the post-holiday blues
-Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
+This SF.Net email is sponsored by: IntelliVIEW -- Interactive Reporting
+Tool for open source databases. Create drag-&-drop reports. Save time
+by over 75%! Publish reports on the web. Export to DOC, XLS, RTF, etc.
+Download a FREE copy at http://www.intelliview.com/go/osdn_nl
