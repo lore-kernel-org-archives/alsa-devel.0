@@ -1,8 +1,8 @@
 From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: I'm developing an Aztech PCI168 (AZF3328) driver
-Date: Sun, 8 Sep 2002 11:16:59 +0200
+Subject: small dummy driver bug ?
+Date: Sun, 8 Sep 2002 15:29:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020908111659.A2151@rhlx01.fht-esslingen.de>
+Message-ID: <20020908152953.A16339@rhlx01.fht-esslingen.de>
 Reply-To: andi@rhlx01.fht-esslingen.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -21,35 +21,43 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi all,
 
-I'm currently in the process of developing a driver for this soundcard
-(that's one of about 6 unsupported cards in the support matrix).
-Needless to say, Aztech doesn't give ANY SUPPORT for its sound cards
-(and yes, I did have my fair share of email autoreplies and negative replies).
-I'm the guy mentioned in the ALSA support matrix, BTW, just in case
-you wondered :)
+while looking at the dummy driver to find usable parts for my driver,
+I found:
 
-The purpose of this mail is to find out whether there's *someone* out there
-who has the same (or a similar !) card and wants to join development.
-I've got the PCI168 AP(W) version (subsystem ID 1801), other versions are:
-- PCI168 A(W), sub ID 1800
-- PCI168 A/AP, sub ID 8000
-- others ??
+static int snd_dummy_volume_put(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t
+* ucontrol)
+{
+        snd_card_dummy_t *dummy = _snd_kcontrol_chip(kcontrol);
+        unsigned long flags;
+        int change, addr = kcontrol->private_value;
+        int left, right;
 
-Current status:
-- mixer interface can be accessed and works, not fully implemented yet
-  (CD playback / master volume muting can be managed and *work*)
-- started trying to get DMA playback (and interrupt management) to work,
-  but so far no annoying noise yet :-)
+        left = ucontrol->value.integer.value[0] % 101;
+        right = ucontrol->value.integer.value[1] % 101;
+        spin_lock_irqsave(&dummy->mixer_lock, flags);
+        change = dummy->mixer_volume[addr][0] != left &&
+                 dummy->mixer_volume[addr][1] != right;
+        dummy->mixer_volume[addr][0] = left;
+        dummy->mixer_volume[addr][1] = right;
+        spin_unlock_irqrestore(&dummy->mixer_lock, flags);
+        return change;
+}
 
-Also, I'd really like to talk to someone who is pretty intimate with
-the operation of several sound card drivers.
+Shouldn't it be
+        change = dummy->mixer_volume[addr][0] != left ||
+                 dummy->mixer_volume[addr][1] != right;
+instead of
+        change = dummy->mixer_volume[addr][0] != left &&
+                 dummy->mixer_volume[addr][1] != right;
+??
 
-Have fun,
-
-Andreas Mohr
+Why only signal a change if *both* channels' values are changed ?
+Or is the meaning of the API's "change" return value actually
+rather mysterious to me ?
 
 -- 
-Microsoft Licensing 6.0: "Pay us now in advance, so that we can own you later."
+The Declaration of Software Freedom:
+http://freedevelopers.net/freedomdec/index.php
 
 
 -------------------------------------------------------
