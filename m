@@ -1,15 +1,14 @@
-From: andersvi@extern.uio.no
-Subject: Re: vxpocket 440 with alsa, problems with vxloader
-Date: Sat, 15 Jan 2005 00:36:03 +0100
-Message-ID: <m3ekgn60t8.fsf@notam02.uio.no>
-References: <copr7koutib.fsf@olivier.localdomain>
-	<s5hu0pk6wlq.wl@alsa2.suse.de> <copllawumfe.fsf@olivier.localdomain>
-	<s5hllaw6pc6.wl@alsa2.suse.de>
+From: "Ivica Ico Bukvic" <ico@fuse.net>
+Subject: RE: More issues with hdsp and 1.0.7 and 1.0.8 drivers
+Date: Fri, 14 Jan 2005 14:32:10 -0500
+Message-ID: <20050114193044.NHXT13012.gx4.fuse.net@64BitBadass>
+References: <s5h3bx48fe7.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="windows-1250"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hllaw6pc6.wl@alsa2.suse.de> (Takashi Iwai's message of "Fri,
- 14 Jan 2005 15:46:17 +0100")
+In-Reply-To: <s5h3bx48fe7.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,43 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->>>>> "TI" == Takashi Iwai <tiwai@suse.de> writes:
+> At Thu, 13 Jan 2005 22:16:56 -0500,
+> Ivica Ico Bukvic wrote:
+> >
+> > 1.0.8 driver install completely from scratch using sources has the
+> following
+> > problem:
+> >
+> > 1) hdsp card gets detected and everything goes fine until the firmware
+> needs
+> > to be loaded.
+> > 2) at that point if I run hdsploader I get the following undocumented
+> error:
+> 
+> You need no longer to call hdsploader.  The hdsp driver uses hotplug
+> firmware loader if available.  So, installating firmware files to the
+> proper directory would suffice.  (Note that the directory is different
+> from the path for hdsploader.)
+> 
+> Did you install alsa-firmware 1.0.8, too?
 
-    TI> Does your kernel support hotplug firmware loader (CONFIG_FW_LOADER)?
-    TI> And is hotplug working?
+I tried to and made no difference. For more info please see my other
+e-mails. If the hotplug is supposed to do that, it certainly fails on my
+system as I have to either explicitly tell it to do it or if the snd-hdsp is
+being probed for the first time, I added the hdsploader to the "install"
+clause so that it is triggered with modprobing of the snd-hdsp module...
 
-    TI> Check whether /proc/asound/devices whether you have a "[1-0] hardware
-    TI> dependent device".  If you have it, the hotplug firmware loader isn't
-    TI> enabled.  Use vxloader, run "vxloader -c1".
+Of course, this only works on the 1.0.7 driver as 1.0.8 fails with the
+aforementioned error. Just to make things as clear as possible, when using
+1.0.8 driver if I do not do anything, the firmware never gets loaded and the
+red HOST light never turns off on the multiface suggesting that nothing got
+to the card.
 
-Theres no such line there now.  It was earlier today though... Hmmm
+Best wishes,
 
-Sticking in the card now leaves the following trail in
-/var/log/messages:
+Ico 
 
-Jan 15 00:25:34 localhost kernel: cs: memory probe 0xa0000000-0xa0ffffff: clean.
-Jan 15 00:25:34 localhost cardmgr[2616]: socket 0: Digigram VX-POCKET440
-Jan 15 00:25:35 localhost kernel: snd-vxp440: RequestIO: Resource in use
-Jan 15 00:25:35 localhost cardmgr[2616]: get dev info on socket 0 failed: No such device
-
-and "/sbin/lsmod | grep vx" shows a list of snd_vxp440 and
-friends.
-
-However, theres no trace inside /proc/asound/cards or any
-/proc/asound/card1/ directory, and i cant find the card anywhere
-else.
-
-$ amixer -c 1
-amixer: Mixer attach hw:1 error: No such device
-
-    TI> With the attached patch, you can check whether the firmware is loaded
-    TI> or not via the proc file.
-
-Which proc file are you suggesting here?
+-- 
+No virus found in this outgoing message.
+Checked by AVG Anti-Virus.
+Version: 7.0.300 / Virus Database: 265.6.11 - Release Date: 1/12/2005
+ 
 
 
 
