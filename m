@@ -1,10 +1,7 @@
-From: Marco Penno <marco.penno@inrebus.it>
-Subject: Problem with RME9636 card configuration
-Date: Fri, 19 Nov 2004 16:15:46 +0100
-Message-ID: <419E0E22.3090708@inrebus.it>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
-Content-Transfer-Encoding: 7bit
+From: William <walsac3@orthoset.com>
+Subject: Bad IRQs from using pcm in alsa-driver-1.0.7
+Date: Fri, 19 Nov 2004 16:28:47 GMT
+Message-ID: <200411191628.QAA01370@orthoset.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,15 +15,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I have a Rme9636 card, so, I loaded snd-rme9652 module (this is the same 
-also for my card)
-I know that module, with option "disable" is configured for my card. But 
-I don't know why alsa.conf load RME9652.conf and not RME9636.conf!
-How can I educate my alsa-tool to load the right configuration?
-Thanks
-bye
-Marco
+Using ALSA PCM always disables the IRQ for my mouse (USB Logitech wheelmouse).
+Is this a known problem?  
+
+I'm using alsa-*1.0.7 on a laptop with a VIA-8235 sound system.
+Whenever I use aplay, the kernel disables IRQ 11 ("kernel: Disabling IRQ 11")
+leaving the mouse disabled though the touchpad does still work
+and there are kernel error messages ("nobody cared!  __report_bad_irq etc" ).
+
+   $ grep ERR /proc/interrupts
+   ERR:     33
+
+Every time this happens I have to reboot to get IRQ 11 working again
+so I can use the mouse again.
+The kernel does not disable IRQ 11 if I use only ALSA MIDI.
+
+Is there a fix?
+
+Thanks,
+
+William
+
 
 
 -------------------------------------------------------
