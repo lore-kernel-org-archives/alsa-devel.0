@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Wed, 29 Dec 2004 17:56:25 +0100
-Message-ID: <b50dc3d0cd93956c5efd07b4edc66497@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 17:59:33 +0100
+Message-ID: <4e7a1df9d02f294a34f55cc1e08a6c9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A49972DD
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:56:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E7D214C
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:59:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat 7.2
 Kernel Version:             2.4.7
 ======================================================================
 Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              12-29-2004 17:56 CET
+Last Modified:              12-29-2004 17:59 CET
 ======================================================================
 Summary:                    Full duplex is not working in OSS emulation.
 Description: 
@@ -48,15 +48,6 @@ If I play something with one player, I am unable to record something on the
 same device.
 The same thing ispossible with the other cards I have.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-29-04 17:39 
-----------------------------------------------------------------------
-Hmm, I don't see problems in rme96.c.
-Could you check whether the devices are really opened in O_WRONLY and
-O_RDONLY?  Maybe strace can show better.
-Also, you can check /proc/asound/card0/pcm*/sub0/* files as the current
-state, too.
 
 ----------------------------------------------------------------------
  croiset - 12-29-04 17:56 
@@ -124,6 +115,24 @@ closed
 # cat /proc/asound/card0/pcm0c/sub0/status
 closed
 
+----------------------------------------------------------------------
+ croiset - 12-29-04 17:59 
+----------------------------------------------------------------------
+I forget one important i think.
+
+# cat /proc/asound/card0/pcm0p/sub0/info
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: Digi96 IEC958
+name: Digi96 IEC958
+subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 0
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -134,6 +143,7 @@ Date Modified  Username       Field                    Change
 12-29-04 14:54 croiset        Note Added: 0003000                          
 12-29-04 17:39 tiwai          Note Added: 0003004                          
 12-29-04 17:56 croiset        Note Added: 0003005                          
+12-29-04 17:59 croiset        Note Added: 0003006                          
 ======================================================================
 
 
