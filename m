@@ -1,10 +1,13 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Lots of BUG alerts with latest CVS and Audigy2
-Date: Fri, 11 Mar 2005 00:10:56 +0000 (GMT)
-Message-ID: <20050311001056.21034.qmail@web52903.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000973]: Errors in headers
+Date: Fri, 11 Mar 2005 01:11:24 +0100
+Message-ID: <8dc1aefdaf68df3d54652de0f19ee913@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85B801C8
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 01:11:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,36 +17,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I don't know what this means, but it's a very persistent error!
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=973> 
+======================================================================
+Reported By:                subbia
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   973
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   tweak
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             03-08-2005 03:08 CET
+Last Modified:              03-11-2005 01:11 CET
+======================================================================
+Summary:                    Errors in headers
+Description: 
+I've tried to make alsa driver, but errors during compiling comes out.
 
-Mar  9 23:06:22 volcano kernel: BUG (or not enough voices), number 1, nex=
-t free 30!
-Mar  9 23:06:53 volcano last message repeated 556 times
-Mar  9 23:07:07 volcano last message repeated 268 times
+1)on file core.h (sound_core)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166 error on free_workq:
+incomplete
+statemente 
 
-Mar 11 00:06:23 volcano kernel: BUG (or not enough voices), number 1, nex=
-t free 38!
-Mar 11 00:06:54 volcano last message repeated 546 times
+2)on file aio.h (kernel/include/linux)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=151 same of above
 
-I am using the latest alsa CVS, with Linux 2.6.11-SMP (dual P4 with HT). =
-My soundcard is an Audigy
-2.
+p.s.: I've bypassed the first errore 'cause i'm thinking free_workq is a
+pointer, but in the second error don't goes this solution, so.....I don't
+know
+======================================================================
 
-Cheers,
-Chris
+----------------------------------------------------------------------
+ tiwai - 03-10-05 14:52 
+----------------------------------------------------------------------
+How did you compile ALSA drivers?
+Did you pass proper configure options?
+
+----------------------------------------------------------------------
+ subbia - 03-11-05 01:11 
+----------------------------------------------------------------------
+I've tried with --isapnp=no and without this option. I thought it can be
+too.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 03:08 subbia         New Issue                                    
+03-08-05 03:08 subbia         Distribution              => Ubuntu Hoary    
+03-08-05 03:08 subbia         Kernel Version            => 2.6.10          
+03-09-05 18:40 tiwai          Note Added: 0003833                          
+03-10-05 14:49 subbia         Note Added: 0003854                          
+03-10-05 14:52 tiwai          Note Added: 0003855                          
+03-11-05 01:11 subbia         Note Added: 0003878                          
+======================================================================
 
 
-Send instant messages to your online friends http://uk.messenger.yahoo.co=
-m=20
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
