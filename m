@@ -1,63 +1,93 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Losing interrupts
-Date: Thu, 15 Jul 2004 23:24:30 -0400
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <1089948269.24832.36.camel@mindpipe>
-References: <1089843559.22841.8.camel@mindpipe>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S266314AbUGPDY1@vger.kernel.org>
-In-Reply-To: <1089843559.22841.8.camel@mindpipe>
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, sbenno@gardena.net
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000392]: feature requests
+Date: Fri, 16 Jul 2004 09:07:08 +0200 (CEST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040716070708.7D35625009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CEC62260
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 09:07:08 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 8D1881258C
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 09:07:08 +0200 (MEST)
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-07-14 at 18:19, Lee Revell wrote:
-> It seems that interrupts are being disabled for long periods, resulting
-> in the soundcard interrupt being lost.  I hacked the ALSA emu10k1 driver
-> to keep track in the interrupt handler of the number of CPU cycles
-> elapsed since the last time it ran.  I am using a period that
-> corresponds to 666 microseconds between interrupts, or ~400000 cycles on
-> my 600Mhz CPU.  As you can see the average jitter is *extremely* low -
-> 50-400 CPU cycles of per interrupt.  I hardcoded it to printk if the
-> jitter is more than 15000 (only happens every 5-10 seconds), and error
-> if it's really big.  As you can see, something is disabling interrupts
-> for a long time.  This is a completely different issue from an XRUN,
-> improving the scheduler latency will not solve this.
 
-The problem is with the video driver (Via CastleRock integrated,
-AGP4x).  By dragging a window in X more quickly than the machine can
-keep up with, I can reliably cause interrupts to be completely disabled
-for tens or hundreds of milliseconds.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000392
+======================================================================
+Reported By:                gblack
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     392
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.4.25
+======================================================================
+Date Submitted:             07-16-2004 09:07 CEST
+Last Modified:              07-16-2004 09:07 CEST
+======================================================================
+Summary:                    feature requests
+Description: 
+I'm not sure if this is the right place to post this, but there are several
+features that my integrated audio has that don't seem to be supported by
+the alsa driver. My sound chip is the Sigmatel STAC9758 running under an
+intel chipset.
 
-There was an issue several years ago where Matrox figured out they could
-get slightly better benchmark scores by not checking whether a FIFO on
-the video card was full before writing to it, which would cause the PCI
-bus to completely freeze until the FIFO had drained.  Lots of vendors
-followed suit until one of the audio software vendors figred it out and
-called them on it, at which point they fixed their drivers.  The effects
-(massive audio drouputs) and the steps to reproduce (drag a window
-around the screen) were identical.
+1. When headphones are plugged into the headphone jack, the built in
+speakers don't turn off, which they do under that other OS.
 
-Is it possible for the XFree86 DRI module to cause this, or would it
-have to be in the kernel?
+2. I've done some research into being able to play several sounds
+simultaneously, and found that this can either be done in hardware on the
+soundcard, or in software. On my desktop (also gentoo), which has a
+soundblaster, I didn't need to configure anything special to get mixing,
+and on my laptop I did. From that, I think that there isn't support for
+hardware mixing in the intel8x0 driver, and I would like to request that
+it be added, please.
 
-Here is the lspci output:
+3. I don't know if this should be done through alsa or not, but the output
+jacks on my laptop are supposed to be configurable to provide different
+functions, ie 5 channel surround, or stereo, mic, and headphones, etc. If
+this can be done through alsa or another program, please let me know.
 
-0000:01:00.0 VGA compatible controller: VIA Technologies, Inc. VT8623 [Apollo CLE266] integrated CastleRock graphics (rev 03) (prog-if 00 [VGA])
-        Subsystem: VIA Technologies, Inc. VT8623 [Apollo CLE266] integrated CastleRock graphics
-        Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (500ns min)
-        Interrupt: pin A routed to IRQ 11
-        Region 0: Memory at e4000000 (32-bit, prefetchable) [size=64M]
-        Region 1: Memory at e8000000 (32-bit, non-prefetchable) [size=16M]
-        Capabilities: [60] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-        Capabilities: [70] AGP version 2.0
-                Status: RQ=32 Iso- ArqSz=0 Cal=0 SBA+ ITACoh- GART64- HTrans- 64bit- FW- AGP3- Rate=x1,x2,x4
-                Command: RQ=1 ArqSz=0 Cal=0 SBA- AGP- GART64- 64bit- FW- Rate=<none>
+I'd like to try to help fix these problems, but I don't know much about
+sound cards, and even less about kernel drivers. If you could suggest a
+good starting point, that would also be appreciated.
 
-Lee
+A discussion about getting the sound to work, as well as other issues with
+this laptop, can be found at:
+http://www.linuxquestions.org/questions/history/145832
+
+Thanks!
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-04 09:07 gblack         New Bug                                      
+07-16-04 09:07 gblack         Distribution              => Gentoo          
+07-16-04 09:07 gblack         Kernel Version            => 2.4.25          
+======================================================================
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by BEA Weblogic Workshop
+FREE Java Enterprise J2EE developer tools!
+Get your free copy of BEA WebLogic Workshop 8.1 today.
+http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
