@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Giuliano Pochini <pochini@shiny.it>
 Subject: Re: Mono to stereo ?
-Date: Thu, 27 Mar 2003 21:46:20 -0500
+Date: Fri, 28 Mar 2003 10:21:03 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18yjnp-0000ZA-00@sc8-sf-list1.sourceforge.net>
-References: <3E83BE0E.4070406@embedded.cl>
+Message-ID: <XFMail.20030328102103.pochini@shiny.it>
+References: <E18yjnp-0000ZA-00@sc8-sf-list1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 27 Mar 2003 23:14:22 -0400."
-             <3E83BE0E.4070406@embedded.cl>
+In-Reply-To: <E18yjnp-0000ZA-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Manuel Jander <mjander@embedded.cl>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net, Manuel Jander <mjander@embedded.cl>
 List-Id: alsa-devel@alsa-project.org
 
->>>When an application opens a mono substream, the sound has to
->>>be sent to one channel only or must the low level driver
->>>transparently convert it to stereo ?
->>>    
->>>
+
+On 28-Mar-2003 Paul Davis wrote:
+>>>one channel only.
+>>>[...]
 >>
->>one channel only.
->>
->>in ALSA, low level drivers do not do any kind of format
->>conversion. that is accomplished (if necessary) by code running in
->>user-space, typically part of alsa-lib. the low level driver simply
->>advertises the capabilities of the hardware, provides ways to use
->>those capabilities, and lets the midlevel code and alsa-lib do the rest.
->>  
->>
+>>...but, if you are doing mono playback, your sound driver has to setup
+>>your soundcard to playback on both channels the same mono channel. The
+>>Vortex
+>>driver (still not in the main branch) for example splits the mono signal
+>>on its internal
+>>mixer into 2 identical signals which are feed one into each CODEC channels.
 >
->...but, if you are doing mono playback, your sound driver has to setup
->your soundcard to playback on both channels the same mono channel. The 
->Vortex
->driver (still not in the main branch) for example splits the mono signal 
->on its internal
->mixer into 2 identical signals which are feed one into each CODEC channels.
+> that's a driver author's design decision. if the "hw" PCM device is
+> opened with a single channel, it would be equally valid to play on one
+> channel only. if the h/w can't handle that, it should not
+> advertise itself to be capable of mono operation. IMHO.
 
-that's a driver author's design decision. if the "hw" PCM device is
-opened with a single channel, it would be equally valid to play on one
-channel only. if the h/w can't handle that, it should not
-advertise itself to be capable of mono operation. IMHO.
+I choosed to send the sound to one channel only, so the apps can
+use all 8 mono channels.
+Since most cards can do mono to stereo in hardware, I would be nice to
+add a capability flag for that. Using that features you halve memory
+usage for buffers and irq frequency.
 
---p
+
+Bye.
 
 
 
