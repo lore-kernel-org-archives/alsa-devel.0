@@ -1,14 +1,15 @@
-From: Jan Depner <eviltwin69@cableone.net>
-Subject: Re: Envy24Control and wordclock
-Date: Sun, 13 Jun 2004 11:47:06 -0500
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000334]: EMU10K1, capturing audio is impossible
+Date: Sun, 13 Jun 2004 23:30:17 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1087145226.13302.4.camel@eviltwin>
-References: <012401c45164$df651660$f7143052@cfd86qjdqauxzj>
+Message-ID: <77289ce89a0aa6ae86e4bf326b2e5dd3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <012401c45164$df651660$f7143052@cfd86qjdqauxzj>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BE13633E
+	for <alsa-devel@alsa-project.org>; Sun, 13 Jun 2004 23:30:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +18,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michele Spinolo <michele.spinolo@tin.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just curious, I've got the ST Audio DSP 2000 and it uses S/PDIF to
-sync.  Does the EWS use the same method?  If so you should set card 0's
-Master Clock to whatever you want it to be and then the other two should
-be set to S/PDIF In.  If the EWS doesn't use S/PDIF for sync I don't
-know what you should do.  I don't have "word clock" under Master Clock
-either.
 
-Jan
+The following bug has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0334
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                netslayer
+Assigned To:               =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     334
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.7rc love-sources
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             06-13-2004 23:30 CEST
+Last Modified:              06-13-2004 23:30 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    EMU10K1, capturing audio is impossible
+Description:=20
+I have an Audigy (EMU10K2 -- on EMU10K1 drivers). It has worked perfectly
+in 0.9.8, and in 1.0.x I can playback audio fine, but capturing seems
+impossible.
 
+In 0.9.8 I was able to select a capture source in alsamixer by selecting
+it with the space bar. The source had "---" areas above it that meant it
+had the capture ability. In 1.0.x that whole functionality is gone, and I
+see no more way to capture audio.=20
 
-On Sun, 2004-06-13 at 11:38, Michele Spinolo wrote:
-> Hi guys,
-> 
-> I installed 3 Terratec EWS88D in my system, which are properly
-> recognized
-> and now, after some work, work fine.
-> 
-> Using the command envy24control -c x (x=0,1,2) I can manage HW
-> settings of
-> different soundcards, bun under "hardware settings", "master clock" I
-> can't
-> find "wordclock" option which permits to sync the different boards.
-> The boards are connected by their internal wordclock propetary cable,
-> the
-> problem seems the driver or envy24control do not recognize this option
-> the
-> soundcard has.
-> 
-> Thanks!
-> Michele
-> 
-> P.S. Sorry If I double posted, but I had a problem with my mail
-> server!:-(
-> 
-> 
+I have all my sources up to 100%, and when I plug in an audio to source
+into LINE IN on the Audigy, I hear nor can record anything. If I unmute
+LINE IN in alsamixer, then I hear pass through audio, which I don't want.
+I want to be able to record it, but not hear it through a pass through.=20
+
+I know several people with this problem, and I myself have a few of these
+cards dedicated to MythTV PVR boxes, and this problem makes it impossible
+to upgrade ALSA... It's been 6 months since I tried this, and since nobod=
+y
+reported it, I thought I would.=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+06-13-04 23:30 netslayer      New Bug                                    =
+ =20
+06-13-04 23:30 netslayer      Distribution              =3D> Gentoo      =
+   =20
+06-13-04 23:30 netslayer      Kernel Version            =3D> 2.6.7rc love=
+-sources
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
