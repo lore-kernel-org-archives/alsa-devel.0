@@ -1,11 +1,11 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: CS46xx woes.
-Date: Sun, 17 Nov 2002 16:55:41 +0100
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: CS4205 (snd-intel8x0) missing recording inputs
+Date: Sun, 17 Nov 2002 16:05:42 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DD7BBFD.9040607@cucumelo.org>
-References: <20021115121043.67b5c0af.flame@home.se>	<Pine.LNX.4.33L2.0211151339210.14712-100000@cactus> <20021116203320.5828f7dd.flame@home.se>
+Message-ID: <000001c28e7d$179ce690$ab1f830a@ICO>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,30 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Richard Olsson <flame@home.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->Heh; I haven't noticed anything bad with it while using Windows, but
->then again I don't set so high standards. ;)
->  
->
-It was long a time since I tested this card with Windows, so I really dont
-have any good point of comparison.  
-Depending of what you are playing sound get's distorcionated when
-PCM volume is higher ~75%, dont known it's possible to get it better.
-We probably never going to known whatever magic is done in the Windows 
-driver.
+This driver seems to be notorious right now with its features (or better
+lack thereof). When using Alsa driver for the above-mentioned driver
+found in many of the current laptops, not all inputs can be selected for
+recording. For instance, line-in is available as an input source, but
+mic-in surprisingly isn't.
 
->Hmm; with rc2 if I unmute the cd input the amplifier seems to get
->disabled sometimes (thus resulting in very badly disorted sound), but
->using latest CVS nothing happens.
->
-OK. confirmed, thanks for testing it out.
+One more thing is that CS4205 is a full-blown dsp so while it is
+compatible with the intel8x0 standard, it in addition has some nice
+features to offer, such as hw multi-open as well as SPDIF and other
+gizmos. Perhaps due to such a variety of intel8x0-compatible hw that
+varies in the number of features, it would be prudent to split a
+intel8x0 driver into two (or more) branches, and implement these
+features so that the full potential of the chip can be utilized, since
+right now it seems to be utilized in a basic (sb-compatible) mode which
+renders the card rather useless.
 
-/Benny
+Alsa is a God-sent framework for the Linux platform, but it isn't much
+good to the end-user if it runs utilizing barely-working driver. I am
+aware of the fact that CS probably is not offering too much
+documentation, but it seems that OSS-free drivers for the same card at
+least offer some additional functionality (such as selecting mic-input)
+that could be easily reimplemented in the Alsa driver. 
+
+Personally, I'd do it myself, but I have no knowledge of Alsa
+architecture, nor the driver-writing. So, for right now, I don't seem to
+be to be the best person to tackle this issue. However, there have been
+a number of inquiries on this list regarding this problem from both
+myself and other people, but so far it has been mostly ignored.
+
+Any thoughts, and/or suggestions regarding this issue are greatly
+appreciated! Sincerely,
+
+Ico
 
 
 
