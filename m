@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000267]: Cannot Auto load module
-Date: Tue, 22 Mar 2005 15:04:58 +0100
-Message-ID: <4856f2d80867ba9e0a33ed91503c3696@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000866]: Can not install snd-intel8x0
+Date: Tue, 22 Mar 2005 15:12:27 +0100
+Message-ID: <5087a250e65bab540553c05c7ef02d91@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D47A8287
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:04:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5866928B
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:12:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,50 +21,96 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=267> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=866> 
 ======================================================================
-Reported By:                skmrr
+Reported By:                ghostdaemon
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   267
-Category:                   OTHERS
+Issue ID:                   866
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
+Status:                     resolved
 Distribution:               
 Kernel Version:             
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-10-2004 07:46 CEST
-Last Modified:              03-22-2005 15:04 CET
+Date Submitted:             01-31-2005 05:30 CET
+Last Modified:              03-22-2005 15:12 CET
 ======================================================================
-Summary:                    Cannot Auto load module
+Summary:                    Can not install snd-intel8x0
 Description: 
-I have an intel D845GLLY board. Compilation and instalation went fine and
-the card works when driver is loaded (but the master volume control has no
-effect). Also I cannot autoload the modules by changing modules.conf.
+I have to use Redhat Linux 7.3.I have  tried ALSA 1.0.8 and 0.9.6,but they
+all failed .when i extact driver package to ./config;make;make install
+,some errors infomation displayed.such as:
+ unresolved symbol fasync_helper_Rsmp_0f820065
+ unresolved symbol proc_symlink_Rsmp_515b8074
+ ...........
+ ...........
+
+when i use modpobe command:
+[root@localhost root]# modprobe snd-intel8x0
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+fasync_helper_Rsmp_0f820065
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+proc_symlink_Rsmp_515b8074
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+remove_proc_entry_Rsmp_18199406
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+kill_fasync_Rsmp_f866c12a
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+proc_root_Rsmp_c79b35f0
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+register_chrdev_Rsmp_10735b95
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+create_proc_entry_Rsmp_9cfe096c
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+register_sound_special_Rsmp_3a650025
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+remove_wait_queue_Rsmp_ca8842ea
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+add_wait_queue_Rsmp_2fd0ca84
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
+__pollwait_Rsmp_4c541ea9
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o failed
+/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod snd-intel8x0
+failed
+[root@localhost root]#
+
+My Motherboard is ASUS P4P800, AD1985 integrated on it.
+
+Many thanks !
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 15:06 
+ tiwai - 01-31-05 18:54 
 ----------------------------------------------------------------------
-"Autoloading" as configured via "alias sound-*" lines in the module
-loader configuration file occurs when the snd module is loaded.
+Possibly the linux kernel source tree (or its kernel config file) doesn't
+match with your running kernel.  Please check it.
 
-This does not look like an ALSA bug.  I think the report can be closed.
+----------------------------------------------------------------------
+ jdthood - 03-19-05 10:01 
+----------------------------------------------------------------------
+This is most likely not an ALSA bug but a problem with modules
+being built against different sources than were used for building
+the running kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-10-04 07:46 skmrr          New Issue                                    
-03-19-05 15:06 jdthood        Note Added: 0004048                          
-03-22-05 15:04 jdthood        Status                   new => closed       
-03-22-05 15:04 jdthood        Resolution               open => not an issue
+01-31-05 05:30 ghostdaemon    New Issue                                    
+01-31-05 18:54 tiwai          Note Added: 0003452                          
+03-19-05 10:01 jdthood        Note Added: 0004029                          
+03-22-05 15:12 jdthood        Status                   new => resolved     
+03-22-05 15:12 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
