@@ -1,16 +1,18 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: You've been selected (aka SPAM)
-Date: Thu, 28 Oct 2004 17:00:44 -0400
+From: "Gaetano Evans" <meannesssavory@btinternet.com>
+Subject: D0N'T WA|T TO F|ND 0UT...
+Date: 28 Oct 2004 23:06:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1098997244.3852.4.camel@krustophenia.net>
-References: <E1CMwWX-0000Tt-9j@sc8-sf-list2.sourceforge.net>
-	 <20041027225911.68651.qmail@web60802.mail.yahoo.com>
-	 <20041028034449.GF1904@zewt.org>
+Message-ID: <GLMSCOM01T456UnHAaa00039dbc@GLMSCOM01.gastrolux.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041028034449.GF1904@zewt.org>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96AA22DC
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 23:12:52 +0200 (MEST)
+Received: from GLMSCOM01.gastrolux.de (unknown [62.80.39.15])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 0806335EAA
+	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 23:12:52 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,42 +21,14 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Glenn Maynard <glenn@zewt.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-10-27 at 23:44 -0400, Glenn Maynard wrote:
-> On Wed, Oct 27, 2004 at 03:59:11PM -0700, Tom Watson wrote:
-> > Unfortunately the digester (or whatever assembles the group of messages into a
-> > digest) DOES NOT forward SpamAssassin Headers.  It treats ALL messages as
-> > equal.  This means that the digest traffic has more visable SPAM in it.  I
-> 
-> The fact that digests are inflexible doesn't make suggestions like "disallow
-> thread crossposting" and "ban an entire IP block wholesale" good ones.
-> 
-> > suspect that what everyone would like (as suggested before) is to get
-> > sourceforge to do the filtering.  If it were done there, us users (regular and
-> > digest ones) wouldn't need to do it.  Why do the filtering for every subscriber
-> > when it can be done once at the source.  Isn't that logical?
-> 
-> Spam filtering isn't perfect; it's up to each individual to decide for himself
-> whether he trusts it not to lose mails (false positives), and putting the spam
-> scanning results in a header allows this, instead of forcing it on everyone.
-> 
+http://V||aggar_C00O0OdeIne_Xana1x_Va1lum_C|alIis_.......and___m000O0re
+http://C|a||is_VI1aggar_.......and___mO000Ore
+http://Cla1lis_V||aggar_C0O000deIne_.......and___mO0O00re
 
-That being said, the original poster does have a point - the result of
-this policy decision by Sourceforge, to add headers but not to filter,
-is that digest users are stuck with all the spam.  There should probably
-be an option to filter spam out of the digests.  SpamAssassin can do
-this, you would just pipe the digest through it deleting anything above
-a configurable spam score.
-
-You should report this to Sourceforge though, I don't think the people
-who could implement this read alsa-devel. 
-
--- 
-Lee Revell <rlrevell@joe-job.com>
-
+Y0UR SOIUT10N lS HERE http://meek.tghffv.com/as#ethereal
 
 
 -------------------------------------------------------
