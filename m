@@ -1,14 +1,23 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Fri, 10 Dec 2004 22:08:14 +0100
-Message-ID: <3d2e19c1425047782cfb02e1d2874284@bugtrack.alsa-project.org>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro             
+             usb_maxpacket() for portability
+Date: Fri, 10 Dec 2004 21:08:39 -0000 (WET)
+Message-ID: <32815.192.168.1.5.1102712919.squirrel@192.168.1.5>
+References: <200412021319.20027.annabellesgarden@yahoo.de>
+    <200412072301.52065.annabellesgarden@yahoo.de>
+    <s5hoeh4a8nh.wl@alsa2.suse.de>
+    <200412091306.23970.annabellesgarden@yahoo.de>
+    <32799.192.168.1.5.1102694242.squirrel@192.168.1.5>
+    <s5hacsm872d.wl@alsa2.suse.de>
+    <32844.192.168.1.5.1102700542.squirrel@192.168.1.5>
+    <s5h653a82gx.wl@alsa2.suse.de>
+    <32798.192.168.1.5.1102702736.squirrel@192.168.1.5>
+    <s5h1xdy810i.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D06B361
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 22:08:14 +0100 (MET)
+In-Reply-To: <s5h1xdy810i.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,327 +27,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote
+>Rui Nuno Capela wrote:
+>> >
+>> > Did you pass nrpacks=1 module option?
+>> > Otherwise the pcm won't be created.
+>> >
+>>
+>> Duh? Yet another magic spell?
+>>
+>> OK. Wired the nrpacks=1 on the options snd-usb-usx2y line in
+>> /etc/modprobe.conf and things are working now.
+>>
+>> Thanks for the help, Takashi-san.
+>>
+>> All these magic numbers builds for the urge of some documentation or is
+>> it about to change in the near future? In another words, is that really
+>> necessary?
+>
+> The current code requires that condition.  Though, it'd be possible to
+> solve this restriction including the more better merge with the normal
+> audio mode.
+>
+> Better to ask Karsten ;)
+>
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
-======================================================================
-Reported By:                footcow
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              12-10-2004 22:08 CET
-======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
-Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
+Although this new hwdep pcm interface may seem tricky, when engaged with
+the corresponding jackd backend on a Ingo's RT patched kernel it works as
+never before.
 
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
+This is my personal low-latency record using a USB audio device and jackd:
+
+    jackd -R -dusx2y -dhw:1,2 -r44100 -p64 -n2
+
+with a couple (yes, only 2) xruns in 60 minutes, mainly due to extra app
+desktop loading (KDE), running 2.6.10-rc2-mm3-RT-V0.7.32-18 on my
+P4@2.5Ghz laptop.
+
+Things' are getting brighter all the time.
+Thanks Karsten, Takashi. Now let's get this less esotheric, would we?
+
+Things to care about next, IMO:
+- merge of this new hwdep interface into the mainstream ALSA usb audio
+module code, or whatever.
+- lobbying for official integration in the JACK alsa backend; it would be
+just great if it could be merged in the current alsa backend driver,
+instead on a cloned one.
+
+You can take a look by my personal homeserver:
+    http://www.rncbc.org/usx2y/
+where you can find custom jack tarballs and RPMs (for SUSE 9.2 and Mdk
+10.1, x86 only)
 
 
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-09-04 12:11 
-----------------------------------------------------------------------
-Also apply other two patches, too.  (They are already on CVS.)
-
-----------------------------------------------------------------------
- footcow - 12-10-04 22:08 
-----------------------------------------------------------------------
-So to answer your first question:
-I get this message in dmesg only with the starting script of Alsa from
-Debian.
-Seems to be something like : (I 'll not copy all the script except if you
-need it)
-alsactl restore 2>&1
-
-So I have get the last CVS update. Hope all your patch were applied on
-it.
-
-In dmesg after start Linux I get this now :
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/azx.c:789: azx_pcm_prepare:
-bufsize=0x79f4, fragsize=0x116c, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x5, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x6, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x5, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x6, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/azx.c:789: azx_pcm_prepare:
-bufsize=0x79f4, fragsize=0x116c, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x5, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x6, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x5, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x6, stream=0x0, channel=0, format=0x0
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/azx.c:789: azx_pcm_prepare:
-bufsize=0x79f4, fragsize=0x116c, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/azx.c:789: azx_pcm_prepare:
-bufsize=0x79f4, fragsize=0x116c, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x3, stream=0x5, channel=0, format=0x11
-ALSA /usr/src/alsa-cvs/alsa-driver/pci/azx/hda_codec.c:455:
-hda_codec_setup_stream: NID=0x4, stream=0x5, channel=0, format=0x11
-
-Now Alsamixer is starting ...
-I get this on the screen :
-Card: ICH6 HDA                                                            
-                                                                          
-                                                      
-Chip: C-Media CMI9880                                                     
-                                                                          
-                                                      
-View: Playback                                                            
-                                                                          
-                                                      
-Item: PCM                                                                 
-                                                                          
-                                                      
-
-And 4 draw bars :
-PCM
-Surround
-Center
-LFE
-+
-2 Input So but without bar
-I can't change any parameters anywhere.
-If I go to Input So and change one parameter I get a Seg Fault.
-I'll upload you a snapshot of what I get.
-
-the contents of /proc/asound/card0/codec#0 have changed I have now :
-Codec: C-Media CMI9880
-Address: 0
-Vendor Id: 0x434d4980
-Subsystem Id: 0x0
-Revision Id: 0x90002
-Default PCM: rates 0x540, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-  PCM: rates 0x000, bits 0x00, types 0x5
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x80 0x80
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x0
-  Connection: 1
-     0x13
-Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01014010: Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x03
-Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01813000: Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x04
-Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01a19000: Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x20: IN
-  Connection: 1
-     0x05
-Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x081033f: IN OUT HP
-  Pin Default 0x01011014: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-    0x06
-Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x82214100: HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x82a19100: Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x20: IN
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0863: IN
-  Pin Default 0x19330000: CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01450000: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x41150000: Speaker at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01016012: Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01012016: Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-  Pin-ctls: 0x00:
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals: 0x0f
-
-And ... I still do have any sound.
-How can I help you then ?
-I don't know if you could be interesting about this offer, but I can give
-you an access to this PC from the Internet for making all the test you
-need on it ! ... Just ask.
-
-Thanks for your work !
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-======================================================================
-
+Bye now.
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 
