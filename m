@@ -1,15 +1,13 @@
 From: Patrick Boettcher <patrick.boettcher@desy.de>
 Subject: Re: DigiDesign MBox USB Audio device
-Date: Tue, 6 Apr 2004 00:17:42 +0200 (CEST)
+Date: Tue, 6 Apr 2004 00:50:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404060012340.20587@pub2.ifh.de>
-References: <Pine.LNX.4.58.0404041840230.21649@pub2.ifh.de>    
- <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
- <20040405215211.GB554@tuba.home>
+Message-ID: <Pine.LNX.4.58.0404060048390.21693@pub2.ifh.de>
+References: <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040405215211.GB554@tuba.home>
+In-Reply-To: <Pine.HPX.4.33n.0404051750110.25421-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,23 +19,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi martin,
+Hi,
 
-On Mon, 5 Apr 2004, Martin Langer wrote:
-> Check the log of the init phase. Perhaps the MBox needs a firmware download
-> at first.
+small supplement:
 
-I don't think so, as I wrote in the last answer to Clemens, the owner
-told, me that he has to do a static firmware update (like a bios update).
+http://vaasa.wi-bw.tfh-wildau.de/~pboettch/digi_mbox/
 
-And the usbsnoop logs only grow, when I play a sound. After pluging the
-device in, only the configuration of the second interface is done, but no
-(extra) data is transferred.
+there is the 0.04-wave file played with winamp on WinXP, and the
+appropriate log file produced by usbsnoop.
 
-I will try to play a very short wave file and put the logfile on some
-webspace.
-
-best regards,
 Patrick
 
 
