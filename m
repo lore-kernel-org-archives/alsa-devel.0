@@ -1,15 +1,19 @@
-From: Florin Andrei <florin@andrei.myip.org>
-Subject: Re: Audigy2 Status/Help
-Date: 19 May 2003 21:53:01 -0700
+From: David B Harris <david@eelf.ddts.net>
+Subject: Re: Removal of /proc/asound ?
+Date: Tue, 20 May 2003 01:09:04 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1053406381.32376.37.camel@rivendell.home.local>
-References: <2265a01c31e41$44429e70$2c00740a@cableone.net>
-Reply-To: alsa-devel@lists.sourceforge.net
+Message-ID: <20030520010904.4a389604.david@eelf.ddts.net>
+References: <20030517081625.6ef24458.erikd-alsa@mega-nerd.com>
+	<Pine.LNX.4.44.0305171343140.21997-100000@pnote.perex-int.cz>
+	<20030518081331.7b9eca31.erikd-alsa@mega-nerd.com>
+	<s5h4r3re0a8.wl@alsa2.suse.de>
+	<20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
+	<20030520044030.GD24175@vergenet.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="pgp-sha1"; boundary="=.Q,Z6:'mtZfQu)C"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2265a01c31e41$44429e70$2c00740a@cableone.net>
+In-Reply-To: <20030520044030.GD24175@vergenet.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,64 +25,41 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-According to this thread...
+--=.Q,Z6:'mtZfQu)C
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06264.html
+On Tue, 20 May 2003 14:40:30 +1000
+Conrad Parker <conrad@vergenet.net> wrote:
+> On Mon, May 19, 2003 at 08:03:01PM +1000, Erik de Castro Lopo wrote:
+> > 
+> > I therefore strongly urge you to keep 2.4 functionality as it was and feel
+> > free to do whatever is needed for the 2.5/2.6 kernel.
+> 
+> erik, you're hassling the wrong people -- a script exists to make the
+> devices you want, this is a packaging problem for el Debian ALSA Psychos
+> (knowing that erik uses debian), and a bog-standard GOTCHA for CVS users,
+> unless it can be done by make install or something.
 
-...Audigy2 Platinum (not EX) is partially supported. I've got a message
-recently from the person who initiated that thread saying that, in a
-later version, ALSA also started to support the line-1 out that didn't
-work before.
+One of the Debian ALSA maintainers here.
 
-According to same source, MIDI input is still broken.
+The removal of /proc/asound/dev/ has been noted, and shouldn't be a
+problem :) Once we actually upload packages within which
+/proc/asound/dev/ has been removed, anyways. We haven't yet. I doubt
+erik is bitching because of this, he hasn't asked any of us about it.
 
-I have no idea if EX is supported at all.
+--=.Q,Z6:'mtZfQu)C
+Content-Type: application/pgp-signature
 
-On Mon, 2003-05-19 at 13:00, maniacdavid@cableone.net wrote:
->  I have an Audigy2 Platinum eX. I have been trying to get the alsa card to recognize it. I have been compiling the 2.5 kernel and 2.4 kernel tons of times to see if anything would work. I still can not get it to work. I can get the emu10k1-cvs drivers to work right away. I really need ALSA because I'm going to be doing a lot of audio editing with jack applications.
-> 
-> I would like to know if there is ANY Audigy2 support in the drivers? I go through the source code and there were references to "Audigy2".  Has anyone got this working and with what version (reg., plat, plat. ex)?
-> 
-> I use 2.4.20-ac2 kernel. (although I have tried 2.5.69 and 2.4.20vanilla).  I think what I have kind of noticed is that it all comes back to the ac97 stuff. I have been using the latest alsa-driver-0.9.3a(and b) as well as tried the alsa-drive-0.9.2. The kernel has compiled in sound and no oss. (I have tried sound as a module as well).
-> It seems like other people get it working but maybe that's because they have just a regular audigy2 and not the eX.
-> 
-> When I "modprobe snd-emu10k1" I get the following:
-> 
-> /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: init_module: No such device
-> Hint: insmod errors can be caused by incorrect module parameters, including invalid IO or IRQ parameters.
-> You may find more information in syslog or the output from dmesg
-> /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o failed
-> /lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod snd-emu10k1 failed
-> 
-> This is from /var/log/everything/current (dmesg):
-> 
-> [kernel] EMU10K1/Audigy soundcard not found or device busy
-> [kernel] ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2046: AC'97 0:0 does not respond - RESET
-> [kernel] EMU10K1/Audigy soundcard not found or device busy
-> [kernel] devfs_mk_dir(snd): using old entry in dir: c1c175c0 ""
-> [kernel] devfs_register(snd/controlC0): could not append to parent, err: -17
-> [kernel] devfs_register(snd/timer): could not append to parent, err: -17
-> [kernel] ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2046: AC'97 0:0 does not respond - RESET
-> [kernel] EMU10K1/Audigy soundcard not found or device busy
-> 
-> David
-> maniacdavid@cableone.net
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: ObjectStore.
-> If flattening out C++ or Java code to make your application fit in a
-> relational database is painful, don't do it! Check out ObjectStore.
-> Now part of Progress Software. http://www.objectstore.net/sourceforge
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
--- 
-Florin Andrei
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.2 (GNU/Linux)
 
-http://florin.myip.org/
+iD8DBQE+ybhwuCQ/g7GxJcARAot3AJ9aCegoOzywurSwghJve8AgCVMLoQCfV+hs
+nSPLi3pGQD0why1K7n04Jmo=
+=ZZaL
+-----END PGP SIGNATURE-----
 
+--=.Q,Z6:'mtZfQu)C--
 
 
 -------------------------------------------------------
