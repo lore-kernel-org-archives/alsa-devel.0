@@ -1,16 +1,14 @@
-From: Marcus Andersson <054185595@telia.com>
-Subject: Re: hdsp and midi problems
-Date: Mon, 23 Jun 2003 19:14:03 +0200
+From: Ryan Pavlik <rpav@nwlink.com>
+Subject: Re: latency with mtpav
+Date: Mon, 23 Jun 2003 10:39:32 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF7355B.95645E70@telia.com>
-References: <NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com>
-		<3EF72262.EF180410@telia.com>
-		<s5h1xxk3ga4.wl@alsa2.suse.de>
-		<3EF72EEB.916B60D9@telia.com> <s5hy8zs20aw.wl@alsa2.suse.de>
+Message-ID: <20030623103932.312a1891.rpav@nwlink.com>
+References: <1056373664.15797.11.camel@littlewolf2.littlewolf>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1056373664.15797.11.camel@littlewolf2.littlewolf>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,21 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> however, the most case in which the compilation breaks is a missing
-> check-in of some files (just like above).  and it's difficult to fix,
-> because forgetfulness is a nature of human being :)
+On 23 Jun 2003 23:07:44 +1000
+Allan Klinbail <allank@labyrinth.net.au> wrote:
 
-Yes, I know it's easy to forget things. But why not automate the
-checking? That's what we use computers for, automate difficult things.
-Missing files are marked with a question mark, and changed files can be
-checked with status.
+<snip> 
+> In trying to test various applications with sync I have observed some
+> serious latency problems with the mtpav driver.
+> 
+> Using ardour I found some serious latency when starting a recording
+> (about half a beat at 163.7 BPM (sorry the calculations escape me trying
+> to work out the exact latency here))
+> 
+> Has any9one else experienced this or can come up with a resolution for
+> this.. 
+<snip>
 
-Marcus
+It may be the fact that the application in question is using the RTC,
+and the clock just doesn't align with that tempo.  Wild guess.  (MIDI
+apps or JACK usually run it at 1024 ticks/second, so figure how that
+would align with 163.7 ticks/s.)
+
+I haven't had any latency problems with the unit or the driver itself.
+Once, I was using the RTC as a timer as well, and the most I'd be off
+would be 1-4ms, and that's just because my box is kinda slow.
+
+-- 
+Ryan Pavlik <rpav@users.sf.net>
+
+"Another *perfectly* calculated space-time
+ splice-n-splice. Now to get back to... wait a second.
+ I forgot to carry the TWO!" - 8BT
 
 
 -------------------------------------------------------
