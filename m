@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000889]: wrong routings of channels for 5.1 ICH5-Onboard-Card
-Date: Wed, 30 Mar 2005 08:52:36 +0200
-Message-ID: <b60b48d61d727e43a55e3cb32cbcaef9@bugtrack.alsa-project.org>
+Date: Wed, 30 Mar 2005 08:53:10 +0200
+Message-ID: <bc869e7de0f92f6d069a38fe9f1548e0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AACD3277
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 08:52:36 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40F08277
+	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 08:53:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+The following issue is now in status NEW (again)
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=889> 
 ======================================================================
@@ -35,10 +35,10 @@ Category:                   mixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 ======================================================================
 Date Submitted:             02-08-2005 13:18 CET
-Last Modified:              03-30-2005 08:52 CEST
+Last Modified:              03-30-2005 08:53 CEST
 ======================================================================
 Summary:                    wrong routings of channels for 5.1 ICH5-Onboard-Card
 Description: 
@@ -109,6 +109,7 @@ Date Modified  Username       Field                    Change
 03-30-05 08:52 jdthood        Status                   resolved => feedback
 03-30-05 08:52 jdthood        Resolution               fixed => reopened   
 03-30-05 08:52 jdthood        Note Added: 0004262                          
+03-30-05 08:53 jdthood        Status                   feedback => new     
 ======================================================================
 
 
