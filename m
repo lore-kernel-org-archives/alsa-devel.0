@@ -1,12 +1,16 @@
-From: Heikki Pernu <hpernu@cc.hut.fi>
-Subject: Porting ALSA 0.4.4 drivers to current release
-Date: Sun, 15 Aug 2004 16:47:04 +0300
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000444]: Need a way to select analog I/O levels on Delta66/44
+Date: Sun, 15 Aug 2004 17:21:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411F6958.4090300@cc.hut.fi>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040815152142.BA62C1102E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C3ED229
+	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 17:21:43 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id CBA98181DF
+	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 17:21:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,17 +19,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, hpernu@cc.hut.fi
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Anyone know how to port a driver written for ALSA 0.4.4 to current ALSA
-kernel?
-What are the major (and minor) differences?
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000444
+======================================================================
+Reported By:                c0ff
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     444
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.8-rc4
+======================================================================
+Date Submitted:             08-15-2004 17:21 CEST
+Last Modified:              08-15-2004 17:21 CEST
+======================================================================
+Summary:                    Need a way to select analog I/O levels on Delta66/44
+Description: 
+Delta66/44 cards support 3 analog level settings (+4dBu, Consumer, -10dBV).
+One setting for all outputs, and per-input settings. We need a way to
+change them :). Thank you.
 
+======================================================================
 
-
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-15-04 17:21 c0ff           New Bug                                      
+08-15-04 17:21 c0ff           Distribution              => Gentoo          
+08-15-04 17:21 c0ff           Kernel Version            => 2.6.8-rc4       
+======================================================================
 
 
 -------------------------------------------------------
