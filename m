@@ -1,16 +1,17 @@
 From: "Thomas Charbonnel" <thomas@undata.org>
 Subject: Re: hdsp driver status
-Date: Thu, 3 Jul 2003 22:13:01 +0200 (CEST)
+Date: Thu, 3 Jul 2003 22:15:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32861.81.50.18.84.1057263181.squirrel@www.undata.org>
+Message-ID: <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
 References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
         <3F044FF5.2010602@boosthardware.com>
         <3F0456A5.9000600@boosthardware.com>
+        <1057252106.7192.61.camel@lotte>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F0456A5.9000600@boosthardware.com>
+In-Reply-To: <1057252106.7192.61.camel@lotte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,29 +20,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pshirkey@boosthardware.com
-Cc: thomas@undata.org, alsa-devel@lists.sourceforge.net
+To: justin@street-vision.com
+Cc: pshirkey@boosthardware.com, thomas@undata.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-> following the above I decided to check I was setting the correct params
-> in the matrix and it turns out that line out has been moved to numid 22
-> (before it was 5).
+>> >> Remaining:
+>> >> * HDSP9652: the matrix mixer isn't yet handled right.
+>> >> * Rev11 + Multiface: either the firmware file is wrong or the
+>> io-box firmware upload scenario has changed for this card revision.
+>> Has anyone ever had success with this combination (or rev11 +
+>> Digiface) ?
+>> >>
 >
-> amixer -D hw:1 cset numid=22 0,0,16384
->
+> you mean 0xb? I have one that works on 0.9.0rc5, but wont work on
+> 0.9.4/todays cvs.
 
-You're mixing things up.
-This is the syntax of the matrix mixer ctl.
-The line out value type is boolean. To enable line outs you should this :
-amixer -D hw:1 cset numid=22 1
-
-I think the command you were using was doing the exact opposite of what
-you wanted.
-
-Maybe you should remove your asound.state file. Alsactl may try to restore
-the state of parameters whose numid changed, leading to unpredicted and
-presumably unwanted results.
+That's surprising. Does the matrix mixer work with 0.9.0rc5 ?
 
 Thomas
 
