@@ -1,12 +1,14 @@
-From: "Vern C. Heller" <cheller_rg@moises.de>
-Subject: Bu'y Cialis softtabs at Unbelievable Prices
-Date: Mon, 27 Dec 2004 10:34:13 +0000
-Message-ID: <970f01c4ebff$78c8f4f7$8570fe29@stanford.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Mon, 27 Dec 2004 10:46:46 +0100
+Message-ID: <65002e8ac94803d3e236a948ec67c9d5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8AF31EC
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 10:46:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-announce@alsa-project.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
-Simply disolve HALF A PlLL under your tongue 10min before action,<br>
-for results that last all weekend.<p>
-Normal retail is $19/PlLL<br>
-<a href=3D"http://pmfpdadsvhoscp.rx-luv.com/d/">0rder from us today at th=
-e price of $3.34</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://aawyvubntbbn.rx-luv.com/d/o.php">not interested(0pt-0ut=
-)</a>
-</html>
+
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+======================================================================
+Reported By:                misnagid
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   749
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              12-27-2004 10:46 CET
+======================================================================
+Summary:                    Buzz from ALSA setup
+Description: 
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
+
+======================================================================
+
+----------------------------------------------------------------------
+ misnagid - 12-26-04 23:46 
+----------------------------------------------------------------------
+Just making sure that you were notified of my last msg.  Did all your
+requests.  Everything still silent.
+
+Jerry
+
+----------------------------------------------------------------------
+ pzad - 12-27-04 10:46 
+----------------------------------------------------------------------
+save and attach test.state again
+
+alsactl -f test.state store
+
+What speakers do you have 2, 4, 5.1 ???
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+======================================================================
+
 
 
 
