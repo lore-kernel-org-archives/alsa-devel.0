@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
-Date: Sun, 22 Aug 2004 10:04:08 +0200 (CEST)
+Subject: [ALSA - lib 0000455]: segfault when trying to connect dmix->plug
+Date: Sun, 22 Aug 2004 17:58:43 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040822080408.1C2DF1102F@server.perex-int.cz>
+Message-ID: <20040822155843.578F91102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7036D2CD
-	for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2004 10:04:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDA192DC
+	for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2004 17:58:43 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6DAD2D6ED
+	for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2004 17:58:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,64 +25,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000433
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000455
 ======================================================================
-Reported By:                cabbagerat
+Reported By:                stsp
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     433
-Category:                   PCI - ice1724
+Project:                    ALSA - lib
+Bug ID:                     455
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian Unstable
-Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-09-2004 11:36 CEST
-Last Modified:              08-22-2004 10:04 CEST
+Date Submitted:             08-18-2004 20:20 CEST
+Last Modified:              08-22-2004 17:58 CEST
 ======================================================================
-Summary:                    Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Summary:                    segfault when trying to connect dmix->plug
 Description: 
-Playing sound at any sample rate other than 48000Hz produces a loud
-clicking sound along with the expected sound. This started with the ALSA
-included with kernel 2.6.7 (worked perfectly in 2.6.6).
-Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
-noticeable at 96kHz.
-I have tried playing with alsaplayer, aplay, mpg123 and a variety of
-gstreamer based apps - all display this behavior. Both native alsa and OSS
-emulation display the same problem.
+Hi.
+
+With the attached configuration I get
+segmentation fault:
+---
+$ ogg123 mise02-ulicka.ogg
+ALSA lib pcm_dmix.c:873:(snd_pcm_dmix_open) dmix plugin can be only
+connected to hw plugin
+Segmentation fault
+---
+
+Here is the problematic place:
+---
+Program received signal SIGSEGV, Segmentation fault.
+[Switching to Thread 1078196992 (LWP 30505)]
+snd_pcm_plug_open (pcmp=0xbffff7c0, name=0x43653b13 "default",
+    sformat=1131543104, schannels=1131543104, srate=1131543104,
+    route_policy=1131543104, ttable=0x4371fa40, tt_ssize=1131543104,
+    tt_cused=1131543104, tt_sused=1131543104, slave=0x428c6fdc,
+    close_slave=1131543104) at pcm_plug.c:1034
+1034            pcm->fast_ops = slave->fast_ops;
+(gdb) p pcm->fast_ops
+$1 = (snd_pcm_fast_ops_t *) 0x0
+---
+So it is trying to assign to NULL.
 ======================================================================
 
 ----------------------------------------------------------------------
- av710user - 08-21-2004 02:40 CEST 
+ stsp - 08-19-2004 10:21 CEST 
 ----------------------------------------------------------------------
-I hear clicking noises with my AV710 at every sample rate I've tried. 
-dmesg says "invalid EEPROM version 1" after loading the drivers.  If it's
-any help, the VIA ICEnsemble chip on the AV710 isn't a 1724 but a 1721.  A
-site I found using Google speculates that the Envy24HT-S (VT1721) is
-similar to the Envy24PT (VT1720).  I'm using the ALSA 1.0.6a drivers, GCC
-3.3.3 and Linux 2.4.26.
+> $1 = (snd_pcm_fast_ops_t *) 0x0
+> So it is trying to assign to NULL.
+OK, never mind, of course that assignment is valid.
+Nothing wrong with the slave->fast_fops either.
+But it segfaults here only when some memory debugger
+is used (njamd, efence), otherwise it segfaults much
+later. Might be some memory corruption.
+Attached are backtraces at a crash points: log1 - with
+memory debugger; log2 - without. Both looks pretty
+useless...
 
 ----------------------------------------------------------------------
- cabbagerat - 08-22-2004 10:04 CEST 
+ stsp - 08-22-2004 17:58 CEST 
 ----------------------------------------------------------------------
-Upgrading to kernel version 2.6.8.1-mm3 (CONFIG_PREEMPT disabled) stopped
-the clicking noises in all sample rates. Brief testing of 2.6.8.1 without
-preempt enabled also seemed to suggest that the clicking had gone. This
-leads me to believe that the clicking sound is related in some way to
-preempt.
+This was trivial to resolve, patch attached.
+Btw, any plans to make dmix to be attachable to other plugins?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-09-04 11:36 cabbagerat     New Bug                                      
-08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
-08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
-08-09-04 11:37 cabbagerat     Bug Monitored: cabbagerat                    
-08-21-04 02:40 av710user      Bugnote Added: 0001603                       
-08-22-04 10:04 cabbagerat     Bugnote Added: 0001608                       
+08-18-04 20:20 stsp           New Bug                                      
+08-18-04 20:20 stsp           File Added: asound.conf                      
+08-19-04 10:21 stsp           Bugnote Added: 0001589                       
+08-19-04 10:22 stsp           File Added: logs.tar.gz                      
+08-19-04 10:23 stsp           Bug Monitored: stsp                          
+08-22-04 17:56 stsp           File Added: pcm_dmix.c.diff                    
+08-22-04 17:58 stsp           Bugnote Added: 0001609                       
 ======================================================================
 
 
