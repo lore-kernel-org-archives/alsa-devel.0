@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
-Date: Wed, 2 Mar 2005 22:08:46 +0100
-Message-ID: <4fc908e217c4c8ba5b27c052cbe11a5c@bugtrack.alsa-project.org>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: Q:codec based config file?
+Date: Thu, 3 Mar 2005 06:40:22 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D66B@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BF3CD1DB
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 22:08:46 +0100 (MET)
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27D8B1F3
+	for <alsa-devel@alsa-project.org>; Thu,  3 Mar 2005 00:30:23 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,56 +22,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
-======================================================================
-Reported By:                mtraum
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   958
-Category:                   mixer
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-02-2005 21:23 CET
-Last Modified:              03-02-2005 22:08 CET
-======================================================================
-Summary:                    noisy output on low sample rate files when using
-dmix
-Description: 
-When using dmix, I get noise when playing files with low sample rates. The
-level of noise increases the lower the sample rate is. This noise does not
-exist when playing files without dmix, and I'm playing them with 'aplay'.
+There are chip-based config file in /usr/share/alsa/cards, but they are =
+based on driver name.
+For example all USB audio will need to search USB-Audio.conf, while AC97 =
+codec with ICH4
+will need to search ICH4.conf.
 
+Since more and more codecs (USB, AC97 and HDA) can appear on the same =
+bus, can this be changed
+to support config file based on the codec id? There are many codecs with =
+different
+capabilities that may needs separate config files.
 
-Files sampled at 44100 have no noticeable noise (at least for me), so I'm
-assumming there's a problem with the resampling algorithm.
-
-Just to be sure, I generated some test tones with sgen
-(http://www.comp.leeds.ac.uk/jj/linux/siggen.html). You can clearly hear
-the noise on these samles, which I am attaching.
-======================================================================
-
-----------------------------------------------------------------------
- hamel_g - 03-02-05 22:08 
-----------------------------------------------------------------------
-I confirm.
-If you use the same sampling rate that the sample, the noise disappears.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-02-05 21:23 mtraum         New Issue                                    
-03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
-03-02-05 22:08 hamel_g        Note Added: 0003781                          
-======================================================================
-
-
+Sincerely,
+ChenLi Tien
 
 
 -------------------------------------------------------
