@@ -1,14 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
-Date: Tue, 23 Nov 2004 21:54:02 +0100
-Message-ID: <6fa0260fd394b7969b084a166ce01918@bugtrack.alsa-project.org>
+From: mike hoy <michael_hoy_636@yahoo.com>
+Subject: ati technologies inc soundmax integrated digital media
+Date: Tue, 23 Nov 2004 12:58:17 -0800 (PST)
+Message-ID: <20041123205818.77854.qmail@web50302.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 327C72AB
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:54:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,61 +14,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+not sure if you got my last email... here it is again.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=552> 
-======================================================================
-Reported By:                footcow
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   552
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             09-30-2004 01:29 CEST
-Last Modified:              11-23-2004 21:54 CET
-======================================================================
-Summary:                    FATAL: Error inserting snd_azx
-Description: 
-Impossible to make running the AZX Alsa driver on my PC, ASUS P5GD2 Premium
-motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 03) integrated sound.
+> developers,
+> 
+> i am using a compaq r3000 laptop with ati
+> technologies
+> inc soundmax integrated digital media soundcard.
+> 
+> I need you to bottom line this for me:
+> 
+> Can I use this hardware with linux?
+> 
+> I'm running alsa on this laptop now and no luck, and
+> NO the sound isn't muted..
+> 
+> what do i need to do to get my sound card working?
+> 
+> Please reply with good news.
+> 
+> the computer: compaq r3000 p4 2.8 ghz
+> the os : Slackware 2.4.26
+> 
+> btw: http://www.alsa-project.org/black.html
+> 
+> look for the workd 'bellow' and you will notice a
+> typo.  
+> 
+> bellow:  To make the deep roaring sound
+> characteristic
+> of a bull.
+> 
+> below: In or to a lower place; beneath.
+> 
+> Mike H.
+> Phoenix AZ
+> 
+> 
+> 		
+> __________________________________ 
+> Do you Yahoo!? 
+> The all-new My Yahoo! - Get yours free! 
+> http://my.yahoo.com 
+>  
+> 
+> 
 
-======================================================================
 
-----------------------------------------------------------------------
- footcow - 11-23-04 21:48 
-----------------------------------------------------------------------
-You can close this ... only a reboot trouble ...
-Sorry.
 
-----------------------------------------------------------------------
- rlrevell - 11-23-04 21:54 
-----------------------------------------------------------------------
-Does this mean the azx driver is working well for you?  Currently we don't
-have much feedback because the driver is so new.  If it works well then it
-should be pushed into the kernel.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-30-04 01:29 footcow        New Issue                                    
-09-30-04 01:29 footcow        Distribution              => Debian          
-09-30-04 01:29 footcow        Kernel Version            => 2.6.8.1         
-11-23-04 21:48 footcow        Note Added: 0002529                          
-11-23-04 21:54 rlrevell       Note Added: 0002532                          
-======================================================================
-
+		
+__________________________________ 
+Do you Yahoo!? 
+The all-new My Yahoo! - Get yours free! 
+http://my.yahoo.com 
+ 
 
 
 
