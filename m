@@ -1,10 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: [PATCH] Increase buffer sizes for the CA0106 driver.
-Date: Sat, 19 Mar 2005 18:26:17 +0000
-Message-ID: <423C6EC9.5070701@superbug.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
+Date: Sat, 19 Mar 2005 19:26:28 +0100
+Message-ID: <0987febaeb5fc0778b6c0f63d5173148@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010806060900060302050900"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE2C81FD
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:26:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,70 +17,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------010806060900060302050900
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
+======================================================================
+Reported By:                jwrdegoede
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   483
+Category:                   ordinary pcm
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-06-2004 11:39 CEST
+Last Modified:              03-19-2005 19:26 CET
+======================================================================
+Summary:                    alsa-libs samplerate-conversion causes assertion
+frames <= snd_pcm_mmap_avail
+Description: 
+When running xmame (x.mame.net) with alsa selected for sound output on my
+es1688. I get the following error:
+pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
+snd_pcm_mmap_avail(pcm)' failed.
 
-This patch increases the buffer size for the ca0106 driver, so this 
-might help prevent over/underruns.
+I checked the source for the alsa driver (I'm one of the xmame developers)
+and the number of frames it is passing to snd_pcm_writei is always smaller
+then or equal to the value
+returned by:
+err = snd_pcm_status(priv->pcm_handle, status);
+/* check err */
+frames = snd_pcm_status_get_avail(status);
 
-Sign off: James Courtier-Dutton
+After some more testing I noticed that alsa returns 22050 as the actual
+acquired samplerate, but I know from the oss days that my card can only do
+22095 not 22050. So I thought this error might be caused by the
+alsa-lib-samplerate conversion code, which appearantly is default enabled
+(Fedora feature?)
 
---------------010806060900060302050900
-Content-Type: text/plain;
- name="ca0106-increase-buffer-sizes.diff.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ca0106-increase-buffer-sizes.diff.txt"
+To test my hypothesis I tried creating an almost empty .asoundrc:
+pcm.!default {
+type hw
+card 0
+}
 
-Index: alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ca0106/ca0106_main.c,v
-retrieving revision 1.4
-diff -u -r1.4 ca0106_main.c
---- alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c	14 Feb 2005 13:46:49 -0000	1.4
-+++ alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c	19 Mar 2005 18:23:18 -0000
-@@ -187,9 +187,9 @@
- 	.rate_max =		192000,
- 	.channels_min =		2,  //1,
- 	.channels_max =		2,  //6,
--	.buffer_bytes_max =	(32*1024),
-+	.buffer_bytes_max =	((65536 - 64) * 8),
- 	.period_bytes_min =	64,
--	.period_bytes_max =	(16*1024),
-+	.period_bytes_max =	(65536 - 64),
- 	.periods_min =		2,
- 	.periods_max =		8,
- 	.fifo_size =		0,
-@@ -206,9 +206,9 @@
- 	.rate_max =		48000,
- 	.channels_min =		2,
- 	.channels_max =		2,
--	.buffer_bytes_max =	(32*1024),
-+	.buffer_bytes_max =	((65536 - 64) * 8),
- 	.period_bytes_min =	64,
--	.period_bytes_max =	(16*1024),
-+	.period_bytes_max =	(65536 - 64),
- 	.periods_min =		2,
- 	.periods_max =		2,
- 	.fifo_size =		0,
-@@ -513,6 +513,8 @@
- 	snd_ca0106_ptr_write(emu, PLAYBACK_LIST_PTR, channel, 0);
- 	snd_ca0106_ptr_write(emu, PLAYBACK_DMA_ADDR, channel, runtime->dma_addr);
- 	snd_ca0106_ptr_write(emu, PLAYBACK_PERIOD_SIZE, channel, frames_to_bytes(runtime, runtime->period_size)<<16); // buffer size in bytes
-+	/* FIXME  test what 0 bytes does. */
-+	snd_ca0106_ptr_write(emu, PLAYBACK_PERIOD_SIZE, channel, 0); // buffer size in bytes
- 	snd_ca0106_ptr_write(emu, PLAYBACK_POINTER, channel, 0);
- 	snd_ca0106_ptr_write(emu, 0x07, channel, 0x0);
- 	snd_ca0106_ptr_write(emu, 0x08, channel, 0);
+ctl.!default {
+type hw
+card 0
+}
 
---------------010806060900060302050900--
+And now alsa-lib returns 22095 as the acquired samplerate and everything
+works fine! So IMHO this problem is clearly somewhere in alsa-libs
+samplerate conversion.
+
+I've searched the internet for this assertion and I believe this bug has
+bitten more people and applications and needs fixing ASAP. (note I'm not
+saying this because I need it fixed, since the .asoundrc workaround works
+fine for me, but I'm saying this in the general interest)
+
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 19:26 
+----------------------------------------------------------------------
+What was in your /etc/asound.conf before you added the .asoundrc?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-06-04 11:39 jwrdegoede     New Issue                                    
+03-19-05 19:26 jdthood        Note Added: 0004067                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
