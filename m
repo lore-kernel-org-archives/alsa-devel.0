@@ -1,14 +1,9 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: questions about usbmidi
-Date: Thu, 10 Apr 2003 17:38:53 +0200 (METDST)
+From: Daniel Pouzzner <douzzer@mega.nu>
+Subject: Re: Waveterminal 192M Envy24HT
+Date: Thu, 10 Apr 2003 12:41:17 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0304101733100.4735-100000@studcom.urz.uni-halle.de>
-References: <3E9581DB.7060404@drehmoment.org>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <200304101641.h3AGfHYU048669@mail.mega.nu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <3E9581DB.7060404@drehmoment.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,40 +12,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Rabe <raven@drehmoment.org>
+To: cw@acidtechno.net
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thomas Rabe wrote:
-> Clemens Ladisch wrote:
-> > The initialization code does nothing USB-related except allocing some URBs
-> > and submitting the input URBs. Please try to remove the call to
-> > snd_usbmidi_submit_urb at the end of _create_midi_interface.
->
-> removing the snd_usbmidi_submit_urb call also oopses. i tried some
-> endpoint configs like below but each crashing my machine:
-> ...
-> .data = & (const snd_usb_midi_endpoint_info_t) {
-> 		 }
->
-> last msg:
-> created 0 output and 0 input ports
+>I guess that we haven't received a reply from ESI regarding this ?
 
-So the oops isn't related to USB at all.
+Sure enough, no response.
 
-The first thing after outputting "created ... ports" is the line:
+>is it worth trying the manufacture of the envy24ht chip (via i
+>think)
 
-	list_add(&umidi->list, &umidi->chip->midi_list);
+My understanding is that the VIA piece of the puzzle is already in
+place in ALSA (CVS at least, maybe release now).  By overriding the
+EPROM version validator in that driver, I have actually gained access
+to the Waveterminal's registers through amixer et al.  It just doesn't
+capture or make any actual sound.
 
-It may be possible that your US428 driver doesn't initialize
-chip->midi_list. This may indicate that you didn't merge all the changes
-made to usbaudio.c.
-
-
-HTH
-Clemens
-
-
+This is sortof frustrating because it suggests very little is needed
+to make the card actually work.
 
 
 -------------------------------------------------------
