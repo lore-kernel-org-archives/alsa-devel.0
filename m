@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: rme9652: possible deadlock
-Date: Mon, 28 Apr 2003 14:27:46 +0200 (CEST)
+From: Jeremy Hall <jhall@maoz.com>
+Subject: Re: Want your Help
+Date: Mon, 28 Apr 2003 08:35:47 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304281418140.1603-100000@pnote.perex-int.cz>
-References: <3EACFE4A.5070300@libero.it>
+Message-ID: <200304281235.h3SCZl7g031386@sith.maoz.com>
+References: <20030428120722.15330.qmail@webmail17.rediffmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EACFE4A.5070300@libero.it>
+In-Reply-To: <20030428120722.15330.qmail@webmail17.rediffmail.com> from mahendra
+  sp at "Apr 28, 2003 12:07:22 pm"
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,75 +18,92 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: mahendra sp <mahendra_sp@rediffmail.com>
+Cc: jhall@maoz.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 28 Apr 2003, Abramo Bagnara wrote:
+oh, well ecasound has FDX support.  I'm not sure what the state of alsa in 
+it is, it seems to work now, it was broken for a while, but recent CVS 
+seems to fix that.
 
-> > It seems a bit complicated to me. We can do easy this block:
-> > 
-> > read_lock(link_manager);
-> > spin_lock(stream);
-> > ....
-> > if (stream_in_group)
-> >    spin_lock(group);
-> > ....
-> > if (stream_in_group)
-> >    spin_unlock(group);
-> > ....
-> > spin_unlock(stream);
-> > read_unlock(link_manager);
-> > 
-> > I cannot imagine any deadlock with this locking scheme, because stream 
-> > locks are independent now.
+I have not tried running jack (jackit.sf.net) with an es1938, that should 
+be a fun adventure
+
+You can test it (after compiling jack) by starting jack and then
+
+jack_connect alsa_pcm:capture_1 alsa_pcm:playback_1
+jack_connect alsa_pcm:capture_2 alsa_pcm:playback_2
+
+WARNING use headphones for this test, otherwise you will get nasty 
+feedback.  Connect a microphone, set the appropriate mixer settings, and 
+with a bit of luck you should hear yourself in your headphones.
+
+Last time I looked, both ecasound and jack were well commented, at least 
+they seemed to be at the time I read them, and easily followable.
+
+Jack tries to run the device synchronously, using a buffer split in half, 
+the driver works on one half, the application the other.  It wants to keep 
+the playback and capture streams synced.
+
+Ecasound ran the playback and capture streams independently (I think) and 
+somehow synced it in the application.  I think the comments in 
+audioio_alsa6.cpp are better than the ones in jack, but I haven't looked 
+at either in a long time.
+
+oh and jack is written in c, ecasound in cpp, but the alsa-lib layer is in 
+c.
+
+Jack uses mmap access because it prefers to do its own reading and writing 
+rather than alsalib.
+
+Ecasound doesn't use mmap access, relying on alsa-lib read and write 
+calls.
+
+Hey Abramo, do you remember all that fun we had a few years ago 
+surrounding this card and the "off-by-1" feature of the chip? If memory 
+serves, part of the solution involved forbidding this card from using mmap 
+access.  I'm looking in the sound for 2.5.68 and see that it is permitted.  
+Does this mean the problem has possibly reappeared, or was it addressed?
+
+anyway, hope this helps.
+
+ecasound can be found at www.eca.cx, jack at jackit.sourceforge.net
+
+_J
+
+
+In the new year, mahendra  sp wrote:
+> hi,
 > 
-> CPU1:
+>   Thanks for replying. I am a student who is doing a project on 
+> linux.
 > 
-> read_lock(link_manager);	read_lock(link_manager);
-> spin_lock(s1);			spin_lock(s2);
-> if (stream_in_group)		if (stream_in_group)
-> 	spin_lock(group);		spin_lock(group); /* Waiting */
-> spin_lock(s2); /* BOOM! */
+>    I have installed ALSA ESS 1938 driver as I have ESS 1938 sound 
+> card driver. My main aim for going to ALSA driver is it supports 
+> full dulex . My project consists of implementing the full duplex 
+> in one of my modules. So i want to write a "C LANGUAGE APPLICATON 
+> "  in which I want to  talk and also listen simultaneously. But 
+> the problem is I  am not getting the documentation for Driver APIs 
+> so that i can use in my application. So i requested for Driver API   
+> documentation.Do you have any written  application code in c 
+> language for Full Duplex ? If it is please send it to me   so that 
+> i can readily use it and also enhance for my requirement. If u 
+> have document for APIs please send it to me . I wanmt to know what 
+> steps should bne followed for opening the device and congfiguring 
+> it for full dulex operation.Please help me in this regard.
 > 
-> I guess that 3rd version will be the one I propose ;-)
-
-Yep, it is in CVS now ;-) Except I don't use trylock...
-
-read_lock(link_manager);
-spin_lock(stream);
-....
-if (stream_in_group) {
-    spin_lock(group);
-    spin_unlock(stream);
-}
-....
-link_for_each(s) {	/* note that streams are locked in defined order now */
-    if (stream_in_group)
-        spin_lock(s);
-}
-....
-list_for_each(s) {
-    if (stream_in_group)
-        spin_unlock(s);
-}
-....
-if (stream_in_group) {
-    spin_lock(stream);
-    spin_unlock(group);
-}
-....
-spin_unlock(stream);
-read_unlock(link_manager);
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
-
+> thanks for the reply,
+> warm regards,
+> mahendra.
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> 
 
 
 
