@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000270]: Audigy 2 ZS side surround channels not supported
-Date: Tue, 15 Jun 2004 19:44:09 +0200
+From: Joachim Falk <joachim.falk@gmx.de>
+Subject: Re: Some Patches for emu10k1
+Date: Wed, 16 Jun 2004 00:18:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <50fc26a320be36b53a4b283398e498ac@bugtrack.alsa-project.org>
+Message-ID: <40CF759E.7050102@jfalk.easynet.de>
+References: <200406080807.i58878cb012056@www4.pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200406080807.i58878cb012056@www4.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,208 +17,271 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000270
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                wraiden
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     270
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               LFS
-Kernel Version:             2.6.5
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-11-2004 11:14 CEST
-Last Modified:              06-15-2004 19:44 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Audigy 2 ZS side surround channels not suppor=
-ted
-Description:=20
-There is no Support for the side surround channels on SB Audigy 2 ZS (
-Platinum Pro ) in Alsa.
+Peter Zubaj wrote:
+|Joachim Falk wrote:
+|>The following is a question I asked on IRC channel
+|
+| AFAIK there is no other documentation. (best is driver source)
+How inconvenient.
+|>I am especcially interested what this emu10k1 registers do.
 
-I'll try to get it work and test everything you give me to test.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+| They are mostly used in midi synth, some of them are exported as mixer
+| controls.
+That I allready did assume, nice to know for good. But I selected this
+registeres especially because I assumed they where the ones responsible
+for PCM send routing and some could be used to control the amplitude
+which witch the channel is transmited to the FX Channels.
 
-----------------------------------------------------------------------
- pzad - 05-11-2004 14:41 CEST=20
-----------------------------------------------------------------------
-First you must find where are these outputs connected.
+Ok after some more driver research and expirimentation I can say
+that all following registers are per channel (There are 64 of them in
+the EMU10K1).
 
-in file alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
-is row with
-A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback +
-SND_EMU10K1_PLAYBACK_CHANNELS);=20
+#define FXRT			0x0b		/* Effects send routing register			*/
+						/* NOTE: It is illegal to assign the same routing to	*/
+						/* two effects sends.					*/
+#define FXRT_CHANNELA		0x000f0000	/* Effects send bus number for
+channel's effects send A	*/
+#define FXRT_CHANNELB		0x00f00000	/* Effects send bus number for
+channel's effects send B	*/
+#define FXRT_CHANNELC		0x0f000000	/* Effects send bus number for
+channel's effects send C	*/
+#define FXRT_CHANNELD		0xf0000000	/* Effects send bus number for
+channel's effects send D	*/
 
-append after it this row
-A_PUT_STEREO_OUTPUT(0x0c, 0x0d, playback + SND_EMU10K1_PLAYBACK_CHANNELS)=
-;
+With FXRT one can select 4 destination FX buses for the channel data to
+be send to. But they must all be different ones or the FX bus which
+appears more than once in FXRT won't receive any data.
 
+Control is 'EMU10K1 PCM Send Routing' it has 12 Values
+#00: FX Target A, if the corresponding PCM stream is a mono
+#01: FX Target B, if the corresponding PCM stream is a mono
+#02: FX Target C, if the corresponding PCM stream is a mono
+#03: FX Target D, if the corresponding PCM stream is a mono
+#04: FX Target A for left, if the corresponding PCM stream is stereo
+#05: FX Target B for left, if the corresponding PCM stream is stereo
+#06: FX Target C for left, if the corresponding PCM stream is stereo
+#07: FX Target D for left, if the corresponding PCM stream is stereo
+#08: FX Target A for right, if the corresponding PCM stream is stereo
+#09: FX Target B for right, if the corresponding PCM stream is stereo
+#10: FX Target C for right, if the corresponding PCM stream is stereo
+#11: FX Target D for right, if the corresponding PCM stream is stereo
 
-compile, instal, play something. If they are working, let me know.
-If not then try change=20
-0x0c to 0x12 and 0x0d to 0x13
-if stil not working try these too
-0x12,0x13
-0x14,0x15
-0x19,0x1a
-0x1b,0x1c
-0x1d,0x1e
+amixer sset 'EMU10K1 PCM Send Routing',0 \
+#0,#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,#11,#12
 
-----------------------------------------------------------------------
- wraiden - 05-21-2004 16:21 CEST=20
-----------------------------------------------------------------------
-side L ans R channels are working.
-patch used for testing is attached.
-is 6.1 and 7.1 Surround support in alsa planed?
+#define VTFT			0x03		/* Volume target and filter cutoff target register	*/
+#define VTFT_VOLUMETARGET_MASK	0xffff0000	/* Volume target of
+specified channel			*/
+#define VTFT_VOLUMETARGET	0x10100003
 
-----------------------------------------------------------------------
- pzad - 05-24-2004 09:21 CEST=20
-----------------------------------------------------------------------
-I can create volume control (+ controls for mirroring stereo -> 7.1) for
-these speakers, and devices something like rearside, and surround71. I
-think under linux not many apps uses 7.1 speaker configuration.
+Than there is the VTFT register which acts as a master volum slider for
+this channel.
 
-----------------------------------------------------------------------
- wraiden - 05-24-2004 16:18 CEST=20
-----------------------------------------------------------------------
-Nice :)
+Control is 'EMU10K1 PCM Volume' it has 3 Values
+#0: Volume, if the corresponding PCM stream is a mono stream
+#1: Volume left, if the corresponding PCM stream is a stereo stream
+#2: Volume right, if the corresponding PCM stream is a stereo stream
 
-let me know when it's done and i'll test it.
+amixer sset 'EMU10K1 PCM',0 #0,#1,#2
 
-7.1 related:
-- dts and dolby codecs have support up to 7.1 ( and more ).
-- sooner or later an decoder will support that.
-- support for this speaker configuration would be a benefit for alsa.
+#define PTRX			0x01		/* Pitch target and send A/B amounts register		*/
+#define PTRX_FXSENDAMOUNT_A_MASK 0x0000ff00	/* Linear level of channel
+output sent to FX send bus A	*/
+#define PTRX_FXSENDAMOUNT_A	0x08080001
+#define PTRX_FXSENDAMOUNT_B_MASK 0x000000ff	/* Linear level of channel
+output sent to FX send bus B	*/
+#define PTRX_FXSENDAMOUNT_B	0x08000001
 
-----------------------------------------------------------------------
- pzad - 05-31-2004 08:38 CEST=20
-----------------------------------------------------------------------
-Could you test attached patch audigy2zs_driver.diff ???
-Mirroring should work.
-There are two new controls:
-PCM Side Playback Volume - this is not working for now.
-Side Playback Volume - this controls mirroring to side speakers.
+#define PSST			0x06		/* Send C amount and loop start address register	*/
+#define PSST_FXSENDAMOUNT_C_MASK 0xff000000	/* Linear level of channel
+output sent to FX send bus C	*/
 
-This is not final version.
-TODO:
-- Audigy 2 ZS detection
-- alsa lib part
+#define PSST_FXSENDAMOUNT_C	0x08180006
 
-----------------------------------------------------------------------
- bryanhundven - 06-10-2004 22:48 CEST=20
-----------------------------------------------------------------------
-I tried audigy2zs_driver.diff with alsa-driver-1.0.5a.
-Seems to work, but as noted above PCM Side doesn't seem to work.
+#define DSL			0x07		/* Send D amount and loop start address register	*/
+#define DSL_FXSENDAMOUNT_D_MASK	0xff000000	/* Linear level of channel
+output sent to FX send bus D	*/
 
-If you would like me to test anything specific other than xmms...
-...Just Ask. :-D
+#define DSL_FXSENDAMOUNT_D	0x08180007
 
-----------------------------------------------------------------------
- wraiden - 06-15-2004 15:56 CEST=20
-----------------------------------------------------------------------
-i've tested the patch against 1.0.5 and can verify the
-above post.
+Than there is the PTRX, PSST and DSL register which acts as a volume
+slider for the individual FX targets.
 
-i'll rebuild my entire system over the next weekend
-and upgrade to the latest releases of everything.
+Control is 'EMU10K1 PCM Send Volume' it has 12 Values
+#00: FX Target A Volume, if the corresponding PCM stream is a mono
+#01: FX Target B Volume, if the corresponding PCM stream is a mono
+#02: FX Target C Volume, if the corresponding PCM stream is a mono
+#03: FX Target D Volume, if the corresponding PCM stream is a mono
+#04: FX Target A Volume left, if the corresponding PCM stream is stereo
+#05: FX Target B Volume left, if the corresponding PCM stream is stereo
+#06: FX Target C Volume left, if the corresponding PCM stream is stereo
+#07: FX Target D Volume left, if the corresponding PCM stream is stereo
+#08: FX Target A Volume right, if the corresponding PCM stream is stereo
+#09: FX Target B Volume right, if the corresponding PCM stream is stereo
+#10: FX Target C Volume right, if the corresponding PCM stream is stereo
+#11: FX Target D Volume right, if the corresponding PCM stream is stereo
 
-I want to support alsa with code contributions and plan
-to look at the API Documentation however i didn't know
-where to begin ( any hints or links ? ).
-
-7.1 related:
-xine player seems to support 7.1 a/52 sound
-i'm hounting for a good test 7.1 DVD ( a/52 and dts ) now.
-
-----------------------------------------------------------------------
- pzad - 06-15-2004 16:41 CEST=20
-----------------------------------------------------------------------
-I don't think that xine supports 7.1 (maybe I am wrong)
-
-For 7.1 playback only changes in .conf files are needed in alsa-lib.
-Driver should be ok with this patch.
-
-----------------------------------------------------------------------
- wraiden - 06-15-2004 19:44 CEST=20
-----------------------------------------------------------------------
-i've misinterpreted an article that was talking about the capability
-of xine to streaming a/52 and dts sound to an external decoder, sorry.
-
-just for the sake of completeness:
-
-The Audigy 2 ZS cards also have support for an 6.1 speaker setup,
-i don't know if the appopriate channel for the rear-center is the
-left or the right channel of the side channels. i can't test it
-because i don't have 6.1 skeakers.
-( i also didn't have a windoZZ version to test via driverswitch )
-
-[ i'll try to find a way to find out the channel for rear-center now ]
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-11-04 11:14 wraiden        New Bug                                    =
- =20
-05-11-04 11:14 wraiden        Distribution              =3D> LFS         =
-   =20
-05-11-04 11:14 wraiden        Kernel Version            =3D> 2.6.5       =
-   =20
-05-11-04 14:41 pzad           Bugnote Added: 0001084                     =
- =20
-05-21-04 16:15 wraiden        File Added: wraiden-alsa-emu10k1-side.patch=
-      =20
-           =20
-05-21-04 16:21 wraiden        Bugnote Added: 0001166                     =
- =20
-05-24-04 09:21 pzad           Bugnote Added: 0001181                     =
- =20
-05-24-04 16:18 wraiden        Bugnote Added: 0001188                     =
- =20
-05-31-04 08:32 pzad           File Added: audigy2zs_driver.diff          =
-      =20
- =20
-05-31-04 08:38 pzad           Bugnote Added: 0001281                     =
- =20
-06-10-04 22:48 bryanhundven   Bugnote Added: 0001298                     =
- =20
-06-15-04 15:56 wraiden        Bugnote Added: 0001309                     =
- =20
-06-15-04 16:41 pzad           Bugnote Added: 0001310                     =
- =20
-06-15-04 19:44 wraiden        Bugnote Added: 0001311                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+amixer sset 'EMU10K1 PCM Send',0 \
+#0,#1,#2,#3,#4,#5,#6,#7,#8,#9,#10,#11,#12
 
 
+|>I assume they are per emu10k1 channel (there are 64 of them ?).
+|>I think I have understood that for each PCM output stream one of this
+|>channels is used (For mono 1 for stereo 2). This channels can also be
+|>used for wavetable synthesis.
+|
+| Not exactly (as I read on alsa-devel mailing list).
+Do you have maybe a reference for this E-Mail message to
+make searching in the archive of alsa-devel easier ?
+
+| for mono PCM stream 2 channels are used
+| for stereo PCM stream 3 channels are used
+| but from user point of view it doesn't metter.
+Hmm, yes A PCM stream is defined as such
+struct _snd_emu10k1_pcm {
+	emu10k1_t *emu;
+	snd_emu10k1_pcm_type_t type;
+	snd_pcm_substream_t *substream;
+	emu10k1_voice_t *voices[2]; <-- This are the channles
+	emu10k1_voice_t *extra;     <-- This are the channles
+	unsigned short running;
+	unsigned short first_ptr;
+	snd_util_memblk_t *memblk;
+	unsigned int start_addr;
+	unsigned int ccca_start_addr;
+	unsigned int capture_ipr;	/* interrupt acknowledge mask */
+	unsigned int capture_inte;	/* interrupt enable mask */
+	unsigned int capture_ba_reg;	/* buffer address register */
+	unsigned int capture_bs_reg;	/* buffer size register */
+	unsigned int capture_idx_reg;	/* buffer index register */
+	unsigned int capture_cr_val;	/* control value */
+	unsigned int capture_cr_val2;	/* control value2 (for audigy)*/
+	unsigned int capture_bs_val;	/* buffer size value */
+	unsigned int capture_bufsize;	/* buffer size in bytes */
+};
+I assume a second (for mono) or third (for stereo) channel is needed for
+smooth switching of channels. If the data of an pcm chunk runs out on
+one channel another is maybe preloaded with the next pcm chunk and can
+promptly be activated.
+Not sure here as I haven't looked at this part of the code just yet.
+Corrections please !
+
+|
+|
+|>And than this magic send routing decides in which FX buses the
+|>processed
+|>stream will be targeted. Maximal 4 FX buses chan be selected per
+|>channel
+|>? Send bus A,B,C, and D. Is this sendbus the same for each channel
+|>or can it be configured for each channel seperatly. Is it fixed
+|>or can for
+|>all channels globally be configured what FX bus sendbus A,B,C and
+|>D is ?
+|
+|
+| Maybe this helps you:
+| http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg11671.html
+No unfortunately not. I allready found that one message, before asking
+here, too.
+
+| Can be configured via
+| EMU10K1 PCM Volume
+| EMU10K1 PCM Send Routing
+| EMU10K1 PCM Send Volume
+| controls.
+|
+|
+|>But some FX buses seam to be connected to outputs even if there is no
+|>code in the dsp. Is that hardcoded in hardware or configurable and if
+|>yes where ?
+|
+|
+| This is maybe hardware feature or ld10k1 bug. If you connect FX bus
+| 0,1 to AC97 PCM output I think it will stop to do this.
+This seams to be a hardware feature of the EMU10K1 I think because if
+you clear the dsp code than FX bus channels 0,1 and 8,9 will be
+forwarded to Output channels 0,1 and 8,9. This I can say for sure.
+The others (2-7 and 10-15) I can not be sure because I have no speakers
+on these channels or they are not connected to output on my card. But I
+assume that to be the case too. As soon as you start driving an output
+within your DSP code the forwarding seams to vanish. I think this can
+not be a alsa driver feature because you can verify that the DSP really
+is empty by catting /proc/asound/Live/fx8010_acode. So the alsa driver
+has no possibility to magically insert some of its one forwardings if
+none are programmed by the user.
+
+|
+| Peter Zubaj
+| ____________________________________
+| http://www.pobox.sk/ - najvacsi slovensky freemail
+By the way, I try to fix myself a master slider for the Live.
+But before I can do this I have to understand the EMU10k1 driver and
+the alsa-libs a little bit more.
+
+P.S.:
+The amixer and alsamixer are horrible broken in regard to multivalue
+controlls (>2).
+
+Than there is the snafu that the Whole EMU10K1 controlls are inactive
+
+static snd_kcontrol_new_t snd_emu10k1_send_routing_control =
+{
+	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
+~        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+~        .name =         "EMU10K1 PCM Send Routing",
+	.count =	32,
+~        .info =         snd_emu10k1_send_routing_info,
+~        .get =          snd_emu10k1_send_routing_get,
+~        .put =          snd_emu10k1_send_routing_put
+};
+
+static snd_kcontrol_new_t snd_emu10k1_send_volume_control =
+{
+	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
+~        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+~        .name =         "EMU10K1 PCM Send Volume",
+	.count =	32,
+~        .info =         snd_emu10k1_send_volume_info,
+~        .get =          snd_emu10k1_send_volume_get,
+~        .put =          snd_emu10k1_send_volume_put
+};
+
+
+static snd_kcontrol_new_t snd_emu10k1_attn_control =
+{
+	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE | SNDRV_CTL_ELEM_ACCESS_INACTIVE,
+~        .iface =        SNDRV_CTL_ELEM_IFACE_MIXER,
+~        .name =         "EMU10K1 PCM Volume",
+	.count =	32,
+~        .info =         snd_emu10k1_attn_info,
+~        .get =          snd_emu10k1_attn_get,
+~        .put =          snd_emu10k1_attn_put
+};
+
+But amixer and alsamixer displays the first ones (index 0) anyway
+it seams.
+Or does something in the emu10k1 driver code enable the
+control with index 0 ?
+
+MfG
+Joachim Falk
+- --
+You can always tell a really good idea by the enemies it makes.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFAz3WeKwZcgs55jUMRAtQAAKCL/dYs79ljfpCwwtAnONxzWRJWkQCfVP4u
+IWi3RQZ0g7jW8aZwqa9ZB1Y=
+=TXJe
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
