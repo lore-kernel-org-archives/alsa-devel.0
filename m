@@ -1,10 +1,10 @@
-From: Manuel Jander <mjander@embedded.cl>
-Subject: Please Remove Aureal Vortex From Black List!!!
-Date: Fri, 14 Mar 2003 23:15:16 -0400
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Interrupt handler
+Date: 15 Mar 2003 21:38:16 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E729AC4.5030607@embedded.cl>
+Message-ID: <1047764298.3296.7.camel@Jay>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,20 +15,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-The current Aureal Vortex Driver is already functional.
-Avaiable at
-http://docencia.mat.utfsm.cl/~mjander/aureal/
+When an interrupt arrives and I call snd_pcm_period_elapsed(), what
+function gets from alsa middle layer the new block to play and sets up
+the hardware ?
 
-So please remove it from the Blacklist...
+Bye.
 
-Best Regards
-
-Manuel Jander.
 
 
 
