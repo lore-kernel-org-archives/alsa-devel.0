@@ -1,13 +1,15 @@
-From: Florian Bomers <Florian.Bomers@sun.com>
-Subject: Re: snd_ prefix for module options
-Date: Tue, 08 Oct 2002 12:35:48 -0700
+From: Philip Thiem <ptt@umr.edu>
+Subject: Re: Opl3 Yamaha7xx Answered
+Date: Tue, 08 Oct 2002 17:18:27 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA33394.A7C5D9AE@sun.com>
-References: <s5hfzvh2fid.wl@alsa2.suse.de>
+Message-ID: <35550000.1034115507@werg>
+References: <9030000.1033964713@werg> <s5hofa52q6i.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hofa52q6i.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,54 +22,57 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I like it a lot. Due to the prefix I was able to cleanly remove 0.5.x from my
-system, and we might want to do that later on with 0.9, too :)
+Takashi,
 
-And since I don't see any benefit in removing the prefix - other than cosmetic -
-keeping it will save time for distribution's programmers, sysadmins, writers,
-etc. to update their setup routines, configs, howtos, etc. :)
+I was going to send this message:
 
-Florian
+>Thank you very much for your response, I appreciate the help.
+>I turned AUX up, but that doesn't seem to have helped.
+>
+>I've also taken the opportunity to update my system info textfile.
+>Overview of changes:
+>        * latest CVS stuff
+>        * verbose-printk and debug=full are compiled in
+>        * cleaned up my startup to use a stock init.d script
+>        * extra modprobes and opl3 patches now loaded in
+>          /etc/alsa.d/ymfpci
+>        * aux turned up all the way
+>        * included a test program I wrote to use the
+>          /dev/dmfm interface.
+>
+>        http://www.icequake.net/~witwerg/ymfpci.txt
+>
+>Thanks to all,
 
+However, I got an urge to kernel hack and added a mixer for
+the FM synth.  I also tried to make sure that the ioport for
+volume wasn't being written to or read from, if the card didn't
+have fm enabled.  However, it works!  I have fm synth now.
+The following is what `cvs diff` outputs in regards to the
+alsa-kernel directory.  If the patch isn't in a usable format,
+one might have to tell me the exact CVS arguments to use:
 
-Takashi Iwai wrote:
-> 
-> Hi,
-> 
-> so far, all alsa modules use snd_ prefix for each module option.
-> iirc, there was a problem regarding namespace at the time of 2.0
-> kernel, and this was some workaround to avoid confliction.
-> but 2.2 and later kernels have no such a problem at all.
-> 
-> so, i'd like to ask you how do you think to remove this snd_ prefix.
-> of course, there is one and only big problem - compatibility!
-> 
-> the questions are
-> 
-> - whether we should really do it or not?  is it worthy?
-> 
-> and
-> 
-> - when? now or after 0.9.0-final release?
-> 
-> opinions, please?
-> 
+         http://www.icequake.net/~witwerg/ymfpci-patch.txt
+
+Thanks all,
+
+Philip Thiem
+
+>
+> the options look already good.  perhaps only the mixer issue.
+>
+> on the YMFPCI chip, the FM might be connected to Aux.
+> try to turn on Aux Playback and raise its volume.
+>
+>
 > Takashi
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
--- 
-Florian Bomers
-Java Sound
-Java Software/Sun Microsystems, Inc.
-http://java.sun.com/products/java-media/sound/
+
+
+GPG Pub Key Archived at wwwkeys.us.pgp.net
+Isn't it obvious lumberjacks love traffic lights?
+
+
 
 
 -------------------------------------------------------
