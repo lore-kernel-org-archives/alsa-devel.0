@@ -1,13 +1,12 @@
-From: Petr Gladkikh <batyi@mail.ru>
-Subject: Re2: Wrong creation of emulated volume control.
-Date: Wed, 16 Feb 2005 11:18:28 +0600
-Message-ID: <4212D7A4.5080705@mail.ru>
-References: <Pine.HPX.4.33n.0502141356140.10867-100000@studcom.urz.uni-halle.de>
-Reply-To: batyi@mail.ru
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: [INFO] C-Media CMI9761 -A- type , CONTINOUS NOT DISCRETE MASTER/PCM
+ MIXER with 106, please branch, PCM PLAY not working
+Date: Wed, 16 Feb 2005 06:21:42 +0100
+Message-ID: <4212D866.5000304@gmx.de>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.HPX.4.33n.0502141356140.10867-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,85 +17,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: RIPEMD160
 
-Clemens Ladisch wrote:
->>> I have sound card with PCM having only mute switch (no volume
->>> control). I have installed alsa-lib-1.8.0 (release). My control list
->>> now have following PCM control (following is part of amixer output):
->>>
->>>  >>>
->>> Simple mixer control 'PCM',0
->>>    Capabilities: pvolume pswitch pswitch-joined
->>>    Playback channels: Front Left - Front Right - Front Center - Rear
->>> Left - Rear Right - Woofer - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ?
->>> - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ? - ?
->>>    Limits: Playback 0 - 0
->>>    Front Left: Playback 0 [0%] [on]
->>>    Front Right: Playback 0 [0%] [on]
->>>    Front Center: Playback 0 [0%] [on]
->>>    Rear Left: Playback 0 [0%] [on]
->>>    Rear Right: Playback 0 [0%] [on]
->>>    Woofer: Playback 0 [0%] [on]
->>>    ?: Playback 0 [0%] [on]
->>>    ?: Playback 0 [0%] [on]
->>>    ?: Playback 0 [0%] [on]
->>>    ...
-> 
-> 
-> How do these controls look in /etc/asound.state after running "alsactl
-> store"?
+hello,
 
-It's my fault but the subject is not correct, I did not mentioned that 
-I had not configured any plugins yet (including svol). But the problem 
-exists anyway.
+this device
 
-My environment (if it helps)
-Linux 2.6.9 (Gentoo)
-alsa-lib 1.0.8, alsa-utils 1.0.8 (release)
-Hardware: AC97 in ICH5 chipset, 6-channel C-Media 9739A (everything is 
-on-board)
-Driver: intel-8x0
+http://www.cmedia.com.tw/product/CMI9761.htm
 
-	Reproduction:
+the -A- type ive got
 
-=[1]= Boot, everything is OK. Both 'alsactl store' and amixer produce 
-sensible results (alsamixer screen looks messy anyway). The part of 
-'alsactl store' result in /etc/asound.state related to PCM is as 
-follows (no other PCM controls present):
+has working continuous (slider) master mixer+balance and "working" pcm
+mixer slider with v106 (2.6.10 release kernel alsa) but no more with
+v108 alsa-driver or cvs from yesterday.
 
-state.ICH5 {
+please branch for this device (on cheap asrock mass-seller K7VTA+ board
+with via8235 pci).
 
-	. . . . .
+- -worse: pcm playback not working, capture works, seems no muting
+problem, klick sound on switching pcm mixer.
 
-	control.26 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		comment.count 1
-		iface MIXER
-		name 'PCM Playback Switch'
-		value false
-	}
+10 days left to fix it, or the board returns to the shop.
 
-	. . . . .
-}
+need a start point for pcm problem, please. somebody got a reg
+descrption? only harware datasheet is available from vendor.
 
-=[2]= aplay
-^C
+?
 
-And now magig happens :) amixer produce the output which has been in 
-my previous post, and 'alsactl store' fails with error message:
+y
+tom
 
-alsactl: control.c:2234: snd_ctl_elem_value_get_integer: Assertion 
-`idx < sizeof(obj->value.integer.value) / 
-sizeof(obj->value.integer.value[0])' failed.
-Aborted.
 
---
-Petr
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (GNU/Linux)
+Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
+
+iQCVAwUBQhLYYmqsze5HSzyoAQPQGAP+NkGJTBonfz23+wKI/YHGjGqfratVRFPL
+0/gaV3PCa+SGcW82QHfs/QPY0W0f4F013QUz+EQUQOxeLnNEvHOaqFbddL5zAIL3
+2LTthgN+rGqfG7RZHfjOkOoU3tE0jjXU5UljqNO1A9Jd2tFGfQUJUZIn+B3RKCya
+Buuk4eI11gQ=
+=Q2Au
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
