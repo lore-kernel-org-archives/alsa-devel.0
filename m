@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000789]: With AZX Sound card
-Date: Sat, 8 Jan 2005 00:44:25 +0100
-Message-ID: <c9a6ba61d85290eeb481ff492849e81c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Sat, 8 Jan 2005 01:22:20 +0100
+Message-ID: <fd7e217e153fc09b6a46f477a9ad8b4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3337F2DC
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 00:44:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DFBD3330
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 01:22:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,191 +24,109 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=789> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
 Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   789
-Category:                   CORE - pcm
+Issue ID:                   666
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     new
 Distribution:               Debian
-Kernel Version:             2.6.10
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             01-07-2005 00:42 CET
-Last Modified:              01-08-2005 00:44 CET
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              01-08-2005 01:22 CET
 ======================================================================
-Summary:                    With AZX Sound card
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-Since Alsa v1.0.8rc2 not in v1.0.7
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-Alsa Start but in my dmesg I get :
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
 
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1872: BUG? (err >=
-0) (called from f8b19f16)
-ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2011:
-snd_pcm_hw_constraints_complete failed
 
-I think it's under KDE when the ARTS server start ... then I have no sound
-unsing ALSA sound server neighter and OSS (same message when I switch the
-sound server under KDE, each time my dmesg).
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
+
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
+
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 17:52 
+ tiwai - 01-07-05 18:04 
 ----------------------------------------------------------------------
-Which card model do you have?  Show the output of /proc/asound/cards.
-Also, attach the content of /proc/asound/card0/codec* file.
+Try the attached patch (azx-debug.diff) and check what error messages
+appear?
 
 ----------------------------------------------------------------------
- footcow - 01-08-05 00:44 
+ footcow - 01-08-05 01:22 
 ----------------------------------------------------------------------
-more /proc/asound/cards
-0 [HDA            ]: Azalia - ICH6 HDA
-                     ICH6 HDA at 0xcccf4000 irq 16
+Sorry for may be my stupid question ... the patch is applied to
+alsa-kernel, I'm right ?
+I just compile/install alsa-driver and alsa-lib ... (usual use) ...
+Tell me if I have more thing to do ...
 
-less /proc/asound/card0/codec* 
-Codec: C-Media CMI9880
-Address: 0
-Vendor Id: 0x434d4980
-Subsystem Id: 0x0
-Revision Id: 0x90002
-Default PCM: rates 0x540, bits 0x0e, types 0x1
-Default Amp-In caps: N/A
-Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
-Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x00 0x00
-Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
-  Amp-Out caps: N/A
-  Amp-Out vals: 0x80 0x80
-  PCM: rates 0x000, bits 0x00, types 0x5
-Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x96 0x96
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
-  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
-  Amp-In vals: 0x94 0x94
-  PCM: rates 0x160, bits 0x02, types 0x0
-  Connection: 9
-     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
-Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
-  PCM: rates 0x160, bits 0x0e, types 0x0
-  Connection: 1
-     0x13
-Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01014010: Line Out at Ext Rear
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x03
-Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01813000: Line In at Ext Rear
-    Conn = 1/8, Color = Blue
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x04
-Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01a19000: Mic at Ext Rear
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-     0x05
-Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x081033f: IN OUT HP
-  Pin Default 0x01011014: Line Out at Ext Rear
-    Conn = 1/8, Color = Black
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 1
-Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x02214000: HP Out at Ext Front
-    Conn = 1/8, Color = Green
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x02a19000: Mic at Ext Front
-    Conn = 1/8, Color = Pink
-  Pin-ctls: 0x24: IN
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
-  Pincap 0x0863: IN
-  Pin Default 0x19330000: CD at Int ATAPI
-    Conn = ATAPI, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
-  Pincap 0x0810: OUT
-  Pin Default 0x01450000: SPDIF Out at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x40: OUT
-  Connection: 1
-     0x07
-Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
-  Pincap 0x0830: IN OUT
-  Pin Default 0x41150000: Speaker at Ext Rear
-    Conn = Optical, Color = Unknown
-  Pin-ctls: 0x00:
-Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01016012: Line Out at Ext Rear
-    Conn = 1/8, Color = Orange
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
-  Pincap 0x0833f: IN OUT HP
-  Pin Default 0x01012016: Line Out at Ext Rear
-    Conn = 1/8, Color = Grey
-  Pin-ctls: 0xc0: OUT HP
-  Connection: 4
-     0x03 0x04 0x05 0x06
-Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
-Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
-  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
-  Amp-Out vals: 0x0f
+No I get :
+XX chn minmax fail: channels_min=2, channels_max=1
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:1874: BUG? (err >=
+0) (called from f8b19fb6)
+ALSA /usr/src/alsa-cvs/alsa-driver/acore/pcm_native.c:2021:
+snd_pcm_hw_constraints_complete failed
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 00:42 footcow        New Issue                                    
-01-07-05 00:42 footcow        Distribution              => Debian          
-01-07-05 00:42 footcow        Kernel Version            => 2.6.10          
-01-07-05 17:52 tiwai          Note Added: 0003103                          
-01-08-05 00:44 footcow        Note Added: 0003124                          
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
+12-08-04 23:56 footcow        Note Added: 0002795                          
+12-09-04 11:27 tiwai          Note Added: 0002799                          
+12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
+12-09-04 11:34 tiwai          Note Added: 0002800                          
+12-09-04 12:11 tiwai          Note Added: 0002801                          
+12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
+  
+12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
+12-10-04 22:08 footcow        Note Added: 0002808                          
+12-10-04 22:08 footcow        File Added: alsamix.png                      
+12-11-04 17:40 tiwai          Note Added: 0002811                          
+12-12-04 00:58 footcow        Note Added: 0002813                          
+12-12-04 00:59 footcow        File Added: alsamix2.png                     
+12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-16-04 21:06 footcow        Note Added: 0002841                          
+01-07-05 00:44 footcow        Note Added: 0003099                          
+01-07-05 18:04 tiwai          Note Added: 0003107                          
+01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
+01-08-05 01:22 footcow        Note Added: 0003125                          
 ======================================================================
 
 
