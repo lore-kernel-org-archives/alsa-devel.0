@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000795]: Broken Pipe
-Date: Tue, 11 Jan 2005 16:46:14 +0100
-Message-ID: <3d4e6d3e4571236b0c0891b30bd50469@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000807]: No sound w/ ASRock K7S41GX
+Date: Tue, 11 Jan 2005 16:13:19 +0100
+Message-ID: <437682c88484b24b3f220002a6b3c0b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A6562D4
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:46:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 856F72D7
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:13:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,59 +22,91 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=795> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=807> 
 ======================================================================
-Reported By:                ajir
-Assigned To:                
+Reported By:                ndarlow
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   795
+Issue ID:                   807
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Gentoo GNU/Linux
+Kernel Version:             2.6.10
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-08-2005 23:21 CET
-Last Modified:              01-11-2005 16:46 CET
+Date Submitted:             01-11-2005 14:33 CET
+Last Modified:              01-11-2005 16:13 CET
 ======================================================================
-Summary:                    Broken Pipe
+Summary:                    No sound w/ ASRock K7S41GX
 Description: 
-Hi!
+I was able to get sound with alsa-driver upto 1.0.6a on
+gentoo-sources-2.4.26 and gentoo-dev-sources-2.6.9 (kernel-bundled ALSA).
 
-I got a problem, with softvolume plugin and 1.0.8rc2 drivers( without
-softvol plugin too).
-When I changed ALSA from 1.0.5 to 1.0.8rc2 after system boot all modules
-load perfectly but! any program like amp(in text mode) or xmms(X mode)
-report broken pipe (no dsp device). When I enable softvol it remains the
-same. But if softvol is on and manualy set to off(deleting of .asoundrc
-without rebooting) Sustem is OK, I got all programs playing and I CAN
-FINALY set volume!!! (but starting and stoping .asoundrd by hand is
-annoying!). Without softvol set by asoundrc only aplay can give a sound
-from wave file
+With gentoo-dev-sources-2.6.10 (kernel-bundled ALSA) and alsa-driver 1.0.7
+I don't get any sound output.
+
+For alsa-driver 1.0.6a, and below, sndstat identified the mixer device as
+a C-Media Electronics device id=0x83. For the kernel-bundled ALSA in
+gentoo-dev-sources-2.6.10 and alsa-driver 1.0.7 the mixer device is
+identified as a CMI9761.
+
+For the working configurations I only had to unmute, and set volume, for
+Master and PCM to get sound.
+
+I have tried enabling all outputs, sources and switches on the non-working
+configurations with no result. I have also tried ac97_quirk between 0 and
+4 without result.
+
+I cannot revert to alsa-driver 1.0.6a as it now fails to compile under
+gentoo-dev-sources-2.6.10 so I am willing to undertake any diagnostic work
+to make the latest stable build function.
 ======================================================================
 
 ----------------------------------------------------------------------
- ajir - 01-08-05 23:22 
+ ndarlow - 01-11-05 15:50 
 ----------------------------------------------------------------------
-I use 1.08.rc2 drivers, OSS, lib, utils codec is CMI9739A
+Gentoo has 1.0.8rc1 in masked status but it does work.
+
+You are correct. Master and PCM volume adjustments have no effect and PCM
+mute does work.
+
+Interestingly, the Master, PCM, Surround, Center and LFE volumes adopt a
+value of 77 after unmuting Master and PCM and restarting alsamixer.
+
+I guess we can mark this one as fixed and close. Master volume must be
+adjusted at the speakers, I suppose :-)
 
 ----------------------------------------------------------------------
- tiwai - 01-11-05 16:46 
+ tiwai - 01-11-05 16:13 
 ----------------------------------------------------------------------
-Don't use any of entries ~/.asoundrc but just pass "default" as the PCM to
-use.
+With ALSA 1.0.8rc2, you can use softvol plugin (and enabled as default).
+
+When you access to "default" PCM, the volume is attenuated in software.
+Unfortunately, no proper way to do this in kernel OSS emulation.
+
+Anyway, move this to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 23:21 ajir           New Issue                                    
-01-08-05 23:22 ajir           Note Added: 0003130                          
-01-11-05 16:46 tiwai          Note Added: 0003155                          
+01-11-05 14:33 ndarlow        New Issue                                    
+01-11-05 14:33 ndarlow        File Added: asound.state                     
+01-11-05 14:33 ndarlow        Distribution              => Gentoo GNU/Linux
+01-11-05 14:33 ndarlow        Kernel Version            => 2.6.10          
+01-11-05 15:03 tiwai          Note Added: 0003146                          
+01-11-05 15:32 tiwai          Note Added: 0003148                          
+01-11-05 15:50 ndarlow        Note Added: 0003149                          
+01-11-05 16:13 tiwai          Status                   new => resolved     
+01-11-05 16:13 tiwai          Resolution               open => fixed       
+01-11-05 16:13 tiwai          Assigned To               => tiwai           
+01-11-05 16:13 tiwai          Note Added: 0003151                          
 ======================================================================
 
 
