@@ -1,13 +1,15 @@
-From: "Keila Horvath" <Autumn_Hennemann@attws.com>
-Subject: Fwd: high quality
-Date: Sat, 11 Sep 2004 21:45:11 +0400
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [PATCH] Kernel crash
+Date: Sat, 11 Sep 2004 21:02:12 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040911164838.CF8E01F8@alsa.alsa-project.org>
+Message-ID: <20040911210212.317d930b.pochini@shiny.it>
+References: <s5h7jr7whqj.wl@alsa2.suse.de>
+	<XFMail.20040907095502.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <XFMail.20040907095502.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,42 +18,96 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<font size=3D"1">As long as I could deny the reality of the fact, I confin=
-ed myself to a decided negative</font>
-<br><br><br><br><br>
-Looking for not expensive high-quality software?<br>
-We might have just what you need.<br>
-<br>
-<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Windows XP Professional 2=
-002 </a>............. $50<br>
-<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Adobe Photoshop 7.0</a> .=
-.................... $60<br>
-<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Microsoft Office XP Profe=
-ssional 2002</a> .... $60<br>
-<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Corel Draw Graphics Suite=
- 11</a> ............. $60<br>
-<br>
-<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">and lots more...</a><br><=
-br>
-<br><br><br>
-<br><br><br><br><br>
-<br><br><br>
-<a href=3D"http://bdedcln.info/eosine?IrKNKddl3gj5.cI">no msg</a><br>
-</html>
-It follows, then, that at 320 feet this pressure equals that of 10 atmosph=
-eres, of 100 atmospheres at 3,200 feet, and of 1,000 atmospheres at 32,000=
- feet, that is, about 6 miles; which is equivalent to saying that if you c=
-ould attain this depth in the ocean, each square three-eighths of an inch =
-of the surface of your body would bear a pressure of 5,600 lb. The Scotia =
-had not struck, but she had been struck, and seemingly by something rather=
- sharp and penetrating than blunt? On my arrival at New York the question =
-was at its height!!=20
+On Tue, 07 Sep 2004 09:55:02 +0200 (CEST)
+Giuliano Pochini <pochini@shiny.it> wrote:
+
+> On 06-Sep-2004 Takashi Iwai wrote:
+> 
+> >> It successfully crashes my system after a few attempts:
+> >>
+> >> Linux Jay 2.6.8.1 #2 SMP Wed Aug 18 15:14:51 CEST 2004 ppc unknown
+> >> booted with maxcpus=1 and without preempt.
+> >> alsa-driver-1.0.6a and CVS-2004-09-05
+> >> alsa-lib-1.0.4
+> >> gcc 3.4.1
+> >>
+> >> with both the powermac (Snapper) driver and my Echoaudio driver.
+> >
+> > It doesn't crash on my system with SB live with the latest CVS
+> > version but segfaults at line 263 because c is bogus.
+> > The crash looks likely driver-specific, then.
+> 
+> No, I don't think so. I already found (one of?) the cause, but
+> I forgot to mention it again, sorry. It happens because ALSA
+> calls the .free() pcm callback without calling .trigger(STOP)
+> and .close() first. Jaroslav posted a patch which didn't work,
+> then the discussion stopped. The problem occurs only when the
+> substreams are linked and the userpace app is badly broken
+> like mine.
+
+I added some code in the hw_free callback to avoid the crash and some debug
+lines in pcm_native.c and I got this trace:
+
+pcm_trigger start
+[...]
+pcm_native.c:1241: snd_pcm_playback_drain (state=RUNNING)
+pcm_native.c:1294: snd_pcm_playback_drain not empty
+pcm_native.c:1204: snd_pcm_change_state(DRAINING)
+pcm_native.c:1457: snd_pcm_capture_drop (state=DRAINING)
+pcm_native.c:1204: snd_pcm_change_state(SETUP)
+
+ This changes the state of both substreams to SETUP, so
+ snd_pcm_playback/capture_drain/drop() functions will not call _stop()
+ anymore.
+
+pcm_native.c:1359: snd_pcm_playback_drop (state=SETUP)
+pcm_hw_free(play) <--- BUG!
+pcm_close
+pcm_native.c:snd_pcm_capture_drop (state=SETUP)
+pcm_hw_free(capt)
+pcm_close
 
 
+
+I developed this patch, but I'm not sure it's ok. The first part probably is
+not required but it seems more correct IMHO.
+
+
+
+
+--- alsa-kernel/core/pcm_native.c_orig	Sat Sep 11 15:29:51 2004
++++ alsa-kernel/core/pcm_native.c	Sat Sep 11 20:54:32 2004
+@@ -1280,7 +1280,8 @@
+ 		break; 
+ 	}
+ 
+-	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING) {
++	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
++	    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
+ 		if (snd_pcm_playback_empty(substream)) {
+ 			snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
+ 			goto _end;
+@@ -1467,7 +1468,10 @@
+ 	case SNDRV_PCM_STATE_PREPARED:
+ 	case SNDRV_PCM_STATE_DRAINING:
+ 	case SNDRV_PCM_STATE_XRUN:
+-		snd_pcm_change_state(substream, SNDRV_PCM_STATE_SETUP);
++		if (snd_pcm_update_hw_ptr(substream) >= 0)
++			snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
++		else
++			snd_pcm_change_state(substream, SNDRV_PCM_STATE_SETUP);
+ 		break;
+ 	default: 
+ 		break; 
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
