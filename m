@@ -1,12 +1,10 @@
-From: "Marissa Holliday" <mholliday_qq@ciling.de>
-Subject: 9 times better then Viagr.a
-Date: Sat, 18 Dec 2004 02:13:59 +0000
-Message-ID: <67a401c4e4a7$4c3da35d$1a94608f@starfleet.inka.de>
-Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+From: "Valeria Ervin" <hylckfjuejsdb@yahoo.com>
+Subject: Look...Here Abramo
+Date: Fri, 17 Dec 2004 10:16:23 -0300
+Message-ID: <36079.6165805825$1103289630@news.gmane.org>
+References: <hylckfjuejsdb@yahoo.com> <E1A4npj-0002ZF-00hylckfjuejsdb@yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E1A4npj-0002ZF-00hylckfjuejsdb@yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,20 +14,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+To: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-New ClALlS softtabs =3D lNSTANT R0CKHARD ERECTl0NS<p>
-Simply disolve HALF A PlLL under your tongue 10min before action,<br>
-for results that last all weekend.<p>
-Normal retail is $19/PlLL<br>
-<a href=3D"http://hrklfldipyc.k5medical.com/">0rder from us today at the =
-price of $3.25</a>
-<p><br><br><br><br><br><br><br><br><br>
-<a href=3D"http://jkeivhbpcfklkr.k5medical.com/rm.php">not interested(0pt=
--0ut)</a>
-</html>
+
+The L0west price of all med's is here. 
+
+ V1a'gra 	- $67
+ Va|ium 	- $59
+ Cia|is 	- $58
+ Xa'nax 	- $79
+and many m0reeee.....
+
+We are the bes't available nowadays
+
+http://www.quickonline.info/?wid=209011
+
+
+
+
+
+
+
+
+This is 1 -time mailing. N0-re m0val are re'qui-red
+FeaAdmlLhylNDxgEHuBIPs7Pcdu4cQy0DcXRIda
 
 
 -------------------------------------------------------
