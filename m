@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Thu, 26 Aug 2004 18:54:25 +0200 (CEST)
+Subject: [ALSA - driver 0000443]: OSS emulation on 'snd-via82xx' & nonblocking write to /dev/dsp
+Date: Thu, 26 Aug 2004 19:54:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040826165425.CD0EE24006@server.perex-int.cz>
+Message-ID: <20040826175453.8669824005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 252AB2B7
-	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 18:54:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8FCC297
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 19:54:53 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 970731B136
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 19:54:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,76 +25,48 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000443
 ======================================================================
-Reported By:                Cyrille
-Assigned To:                tiwai
+Reported By:                serge
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     432
-Category:                   PCI - atiixp-modem
+Bug ID:                     443
+Category:                   CORE OSS - pcm
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10
-Kernel Version:             2.4.24
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              08-26-2004 18:54 CEST
+Date Submitted:             08-15-2004 12:19 CEST
+Last Modified:              08-26-2004 19:54 CEST
 ======================================================================
-Summary:                    Impossible de se connecter : NODIALTONE
+Summary:                    OSS emulation on 'snd-via82xx' & nonblocking write to /dev/dsp
 Description: 
-I've got a TOSHIBA SATELITTE A30 222 laptop
-Sound card and modem are based upon ATI IXP
-But I'm not able to run modem in spite of the differents bug-report on
-ALSA web site
-(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
--
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
- -
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
-) and on Unixtrix.com (http://www.unixtrix.com/)
-
-Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
--, I'm always in the same situation : compilation is OK, modem driver OK
-but I'm not able to connect : NODIALTONE
+When you open '/dev/dsp' in nonblocking mode (O_NONBLOCK) and write too
+much data to it, it seems that write operation always returns success and
+pretends that all data was written. But calls to ioctl(oss_fd,
+SNDCTL_DSP_GETOSPACE, &bufinfo) start returning weird information. Test
+program that reproduces the bug is attached.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 08-25-2004 19:11 CEST 
+ serge - 08-26-2004 19:54 CEST 
 ----------------------------------------------------------------------
-There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
-bit in ATI_REG_CMD register (reg 003, bit 27 - look in
-'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
-to reported here - DMA works ok, line still be disconnected.
-
-Uploaded patch solves the problem.
-
-----------------------------------------------------------------------
- netstar - 08-26-2004 01:18 CEST 
-----------------------------------------------------------------------
-Additional problems with patch when applied to alsa CVS.  All conditions
-necessary are met.
-
-----------------------------------------------------------------------
- netstar - 08-26-2004 18:54 CEST 
-----------------------------------------------------------------------
-Forget that, now working fine, congratulations.
+Just tested and reproduced the same problem on 'snd-intel8x0' (nforce2
+chipset), so this is not 'snd-via82xx' specific (KT133A chipset). Please
+anybody replace the summary of this bug with 'OSS emulation & nonblocking
+write to /dev/dsp'.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-04 19:02 Cyrille        New Bug                                      
-08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
-08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
-08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
-08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
-08-25-04 19:11 sashak         Bugnote Added: 0001624                       
-08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
-08-26-04 01:18 netstar        Bugnote Added: 0001630                       
-08-26-04 18:54 netstar        Bugnote Added: 0001634                       
+08-15-04 12:19 serge          New Bug                                      
+08-15-04 12:19 serge          File Added: oss-bug.cpp                      
+08-15-04 12:26 serge          Bug Monitored: serge                         
+08-26-04 19:54 serge          Bugnote Added: 0001635                       
 ======================================================================
 
 
