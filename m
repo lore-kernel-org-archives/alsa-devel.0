@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000132]: Build error making rpms
-Date: Fri, 16 Jul 2004 12:44:20 +0200 (CEST)
+Subject: [ALSA - WWW server 0000201]: atiixp driver does not appear in the pull down list when entering bugs for drivers
+Date: Fri, 16 Jul 2004 12:46:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104420.4034C26008@server.perex-int.cz>
+Message-ID: <20040716104640.B032A26008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4DD4255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:44:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E1C32255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:46:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,46 +22,41 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000132
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000201
 ======================================================================
-Reported By:                simbad
-Assigned To:                perex
+Reported By:                Mark Knecht
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     132
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - WWW server
+Bug ID:                     201
+Category:                   soundcard matrix
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               Red Hat 9
-Kernel Version:             2.4.20-8
 ======================================================================
-Date Submitted:             03-14-2004 13:57 CET
-Last Modified:              07-16-2004 12:44 CEST
+Date Submitted:             04-12-2004 17:02 CEST
+Last Modified:              07-16-2004 12:46 CEST
 ======================================================================
-Summary:                    Build error making rpms
+Summary:                    atiixp driver does not appear in the pull down list when entering bugs for drivers
 Description: 
-Launching ./build rpms causes the error unknow option -ba, the buildrpm
-scripts use rpm -ba <specfile> and not rpmbuild -ba <specfile>, this is
-also for alsa-lib and alsa-utils.
+Go to enter a bug. Choose driver. Look for atiixp. I cannot find it.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-14-2004 18:15 CET 
+ tiwai - 04-13-2004 19:29 CEST 
 ----------------------------------------------------------------------
-Fixed in CVS. Thanks.
+fixed now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-04 13:57 simbad         New Bug                                      
-03-14-04 13:57 simbad         Distribution              => Red Hat 9       
-03-14-04 13:57 simbad         Kernel Version            => 2.4.20-8        
-03-14-04 18:15 perex          Bugnote Added: 0000601                       
-03-14-04 18:15 perex          Resolution               open => fixed       
-03-14-04 18:15 perex          Status                   assigned => resolved
-07-16-04 12:44 tiwai          Status                   resolved => closed  
+04-12-04 17:02 Mark Knecht    New Bug                                      
+04-13-04 19:29 tiwai          Bugnote Added: 0000791                       
+04-13-04 19:29 tiwai          Assigned To               => tiwai           
+04-13-04 19:29 tiwai          Resolution               open => fixed       
+04-13-04 19:29 tiwai          Status                   new => resolved     
+07-16-04 12:46 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
