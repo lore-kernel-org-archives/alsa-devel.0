@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000244]: aplay loops like a broken record with YMF-724F
-Date: Tue,  7 Sep 2004 16:53:07 +0200 (CEST)
+Subject: [ALSA - driver 0000194]: Prodigy 192 -  Eprom incorrect size?
+Date: Tue,  7 Sep 2004 17:03:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907145307.DD853E01F@server.perex-int.cz>
+Message-ID: <20040907150329.ABD16E001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3C4CD28E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:53:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19CB425C
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 17:03:30 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,78 +22,97 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000244
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000194
 ======================================================================
-Reported By:                dant
+Reported By:                jvlake
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     244
-Category:                   PCI - ymfpci
+Bug ID:                     194
+Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               
-Kernel Version:             2.4.26-1.ll.rh90.ccrma
+Distribution:               RedHat 9 _ 2.4.20.8
+Kernel Version:             RedHat9 _ 2.4.20.8
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             04-28-2004 04:18 CEST
-Last Modified:              09-07-2004 16:53 CEST
+Date Submitted:             04-07-2004 06:06 CEST
+Last Modified:              09-07-2004 17:03 CEST
 ======================================================================
-Summary:                    aplay loops like a broken record with YMF-724F
+Summary:                    Prodigy 192 -  Eprom incorrect size?
 Description: 
-I have downloaded the latest kernel and Alsa RPMs from CCRMA site and was
-able to get the sound drivers to work
-for Yamaha YMF-724F sound card.
-
-KMidi seems to play fine.  The only problem so far that I can see is
-'aplay' with WAV files.
-
-Here is what I tried:
-
-[root@linux sounds]# aplay email.wav
-Playing WAVE 'email.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-Mono
-ALSA lib pcm_hw.c:523:(snd_pcm_hw_drain) SNDRV_PCM_IOCTL_DRAIN failed:
-Input/output error
-
-This sound was supposed to play once.  I hear a repeat of this sound 20
-times exactly.  I tried all other wave files with the same results!  It
-sounds like a broken record up to 20 times.
-
-I have scanned google and found only two references where others have
-reported simliar results but no response fixes were given.
-
-Help!
-
-Best regards!
-Dan Thurman
-dant@cdkkt.com
+after compiling the driver and rebooting i get a message that the eprom is
+the wrong size for my card (on startup) needless to say, I also get no
+sound. I am assuming this is because this card is not a 'prodigy 7.1' but
+a 'prodigy 192' even though both cards are made by Audiotrak are 24/192khz
+& 7.1. to look at the cards they are almost identical. is there anyway I
+can get the driver to work?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-30-2004 10:56 CEST 
+ jvlake - 04-07-2004 06:09 CEST 
 ----------------------------------------------------------------------
-the symoptom looks like an IRQ problem.
-if you have PNP-OS setting in BIOS, try to turn it off.
+oops, that would be ICE1724 not 1712, never mind same error either way.
 
 ----------------------------------------------------------------------
- perex - 09-07-2004 16:53 CEST 
+ perex - 04-07-2004 19:54 CEST 
 ----------------------------------------------------------------------
-Yes, it looks like a general IRQ problem. Please, ask on lkml or enter this
-problem to kernel's bugzilla.
+Only Prodigy 7.1 card is supported at this time.
+
+----------------------------------------------------------------------
+ tiwai - 04-16-2004 16:00 CEST 
+----------------------------------------------------------------------
+the board has apparently no EEPROM as well as prodigy 7.1.
+you have to provide the EEPROM image.
+
+at your own risk, you can try to change the subvendor value to the
+corresponding one in prodigy.c, so that the driver believes that's
+prodigy 7.1.
+
+----------------------------------------------------------------------
+ Apostolos Dimitromanolakis - 06-18-2004 17:45 CEST 
+----------------------------------------------------------------------
+Hmm.. If this card uses the same chips as the Prodigy that would be easy to
+modify the driver. Can you send a picture of the top of the board ?
+
+----------------------------------------------------------------------
+ co2b - 09-07-2004 16:37 CEST 
+----------------------------------------------------------------------
+Prodigy192 uses Sigmatel STAC9460 audio codec, so Prodigy7.1 driver does
+not work.
+STAC9460 data sheet is here:
+http://www.sigmatel.com/products/technical_docs.htm#9460
+
+I wrote a patch for this card (it is against Linux-2.6.8-rc2).
+
+----------------------------------------------------------------------
+ perex - 09-07-2004 17:03 CEST 
+----------------------------------------------------------------------
+The patch was applied to CVS. Thanks.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-28-04 04:18 dant           New Bug                                      
-04-28-04 04:18 dant           Kernel Version            => 2.4.26-1.ll.rh90.ccrma
-04-30-04 10:55 tiwai          Category                 0_compilation problem_!!! => PCI - ymfpci
-04-30-04 10:56 tiwai          Bugnote Added: 0000974                       
-09-07-04 16:53 perex          Bugnote Added: 0001718                       
-09-07-04 16:53 perex          Resolution               open => fixed       
-09-07-04 16:53 perex          Status                   assigned => resolved
+04-07-04 06:06 jvlake         New Bug                                      
+04-07-04 06:06 jvlake         Distribution              => RedHat 9 _ 2.4.20.8
+04-07-04 06:06 jvlake         Kernel Version            => RedHat9 _ 2.4.20.8
+04-07-04 06:09 jvlake         Bugnote Added: 0000760                       
+04-07-04 06:10 jvlake         Bug Monitored: jvlake                        
+04-07-04 19:47 perex          Category                 PCI - ice1712 => PCI - ice1724
+04-07-04 19:53 perex          Severity                 major => feature    
+04-07-04 19:53 perex          Status                   new => confirmed    
+04-07-04 19:54 perex          Bugnote Added: 0000763                       
+04-16-04 16:00 tiwai          Bugnote Added: 0000838                       
+06-18-04 17:45 Apostolos DimitromanolakisBugnote Added: 0001319                       
+06-18-04 18:01 Apostolos DimitromanolakisBug Monitored: Apostolos Dimitromanolakis                    
+09-07-04 16:37 co2b           Bugnote Added: 0001711                       
+09-07-04 16:38 co2b           File Added: linux-2.6.8-rc2-prodigy192.patch                    
+09-07-04 17:03 perex          Bugnote Added: 0001719                       
+09-07-04 17:03 perex          Assigned To               => perex           
+09-07-04 17:03 perex          Resolution               open => fixed       
+09-07-04 17:03 perex          Status                   confirmed => resolved
 ======================================================================
 
 
