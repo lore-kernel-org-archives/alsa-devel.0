@@ -1,14 +1,13 @@
 From: "Vrihad Shoonya" <vrihad@softhome.net>
 Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 19:03:33 +0530 (IST)
+Date: Thu, 19 Aug 2004 19:01:25 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2891.192.168.0.30.1092922413.squirrel@dev.datamax.co.in>
-References: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
-     <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
+Message-ID: <2878.192.168.0.30.1092922285.squirrel@dev.datamax.co.in>
+References: <200408191314.i7JDEEAK015224@www4.pobox.sk>
 Mime-Version: 1.0
 Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
+In-Reply-To: <200408191314.i7JDEEAK015224@www4.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,21 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: clemens@ladisch.de, alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-
->> Google finds a NetBSD patch at
->> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+>>It looks that the driver must be written from scratch,
+>>because hardware is different from SI7018 and SI7012.
 >
-> It looks that the driver must be written from scratch, because hardware is
-> different from SI7018 and SI7012.
+> I don't expect alsa driver for this soon, because this
+> is not common hardware. This means, this is not standard
+> pc soundcard (or chipset). This is used in STB, PDA,
+> embeded systems... .
+> For this is more used OSS drivers, because of alsa-lib size.
+That is true. But the problem with OSS driver is that
+recording is problematic.
 
-That would be pretty big work isn't it? :-( Any estimation of scope and
-time?
+> PS: I wonder about existence of NetBSD patch, because I
+> found this:
+The info was still under NDA when we got it. But they have
+agreed now that info on audio section and code can be
+released to third parties as they have stopped development.
 
 -vrihad
+
 
 
 -------------------------------------------------------
