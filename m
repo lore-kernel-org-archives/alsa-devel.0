@@ -1,11 +1,16 @@
-From: "Erik Welander" <erikwelander@hotmail.com>
-Subject: Verification Request for Filter Divider calculation; ES18XX.c
-Date: Wed, 12 Mar 2003 18:25:09 +0100
+From: Andrew de Quincey <adq_dvb@lidskialf.net>
+Subject: Re: Patch to fix LIN_OUT1 on Audigy2 cards (+ others)
+Date: Wed, 12 Mar 2003 22:16:33 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <BAY1-F199ap7p8bVPZu00035e16@hotmail.com>
+Message-ID: <200303122216.33901.adq_dvb@lidskialf.net>
+References: <200303120648.HAA27496@www1.pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200303120648.HAA27496@www1.pobox.sk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,40 +19,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: p z oooo <pzad@pobox.sk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I am looking into the ES18XX driver for my ES1878.
 
-Now, I get static when using only the second DMA channel, as dma1=5, dma2=5, 
-and no other errors. (The firstDMA channel does not work at all…) My 
-investigation points to that there may be problems in the sample rate/filter 
-divider calculations.
+Please ignore the disable-AC97 mixer part of my Audigy2 patch. it isn't that 
+simple...
 
-Could any knowledgeable person verify if this calculation incorrect or not:
+It seems the AC97 is only used for capture on the Audigy2.. As you said, you 
+need it to control capturing from mike, line in etc. 
 
-/* set filter register */
-div0 = 256 - 7160000*20/(8*82*runtime->rate);
+However, it also seems that the microphone input is routed through the FX 
+processor and the AC97 in serial.... To adjust the mike volume, you have to 
+mess with: (from AC97) "Master", "Mic", "Mic Boost", and (from the EMUFX?) 
+"Capture", and "AC97" (Note: NOT "AC97 Capture"... that does nothing!). 
+"AC97" has the most effect on the volume, so I assume it must be first in the 
+chain... but all the others have a cumulative effect on the recorded volume.
 
-Here is the text outlining the procedure from the Datasheet for ES1878:
+Oh for "Line in": only "Master", and "Line" work, which actually makes sense.
 
-This register controls the low-pass frequency of the switchcapacitor
-filters inside the ES1878. Generally, the filter rolloff
-should be positioned at 80% - 90% of the Sample_Rate/
-2 frequency. The ratio of the roll-off frequency to the filter
-clock frequency is 1:82. In other words, first determine the
-desired roll-off frequency by taking 80% of the
-Sample_Rate divided by 2, then multiply by 82 to find the
-desired Filter Clock frequency. Use the formula below to
-determine the closest divider:
-Filter_Clock_Frequency = 7.16 MHz / (256-Filter_Divider_Register)
-
-Regards From Erik
-
-_________________________________________________________________
-Tired of spam? Get advanced junk mail protection with MSN 8. 
-http://join.msn.com/?page=features/junkmail
-
+-- 
+adq
 
 
 -------------------------------------------------------
