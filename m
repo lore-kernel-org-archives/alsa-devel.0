@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000077]: Device busy or Can't find it!
-Date: Fri, 22 Oct 2004 16:38:43 +0200
+Date: Fri, 22 Oct 2004 16:36:50 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <156e08b745504a764d29ef4816b32b30@bugtrack.alsa-project.org>
+Message-ID: <9b0fde9caf14c71b26c95e8c5ff86c05@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E138C29A
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:38:43 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D1C3529A
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:36:50 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-email_notification_title_for_status_bug_new
+The following issue has been ASSIGNED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=77> 
 ======================================================================
@@ -35,12 +35,12 @@ Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
 Distribution:               1.02c
 Kernel Version:             2.6.3
 ======================================================================
 Date Submitted:             02-21-2004 17:43 CET
-Last Modified:              10-22-2004 16:38 CEST
+Last Modified:              10-22-2004 16:36 CEST
 ======================================================================
 Summary:                    Device busy or Can't find it!
 Description: 
@@ -158,7 +158,6 @@ Date Modified  Username       Field                    Change
 05-01-04 06:21 boyod          Note Added: 0000988                          
 05-01-04 09:11 boyod          Note Added: 0000989                          
 10-22-04 16:36 perex          Assigned To              perex =>            
-10-22-04 16:38 perex          Status                   assigned => new     
 ======================================================================
 
 
