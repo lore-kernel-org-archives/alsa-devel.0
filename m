@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Wed, 30 Mar 2005 18:27:12 +0200
-Message-ID: <72fc402470fd90945624c4cf409cdffd@bugtrack.alsa-project.org>
+From: =?Windows-1251?B?0/jg6u7i4CDOLsIu?= <barn@bluewin.ch>
+Subject: =?Windows-1251?B?1O7y7uPw4PTo6CDk8PPn5ek=?=
+Date: Wed, 30 Mar 2005 16:33:07 +0000
+Message-ID: <E1DGeYr-0003WI-FW@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C77C2249
-	for <alsa-devel@alsa-project.org>; Wed, 30 Mar 2005 18:27:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +15,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
-======================================================================
-Reported By:                mr-k
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              03-30-2005 18:27 CEST
-======================================================================
-Summary:                    Driver and all sound aplications hangs
-Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
-
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
-
-
-======================================================================
-
-----------------------------------------------------------------------
- mr-k - 03-22-05 17:59 
-----------------------------------------------------------------------
-I've added some pieces of information to my report but i dont know if sb
-has read that. Please take a look at it.
-
-----------------------------------------------------------------------
- tiwai - 03-30-05 18:27 
-----------------------------------------------------------------------
-Well, I still don't find any problem, at least it's not reproducible on my
-system, unfortunately.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
-01-11-05 22:12 mr-k           File Added: alsa.log                         
-01-12-05 15:14 tiwai          Note Added: 0003170                          
-01-12-05 15:57 mr-k           Note Added: 0003173                          
-01-16-05 15:38 mr-k           Note Added: 0003218                          
-02-09-05 21:45 mr-k           Note Edited: 0003173                         
-02-09-05 21:46 mr-k           Note Edited: 0003123                         
-03-10-05 16:46 mr-k           Note Added: 0003868                          
-03-10-05 16:47 mr-k           Note Edited: 0003868                         
-03-20-05 22:53 bendis         Issue Monitored: bendis                      
-03-22-05 17:59 mr-k           Issue Monitored: tiwai                       
-03-22-05 17:59 mr-k           Note Added: 0004126                          
-03-30-05 18:27 tiwai          Note Added: 0004269                          
-======================================================================
+<html>
+<body bgcolor=3D"#FFFFF9" text=3D"#000000" link=3D"#000000" vlink=3D"#000=
+000" alink=3D"#000000">
+<table width=3D"75%" border=3D"3" align=3D"center" cellpadding=3D"20" bor=
+dercolor=3D"#000000" bgcolor=3D"#666666">
+  <tr>=20
+    <td valign=3D"top"><font color=3D"#FFFFFF" face=3D"Arial Narrow">=D3 =
+=C2=E0=F1 =E5=F1=F2=FC =D6=C8=D4=D0=CE=C2=CE=C9=20
+      =D4=CE=D2=CE=C0=CF=CF=C0=D0=C0=D2 =E8 =C2=FB =F1=EB=E0=E2=E8=F2=E5=F1=
+=FC =F1=E2=EE=E8=EC =F3=EC=E5=ED=E8=E5=EC =E4=E5=EB=E0=F2=FC =CE=D2=CB=C8=
+=D7=CD=DB=C5 =CA=C0=C4=D0=DB?<br>
+      =C2=FB =EB=FE=E1=E8=F2=E5 =F1=E2=EE=E8=F5 =E4=F0=F3=E7=E5=E9, =ED=EE=
+ =EE=ED=E8 =EC=E5=F1=FF=F6=E0=EC=E8 =ED=E5 =EC=EE=E3=F3=F2 =E4=EE=E6=E4=E0=
+=F2=FC=F1=FF =EE=F2 =C2=E0=F1 =F4=EE=F2=EE=E3=F0=E0=F4=E8=E9=20
+      =F1=EE =E2=F1=F2=F0=E5=F7? </font><font face=3D"Arial Narrow">=20
+      <p align=3D"center"><font color=3D"#000000"><strong>=CD=C5=D2 =C2=D0=
+=C5=CC=C5=CD=C8 =C2=CE=C7=C8=D2=DC=D1=DF =D1 =CF=C5=D7=C0=D2=DC=DE=20
+        =D6=C8=D4=D0=CE=C2=DB=D5 =D4=CE=D2=CE=C3=D0=C0=D4=C8=C9?</strong>=
+</font></p>
+      <p align=3D"right"><font color=3D"#FFFFFF">=D2=E5=EF=E5=F0=FC =C2=FB=
+ =EC=EE=E6=E5=F2=E5=20
+        =EF=E5=F7=E0=F2=E0=F2=FC =C2=E0=F8=E8 =D6=C8=D4=D0=CE=C2=DB=C5 =D4=
+=CE=D2=CE =F7=E5=F0=E5=E7 =C8=ED=F2=E5=F0=ED=E5=F2!</font></p>
+      <p align=3D"center"><font color=3D"#000000"><strong>=C7=C0=C3=D0=D3=
+=C7=C8=C2 =C2=C0=D8=C8 =D4=CE=D2=CE=C3=D0=C0=D4=C8=C8=20
+        =CD=C0 =CD=C0=D8 =D1=C0=C9=D2</strong> =EF=F0=FF=EC=EE =F1=E5=E9=F7=
+=E0=F1, <br>
+        <strong>=C2=FB =CF=CE=CB=D3=D7=C8=D2=C5</strong> =EE=F2=EF=E5=F7=E0=
+=F2=E0=ED=ED=FB=E5 =F1=ED=E8=EC=EA=E8 <strong>=D1 =CA=D3=D0=DC=C5=D0=CE=CC=
+ </strong>=E2=20
+        =F2=E5=F7=E5=ED=E8=E5 <strong>=C4=C2=D3=D5</strong> =E4=ED=E5=E9.=
+</font></p>
+      <p><font color=3D"#FFFFFF">=D4=EE=F2=EA=E8 =E1=F3=E4=F3=F2. =C4=F0=F3=
+=E7=FC=FF =E4=EE=E2=EE=EB=FC=ED=FB.</font></p>
+      <p align=3D"center"><font color=3D"#000000"><strong>=C8=F1=EA=F0=E5=
+=ED=ED=E5 =C2=E0=F8,<br>
+        <a href=3D"http://www.Mkadr.ru">www.Mkadr.ru</a> </strong></font>=
+</p>
+      <p align=3D"right"><font color=3D"#FFFFFF">P.S. =C2=FB =EE=EF=EB=E0=
+=F7=E8=E2=E0=E5=F2=E5 =D2=CE=CB=DC=CA=CE =E4=EE=F1=F2=E0=E2=EA=F3=20
+        =E2 =EF=F0=E5=E4=E5=EB=E0=F5 =D1=F2=EE=EB=E8=F6=FB =E8 =D1=D2=CE=C8=
+=CC=CE=D1=D2=DC=20
+        =CF=C5=D7=C0=D2=C8 (6 =D0=D3=C1=CB=C5=C9 =E7=E0 1 =F1=ED=E8=EC=EE=
+=EA).</font></p>
+      </font><font face=3D"georgia">=20
+      <p>&nbsp;</p>
+      </font><font face=3D"times New Roman">
+      <p>&nbsp;</p>
+      </font></td>
+  </tr>
+</table>
+</body>
+</html>
 
 
+=00
 
 
 -------------------------------------------------------
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
