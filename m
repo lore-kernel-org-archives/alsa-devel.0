@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
-Date: Tue, 28 Sep 2004 22:37:27 +0200 (CEST)
+Date: Tue, 28 Sep 2004 23:15:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928203727.8C0F446008@server.perex-int.cz>
+Message-ID: <20040928211506.B7A1A46008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDADE2D7
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 22:37:27 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17EE5317
+	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 23:15:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,12 +20,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000410
 ======================================================================
 Reported By:                skamp
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Bug ID:                     410
@@ -33,12 +33,13 @@ Category:                   PCI - ice1724
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               LFS 5.1.1, BLFS 5.1
 Kernel Version:             2.4.26
+Resolution:                 fixed
 ======================================================================
 Date Submitted:             07-27-2004 18:48 CEST
-Last Modified:              09-28-2004 22:37 CEST
+Last Modified:              09-28-2004 23:15 CEST
 ======================================================================
 Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
@@ -95,6 +96,11 @@ capture.
 ----------------------------------------------------------------------
 This is fixed in the latest CVS (See bugnote 0000510 for details)
 
+----------------------------------------------------------------------
+ tiwai - 09-28-2004 23:15 CEST 
+----------------------------------------------------------------------
+Ok, then close this bug now.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -107,6 +113,10 @@ Date Modified  Username       Field                    Change
 08-01-04 18:00 skamp          Bugnote Added: 0001516                       
 08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
 09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
 ======================================================================
 
 
