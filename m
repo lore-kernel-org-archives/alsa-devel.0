@@ -1,17 +1,19 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: ALSA 1.0.6rc2
-Date: Tue, 10 Aug 2004 00:30:44 +0200
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: OSS vs ALSA war :-)
+Date: Tue, 10 Aug 2004 08:36:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040809223044.GA517@tuba.home>
-References: <Pine.LNX.4.58.0408071354310.1780@pnote.perex-int.cz>
+Message-ID: <200408100636.i7A6aMAo030159@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id DE1B6234
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 00:29:03 +0200 (MEST)
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0408071354310.1780@pnote.perex-int.cz>
+Received: from www4.pobox.sk (www4.pobox.sk [212.5.216.14])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7045219
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 08:36:25 +0200 (MEST)
+Received: from www4.pobox.sk (www4.pobox.sk [212.5.216.14])
+	by www4.pobox.sk (8.12.10/8.12.10) with SMTP id i7A6aMAo030159
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 08:36:22 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,23 +22,14 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Aug 07, 2004 at 01:57:59PM +0200, Jaroslav Kysela wrote:
-> 
-> 	It might be the last release candidate for 1.0.6.
-
-I've just noticed on 2.6.7/ppc:
-
-/usr/local/src/alsa-driver-1.0.6rc2/pci/hdspm.c: In function
-snd_hdspm_hwdep_ioctl':
-/usr/local/src/alsa-driver-1.0.6rc2/pci/hdspm.c:3288: error: case label does
-not reduce to an integer constant
+http://www.osnews.com/comment.php?news_id=3D7976
 
 
-martin
+=0A____________________________________=0Ahttp://www.pobox.sk/ - najvacsi s=
+lovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
