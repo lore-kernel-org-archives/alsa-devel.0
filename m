@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000702]: Crash when pushing hardware volume button
-Date: Mon, 3 Jan 2005 16:58:02 +0100
-Message-ID: <109b016c7896340100fdec664e0ef4ff@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0000778]: xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR wrongly
+Date: Mon, 3 Jan 2005 16:58:55 +0100
+Message-ID: <c198402e929896eec93e439a69538d59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B50F12CB
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:58:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0D8B2CB
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:58:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,61 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=702> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=778> 
 ======================================================================
-Reported By:                jjoosse
-Assigned To:                tiwai
+Reported By:                julian
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   702
-Category:                   PCI - es1968
+Project:                    ALSA - firmware
+Issue ID:                   778
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             12-02-2004 21:35 CET
+Date Submitted:             01-02-2005 18:53 CET
 Last Modified:              01-03-2005 16:58 CET
 ======================================================================
-Summary:                    Crash when pushing hardware volume button
+Summary:                    xbox parameter sets AC97_SCAP_DETECT_BY_VENDOR
+wrongly
 Description: 
-When I use the hardware vulume buttons on my Dell Inspiron 5000 the system
-locks up. 
+the xbox parameter was designed to avoid failed detection of the AC97
+codec.
+according to the header file AC97_SCAP_DETECT_BY_VENDOR is a flag to ALLOW
+detection. Therefore AC97_SCAP_DETECT_BY_VENDOR should be set in scaps if
+the xbox 
+parameter is false, not true.
 
-I capured the oops via serial console. See additional information.
+The logic in ac97-codec is not consistent either.
 
-Commenting out the msleep(1)'s in snd_es1968_ac97_write and just to be
-sure also in snd_es1968_ac97_read, fixes it for me. Removal of the delay
-has no side effects on my system.
+To avoid bad AC97 probes, either AC97_SCAP_AUDIO or AC97_SCAP_SKIP_AUDIO
+should be set if the xbox parameter is set.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-03-04 14:02 
+ julian - 01-02-05 20:21 
 ----------------------------------------------------------------------
-My bad.  The attached patch should fix this problem.
+ignore the patch for ac97-codec.c for now - it loads OK but crashes my xbox
+when I try to play something with xine.
+
+The bug and the intel8x0.c points are valid.
+
+Julian
 
 ----------------------------------------------------------------------
- tiwai - 12-03-04 14:22 
+ julian - 01-03-05 16:58 
 ----------------------------------------------------------------------
-The patch was applied to CVS.
+OK - I'm starting to understand - xboxes HAVE readble vendor registers but
+not readable other registers, so the sense of the original code was
+correct. I think t he comments could be improved but please close/delete
+this bug. I'll raise something more sensible if I get to the point of
+knowing what I'm on about and have something useful to contribute.
+
+Julian
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-04 21:35 jjoosse        New Issue                                    
-12-03-04 14:02 tiwai          Note Added: 0002709                          
-12-03-04 14:03 tiwai          File Added: es1968-hwvol-fix.dif                  
- 
-12-03-04 14:22 tiwai          Status                   assigned => resolved
-12-03-04 14:22 tiwai          Resolution               open => fixed       
-12-03-04 14:22 tiwai          Note Added: 0002712                          
-01-03-05 16:58 tiwai          Status                   resolved => closed  
+01-02-05 18:53 julian         New Issue                                    
+01-02-05 18:53 julian         File Added: x                                
+01-02-05 18:56 julian         Issue Monitored: julian                      
+01-02-05 20:21 julian         Note Added: 0003047                          
+01-03-05 16:58 julian         Note Added: 0003069                          
 ======================================================================
 
 
