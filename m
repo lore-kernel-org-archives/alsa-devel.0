@@ -1,12 +1,13 @@
-From: "Gupta, Kshitij" <kshitij@ti.com>
-Subject: runtime->dma_addr
-Date: Wed, 3 Mar 2004 23:47:10 +0530
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: runtime->dma_addr
+Date: Wed, 3 Mar 2004 19:29:19 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01>
+Message-ID: <Pine.LNX.4.58.0403031928440.2089@pnote.perex-int.cz>
+References: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-2"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,21 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "Gupta, Kshitij" <kshitij@ti.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi,
-	Can someone please explain me what is  the difference between
-runtime->dma_addr and runtime->dma_area
+On Wed, 3 Mar 2004, Gupta, Kshitij wrote:
 
-where runtime = substream->runtime
+> hi,
+> 	Can someone please explain me what is  the difference between
+> runtime->dma_addr and runtime->dma_area
+> 
+> where runtime = substream->runtime
+> 
+> I am getting a very strange problem where I am getting a rumtime->dma_addr
+> value as 0 while runtime->dma_area is a proper value.  
+> Any hints will be helpful
 
-I am getting a very strange problem where I am getting a rumtime->dma_addr
-value as 0 while runtime->dma_area is a proper value.  
-Any hints will be helpful
+dma_area is virtual address (visible from the CPU view)
+dma_addr is the physical bus address (visible from the hardware)
 
-warm regards
--kshitij
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
