@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000514]: [PATCH] 15_amixer_doc_bug271556
-Date: Thu, 23 Sep 2004 19:52:00 +0200 (CEST)
+Subject: [ALSA - utils 0000519]: [PATCH] 90_debian_alsaconf_notouch
+Date: Thu, 23 Sep 2004 19:50:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923175200.42A304500F@server.perex-int.cz>
+Message-ID: <20040923175014.A9CAF4500E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83E15300
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:52:00 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 431FC311
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:51:13 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 470B225AA0
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:52:00 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B9BD82610F
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:50:14 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,41 +25,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000514
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000519
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     514
-Category:                   amixer
+Bug ID:                     519
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-21-2004 19:48 CEST
-Last Modified:              09-23-2004 19:52 CEST
+Date Submitted:             09-21-2004 20:01 CEST
+Last Modified:              09-23-2004 19:50 CEST
 ======================================================================
-Summary:                    [PATCH] 15_amixer_doc_bug271556
+Summary:                    [PATCH] 90_debian_alsaconf_notouch
 Description: 
-Patch for amixer.1 which makes fixes its use of formatting
-codes.
+Patch for alsaconf which makes it refrain from creating
+/etc/modprobe.conf if the latter does not already exist.
+
+Creating an empty /etc/modprobe.conf is bad because if it
+exists then modprobe uses _only_ this file -- it does not
+use /etc/modprobe.d/.
+
+Additionally, this patch makes alsaconf set the cleanup
+trap before it creates temporary files rather than after.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-2004 19:52 CEST 
+ jdthood - 09-23-2004 19:50 CEST 
 ----------------------------------------------------------------------
-Summary: fixes its use of formatting codes in amixer.1
+Summary: Refrain from creating /etc/modprobe.conf if it does not already
+exist
 
 Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:48 jdthood        New Bug                                      
-09-21-04 19:48 jdthood        File Added: 15_amixer_doc_bug271556.dpatch                    
-09-23-04 19:52 jdthood        Bugnote Added: 0001842                       
+09-21-04 20:01 jdthood        New Bug                                      
+09-21-04 20:01 jdthood        File Added: 90_debian_alsaconf_notouch.dpatch                    
+09-23-04 19:50 jdthood        Bugnote Added: 0001838                       
 ======================================================================
 
 
