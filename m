@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: Re: Multiple PCM files
-Date: Wed, 31 Jul 2002 18:18:00 -0400
+From: Taupter <taupter@baydenet.com.br>
+Subject: Re: Quick SBLive/AWE32 synth question
+Date: Wed, 31 Jul 2002 20:03:41 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17a1lS-0000L9-00@usw-sf-list1.sourceforge.net>
-References: <121a01c238cf$b88c66b0$360110ac@dillon>
+Message-ID: <3D486CCD.2040600@baydenet.com.br>
+References: <200207301624.02609.bownie@bownie.com> <s5hy9bsf2x1.wl@alsa2.suse.de> <200207311902.02690.bownie@bownie.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 31 Jul 2002 21:20:31 BST."
-             <121a01c238cf$b88c66b0$360110ac@dillon>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,32 +16,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Nick French <nick@greensignal.com>
-Cc: Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@lists.sourceforge.net
+To: bownie@bownie.com
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Exactly. I would prefer the second as if I needed to add a third, 4th its
->takes no effort and I don't reinvent the wheel as they say.
->
->Does alsa support 2 or is this just JACK's.
+Richard Bown wrote:
+> Takashi Iwai wrote:
+> 
+> 
+>>can you check whether this happens on SB Live only or both on SB Live
+>>and AWE?
+> I'm trying to reproduce the problem with another sequencer but to tell the
+> truth I'm having a problem finding one that does on-board ALSA synths too.
 
-No, ALSA does not support it *in general*. Some interfaces will work
-this way, some will not. In theory, the ALSA "share" device type will
-allow this, but apparently almost no-one has ever used it except its
-main author.
+try noteedit.
 
->The mathematics may be simple for 1 but why should it be done over and over
->again. An API is meant to take away repetitive annoyances ;)
+http://rnvs.informatik.tu-chemnitz.de/~jan/noteedit/noteedit.html
 
-the mathematics, such as they are, consist of addition.
+to get ALSA MIDI output with it you'll need to install the TSE3 library 
+by Peter Goodliffe.
 
-the real problems you face have to do with sample rate and sample bit
-width conversion, which are entirely different. i and others have said
-before that it would be nice if alsa-lib exposed the code it contains
-to do this stuff so that it could used in other contexts (not just
-hidden as part of "plug" or "plughw" device implementation.
+http://tse3.sourceforge.net/
 
---p
+>>could you try to make a short midi clip which can cause the same
+>>behavior, so that i can test to reproduce on my machine?
+> I will do once I've convinced myself it's not us.
+
+I would do the test right now if I could get my ALSA working... I 
+reinstalled MDK8.2 and the kernel 2.4.18-8.1mdk. ALSA 0.9.0rc2 compiles 
+fine, installs, but
+
+service alsa start
+
+tells me:
+
+Starting ALSA version 
+none:/lib/modules/2.4.18-8.1mdk/kernel/sound/acore/snd.o: unresolved 
+symbol register_sound_special_R69a88294
+/lib/modules/2.4.18-8.1mdk/kernel/sound/acore/snd.o: unresolved symbol 
+unregister_sound_special_R99c95fa5
+modprobe: insmod /lib/modules/2.4.18-8.1mdk/kernel/sound/acore/snd.o failed
+modprobe: insmod snd failed
+
+
+Any ideas?
+
+
+Taupter
+
 
 
 -------------------------------------------------------
