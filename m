@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: emu10k1 effect processor
-Date: Mon, 27 Sep 2004 13:28:21 +0100
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000547]: Outdated pmac.patch
+Date: Mon, 27 Sep 2004 15:02:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41580765.40206@superbug.co.uk>
-References: <Pine.LNX.4.58.0409262037130.2760@pat.dumaisnet.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040927130256.C8E9F2400C@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0409262037130.2760@pat.dumaisnet.ca>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E19D2D6
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 15:02:57 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +16,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa@dumaisnet.ca
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Dumais wrote:
-> Hi,
-> 
-> Could any one point me out where I could find information on how to
-> control the integrated effect processor on the Live card with an alsa
-> programming interface? and possibily how to make my own modules? I know
-> there is an assembler for that, I found a couple of links. I just want to
-> know if someone has a specific link to recommend.
-> 
-> But I am mostly looking for specification of how to use emu10k1 effect
-> within my alsa application
-> 
-> Thank you
-> 
-> Patrick Dumais
 
-http://ld10k1.sourceforge.net/
+The following bug has been RESOLVED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000547
+======================================================================
+Reported By:                jdthood
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     547
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+======================================================================
+Date Submitted:             09-26-2004 22:17 CEST
+Last Modified:              09-27-2004 15:02 CEST
+======================================================================
+Summary:                    Outdated pmac.patch
+Description: 
+Build fails because alsa-driver/ppc/pmac.patch doesn't apply to
+alsa-kernel/ppc/pmac.c any more.
 
-It even has a GUI now.
+I include an updated patch which does apply.
+======================================================================
 
+----------------------------------------------------------------------
+ jdthood - 09-27-2004 09:24 CEST 
+----------------------------------------------------------------------
+Summary: Fix pmac.patch
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
+----------------------------------------------------------------------
+ tiwai - 09-27-2004 15:02 CEST 
+----------------------------------------------------------------------
+Thanks, applied to CVS now.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-26-04 22:17 jdthood        New Bug                                      
+09-26-04 22:17 jdthood        File Added: pmac_jdth1.patch                    
+09-27-04 09:24 jdthood        Bugnote Added: 0001932                       
+09-27-04 15:02 tiwai          Bugnote Added: 0001937                       
+09-27-04 15:02 tiwai          Resolution               open => fixed       
+09-27-04 15:02 tiwai          Status                   assigned => resolved
+======================================================================
 
 
 -------------------------------------------------------
