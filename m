@@ -1,12 +1,11 @@
-From: "Ivica Bukvic" <ico@fuse.net>
-Subject: CS4205 (Dell Inspiron 8200) -- what are the chances of implementing more than one codec for multiple simultaneous hw streams?
-Date: Mon, 14 Oct 2002 19:18:04 -0400
+From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
+Subject: help needed on how to autoload snd-usb-midi
+Date: Tue, 15 Oct 2002 16:40:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000001c273d7$f4e13d00$ac1f830a@ico>
+Message-ID: <20021015144056.40474.qmail@web12202.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,32 +14,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>, Clemens Ladisch <clemens@ladisch.de>
+Cc: Devel Alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
+Hi,
 
-I was just wondering if there is any chance of implementing more than
-one codec on the CS4205 (intel8x0 module) soundcard found in laptops, so
-that the soundcard can at least do 2 streams at the same time? (my
-understanding is that this soundcard supports at least 2 if not more
-simultaneous streams)
+I am in the process of updating the tascam us-428
+patch for alsa-current and need some hints:
+formerly the snd-usb-us428 issued 
+"request_module( "snd-usb-midi");"
+to load that module. this doesn't work with
+alsa-current anymore as the snd-usb-audio
+initialisation, which is triggered, conflicts with the
+initialisation of snd-usb-us428.
+thus I deleted that "request_module( "snd-usb-midi");"
+from snd_usb_us428.
+I remember from some Mail on this list, that
+snd-usb-midi  would be autoloaded if a users process
+accesses a mididevice, which has been created by 
+"snd_seq_device_new( ...SNDRV_SEQ_DEV_ID_USBMIDI)".
+this does not happen here now.
+what do I miss?
+for the tests I use the bristolsynth with
+"./startBristol -alsa -audiodev hw:1 -mididev hw:1"
+having issued "modprobe snd-usb-midi" before,
+everythingg works as expected. otherwise 
+"Could not open the MIDI interface.
+Error opening midi device hw:1, exiting midi thread"
 
-Recent fixes seem encouraging (no more clicks), yet without this
-feature, card still feels a bit useless for any serious
-real-time-oriented audio work.
+TIA, Karsten
 
-Furthermore, the driver as it is does not permit selection of the
-microphone as a recording source (at least not using Kmix/KDE apps --
-this may be an OSS compatibility problem). Can someone please shed some
-light on this issue as well?
+__________________________________________________________________
 
-Thank you! Sincerely,
-
-Ivica Ico Bukvic
-
-
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
 
 
 -------------------------------------------------------
