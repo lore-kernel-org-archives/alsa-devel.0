@@ -1,10 +1,9 @@
-From: Eric Dantan Rzewnicki <eric@zhevny.com>
-Subject: alsa-utils-1.0.8 make error
-Date: Sat, 15 Jan 2005 18:41:59 -0500
-Message-ID: <41E9AA47.3040107@zhevny.com>
+From: <maxdelm@tele2.fr>
+Subject: vt1720 mobo
+Date: Sun, 16 Jan 2005 9:35:32 +0100
+Message-ID: <auto-000075553485@mailfe05.swip.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="----=____1105864532241_wHc57ge30r"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,49 +17,120 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I got the following error when attempting to make alsa-utils-1.0.8:
+This is a multi-part message in MIME format.
 
-Making all in po
-make[2]: Entering directory 
-`/home/eric/audio_code/recent_releases/alsa-utils-1.0.8/alsaconf/po'
-mv: cannot stat `t-ja.gmo': No such file or directory
-make[2]: *** [ja.gmo] Error 1
-make[2]: Leaving directory 
-`/home/eric/audio_code/recent_releases/alsa-utils-1.0.8/alsaconf/po'
+------=____1105864532241_wHc57ge30r
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-this patch to alsa-utils-1.0.8/alsaconf/po/Makefile.in lets it compile 
-... but, I don't understand what I've done:
+Hello
 
+    I have Chaintech 9CJS Mainboard with VT1720 sound-chip.
 
---- Makefile.in 2005-01-15 18:27:52.000000000 -0500
-+++ Makefile.in.ok      2005-01-15 18:29:25.000000000 -0500
-@@ -24,19 +24,15 @@
-  MSGMERGE_UPDATE = @MSGMERGE@ --update
+Delmaire Maxime.
 
-  DISTFILES = $(POFILES) Makefile.in
--CATALOGS = $(POFILES:.po=.gmo)
-+CATALOGS = $(POFILES:.po)
+-------------------------------------------------
+Internet simplement moins cher avec Tele2 : http://www.tele2.fr
+-------------------------------------------------
 
-  all: $(CATALOGS)
+------=____1105864532241_wHc57ge30r
+Content-Transfer-Encoding: base64
+Content-Type: application/octet-stream;
+	name="vt1720_mobo.c"
+Content-Disposition: inline;
+	filename="vt1720_mobo.c"
 
--.SUFFIXES: .po .gmo .mo
-+.SUFFIXES: .po .mo
+LyoKICogICBBTFNBIGRyaXZlciBmb3IgVlQxNzIwL1ZUMTcyNCAoRW52eTI0UFQvRW52eTI0
+SFQpCiAqCiAqICAgTG93bGV2ZWwgZnVuY3Rpb25zIGZvciBWVDE3MjAtYmFzZWQgbW90aGVy
+Ym9hcmRzCiAqCiAqCUNvcHlyaWdodCAoYykgMjAwNCBUYWthc2hpIEl3YWkgPHRpd2FpQHN1
+c2UuZGU+CiAqCiAqICAgVGhpcyBwcm9ncmFtIGlzIGZyZWUgc29mdHdhcmU7IHlvdSBjYW4g
+cmVkaXN0cmlidXRlIGl0IGFuZC9vciBtb2RpZnkKICogICBpdCB1bmRlciB0aGUgdGVybXMg
+b2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBMaWNlbnNlIGFzIHB1Ymxpc2hlZCBieQogKiAg
+IHRoZSBGcmVlIFNvZnR3YXJlIEZvdW5kYXRpb247IGVpdGhlciB2ZXJzaW9uIDIgb2YgdGhl
+IExpY2Vuc2UsIG9yCiAqICAgKGF0IHlvdXIgb3B0aW9uKSBhbnkgbGF0ZXIgdmVyc2lvbi4K
+ICoKICogICBUaGlzIHByb2dyYW0gaXMgZGlzdHJpYnV0ZWQgaW4gdGhlIGhvcGUgdGhhdCBp
+dCB3aWxsIGJlIHVzZWZ1bCwKICogICBidXQgV0lUSE9VVCBBTlkgV0FSUkFOVFk7IHdpdGhv
+dXQgZXZlbiB0aGUgaW1wbGllZCB3YXJyYW50eSBvZgogKiAgIE1FUkNIQU5UQUJJTElUWSBv
+ciBGSVRORVNTIEZPUiBBIFBBUlRJQ1VMQVIgUFVSUE9TRS4gIFNlZSB0aGUKICogICBHTlUg
+R2VuZXJhbCBQdWJsaWMgTGljZW5zZSBmb3IgbW9yZSBkZXRhaWxzLgogKgogKiAgIFlvdSBz
+aG91bGQgaGF2ZSByZWNlaXZlZCBhIGNvcHkgb2YgdGhlIEdOVSBHZW5lcmFsIFB1YmxpYyBM
+aWNlbnNlCiAqICAgYWxvbmcgd2l0aCB0aGlzIHByb2dyYW07IGlmIG5vdCwgd3JpdGUgdG8g
+dGhlIEZyZWUgU29mdHdhcmUKICogICBGb3VuZGF0aW9uLCBJbmMuLCA1OSBUZW1wbGUgUGxh
+Y2UsIFN1aXRlIDMzMCwgQm9zdG9uLCBNQSAgMDIxMTEtMTMwNyBVU0EKICoKICovICAgICAg
+CgojaW5jbHVkZSA8c291bmQvZHJpdmVyLmg+CiNpbmNsdWRlIDxhc20vaW8uaD4KI2luY2x1
+ZGUgPGxpbnV4L2RlbGF5Lmg+CiNpbmNsdWRlIDxsaW51eC9pbnRlcnJ1cHQuaD4KI2luY2x1
+ZGUgPGxpbnV4L2luaXQuaD4KI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KI2luY2x1ZGUgPHNv
+dW5kL2NvcmUuaD4KCiNpbmNsdWRlICJpY2UxNzEyLmgiCiNpbmNsdWRlICJ2dDE3MjBfbW9i
+by5oIgoKCnN0YXRpYyBpbnQgX19kZXZpbml0IGs4eDgwMF9pbml0KGljZTE3MTJfdCAqaWNl
+KQp7CglpY2UtPnZ0MTcyMCA9IDE7CgoJLyogVlQxNjE2IGNvZGVjICovCglpY2UtPm51bV90
+b3RhbF9kYWNzID0gNjsKCWljZS0+bnVtX3RvdGFsX2FkY3MgPSAyOwoKCS8qIFdNODcyOCBj
+b2RlYyAqLwoJLyogRklYTUU6IFRPRE8gKi8KCglyZXR1cm4gMDsKfQoKc3RhdGljIGludCBf
+X2RldmluaXQgazh4ODAwX2FkZF9jb250cm9scyhpY2UxNzEyX3QgKmljZSkKewoJLyogRklY
+TUU6IG5lZWRzIHNvbWUgcXVpcmtzIGZvciBWVDE2MTY/ICovCglyZXR1cm4gMDsKfQoKLyog
+RUVQUk9NIGltYWdlICovCgpzdGF0aWMgdW5zaWduZWQgY2hhciBrOHg4MDBfZWVwcm9tW10g
+X19kZXZpbml0ZGF0YSA9IHsKCTB4MDEsCS8qIFNZU0NPTkY6IGNsb2NrIDI1NiwgMUFEQywg
+MkRBQ3MgKi8KCTB4MDIsCS8qIEFDTElOSzogQUNMSU5LLCBwYWNrZWQgKi8KCTB4MDAsCS8q
+IEkyUzogLSAqLwoJMHgwMCwJLyogU1BESUY6IC0gKi8KCTB4ZmYsCS8qIEdQSU9fRElSICov
+CgkweGZmLAkvKiBHUElPX0RJUjEgKi8KCTB4MDAsCS8qIC0gKi8KCTB4ZmYsCS8qIEdQSU9f
+TUFTSyAqLwoJMHhmZiwJLyogR1BJT19NQVNLMSAqLwoJMHgwMCwJLyogLSAqLwoJMHgwMCwJ
+LyogR1BJT19TVEFURSAqLwoJMHgwMCwJLyogR1BJT19TVEFURTEgKi8KCTB4MDAsCS8qIC0g
+Ki8KfTsKCgovKiBlbnRyeSBwb2ludCAqLwpzdHJ1Y3Qgc25kX2ljZTE3MTJfY2FyZF9pbmZv
+IHNuZF92dDE3MjBfbW9ib19jYXJkc1tdIF9fZGV2aW5pdGRhdGEgPSB7Cgl7CgkJLnN1YnZl
+bmRvciA9IFZUMTcyMF9TVUJERVZJQ0VfSzhYODAwLAoJCS5uYW1lID0gIkFsYmF0cm9uIEs4
+WDgwMCBQcm8gSUkiLAoJCS5tb2RlbCA9ICJrOHg4MDAiLAoJCS5jaGlwX2luaXQgPSBrOHg4
+MDBfaW5pdCwKCQkuYnVpbGRfY29udHJvbHMgPSBrOHg4MDBfYWRkX2NvbnRyb2xzLAoJCS5l
+ZXByb21fc2l6ZSA9IHNpemVvZihrOHg4MDBfZWVwcm9tKSwKCQkuZWVwcm9tX2RhdGEgPSBr
+OHg4MDBfZWVwcm9tLAoJfSwKCXsKCQkuc3VidmVuZG9yID0gVlQxNzIwX1NVQkRFVklDRV9a
+TkYzXzE1MCwKCQkubmFtZSA9ICJDaGFpbnRlY2ggWk5GMy0xNTAiLAoJCS8qIGlkZW50aWNh
+bCB3aXRoIGs4eDgwMCAqLwoJCS5jaGlwX2luaXQgPSBrOHg4MDBfaW5pdCwKCQkuYnVpbGRf
+Y29udHJvbHMgPSBrOHg4MDBfYWRkX2NvbnRyb2xzLAoJCS5lZXByb21fc2l6ZSA9IHNpemVv
+ZihrOHg4MDBfZWVwcm9tKSwKCQkuZWVwcm9tX2RhdGEgPSBrOHg4MDBfZWVwcm9tLAoJfSwK
+CXsKCQkuc3VidmVuZG9yID0gVlQxNzIwX1NVQkRFVklDRV9aTkYzXzI1MCwKCQkubmFtZSA9
+ICJDaGFpbnRlY2ggWk5GMy0yNTAiLAoJCS8qIGlkZW50aWNhbCB3aXRoIGs4eDgwMCAqLwoJ
+CS5jaGlwX2luaXQgPSBrOHg4MDBfaW5pdCwKCQkuYnVpbGRfY29udHJvbHMgPSBrOHg4MDBf
+YWRkX2NvbnRyb2xzLAoJCS5lZXByb21fc2l6ZSA9IHNpemVvZihrOHg4MDBfZWVwcm9tKSwK
+CQkuZWVwcm9tX2RhdGEgPSBrOHg4MDBfZWVwcm9tLAoJfSwKCXsKCQkuc3VidmVuZG9yID0g
+VlQxNzIwX1NVQkRFVklDRV85Q0pTLAoJCS5uYW1lID0gIkNoYWludGVjaCA5Q0pTIiwKCQkv
+KiBpZGVudGljYWwgd2l0aCBrOHg4MDAgKi8KCQkuY2hpcF9pbml0ID0gazh4ODAwX2luaXQs
+CgkJLmJ1aWxkX2NvbnRyb2xzID0gazh4ODAwX2FkZF9jb250cm9scywKCQkuZWVwcm9tX3Np
+emUgPSBzaXplb2Yoazh4ODAwX2VlcHJvbSksCgkJLmVlcHJvbV9kYXRhID0gazh4ODAwX2Vl
+cHJvbSwKCX0sCgl7IH0gLyogdGVybWluYXRvciAqLwp9OwoK
+------=____1105864532241_wHc57ge30r
+Content-Transfer-Encoding: base64
+Content-Type: application/octet-stream;
+	name="vt1720_mobo.h"
+Content-Disposition: inline;
+	filename="vt1720_mobo.h"
 
-  .po.mo:
-         $(MSGFMT) -c -o t-$@ $< && mv t-$@ $@
+I2lmbmRlZiBfX1NPVU5EX1ZUMTcyMF9NT0JPX0gKI2RlZmluZSBfX1NPVU5EX1ZUMTcyMF9N
+T0JPX0gKCi8qCiAqICAgQUxTQSBkcml2ZXIgZm9yIFZUMTcyMC9WVDE3MjQgKEVudnkyNFBU
+L0VudnkyNEhUKQogKgogKiAgIExvd2xldmVsIGZ1bmN0aW9ucyBmb3IgVlQxNzIwLWJhc2Vk
+IG1vdGhlcmJvYXJkcwogKgogKglDb3B5cmlnaHQgKGMpIDIwMDQgVGFrYXNoaSBJd2FpIDx0
+aXdhaUBzdXNlLmRlPgogKgogKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5
+b3UgY2FuIHJlZGlzdHJpYnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CiAqICAgaXQgdW5kZXIgdGhl
+IHRlcm1zIG9mIHRoZSBHTlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQg
+YnkKICogICB0aGUgRnJlZSBTb2Z0d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAy
+IG9mIHRoZSBMaWNlbnNlLCBvcgogKiAgIChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZl
+cnNpb24uCiAqCiAqICAgVGhpcyBwcm9ncmFtIGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3Bl
+IHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCiAqICAgYnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZ
+OyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFudHkgb2YKICogICBNRVJDSEFOVEFC
+SUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBVUlBPU0UuICBTZWUgdGhlCiAq
+ICAgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUgZGV0YWlscy4KICoKICog
+ICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBHTlUgR2VuZXJhbCBQ
+dWJsaWMgTGljZW5zZQogKiAgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBpZiBub3QsIHdy
+aXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCiAqICAgRm91bmRhdGlvbiwgSW5jLiwgNTkgVGVt
+cGxlIFBsYWNlLCBTdWl0ZSAzMzAsIEJvc3RvbiwgTUEgIDAyMTExLTEzMDcgVVNBCiAqCiAq
+LyAgICAgIAoKI2RlZmluZSBWVDE3MjBfTU9CT19ERVZJQ0VfREVTQyAgICAgICAgIntBbGJh
+dHJvbixLOFg4MDAgUHJvIElJfSwiXAoJCQkJICAgICAgICJ7Q2hhaW50ZWNoLFpORjMtMTUw
+fSwiXAoJCQkJICAgICAgICJ7Q2hhaW50ZWNoLFpORjMtMjUwfSwiXAoJCQkJICAgICAgICJ7
+Q2hhaW50ZWNoLDlDSlN9LCIKCiNkZWZpbmUgVlQxNzIwX1NVQkRFVklDRV9LOFg4MDAJCTB4
+ZjIxNzA1MmMKI2RlZmluZSBWVDE3MjBfU1VCREVWSUNFX1pORjNfMTUwCTB4MGYyNzQxZjYK
+I2RlZmluZSBWVDE3MjBfU1VCREVWSUNFX1pORjNfMjUwCTB4MGYyNzQ1ZjYKI2RlZmluZSBW
+VDE3MjBfU1VCREVWSUNFXzlDSlMJCTB4MGYyNzIzMjcKCmV4dGVybiBzdHJ1Y3Qgc25kX2lj
+ZTE3MTJfY2FyZF9pbmZvICBzbmRfdnQxNzIwX21vYm9fY2FyZHNbXTsKCiNlbmRpZiAvKiBf
+X1NPVU5EX1ZUMTcyMF9NT0JPX0ggKi8K
+------=____1105864532241_wHc57ge30r--
 
--.po.gmo:
--       @lang=`echo $* | sed -e 's,.*/,,'`; \
--       rm -f $${lang}.gmo && $(GMSGFMT) -c --statistics -o 
-t-$${lang}.gmo $${lang}.po && mv t-$${lang}.gmo $${lang}.gmo
--
-  $(DOMAIN).pot: $(GETTEXT_SRC)
-         $(XGETTEXT) -o$@ --default-domain=$(DOMAIN) \
-           --add-comments=TRANSLATORS: --language=Shell \
-
-
-
--Eric Rz.
 
 
 -------------------------------------------------------
