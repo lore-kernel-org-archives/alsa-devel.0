@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa substreams +rates
-Date: Tue, 13 Apr 2004 18:21:53 +0200 (METDST)
+Subject: Re: aplay playback-pointer
+Date: Tue, 13 Apr 2004 18:25:29 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0404131816270.10741-100000@studcom.urz.uni-halle.de>
-References: <20040409104120.63050.qmail@web25101.mail.ukl.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0404131825060.10741-100000@studcom.urz.uni-halle.de>
+References: <000901c4204e$6f0b3580$0403a8c0@win2K>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20040409104120.63050.qmail@web25101.mail.ukl.yahoo.com>
+In-reply-to: <000901c4204e$6f0b3580$0403a8c0@win2K>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,37 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Brian Furey wrote:
-> with the ALSA driver, what do the OSS substream mean?
+Mathieu Rondonneau wrote:
+> I'm writting an audio driver and i have some trouble.
+>
+> when i use:
+>  dd if=file.wav of=/dev/audio0
+> the oss part of the ALSA driver seams to be used and some sound (not good
+> sound but noise) are coming out. (the playback_pointer operator is called)
+>
+> but when i use aplay:
+>  aplay file.wav
+> nothing coming out, and the playback_pointer operator is not called.
+> nothing is called between the start and the stop trigger.
 
-There are no "OSS substreams".  ALSA PCM devices have substreams.  A
-device with more than one substream can be opened multiple times
-simultaneously.
-
-> If you have a 2 main capture channels, how many substream would
-> you have?
-
-Depends on the hardware, and is completely unrelated to the number of
-channels.
-
-> Also the capture stream is supposed to operate at 8000
-> Hz per second.
-
-8000 Hz is just the default.
-
-> Is it possible that it is actually say 8192, a value to the
-> power-of-two?
-
-It's 8000, for historical reasons (the standard rate of some telephony
-codec, which was then used on some early UNIX systems, or something
-like that).
+Do you call snd_pcm_period_elapes() in your interrupt routine?
 
 
-HTH
+Regards,
 Clemens
 
 
