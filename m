@@ -1,14 +1,14 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: no sound with 1.0.0 release
-Date: Sun, 14 Dec 2003 15:01:55 +0100
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: alsa timer slippage
+Date: Sun, 14 Dec 2003 14:07:08 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031214140154.GA7381@fliwatut.scifi>
-References: <1071201843.1980.9.camel@localhost.localdomain>
+Message-ID: <200312141335.00239.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <1071201843.1980.9.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,21 +20,43 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Noel Bush hat gesagt: // Noel Bush wrote:
 
-> I am using the planetccrma-core distribution.  Recently I tried
-> upgrading, via that distro, to the alsa 1.0.0 packages.  I found that
-> after this upgrade, I was unable to hear any sound when using any app
-> (simplest test, using aplay on a wav file). 
+While trying to track down the source of some poor timing in 
+sequencing, I've noticed that my ALSA sequencer queue timer has a 
+tendency to fall suddenly behind.
 
-I have no real idea why this is so, but here often it helped to remove the
-file /etc/asound.state while ALSA isn't running and then start ALSA
-again.
+I have a little test program (available on request) that just starts a 
+queue and every second or so compares the queue timer against real 
+time as returned by gettimeofday().  It doesn't mind if the two don't 
+quite match, but it does complain if the difference between the two 
+timers changes dramatically between two sample points.  When I run 
+it, it never lasts for more than about a minute before the ALSA queue 
+timer suddenly slips by anything from 10 to 60 milliseconds.
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+This is a non-low-latency kernel so I'm not surprised that there may 
+be some occasional timing issues, but 60ms is a lot on an unloaded 
+machine, and I am vaguely surprised that the timer doesn't notice 
+it's fallen behind and recover -- instead all events on the queue 
+continue to be delivered late forever.  This obviously makes for some 
+disconcerting audible effects.
+
+The system is SuSE 9.0 on a dual 2GHz Athlon using SuSE's stock SMP 
+kernel.  I have tried both ALSA 0.9.6 (from SuSE) and 1.0.0rc2 
+drivers and libraries.  I haven't managed to reproduce it using a 
+PlanetCCRMA SMP kernel on the same machine, nor on my uniprocessor 
+laptop.  I've surveyed a few other people on rosegarden-devel and 
+nobody's corroborated my findings, so I guess it might be related to 
+using a dual-processor machine.
+
+Any thoughts on this, anyone?  I'm finding it a little depressing that 
+I can't play even a minute of 4/4 beats from an ALSA test program 
+without the timing slipping audibly at least once.  I'm ready to 
+delve cluelessly into the timer code to take a look, but (glancing at 
+alsa-kernel/core/timer.c) I'm not at all sure how far I'd get...
+
+
+Chris
+
 
 
 -------------------------------------------------------
