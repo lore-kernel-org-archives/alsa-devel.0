@@ -1,59 +1,61 @@
-From: "Edward Wildgoose" <ed@wildgooses.com>
-Subject: Re: HDSP 9632 driver and expansion cards
-Date: Fri, 23 Jan 2004 20:19:27 -0000
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <026e01c3e1ee$34858ee0$0369a8c0@BigMotha>
-References: <1074650862.6893.10.camel@rivendell.home.local> <400E74F6.1040803@undata.org> <02f701c3e04e$1f39d2e0$5d40a8c0@FRiskMan.com> <400EEDE9.80208@undata.org> <013301c3e0fc$f4ea92e0$5d40a8c0@FRiskMan.com> <4010F57E.7070207@undata.org> <01e001c3e1d4$a32393c0$5d40a8c0@FRiskMan.com>
+From: Garett Shulman <shulmang@colorado.edu>
+Subject: sequencer filter client
+Date: Fri, 23 Jan 2004 14:26:05 -0700
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <4011916D.4040601@colorado.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > Just to make it clear that this is a software problem and not the
-> > problem that Tim, Paul and Mark reported, could you please try to route
-> > an incoming signal (through analog or digital in) to your amp using
-> > hdspmixer and tell me if the routed sound suffers from the same audio
-> > corruption as the one being played back ? (this test should be done
-> > while you're playing back a stuttering software stream)
->
+Hello, I am trying to create a very simple midi filter client for the 
+alsa sequencer based on aseqview-0.1.4. I have alsa 0.9.8. This code 
+shows the input and the output port in aconnect when executed. And, when 
+the raw_midi client is connected The callback does get called when I 
+play keys on my piano. However, Its as though the message is getting 
+sent back to this client and  not on to the next client. The 
+process_event function keeps getting called over and over again with the 
+same message when I hit one piano key. It's as though it is sending 
+itself the message. Any Ideas are greatly appreciated. -Garett
 
-OK, I'm sure that I misunderstand what you are asking, but here is what I did:
+#include "portlib.h"
 
-Set mplayer playing with something like "mplayer file.mpg -ao alsa9:rme9632plug" - It sutters like crazy and mplayer reports "xruns
-of at least 10ms".
+int process_event(port_t *p, int type, snd_seq_event_t *ev, int 
+*priate_data)
+{
+    port_write_event(p, ev, 0);
+}
 
-At the same time I spun a disk in the CD player, and changed the hdspmixer so that spdif mapped through to the front speakers
-instead of the mplayer audio.  CD output was fine, mplayer continued spewing errors up the screen.
+int main()
+{
+        unsigned int caps = SND_SEQ_PORT_CAP_WRITE | 
+SND_SEQ_PORT_CAP_SUBS_WRITE | SND_SEQ_PORT_CAP_READ | 
+SND_SEQ_PORT_CAP_SUBS_READ;
 
-I have just had a peek at the mplayer alsa output code, and compared with the verbose logs.  It does seem that mplayer has managed
-to set "chunksize" to 1024 and asked for 2 fragments - so this should be quite reasonable.  Switching to mmap or noblock mode makes
-no difference (neither does switching to the OSS device...)
+        port_client_t *client = port_client_new("MIDI filter", 
+SND_SEQ_OPEN_DUPLEX);
+        port_t *port = port_attach(client, "FILTER port", caps, 
+SND_SEQ_PORT_TYPE_MIDI_GENERIC);
+        int *priv_data;
 
-Any ideas what could be happening?  As I said, the same problem happens with Mythtv under OSS, and I think also under alsa.  Some
-other apps are fine, alsaplayer for example.
+        /* add callback */
+        port_add_callback(port, PORT_MIDI_EVENT_CB, 
+(port_callback_t)process_event, priv_data);
 
-Quite peculiar...
+        port_client_do_loop(client);
 
-I just checked and I actually have alsa 1.00 rc2.  Am I missing any driver updates?
-
-asound.conf is pretty empty in case it matters.  Just an entry for the hardware device and a plug device for the same.
-
-Thanks
-
-Ed W
-
+        return port_detach(port);
+}
 
 
 -------------------------------------------------------
