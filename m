@@ -1,13 +1,13 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]snd-usb-usx2y 0.8.0 against alsa-kernel cvshead: OHCI doesn't crash anymore
-Date: Thu, 30 Sep 2004 20:46:29 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000556]: ATI IXP 150 - Does Not work majority of the time.
+Date: Thu, 30 Sep 2004 20:53:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409302046.29798.annabellesgarden@yahoo.de>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_FSFXBep9yCct9/Z"
+Message-ID: <20040930185349.0DA0715008@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C0A8256
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 20:53:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,158 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_FSFXBep9yCct9/Z
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000556
+======================================================================
+Reported By:                bremedios
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     556
+Category:                   PCI - atiixp
+Reproducibility:            sometimes
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-30-2004 20:53 CEST
+Last Modified:              09-30-2004 20:53 CEST
+======================================================================
+Summary:                    ATI IXP 150 - Does Not work majority of the time.
+Description: 
+Majority of the time (approx 70%) the board boots and reports timeout
+errors.  In these cases the sound driver fails to load, thus trying to use
+any sound applications results in failure.
 
-Summary: Prevents crashes when communicating over ohci usb-hcds.
+Trying to unload and reload the modules when it fails does not seem to
+help.
 
-Work on this started, when rumors spread that ohci equipped machines would 
-crash.
-This was due to me missing two facts:
-1) Ohci has a bigger usb frame number wrap around.
-2) It only supports URB_ISO_ASAP when submitting iso urbs.
-Fixed now.
-Usb-traffic for playback starts now in the prepare callback, like it 
-previously only did for capture.
-As a side effect code became simpler and smaller.
+Shutting down and Starting up seems to eventually fix the problem.
 
-Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+======================================================================
 
---Boundary-00=_FSFXBep9yCct9/Z
-Content-Type: application/x-bzip2;
-  name="snd-usb-usx2y.patch.0.8.0.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="snd-usb-usx2y.patch.0.8.0.bz2"
-
-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
-
---Boundary-00=_FSFXBep9yCct9/Z--
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-30-04 20:53 bremedios      New Bug                                      
+09-30-04 20:53 bremedios      File Added: messages                         
+09-30-04 20:53 bremedios      Distribution              => Fedora Core 2   
+09-30-04 20:53 bremedios      Kernel Version            => 2.6.8.1         
+======================================================================
 
 
 -------------------------------------------------------
