@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: [alsa-cvslog] CVS: alsa-lib/src/pcm pcm.c,1.227,1.228
-Date: Wed, 23 Oct 2002 19:38:20 +0200 (CEST)
+Date: Wed, 23 Oct 2002 19:46:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210231933090.5772-100000@pnote.perex-int.cz>
-References: <3DB6DCE3.4452ABED@libero.it>
+Message-ID: <Pine.LNX.4.33.0210231945010.5772-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.33.0210231933090.5772-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DB6DCE3.4452ABED@libero.it>
+In-Reply-To: <Pine.LNX.4.33.0210231933090.5772-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,31 +20,37 @@ To: Abramo Bagnara <abramo.bagnara@libero.it>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 23 Oct 2002, Abramo Bagnara wrote:
+On Wed, 23 Oct 2002, Jaroslav Kysela wrote:
 
-> Jaroslav Kysela wrote:
-> > 
-> > Added ommited clear() functions
-> > 
-> > Index: pcm.c
-> >  /**
-> > + * \brief clear snd_pcm_hw_params_t structure
-> > + * \param obj pointer to structure
-> > + */
-> > +void snd_pcm_hw_params_clear(snd_pcm_hw_params_t *obj)
-> > +{
-> > +       assert(obj);
-> > +       memset(obj, 0, snd_pcm_hw_params_sizeof());
-> > +}
+> On Wed, 23 Oct 2002, Abramo Bagnara wrote:
 > 
-> Why that _clear functions?
-> What's the expected semantic for "clear"?
+> > Jaroslav Kysela wrote:
+> > > 
+> > > Added ommited clear() functions
+> > > 
+> > > Index: pcm.c
+> > >  /**
+> > > + * \brief clear snd_pcm_hw_params_t structure
+> > > + * \param obj pointer to structure
+> > > + */
+> > > +void snd_pcm_hw_params_clear(snd_pcm_hw_params_t *obj)
+> > > +{
+> > > +       assert(obj);
+> > > +       memset(obj, 0, snd_pcm_hw_params_sizeof());
+> > > +}
+> > 
+> > Why that _clear functions?
+> > What's the expected semantic for "clear"?
+> > 
+> > When we designed new API I took in consideration them, but the lack of
+> > usefulness and the ambiguity of semantic has pushed me to avoid them.
 > 
-> When we designed new API I took in consideration them, but the lack of
-> usefulness and the ambiguity of semantic has pushed me to avoid them.
+> Well, you're right that the name is misleading, but wouldn't be good to 
+> let to reuse a structure? Perhaps, _init suffix is better.
 
-Well, you're right that the name is misleading, but wouldn't be good to 
-let to reuse a structure? Perhaps, _init suffix is better.
+I got it. The initialization makes no sense for these structures.
+I required this action for an internal function, but it should not be 
+visible. Ok, I'll remove it. Thank you for the correction.
 
 						Jaroslav
 
