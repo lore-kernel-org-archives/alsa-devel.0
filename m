@@ -1,14 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Audigy LS SPDIF output.
-Date: Mon, 21 Jun 2004 23:08:20 +0100
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] Audigy + FX8010 capture (hw:x,2)
+Date: Mon, 21 Jun 2004 19:26:52 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40D75C54.7010700@superbug.demon.co.uk>
-References: <40D72EBF.80108@superbug.demon.co.uk> <40D7463C.5090406@ait.nrl.navy.mil>
+Message-ID: <1087860356.8203.2.camel@debian>
+References: <200406210745.i5L7j585017902@www3.pobox.sk>
+	 <s5hy8mgn4or.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40D7463C.5090406@ait.nrl.navy.mil>
+In-Reply-To: <s5hy8mgn4or.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,62 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Klein <eklein@ait.nrl.navy.mil>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Eric Klein wrote:
-> James Courtier-Dutton wrote:
+FWIW, here is what happens when trying to capture hw:x,2 using the 
+current CVS, without applying Peter's patch:
+
+debian:/home/rlrevell# jackd --realtime -d alsa -d hw:0,2
+jackd 0.98.1
+Copyright 2001-2003 Paul Davis and others.
+jackd comes with ABSOLUTELY NO WARRANTY
+This is free software, and you are welcome to redistribute it
+under certain conditions; see the file COPYING for details
+
+loading driver ..
+creating alsa driver ...
+hw:0,2|hw:0,2|1024|2|48000|0|0|nomon|swmeter|-|32bit
+ALSA lib pcm_hw.c:1056:(snd_pcm_hw_open) open /dev/snd/pcmC0D2p failed:
+No such device
+jackd: pcm.c:690: snd_pcm_nonblock: Assertion `pcm' failed.
+Aborted
+
+Here is my /proc/asound/pcm:
+
+debian:/home/rlrevell# cat /proc/asound/pcm
+00-00: emu10k1 : EMU10K1 : playback 32 : capture 1
+00-01: emu10k1 mic : EMU10K1 MIC : capture 1
+00-02: emu10k1 efx : EMU10K1 EFX : playback 8 : capture 1
+
+Lee
+
+On Mon, 2004-06-21 at 14:31, Takashi Iwai wrote:
+> At Mon, 21 Jun 2004 09:45:05 +0200,
+> Peter Zubaj wrote:
+> > 
+> > Hi,
+> > 
+> > This patch fixes capture problems from hw:x,2 on Audigy
+> > 
+> > I tested 4 channel recrding and it was OK.
+> > 
+> > hw:x,2 records outputs from FX8010 (not FX buses)
+> > 
+> > Using "EFX voices mask" you can set channels what you want record.
+> > 
+> > use alsactl store to store config
+> > edit this config (set true for needed channel for "EFX voices mask"
+> > control) - I recorded channels 8,9,14,15 (front and rear output).
+> > use alsactl restore to restore config
+> > 
+> > Looks like channel count must be power of 2 (1, 2, 4, 8, ...).
 > 
->> Hi,
->>
->> I cannot test SPDIF output because I cannot find a suitable 4 pole 
->> mini jack that has 3 phone plugs on the end of it, so that I can test 
->> spdif out.
->>
->> I have tried a few different cables, but none of them even work with 
->> the 4front drivers. Once I have a cable that works with the 4Front 
->> drivers, I will then look into getting the ALSA driver working.
->>
->> Can anybody help me here?
+> Oh, shortly before, I changed the EFX-related code a bit to merge
+> playback and capture streams.
+> 
+> Could you regenerate the patch based on CVS?  (But wait for a while
+> until anon cvs is sync'ed.)
 > 
 > 
-> There are two solutions I can offer (assuming when you mention phone 
-> plugs, that you mean 3-pole 3.5mm plugs):
-> 1) Creative UK offers a set of cables that will take the 3 output lines 
-> (two of which are 4-pole lines) and convert them into 4 3-pole lines 
-> (aka stereo lines). These cables are meant for hooking the Audigy 2 up 
-> to a set of creative labs 7.1 speakers. The website to order the cable 
-> is: http://uk.europe.creative.com/estore/product.asp?prod=598   . I'm 
-> not sure why they don't offer this cable in the US, but I assume you can 
-> order if from the UK.
-> 2) You can make a custom cable (this is what I spent my day doing 
-> today). You can buy a camcorder cable which has a 4-pole 3.5mm plug on 
-> one end, and 3 mono RCA type plugs. If you then buy some mono-phone 
-> plugs (either 3.5mm (aka 1/8") or 1/4" will do), you can cut off the RCA 
-> plugs and do a little wire splicing/soldering to attach the plugs you 
-> want. This solution works very nicely (although it takes a little time).
+> thanks,
 > 
-> Good luck,
+> Takashi
 > 
-> Eric Klein
-> eklein@ait.nrl.navy.mil
 > 
+> -------------------------------------------------------
+> This SF.Net email sponsored by Black Hat Briefings & Training.
+> Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
+> digital self defense, top technical experts, no vendor pitches, 
+> unmatched networking opportunities. Visit www.blackhat.com
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 > 
 
-I have a camcorder cable, that has one 4-pole mini-jack connected to 3 
-mono RCA plugs, but the connections are all wrong. i.e. the ground or 
-sheild on the RCA plugs is not connected to the Ground pole of the mini 
-jack as far as the Audigy LS sound card is concerned. It is only correct 
-for use with a camcorder.
-
-This is all quite annoying, because a simple mono jack to RCA plug does 
-perfectly for SPDIF out to Coax input on the Audigy 2. But this does not 
-work with the Audigy LS.
-
-So, I will probably have to go with option (1).
-
-James
 
 
 -------------------------------------------------------
