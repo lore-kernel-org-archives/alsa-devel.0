@@ -1,70 +1,83 @@
-From: Christian Kujau <evil@g-house.de>
-Subject: Re: [Alsa-devel] Oops in 2.6.10-rc1
-Date: Fri, 05 Nov 2004 03:35:58 +0100
-Message-ID: <418AE70E.80302@g-house.de>
-References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de>
+From: "Alexander E. Patrakov" <patrakov@ums.usu.ru>
+Subject: Re: Question on ALSA versions
+Date: Fri, 05 Nov 2004 09:53:18 +0500
+Message-ID: <cmf0td$rqv$1@sea.gmane.org>
+References: <cmciu9$hsn$1@sea.gmane.org> <1099596730.1617.61.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262536AbUKECgS@vger.kernel.org>
-In-Reply-To: <418A47BB.5010305@g-house.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@lists.sourceforge.net, perex@suse.cz
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7Bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Lee Revell wrote:
 
-hi again,
+> On Thu, 2004-11-04 at 11:42 +0500, Alexander E. Patrakov wrote:
+>> Hello,
+>> 
+>> I have the following question. Is it OK to have mismatched versions of
+>> ALSA drivers (e.g. 1.0.4, from linux-2.6.8.1) and libs (1.0.6)? This
+>> _seems_ to work, and I see the code to support various versions of the
+>> kernel PCM protocol in the library, but I want to see official words from
+>> developers.
+> 
+> This is not guaranteed to work, and could lead to all kinds of weird
+> problems.  Alsa-lib is the mechanism by which changes in the kernel side
+> ALSA are hidden from userspace.  They expect to be the same version.
 
-i *think* i found the ChangeSet leading to the bug i tried to report in
- http://marc.theaimsgroup.com/?l=linux-kernel&m=109888178603516&w=2
+But the code says, e.g.:
 
-the error is sill present here (and only here? strange...), the latest -BK
-does not fix it. i had some difficulties in telling BK to do the right
-thing. to summarise the error:
+        if (ioctl(fd, SNDRV_PCM_IOCTL_PVERSION, &ver) < 0) {
+                ret = -errno;
+                SYSERR("SNDRV_PCM_IOCTL_PVERSION failed");
+                close(fd);
+                return ret;
+        }
+        if (SNDRV_PROTOCOL_INCOMPATIBLE(ver, SNDRV_PCM_VERSION_MAX))
+                return -SND_ERROR_INCOMPATIBLE_VERSION;
 
-- - upon loading of snd_ens1371 the Oops occurs. system is still stable
-then, but no sound available.
-- - this occured somewhere between 2.6.9 (released 15-Oct-2004) and 2.6.9-10
-(released 22-Oct-2004)
+        if (SNDRV_PROTOCOL_VERSION(2, 0, 5) <= ver) {
+  /* old stuff */
+ }
 
-one interesting changeset was:
+So, contrary to your words, the code checks not for exactly the same version
+but for some match defined by SNDRV_PROTOCOL_INCOMPATIBLE macro:
 
-ChangeSet@1.2000.7.1, 2004-10-20 20:33:06+02:00, perex@suse.cz
-  Merge suse.cz:/home/perex/bk/linux-sound/linux-2.5
-  into suse.cz:/home/perex/bk/linux-sound/linux-sound
+#define SNDRV_PROTOCOL_INCOMPATIBLE(kversion, uversion) \
+    (SNDRV_PROTOCOL_MAJOR(kversion) != SNDRV_PROTOCOL_MAJOR(uversion) || \
+    (SNDRV_PROTOCOL_MAJOR(kversion) == SNDRV_PROTOCOL_MAJOR(uversion) && \
+    SNDRV_PROTOCOL_MINOR(kversion) != SNDRV_PROTOCOL_MINOR(uversion)))
 
-i tried to back it out:
+So the protocols are considered compatible in the code if they have the same
+major and minor versions, but differences in micro versions are allowed.
 
-$ bk clone -r1.2000.7.1 linux-2.6-BK linux-2.6-BK-test
+> In practice it usually works but there have been some specific incidents
+> where this caused problems.  For example when a major change is made to
+> a driver the hardware specific parts of alsa-lib will be updated to
+> reflect the change.
 
-but the said ChangeSet was still there (of course). i tried to back it out
-(now for sure):
+Isn't it what minor and major versions are for? Or are they just an old
+artifact that should not be relied upon? Or there is just lack of testing?
 
-$ bk undo -a1.2010
-(hm: the changesets get renumbered everytime i "do" something with the
-tree) this one reverted quite a few ChangeSets but i let it happen.
+In short: is it a bug when it doesn't work with only micro versions being
+different?
 
-compiling & booting this thing goes fine and i am now running 2,6,9-BK(?)
-with working snd_ens1371.
+-- 
+Alexander E. Patrakov
 
-if someone could give me a hint here what to do next or perhaps tell me
-that the whole things was totally pointless - please say so.
-i am somehow lost as to which is the right person to bug here.
 
-thank you for your time,
-Christian.
-- --
-BOFH excuse #328:
 
-Fiber optics caused gas main leak
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBiucN+A7rjkF8z0wRAkpKAJ0bbevHqmpU/Ut3r5TbWgfu42cGBACgsrhm
-X8euqIjgc8KNCWl50oys/Yw=
-=8VM9
------END PGP SIGNATURE-----
+-------------------------------------------------------
+This SF.Net email is sponsored by:
+Sybase ASE Linux Express Edition - download now for FREE
+LinuxWorld Reader's Choice Award Winner for best database on Linux.
+http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
