@@ -1,14 +1,20 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: memory leaks?
-Date: Tue, 29 Mar 2005 15:24:03 -0500
-Message-ID: <1112127843.5141.12.camel@mindpipe>
-References: <1111896886.2408.1.camel@mindpipe>
-	 <s5hpsxiiqls.wl@alsa2.suse.de>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: Re: 2.6.12-rc1-mm3, sound card lost id
+Date: Tue, 29 Mar 2005 22:46:30 +0200
+Message-ID: <20050329224630.069cda56.khali@linux-fr.org>
+References: <20050325002154.335c6b0b.akpm@osdl.org>
+	<20050326111945.5eb58343.khali@linux-fr.org>
+	<s5hr7hyiqra.wl@alsa2.suse.de>
+	<20050329195721.385717aa.khali@linux-fr.org>
+	<1112127424.5141.7.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpsxiiqls.wl@alsa2.suse.de>
+Received: from kraid.nerim.net (smtp-102-tuesday.nerim.net [62.4.16.102])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43BB2233
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 22:46:27 +0200 (MEST)
+In-Reply-To: <1112127424.5141.7.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +24,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-03-29 at 14:27 +0200, Takashi Iwai wrote:
-> Yes.  Could you trace the corresponding addresses?
-> (just checking /proc/kallsyms before unloading would help, too).
+Hi Lee,
 
-How exactly would I trace those addresses?
+> I think we just have to add this PCI id to the table.  I got the same
+> result before James added the SBLive! platinum detection.
+> 
+> What is the output of 'lspci -v | grep -1 EMU10k1'?
 
-Anyway, it looks to me that the leak is in snd_seq_midi.  Here is the
-most recent output.  The first one I'm not sure about, the second seems
-to be in snd_seq_midisynth_register_port.
+00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 06)
+        Subsystem: Creative Labs CT4832 SBLive! Value
 
-ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:71: Not freed snd_alloc_kmalloc = 432
-ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(164) from e098b806 not freed
-ALSA /home/rlrevell/cvs/alsa/alsa-driver/alsa-kernel/core/memory.c:80: kmalloc(268) from e098b6fe not freed
+and the one you didn't ask for:
 
-Here are the closest addresses from kallsyms:
+00:0d.0 Class 0401: 1102:0002 (rev 06)
+        Subsystem: 1102:8027
 
-00000000 a seq_midi.c   [snd_seq_midi]
-e0a37ea0 ? __mod_author43       [snd_seq_midi]
-e0a37f00 ? __mod_description44  [snd_seq_midi]
-e0a37f44 ? __mod_license45      [snd_seq_midi]
-e098d7ec d output_buffer_size   [snd_seq_midi]
-e098d7f0 d __param_str_output_buffer_size       [snd_seq_midi]
-e098be0c r __param_output_buffer_size   [snd_seq_midi]
-e0a37f60 ? __mod_output_buffer_sizetype47       [snd_seq_midi]
-e0a37f80 ? __mod_output_buffer_size48   [snd_seq_midi]
-e098d804 d input_buffer_size    [snd_seq_midi]
-e098d808 d __param_str_input_buffer_size        [snd_seq_midi]
-e098be20 r __param_input_buffer_size    [snd_seq_midi]
-e0a37fc0 ? __mod_input_buffer_sizetype50        [snd_seq_midi]
-e0a37fe0 ? __mod_input_buffer_size51    [snd_seq_midi]
-e098d81c d register_mutex       [snd_seq_midi]
-e098b000 t snd_midi_input_event [snd_seq_midi]
-e098b100 t dump_midi    [snd_seq_midi]
-e098b1b0 t event_process_midi   [snd_seq_midi]
-e098b2e0 t snd_seq_midisynth_new        [snd_seq_midi]
-e098b330 t midisynth_subscribe  [snd_seq_midi]
-e098b420 t midisynth_unsubscribe        [snd_seq_midi]
-e098b480 t midisynth_use        [snd_seq_midi]
-e098b540 t midisynth_unuse      [snd_seq_midi]
-e098b5c0 t snd_seq_midisynth_delete     [snd_seq_midi]
-e098b610 t set_client_name      [snd_seq_midi]
-e098b6a0 t snd_seq_midisynth_register_port      [snd_seq_midi] 
-e098bd68 t .text.lock.seq_midi  [snd_seq_midi]
-e098d9c0 b synths       [snd_seq_midi]
-e098bc80 t snd_seq_midisynth_unregister_port    [snd_seq_midi]
-e098d82c d ops.1        [snd_seq_midi]
-e08fd000 t alsa_seq_midi_init   [snd_seq_midi]
-e098bdf0 t alsa_seq_midi_exit   [snd_seq_midi]
+This made me realize that I could still try to hack it myself. The
+following patch somehow helped:
 
-HTH,
+--- linux-2.6.12-rc1-mm3/sound/pci/emu10k1/emu10k1_main.c.orig	2005-03-29 20:38:12.000000000 +0200
++++ linux-2.6.12-rc1-mm3/sound/pci/emu10k1/emu10k1_main.c	2005-03-29 22:32:23.000000000 +0200
+@@ -680,6 +680,10 @@
+ 	 .driver = "EMU10K1", .name = "E-mu APS [4001]", 
+ 	 .emu10k1_chip = 1,
+ 	 .ecard = 1} ,
++	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80271102,
++	 .driver = "EMU10K1", .name = "SB Live Player 1024", 
++	 .emu10k1_chip = 1,
++	 .ac97_chip = 1} ,
+ 	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80641102,
+ 	 .driver = "EMU10K1", .name = "SB Live 5.1", 
+ 	 .emu10k1_chip = 1,
 
-Lee
 
+Now the card will be listed as "S1024" instead of "Unknown" so that's a
+change. Looks like the short name is auto-generated? Unfortunately
+that's still not "Live" as before so my mixer settings are not back yet.
+And I believe that "Live" was a much better name than "S1024" too.
+
+Thanks,
+-- 
+Jean Delvare
 
 
 -------------------------------------------------------
