@@ -1,14 +1,16 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [PATCH] standard control names for the rme96
-Date: Tue, 13 May 2003 20:32:33 +0200
+From: ljp <ljp@llornkcor.com>
+Subject: Re: An offer to help from a Linux Device Driver engineer
+Date: Tue, 13 May 2003 12:52:29 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030513183233.GA825@tuba.home>
-References: <200305111919.h4BJJwlI038695@mail.mega.nu> <20030511235421.GA3610@tuba.home> <s5h1xz3uf43.wl@alsa2.suse.de>
+Message-ID: <200305131252.29524.ljp@llornkcor.com>
+References: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
 Content-Disposition: inline
-In-Reply-To: <s5h1xz3uf43.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +19,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Daniel Pouzzner <douzzer@mega.nu>, alsa-devel@lists.sourceforge.net
+To: John Hubbard <hubbardjohn@earthlink.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 13, 2003 at 03:54:04PM +0200, Takashi Iwai wrote:
-> 
-> let me know if it's ok, so that i'll commit it soon.
-> also rmedigicontrol is a good candidate for alsa-tools.  i'll put it
-> together with the patch for rme driver.
-> 
+On Tuesday May 13 2003 11:21 am, John Hubbard wrote:
+> Hello,
+>     May I help the ALSA project, by building device drivers for anything
+> that is not yet supported?  I am a device driver engineer looking to gain
+> experience with Linux Audio, and to advance my knowledge in this area.  I
+> definitely have an ulterior motive (to enhance my resume) but I also happen
+> to love composing on my SY-85 synthesizer in my spare time, so this is not
+> as unnatural as it sounds...
+>
+>     My first idea was to find an unsupported sound card, purchase one, and
+> provide ALSA support for it.  However, after lurking on this mailing list
+> for a few days, I see that you all  have been busy, and it may actually be
+> difficult to find an unsupported card.
+>
+>    Can anyone advise me as to kernel/driver work that needs to be done
+> here?
+>
+> thanks,
+> john h
+> -------------------------
+> John F. Hubbard
+> hubbardjohn@earthlink.net
 
-After some patch in, patch out, patch in -- I've made two versions of the same
-code level:
+Although not popular cards, I would personally like to see the alsa driver for 
+the adatpcr updated and working. and also perhaps the tascam 428 driver thats 
+floating somewhere else also, but wont be included due to proprietary 
+crapola..
 
-... and rmedigicontrol-0.3.5a is my tools candidate that depends on the rme96
-patch. Usage with rme32 is fine.
 
 
-bye,
-martin
 
-See http://langerland.de/rme32/control.html
+-- 
+My cat's a debugger....
+
+Potter, Lorn, "ljp"
+core developer / Web Administrator
+Project OPIE- the Open Palmtop Integrated Environment
+http://opie.handhelds.org 
+IRC: irc.freenode.net #opie #opie.de
+
+llornkcor@handhelds.org
+llornkcor@helixcommunity.org
+
 
 
 -------------------------------------------------------
