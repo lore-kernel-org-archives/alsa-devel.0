@@ -1,11 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000812]: SNDRV_PCM_IOCTL_DELAY failed:
-Date: Wed, 12 Jan 2005 20:42:46 +0100
-Message-ID: <20050112194246.F3CC62D8@alsa.alsa-project.org>
+From: Rusty Phillips <rustyp@freeshell.org>
+Subject: Re: Omnistudio USB
+Date: Wed, 12 Jan 2005 15:50:02 -0500
+Message-ID: <1105563002.14697.45.camel@localhost>
+References: <Pine.HPX.4.33n.0501121001170.22429-100000@studcom.urz.uni-halle.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CC62D8
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 20:42:46 +0100 (MET)
+In-Reply-To: <Pine.HPX.4.33n.0501121001170.22429-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,91 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
-Message-ID: <0b3183954cc1214e33404e6f93b73150@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
+Okay, I've been trying most of my testing with the first two channels.
 
+However, I just figured out that recording and playback works on
+channels #3 and #4 at 96000.
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=812> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   812
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-12-2005 19:06 CET
-Last Modified:              01-12-2005 20:42 CET
-======================================================================
-Summary:                    SNDRV_PCM_IOCTL_DELAY failed: 
-SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
-Description: 
-This is Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=287583: please see
-http://bugs.debian.org/287583
-for the full report.
+The first two are the best ones to get, though, because those are the
+ones with built-in preamps and XLR inputs.  Note that even bypassing the
+preamps by going directly through the line-ins doesn't work, though.
 
-Summary: The user runs xmms with the ALSA output plugin and gets huge
-numbers of error messages:
+Clues?
 
-..
-ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
-File descriptor in bad state
-ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
-File descriptor in bad state
-ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
-File descriptor in bad state
-..
-
-
-The problem disappeared when the user reverted to libasound2 1.0.6-5.
-Indeed, it seems that the error message in question was only added to
-libasound2 in 1.0.7.
-
-
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 01-12-05 19:09 
-----------------------------------------------------------------------
-See also Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=290034:
-
-    http://bugs.debian.org/290034
-
-----------------------------------------------------------------------
- tiwai - 01-12-05 20:42 
-----------------------------------------------------------------------
-This is partly a problem of xmms ALSA output plugin.
-
-But, anyway, this messages no longer appears on alsa-lib 1.0.8.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-12-05 19:06 jdthood        New Issue                                    
-01-12-05 19:09 jdthood        Note Added: 0003176                          
-01-12-05 20:42 tiwai          Status                   new => resolved     
-01-12-05 20:42 tiwai          Resolution               open => fixed       
-01-12-05 20:42 tiwai          Assigned To               => tiwai           
-01-12-05 20:42 tiwai          Note Added: 0003177                          
-======================================================================
+On Wed, 2005-01-12 at 10:02 +0100, Clemens Ladisch wrote:
+> Rusty Phillips wrote:
+> > I recently purchased one, and have been trying to find out
+> > anything I can about getting it to work.  So far all I've gotten
+> > is playback on two channels at 48Khz with alsa (from the 2.6.10
+> > kernel as well as from alsa CVS).
+> 
+> What are the contents of /proc/asound/cardX/stream0?
+> Is there a second output device in the output of "aplay -l"?
+> 
+> 
+> Clemens
+> 
 
 
 
