@@ -1,14 +1,14 @@
-From: "Ed Wildgoose" <Ed@Wildgooses.com>
-Subject: Jack-Alsa plugin - problems (does it work at all?!)
-Date: Wed, 7 Jan 2004 14:21:50 -0000
+From: "Ralph Little" <ralph.little@tribaldata.co.uk>
+Subject: Re: VIA82XX & aRTS
+Date: Wed, 7 Jan 2004 14:31:05 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <00e901c3d529$97d63840$5d40a8c0@FRiskMan.com>
-References: <04de01c3d37f$20a3aa10$5d40a8c0@FRiskMan.com>
+Message-ID: <E73302CFAE1F8D4A908B7B2DD4007DCA0B7A72@TDSCore01.TribalData.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,102 +20,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
+Sorry about the HTML formatting.  :(
+Should be fixed now.
 
+Nobody likes all that crap in their mail digests!
 
-> Hi, I'm having some problems getting the alsa input into Jack working
-> correctly.
->
-> The soundcard is an RME96/8 PAD, Alsa from Kernel 2.6 pre9, and Jack
-version
-> 0.91.1 - I'm firing up Jackd with:
->
-> jackd -R -t 2000 -d alsa -d rme96 -r 44100 -p 1024 -n 8 -m -zs -H -M &
->
-> ...and I have an asound config (below) which lets me play sounds correctly
-> with something like: aplay -D jackplug blah.wav
->
-> However, trying to use either xmms, mplayer or mythtv with the same alsa
-> device just seems to leave the app "hanging" and not doing anything, and
-> attempts to fastforward in mplayer and mythtv (which presumably causes the
-> alsa layer in each app to try and pause then reopen the sound layer)
-causes
-> the error:
->
-> "You cannot set callbacks on an active client
-> cannot connect alsaP:out_000
->  to alsa_pcm:playback_1"
->
-> No sound comes out...
->
-> Is this an alsa issue, sound card driver problem or something else?  Apart
-> from aplay (which does work) are there any other things I should try to
-test
-> the alsa-jack plugin?  Just for reference at least some native jack apps
-> seem to be working fine, although I haven't tried the xmms-jack plugin
-yet.
->
-> Can anyone please help with some debugging ideas here.  I'm really keen to
-> get Jack working as it seems to be the best way to integrate Brutefir in
-> order to do some fancy room correction effects (note: Brutefir is not
-active
-> in the failed tests above, just to remove some variables...)
->
+Regards,
+Ralph
 
-I've still not got this working *at all*.  I have switched in a new RME 9632
-card to compare, and upgraded the drivers on my 2.6.1mm2 kernel to the
-latest tarball 1.0rc2 versions.
-
-Still the same issue.  Every app just sits there hanging or making no sound
-when you ask it to play to the jackplug pcm device.  Most recently I
-installed alsaplayer and the same happens here - it's own native jack output
-layer works a treat, but the alsa output to the jack output just plays
-silence (although it doesn't seem to hang the app now...)
-
-I did spot one problem in that I hadn't created a ctl device for my pcm
-originally, but my new asoundrc is below and this doesn't play anything...
-
-Does someone have this working *at all* on their system? Could you please
-demonstrate your asoundrc and list your soundcard make/model and versions of
-drivers.
-
-Thanks
-
-        pcm.rme96 {
-                type hw
-                card 0
-        }
-
-        ctl.rme96 {
-                type hw
-                card 0
-        }
-
-        pcm.jackplug {
-                type plug
-                slave { pcm "jack" }
-        }
-
-        ctl.jackplug {
-                type hw
-                card 0
-        }
-
-        pcm.jack {
-                type jack
-                playback_ports {
-                       0 alsa_pcm:playback_1
-                       1 alsa_pcm:playback_2
-                }
-                       capture_ports {
-                       0 alsa_pcm:capture_1
-                       1 alsa_pcm:capture_2
-               }
-        }
-
-        ctl.jack {
-                type hw
-                card 0
-        }
+---------
+We have moved! Tribal Data Solutions (formerly Trackit Systems) has =
+moved to bigger and better premises at Hawthorn Park, which is two =
+minutes from the junction of the A64 and Leeds outer ring road. The new =
+contact details are; Tribal Data Solutions, Tribal House, Hawthorn Park, =
+Coal Road, Leeds, LS14 1PQ, Telephone number - 0113 306 0306. For more =
+details and a map, please visit our website at =
+http://www.tribaldata.co.uk=20
+This e-mail and any attachments are confidential and are sent on the =
+basis of our copyright, e-mail and security policy which can be =
+inspected by visiting http://www.tribaldata.co.uk/policies.asp=20
+If you are not the intended recipient, please notify the sender and =
+delete this message. Thank you.
+-----------
 
 
 
