@@ -1,17 +1,23 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: intel8x0 has stopped working.
-Date: Mon, 02 Feb 2004 19:42:37 +0000
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Some info about the Edirol UA-3 FX
+Date: Mon, 2 Feb 2004 21:32:53 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <401EA82D.3060702@superbug.demon.co.uk>
-References: <401E8BAE.6010802@superbug.demon.co.uk> <s5hn081uztv.wl@alsa2.suse.de>
+Message-ID: <20040202203253.GB14461@fliwatut.scifi>
+References: <20040202192250.GA12719@fliwatut.scifi> <008301c3e9c4$367b2dd0$a501a8c0@computer2>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA23102
-	for <alsa-devel@alsa-project.org>; Mon, 2 Feb 2004 20:36:40 +0100
-In-Reply-To: <s5hn081uztv.wl@alsa2.suse.de>
+Received: from smtp2.netcologne.de (smtp2.netcologne.de [194.8.194.218])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA24778
+	for <alsa-devel@alsa-project.org>; Mon, 2 Feb 2004 21:33:26 +0100
+Received: from fliwatut.scifi (xdsl-213-196-247-129.netcologne.de [213.196.247.129])
+	by smtp2.netcologne.de (Postfix) with ESMTP id 07C4E3AF8E
+	for <alsa-devel@alsa-project.org>; Mon,  2 Feb 2004 21:32:54 +0100 (MET)
+Received: from freak by fliwatut.scifi with local (Exim 3.36 #1 (Debian))
+	id 1AnkkY-0003sT-00
+	for <alsa-devel@alsa-project.org>; Mon, 02 Feb 2004 21:32:54 +0100
+Content-Disposition: inline
+In-Reply-To: <008301c3e9c4$367b2dd0$a501a8c0@computer2>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,79 +26,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Mon, 02 Feb 2004 17:41:02 +0000,
-> James Courtier-Dutton wrote:
-> 
->>In alsa 0.9.8, the snd-intel8x0 worked find with my MB. An ICH5 with ALC650.
->>With alsa 1.0.2, I get: -
->>device: front -> no-sound output
->>device: surround40: -> Only sound on rear left, and rear right.
->>device: surround51: -> Only sound on rear left, and rear right, center, lfe
->>
->>So, in all cases there is never sound on the front speakers.
->>
->>The same problem has happened to a person with an ICH2, which only has 
->>front speakers, so they get no sound at all.
->>
->>I am investigating, and I suspect that the mixer has just lost the 
->>mixer/mute for the front speakers.
-> 
-> 
-> hmm, it looks like a generic problem of intel8x0 with ALC65x.
-> in the recent version, the detection and implementation of PCM streams
-> have been changed, and i guess it's broken for these codecs.
-> 
-> 
-> 
->>Is there a tool where I can adjust ac97 registers directly through a 
->>IOCTL or something, for test purposes?
-> 
-> 
-> 	% cat /proc/asound/card0/codec97#0/ac97#0-0+regs
-> 
-> we'll need to trace the behavior in snd_ac97_pcm_*() functions...
-> 
-> 
-> Takashi
-> 
-> 
-Ok, the front channel is now working, but I don't know why.
-One thing that is definitely broken is sample rate conversion.
-E.g. Open card at rate 44100, device="hw:0", fails saying rate 44100 not 
-supported.
-Open card at rate 48000, device="hw:0" works.
-Now, open card at rate 44100, device "plughw:0" succeeds, but then the 
-snd_pcm_writei() calls just hangs at poll()
+Hallo,
+Andreas Kuckartz hat gesagt: // Andreas Kuckartz wrote:
 
-#0  0x401a5ab8 in *__GI___poll (fds=0x402049a8, nfds=1, timeout=-1) at 
-../sysdeps/unix/sysv/linux/poll.c:82
-#1  0x4006abd4 in snd_pcm_wait (pcm=0x8054630, timeout=-4) at pcm.c:2044
-#2  0x400706f8 in snd_pcm_write_areas (pcm=0x8054630, areas=0xbfffe9d4, 
-offset=0, size=71, func=0x4007a480 <snd_pcm_plugin_write_areas>)
-     at pcm.c:6041
-#3  0x4007a88d in snd_pcm_plugin_writei (pcm=0x8054630, 
-buffer=0xfffffffc, size=4294967292) at pcm_plugin.c:436
-#4  0x40068dd7 in snd_pcm_writei (pcm=0x7fffffff, buffer=0x8054810, 
-size=1) at pcm_local.h:368
-#5  0x080495e0 in write_loop (handle=0x80544b8, channel=0, periods=3105, 
-samples=0x8054810) at speaker-test.c:289
-#6  0x08049b73 in main (argc=4, argv=0xbfffee54) at speaker-test.c:445
+> Do you know if it works with a 2.4 kernel?
 
+No, I didn't test this yet, but I strongly suppose, that it is the
+same behaviour. I had the Edirol UA-20, when the Advanced mode wasn't
+supported yet by ALSA (it is now). At that time, the normal mode was
+working just fine, so I guess, that this is just a standard USB audio
+device when not in Advanced mode. In advanced mode however lie all the
+discerning features of the UA-3 FX, like higher samplerates. And
+without a samplerate of 48000 you won't be happy with any USB device
+because of the constant frame size of USB audio (the samplerate should
+divide evenly by 1000). 
 
-Once thing I have noticed, is that with the alc650, we used to have VRA 
-(alsa 0.9.8), but the 1.0.2 intel8x0 driver ignores the VRA and fixes 
-itself at 48000.
-So, before I never needed the sample rate converters, but as it now 
-fixes the rate at 48000, I need the sample rate converters, and they 
-don't actually work.
-
-
-
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
