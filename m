@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000792]: alsa fails to initialize after UDEV is installed
-Date: Sat, 8 Jan 2005 04:12:03 +0100
-Message-ID: <b87c5a1256867608334b3c50e60840f8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000793]: Feature Request SRS
+Date: Sat, 8 Jan 2005 05:16:00 +0100
+Message-ID: <8051a879d49282cf1c8e711f7a4776ae@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 561662DC
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 04:12:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 826DA22D
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 05:16:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,44 +24,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=792> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=793> 
 ======================================================================
-Reported By:                sluce
-Assigned To:                
+Reported By:                gregh
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   792
-Category:                   alisp
+Project:                    ALSA - driver
+Issue ID:                   793
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-08-2005 04:12 CET
-Last Modified:              01-08-2005 04:12 CET
+Date Submitted:             01-08-2005 05:16 CET
+Last Modified:              01-08-2005 05:16 CET
 ======================================================================
-Summary:                    alsa fails to initialize after UDEV is installed
+Summary:                    Feature Request SRS
 Description: 
-I'm really running 1.0.7 but that wasn't an option above.
-The kernel reports that it finds my CMI8330 card and alsa says:
-pnp: the driver 'cmi8330' has been registered
-pnp: match found with the PnP device '01:01.00' and the driver 'cmi8330'
-pnp: match found with the PnP device '01:01.03' and the driver 'cmi8330'
-pnp: Device 01:01.00 activated.
-pnp: Device 01:01.03 activated.
-ALSA sound/isa/sb/sb_common.c:130: SB [0x220]: DSP chip found, version =
-4.13
-
-I am unable to use the sound card.  KDE is configured to use alsa but is
-unable to open the sound device.
-
-I'll happily provide more information if you tell me what you want to see.
+Is there a way to use SRS with alsa?
+Is this even the correct forum to post a request?
+I apologise if it's not
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-08-05 04:12 sluce          New Issue                                    
+01-08-05 05:16 gregh          New Issue                                    
+01-08-05 05:16 gregh          Kernel Version            => 2.6.10          
 ======================================================================
 
 
