@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000522]: [PATCH] 15_alsaconf_doc_config
-Date: Tue, 21 Sep 2004 23:29:21 +0200 (CEST)
+From: Jeff Muizelaar <muizelaar@rogers.com>
+Subject: Re: [PATCH] more au88x0 eq cleanups
+Date: Tue, 21 Sep 2004 17:32:18 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921212921.B8C9339007@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <41509DE2.1050702@rogers.com>
+References: <41501995.8030203@rogers.com> <s5hfz5bzu07.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 31E6A361
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 23:29:22 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C9BA22663F
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 23:29:21 +0200 (MEST)
+In-Reply-To: <s5hfz5bzu07.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,40 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000522
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Bug ID:                     522
-Category:                   alsaconf
-Reproducibility:            always
-Severity:                   text
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             09-21-2004 23:29 CEST
-Last Modified:              09-21-2004 23:29 CEST
-======================================================================
-Summary:                    [PATCH] 15_alsaconf_doc_config
-Description: 
-Here is a patch that makes alsaconf.8 mention the new --config
-option.
-======================================================================
+>Could you provide a changelog with a summary and a signed-off-by
+>lines?
+>
+>
+>  
+>
+Sure,
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-21-04 23:29 jdthood        New Bug                                      
-09-21-04 23:29 jdthood        File Added: 15_alsaconf_doc_config.dpatch                    
-======================================================================
+cleanup au88x0 equalizer code by factoring out a sign_invert function 
+that ensures all negative integers become positive.
+
+Signed-off-by: Jeff Muizelaar <muizelaar@rogers.com>
+
 
 
 -------------------------------------------------------
