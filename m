@@ -1,18 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] Change alsamixer to show different views.
- Playback controls, or Capture controls.
-Date: Fri, 27 Aug 2004 18:34:21 +0100
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
+Date: Fri, 27 Aug 2004 19:33:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <412F709D.10903@superbug.demon.co.uk>
-References: <412F2E4E.4080300@superbug.demon.co.uk>	<s5hwtzkk0hf.wl@alsa2.suse.de>	<412F6481.7030300@superbug.demon.co.uk> <s5hsma8jzfp.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040827173318.738F82C008@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1654F1E5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:34:23 +0200 (MEST)
-In-Reply-To: <s5hsma8jzfp.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD10D1E5
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:33:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,32 +16,110 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
->>
->>I have a question. The "Mic Boost" seems to think it is a "Playback" 
->>control. What would be the best way to getting that to be a "Capture" 
->>control. Would simply editing it in ac97_codec.c be enough?
-> 
-> 
-> Hmm, when you change the control name itself, it breaks slightly
-> compatibility with older version.
 
-What does the name have to be compatible with?
-I.e. What program might break if we change this in ac97_codec.c ?
+The following bug has been ASSIGNED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
+======================================================================
+Reported By:                Cyrille
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     432
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Slackware 10
+Kernel Version:             2.4.24
+======================================================================
+Date Submitted:             08-08-2004 19:02 CEST
+Last Modified:              08-27-2004 19:33 CEST
+======================================================================
+Summary:                    Impossible de se connecter : NODIALTONE
+Description: 
+I've got a TOSHIBA SATELITTE A30 222 laptop
+Sound card and modem are based upon ATI IXP
+But I'm not able to run modem in spite of the differents bug-report on
+ALSA web site
+(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+-
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+ -
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
+) and on Unixtrix.com (http://www.unixtrix.com/)
 
-> 
-> I don't mind it, but maybe it would be wiser to change alsa-lib
-> simple.c to handle 'Mic Boost' as capture?
-> 
-> 
-> Takashi
-> 
-> 
+Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+-, I'm always in the same situation : compilation is OK, modem driver OK
+but I'm not able to connect : NODIALTONE
+======================================================================
 
+----------------------------------------------------------------------
+ sashak - 08-25-2004 19:11 CEST 
+----------------------------------------------------------------------
+There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
+bit in ATI_REG_CMD register (reg 003, bit 27 - look in
+'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
+to reported here - DMA works ok, line still be disconnected.
+
+Uploaded patch solves the problem.
+
+----------------------------------------------------------------------
+ netstar - 08-26-2004 01:18 CEST 
+----------------------------------------------------------------------
+Additional problems with patch when applied to alsa CVS.  All conditions
+necessary are met.
+
+----------------------------------------------------------------------
+ netstar - 08-26-2004 18:54 CEST 
+----------------------------------------------------------------------
+Forget that, now working fine, congratulations.
+
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:46 CEST 
+----------------------------------------------------------------------
+Concretrely, does it mean the current version of alsa driver will not run
+with this hardware ?
+Thanx
+
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:47 CEST 
+----------------------------------------------------------------------
+Oups, I've got not see the last Netstar message...
+I try to test it...
+
+----------------------------------------------------------------------
+ Cyrille - 08-27-2004 15:41 CEST 
+----------------------------------------------------------------------
+Hello
+I have try Sashak's tip but the upload patch don't solve the problem.
+Always the same error message : NODIALTONE.
+(with alsa-driver/lib/... 1.0.6 ; test with slmodem-2.9.9 unless patch and
+with Ronis's patch).
+At your mind, is there really no hope to run it ?
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-08-04 19:02 Cyrille        New Bug                                      
+08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
+08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
+08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
+08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
+08-25-04 19:11 sashak         Bugnote Added: 0001624                       
+08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
+08-26-04 01:18 netstar        Bugnote Added: 0001630                       
+08-26-04 18:54 netstar        Bugnote Added: 0001634                       
+08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
+08-26-04 21:47 Cyrille        Bugnote Added: 0001637                       
+08-27-04 15:41 Cyrille        Bugnote Added: 0001644                       
+08-27-04 19:33 tiwai          Assigned To              tiwai => sashak     
+======================================================================
 
 
 -------------------------------------------------------
