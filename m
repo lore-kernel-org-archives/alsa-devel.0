@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000527]: snd_pcm_set_rate_near used always
-Date: Thu, 31 Mar 2005 20:22:20 +0200
-Message-ID: <aba62dce0efad9b0dc5acc9f0ee15cba@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000621]: Audigy input
+Date: Thu, 31 Mar 2005 20:25:53 +0200
+Message-ID: <594d0545a3afb43b5e8ae5c71099213b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3467F127
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:22:21 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A55624B
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:25:53 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=527> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=621> 
 ======================================================================
-Reported By:                AKennedy
+Reported By:                KoxtaRF
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   527
-Category:                   aplay/arecord
+Issue ID:                   621
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-23-2004 21:43 CEST
-Last Modified:              03-31-2005 20:22 CEST
+Date Submitted:             10-31-2004 15:14 CET
+Last Modified:              03-31-2005 20:25 CEST
 ======================================================================
-Summary:                    snd_pcm_set_rate_near used always
+Summary:                    Audigy input
 Description: 
-When selecting to record using a speific device, say hw1,0, this craps out.
-. . using plughw1,0 or default works, however.  Should this have an if
-statement to control if the device selected is hw/can you _near if the
-device is NOT default or plughw?
+I get exactly the same issue as the guy who posted this message:
+
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg13087.html
+
+I cannot select any input source to be captured in alsamixer . Moreover,
+many of the output sliders cannot be muted by pressing M (like Master or
+PCM).
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 15:47 
+ pzad - 11-03-04 08:18 
 ----------------------------------------------------------------------
-> When selecting to record using a speific device, say hw1,0, this
-> craps out. . . using plughw1,0 or default works, however. Should
-> this have an if statement to control if the device selected is
-> hw/can you _near if the device is NOT default or plughw?
+> I didn't know that it's technically impossible to mute the Master or PCM
+channel. 
 
-Can you please try to explain more clearly what you mean?
+This is posible, but need changes in driver or usage of ld10k1 (dl10k1).
+
+>However, I remember that I was able to choose the input source to capture
+simply clicking space on it. Is there a way to bring it back?
+
+Previous versions uses AC97 ADC and you choose capture source on this
+AC97. Now, philips ADC is used (it is 24 bit and has better SNR). AC97 ADC
+is used only for Mic. I think, this will be step back. Under windows you
+can not capture from only line in too. You can capture only "Analog Mix".
+
+In previous alsa version you can set capture source only on sources mixed
+in AC97 all other source didn't have capture switch (Audigy CD,
+AudigyDrive inputs, ...).
 
 ----------------------------------------------------------------------
- tiwai - 03-23-05 12:51 
+ jdthood - 03-20-05 13:29 
 ----------------------------------------------------------------------
-You'll see a warning message if the given rate can't be used (at least with
-the latest version).
+It looks as if this report can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 21:43 AKennedy       New Issue                                    
-09-29-04 05:37 AKennedy       Issue Monitored: AKennedy                    
-09-29-04 05:37 AKennedy       Issue End Monitor: AKennedy                    
-03-20-05 15:47 jdthood        Note Added: 0004094                          
-03-23-05 12:51 tiwai          Note Added: 0004154                          
-03-31-05 20:22 jdthood        Status                   new => resolved     
-03-31-05 20:22 jdthood        Resolution               open => fixed       
+10-31-04 15:14 KoxtaRF        New Issue                                    
+10-31-04 15:15 KoxtaRF        Issue Monitored: KoxtaRF                     
+10-31-04 15:16 KoxtaRF        Note Added: 0002293                          
+11-02-04 09:31 pzad           Note Added: 0002295                          
+11-02-04 18:50 KoxtaRF        Note Added: 0002298                          
+11-03-04 08:18 pzad           Note Added: 0002303                          
+03-20-05 13:29 jdthood        Note Added: 0004085                          
+03-31-05 20:25 jdthood        Status                   new => resolved     
+03-31-05 20:25 jdthood        Resolution               open => not an issue
 ======================================================================
 
 
