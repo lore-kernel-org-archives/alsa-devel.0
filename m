@@ -1,15 +1,13 @@
-From: Justin Cormack <justin@street-vision.com>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: hdsp driver status
-Date: 03 Jul 2003 18:08:26 +0100
+Date: Fri, 04 Jul 2003 01:34:24 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1057252106.7192.61.camel@lotte>
-References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
-	<3F044FF5.2010602@boosthardware.com>  <3F0456A5.9000600@boosthardware.com>
+Message-ID: <3F045B10.9030403@boosthardware.com>
+References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org> <3F044FF5.2010602@boosthardware.com> <3F0456A5.9000600@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F0456A5.9000600@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,31 +16,55 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: Thomas Charbonnel <thomas@undata.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-07-03 at 17:15, Patrick Shirkey wrote:
-> Patrick Shirkey wrote:
-> > Thomas Charbonnel wrote:
-> > 
-> >>
-> >> Remaining:
-> >> * HDSP9652: the matrix mixer isn't yet handled right.
-> >> * Rev11 + Multiface: either the firmware file is wrong or the io-box
-> >> firmware upload scenario has changed for this card revision. Has anyone
-> >> ever had success with this combination (or rev11 + Digiface) ?
-> >>
+Patrick Shirkey wrote:
+> 
+> I'll also try with amixer just incase.
 
-you mean 0xb? I have one that works on 0.9.0rc5, but wont work on
-0.9.4/todays cvs.
+Yep. Things changed again. This time Jeds rich and I'm happy.
 
-And now I have a 0xa revision that wont work at all on any version of
-the driver...
+The line outs are still kaput but the outputs are working.
 
+I got a nice clear clean signal from output 1 and 2 after running:
 
-Justin
+amixer -c 1 cset numid=23 0,0,4000;
+amixer -c 1 cset numid=24 0,0,4000;
+amixer -c 1 cset numid=25 0,0,4000;
+amixer -c 1 cset numid=26 0,0,4000;
+amixer -c 1 cset numid=27 0,0,4000;
+amixer -c 1 cset numid=28 0,0,4000;
+amixer -c 1 cset numid=29 0,0,4000;
+amixer -c 1 cset numid=30 0,0,4000;
+amixer -c 1 cset numid=31 0,0,4000;
+amixer -c 1 cset numid=32 0,0,4000;
+amixer -c 1 cset numid=33 0,0,4000;
+amixer -c 1 cset numid=34 0,0,4000;
+amixer -c 1 cset numid=34 0,0,4000;
+amixer -c 1 cset numid=35 0,0,4000;
+amixer -c 1 cset numid=36 0,0,4000;
+amixer -c 1 cset numid=37 0,0,4000;
+amixer -c 1 cset numid=38 0,0,4000;
+amixer -c 1 cset numid=39 0,0,4000;
+amixer -c 1 cset numid=40 0,0,4000;
 
+Someone might want to make a script out of this...
+
+Now I can start recording :)
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
