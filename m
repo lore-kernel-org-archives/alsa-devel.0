@@ -1,19 +1,16 @@
-From: Joe <madcoder@comcast.net>
-Subject: CS46xx, TB Santa Cruz, 4+ channel output?
-Date: 09 Sep 2003 20:57:14 -0500
+From: "Sam" <4l8uie002@sneakemail.com>
+Subject: Re: Please add snd-ice1712 problem to "Known bugs"
+	page
+Date: Tue, 09 Sep 2003 20:59:13 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1063159034.23481.10.camel@localhost>
-References: <20030828005741.162b0565.david@neongoat.com>
-	 <873cfj82bq.fsf@sycorax.lbl.gov>
-	 <20030909133550.0d325254.david@neongoat.com>
-	 <87llsx4red.fsf@sycorax.lbl.gov>
-	 <20030909143229.6858d04a.david@neongoat.com>
-	 <87d6e94osn.fsf@sycorax.lbl.gov>
+Message-ID: <2226-33676@sneakemail.com>
+References: <1630-86930@sneakemail.com>
+	 <20030909173727.GA20549@willow.seitz.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87d6e94osn.fsf@sycorax.lbl.gov>
+In-Reply-To: <20030909173727.GA20549@willow.seitz.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,50 +19,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, I've posted on the Alsa-User list, and get absolutely no reply, so I
-thought I'd try my luck here.
+On Tue, 2003-09-09 at 10:37, Ross Vandegrift wrote:
+> This is a feature!
+> 
+> envy24control does a much better job than just three settings - the volume
+> sliders in the Analog Volume tab lets you set it to any values, not just
+> three pre-chosen values.  Then, of course, you can mix different routes
+> with the sliders next to the level meters.  Between these, the volume
+> with ALSA is far more flexible than with Windows.  It just takes a bit
+> to get used to it.
 
-I've given the same spiel to several forums and lists, so rather than go
-over it again, I'm going to post a link to a few of my forum topics, to
-see if I can get any help with this.  The problem is I am trying to find
-a way to mirror the output on one device (CS46xx) to one or two other
-devices ("CS46xx - Rear", and "CS46xx - Center LFE"), and I'm getting no
-where.  The alsa-project "Wiki" says that surround output has been
-"verified working" with the latest version of alsa, so my question is,
-what is required to get that sound mirrored?  Using "surround40" and
-"surround51", I get an error, so I don't think that works, yet each
-individual output device works, and I get sound on the correct speakers
-when I change the output device.
+Oh, oh...  oh!  I see!
 
-http://forums.gentoo.org/viewtopic.php?p=512760#512760
-http://forums.gentoo.org/viewtopic.php?t=76654
+I was feeling the sinking "I'm getting 90% of functionality with Linux
+because hardware companies don't see the light yet, sigh" and now it's
+been replaced with the less frequent feeling of "the Linux version does
+it better.  Yeah!"
 
-Can anyone tell me what I need to do in order to get simultaneous output
-on all channels for this particular sound card?
+Cool, thanks for setting me straight.  I brought down the analog signal
+to 110 (from 127) and it has improved the problem significantly, though
+not solved it completely.  I chose 110 by doing A/B comparisons with my
+DVD player to try to match the volume.  Unfortunately, there's still a
+slight buzzing/clicking sometimes with the Delta 44 that I don't hear
+from my Pioneer DVD player playing the same music, and it cost me less
+than the Delta 44.  :-(  I also don't hear the problem using the same
+source file through a Logitech DAC.
 
-Pertinent info:
+On Tue, 2003-09-09 at 00:44, Jaroslav Kysela wrote: 
+> I think that your problems are probably caused by underruns (system does
+> not deliver samples to the DMA buffer for your card in time). The analog
+> levels can be changed using alsamixer or envy24control (use analog
+> section). The driver fully supports your hardware and yes, it is difficult
+> to make reliable sound output for the ICE1712 chip with the standard linux
+> kernels. Look for lowlatency patches.
 
-$ cat /proc/asound/version
-Advanced Linux Sound Architecture Driver Version 0.9.6.
-Compiled on Aug 18 2003 for kernel 2.4.20-gentoo-r6 with versioned
-symbols.
+Thanks for the suggestion; I've already tried both low latency and
+preemptible kernel patches.
 
-$ cat /proc/asound/pcm
-00-00: CS46xx : CS46xx : playback 31 : capture 1
-00-01: CS46xx - Rear : CS46xx - Rear : playback 31
-00-02: CS46xx - IEC958 : CS46xx - IEC958 : playback 1
-00-03: CS46xx - Center LFE : CS46xx - Center LFE : playback 31
+I noticed that the sound card was sharing an interrupt with three other
+devices, so I swapped PCI cards around until the sound card got its own
+IRQ.  This didn't help.
 
-Any other information you need, just ask.
+The problem is subtle enough that if this were (for example) a Creative
+Labs sound card, I'd dismiss it.  It's the fact that I was trying to
+purchase my last sound card (get that part of my life "handled", like
+the guy in Fight Club with his sofa) that's causing me to be bothered by
+this.
 
-Thanks a lot,
--- 
-madCoder <madCoder@GamesNET.net>
-GamesNET Support Operator
-http://www.gamesnet.net/
+Though I'm no expert I'm guessing that because it's so subtle it's not a
+driver problem.  Perhaps when I get a paycheck again I'll play roulette
+and try a different high-end sound card.
+
+Thanks for your help and suggestions (and for writing these great
+drivers).
+
+Sam
+
 
 
 
