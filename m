@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000873]: Great delay when loading snd_ali5451 which does not occur with the trident OSS driver
-Date: Tue, 1 Feb 2005 01:57:55 +0100
-Message-ID: <1b6a848eaf6f88fa7cc94c8c59dce346@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000874]: Opening hdspmixer causes dropouts in audio
+Date: Tue, 1 Feb 2005 02:21:55 +0100
+Message-ID: <40425638fc9e15be551e3725b60959e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5BD6240
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 01:57:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A173240
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 02:21:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,46 +23,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=873> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=874> 
 ======================================================================
-Reported By:                tbm
+Reported By:                Mark Knecht
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   873
-Category:                   PCI - ali5451
+Issue ID:                   874
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.6.10, 2.6.9
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             02-01-2005 01:57 CET
-Last Modified:              02-01-2005 01:57 CET
+Date Submitted:             02-01-2005 02:21 CET
+Last Modified:              02-01-2005 02:21 CET
 ======================================================================
-Summary:                    Great delay when loading snd_ali5451 which does not
-occur with the trident OSS driver
+Summary:                    Opening hdspmixer causes dropouts in audio
 Description: 
-When I load the snd_ali5451 module there is a delay of about 10 seconds
-until the module is successfully loaded and the device recognized.  This
-delay does not occur with the OSS trident driver (which loads immediately)
-which shows that this is not a hardware problem.
-
-I have put some get_seconds() statements in the driver to see where the
-delay occurs.  It seems to be related to codec_read() and reg=7eh.  See
-attachment.
-
-
+With the HDSP 9652 running audio through it from ADAT port to ADAT port
+opening hdspmixer causes audio dropouts. This makes it impossible to
+adjust audio levels realtime without creating glitches. This does not
+happen with the RME version (TotalMix) under Windows.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-01-05 01:57 tbm            New Issue                                    
-02-01-05 01:57 tbm            File Added: ali                              
-02-01-05 01:57 tbm            Distribution              => Debian GNU/Linux
-02-01-05 01:57 tbm            Kernel Version            => 2.6.10, 2.6.9   
+02-01-05 02:21 Mark Knecht    New Issue                                    
 ======================================================================
 
 
