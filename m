@@ -1,14 +1,15 @@
-From: Marcus Andersson <054185595@telia.com>
-Subject: Re: hdsp and midi problems
-Date: Mon, 23 Jun 2003 20:12:38 +0200
+From: Matthew Clarke <Matthew_Clarke@mindlink.bc.ca>
+Subject: Re: 2 questions: cvs down? Paul's patches?
+Date: Mon, 23 Jun 2003 13:08:09 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF74316.4508B81@telia.com>
-References: <3EF4BCA2.578FD128@telia.com>
-			<NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com> <s5h3ci03gb8.wl@alsa2.suse.de> <3EF734CD.23E1E15@telia.com>
+Message-ID: <20030623200809.GA14822@ds0.van.maves.ca>
+References: <200306231420.11726.Jaakko.Prattala@Helsinki.FI>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200306231420.11726.Jaakko.Prattala@Helsinki.FI>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,45 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
+To: Jaakko =?iso-8859-1?B?UHLkdHTkbOQ=?= <Jaakko.Prattala@Helsinki.FI>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Marcus Andersson wrote:
+lundi, le 23 juin, 2003, Jaakko Prättälä nous a dit ceci:
+
+> Hello.
 > 
-> Takashi Iwai wrote:
-> > btw, could you try the attached patch?
-> > (and in-advance-scheduled excuse if it causes a hang-up :)
-> 
-> I will try it. Do you think I can safely apply it to 0.9.4, or should I
-> use cvs?
+> 1. I haven't been able to reach alsa cvs for a few days
+> With the instructions on alsa website I keep getting
+> cvs [login aborted]: end of file from server (consult above messages if any)
+> on login. Where's the problem?
 
-Tested with current cvs. It locks up my computer. I used alsa-lib 0.9.4,
-as I can't build the latest:
+Sourceforge.  They have put a cap on the number of anonymous (pserver) CVS
+connections due to server load problems.  Check their site status page for
+an explanation and details.
 
-mkdir .libs
-rm -fr .libs/libcontrol.la .libs/libcontrol.* .libs/libcontrol.*
-(cd . && ln -s cards.lo cards.lo)
-(cd . && ln -s hcontrol.lo hcontrol.lo)
-(cd . && ln -s control.lo control.lo)
-(cd . && ln -s control_hw.lo control_hw.lo)
-(cd . && ln -s control_shm.lo control_shm.lo)
-(cd . && ln -s setup.lo setup.lo)
-(cd . && ln -s control_symbols.lo control_symbols.lo)
-ar cru .libs/libcontrol.al cards.lo hcontrol.lo control.lo control_hw.lo
-control_shm.lo setup.lo control_symbols.lo
-ar: cards.lo: Too many levels of symbolic links
-make[2]: *** [libcontrol.la] Error 1
-make[2]: Leaving directory `/usr/local/src/alsa/alsa-lib/src/control'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/usr/local/src/alsa/alsa-lib/src'
-make: *** [all-recursive] Error 1
-debian:/usr/local/src/alsa/alsa-lib#
+> 2. Are Paul Davis' patches from Friday the 13th for the hdsp in cvs already?
+> I deleted the email by mistake and copy-paste from archives does not work
+> (lines get messed up) and I'd like to try them out... :-p
 
-Probably my system configuration that is screwed up.
+Sorry, can't help with this one.
 
-But I don't think it matters, as I open() the device directly.
-
-Marcus
+Matt.
+-- 
+For a successful technology, reality must take precedence over public
+relations, for nature cannot be fooled.
+				-- Richard P. Feynman
 
 
 -------------------------------------------------------
