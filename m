@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
-Date: Thu, 10 Mar 2005 16:44:38 +0100
-Message-ID: <0dbb3719acc880f4663843b3e11f8dff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Thu, 10 Mar 2005 16:46:15 +0100
+Message-ID: <c6fa2d84e359a28bdff7f67a116fb3f5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5E6E1C5
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:44:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BE611C5
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:46:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,69 +23,80 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                kernel_bug
-Assigned To:                mjander
+Reported By:                mr-k
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   59
-Category:                   PCI - au88x0
+Issue ID:                   761
+Category:                   OTHERS
 Reproducibility:            random
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     feedback
-Distribution:               
-Kernel Version:             2.6.2
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-13-2004 11:40 CET
-Last Modified:              03-10-2005 16:44 CET
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              03-10-2005 16:46 CET
 ======================================================================
-Summary:                    On au8820 left and right channels are swapped
+Summary:                    Driver and all sound aplications hangs
 Description: 
-In most cases, left and right channels are swapped. But in approx. 5% cases
-all OK. Looks like the matter is somewhere in byte alignment...
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
+
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 15:31 
+ mr-k - 01-16-05 15:38 
 ----------------------------------------------------------------------
-> Channels are still swapped (always) when you are playing something
-> first time after loading modules.
-
-Submitter: Is this bug still present?  Are the channels swapped just
-after the module is loaded?
+Nothing changes on alsa 1.0.8.
 
 ----------------------------------------------------------------------
- mjander - 03-10-05 16:44 
+ mr-k - 03-10-05 16:46 
 ----------------------------------------------------------------------
-AFAIK this bug was solved a long time ago. It was supposedly caused by a
-incorrect routing table initialization (bug found by Claudia). That fact,
-i guess, leaved some random routes interferening with other intentional
-routes.
-
-Did anyone still get this bug or may we close it ?
-
-Best Regards
-
-Manuel
+I think i know what is reason of crashing driver. Simply way to call crash
+out is to execute something like this:
+$ for $sth in `seq 1 100`; do aplay file.wav & bg; done
+I think taht problem ocure when too many processess whant to use sound
+card. What else can i do to help you?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-04 11:40 kernel_bug     New Issue                                    
-02-21-04 15:40 kernel_bug     Note Added: 0000280                          
-03-02-04 02:56 Tim            Note Added: 0000429                          
-04-09-04 11:54 kernel_bug     Note Added: 0000774                          
-04-09-04 18:35 mjander        Note Added: 0000777                          
-04-17-04 18:59 mjander        Status                   assigned => closed  
-04-17-04 18:59 mjander        Note Added: 0000849                          
-04-26-04 17:04 kernel_bug     Status                   closed => feedback  
-04-26-04 17:04 kernel_bug     Resolution               open => reopened    
-04-26-04 17:04 kernel_bug     Note Added: 0000953                          
-04-26-04 23:27 mjander        Note Added: 0000956                          
-03-10-05 15:31 jdthood        Note Added: 0003866                          
-03-10-05 16:44 mjander        Note Added: 0003867                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
+01-07-05 22:41 mr-k           Note Added: 0003123                          
+01-11-05 22:11 mr-k           Note Added: 0003158                          
+01-11-05 22:12 mr-k           File Added: alsa.log                         
+01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 15:57 mr-k           Note Added: 0003173                          
+01-16-05 15:38 mr-k           Note Added: 0003218                          
+02-09-05 21:45 mr-k           Note Edited: 0003173                         
+02-09-05 21:46 mr-k           Note Edited: 0003123                         
+03-10-05 16:46 mr-k           Note Added: 0003868                          
 ======================================================================
 
 
