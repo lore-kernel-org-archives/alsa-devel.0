@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000221]: ac97 detect fails on xbox/i8x0
-Date: Tue,  7 Sep 2004 17:11:02 +0200 (CEST)
+Subject: [ALSA - driver 0000484]: Hercules MUSE Pocket, channels swapping randomly during playback
+Date: Tue,  7 Sep 2004 17:44:24 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907151102.CCB3BE001@server.perex-int.cz>
+Message-ID: <20040907154424.A70E3E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1ECFC291
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 17:11:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 00B41273
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 17:44:24 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,205 +22,42 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000221
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000484
 ======================================================================
-Reported By:                chrb
-Assigned To:                perex
+Reported By:                jone
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     221
-Category:                   PCI - intel8x0
+Bug ID:                     484
+Category:                   USB - usb-audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Debian unstable
+Kernel Version:             2.4.23-cobalt3
 ======================================================================
-Date Submitted:             04-19-2004 11:14 CEST
-Last Modified:              09-07-2004 17:11 CEST
+Date Submitted:             09-06-2004 21:32 CEST
+Last Modified:              09-07-2004 17:44 CEST
 ======================================================================
-Summary:                    ac97 detect fails on xbox/i8x0
+Summary:                    Hercules MUSE Pocket, channels swapping randomly during playback
 Description: 
-this test for ac97 in ac97_codec.c fails:
-
-       /* test for AC'97 */
-        if (!(ac97->scaps & AC97_SCAP_SKIP_AUDIO) && !(ac97->scaps &
-AC97_SCAP_AUDIO)) {
-                /* test if we can write to the record gain volume register
-*/
-                snd_ac97_write_cache(ac97, AC97_REC_GAIN, 0x8a06);
-                if ((err = snd_ac97_read(ac97, AC97_REC_GAIN)) == 0x8a06)
-                        ac97->scaps |= AC97_SCAP_AUDIO;
-        }
-
-The test writes to a record gain register but the xbox hardware doesn't
-have a record in line, or a hardware mixer. Could this test be made more
-generic?
-
-At the moment this block:
-
-        if (!ac97_is_audio(ac97) && !ac97_is_modem(ac97)) {
-                if (!(ac97->scaps &
-(AC97_SCAP_SKIP_AUDIO|AC97_SCAP_SKIP_MODEM)))
-                        snd_printk(KERN_ERR "AC'97 %d access error (not
-audio or modem codec)\n", ac97->num);
-                snd_ac97_free(ac97);
-                return -EACCES;
-        }
-
-logs an error and exits. When this is commented out the driver works fine.
-Only the ac97 detection seems to be problematic.
+When my Hercules MUSE Pocket device is connected via a hub the  sound
+channels swap back and forth randomly during playback.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 04-19-2004 15:31 CEST 
+ Clemens Ladisch - 09-07-2004 17:44 CEST 
 ----------------------------------------------------------------------
-Could you send me output from /proc/asound/card0/codec97#0/ac97#0-0+regs ?
-
-edited on: 04-19-04 15:31
-
-----------------------------------------------------------------------
- chrb - 04-20-2004 14:10 CEST 
-----------------------------------------------------------------------
-0:00 = 0000
-0:02 = 0000
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 0000
-0:0c = 0000
-0:0e = 0000
-0:10 = 0000
-0:12 = 0000
-0:14 = 0000
-0:16 = 0000
-0:18 = 0000
-0:1a = 0000
-0:1c = 0000
-0:1e = 0000
-0:20 = 0000
-0:22 = 0000
-0:24 = 0000
-0:26 = 0000
-0:28 = 0000
-0:2a = 0000
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0000
-0:70 = 0000
-0:72 = 0000
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 574d
-0:7e = 4c09
-
-----------------------------------------------------------------------
- perex - 04-20-2004 14:51 CEST 
-----------------------------------------------------------------------
-It's not ok. Registers should not be zero.
-Is something in /var/log/messages related to AC'97?
-What is in file /proc/asound/card0/intel8x0 ?
-
-----------------------------------------------------------------------
- chrb - 04-20-2004 16:03 CEST 
-----------------------------------------------------------------------
-On /etc/init.d/alsasound start I get:
-
-Apr 20 14:00:59 Pro kernel: PCI: Setting latency timer of device 00:06.0
-to 64
-Apr 20 14:01:01 Pro kernel: ALSA
-../../alsa-kernel/pci/ac97/ac97_codec.c:1759: AC'97 0 does not respond -
-RESET
-Apr 20 14:01:01 Pro kernel: ALSA
-../../alsa-kernel/pci/ac97/ac97_codec.c:1837: AC'97 0 analog subsections
-not ready
-Apr 20 14:01:01 Pro kernel: intel8x0_measure_ac97_clock: measured 49814
-usecs
-Apr 20 14:01:01 Pro kernel: intel8x0: clocking to 48000
-
-Those are the only logged messages from alsa. 
-
-/proc/asound/card0/intel8x0 contains:
-Intel8x0
-
-Global control        : 0x00000002
-Global status         : 0x00300100
-AC'97 codecs ready    : primary
-
-----------------------------------------------------------------------
- chrb - 07-23-2004 09:43 CEST 
-----------------------------------------------------------------------
-Reminder sent to perex
-
-Months go by... ping. Surely theres an audio playback register that we
-could write to test?
-
-----------------------------------------------------------------------
- perex - 09-07-2004 16:44 CEST 
-----------------------------------------------------------------------
-Sorry, no clue. It seems that another special initialization must be done
-before AC'97 codec can be used on Xbox.
-
-----------------------------------------------------------------------
- chrb - 09-07-2004 17:11 CEST 
-----------------------------------------------------------------------
-Perhaps I did not make it clear. The driver works fine on the xbox. You
-just need to change ac97 detection to not use REC_GAIN_REGISTER, as xbox
-does not have this register. Any of normal registers would do.
+Is this a USB 2.0 hub?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-19-04 11:14 chrb           New Bug                                      
-04-19-04 15:29 perex          Assigned To               => perex           
-04-19-04 15:29 perex          Status                   new => assigned     
-04-19-04 15:31 perex          Bugnote Added: 0000857                       
-04-19-04 15:31 perex          Bugnote Edited: 0000857                      
-04-20-04 14:10 chrb           Bugnote Added: 0000880                       
-04-20-04 14:51 perex          Bugnote Added: 0000882                       
-04-20-04 16:03 chrb           Bugnote Added: 0000886                       
-04-20-04 17:59 eradicator     Bug Monitored: eradicator                    
-05-10-04 09:54 kingmob        Bug Monitored: kingmob                       
-07-23-04 09:43 chrb           Bugnote Added: 0001468                       
-09-07-04 16:44 perex          Bugnote Added: 0001715                       
-09-07-04 16:45 perex          Description Updated                          
-09-07-04 16:45 perex          Resolution               open => suspended   
-09-07-04 16:45 perex          View Status              @0@ => public       
-09-07-04 17:11 chrb           Bugnote Added: 0001720                       
+09-06-04 21:32 jone           New Bug                                      
+09-06-04 21:32 jone           Distribution              => Debian unstable 
+09-06-04 21:32 jone           Kernel Version            => 2.4.23-cobalt3  
+09-07-04 17:44 Clemens LadischBugnote Added: 0001721                       
 ======================================================================
 
 
