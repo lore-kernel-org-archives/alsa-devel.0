@@ -1,11 +1,12 @@
-From: Lars Hamren <hamren@sdu.se>
-Subject: BUG REPORT: Not all configure scripts honour --with-alsa-inc-prefix=/path/to/includes
-Date: Thu, 20 Mar 2003 17:54:19 +0100
+From: cw <cw@acidtechno.net>
+Subject: Waveterminal 192M Envy24HT
+Date: 20 Mar 2003 17:13:34 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <15993.62011.418259.236234@maxi.int.sdu.se>
+Message-ID: <1048180414.8728.9.camel@localhost.localdomain>
+Reply-To: cw@acidtechno.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,24 +19,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The following configure scripts generates makefiles that disregards
-`--with-alsa-inc-prefix=3D/path/to/includes':
+Hi,
 
-    alsa-tools-0.9.0rc7/ac3dec/configure
-    alsa-tools-0.9.0rc7/sb16_csp/configure
-    alsa-tools-0.9.0rc7/seq/sbiload/configure
+I have a EgoSys / ESI Waveterminal 192M card using an Envy24HT chip (aka
+VIA VT1724 i think), which is possible to support according to the
+matrix, but no driver has been written yet.
 
-The variable `ALSA_CFLAGS' gets set corectly in the Makefile, but is
-not used in the compile command line.
+Ive seen a few threads in the archive which suggest people were looking
+at development, and i was just wondering how it was going.
 
-Regards
-/Lars
--------------------------------------------------------------------
-Lars Hamr=E9n              Tel...: +46(46)189090
-Svensk Datorutveckling   e-post: hamren@sdu.se
-Vadm=F6llan 211            WWW...: www.sdu.se
-S-225 94 Lund
-Sweden
+thanks,
+
+
+Chris W
+
 
 
 -------------------------------------------------------
