@@ -1,14 +1,26 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000648]: aplay -Dspdif produces choppy (beating?) audio from DTS .wav files
-Date: Sun, 14 Nov 2004 04:41:09 +0100
-Message-ID: <d0eaa9d0d6770fe862653fe8ebe8b2ba@bugtrack.alsa-project.org>
+From: Manuel Jander <manuel.jander@usm.cl>
+Subject: Re: The ALSA Situation
+Date: Sun, 14 Nov 2004 01:00:17 -0300
+Message-ID: <1100404817.2009.15.camel@localhost>
+References: <200411102113.iAALDLUN001061@localhost.localdomain>
+	 <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
+	 <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
+	 <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
+	 <s5his8cfiot.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
+	 <s5hhdnwfgbz.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+	 <s5hekizfo0n.wl@alsa2.suse.de>
+	 <Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
+	 <20041112230617.41c5073e@mango.fruits.de>
+	 <1100308501.2337.54.camel@localhost>
+	 <Pine.LNX.4.58.0411131133300.1736@pnote.perex-int.cz>
+Reply-To: mjander@users.sourceforge.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86B92262
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2004 04:41:09 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0411131133300.1736@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +30,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=648> 
-======================================================================
-Reported By:                duanev
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   648
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.1
-Kernel Version:             Preemptable 2.6.8 kernel
-======================================================================
-Date Submitted:             11-14-2004 04:24 CET
-Last Modified:              11-14-2004 04:41 CET
-======================================================================
-Summary:                    aplay -Dspdif produces choppy (beating?) audio from
-DTS .wav files
-Description: 
-Sound produced by aplay is not smooth - audio is "chopped up" or appears to
-"beat" at about 5Hz.
-======================================================================
+> > IMHO, ALSA requires a resource manager. And before someone starts
+> > hacking any shit, please let us design something well done.
+> 
+> Exactly. We need a configuration manager for alsa-lib.
+> We can discuss it right now.
 
-----------------------------------------------------------------------
- rlrevell - 11-14-04 04:41 
-----------------------------------------------------------------------
-duplicate of bug 646
+Excelent ! Since a long time, i have been collecting ideas about
+this... 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-14-04 04:24 duanev         New Issue                                    
-11-14-04 04:24 duanev         Distribution              => Mandrake 10.1   
-11-14-04 04:24 duanev         Kernel Version            => Preemptable 2.6.8
-kernel
-11-14-04 04:41 rlrevell       Note Added: 0002406                          
-======================================================================
+First of all, i would propose to make a detailed and complete
+requirements definition.
+For that purpose i'm soliciting write access to the ALSA Wiki, because i
+think it would be appropriate for sharing ideas, and the requirement
+documentation itself (our drawing board).
 
+IMHO, this would be roughly the steps involved:
+1) Definition of requirements.
+2) Design.
+3) Implementation.
+
+As soon as i get write access to the ALSA wiki (if not, i'll setup my
+own), i will post there my current ideas, in order to start.
+
+Cheers,
+
+-- 
+Manuel Jander
+Electronic Engineer
 
 
 
