@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 13:03:22 +0100
-Message-ID: <52385474cc651ea08d4887742a6405d0@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 14:56:48 +0100
+Message-ID: <a6b21fab157ecb6ca71b0f1e1fd7ce27@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9960126B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 13:03:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 09DA9257
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 14:56:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 13:03 CET
+Last Modified:              12-23-2004 14:56 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -79,55 +79,16 @@ Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 12-23-04 13:01 
-----------------------------------------------------------------------
-"/usr/sbin/alsactl: set_controls:986: snd_ctl_open error: No such device"
-
-Details: I added "2>&1 | /usr/bin/logger -t $0" to the dev.d script.  Here
-is what appears in the syslog:
-
-Dec 23 12:55:23 thanatos udev[872]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 50 applied, 'timer' becomes
-'snd/%k'
-Dec 23 12:55:23 thanatos udev[872]: creating device node '/dev/snd/timer'
-Dec 23 12:55:24 thanatos kernel: PCI: Found IRQ 11 for device
-0000:00:06.0
-Dec 23 12:55:24 thanatos kernel: PCI: Sharing IRQ 11 with 0000:00:02.0
-Dec 23 12:55:24 thanatos kernel: PCI: Sharing IRQ 11 with 0000:01:00.0
-Dec 23 12:55:24 thanatos udev[888]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 46 applied, 'controlC0' becomes
-'snd/%k'
-Dec 23 12:55:24 thanatos udev[888]: creating device node
-'/dev/snd/controlC0'
-Dec 23 12:55:24 thanatos /etc/dev.d/snd/controlC0/alsa-base.dev:
-/usr/sbin/alsactl: set_controls:986: snd_ctl_open error: No such device
-Dec 23 12:55:24 thanatos udev[901]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 49 applied, 'midiC0D0' becomes
-'snd/%k'
-Dec 23 12:55:24 thanatos udev[901]: creating device node
-'/dev/snd/midiC0D0'
-Dec 23 12:55:24 thanatos udev[909]: creating device node '/dev/midi'
-Dec 23 12:55:25 thanatos udev[919]: creating device node '/dev/dmmidi'
-Dec 23 12:55:25 thanatos udev[930]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0p' becomes
-'snd/%k'
-Dec 23 12:55:25 thanatos udev[930]: creating device node
-'/dev/snd/pcmC0D0p'
-Dec 23 12:55:25 thanatos udev[942]: configured rule in
-'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0c' becomes
-'snd/%k'
-Dec 23 12:55:25 thanatos udev[942]: creating device node
-'/dev/snd/pcmC0D0c'
-Dec 23 12:55:25 thanatos udev[950]: creating device node '/dev/dsp'
-Dec 23 12:55:25 thanatos udev[961]: creating device node '/dev/audio'
-Dec 23 12:55:25 thanatos udev[970]: creating device node '/dev/mixer'
-
-----------------------------------------------------------------------
  jdthood - 12-23-04 13:03 
 ----------------------------------------------------------------------
 > I found the problematic part.
 
 :)
+
+----------------------------------------------------------------------
+ tiwai - 12-23-04 14:56 
+----------------------------------------------------------------------
+Now back from lunch :)  The new patch is attached.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -147,6 +108,7 @@ Date Modified  Username       Field                    Change
 12-23-04 13:01 tiwai          Note Added: 0002919                          
 12-23-04 13:01 jdthood        Note Added: 0002920                          
 12-23-04 13:03 jdthood        Note Added: 0002921                          
+12-23-04 14:56 tiwai          Note Added: 0002922                          
 ======================================================================
 
 
