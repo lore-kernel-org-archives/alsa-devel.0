@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Tue, 11 Jan 2005 23:20:41 +0100
-Message-ID: <df9add5f79ceb68831b9ee109de55f53@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Wed, 12 Jan 2005 02:46:42 +0100
+Message-ID: <93b7cf6cbb6bc194319d46dc15f2411f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC6A12BF
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 23:20:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C293C2DA
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 02:46:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,161 +24,72 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
 ======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
+Reported By:                FishB8
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
+Issue ID:                   705
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
+Status:                     new
+Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              01-11-2005 23:20 CET
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              01-12-2005 02:46 CET
 ======================================================================
-Summary:                    Buzz from ALSA setup
+Summary:                    RME96 Driver crashes
 Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
-
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 01-11-05 11:24 
+ tiwai - 12-16-04 18:27 
 ----------------------------------------------------------------------
-Added new bug ID 0000806 concerning M-Audio Revolution 7.1 also not working
-under Fedora FC3.  The Creative Audugy 2 would not work so I thought I'd
-try new card.  Still no go.  Red Hat Fedora has never responded to ticket
-submitted to them.  Red Hat Fedora Bugzilla.
-Bug 143971 has been added to the database
-Was assigned, no response.
+Could you try the old version of JACK (e.g. 0.98.x) to check the changes
+for swparams threshold in the recent JACK version has any influence on the
+behavior on rme32/96?
 
 ----------------------------------------------------------------------
- misnagid - 01-11-05 23:20 
+ FishB8 - 01-12-05 02:46 
 ----------------------------------------------------------------------
-Peter,
-You've been exceptionally kind and considerate to me!  I did as you
-suggested and reported this bug to the Alsa mailing list you suggested. 
-In reply, I received the following critique from Lee Revell.
+As of kernel 2.6.10 this issue seems to have been resolved. Both regular
+audio apps and Jack function as expected for the RME96 card.
 
-On Tue, 2005-01-11 at 05:54 -0500, JerryN wrote:
-> Hi,
-> 
-> Please see:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749
-> 
-> and:
-> 
-> https://bugtrack.alsa-project.org/alsa-bug/view.php?id=806
-> 
-> 
-> I have tried to use ALSA under Fedora FC3 with 2 very different sound
-> cards.  Both sound cards work fine with Suse 9.2, RHEL 3.0, RHEL Beta
-> 4.x, Debian weekly Sarge, latest LIVE Mepis, Mandrake 10.1, you name
-it!
-> 
-
-Then it's not an ALSA bug, it's a Fedora bug.  I am not sure why you
-keep filing ALSA bug reports.
-
-> The MB is the Asus A7N8X-E Deluxe.  Latest Bios. Onboard Audio
-disabled.
-> All Alsa instructions including unmuting sound fully followed!
-> 
-> Have tried both Creative Labs Audigy 2 and M-Audio Revolution 7.1.
-> Latest ALSA drivers, etc.
-> 
-> 
-> These bug descriptions are totally extremely complete!!
-> 
-> Nobody's been able to assist at ALSA though theyve tried hard.
-> 
-
-See above.  ALSA is not the problem, FC3 must be doing something weird.
-Have you tried FC2?  If FC2 works then you can narrow the problem down a
-bit.
-
-> Red Har Fedora does not reply to my bug reports though it was assigned;
-> never any replies from them.
-
-How long ago did you file these bug reports?  You can't expect an
-immediate response...
-
-Lee
+I recommend closing this bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-12-27-04 22:54 pzad           Note Added: 0002981                          
-12-27-04 23:15 misnagid       Note Added: 0002982                          
-12-27-04 23:19 misnagid       Note Added: 0002983                          
-12-27-04 23:46 pzad           Note Added: 0002984                          
-12-27-04 23:48 misnagid       Note Added: 0002985                          
-12-28-04 21:13 rlrevell       Note Added: 0002987                          
-01-03-05 00:36 misnagid       Note Added: 0003049                          
-01-03-05 15:10 pzad           Note Added: 0003064                          
-01-09-05 00:27 misnagid       Note Added: 0003132                          
-01-11-05 10:36 pzad           Note Added: 0003141                          
-01-11-05 11:24 misnagid       Note Added: 0003142                          
-01-11-05 23:20 misnagid       Note Added: 0003159                          
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 12:30 martin         Note Added: 0002715                          
+12-04-04 17:56 FishB8         Note Added: 0002717                          
+12-04-04 19:21 FishB8         Note Added: 0002718                          
+12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
+12-07-04 18:44 tiwai          Note Added: 0002758                          
+12-07-04 23:06 FishB8         Note Added: 0002768                          
+12-08-04 12:08 tiwai          Note Added: 0002776                          
+12-09-04 00:22 FishB8         Note Added: 0002796                          
+12-09-04 11:22 tiwai          Note Added: 0002798                          
+12-12-04 20:04 martin         Note Added: 0002819                          
+12-12-04 23:35 FishB8         Note Added: 0002820                          
+12-13-04 19:28 martin         Note Added: 0002822                          
+12-15-04 06:09 FishB8         Note Added: 0002825                          
+12-15-04 20:06 martin         Note Added: 0002828                          
+12-16-04 18:27 tiwai          Note Added: 0002835                          
+01-12-05 02:46 FishB8         Note Added: 0003160                          
 ======================================================================
 
 
