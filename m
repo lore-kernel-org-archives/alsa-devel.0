@@ -1,19 +1,12 @@
-From: Torrey Hoffman <thoffman@arnor.net>
-Subject: Success with xine, 5.1 surround & ALSA
-Date: Fri, 23 Jan 2004 16:53:58 -0800
+From: Torsten Mohr <tmohr@s.netic.de>
+Subject: Code to capture a buffer
+Date: Sat, 24 Jan 2004 02:26:54 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074905638.13428.205.camel@moria.arnor.net>
+Message-ID: <200401240226.54832.tmohr@s.netic.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_encEA225R9TOya0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from devil.servak.biz (devil.servak.biz [209.124.81.2])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA12735
-	for <alsa-devel@alsa-project.org>; Sat, 24 Jan 2004 01:54:17 +0100
-Received: from [64.122.104.99] (helo=[10.134.0.78])
-	by devil.servak.biz with esmtp (Exim 4.24)
-	id 1AkC3r-0004X6-Sm
-	for alsa-devel@alsa-project.org; Fri, 23 Jan 2004 19:54:08 -0500
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,26 +15,216 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA Development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-after all the bug reports and questions I've sent, I thought I'd send in
-a success report - this was unexpectedly easy, and very nice to have
-working.
 
-Without much trouble, I got xine playing 5.1 channel surround sound
-through the ALSA drivers for my onboard Intel ICH5 AC97 to Realtek
-ALC650...  it all works... center & rear channels, downmixing if I
-enable it, individual volume controls with gAlsaMixer for all the
-surround channels...
+--Boundary-00=_encEA225R9TOya0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Haven't tested the optical digital outputs yet... need to get a better
-amp for that...
+Hi,
 
-Woohoo!  
+i got this code constructed from an example i found googling.
 
--- 
-Torrey Hoffman <thoffman@arnor.net>
+What i basically want is to initialise some settings and then
+i'd like to capture some PCM to a buffer.  This should be
+repeatable, i want to initialise ONCE and call a capture
+function whenever i need some data.
+It is perfectly ok, if the data buffers that are captured are
+not consecutive.
+
+The code basically works, but whenever i try to capture the
+buffer a SECOND time, the whole program crashes.
+
+
+Has anybody got a hint for me on what could be wrong?
+
+
+Thanks for any hints,
+Torsten.
+
+--Boundary-00=_encEA225R9TOya0
+Content-Type: text/x-csrc;
+  charset="us-ascii";
+  name="sound.c"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="sound.c"
+
+#define _GNU_SOURCE
+#include <stdio.h>
+#include <malloc.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include <alsa/asoundlib.h>
+#include <sys/signal.h>
+
+#include "sound.h"
+#include "settings.h"
+
+#define QWE	fprintf(stderr, "File %s, Line %i\n", __FILE__, __LINE__)
+
+
+snd_pcm_t *pcm_handle;
+snd_pcm_stream_t stream = SND_PCM_STREAM_CAPTURE;
+snd_pcm_hw_params_t* hwparams;
+char *pcm_name = "default";
+
+int rate = 44100; /* Sample rate */
+int exact_rate;   /* Sample rate returned by */
+                      /* snd_pcm_hw_params_set_rate_near */ 
+int dir;          /* exact_rate == rate --> dir = 0 */
+                      /* exact_rate < rate  --> dir = -1 */
+                      /* exact_rate > rate  --> dir = 1 */
+int periods = 2;       /* Number of periods */
+int periodsize = 4*SAMPLES; /* Periodsize (bytes) */
+
+unsigned char *data;
+int pcmreturn, l1, l2;
+short s1, s2;
+int frames;
+
+snd_pcm_state_t sss;
+
+
+static void show(snd_pcm_state_t* s) {
+	switch(*s) {
+		case SND_PCM_STATE_OPEN:
+			printf("open\n");
+			break;
+
+		case SND_PCM_STATE_SETUP:
+			printf("SETUP\n");
+			break;
+
+		case SND_PCM_STATE_PREPARED:
+			printf("PREPARED\n");
+			break;
+
+		case SND_PCM_STATE_RUNNING:
+			printf("RUNNING\n");
+			break;
+
+		case SND_PCM_STATE_XRUN:
+			printf("XRUN\n");
+			break;
+
+		case SND_PCM_STATE_DRAINING:
+			printf("DRAINING\n");
+			break;
+
+		case SND_PCM_STATE_PAUSED:
+			printf("PAUSED\n");
+			break;
+
+		case SND_PCM_STATE_SUSPENDED:
+			printf("SUSPENDED\n");
+			break;
+	}
+}
+
+unsigned char* sound_get_data(void) {
+	return data;
+}
+
+int sound_init(void) {
+	pcm_name = strdup("plughw:0,0");
+	snd_pcm_hw_params_alloca(&hwparams);
+
+    if (snd_pcm_open(&pcm_handle, pcm_name, stream, 0) < 0) {
+      fprintf(stderr, "Error opening PCM device %s\n", pcm_name);
+      return(-1);
+    }
+
+    /* Init hwparams with full configuration space */
+    if (snd_pcm_hw_params_any(pcm_handle, hwparams) < 0) {
+      fprintf(stderr, "Can not configure this PCM device.\n");
+      return(-1);
+    }
+
+    if (snd_pcm_hw_params_set_access(pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED) < 0) {
+      fprintf(stderr, "Error setting access.\n");
+      return(-1);
+    }
+  
+    /* Set sample format */
+    if (snd_pcm_hw_params_set_format(pcm_handle, hwparams, SND_PCM_FORMAT_S16_LE) < 0) {
+      fprintf(stderr, "Error setting format.\n");
+      return(-1);
+    }
+
+    /* Set sample rate. If the exact rate is not supported */
+    /* by the hardware, use nearest possible rate.         */ 
+    exact_rate = snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, &rate, &dir);
+    if (dir != 0) {
+      fprintf(stderr, "The rate %d Hz is not supported by your hardware.\n"
+                       "==> Using %d Hz instead.\n", rate, exact_rate);
+    }
+
+    /* Set number of channels */
+    if (snd_pcm_hw_params_set_channels(pcm_handle, hwparams, 2) < 0) {
+      fprintf(stderr, "Error setting channels.\n");
+      return(-1);
+    }
+
+    /* Set number of periods. Periods used to be called fragments. */ 
+    if (snd_pcm_hw_params_set_periods(pcm_handle, hwparams, periods, 0) < 0) {
+      fprintf(stderr, "Error setting periods.\n");
+      return(-1);
+    }
+
+    /* Set buffer size (in frames). The resulting latency is given by */
+    /* latency = periodsize * periods / (rate * bytes_per_frame)     */
+    if (snd_pcm_hw_params_set_buffer_size(pcm_handle, hwparams, (periodsize * periods)>>2) < 0) {
+      fprintf(stderr, "Error setting buffersize.\n");
+      return(-1);
+    }
+
+    /* Apply HW parameter settings to */
+    /* PCM device and prepare device  */
+    if (snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
+      fprintf(stderr, "Error setting HW params.\n");
+      return(-1);
+    }
+
+    data = (unsigned char *)calloc(periodsize*periods*4, 0);
+    frames = periodsize >> 2;
+
+QWE;
+//    snd_pcm_start(pcm_handle);
+
+	sss = snd_pcm_state(pcm_handle);
+	show(&sss);
+}
+
+
+void sound_capture(void) {
+QWE;
+	show(&sss);
+QWE;
+	while(pcmreturn = snd_pcm_readi(pcm_handle, data, frames), pcmreturn < 0) {
+	    snd_pcm_prepare(pcm_handle);
+		QWE;
+	}
+QWE;
+	show(&sss);
+QWE;
+	snd_pcm_drop(pcm_handle);
+QWE;
+	show(&sss);
+QWE;
+	printf("pcmreturn %i\nperiodsize %i\n", pcmreturn, periodsize); // */
+QWE;
+	show(&sss);
+
+}
+
+
+--Boundary-00=_encEA225R9TOya0--
 
 
 
