@@ -1,14 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
 Subject: RE: Has this patch been updated on any ALSA releases
- ?
-Date: Fri, 26 Mar 2004 14:12:32 +0100 (CET)
+	 ?
+Date: Fri, 26 Mar 2004 13:12:31 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403261412240.10157@pnote.perex-int.cz>
-References: <51BF576D5A02CC4CB2591F50994FD76691CA76@nts013.uk.trt.thales>
+Message-ID: <51BF576D5A02CC4CB2591F50994FD76691CA77@nts013.uk.trt.thales>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <51BF576D5A02CC4CB2591F50994FD76691CA76@nts013.uk.trt.thales>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,38 +16,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Yong, Chee Yeew " <Chee-Yeew.Yong@thalesgroup.com>
+To: 'Jaroslav Kysela' <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 26 Mar 2004, Yong, Chee Yeew  wrote:
+alsa-0.9.4
+rat-4.2.24
 
-> Hi Jaroslav,
+> -----Original Message-----
+> From: Jaroslav Kysela [mailto:perex@suse.cz]
+> Sent: 26 March 2004 13:13
+> To: Yong, Chee Yeew 
+> Cc: alsa-devel@lists.sourceforge.net
+> Subject: RE: [Alsa-devel] Has this patch been updated on any ALSA
+> releases ?
 > 
-> Thanks for replying.
 > 
-> > It would be better to specify your problem. The OSS emulation code was 
-> > changed a lot from this date and rat is working for me perfectly.
-> >					Jaroslav
+> On Fri, 26 Mar 2004, Yong, Chee Yeew  wrote:
 > 
-> When I run RAT, I get the warning:
+> > Hi Jaroslav,
+> > 
+> > Thanks for replying.
+> > 
+> > > It would be better to specify your problem. The OSS 
+> emulation code was 
+> > > changed a lot from this date and rat is working for me perfectly.
+> > >					Jaroslav
+> > 
+> > When I run RAT, I get the warning:
+> > 
+> > audio_read: Resource temporarily unavailable.
+> > 
+> > This warning persists throughout the running of RAT. RAT 
+> continues to run
+> > even with this warning/error.
+> > This may (or may not) be impacting the received audio, as I 
+> am experiencing
+> > break-ups even with 'redundancy' switched on.
 > 
-> audio_read: Resource temporarily unavailable.
+> ALSA version?
 > 
-> This warning persists throughout the running of RAT. RAT continues to run
-> even with this warning/error.
-> This may (or may not) be impacting the received audio, as I am experiencing
-> break-ups even with 'redundancy' switched on.
-
-ALSA version?
-
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
+> 
 
 
 -------------------------------------------------------
