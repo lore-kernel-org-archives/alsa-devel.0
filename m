@@ -1,7 +1,7 @@
 From: Brian L Scipioni <brian@gaugetheory.org>
 Subject: Re: ALSA, JACK, ASIO
-Date: Thu, 10 Feb 2005 04:56:55 -0500
-Message-ID: <1108029414.1806.23.camel@radium.gaugetheory.org>
+Date: Thu, 10 Feb 2005 05:47:48 -0500
+Message-ID: <1108032468.1806.26.camel@radium.gaugetheory.org>
 References: <9e47339105020710162d246fed@mail.gmail.com>
 	 <s5his52u6et.wl@alsa2.suse.de> <9e473391050208182623c5b3ea@mail.gmail.com>
 	 <1107982073.1806.10.camel@radium.gaugetheory.org>
