@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000387]: No soundcard detected on Chaintech ZNF3-250
-Date: Mon, 22 Nov 2004 14:50:23 +0100
-Message-ID: <68cd6fd87af8e9b29d82fbc0410be688@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
+Date: Mon, 22 Nov 2004 14:42:16 +0100
+Message-ID: <2a4ee3ac0cf9eff47a92bec6e54a2065@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A39B6187
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:50:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E99772B3
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:42:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,63 +22,52 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=387> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
 ======================================================================
-Reported By:                silent_runner
+Reported By:                olivier55
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   387
-Category:                   PCI - ice1724
+Issue ID:                   659
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.7 kernel.org stock
-Resolution:                 suspended
-Fixed in Version:           
+Status:                     assigned
+Distribution:               mandrake 10.1
+Kernel Version:             2.6.8.1-10
 ======================================================================
-Date Submitted:             07-13-2004 21:48 CEST
-Last Modified:              11-22-2004 14:50 CET
+Date Submitted:             11-20-2004 22:25 CET
+Last Modified:              11-22-2004 14:42 CET
 ======================================================================
-Summary:                    No soundcard detected on Chaintech ZNF3-250
+Summary:                    configure: error: Unsupported soundcard cs4236
 Description: 
-cat /proc/asound/cards gives --no souncards--
+when i do : 
+./configure --with-cards=cs4236 --with-sequencer=yes
+
+i've this error : 
+configure: error: Unsupported soundcard cs4236
+
+my soundcard is a Crystal Audio CS4237 (cirrus logic)
+i have a laptop dell inspiron 8200
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-22-04 17:02 
+ tiwai - 11-22-04 14:42 
 ----------------------------------------------------------------------
-No response from user.
-
-----------------------------------------------------------------------
- tiwai - 11-22-04 14:50 
-----------------------------------------------------------------------
-Now closed.  Please reopen if you can try the patch.
+Perhaps your kernel config doesn't support ISA?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 21:48 silent_runner  New Issue                                    
-07-13-04 21:48 silent_runner  File Added: command-outputs.tar.bz2               
-    
-07-13-04 21:48 silent_runner  Distribution              => Gentoo          
-07-13-04 21:48 silent_runner  Kernel Version            => 2.6.7 kernel.org
-stock
-07-13-04 22:18 silent_runner  Issue Monitored: silent_runner                    
-07-27-04 13:50 silent_runner  Issue Monitored: perex                       
-07-27-04 13:50 silent_runner  Note Added: 0001476                          
-07-30-04 17:03 tiwai          Note Added: 0001494                          
-07-30-04 17:03 tiwai          File Added: chaintech.dif                    
-10-22-04 17:02 perex          Status                   new => resolved     
-10-22-04 17:02 perex          Resolution               open => suspended   
-10-22-04 17:02 perex          Assigned To               => perex           
-10-22-04 17:02 perex          Note Added: 0002251                          
-11-22-04 14:50 tiwai          Status                   resolved => closed  
-11-22-04 14:50 tiwai          Note Added: 0002505                          
+11-20-04 22:25 olivier55      New Issue                                    
+11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
+11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
+11-20-04 22:30 olivier55      Issue Monitored: olivier55                    
+11-20-04 22:30 olivier55      Issue End Monitor: olivier55                    
+11-22-04 14:42 tiwai          Note Added: 0002502                          
 ======================================================================
 
 
