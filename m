@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000549]: Jackd crash randomly
-Date: Fri,  1 Oct 2004 10:07:25 +0200 (CEST)
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Spam on Alsa-devel.
+Date: Fri, 01 Oct 2004 09:32:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041001080725.539A32A001@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <415D1623.4060301@superbug.co.uk>
+References: <2004WQdvQh10NQC1Jjv.wm2ZaVFIdjIkUzUSUFunRfL.qmail@webeMutxHWGhe8JTZRleXYrN5VpdkWuXOykxaPyV.mail.yahoo.com> <415C45D9.401@icem.com> <Pine.LNX.4.58.0410010800330.2073@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AD815217
-	for <alsa-devel@alsa-project.org>; Fri,  1 Oct 2004 10:07:25 +0200 (MEST)
+In-Reply-To: <Pine.LNX.4.58.0410010800330.2073@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,81 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Carsten Koch <Carsten.Koch@icem.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Jaroslav Kysela wrote:
+> On Thu, 30 Sep 2004, Carsten Koch wrote:
+> 
+> 
+>>It appears I am receiving more spam via Alsa-devel these days
+>>than via the rest of my mail together (I am using this
+>>http://angel.net/~nic/spam-x.html against spam, which is very
+>>effective, but totally helpless against spam posted to a
+>>list I am subscribed to).
+>>
+>>I wonder why the list accepts postings from non-subscribers.
+> 
+> 
+> Because of kernel folks.
+> 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549
-======================================================================
-Reported By:                roswel
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     549
-Category:                   USB - usb-usx2y
-Reproducibility:            random
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid/experimental
-Kernel Version:             2.6.9-rc2-bk14
-======================================================================
-Date Submitted:             09-29-2004 07:52 CEST
-Last Modified:              10-01-2004 10:07 CEST
-======================================================================
-Summary:                    Jackd crash randomly
-Description: 
-Hi,
-I still have some troubles with jackd. I rebuilt a kernel without
-USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
-hang with the following jackd error  : 
-04:25:29.436 Audio connection graph change.
-delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
-restart ...
-04:28:42.753 XRUN callback. (1)
+Jaroslav,
 
-I never have this error with my integrated chip using intel_i8x0 driver.
-But wost, after a random time, jackd crash with the following error : 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-could not start playback (Broken pipe)
-jackd watchdog: timeout - killing jackd
+We can still keep this email list private.
 
-And in my kernel logs, i've got : 
-Sequence Error!(ep=10;nuc=1,frame=643)
-Sequence Error!(ep=8;nuc=0,frame=643)
-Sequence Error!(ep=8;nuc=1,frame=644)
+All you have to do is select:
+"Send mail to poster when their posting is held for approval? NO"
 
-Jackd crashs also if i'm not doing anything. I tried to let it run
-sometimes without using it, and it crashs.
+So, any post by a non-member will have to be authorised, the the 
+authorisation will be quiet.
+In this way, you can filter out all SPAM manually, so that it does not 
+get posted to the list.
+If mail is from the kernel mailing list, accept it, if it is from a 
+non-member, manually reject it, saying only members can submit messages.
 
-Thanx for your attention.
-======================================================================
+I think that would be acceptable to everyone.
+I do this for my mailing lists.
 
-----------------------------------------------------------------------
- karsten - 10-01-2004 01:24 CEST 
-----------------------------------------------------------------------
-please recheck snd-usb-usx2y version 0.8.0, which I posted to the
-alsa-devel list.
-
-----------------------------------------------------------------------
- roswel - 10-01-2004 10:07 CEST 
-----------------------------------------------------------------------
-How to get it, i'm not subscribe to alsa-devel list. Can you forward me
-your mail? or give me a link kto download it please.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-29-04 07:52 roswel         New Bug                                      
-09-29-04 07:52 roswel         Distribution              => Debian sid/experimental
-09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
-09-29-04 07:52 roswel         Bug Monitored: roswel                        
-10-01-04 01:24 karsten        Bugnote Added: 0001989                       
-10-01-04 10:07 roswel         Bugnote Added: 0001996                       
-======================================================================
+James
 
 
 -------------------------------------------------------
