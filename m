@@ -1,61 +1,61 @@
-From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
-Subject: Re: ALSA driver 1.0.2c: divide by zero oops
-Date: Tue, 16 Mar 2004 08:45:00 +1030 (CST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403152215.i2FMF0s16137@turbo.physics.adelaide.edu.au>
-References: <s5hoeqyie3w.wl@alsa2.suse.de>
+From: Luca Capello <luca@pca.it>
+Subject: Re: Fw: [Alsa-devel] drivers in alsa-driver tree with 2.6 kernels
+Date: Tue, 16 Mar 2004 00:14:40 +0100
+Message-ID: <405638E0.5030209@pca.it>
+References: <20040311180122.30343d89@sashak.lan>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hoeqyie3w.wl@alsa2.suse.de> from "Takashi Iwai" at Mar 15, 2004 11:44:35 AM
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
+Return-path: <discuss-return-13430-lindows=m.gmane.org@linmodems.org>
+In-Reply-To: <20040311180122.30343d89@sashak.lan>
+To: ML ALSA-devel <alsa-devel@lists.sourceforge.net>
+Cc: "linmodems.org" <discuss@linmodems.org>
 List-Id: alsa-devel@alsa-project.org
 
-> > I have been trying cinelerra 1.1.9 in OSS mode against the OSS emulation
-> > driver (snd-pcm-oss) from ALSA driver 1.0.2c. Whenever anything is done to
-> > start audio playback (such as playing a video clip) the ALSA driver panics
-> > with a divide by zero error.  The decoded oops is found below.
-> > 
-> > Under native OSS from 2.4.23 cinelerra works fine.  Furthermore, all other
-> > OSS applications I've tried against ALSA driver 1.0.2c seem to be fine. 
-> > Thus the problem seems to be associated with the way cinelerra does things -
-> > something it does is upsetting ALSA but is fine under native OSS.  Of
-> > course, even a misbehaving application not running as root should not be
-> > able to panic the kernel.
-> 
-> sure.  what soundcard/soundchip are you using?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-It's an Ensoniq AudioPCI card with the ES-1370 chipset.
+Hello,
 
-> also, did you compile with the debug option?
+on 03/11/04 17:01, Sasha Khapyorsky wrote:
+> Takashi, ALSA maintainer, is asking now for confirmations of 'intel8x0m'
+> AC97 modem driver usage.
+> If you are using this you may report your case to
+> alsa-devel@lists.sourceforge.net - then the driver will be submitted to
+> 2.6 linux kernel tree.
+<cut>
+> Begin forwarded message:
+>
+> Date: Thu, 11 Mar 2004 14:27:59 +0100
+> From: Takashi Iwai <tiwai@suse.de>
+> To: alsa-devel@lists.sourceforge.net
+> Subject: [Alsa-devel] drivers in alsa-driver tree with 2.6 kernels
+<cut>
+> does anyone use the following drivers with a 2.6 kernel successfully?
+> if it's confirmed, i'd like to move them to alsa-kernel tree, so that
+> they can be submitted to 2.6 linux tree soon.
+<cut>
+> - snd-intel8x0m
+I successfully used 'snd-intel8x0m' on my ancient laptop, an ASUS M3410C:
+ http://luca.pca.it/projects/asus/m3410c/
 
-No.  Should I?  I'm guessing you may be after further debugging output
-here - if so, what would you like me to do (after compiling with the debug
-option)?
+My success post on the 'discuss@linmodems.org' mailing-list is here:
+ http://linmodems.org/cgi-bin/ezmlm-cgi?1:mss:13083:200402:pkpdkliklhpapcodpmop
 
-Regards
-  jonathan
--- 
-* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
-*                    http://www.physics.adelaide.edu.au/~jwoithe            *
-***-----------------------------------------------------------------------***
-** "Time is an illusion; lunchtime doubly so"                              **
-*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
-*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
+I already posted on 'alsa-user@lists.sourceforge.net'
+ http://sourceforge.net/mailarchive/forum.php?thread_id=3847625&forum_id=1751
+while it seems that my post never reached 'alsa-devel@lists.sourceforge.net'.
 
+ASAP I'll try with my new laptop (an ASUS M6842NWH, M6800N family), just to have
+another confirmation.
 
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+Thx, bye,
+Gismo / Luca
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Debian - http://enigmail.mozdev.org
+
+iD8DBQFAVjaSVAp7Xm10JmkRAj2fAJ9kSAHE8m+nE9nI5iMFd6+4KBg4OwCfbZod
+suN/ukkIhXgg8kuDKxrx4DM=
+=h2J6
+-----END PGP SIGNATURE-----
