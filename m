@@ -1,11 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: alsa memory leaks
-Date: Tue, 15 Oct 2002 00:13:51 +1000
+From: Richard Bown <bownie@bownie.com>
+Subject: alsa sequencer: note interface
+Date: Mon, 14 Oct 2002 17:16:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DAAD11F.2050602@superbug.demon.co.uk>
+Message-ID: <200210141716.17222.bownie@bownie.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,36 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Has anyone run a diagnosis tool like "memprof" on an application that 
-uses alsa for audio out ?
-I recently did this, and have found that alsa is a little leaky. It is 
-mainly the mixer part of alsa.
-Here is an example backtrace for the call to the malloc that is never 
-freed even if the application exits.
-Maybe I am just missing the alsa-lib api call to free up all the memory, 
-but I thought I would mention it anyway.
+A question - if you're sending a load of MIDI notes (as opposed to 
+noteons/noteoffs) with very long duration and to curtail these notes 
+you're sending notes with shorter (finite if you like) duration to same 
+channel/pitch should the longer ones clear down from ALSA and get cast 
+away?
 
-There are lots of these: -
-Leaked 0x8106038 (12 bytes)
-        [0x400157b0]
-        bag_add(): /alsa-lib/src/mixer/bag.c:47
-        snd_mixer_elem_attach(): /alsa-lib/src/mixer/mixer.c:88
-        simple_add1(): /alsa-lib/src/mixer/simple.c:966
-        simple_event_add(): /alsa-lib/src/mixer/simple.c:1029
-        simple_event(): /alsa-lib/src/mixer/simple.c:1062
-        hctl_event_handler(): /alsa-lib/src/mixer/mixer.c:175
-        snd_hctl_throw_event(): /alsa-lib/src/control/hcontrol.c:178
-        snd_hctl_load(): /alsa-lib/src/control/hcontrol.c:567
-        snd_mixer_load(): /alsa-lib/src/mixer/mixer.c:448
-        ao_alsa_mixer_init(): /xine-lib/src/audio_out/audio_alsa_out.c:858
+At the moment I can get the notes to stop sounding correctly but after 
+playing more notes for a while (and everything sounding fine) the 
+sequencer just eventually stops accepting any more notes for playback 
+presumably because the original long notes are still hanging around in 
+a buffer somewhere.
 
-Cheers
-James
+Thoughts?
 
-
+B
+-- 
+Rosegarden.  Music Software For Linux
+http://www.all-day-breakfast.com/rosegarden
 
 
 -------------------------------------------------------
