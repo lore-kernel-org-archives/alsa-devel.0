@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000681]: alsamixer, rmedigicontrol and rme96 kernel driver
-Date: Mon, 29 Nov 2004 16:10:56 +0100
-Message-ID: <f8b95cbc61b3320a1d1e88859e82df4f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000570]: Sparse mixer for RME96
+Date: Mon, 29 Nov 2004 16:11:31 +0100
+Message-ID: <f0c2d8adaea3389a705c46db1dff7c88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 908812C8
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:10:56 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 32A0A2C8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:11:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,79 +24,69 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=681> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=570> 
 ======================================================================
-Reported By:                d637e16c5433737884c13889afdeaf34
-Assigned To:                martin
+Reported By:                ungod
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   681
-Category:                   rmedigicontrol
+Project:                    ALSA - driver
+Issue ID:                   570
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
+Distribution:               
+Kernel Version:             
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-27-2004 00:59 CET
-Last Modified:              11-29-2004 16:10 CET
+Date Submitted:             10-07-2004 10:59 CEST
+Last Modified:              11-29-2004 16:11 CET
 ======================================================================
-Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
+Summary:                    Sparse mixer for RME96
 Description: 
-As it's impossible to use the alsamixer with the rme96 driver here's a
-small patch for it to make it work. (it's not from me, it's from undog
-#alsa on irc.freenode.org)
+Noticed that almost all mixer controls was identified as PCM controles, so
+I did a small patch.
 
-This patch will break rmedigicontrol, so i made a small patch for
-rmedigicontrol that'll fix this, too.
+Summary: RME96 Mixer fix
 
-Adding is trivial, it's just editing 8 lines of source.
+ - Fix mixer bugs
 
-
-Regards,
-Matthias
-
-PS: Added patch for rmedigicontrol
+Signed-off-by: Peter Chrisensen <peter@developers.dk>
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-related to          0000570 Sparse mixer for RME96
+related to          0000681 alsamixer, rmedigicontrol and rme96 ker...
+has duplicate       0000682 alsamixer, rmedigicontrol and rme96 ker...
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 11-28-04 18:01 
+ ungod - 10-07-04 18:05 
 ----------------------------------------------------------------------
-I've added a patch for rme32, because your patch will also break rme32
-support.
-Don't forget to attach a summary and a signed-off-by line for your patch.
-
-
-Summary: 
-
-The patch will change SNDRV_CTL_ELEM_IFACE_PCM to
-SNDRV_CTL_ELEM_IFACE_MIXER for some mixer elements of rme32.
-
-Signed-off-by: Martin Langer <martin-langer@gmx.de>
+I see. Strange. Anyway, didn't even know that there was such a tool. I'll
+mention that to the dude on #alsa I made the patch for.
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 16:10 
+ tiwai - 11-29-04 16:11 
 ----------------------------------------------------------------------
-OK, now changed as proposed on CVS.
+Now applied to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
-           
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rmedigicontrol.patch 
-                  
-11-28-04 17:53 martin         File Added: rme32-iface.patch                    
-11-28-04 18:01 martin         Note Added: 0002625                          
-11-29-04 16:01 tiwai          Relationship added       related to 0000570  
-11-29-04 16:10 tiwai          Status                   assigned => resolved
-11-29-04 16:10 tiwai          Resolution               open => fixed       
-11-29-04 16:10 tiwai          Note Added: 0002647                          
+10-07-04 10:59 ungod          New Issue                                    
+10-07-04 10:59 ungod          File Added: rme96-mixerfix.diff                   
+
+10-07-04 14:11 tiwai          Note Added: 0002030                          
+10-07-04 14:12 tiwai          Note Added: 0002031                          
+10-07-04 18:05 ungod          Note Added: 0002036                          
+11-29-04 16:01 tiwai          Relationship added       related to 0000681  
+11-29-04 16:04 tiwai          Relationship added       has duplicate 0000682
+11-29-04 16:11 tiwai          Status                   new => resolved     
+11-29-04 16:11 tiwai          Resolution               open => fixed       
+11-29-04 16:11 tiwai          Assigned To               => tiwai           
+11-29-04 16:11 tiwai          Note Added: 0002648                          
 ======================================================================
 
 
