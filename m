@@ -1,12 +1,16 @@
-From: =?iso-8859-1?q?Evghenii=20Gaburov?= <alsa_eg35@yahoo.co.uk>
-Subject: SIS7012 and alsa >= 0.9.7
-Date: Wed, 14 Jan 2004 17:24:17 +0000 (GMT)
+From: Michael Huijsmans <mgh@telering.at>
+Subject: Re: [PATCH] ens1373/ct5880 - Switch Line In to Rear Out
+Date: Wed, 14 Jan 2004 19:15:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040114172417.99270.qmail@web25007.mail.ukl.yahoo.com>
+Message-ID: <20040114191559.6df196fa.mike@marune.alastor>
+References: <20040111185547.34073761.mike@marune.alastor>
+	<s5hy8sbambx.wl@alsa2.suse.de>
+Reply-To: mgh@telering.at
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hy8sbambx.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,41 +19,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Tue, 13 Jan 2004 16:40:34 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-There is a problem with alsa-driver with versions >=
-0.9.7 on my card SIS7012; the last working version was
-0.9.6. All further versions have too fast playback,
-and sending option "ac97_clock=48000" does not change
-anythin. Actually, it does changes, but not that I
-expected - playback is still fast, but with low
-quality if one sends a low value, say
-"ac97_clock=8000".
+> At Sun, 11 Jan 2004 18:55:47 +0100,
+> Michael Huijsmans wrote:
+> > 
+> >   < patch to ens1370.c > 
+> 
+> thanks for the patch!
+> 
+> i applied it with a minor correction (the return value of put
+> callback) together with clean up and fixes of other parts.
+> please check the cvs tree later (the anon. server isn't mirrored
+> immediately) whether it works for you.
+> 
+> 
+> ciao,
+> 
+> Takashi
 
-Comparison of 0.9.7 (first non-working) against 0.9.6
-(last working) reveals that a slightly differnt
-interrupt handler was used ("snd_intel8x0_update" in
-alsa-kernel/pci/intel8x0.c). It turns out that seting
-variable "step=1" right before "ichdev->position +=
-step * ichdev->fragsize1" solves the problem, and
-driver work fine. This also work with the latest
-realese, that is alsa-1.0.1. 
+Hi, 
 
-I am not a driver developer and have no idea what is
-the problem, but it would be great if this can be
-fixed in all future versions of alsa.
+Yes, it's still working.
 
-Regards,
- Evghenii Gaburov
+Thanks,
 
-
-________________________________________________________________________
-Yahoo! Messenger - Communicate instantly..."Ping" 
-your friends today! Download Messenger Now 
-http://uk.messenger.yahoo.com/download/index.html
+Mike
 
 
 -------------------------------------------------------
