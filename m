@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000258]: Recording from line-in produces noise
-Date: Wed, 23 Mar 2005 15:29:46 +0100
-Message-ID: <cedb9bfa1dc15e3d0489727bb1a53c71@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Tue, 22 Mar 2005 14:58:57 +0100
+Message-ID: <f4635f3edbe70d619f3da02e4f4fdbe7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17FAC26B
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:29:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58FFCFA
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 14:58:57 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,67 +23,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=258> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                Fancia
+Reported By:                jnilles
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   258
-Category:                   PCI - emu10k1
+Issue ID:                   963
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.22
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             05-06-2004 22:03 CEST
-Last Modified:              03-23-2005 15:29 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-22-2005 14:58 CET
 ======================================================================
-Summary:                    Recording from line-in produces noise
+Summary:                    Sounc card is mute
 Description: 
-Attempting to record audio from the sound card's line-in port causes
-audible pops and crackle in the resulting recording, regardless of
-recording software used. These artefacts are not present in the input
-itself and are not audible during the recording itself, but are present in
-the resulting recording. I've tried recording from several different
-devices on the same line-in port, and the noise is consistent. I've spoken
-to several other AmigaOne owners with the same sound card, all of whom can
-reproduce the problem.
-Attached is a recording from my Roland MT-32 synthesizer module. Aside
-from normalization, it's unaltered from the original recording.
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 11-17-04 19:21 
+ jnilles - 03-19-05 18:55 
 ----------------------------------------------------------------------
-Can you verify this bug still exists with latest ALSA version, 1.0.7?
+Only the 'External Amplifier' switch was necessary to produce the sound
+output.
+What might be the problem with the microphone? The mic controls on gamix
+are quite ambiguous.
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:29 
+ jdthood - 03-22-05 14:58 
 ----------------------------------------------------------------------
-Submitter: Has there been any progress on this issue in later ALSA
-releases?
+Before we mark this "resolved", can you please check that you are
+able to control the 'External Amplifier' setting with both alsamixer
+and amixer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-06-04 22:03 Fancia         New Issue                                    
-05-06-04 22:03 Fancia         Distribution              => Debian          
-05-06-04 22:03 Fancia         Kernel Version            => 2.4.22          
-05-06-04 22:05 Fancia         Issue Monitored: Fancia                      
-05-06-04 22:06 Fancia         Issue End Monitor: Fancia                    
-05-06-04 22:14 Fancia         Note Added: 0001064                          
-11-17-04 19:21 rlrevell       Note Added: 0002440                          
-03-23-05 15:29 jdthood        Note Added: 0004161                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
+03-10-05 15:01 jdthood        Note Added: 0003856                          
+03-10-05 20:29 jnilles        Note Added: 0003872                          
+03-10-05 22:04 jdthood        Note Added: 0003874                          
+03-16-05 01:33 jnilles        Note Added: 0003926                          
+03-16-05 12:31 tiwai          Note Added: 0003941                          
+03-16-05 22:52 jnilles        Note Added: 0003972                          
+03-17-05 10:11 jdthood        Note Added: 0003980                          
+03-17-05 23:07 jnilles        Note Added: 0003986                          
+03-18-05 14:38 jdthood        Note Added: 0003993                          
+03-18-05 17:59 tiwai          Note Added: 0003997                          
+03-18-05 22:42 jnilles        Note Added: 0004006                          
+03-19-05 09:44 jdthood        Note Added: 0004025                          
+03-19-05 18:55 jnilles        Note Added: 0004066                          
+03-22-05 14:58 jdthood        Note Added: 0004125                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now.
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
