@@ -1,17 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [RFC] re-queuing usx2y-fw
-Date: Mon, 28 Mar 2005 17:51:51 +0200
-Message-ID: <20050328155151.GA3552@tuba>
+From: Janina Sajka <janina@rednote.net>
+Subject: Re: No dmix with HDSP Multiface
+Date: Mon, 28 Mar 2005 16:12:48 -0500
+Message-ID: <20050328211248.GG7520@rednote.net>
+References: <20050322180510.GA8180@rednote.net> <s5hfyymqwjo.wl@alsa2.suse.de> <20050323155908.GW8178@rednote.net> <s5hy8cel1mx.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed; boundary="J2SCkAp4GZ/dPZZf"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id CF12021F
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 17:52:27 +0200 (MEST)
-Received: from ml by tuba with local (Exim 4.44)
-	id 1DFwWt-0000wi-FF
-	for alsa-devel@alsa-project.org; Mon, 28 Mar 2005 17:51:51 +0200
 Content-Disposition: inline
+In-Reply-To: <s5hy8cel1mx.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,44 +17,121 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Janina Sajka <janina@rednote.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-long time ago there was a thread about replacing tascam_loader.ihx with 
-an open firmware:
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-http://sourceforge.net/mailarchive/message.php?msg_id=8555003
+Takashi Iwai writes:
+> At Wed, 23 Mar 2005 10:59:08 -0500,
+> Janina Sajka wrote:
+> > 
+> > Takashi Iwai writes:
+> > > At Tue, 22 Mar 2005 13:05:10 -0500,
+> > > Janina Sajka wrote:
+> > > > 
+> > > > I have 1.0.9RC1 compiled and installed--but cannot get dmix to work. Am
+> > > > I going about it wrong? Or are there still known issues with dmix using
+> > > > RME hardware? Mine is a HDSP Multiface. Here's what I get:
+> > > >... snip snip ...
+> >  
+> > > The dmix PCM definition was slightly changed recently.  It no longer
+> > > takes SLAVE argument but CARD, DEV and SUBDEV.  For hw:0,0, it's like
+> > > 	dmix:CARD=0,DEV=0,RATE=48000
+> > > 
+> > > The default card and device are both 0, and the default rate is 48000,
+> > > in the case above, you don't need to pass arguments.  Just run like
+> > > 
+> > > 	% aplay -Dplug:dmix foo.wav
+> > 
+> > Still no sound, though:
+> > 
+> > #aplay -Dplug:dmix Any_Dream_Will_Do.wav
+> > ALSA lib pcm_direct.c:741:(snd_pcm_direct_initialize_slave) unable to
+> > install hw params
+> 
+> You need to specify FORMAT=S32_LE in the case of HDSP.
+> Add the following to ~/.asoundrc:
+> 
+> mydmix {
+> 	type plug
+> 	slave.pcm "dmix:FORMAT=S32_LE"
+> }		
+> 
+> 
+> Takashi
+Regret to say still no response:
 
-http://www.langerland.de/audio/usx2y/usx2y-fw-0.1b.tar.bz2
+aplay -Dplug:dmix Any_Dream_Will_Do.wav
+ALSA lib pcm_direct.c:741:(snd_pcm_direct_initialize_slave) unable to
+install hw params
+ALSA lib pcm_dmix.c:728:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:508: audio open error: Device or resource busy
+[root@concerto
 
-All results were quite positive and I've had a lot of downloads since 
-them on my site and I never ever got a bugreport about it :)
-
-What about a second attempt of merging it into alsa-firmware? Any new 
-strategies for this step? The code still depends on as31 (8031/8051 
-crosss-assembler) which still isn't available as .rpm or .deb, at least 
-newer versions since 2.1. Should we care about it?
-
-I use it on my US-122 since several months without problems and we have 
-positive results from us224 and us428 owners. Even the size has only 20 
-percent of the size of the original tascam file. Aren't these good 
-reasons for deleting the original closed source file?
-
-Another point is the license note in the README file for those Tascam 
-files. Is it really true for tascam_loader.ihx? I (we?) know that 
-tascam_loader.ihx and MidiSportLoader.ihx (for M-Audio MidiSport's) are 
-100% identical; there's no difference. So I believe that this file is 
-part of the same 3rd party development kit and is not be copyrighted by 
-Tascam? I don't know it, but Tascam should know it better... just my 
-two cents.
+Perhaps I misunderstand .asoundrc? Since that's very possible, I'm
+attaching my current. Works to play directly and via spdif, but not
+dmix
+Thanks.
+.
 
 
-bye,
-martin
+-- 
 
+Janina Sajka				Phone: +1.202.494.7040
+Partner, Capital Accessibility LLC	http://www.CapitalAccessibility.Com
+
+Chair, Accessibility Workgroup		Free Standards Group (FSG)
+janina@freestandards.org		http://a11y.org
+
+If Linux can't solve your computing problem, you need a different problem.
+
+
+--J2SCkAp4GZ/dPZZf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=".asoundrc"
+
+pcm.hdsp {
+        type hw
+        card 0
+}
+ctl.hdsp {
+        type hw
+        card 0
+}
+
+pcm.hdsp_analog {
+        type plug
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.2.2 1
+        ttable.3.3 1
+        ttable.4.4 1
+        ttable.5.5 1
+        ttable.6.6 1
+        ttable.7.7 1
+        slave.pcm hdsp
+}
+
+
+pcm.hdsp_spdif {
+    type plug
+    ttable.0.16 1
+    ttable.1.17 1
+    slave.pcm hdsp
+}
+
+mydmix {
+        type plug
+        slave.pcm "dmix:FORMAT=S32_LE"
+}
  
+
+--J2SCkAp4GZ/dPZZf--
 
 
 -------------------------------------------------------
