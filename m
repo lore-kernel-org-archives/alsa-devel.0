@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
-Date: Mon, 13 Sep 2004 15:45:16 +0200 (CEST)
+Subject: [ALSA - liboss 0000494]: aoss crashes (patch)
+Date: Mon, 13 Sep 2004 15:49:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040913134516.DF6A812009@server.perex-int.cz>
+Message-ID: <20040913134938.BA9BC1200A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 32E65282
-	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:45:17 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D12628B
+	for <alsa-devel@alsa-project.org>; Mon, 13 Sep 2004 15:49:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,180 +22,60 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000366
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000494
 ======================================================================
-Reported By:                deathpudding
-Assigned To:                pzad
+Reported By:                stsp
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     366
-Category:                   PCI - emu10k1
+Project:                    ALSA - liboss
+Bug ID:                     494
+Category:                   
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.6.7
+Status:                     new
 ======================================================================
-Date Submitted:             07-05-2004 09:43 CEST
-Last Modified:              09-13-2004 15:45 CEST
+Date Submitted:             09-09-2004 20:46 CEST
+Last Modified:              09-13-2004 15:49 CEST
 ======================================================================
-Summary:                    driver hangs when trying to load a soundfont >8MB
+Summary:                    aoss crashes (patch)
 Description: 
-The alsa driver and the applications using it hang, unkillable and unable
-to be unloaded, when I try to load a soundfont larger than 8MB. This
-sometimes results in the appearance of a page fault message when shutting
-down. The shutdown is never completed because the disk cannot be
-unmounted, presumably because the alsa driver is still frozen while trying
-load the soundfont from it.
-
-I found a thread in the alsa-devel archives discussing this problem:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
-
-I see that the discussed patch has been applied, but I still have this
-problem. I haven't tested with versions prior to 1.0.4 because they did
-not compile with the later library version, but I do know that it was
-working not too long ago (with kernel 2.6.x).
+aoss always causes a SIGSEGV for me. Here is a
+stack trace:
+---
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000  0x00000000 in ?? ()
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001  0x4002a76d in fopen (path=0x40039c3a "/proc/mounts", mode=0x40039c38
+"r")
+    at alsa-oss.c:661
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000002  0x40036d4d in print_access_vector () from /lib/libselinux.so.1
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000003  0x40038971 in setfscreatecon () from /lib/libselinux.so.1
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000004  0x4002fc55 in _init () from /lib/libselinux.so.1
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005  0x4000bf71 in _dl_init_internal () from /lib/ld-linux.so.2
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000006  0x400007f5 in _dl_start_user () from /lib/ld-linux.so.2
+---
 ======================================================================
 
 ----------------------------------------------------------------------
- vlajsa - 07-10-2004 20:39 CEST 
+ tiwai - 09-13-2004 15:49 CEST 
 ----------------------------------------------------------------------
-To add to this report! Sfxload don't work with alsa 1.0.5, too!
+Could you give the patch summary and signed-off-by line to apply
+your patch (preferably with detailed description).
 
-----------------------------------------------------------------------
- deathpudding - 07-10-2004 21:45 CEST 
-----------------------------------------------------------------------
-I marked this as a 1.0.5a bug, but it doesn't look like it showed up in the
-report.
+It looks like below.
 
-----------------------------------------------------------------------
- pzad - 07-12-2004 13:31 CEST 
-----------------------------------------------------------------------
-I tested this with 32 MB soundfont what I have and it worked.
-If this is free soundfont can you give link to it ????
+Summary: [ALSA-OSS] Fix segfault at fopen
 
-----------------------------------------------------------------------
- deathpudding - 07-12-2004 23:03 CEST 
-----------------------------------------------------------------------
-I've tried it with multiple soundfonts, but here are two examples:
+This patch fixes the bug....
+More description...
 
-http://www.hammersound.net/cgi-bin/soundlink.pl?action=view_download_page;ID=116;SoundFont_Filename_Selected=mustheory2.sfArk
-http://bennetng.kc-studio.com/bennetng_AnotherGS_v2-0.exe
-
-Unfortunately the first requires the sfArk program, and the second is a
-self-extracting sfArk. Both should work under Wine, at least.
-
-edited on: 07-12-04 23:03
-
-----------------------------------------------------------------------
- vlajsa - 08-03-2004 17:11 CEST 
-----------------------------------------------------------------------
-Hmm... I really don't know how I've missed this one! When playing some
-music with xmms through alsa plugin, the song continues to the end, and
-then silently driver hangs! Of course this happenes when trying to load
-soundfont while playing some song! Hope this can help!!
-
-I'm sure I can find sone fonts that dont need wine to use them. If you
-want me to do that, let me know!
-
-----------------------------------------------------------------------
- pzad - 09-07-2004 09:37 CEST 
-----------------------------------------------------------------------
-Sorry, I can not reproduce this with alsa 1.0.6a + Audigy + kernel 2.6.5.
-
-----------------------------------------------------------------------
- deathpudding - 09-07-2004 10:31 CEST 
-----------------------------------------------------------------------
-I tried again with kernel 2.6.8.1, alsa 1.0.6a and SB Live!. This time,
-instead of alsa hanging, several of my unrelated running processes were
-killed. I at least got some debug output, which I've attached to the
-report as a text file. The file only contains the message for asfxload -
-the other killed processes had similar messages but without page faults.
-
-----------------------------------------------------------------------
- vlajsa - 09-07-2004 18:25 CEST 
-----------------------------------------------------------------------
-hmm,
-somewhere on the rosegarden-user list I've heared that problem will be
-gone after kernel patching (with mm# patch from Andrew Morton, I think).
-But I didn't try this becouse of fedora_core2 kernel, which is not easyly
-patchable, and I cann't download complete kernel sources.. something's
-wrong with my provider!
-
-deathpudding, are you able to do this test?
-
-here's the patch url:
-ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.8.1/2.6.8.1-mm4/2.6.8.1-mm4.bz2
-
-edited on: 09-07-04 18:25
-
-----------------------------------------------------------------------
- deathpudding - 09-08-2004 01:38 CEST 
-----------------------------------------------------------------------
-I tried the -mm4 patch, but it didn't make a difference.
-
-----------------------------------------------------------------------
- tiwai - 09-08-2004 17:06 CEST 
-----------------------------------------------------------------------
-This should not happen on the ALSA CVS version because it now has
-__GFP_NORETRY unconditionally.  If still gets wrong, it must be a
-kernel bug.
-
-----------------------------------------------------------------------
- deathpudding - 09-09-2004 03:46 CEST 
-----------------------------------------------------------------------
-I tried 1.0.7rc1, which uses the NORETRY flag, and the soundfont loads
-without hanging/killing processes. But it doesn't load the entire
-soundfont, probably stopping when it runs out of memory. Only one
-instrument played when I played a test midi file. I don't understand why
-it thinks there isn't enough memory.
-
-----------------------------------------------------------------------
- deathpudding - 09-09-2004 03:49 CEST 
-----------------------------------------------------------------------
-ah, it's using dma_alloc, and the txt I attached says there was only 32kb
-DMA memory free.
-
-----------------------------------------------------------------------
- deathpudding - 09-09-2004 04:30 CEST 
-----------------------------------------------------------------------
-and also that there was 16MB of DMA memory total, while the soundfont is
-32MB...
-
-----------------------------------------------------------------------
- tiwai - 09-13-2004 15:45 CEST 
-----------------------------------------------------------------------
-This should NOT happen.  snd-page-alloc has a wrapper for
-dma_alloc_coherent() to allocate the pages from __GFP_KERNEL
-as much as possible.  It means, that this hack isn't working
-on your environment.
-
-Check whether the codepath goes through dma_alloc_coherent wrapper
-in memalloc.c (e.g. adding prink's there).
+Signed-off-by: Foo Bar <foo@bar.com>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-05-04 09:43 deathpudding   New Bug                                      
-07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
-07-10-04 20:39 vlajsa         Bugnote Added: 0001404                       
-07-10-04 21:45 deathpudding   Bugnote Added: 0001405                       
-07-12-04 13:31 pzad           Bugnote Added: 0001409                       
-07-12-04 23:02 deathpudding   Bugnote Added: 0001411                       
-07-12-04 23:03 deathpudding   Bugnote Edited: 0001411                      
-08-03-04 17:11 vlajsa         Bugnote Added: 0001528                       
-09-07-04 09:37 pzad           Bugnote Added: 0001703                       
-09-07-04 10:26 deathpudding   File Added: alsacrash.txt                    
-09-07-04 10:31 deathpudding   Bugnote Added: 0001705                       
-09-07-04 18:21 vlajsa         Bugnote Added: 0001724                       
-09-07-04 18:25 vlajsa         Bugnote Edited: 0001724                      
-09-08-04 01:38 deathpudding   Bugnote Added: 0001725                       
-09-08-04 17:06 tiwai          Bugnote Added: 0001732                       
-09-09-04 03:46 deathpudding   Bugnote Added: 0001740                       
-09-09-04 03:49 deathpudding   Bugnote Added: 0001741                       
-09-09-04 04:30 deathpudding   Bugnote Added: 0001742                       
-09-13-04 15:45 tiwai          Bugnote Added: 0001748                       
+09-09-04 20:46 stsp           New Bug                                      
+09-09-04 20:46 stsp           File Added: alsa-oss.c.diff                    
+09-13-04 15:49 tiwai          Bugnote Added: 0001749                       
 ======================================================================
 
 
