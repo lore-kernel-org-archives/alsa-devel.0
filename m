@@ -1,12 +1,14 @@
-From: "Yon Mercury" <swirlee@stickist.com>
-Subject: UA-1000 working now?
-Date: Tue, 16 Nov 2004 11:08:53 -0700
-Message-ID: <20041116180853.M82353@stickist.com>
-References: <20041114012001.DA0F81D5AEC@sc8-sf-uberspam1.sourceforge.net>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Echoaudio driver, hint request
+Date: Tue, 16 Nov 2004 19:25:04 +0100
+Message-ID: <20041116192504.5d766678.pochini@shiny.it>
+References: <20041108224637.1fd8b6cd.pochini@shiny.it>
+	<s5h8y97fjv2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041114012001.DA0F81D5AEC@sc8-sf-uberspam1.sourceforge.net>
+In-Reply-To: <s5h8y97fjv2.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,21 +18,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone.
+On Fri, 12 Nov 2004 11:21:37 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-Looking back, I see that UA-1000 support entered the stage in ALSA 1.0.5 (yet
-to appear in the soundcard matrix, but I understand y'all are busy). There was
-a big thread back in May between Gwenyth Morrison and Clemens Ladisch, where
-they were debugging on the UA-1000.
+> > My driver currently registers two pcm devices: pmc#0 for analog channels and
+> > pcm#1 for digital channels. Though the DSP interface does not make that
+> > distinction: for example the Gina24 has 2 analog and 8 digital input
+> > channels and they are numbered 16..25. It's also possible to use a substream
+> > made of all 10 channels at the same time.
+> >
+> > The question is: what's better, the current approach of keeping analog and
+> > digital channels on different pcm devices (quite messy at driver level), or
+> > should I put them toghether and write a proper .alsarc file, so the user can
+> > choose digital channels by name instead of by index ?
+>
+> It's diffituly to tell which is definitely better.
+>
+> When someone wants to use OSS emulation for digital, it'd be nicer to
+> have a distinct device, so that it may work with the kernel OSS
+> emulation route.  OTOH, from the ALSA perspective, it's no problem to
+> have one stream with all channels.
+>
+> So, the question is the difficulty of coding.  If the code wouldn't be
+> too complicated, the separate devices are easier and more
+> understandable for users.  If the code matters, choose the one stream
+> type like ice1712.
 
-Guys, did y'all get that working? How's the latency?
+No, it's not difficult. The driver uses separated devices since the first
+release. It's a bit ugly, though. There are two couples of almost identical
+pcm_open() functions and a couple of nested ifdef's. Btw, I'll keep the
+current solution because it appears cleaner at user level.
 
-Thanks,
--Mercury
 
+--
+Giuliano.
 
 
 -------------------------------------------------------
