@@ -1,15 +1,22 @@
-From: Josh Buhl <uzs33d@uni-bonn.de>
-Subject: Re: intel8x0 driver motorboots (gets caught in loop)
- in Quake 3
-Date: Mon, 17 Feb 2003 12:27:21 +0100
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: Re: MTP-AV problems (Re: intel8x0 sequencer &
+	MTP-AV) - success
+Date: 17 Feb 2003 22:36:31 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E50C719.1000306@uni-bonn.de>
-References: <3E4A8A39.9000608@uni-bonn.de> <877kc2j521.fsf@dimail.umc.com.ua>
+Message-ID: <1045481799.16503.33.camel@littlewolf2.littlewolf>
+References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
+	<s5h3cn5ino4.wl@alsa2.suse.de>
+	<1044273602.2013.6.camel@littlewolf2.littlewolf>
+	<s5hheb8l05o.wl@alsa2.suse.de>
+	<1045193186.10268.392.camel@littlewolf2.littlewolf>
+	<s5h4r77jdmm.wl@alsa2.suse.de>
+	<1045389509.6765.21.camel@littlewolf2.littlewolf>
+	<s5hfzqni39i.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <877kc2j521.fsf@dimail.umc.com.ua>
+In-Reply-To: <s5hfzqni39i.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,88 +25,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Doesn't look like we're getting very far in this thread...
+Hi Takashi
 
-I, like Dmitry, am eager to help debug this problem and can 
-patch/compile/use gdb, but don't know much about alsa internals. Anybody 
-have any hints about what to try next?
+At this stage till I get the cvs version of ALSA I have no further
+information. 
 
---josh
+I did only notice at the start of using the sequencer.. once it happened
+once it didn't happen again. 
 
-Dmitry Astapov wrote:
-> Evening, Josh. 
-> 
-> Josh Buhl <uzs33d@uni-bonn.de> 18:54 12/2/2003 wrote:
-> 
->  JB> When running Quake 3 Arena the sound initializes
->  JB> properly and plays correctly during the game until the
->  JB> end of a match. At this point, the game abruptly enters
->  JB> a different mode (this is where the models of the
->  JB> players for the first, second, and third placements are
->  JB> shown on pedestals and a voice says "Grunt Wins!" or
->  JB> whatever) and the game locks up with a small segment of
->  JB> sound being repeated in a loop.
-> 
-> I'd like to second that, but for me looping occurs at the beginning of
-> level.
-> 
->  JB> This does not occur when sound is disabled in quake.
-> True.
-> 
->  JB> This does not occur on the same machine while running
->  JB> quake 3 under Windows 2000 with sound.
-> True.
-> 
->  JB> This also occurs using the linux kernel 2.4.18 oss
->  JB> kernel sound driver for intel8x0.
-> Ture.
-> 
->  JB> I set up the quake mmap stuff for alsa like this:
->  JB> echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
-> Same thing here.
-> 
->  JB> I'm using alsa-0.9rc7 on Debian 3.0r1 running kernel 2.4.20 on an AMD
->  JB> 1800+ Elitegroup K7S5A with SIS 7012 sound on board (intel8x0 driver.)
-> alsa-0.9rc7, Debian unstable, kernel 2.4.20 on Toshiba Satellite 5105-S907
-> with Yamaha sound on board
-> (00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio (rev 02))
-> 
-> JB> This has happened on all the ALSA 0.9rcx drivers I have
->  JB> tried, including 0.9rc7.
-> True.
-> 
-> I have made checks suggested in this thread. Results are the same:
-> interrupts are being generated and sttuses in /proc/asound keep changing.
-> 
-> I'm eager to help debug this. I know how to use debugger/compiler/whatever
-> it takes, I just need a push in the right direction.
-> 
+However, Ryan Pavlik has also seen this behaviour and may be able to
+tell you a little more. 
 
--- 
-"When you wake up in the morning, Pooh," said Piglet at last,
-"what's the first thing you say to yourself?"
 
-"What's for breakfast?" said Pooh.  "What do you say, Piglet?"
+cheers
 
-"I say, 'I wonder what's going to happen exciting today?'" said Piglet.
+Allan
 
-Pooh nodded thoughtfully.  "It's the same thing," he said.
 
-	-- A.A. Milne
-
------------------------------------------------------
-http://www.nyfairuse.org/
-
-WTO + WIPO = DMCA http://www.anti-dmca.org
-
-Innovation vs Patent Inflation http://swpat.ffii.org/
-
-120000 voices and 400 Firms against logic patents
-http://www.noepatents.org/
------------------------------------------------------
+On Mon, 2003-02-17 at 21:56, Takashi Iwai wrote:
+> At 16 Feb 2003 20:58:23 +1100,
+> Allan Klinbail wrote:
+> > 
+> > One glitch I noticed was that the driver seemed to send the note
+> > information to all ports when the sequence I had only sent to one of the
+> > MTPAV ports... When I assigned a second to a different port it began
+> > behaving correctly.
+> 
+> i'm not sure whether the driver bug or what else.
+> i guess the hardware port is initialized to 0 (or it IS as default),
+> which corresponds to the broadcast.
+> this may happen even if a message "F5 00" is sent by an application.
+> so, we'll need to trace all F5 xx messages.
+> 
+> does this broadcast behavior appear at the first start only?
+> 
+> 
+> Takashi
 
 
 
