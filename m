@@ -1,14 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [ANN] Open Source US-X2Y firmware
-Date: Fri, 30 Jul 2004 21:30:14 +0200
+From: Sacher Khoudari <alsa-devel@craesh.net>
+Subject: Need some help for a metronome
+Date: Sat, 31 Jul 2004 01:31:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040730193014.GA558@tuba.home>
-References: <20040727193708.GA1085@tuba.home> <Pine.HPX.4.33n.0407280910590.25644-100000@studcom.urz.uni-halle.de>
+Message-ID: <410ADA64.6020006@craesh.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0407280910590.25644-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +15,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>
+To: Mailing list for ALSA developers <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jul 28, 2004 at 09:17:10AM +0200, Clemens Ladisch wrote:
-> Martin Langer wrote:
-> > I guess many users will get trouble because they haven't yet installed a new
-> > version of as31 (v2.2). BTW, I haven't found any deb or rpm :(
-> 
-> Then it might make sense to include either the loader binary or the
-> assembler into the alsa-firmware package.
-> (http://www.pjrc.com/tech/8051/ says that AS31 is provided under the
-> BSD license)
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I've tried out some versions of as31 and the code works with the latest
-versions: 2.1, 2.2 and 2.2.1
+Hi!
 
-Earlier versions including 2.0-beta3 from http://www.pjrc.com/tech/8051/
-fail.
+I need some help to get my litle metronome to work. I'm an Alsa-Newbie,
+so I'm sorry for this - probably - stupid question. I've copied some
+code from tutorials and other Alsa-programs, so probably I've forgotten
+some details. But I don't know what.
 
-Including as31 into alsa-firmware is the wrong way IMO. Fixing assembler
-bugs shouldn't be the goal of alsa in the future. Also, the number of
-compiler tools will grow. Each card has a different chip and need different
-cross-compiling tools. And I believe in three years we have no longer cards
-without firmware.... perhaps five years ;-) 
+The error has to be in this function, it gets called every time a "tick"
+has to be played, but it doesn't send any MIDI-events. At least,
+fluidsynth doesn't play anything (nor prints any events in verbose mode).
 
-It looks like a general problem, because development tools for firmware files 
-can be exotic, if they exist at all. Offering two packages firmware-bin and
-firmware-source sounds much better.
+- --snip--
 
+void schedule_event( guint8 i_velocity, guint i_ticks ) {
+	guint i_channel = 10;
+	guint i_note = 33;
+	guint i_duration = 1;
 
-martin
+	snd_seq_event_t ev;
 
+	snd_seq_ev_clear( &ev );
+	//ev.type = SND_SEQ_EVENT_USR0;
+	//ev.type = SND_SEQ_EVENT_NOTE;
+	snd_seq_ev_set_source( &ev, my_port );
+	snd_seq_ev_set_subs( &ev );
+	//snd_seq_ev_set_dest( &ev, i_dest_client, i_dest_port );
+	snd_seq_ev_set_note( &ev, i_channel, i_note, i_velocity, i_duration );
+	snd_seq_ev_schedule_tick( &ev, my_queue, 0, i_ticks );
+	printf( "channel: %d, note: %d, velocity: %d, duration: %d, i_ticks
+%d", i_channel, i_note, i_velocity, i_duration, i_ticks );
 
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
+	snd_seq_event_output( handle, &ev );
+	snd_seq_drain_output( handle );
+}
+
+- --snap--
+
+The printf gets called, and the values are ok. I've also tried the
+things which are commented out. Whats wrong, or missing? Can anyone help me?
+
+Thanks!
+Sacher
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
+
+iD8DBQFBCtpjdiWjuQmpvxoRApCaAKCtqGGsUeu3/ubPDbHR2WiHKBcr5QCg7SQY
+XtvpXQYgTP/Tzs7gttVgpHo=
+=xmct
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
