@@ -1,12 +1,13 @@
-From: Jeff Tranter <tranter@pobox.com>
-Subject: Looking for reviewers for Linux Journal article on ALSA
-Date: Tue, 18 Mar 2003 08:56:26 -0500
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: Fwd: arecord bug?
+Date: Tue, 18 Mar 2003 16:30:35 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E77258A.3020000@pobox.com>
+Message-ID: <Pine.LNX.4.44.0303181622330.9177-100000@vaino.wakkanet.fi>
+References: <BE6FC7E8-5926-11D7-A553-0003934489D0@mac.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <BE6FC7E8-5926-11D7-A553-0003934489D0@mac.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,19 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jon Ellis <ashura666@mac.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am writing an introductory article on ALSA programming for an upcoming
-issue of Linux Journal. The article is limited to about 2500 words, so
-it only covers the basics of programming the PCM interface, with some
-example programs. I would appreciate it if some ALSA developers would
-take a quick look at the draft article and let me know if there are any
-obvious errors or suggestions for improvement. If you would be willing
-to review the draft article and can feed comments back to me within
-the next two or three days, please send me private e-mail and I will
-send you a copy along with the small example programs.
+On Tue, 18 Mar 2003, Jon Ellis wrote:
 
+>> http://bugs.gentoo.org/show_bug.cgi?id=12724
+[...]
+>>  and it's giving me grief because it takes so long to reproduce. The 
+>> basic problem is that either arecord or oggenc hangs after 400min 
+>> 47sec. The fact that lowering the sample rate (and talking to the ogg 
+>> devs) makes me think that this is a overflow somewhere in arecord.
+
+If Takashi's guess is right and you are facing the 32bit problem, may I
+suggest using ecasound:
+
+ecasound -f:16,2,44100 -i alsa -o stdout |oggenc -r -q 0 -o recording.ogg -
+
+Ecasound should be available as a Gentoo package. Be sure to compile
+ecasound with --with-largefile.
+
+As a bonus, you should get much more reliable recording thanks to
+ecasound's double-buffering disk i/o subsystem and other mechanisms 
+present to fight both disk i/o and scheduling latency spikes.
+
+--
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
