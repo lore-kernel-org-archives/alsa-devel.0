@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000266]: I receive pages of unresolved symbols when I attempt to load the intel8x0 module.
-Date: Tue,  7 Sep 2004 16:36:40 +0200 (CEST)
+Subject: [ALSA - tools 0000436]: How to have sound to Digital and Analog at the same time ?
+Date: Tue,  7 Sep 2004 16:38:00 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907143640.CB737E01F@server.perex-int.cz>
+Message-ID: <20040907143800.C1526E01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16C6428E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:36:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C66828E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:38:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,109 +22,53 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000266
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000436
 ======================================================================
-Reported By:                malkuth
+Reported By:                tho_x_tran
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     266
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - tools
+Bug ID:                     436
+Category:                   ac3dec
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2115.nptl
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             05-10-2004 05:36 CEST
-Last Modified:              09-07-2004 16:36 CEST
+Date Submitted:             08-12-2004 20:36 CEST
+Last Modified:              09-07-2004 16:38 CEST
 ======================================================================
-Summary:                    I receive pages of unresolved symbols when I attempt to load the intel8x0 module.
+Summary:                    How to have sound to Digital and Analog at the same time ?
 Description: 
-I had version 0.9.8 and had the problem, so I downloaded and built the
-1.0.4 version. The following is the output from the load of the module.
-Starting sound driver: snd-card-intel8x0 Warning: ignoring snd_major=116,
-no such parameter in this module
-Warning: ignoring snd_cards_limit=1, no such parameter in this module
-Warning: ignoring snd_device_mode=0666, no such parameter in this module
-Warning: ignoring snd_device_gid=0, no such parameter in this module
-Warning: ignoring snd_device_uid=0, no such parameter in this module
-Module snd loaded, with warnings
-Module gameport loaded, with warnings
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_suspend_all_R43c50b57
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_mixer_Rf5b599af
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_set_rate_R1be27d60
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_new_Rd565b6d2
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_new_Rc2b77688
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_free_pages_Re8dafa0a
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_verbose_printk_R49d4e4d1
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_hw_constraint_integer_R5eb3e8f8
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_tune_hardware_R94360210
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_resume_Re12d8194
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_period_elapsed_Re6e6b098
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_preallocate_pci_pages_for_all_Rd644d0aa
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_ioctl_R8482811c
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_register_R492d494a
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_free_pci_pages_Ra2184231
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_device_new_R371c74fc
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_set_ops_Rad3c274a
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_malloc_pci_pages_R516d0d40
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_hw_constraint_list_R74cb7c63
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_proc_new_Ra82b74c6
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_malloc_pages_R0407e1db
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_mpu401_uart_new_Ra520c930
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_update_bits_R2f6d9192
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_free_Rf8b77bec
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-insmod
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o
-failed
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-insmod snd-card-intel8x0 failed
-
+I play Xine and Watch TV at the same time, and Xine audio can only go to
+Digital Opt out while TV sound goes to Analog front speakers only.  How
+can I make it go to both devices AT THE SAME TIME for all applications.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 09-07-2004 16:36 CEST 
+ tiwai - 09-01-2004 22:53 CEST 
 ----------------------------------------------------------------------
-Too old, please, try latest ALSA version.
+Basically it's a job of application.
+ALSA doesn't decode AC3 by itself.
+So, apps should send both AC3-analog and AC3-passthru signals to
+different PCM (if possible).  And, this is not always possible
+on many motherboards...
+
+----------------------------------------------------------------------
+ perex - 09-07-2004 16:38 CEST 
+----------------------------------------------------------------------
+Application problem.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-10-04 05:36 malkuth        New Bug                                      
-05-10-04 05:36 malkuth        Distribution              => Fedora Core 1   
-05-10-04 05:36 malkuth        Kernel Version            => 2.4.22-1.2115.nptl
-05-10-04 05:38 malkuth        Bug Monitored: malkuth                       
-09-07-04 16:36 perex          Bugnote Added: 0001710                       
-09-07-04 16:36 perex          Resolution               open => fixed       
-09-07-04 16:36 perex          Status                   assigned => resolved
+08-12-04 20:36 tho_x_tran     New Bug                                      
+08-12-04 20:36 tho_x_tran     File Added: asound.conf                      
+09-01-04 22:53 tiwai          Bugnote Added: 0001678                       
+09-07-04 16:38 perex          Bugnote Added: 0001712                       
+09-07-04 16:38 perex          Resolution               open => fixed       
+09-07-04 16:38 perex          Status                   assigned => resolved
 ======================================================================
 
 
