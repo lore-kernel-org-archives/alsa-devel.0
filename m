@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000566]: Doesn't save nor restore mixer settings (volumes set to 0)
-Date: Tue,  5 Oct 2004 17:36:49 +0200 (CEST)
+Subject: [ALSA - driver 0000567]: S/PDIF control missing in mixer
+Date: Tue,  5 Oct 2004 17:47:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041005153649.6B6004E011@server.perex-int.cz>
+Message-ID: <20041005154703.B325B4E011@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B9EA31A3
-	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:36:49 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13C03254
+	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:47:03 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 7A9672A7F6
-	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:36:49 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C27CC2A7FE
+	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 17:47:03 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,13 +25,13 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000566
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000567
 ======================================================================
 Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     566
+Bug ID:                     567
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
@@ -40,25 +40,22 @@ Status:                     new
 Distribution:               Debian GNU/Linux
 Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             10-05-2004 17:36 CEST
-Last Modified:              10-05-2004 17:36 CEST
+Date Submitted:             10-05-2004 17:47 CEST
+Last Modified:              10-05-2004 17:47 CEST
 ======================================================================
-Summary:                    Doesn't save nor restore mixer settings (volumes set to 0)
+Summary:                    S/PDIF control missing in mixer
 Description: 
-No error messages, init-scripts work but doesn't save nor restore mixer
-settings. At boot, volumes are 0% but not muted. After setting the mixer
-settings, doing alsactl store / alsactl restore works and actually saves
-mixer settings to the default file. Still after boot/reboot settings have
-been reset and also the file has been cleared (all volumes = 0). Card is
-Terratec DMX Xfire 1024...(cs46xx)
+Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
+from the mixer... It has been there before and there IS one on my
+soundcard (Terratec DMX Xfire 1024, cs46xx)
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-05-04 17:36 pmatil         New Bug                                      
-10-05-04 17:36 pmatil         Distribution              => Debian GNU/Linux
-10-05-04 17:36 pmatil         Kernel Version            => 2.4.22          
+10-05-04 17:47 pmatil         New Bug                                      
+10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
 ======================================================================
 
 
