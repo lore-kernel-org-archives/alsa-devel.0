@@ -1,15 +1,13 @@
-From: Niklas Werner <bergtroll@gmx.li>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: status of usb audio driver
-Date: Thu, 13 Jun 2002 15:21:05 +0200
+Date: Thu, 13 Jun 2002 22:35:44 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206131321.PAA09889@papaschlumpf.wg>
-References: <s5hn0tzz5vg.wl@alsa2.suse.de>
+Message-ID: <3D089FB0.5020604@boosthardware.com>
+References: <s5h7klfdlrn.wl@alsa2.suse.de>	<3D06D91D.1080104@boosthardware.com>	<s5hhek81vgl.wl@alsa2.suse.de>	<3D07564B.4050908@boosthardware.com>	<s5hbsag1t5r.wl@alsa2.suse.de>	<3D0760FC.5060906@boosthardware.com>	<3D0772F1.6090009@boosthardware.com>	<3D077B61.7030902@boosthardware.com>	<s5hzny0zb43.wl@alsa2.suse.de>	<3D078560.4030707@boosthardware.com>	<s5hr8jbzcml.wl@alsa2.suse.de>	<3D0895F0.20904@boosthardware.com> <s5hn0tzz5vg.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0tzz5vg.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,53 +16,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<SNIP>
+Takashi Iwai wrote:
+>>This card is supposed to be 24bit/96Khz. In windows it works like this:
+>>
+>>4 i/o channels(2 in, 2 out) at 16bit/48Khz or less
+>>3 i/o channels(2 in, 1 out or 1 in, 2 out) at 24bit/48Khz or less
+>>1 channel at 24bit/96Khz
+> 
+>  
+> interesting.  i don't find any mono channel on the descriptions.
+> well, more investigations are necessary.
+> 
 
-Well, now comes the ugly things:
+It is confusing to me also. From reading their docs I thought that the 
+card was all seperate mono channels lsusb has changed my opinion. I now 
+belive that Quattro stands for 2 stereo i/o devices not 4 mono i/o devices.
 
-Using the usb-audio-driver leads to system-lockups:
+By saying in the docs that it supports 1 channel at 24bit/96Khz I guess 
+they mean 1 stereo in or 1 stereo out. that is good news to me becasue I 
+was under the impression that I had bought a turkey with only one mono 
+i/o channel at 24/96.
 
-No matter whether I access my emi26 via aplay or via oss-emulation, after 
-some time or (more probable) some amount of data my System locks up (hard 
-reset ;-() or at least the usb-bus locks absoulety thight up.
-I can't reload the driver, not even reconnecting the device helps it 
-always gives a timeout message:
+>>>i've tested usb mic from Labtec, and it works.
+>>>so the problem is specific to the hardware, or multi-channels...
+>>>
+>>
+>>I just remembered that my mouse is a usb mouse too so that is not 
+>>unexpected.
+> 
+> 
+> too much bandwidth?
+> 
 
-Jun 13 12:26:19 Schlumpfine kernel:   0: [cd2c01e0] link (0d2c0210) e0 
-Stalled CRC/Timeo Length=7 MaxLen=7 DT0 EndPt=0 Dev=2, PID=2d(SETUP) 
-(buf=0d0222c0)
-Jun 13 12:26:19 Schlumpfine kernel:   1: [cd2c0210] link (0d2c0240) e3 
-SPD Active Length=0 MaxLen=11 DT1 EndPt=0 Dev=2, PID=69(IN) (buf=08a9c000)
-Jun 13 12:26:19 Schlumpfine kernel:   2: [cd2c0240] link (00000001) e3 
-IOC Active Length=0 MaxLen=7ff DT1 EndPt=0 Dev=2, PID=e1(OUT) 
-(buf=00000000)
-Jun 13 12:25:03 Schlumpfine kernel: usb_control/bulk_msg: timeout
-Jun 13 12:25:03 Schlumpfine kernel: emi26_load_firmware - error loading 
-firmware
-: error = -110<6>IPv6 v0.8 for NET4.0
-Jun 13 12:25:28 Schlumpfine kernel: usb_control/bulk_msg: timeout
-Jun 13 12:25:43 Schlumpfine last message repeated 149 times   
-Jun 13 12:26:06 Schlumpfine kernel: emi26: set_reset (1) 
-failed<3>emi26_load_fir
-mware - error loading firmware: error = -110<7>uhci.c: root-hub INT 
-complete: po
-rt1: 580 port2: 48a data: 4
+Testing again with the new code didn't lock up my mouse and this time 
+the file actually recorded data although I still cannot capture noise. 
+Do you have any ideas on how I can adjust the input levels internally 
+seeing as the card has no apparent internal mixer?
 
-This doesn't happen with the kernel module (audio).
-Unfortunately I can't find any clues in the logfiles, maybe you can...
+Is this a case of having to write our own mixer device?
 
-At least I can reproduce this easily using xmms to playback some 7 
-minutes or so of 48kHz mp3s....
+Does this part of lsusb have anything to do with mixer controls?
 
-Using aplay and waves this effect tends to appear later.
-Using xmms' alsa-plugin crashes the sound-driver at once...
+----
+  wChannelConfig     0x0003
+           Left Front (L)
+           Right Front (R)
+         iChannelNames           0
+         iTerminal               0
+----
 
-right, have fun*
 
-Niklas
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 _______________________________________________________________
 
