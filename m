@@ -1,59 +1,78 @@
-From: "Pavana Sharma" <pavans@india.ti.com>
-Subject: RE: OSS mapping for ALSA controls
-Date: Thu, 8 Apr 2004 10:59:50 +0530
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <031101c41d2a$83ea2a50$f8b6a8c0@ent.ti.com>
-References: <s5hhdvvacci.wl@alsa2.suse.de>
-Reply-To: <pavans@india.ti.com>
+From: Kronos <kronos@people.it>
+Subject: [2.6.5-rc3] Hang on module unload
+Date: Thu, 8 Apr 2004 19:02:50 +0200
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040408170250.GA11590@dreamland.darkstar.lan>
+Reply-To: kronos@people.it
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhdvvacci.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+To: alsa-devel@lists.sourceforge.net
+Cc: linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-yes, I did this as root ..
+Hi,
+I'm running debian unstable on my PC. With kernel 2.6.5-rc3 the shutdown hang
+while unloading ALSA modules. PC is alive (ie. responds to ping and to SysRq).
+This is from lsmod:
+snd_pcm_oss            51492  0
+snd_mixer_oss          18752  1 snd_pcm_oss
+snd_intel8x0           32004  0
+snd_ac97_codec         59268  1 snd_intel8x0
+snd_pcm                95204  2 snd_pcm_oss,snd_intel8x0
+snd_timer              25668  1 snd_pcm
+snd_page_alloc         11140  2 snd_intel8x0,snd_pcm
+snd_mpu401_uart         7360  1 snd_intel8x0
+snd_rawmidi            24736  1 snd_mpu401_uart
+snd_seq_device          8264  1 snd_rawmidi
+snd                    54884  9 snd_pcm_oss,snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
 
------Original Message-----
-From: Takashi Iwai [mailto:tiwai@suse.de]
-Sent: Wednesday, April 07, 2004 11:40 PM
-To: pavans@india.ti.com
-Cc: alsa-devel@lists.sourceforge.net
-Subject: Re: [Alsa-devel] OSS mapping for ALSA controls
+Alsa script is unloading everything:
 
+for i in $(lsmod | awk '/^snd/ {print $1}'); do
+        $rmmod $i >/dev/null 2>&1 || :
+done
 
-At Wed, 7 Apr 2004 19:38:18 +0530,
-Pavana Sharma wrote:
-> 
-> Hi,
-> 
-> 	I am trying to map my ALSA driver (for ARM) controls with OSS default
-> controls.
-> 
-> 	I am using this method, to change/update assignment in /proc file.
-> 	but I am not seeing any changes in my /proc/asound/card0/oss_mixer file.
-> 	% echo 'VOLUME "Master Playback" 0' > /proc/asound/card0/oss_mixer
+I can reproduce using "rmmod snd_intel8x0", and this is the relevant part of SysRq-T:
 
-it should be ok.  did you do it as root?
+rmmod         D DDFC6840     0 20120   3843                     (NOTLB)
+d8e8bef0 00000086 dd6176c0 ddfc6840 dccf9e40 d8e8bed4 c016e150 4075837a
+       39adce53 dca940c0 dca940e0 000f4240 d2175e40 000f45af dd472d00 dd472ec0
+       e09cc60c 00000246 d8e8a000 d8e8bf2c c01060a5 e09cc614 dd472d00 00000001
+Call Trace:
+ [<c016e150>] simple_unlink+0x40/0x50
+ [<c01060a5>] __down+0x85/0x100
+ [<c0119c80>] default_wake_function+0x0/0x10
+ [<c01062bf>] __down_failed+0xb/0x14
+ [<c02314f0>] .text.lock.driver+0x5/0x15
+ [<c01d4a1e>] pci_unregister_driver+0xe/0x20
+ [<e09c7ecd>] alsa_card_intel8x0_exit+0xd/0x23 [snd_intel8x0]
+ [<c0131245>] sys_delete_module+0x125/0x180
+ [<c01467ac>] do_munmap+0x10c/0x150
+ [<c01071af>] syscall_call+0x7/0xb
+                        
+In case it does matter udevd (from udev 0.024-2) is running:
 
+udevd         S C013AE36     0  5521      1                2523 (NOTLB)
+cc50feb4 00000082 cc50feb4 c013ae36 13b94045 13b94045 dd20a7e0 cc50fed4
+       00000000 dd20a240 dd20a260 00000000 d2ecfdc0 000f45af c440eb80 c440ed40
+       00000000 7fffffff 00000004 cc50fef0 c0125247 00000000 cc50fed8 00000246
+Call Trace:
+ [<c013ae36>] __alloc_pages+0x96/0x310
+ [<c0125247>] schedule_timeout+0xa7/0xb0
+ [<c029a4d5>] datagram_poll+0x15/0xc0
+ [<c0162362>] do_select+0x152/0x270
+ [<c0162070>] __pollwait+0x0/0xc0
+ [<c0162733>] sys_select+0x283/0x460
+ [<c011ff17>] sys_waitpid+0x27/0x29
+ [<c01071af>] syscall_call+0x7/0xb
+                      
 
-Takashi
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
+Any clue?
+Luca
+-- 
+Home: http://kronoz.cjb.net
+Se il  destino di un uomo  e` annegare, anneghera` anche  in un bicchier
+d'acqua.
+Proverbio yddish
