@@ -1,16 +1,15 @@
-From: Justin Cormack <justin@street-vision.com>
-Subject: Re: RME HDSP9652
-Date: 28 Nov 2002 16:52:36 +0000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] Use rawmidi device name for sequencer client
+ name
+Date: Thu, 28 Nov 2002 18:12:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1038502361.1476.15.camel@lotte>
-References: <200211281337.gASDbvf00556@tench.street-vision.com>
-	<1038494386.20379.31.camel@lotte>  <s5hwumxzoqd.wl@alsa2.suse.de>
-	<1038500569.1476.5.camel@lotte>
+Message-ID: <Pine.HPX.4.33n.0211281805100.24653-100000@studcom.urz.uni-halle.de>
+References: <s5hptspzmrc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1038500569.1476.5.camel@lotte>
+In-reply-to: <s5hptspzmrc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,22 +18,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2002-11-28 at 16:22, Justin Cormack wrote:
+Takashi Iwai wrote:
+> Clemens Ladisch wrote:
+> > The maybe we could add the card number or id to the string.
+> > "MPU-401 (card42)" would be better than "External MIDI 42-0".
+>
+> ok, now, the question is whether this "(cardx)" is included in each
+> rawmidi name or put in seq_midi.c.
+> if we use the rawmidi name with the card id, each rawmidi creator
+> should be responsible.
 
-> Thanks, this fixes the segfault, and adding the rev 0x64 in
-> snd_hdsp_create makes it work... It recognises the IO box as a digiface
-> which I think is ok (3x adat + midi + 2 * spdif). Playback works, and
-> the mixer is recognised - will test it further.
+You already mentioned that the rawmidi name for USB devices is more unique
+(although it's easy to plug in several identical devices), so I think it
+should be handled by the rawmidi driver.
 
-ok, the mixer doesnt actually appear to do anything (as hinted in Paul's
-email a while back). What needs to be done to support it?
+And having different names for rawmidi and sequencer would be
+inconsistent.
 
-Justin
 
+Regards,
+Clemens
 
 
 
