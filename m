@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000871]: Distortion in sound output.
-Date: Mon, 14 Feb 2005 17:15:50 +0100
-Message-ID: <99beb44addb92f35d84c4477c788c036@bugtrack.alsa-project.org>
+Date: Mon, 14 Feb 2005 17:19:23 +0100
+Message-ID: <3f03e99348bac9b492afce46ab05a199@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CE46237
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 17:15:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F19A17C
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 17:19:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=871> 
 ======================================================================
 Reported By:                Mutant_Fruit
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   871
@@ -34,12 +34,14 @@ Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian Sarge
 Kernel Version:             2.6.8
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-31-2005 21:18 CET
-Last Modified:              02-14-2005 17:15 CET
+Last Modified:              02-14-2005 17:19 CET
 ======================================================================
 Summary:                    Distortion in sound output.
 Description: 
@@ -54,12 +56,6 @@ supposed to be in the music.
 
 If you need any more info, gimme a shout. I'm new at this.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-14-05 16:11 
-----------------------------------------------------------------------
-OK please provide the output of lspci -nv to set ac97_quirk=hp_only as
-default.
 
 ----------------------------------------------------------------------
  Mutant_Fruit - 02-14-05 17:15 
@@ -175,6 +171,12 @@ Here's the contents of lspci -nv:
         I/O ports at ecc0 [size=64]
         Capabilities: [dc] Power Management version 2
 
+----------------------------------------------------------------------
+ tiwai - 02-14-05 17:19 
+----------------------------------------------------------------------
+It's same as https://bugtrack.alsa-project.org/alsa-bug/view.php?id=872 ?  Then
+now fixed on CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -186,6 +188,10 @@ Date Modified  Username       Field                    Change
 02-13-05 17:21 Mutant_Fruit   Note Added: 0003585                          
 02-14-05 16:11 tiwai          Note Added: 0003592                          
 02-14-05 17:15 Mutant_Fruit   Note Added: 0003601                          
+02-14-05 17:19 tiwai          Status                   new => resolved     
+02-14-05 17:19 tiwai          Resolution               open => fixed       
+02-14-05 17:19 tiwai          Assigned To               => tiwai           
+02-14-05 17:19 tiwai          Note Added: 0003602                          
 ======================================================================
 
 
