@@ -1,12 +1,14 @@
-From: User for realtime audio <audiodev@ind.RWTH-Aachen.DE>
-Subject: Application using ALSA-driver es-1968 for Maestro-2e: Bug or my fault?
-Date: Mon, 17 Jun 2002 11:41:20 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: forking in user-space; mmap refcounting bug in
+ alsa-kernel
+Date: Mon, 17 Jun 2002 12:22:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D0DAEC0.F063CB35@ind.rwth-aachen.de>
+Message-ID: <Pine.LNX.4.33.0206171221090.2238-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0206170454320.2887-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0206170454320.2887-100000@ecabase.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,86 +17,140 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Mon, 17 Jun 2002, Kai Vehmanen wrote:
 
-I have a question to all those who have experience with a Maestro-2e
-soundcard and ALSA-applications:
+> Running the following test program with current ALSA-CVS and with Delta44
+> as the soundcard, I always get a failure from
+> alsa-lib/src/pcm/pcm_hw.c:snd_pcm_hw_hw_free():
+> 
+> SYSERR("SNDRV_PCM_IOCTL_HW_FREE failed");
+> 
+> ... in kernel side, the following assertation fails in
+> alsa-kernel/core/pcm_native.c:snd_pcm_release():
+> 
+> snd_assert(!atomic_read(&substream->runtime->mmap_count), );
+> 
+> After a long debug session I think I finally found the reason why this
+> happens. When the forked child process exits, kernel will cleanup the mmap
+> areas by calling snd_pcm_mmap_data_close(). As there are two processes,
+> this gets called twice and substream->runtime->mmap_count goes to -1. When
+> snd_pcm_release() finally gets called (following the user-space
+> snd_pcm_close()), the assertion fails.
+> 
+> The most harmful failure happens in pcm_native.c:snd_pcm_hw_free() where
+> 'if (atomic_read(&runtime->mmap_count)) {' fails, which means that device
+> status is never resetted back to SNDRV_PCM_STATE_OPEN.
+> 
+> As for the fix, well, it's already 5am so it's probably better for me to
+> continue tomorrow. :) As a simple fix, I moved mmap_count decrease code to
+> snd_pcm_hw_free(). This fixes all my test cases, but might break something
+> else. Comments are welcome.
+> 
+> Btw; running standard 2.4.17 kernel.
 
-I have written a realtime-capture plus playback application for realtime
-signal processing algorithms. It is simply
-a modification of the PCM-example.
+Bellow patch should fix this problem, but I need to do more tests with 
+latest 2.5 and older 2.2 kernels, if it's a correct fix.
 
-The software did work with my old notebook including an es-1668
-soundcard but with the new es-1968 device none of the possible transfer
-modes function propperly.
-
-The problem is that only parts of the buffers seem to be read correctly
-for capture, for example I have the IO-read access to a 16 bit capture
-device, periodsize is 64, buffersize 128 and two channels input.
-
-The card only support non interleaved input (although only interleaved
-output for playback!).
-
-Furthermore I have one buffer for sampleinput:
-
-    signed short inputBuffer[128];
-
-(2 channels, 64 samples for call of snd_pcm_readn(..))
-
-In order to use non interleaved read-function I have created the
-void**-field:
-
-    void** bufsInput[2];
-
-for each channel and assigned the sample-buffer to each channel:
-
-    bufsInput[0] = inputBuffer;
-    bufsInput[1] = &inputBuffer[64];
-
-
-In my callback-loop for audio read process I check that there are more
-than 64 samples available
-If so I call the read function:
-
-    err=snd_pcm_readn(pcmDevice_capture, bufsInput, 64);
-
-After this call err is equal 64 so everything is fine.
-When dumping the received data some strange values are stored:
-
-- sampleBuffer[0] .. sampleBuffer[15] seem to be the result from
-channel1 which is still correct.
-- sampleBuffer[16]..sampleBuffer[31] seem to be the result from the
-other channel which is not correct anymore
-(I can distinguish the channels as I am using different signals on the
-two channels)
-- sampleBuffer[32].. sampleBuffer[63] have not been copied. The values
-in sampleBuffer BEFORE the snd_pcm_readn-call still remain unchanged!
-- From sampleBuffer[64] .. sampleBuffer[127] the values from
-sampleBuffer[0] .. sampleBuffer[63] are repeated.
-
-I would expect that values from 0 to 63 contain channel1 input and
-values from 64 to 127 contain other channel input..
-
-Did I misunderstand the ALSA-API, what am I doing wrong or is there a
-bug in the ALSA-driver/library for this specific application?
-
-aplay and the pcm example do function as expected but arecord seems to
-generate some clicking noise either....
+Index: pcm_native.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/core/pcm_native.c,v
+retrieving revision 1.13
+diff -u -r1.13 pcm_native.c
+--- pcm_native.c	23 May 2002 08:20:38 -0000	1.13
++++ pcm_native.c	17 Jun 2002 10:21:21 -0000
+@@ -2573,16 +2573,16 @@
+ 
+ static void snd_pcm_mmap_data_open(struct vm_area_struct *area)
+ {
+-#if 0
+ 	snd_pcm_substream_t *substream = (snd_pcm_substream_t *)area->vm_private_data;
+ 	atomic_inc(&substream->runtime->mmap_count);
+-#endif
++	printk("mmap_data_open!!!\n");
+ }
+ 
+ static void snd_pcm_mmap_data_close(struct vm_area_struct *area)
+ {
+ 	snd_pcm_substream_t *substream = (snd_pcm_substream_t *)area->vm_private_data;
+ 	atomic_dec(&substream->runtime->mmap_count);
++	printk("mmap_data_close!!!\n");
+ }
+ 
+ #ifndef LINUX_2_2
+@@ -2674,6 +2674,7 @@
+ #ifdef VM_RESERVED
+ 	area->vm_flags |= VM_RESERVED;
+ #endif
++	printk("mmaping data!!!\n");
+ 	atomic_inc(&runtime->mmap_count);
+ 	return 0;
+ }
 
 
-System: I am using a Dell Lattitude CPH-500 notebook, SUSE linux, kernel
-2.4.16 with the lowlatency patches + rtc-patch found in the
-alsa-beta0.12 package. The current alsa-version however is the current
-release candidate (rc1). I have also tried to use the
-unpatched 2.4.18 kernel which did not lead to different results.
+> 
+> --cut--
+> #include <assert.h>
+> #include <stdio.h>
+> #include <sys/types.h>
+> #include <unistd.h>
+> #include <alsa/asoundlib.h>
+> 
+> int main(int argc, char* argv[])
+> {
+>   snd_pcm_t *handle;
+>   snd_pcm_hw_params_t* hwparams;
+>   int n, pid;
+> 
+>   int err = snd_pcm_open(&handle, "default", 
+> 		         SND_PCM_STREAM_PLAYBACK, 
+> 			 SND_PCM_NONBLOCK);
+>   assert(err == 0);
+> 
+>   err += snd_pcm_hw_params_malloc(&hwparams);
+>   err += snd_pcm_hw_params_any(handle, hwparams);
+>   err += snd_pcm_hw_params(handle, hwparams);
+>   assert(err == 0);
+> 
+>   pid = fork();
+>   if (pid == 0) { /* child */
+>     fprintf(stderr, "child pid=%d.\n", getpid());
+>     exit(1);
+>   }
+>   else { /* parent */
+>     fprintf(stderr, "parent pid=%d.\n", getpid());
+>     sleep(1);
+> 
+>     snd_pcm_close(handle);
+>   }
+> }
+> --cut---
+> 
+> -- 
+>  http://www.eca.cx
+>  Audio software for Linux!
+> 
+> 
+> _______________________________________________________________
+> 
+> Sponsored by:
+> ThinkGeek at http://www.ThinkGeek.com/
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
-I d appreceate any kind of hint or other experiences with this device,
-thanks in advance
+						Jaroslav
 
-Hauke
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 _______________________________________________________________
