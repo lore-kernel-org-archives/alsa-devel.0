@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
-Date: Mon, 7 Mar 2005 20:52:05 +0100
-Message-ID: <210520ffee9cd5493a02c04c070b95b5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000969]: ice1724 & Gainward hollywood@home 7.1 bad EEPROM version
+Date: Mon, 7 Mar 2005 20:53:50 +0100
+Message-ID: <c4652591a2f98ae9680e289f0b2c7d88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ADE7A13F
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 20:52:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C29641D2
+	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 20:53:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +21,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been UPDATED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=969> 
 ======================================================================
-Reported By:                ScottHelmke
-Assigned To:                
+Reported By:                bnolsen
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   968
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   969
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-07-2005 18:11 CET
-Last Modified:              03-07-2005 20:52 CET
+Date Submitted:             03-07-2005 19:47 CET
+Last Modified:              03-07-2005 20:53 CET
 ======================================================================
-Summary:                    arecord/aplay 24-bit nonstandard?
+Summary:                    ice1724 & Gainward hollywood@home 7.1 bad EEPROM
+version
 Description: 
-Using arecord with S24_LE resolution, later tried to import files into
-Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
-32 bit audio from arecord imported just fine.  Ardour developers say that
-problem is with arecord.
-
+I'm now getting error
+ice1724: Invalid EEPROM version 1
+when loading snd-ice1724
+in 2.6.10 sometimes the driver would load, sometimes not.
+Now it doesn't load at all
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-07-05 20:52 
+ bnolsen - 03-07-05 19:53 
 ----------------------------------------------------------------------
-Ok, so what's the correct behaviour? S24_LE format aligns the used bits to
-left not to right as S32_LE with 24-bit hardware. So, we should probably
-disallow .wav file recording when this format is used for .wav files... Or
-not?
+Umm..this isn't a compilation problem :( pls reassign...(i can't seem to
+fix it)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-05 18:11 ScottHelmke    New Issue                                    
-03-07-05 20:52 perex          Note Added: 0003808                          
+03-07-05 19:47 bnolsen        New Issue                                    
+03-07-05 19:53 bnolsen        Note Added: 0003807                          
+03-07-05 20:53 perex          Severity                 major => feature    
+03-07-05 20:53 perex          Category                 0_compilation problem_!!!
+=> PCI - ice1724
 ======================================================================
 
 
