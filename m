@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000565]: Bug reported to gnomemeeting team
-Date: Sun, 13 Feb 2005 11:03:33 +0100
-Message-ID: <f2c81871a1212e48b6417ca2289ed34c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Sun, 13 Feb 2005 11:36:43 +0100
+Message-ID: <e923eb7deadb047acc36d3cba9093055@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D4D813A
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 11:03:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 199E01D5
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 11:36:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,58 +21,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=565> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
 ======================================================================
-Reported By:                mirko
-Assigned To:                
+Reported By:                sHINOBI
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   565
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   907
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
-Date Submitted:             10-04-2004 14:35 CEST
-Last Modified:              02-13-2005 11:03 CET
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              02-13-2005 11:36 CET
 ======================================================================
-Summary:                    Bug reported to gnomemeeting team
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
 Description: 
-http://bugzilla.gnome.org/show_bug.cgi?id=153770
-
-D. Sandras says it's a big-endian/little-endian problem and suggested to
-report it here.
-
-
-
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 10-18-04 18:03 
-----------------------------------------------------------------------
-Hmm, too little info.  Can't you get a bt with symbols?
-
-At least, we need to know the h/w information and hw_params,
-sw_params setting running in GM.
-
-----------------------------------------------------------------------
- jdthood - 02-13-05 11:03 
-----------------------------------------------------------------------
-I believe that this bug was closed by the 1.0.8 release.  See Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=245040.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-04-04 14:35 mirko          New Issue                                    
-10-04-04 15:01 jcdutton       Note Added: 0002010                          
-10-04-04 15:58 tiwai          Note Added: 0002011                          
-10-17-04 15:13 jdthood        Note Added: 0002192                          
-10-18-04 18:03 tiwai          Note Added: 0002198                          
-02-13-05 11:03 jdthood        Note Added: 0003582                          
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
 ======================================================================
 
 
