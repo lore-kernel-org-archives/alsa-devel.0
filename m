@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000365]: No audio with Asus p4p800-vm
-Date: Fri, 25 Mar 2005 19:40:02 +0100
-Message-ID: <4ceb63111def06bdedc9081d370891a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001010]: Speaker output does not work.
+Date: Fri, 25 Mar 2005 20:55:44 +0100
+Message-ID: <1480a5df7ec7d68fd0012d819a8ae7b0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7D2AD1B1
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 19:40:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E99D5252
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 20:55:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,84 +23,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=365> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
 ======================================================================
-Reported By:                Anlar
-Assigned To:                
+Reported By:                sylware
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   365
-Category:                   PCI - intel8x0
+Issue ID:                   1010
+Category:                   PPC - powermac
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo - up to date stable
-Kernel Version:             2.6.7
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-04-2004 20:53 CEST
-Last Modified:              03-25-2005 19:40 CET
+Date Submitted:             03-24-2005 10:24 CET
+Last Modified:              03-25-2005 20:55 CET
 ======================================================================
-Summary:                    No audio with Asus p4p800-vm
+Summary:                    Speaker output does not work.
 Description: 
-I have new Asus P4P800-VM motherboard (865G) that has i8x0 (x=1?) (ADI1980)
-builtin. Alsa does seem to initialize, the required modules load and
-something gets fed to the device but nothing comes out. I have played
-around with the mixer volumes and done other known usual stuff as well.
-
-A googling session revealed that some people have had success with this
-motherboard but most of the people have failed. I thought that something
-on this motherboard might be non-standard and require attention. 
-
-(If it is trivial, something t be added to the wikis. I doubt though since
-couple guys have tried already and none of them were complete newbies.)
+I use a powermac windtunnel newworld with a keywest snapper audio
+controller on the uninorth i2c bus (according to the /sys and /proc
+filesystems). I'm able to get sound from the headphone output at the front
+of the computer(it does automute the computer speaker when I plug the jack
+in) but I'm unable to get sound from the speaker output at the rear of the
+computer.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:09 
+ tiwai - 03-24-05 19:49 
 ----------------------------------------------------------------------
-The fact that OSS doesn't work either leads one to suspect a
-hardware problem.
+Snapper has two PCM volumes (you can see in alsamixer).  Does the second
+PCM (PCM,1) have any influence?
 
 ----------------------------------------------------------------------
- Anlar - 03-25-05 19:40 
+ sylware - 03-25-05 20:55 
 ----------------------------------------------------------------------
-Works on all flavors of Windows. It's quite stunning actually. I spent a
-lot time trying to find out any sane explanation but was unable to find
-any. 
+As far as I tried it, Nope.
 
-The spdif module (that I stole from P4PE mobo, those modules seem to be
-more or less universal) works wonderfully so I am happy. I tried finding
-any proof that some P4P800VM user would have got the analogs working.
-Didn't find any. 
-
-However the mobo is old already, never sold much (I guess) and it's not
-imho worth digging more.
+But if I'm not mistaken, sound is sent on the (PCM,0)? You mean that if I
+modify the default PCM device on which the sound is sent, I will hear
+something from the speaker output? (I may be completely wrong).
+If what's above is right (will check it out tonight, coze guilty computer
+at girlfriend's place), "basic users" will never get their speaker output
+working! I just realized that there is no way to configure that from a
+"basic user" perspective (GNOME alsa mixer, esd emulation from polysound,
+gstreamer default audio output plugin)! Seems to be a job for direct or
+indirect alsa clients and no concern for ALSA... In order to do so, can we
+l10n name the PCMs in order to get some to configure the target alsa PCM
+(I'm thinking gstreamer alsa/polysound output filters)?
+(BTW... sorry for the "FAQ" level question).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-04-04 20:53 Anlar          New Issue                                    
-07-04-04 20:53 Anlar          Distribution              => Gentoo - up to date
-stable
-07-04-04 20:53 Anlar          Kernel Version            => 2.6.7           
-07-04-04 20:54 Anlar          Issue Monitored: Anlar                       
-07-06-04 22:04 Anlar          Note Added: 0001387                          
-07-06-04 22:29 Anlar          File Added: asound.state                     
-07-06-04 22:58 Anlar          Note Added: 0001389                          
-07-06-04 22:59 Anlar          Note Edited: 0001389                         
-07-07-04 17:32 Anlar          Note Edited: 0001389                         
-07-07-04 22:02 Anlar          Note Added: 0001394                          
-07-08-04 20:30 Anlar          Note Added: 0001395                          
-07-08-04 20:31 Anlar          File Added: alsa                             
-07-08-04 20:32 Anlar          File Added: alsa.conf                        
-07-08-04 20:33 Anlar          Note Edited: 0001387                         
-07-08-04 20:36 Anlar          Note Edited: 0001395                         
-07-08-04 20:40 Anlar          Note Edited: 0001395                         
-07-16-04 12:14 tiwai          Note Added: 0001447                          
-07-16-04 20:09 Anlar          Note Added: 0001454                          
-03-23-05 16:09 jdthood        Note Added: 0004175                          
-03-25-05 19:40 Anlar          Note Added: 0004210                          
+03-24-05 10:24 sylware        New Issue                                    
+03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
+03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
+03-24-05 19:49 tiwai          Note Added: 0004198                          
+03-25-05 20:55 sylware        Note Added: 0004211                          
 ======================================================================
 
 
