@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000422]: snd-atiixp-modem driver: No CARRIER/DIALTONE.
-Date: Sat, 28 Aug 2004 04:20:23 +0200 (CEST)
+Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
+Date: Sat, 28 Aug 2004 04:24:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040828022023.4DCB82D0BF@server.perex-int.cz>
+Message-ID: <20040828022419.13A4F2D0BD@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C7E922B
-	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 04:20:23 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8704C22B
+	for <alsa-devel@alsa-project.org>; Sat, 28 Aug 2004 04:24:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,70 +22,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
 ======================================================================
-Reported By:                netstar
+Reported By:                Cyrille
 Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     422
+Bug ID:                     432
 Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Slackware 10
+Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             08-04-2004 01:13 CEST
-Last Modified:              08-28-2004 04:20 CEST
+Date Submitted:             08-08-2004 19:02 CEST
+Last Modified:              08-28-2004 04:24 CEST
 ======================================================================
-Summary:                    snd-atiixp-modem driver: No CARRIER/DIALTONE.
+Summary:                    Impossible de se connecter : NODIALTONE
 Description: 
-I am having issues with the modem, although not the sound card. Both
-drivers load fine (CVS alsa-driver, kernel and lib), sound also works
-fine, it is normally loaded as my second device "hw:1", fine, although the
-problem is persistant with any combination of the two devices. When using
-slmodemd with the "modem" device things seem ok until I try dialing and it
-is reported to me that there is no DIALTONE. After disabling DIALTONE
-detection with ATX3, subsequent ATDT attempts return NO CARRIER.  My
-slmodemd was already fixed with a patch sasha sent me some time back.
+I've got a TOSHIBA SATELITTE A30 222 laptop
+Sound card and modem are based upon ATI IXP
+But I'm not able to run modem in spite of the differents bug-report on
+ALSA web site
+(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+-
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+ -
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
+) and on Unixtrix.com (http://www.unixtrix.com/)
 
-When listening on the device with arecord for example and outputting to
-STDOUT, I get a constant hiss, however when I pick up a phone on the line
-it appears that the device does notice this as the constant hissing is
-interupted when either opening or closing the line elsewhere.
-
-I do not believe the modem is broken as has been suggested to me before.
-
-Attatched is an slmodem log of a dialing attempt and some system
-information including card register information whilst dialing. I hope
-this helps.
-
-slmodemd usage:
-
-./slmodemd --alsa modem or modem:0 or modem:1 --country=UK  
-
- Depending on the card configurations tested.
+Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+-, I'm always in the same situation : compilation is OK, modem driver OK
+but I'm not able to connect : NODIALTONE
 ======================================================================
 
 ----------------------------------------------------------------------
- netstar - 08-28-2004 04:20 CEST 
+ sashak - 08-25-2004 19:11 CEST 
 ----------------------------------------------------------------------
-It appears that the latest patch added by Sasha on the 25th of August fixes
-to bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432 resolves the issues with some modems reporting NO DIALTONE. 
-Modem and sound card are working fine.
+There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
+bit in ATI_REG_CMD register (reg 003, bit 27 - look in
+'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
+to reported here - DMA works ok, line still be disconnected.
+
+Uploaded patch solves the problem.
+
+----------------------------------------------------------------------
+ netstar - 08-26-2004 01:18 CEST 
+----------------------------------------------------------------------
+Additional problems with patch when applied to alsa CVS.  All conditions
+necessary are met.
+
+----------------------------------------------------------------------
+ netstar - 08-26-2004 18:54 CEST 
+----------------------------------------------------------------------
+Forget that, now working fine, congratulations.
+
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:46 CEST 
+----------------------------------------------------------------------
+Concretrely, does it mean the current version of alsa driver will not run
+with this hardware ?
+Thanx
+
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:47 CEST 
+----------------------------------------------------------------------
+Oups, I've got not see the last Netstar message...
+I try to test it...
+
+----------------------------------------------------------------------
+ Cyrille - 08-27-2004 15:41 CEST 
+----------------------------------------------------------------------
+Hello
+I have try Sashak's tip but the upload patch don't solve the problem.
+Always the same error message : NODIALTONE.
+(with alsa-driver/lib/... 1.0.6 ; test with slmodem-2.9.9 unless patch and
+with Ronis's patch).
+At your mind, is there really no hope to run it ?
+
+----------------------------------------------------------------------
+ netstar - 08-28-2004 04:24 CEST 
+----------------------------------------------------------------------
+It seems that the new patch fixes the issues.  Note:  The earlier 
+"fixed" slmodem package on my site was actually broken, attaching a fixed
+version to this page and updating the file on my site.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-04-04 01:13 netstar        New Bug                                      
-08-04-04 01:14 netstar        File Added: systeminfo.txt                    
-08-04-04 01:16 netstar        File Added: slmodem.log.modem                    
-08-04-04 01:17 netstar        File Added: slmodem-2.9.9-fix.patch                    
-08-27-04 19:41 tiwai          Assigned To              tiwai =>            
-08-27-04 19:42 tiwai          Assigned To               => sashak          
-08-28-04 04:20 netstar        Bugnote Added: 0001659                       
+08-08-04 19:02 Cyrille        New Bug                                      
+08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
+08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
+08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
+08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
+08-25-04 19:11 sashak         Bugnote Added: 0001624                       
+08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
+08-26-04 01:18 netstar        Bugnote Added: 0001630                       
+08-26-04 18:54 netstar        Bugnote Added: 0001634                       
+08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
+08-26-04 21:47 Cyrille        Bugnote Added: 0001637                       
+08-27-04 15:41 Cyrille        Bugnote Added: 0001644                       
+08-27-04 19:33 tiwai          Assigned To              tiwai => sashak     
+08-28-04 04:24 netstar        Bugnote Added: 0001660                       
 ======================================================================
 
 
