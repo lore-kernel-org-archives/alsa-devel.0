@@ -1,15 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: DMIX and capture stream
-Date: Sun, 4 Jan 2004 14:52:23 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Generating LFE-channel from Stereo Sound?
+Date: Sun, 04 Jan 2004 14:36:17 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040104145223.25bddac3.mista.tapas@gmx.net>
-References: <Pine.LNX.4.58.0401021421520.4466@tomservo.workpc.tds.net>
-	<200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
+Message-ID: <3FF824E1.3010209@superbug.demon.co.uk>
+References: <3FF7DCE2.4090104@aposso.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200401040507.i0457Qbv005994@dhin.linuxaudiosystems.com>
+In-Reply-To: <3FF7DCE2.4090104@aposso.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,40 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: dmlloyd@tds.net, alsa-devel@lists.sourceforge.net
+To: Thorsten Guenther <aposso@aposso.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 04 Jan 2004 00:07:26 -0500
-Paul Davis <paul@linuxaudiosystems.com> wrote:
-
-> >I'm working on changing DMIX to allow clients to open the capture
-> >stream.  
+Thorsten Guenther wrote:
+> Hi all!
 > 
-> i don't get it. dmix is for playback, not capture. what would be the
-> semantics of this?
+> 
+> First i would like to thank you for your great work. Yesterday i watched 
+> DVD and really enjoied doing so with 5.1 sound on my nforce2 Linux 
+> system. :-)))
+> After some hassle with the right settings for the DVD player software, 
+> anything works great and there is only one feature i'm missing:
+> 
+> In the Windows sound driver there is an option to generate an LFE 
+> channel from ordinary stero sound (e.g. MP3 playback). I searched the 
+> net and this list for some time but did not find any hints for player- 
+> or driver-options to do this. Am i missing something? Are there plans to 
+> add such a feature? May i help in some way (i'm a developer, but the 
+> java / server side type of) develop such a feature?
+> 
+> Tahnk's in advance!
+> 
+> Bye,
+> Thorsten
+> 
+Converting stereo sound (2.0) to stereo with separate LFE (2.1) is best 
+left to the media player, because high/low pass filters are CPU 
+intensive, and would add too much delay in the audio out path, but can 
+be done at the decoder stage, which is a stage in the media player 
+before audio/video sync is attempted.
 
-Hmm, i don't know the OP's answer to this, but i like to ask a very
-related question:
+I don't know which media player you use, so I cannot comment further.
 
-It is possible to create a playback pcm device with the help of the dmix
-plugin. This way several apps can playback at once - nice. But now what
-about using two apps that do full duplex at the same time?
+xine could support this by implementing a new audio_post_processing_plugin.
+mplayer might already have this feature, look in the audio filters 
+section of their manual.
 
-It is also possible to create a readable pcm device with the help of the
-dsnoop plugin. This way several apps can record at once..
+Cheers
+James
 
-But the question is: How do i combine those two, so that i have a pcm
-device that is readable and writeable by multiple clients on a soundcard
-that does not support hw mixing of neither capture nor playback streams.
-And how do i get OSS emu to work with it. I suppose i will need to alter
-the pcm.dsp0 device to use that dmix/dsnoop combined device..
 
-Flo
-
--- 
-music: http://www.soundclick.com/bands/9/florianschmidt.htm
-
+Cheers
+James
 
 
 
