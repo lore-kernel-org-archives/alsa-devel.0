@@ -1,18 +1,12 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: More CS4630, secondary CODEC output.
-Date: Sat, 27 Jul 2002 01:01:48 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: ALSA docs
+Date: Fri, 26 Jul 2002 20:15:08 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D41D4DC.60004@cucumelo.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <E17YFBD-0007ac-00@usw-sf-list1.sourceforge.net>
+References: <3D403A94.2070308@boosthardware.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cucumelo.org (as1-4-7.bn.g.bonet.se [194.236.61.89])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA02853
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2002 01:52:49 +0200
-Received: from cucumelo.org (cactus [194.236.61.89])
-	by cucumelo.org (Postfix) with ESMTP id E58C72F46D
-	for <alsa-devel@alsa-project.org>; Sat, 27 Jul 2002 01:01:48 +0200 (CEST)
+In-Reply-To: Your message of "Fri, 26 Jul 2002 02:51:16 +0900."
+             <3D403A94.2070308@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,46 +15,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi again!
+>I'm looking into ways to automate the modules options component file for 
+>  the docs.
+>
+>At the moment I am considering using perl or mysql. Does anyone know 
+>which is easier to setup to do the following.
+>
+>Parse the INSTALL file for a module name.
+>Return the info for that module.
+>
+>Then either
+>
+>Write the module info to a temp file which is inserted into the template
+>
+>  or
+>
+>insert the module info into the template.
 
-Seems there's quite big interest in the cs46xx stuff. Finally i've been 
-able to have output from
-the rear channel on the secondary CODEC. For the moment the output are 
-same on both
-rear and front channels, but it's possible to create a secondary .WAV 
-device and
-transfer two independent DMA channels to front and rear, and I believe 
-that I know
-how to do that, but that will require some more work and some drastic 
-changes in cs46xx_lib.c.
+i would personally work from a complete set of snd-* modules, and use
+modinfo(1) + perl to get the information and put that into the temp
+file that is inserted into the template, or if possible, put it
+straight into the template.
 
-It was not easy to find out how to probe and speak to the secondary CODEC,
-it has to be done different with AC97 2.0 and AC97 1.03 codecs, on AC97 1.03
-I believe that codec_write && codec_read fucntions cant be the same so 
-for the moment
-(probably) only cards with AC97  2.0 codecs will work. I've only tested 
-this with "Hercules Game Theater",
-probably there will be a lot of strange behaviours with other soundcards.
-
-Now the "Game Theater XP" got two CS294 codecs, and now the ALSA mixer 
-got two elements
-of almost everything, where about a 70% of all controls in the mixer are 
-probably totally meaningless,
-controlling stuffs that are not conected to CODEC any suggestions about 
-what to do with this ???
-It dont not feel necesary to have two Master volumes ...
-
-Heres my new snaphot, you are welcome to test it out:
-http://www.cucumelo.org/~gorm/alsa-driver-0.9.0rc2-bs20020727.tar.gz
-http://www.cucumelo.org/~gorm/alsa-driver-0.9.0rc2-bs20020727.diff.gz
-
-/Benny
-
-
-
+--p 
 
 
 -------------------------------------------------------
