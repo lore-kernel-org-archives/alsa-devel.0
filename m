@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Mon, 20 Sep 2004 19:55:22 +0200 (CEST)
+Date: Mon, 20 Sep 2004 20:18:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920175522.4CBB34904D@server.perex-int.cz>
+Message-ID: <20040920181844.5C5B64904C@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB314335
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 19:55:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9DF42F2
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 20:18:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian
 Kernel Version:             2.4.25
 ======================================================================
 Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-20-2004 19:55 CEST
+Last Modified:              09-20-2004 20:18 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working
 Description: 
@@ -171,6 +171,34 @@ audio) without passthrough !!! Our Laptop is a dell inspiron 8200. If I
 switch on passthrough I've got the same ugly noise like you get.
 Sorry is the only thing I can tell you.
 
+----------------------------------------------------------------------
+ m_stolle - 09-20-2004 20:18 CEST 
+----------------------------------------------------------------------
+I should clarify:  in general my S/PDIF works.  When I play mp3s, I get
+2-channel PCM output just fine.  Also, when I watch a DVD with
+xine's/mplayer's _SOFTWARE AC3 DECODER_, I get sound out of S/PDIF.  But
+it is _NOT_ 5.1 surround sound.  It is in fact 2-channel PCM stereo,
+downmixed to 2.0 from the decoded 5.1 output by the software decoder.
+
+Depending on Stoffel's stereo system, this sound might still come out of
+all 5 speakers, but it is NOT 5 discrete channels, but rather 2 discrete
+channels output over multiple speakers.
+
+I don't know how ac3dec is going to help at all... ac3dec is a software
+ac3 decoder.  I do NOT want to decode the AC3 stream, since the sound card
+cannot output multiple channels.  It can only PASS-THOUGH that AC3 sound
+on the DVD over the S/PDIF output.  (For example, it is entirely
+impossible to play a game with surround sound on the I8.2k, since it
+cannot output multiple streams, and encoding multiple streams as AC3 and
+outputting over the S/PDIF is too CPU intensive to be done in realtime...
+and no game has support for this.)
+
+So, while I can output a downmixed 2.0 PCM Stereo mix over the S/PDIF, I
+cannot output a full 5.1 AC3 surround signal over S/PDIF. (and I highly
+doubt Stoffel can, either!)
+
+MST
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -192,6 +220,7 @@ Date Modified  Username       Field                    Change
 09-18-04 17:50 m_stolle       Bugnote Added: 0001783                       
 09-20-04 17:44 tiwai          Bugnote Added: 0001791                       
 09-20-04 19:55 stoffel        Bugnote Added: 0001793                       
+09-20-04 20:18 m_stolle       Bugnote Added: 0001794                       
 ======================================================================
 
 
