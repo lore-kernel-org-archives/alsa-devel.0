@@ -1,12 +1,11 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: problems on alpha
-Date: Sun, 16 Nov 2003 18:51:17 +0100
+From: Shawn Smout <olorin_the_great@yahoo.com>
+Subject: Alsa-driver gawk/POSIX bug (again)
+Date: Sun, 16 Nov 2003 12:44:50 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031116175117.GA1174@tuba.home>
+Message-ID: <20031116204450.51935.qmail@web40906.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,84 +17,38 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+There is a bug in the alsa-driver file
+"utils/convert_isapnp_ids" that causes compilation of
+alsa-driver to fail if gawk runs in POSIX mode (which
+is the case if the environment variable
+POSIXLY_CORRECT is set).
 
-Hi,
+Line 84 of convert_isapnp_ids currently says:
+    if (match($0, "\{.*\}")) {
 
-please don't try to build au88x0 on an alpha. You have to read a lot. 
-But here is an extract with some quite interesting points about CVS ;-)
+The slashes to escape the braces were intended as a
+fix to this bug (which I previously posted), but it
+turns out they don't work.  I believe this is because
+awk evaluates the expression in the double quotes
+before passing it to the match function, so the regex
+matcher sees {.*}, not \{.*\}.  This can be fixed in
+one of two ways:
 
-martin
+    if (match($0, "\\{.*\\}")) {
+or
+    if (match($0, /\{.*\}/) {
 
+The former escapes the slash, so the regex itself sees
+the braces as escaped.  The latter merely causes gawk
+not to evaluate the argument before passing it to
+match.  Both have the same effect of sending the regex
+\{.*\} to match.  The code then works as intended
+regardless of whether POSIXLY_CORRECT is set.
 
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
--I/lib/modules/2.2.19/build/include -O2 -mno-fp-regs -ffixed-8 -Wa,-mev6
--DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--DKBUILD_BASENAME=memory_wrapper   -c -o memory_wrapper.o memory_wrapper.c
-memory_wrapper.c: In function snd_compat_vmalloc_to_page':
-memory_wrapper.c:35: warning: implicit declaration of function VMALLOC_VMADDR'
-memory_wrapper.c:39: warning: implicit declaration of function pgd_offset'
-memory_wrapper.c:39: warning: assignment makes pointer from integer without
-a cast
-memory_wrapper.c:40: warning: implicit declaration of function pmd_offset'
-memory_wrapper.c:40: warning: assignment makes pointer from integer without
-a cast
-memory_wrapper.c:41: warning: implicit declaration of function pte_offset'
-memory_wrapper.c:41: warning: assignment makes pointer from integer without
-a cast
-memory_wrapper.c:43: warning: implicit declaration of function pte_page'
-
-[...]
-
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
--I/lib/modules/2.2.19/build/include -O2 -mno-fp-regs -ffixed-8 -Wa,-mev6
--DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--DKBUILD_BASENAME=au8810   -c -o au8810.o au8810.c
-In file included from au88x0.c:23,
-                 from au8810.c:8:
-/usr/local/src/alsa-cvs/alsa-driver/include/sound/initval.h: In function
-get_option_long':
-/usr/local/src/alsa-cvs/alsa-driver/include/sound/initval.h:172: warning:
-implicit declaration of function get_option'
-In file included from au8810.c:8:
-au88x0.c: In function snd_vortex_dev_free':
-au88x0.c:76: warning: implicit declaration of function pci_release_regions'
-au88x0.c:77: warning: implicit declaration of function pci_disable_device'
-au88x0.c: In function snd_vortex_create':
-au88x0.c:121: warning: implicit declaration of function pci_request_regions'
-
-[...]
-
-au88x0_core.c: In function vortex_mixer_en_sr':
-au88x0_core.c:72: warning: passing arg 2 of cia_writel' makes integer from
-pointer without a cast
-au88x0_core.c: In function vortex_mixer_dis_sr':
-au88x0_core.c:76: warning: passing arg 2 of cia_writel' makes integer from
-pointer without a cast
-au88x0_core.c: In function vortex_mix_muteinputgain':
-au88x0_core.c:80: warning: passing arg 2 of cia_writel' makes integer from
-pointer without a cast
-au88x0_core.c:81: warning: passing arg 2 of cia_writel' makes integer from
-pointer without a cast
-
-[...]
-
-ld  -r -o snd-au8810.o au8810.o au8810_core.o au8810_pcm.o au8810_mixer.o
-au8810_mpu401.o au8810_game.o au8810_eq.o
-au8810_core.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-au8810.o(.modinfo+0x0): first defined here
-au8810_pcm.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-au8810.o(.modinfo+0x0): first defined here
-au8810_mixer.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-au8810.o(.modinfo+0x0): first defined here
-au8810_mpu401.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-au8810.o(.modinfo+0x0): first defined here
-au8810_game.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-au8810.o(.modinfo+0x0): first defined here
-au8810_eq.o(.modinfo+0x0): multiple definition of __module_kernel_version'
-au8810.o(.modinfo+0x0): first defined here
-make[2]: *** [snd-au8810.o] Error 1
+__________________________________
+Do you Yahoo!?
+Protect your identity with Yahoo! Mail AddressGuard
+http://antispam.yahoo.com/whatsnewfree
 
 
 -------------------------------------------------------
