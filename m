@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: .hw_free() while audio is running ??
-Date: Sun, 8 Aug 2004 22:39:57 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Miditech Midistart-2 USB keyboard
+Date: Mon, 09 Aug 2004 09:58:25 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
-References: <20040808172946.43212219.pochini@shiny.it>
+Message-ID: <Pine.HPX.4.33n.0408090953400.11985-100000@studcom.urz.uni-halle.de>
+References: <20040806231819.GB2309@torni>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040808172946.43212219.pochini@shiny.it>
+In-reply-to: <20040806231819.GB2309@torni>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,37 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Ville =?iso-8859-1?Q?P=E4tsi?= <drc@gimp.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 8 Aug 2004, Giuliano Pochini wrote:
+Ville P=E4tsi wrote:
+> What is needed to get snd-usb-audio to support this?
+>
+>   idVendor           0x7104
+>       bInterfaceClass         2 Communications
+>       bInterfaceSubClass      1 Direct Line
 
-> It happened that the hw_free() callback was called for a running substream.
-> System freezed. I had a look to the other drivers and none of them seems to
-> take into account this possibility and my driver also doesn't support it. If
-> it's my fault, please ignore the following.
-> 
-> Some details:
-> 
-> The call sequence in the logs is:
-> 
-> pcm_trigger (start)	- of two synced ss's
-> pcm_hw_free (playback ss)
-> Crash, nothing more in the logs :(
-> 
-> trigger(stop) wasn't called before hw_free.
+This is a modem made by Philips.  I'm not really sure if snd-usb-audi=
+o
+should support this device ...  ;-)
 
-You have an SMP machine? The hw_free is protected with the 
-runtime->status->state checking, but the code is not protected with 
-spinlock, so I suspect trouble here.
+Miditech's vendor ID is 0x4752.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Regards,
+Clemens
+
+
+
 
 
 -------------------------------------------------------
