@@ -1,13 +1,13 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
-Subject: Re: capture buffers on SBLIVE...
-Date: Sat, 29 Jun 2002 22:28:23 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: 24bit format support on usb audio
+Date: Sun, 30 Jun 2002 06:28:37 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0206292224020.2593-100000@mailserver.intern.bfad.de>
-References: <3D1E09F4.46DDF834@folkwang-hochschule.de>
+Message-ID: <3D1E2685.1080704@boosthardware.com>
+References: <s5hbsa8h7fa.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D1E09F4.46DDF834@folkwang-hochschule.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,30 +16,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, pbd@op.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 29 Jun 2002, Joern Nettingsmeier wrote:
+- This is with code that Takashi sent me privately -
 
-> i'm tracking down a nasty problem i have with jack. is there any way to
-> increase the periods-per-hardware-buffer setting on an sblive for
-> capture ? jackd refuses to do that, and i wonder whether it's a hardware
-> limitation.
+I did some testing earlier with playback. Using alsaplayer with alsa 
+drivers I get a nice smooth stream with no dropouts.
 
-I had similar problem with cs4281 driver. I had to port forward an old patch
-for 0.5.12 driver to increase this.
+However using the JACK plugin I get constant cracks/pops which act like 
+a delay.  Any idea why that could be?
 
-The problem is that if the hardware supports just "buffer full" and "half
-full" than it is easiest to implement just 2 periods. Getting more requires
-more intelligent interrupt handler.
+With the new code I can now hear and capture sound through the input 
+channels using jack, ardour and alsaplayer. Nice :) I cannot hear the 
+sound if I use the native alsa drivers. This appears to be the same 
+functionality that I observed in windows using cubase and ASIO. Except I 
+couldn't access the sound card in any way using the standard dohs 
+drivers but using the cubase+ASIO I could record and play back. At least 
+with ALSA I can get playback happening.
 
-Look into the source code for your driver. May be you will find a place where
-this limit is enforced.
+I now get active meters in ardour so I can adjust the levels using 
+ardour mixer. I can record the signal and have made an ogg file so you 
+can hear what is happening here.
 
-Best regards,
---
-Tomasz Motylewski
+http://www.boosthardware.com/LAU/
+
+(shift+click on the quattro2.ogg file)
+
+This works for me using xmms but alsaplayer has problems with the speed 
+of playback here so if you use alsaplayer to listen to it and it seems 
+out of sync that is not the problem. However Andy has tested my oggs on 
+his system and has found no problems with them. YMMV.
+
+Thanks Takashi and Paul. The combination of USB sound card and multiple 
+apps interacting with each other is a huge achievement to which you both 
+have contributed greatly through your tireless work on ALSA and/or JACK.
+
+You have made my night.
+
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
