@@ -1,7 +1,7 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: [PATCH] echomixer update 3/4
-Date: Sun, 16 Jan 2005 20:01:25 +0100
-Message-ID: <20050116200125.225e730f.pochini@shiny.it>
+Subject: [PATCH] echomixer update 2/4
+Date: Sun, 16 Jan 2005 20:22:17 +0100
+Message-ID: <20050116202217.32e1c384.pochini@shiny.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
@@ -20,285 +20,100 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-- Code cleanup: remove some redundant variables.
+- Bugfix: Makes sure that the "changed" event will be triggered when we will
+set the right value (the trick of setting an out of range value do not work
+anymore with gtk+-2.x).
 
-- Enhancement: The matrix mixer ignores mouse clicks that don't fall inside
-enabled mixer cells.
+- Bugfix: Same as above for toggle buttons.
 
 
 
 Signed-off-by: Giuliano Pochini <pochini@shiny.it>
 
---- alsa-tools/echomixer/echomixer.c_old	Sat Jan 15 17:43:54 2005
-+++ alsa-tools/echomixer/echomixer.c	Sun Jan 16 19:30:50 2005
-@@ -114,9 +114,10 @@
+--- alsa-tools/echomixer/echomixer.c_old	Sun Jan 16 18:29:20 2005
++++ alsa-tools/echomixer/echomixer.c	Sat Jan 15 17:43:54 2005
+@@ -1865,7 +1865,7 @@
+   GtkWidget *vbsel, *frame, *button;
+   GtkWidget *label, *menu, *menuitem;
+   GSList *bgroup;
+-  int err, i, o, n, cardnum;
++  int err, i, o, n, cardnum, value;
+   char hwname[8], cardname[32], load, save;
+   snd_ctl_card_info_t *hw_info;
  
- // This structure contains the first and the last row of each section of the graphic mixer window
- struct {
--  int Monitor;	// The first is always 0
--  int VmixerFirst, VmixerLast;
--  int LineOut;	// There is only one row
-+  int VmixerFirst, VmixerLast;	// Rows
-+  int LineOut;			// There is only one row
-+  int Inputs;			// Rows
-+  int Outputs;			// Columns
- } GMixerSection;
- 
- struct mixel {
-@@ -255,12 +256,6 @@
- 
- 
- 
--int ADATmode() {
--  return(!memcmp(dmodeName[dmodeVal], "ADAT", 4));
--}
--
--
--
- // Write an enumerated ALSA control
- int SetEnum(int numid, int val) {
-   int err;
-@@ -638,20 +633,12 @@
-   static int InClip[ECHO_MAXAUDIOINPUTS];
-   static int OutClip[ECHO_MAXAUDIOOUTPUTS];
-   char str[8];
--  int i, o, dB, inchannels, outchannels;
-+  int i, o, dB;
-   GdkColor Grid={0x787878, 0, 0, 0};
-   GdkColor Labels={0x9694C4, 0, 0, 0};
-   GdkColor Hilight={0x000078, 0, 0, 0};
-   GdkColor Hilight2={0x600000, 0, 0, 0};
- 
--  if (ADATmode()) {
--    inchannels=nIn;
--    outchannels=nLOut;
--  } else {
--    inchannels=fdIn+2;
--    outchannels=fdOut+2;
--  }
--
-   if (!Mixpixmap)
-     return(TRUE);
- 
-@@ -715,7 +702,7 @@
-   gdk_draw_rectangle(Mixpixmap, gc, TRUE, 0, YCELLTOT*(GMixerSection.LineOut+1)-1, Mixwidth, 1);
- 
-   // Draw input levels and peaks
--  for (i=0; i<inchannels; i++)
-+  for (i=0; i<GMixerSection.Inputs; i++)
-     DrawBar(0, i, InLevel[i], InPeak[i], DONT_DRAW);
- 
-   // Draw vchannels levels and peaks (Vmixer cards only)
-@@ -725,12 +712,12 @@
-   }
- 
-   // Draw output levels, peaks and volumes
--  for (o=0; o<outchannels; o++)
-+  for (o=0; o<GMixerSection.Outputs; o++)
-     DrawBar(o+1, GMixerSection.LineOut, OutLevel[o], OutPeak[o], lineoutControl.Gain[o]);
- 
-   // Draw monitor mixer elements
--  for (o=0; o<outchannels; o++) {
--    for (i=0; i<inchannels; i++) {
-+  for (o=0; o<GMixerSection.Outputs; o++) {
-+    for (i=0; i<GMixerSection.Inputs; i++) {
-       dB=Add_dB(mixerControl.mixer[o][i].Gain, InLevel[i]);
-       DrawBar(o+1, i, dB, DONT_DRAW, mixerControl.mixer[o][i].Gain);
+@@ -2049,6 +2049,7 @@
+       p4dbuIn[i]=gtk_toggle_button_new_with_label(str);
+       gtk_box_pack_start(GTK_BOX(hbox), p4dbuIn[i], TRUE, FALSE, 1);
+       gtk_widget_show(p4dbuIn[i]);
++      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(p4dbuIn[i]), NominalIn[i]);	// Forces handler call
+       gtk_signal_connect(GTK_OBJECT(p4dbuIn[i]), "toggled", GTK_SIGNAL_FUNC(Nominal_level_toggled), (gpointer)i);
+       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(p4dbuIn[i]), !NominalIn[i]);
      }
-@@ -738,7 +725,7 @@
- 
-   // Draw vmixer elements (Vmixer cards only)
-   if (vmixerId) {
--    for (o=0; o<outchannels; o++)
-+    for (o=0; o<GMixerSection.Outputs; o++)
-       for (i=0; i<vmixerControl.vchannels; i++)
-         DrawBar(o+1, i+GMixerSection.VmixerFirst, VirLevel[i], DONT_DRAW, vmixerControl.mixer[o][i].Gain);
+@@ -2069,6 +2070,7 @@
+       p4dbuOut[i]=gtk_toggle_button_new_with_label(str);
+       gtk_box_pack_start(GTK_BOX(hbox), p4dbuOut[i], TRUE, FALSE, 1);
+       gtk_widget_show(p4dbuOut[i]);
++      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(p4dbuOut[i]), NominalOut[i]);
+       gtk_signal_connect(GTK_OBJECT(p4dbuOut[i]), "toggled", GTK_SIGNAL_FUNC(Nominal_level_toggled), (gpointer)(i+ECHO_MAXAUDIOINPUTS));
+       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(p4dbuOut[i]), !NominalOut[i]);
+     }
+@@ -2209,7 +2211,8 @@
+       gtk_widget_show(label);
+       gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+       // Volume
+-      pcmoutControl.adj[i]=gtk_adjustment_new(999, ECHOGAIN_MINOUT, ECHOGAIN_MAXOUT, SHORTSTEP, LONGSTEP, 0);
++      value = INVERT(pcmoutControl.Gain[i]);
++      pcmoutControl.adj[i]=gtk_adjustment_new(!value, ECHOGAIN_MINOUT, ECHOGAIN_MAXOUT, SHORTSTEP, LONGSTEP, 0);
+       pcmoutControl.volume[i]=gtk_vscale_new(GTK_ADJUSTMENT(pcmoutControl.adj[i]));
+       gtk_widget_show(pcmoutControl.volume[i]);
+       gtk_box_pack_start(GTK_BOX(vbox), pcmoutControl.volume[i], TRUE, TRUE, 0);
+@@ -2219,7 +2222,7 @@
+       pcmoutControl.label[i]=gtk_label_new("xxx");
+       gtk_widget_show(pcmoutControl.label[i]);
+       gtk_box_pack_start(GTK_BOX(vbox), pcmoutControl.label[i], FALSE, FALSE, 0);
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(pcmoutControl.adj[i]), INVERT(pcmoutControl.Gain[i]));
++      gtk_adjustment_set_value(GTK_ADJUSTMENT(pcmoutControl.adj[i]), value);
+     }
+     gtk_widget_set_usize(GTK_WIDGET(pcmoutControl.volume[0]), 0, 170);		// Set minimum y size
    }
-@@ -926,24 +913,23 @@
-   GMixerRow=(int)event->y/YCELLTOT;
-   GMixerColumn=(int)event->x/XCELLTOT-1;
- 
-+  if (GMixerColumn<0 || GMixerColumn>=GMixerSection.Outputs)
-+    return TRUE;
-+
-   /* grab_focus must follow set_active because the latter causes
-      Vmixer_*_selector_clicked() to be called and, in turn,
-      Vmixer_volume_changed() which changes mixerControl.input
-      (or .output in non-reverse mode). grab_focus then causes
-      Vmixer_volume_clicked() to be called and that event handler
-      finally sets the correct value of mixerControl.input */
--  if (GMixerRow<=GMixerSection.Monitor) {
--    if (GMixerColumn!=mixerControl.output && GMixerColumn>=0) {
--      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<nLOut))
--        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixerControl.outsel[GMixerColumn]), TRUE);
--    }
-+  if (GMixerRow<GMixerSection.Inputs) {
-+    if (GMixerColumn!=mixerControl.output)
-+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixerControl.outsel[GMixerColumn]), TRUE);
-     if (GMixerRow!=mixerControl.input)
-       gtk_widget_grab_focus(GTK_WIDGET(mixerControl.volume[GMixerRow]));
-   } else if (GMixerRow>=GMixerSection.VmixerFirst && GMixerRow<=GMixerSection.VmixerLast) {
--    if (GMixerColumn!=vmixerControl.output && GMixerColumn>=0) {
--      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<vmixerControl.outputs))
--        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vmixerControl.outsel[GMixerColumn]), TRUE);
--    }
-+    if (GMixerColumn!=vmixerControl.output)
-+      gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vmixerControl.outsel[GMixerColumn]), TRUE);
-     if (GMixerRow!=vmixerControl.vchannel)
-       gtk_widget_grab_focus(GTK_WIDGET(vmixerControl.volume[GMixerRow-GMixerSection.VmixerFirst]));
+@@ -2261,7 +2264,8 @@
+       gtk_widget_show(label);
+       gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+       // Volume (resolution is 0.5 dB)
+-      lineinControl.adj[i]=gtk_adjustment_new(999, ECHOGAIN_MININP, ECHOGAIN_MAXINP, SHORTSTEP, LONGSTEP*2, 0);
++      value = IN_INVERT(lineinControl.Gain[i]);
++      lineinControl.adj[i]=gtk_adjustment_new(!value, ECHOGAIN_MININP, ECHOGAIN_MAXINP, SHORTSTEP, LONGSTEP*2, 0);
+       lineinControl.volume[i]=gtk_vscale_new(GTK_ADJUSTMENT(lineinControl.adj[i]));
+       gtk_widget_show(lineinControl.volume[i]);
+       gtk_box_pack_start(GTK_BOX(vbox), lineinControl.volume[i], TRUE, TRUE, 0);
+@@ -2271,7 +2275,7 @@
+       lineinControl.label[i]=gtk_label_new("xxx");
+       gtk_widget_show(lineinControl.label[i]);
+       gtk_box_pack_start(GTK_BOX(vbox), lineinControl.label[i], FALSE, FALSE, 0);
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(lineinControl.adj[i]), IN_INVERT(lineinControl.Gain[i]));
++      gtk_adjustment_set_value(GTK_ADJUSTMENT(lineinControl.adj[i]), value);
+     }
+     gtk_widget_set_usize(GTK_WIDGET(lineinControl.volume[0]), 0, 170);	// Set minimum y size
    }
-@@ -962,21 +948,20 @@
-   GMixerRow=(int)event->y/YCELLTOT;
-   GMixerColumn=(int)event->x/XCELLTOT-1;
- 
-+  if (GMixerColumn<0 || GMixerColumn>=GMixerSection.Outputs)
-+    return TRUE;
-+
-   // See the note above
--  if (GMixerRow<=GMixerSection.Monitor) {
-+  if (GMixerRow<GMixerSection.Inputs) {
-     if (GMixerRow!=mixerControl.input)
-       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(mixerControl.inpsel[GMixerRow]), TRUE);
--    if (GMixerColumn!=mixerControl.output && GMixerColumn>=0) {
--      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<nLOut))
--        gtk_widget_grab_focus(GTK_WIDGET(mixerControl.volume[GMixerColumn]));
--    }
-+    if (GMixerColumn!=mixerControl.output)
-+      gtk_widget_grab_focus(GTK_WIDGET(mixerControl.volume[GMixerColumn]));
-   } else if (GMixerRow>=GMixerSection.VmixerFirst && GMixerRow<=GMixerSection.VmixerLast) {
-     if (GMixerRow!=vmixerControl.vchannel)
-       gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(vmixerControl.vchsel[GMixerRow-GMixerSection.VmixerFirst]), TRUE);
--    if (GMixerColumn!=vmixerControl.output && GMixerColumn>=0) {
--      if (GMixerColumn<fdOut+2 || (ADATmode() && GMixerColumn<vmixerControl.outputs))
--        gtk_widget_grab_focus(GTK_WIDGET(vmixerControl.volume[GMixerColumn]));
--    }
-+    if (GMixerColumn!=vmixerControl.output)
-+      gtk_widget_grab_focus(GTK_WIDGET(vmixerControl.volume[GMixerColumn]));
+@@ -2299,7 +2303,8 @@
+       gtk_widget_show(label);
+       gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, FALSE, 0);
+       // Volume
+-      lineoutControl.adj[i]=gtk_adjustment_new(0, ECHOGAIN_MINOUT, ECHOGAIN_MAXOUT, SHORTSTEP, LONGSTEP, 0);
++      value = INVERT(lineoutControl.Gain[i]);
++      lineoutControl.adj[i]=gtk_adjustment_new(!value, ECHOGAIN_MINOUT, ECHOGAIN_MAXOUT, SHORTSTEP, LONGSTEP, 0);
+       lineoutControl.volume[i]=gtk_vscale_new(GTK_ADJUSTMENT(lineoutControl.adj[i]));
+       gtk_widget_show(lineoutControl.volume[i]);
+       gtk_box_pack_start(GTK_BOX(vbox), lineoutControl.volume[i], TRUE, TRUE, 0);
+@@ -2309,7 +2314,7 @@
+       lineoutControl.label[i]=gtk_label_new("xxx");
+       gtk_widget_show(lineoutControl.label[i]);
+       gtk_box_pack_start(GTK_BOX(vbox), lineoutControl.label[i], FALSE, FALSE, 0);
+-      gtk_adjustment_set_value(GTK_ADJUSTMENT(lineoutControl.adj[i]), INVERT(lineoutControl.Gain[i]));
++      gtk_adjustment_set_value(GTK_ADJUSTMENT(lineoutControl.adj[i]), value);
+     }
+     gtk_widget_set_usize(GTK_WIDGET(lineoutControl.volume[0]), 0, 170);		// Set minimum y size
    }
- 
-   if (event->button==1) {
-@@ -999,6 +984,8 @@
- 
- 
- 
-+// Gets how many pixels the mouse pointer was moved of and updates
-+// the currently active mixer/vmixer/line_out control.
- static gint Gmixer_motion_notify(GtkWidget *widget, GdkEventMotion *event) {
-   int x, y;
-   GdkModifierType state;
-@@ -1012,42 +999,40 @@
-     state=event->state;
-   }
- 
--  // Check if the button is still pressed because the release event can fall in another window, so we may miss it.
--  if (!(state & GDK_BUTTON1_MASK))
-+  // Check if the button is still pressed because the release event can
-+  // fall in another window, so we may miss it. Ignore the event if there
-+  // isn't a backing pixmap or the user clicked an invalid cell. We also
-+  // have to check mouseButton because the button_press event may arrive
-+  // after the respective motion_notify event.
-+  if (!(state & GDK_BUTTON1_MASK) || !mouseButton || !Mixpixmap || GMixerColumn<0 || GMixerColumn>=GMixerSection.Outputs) {
-     mouseButton=0;
-+    return(TRUE);
-+  }
- 
--  if (GMixerRow<=GMixerSection.Monitor) {
--    if (mouseButton && Mixpixmap != NULL) {
--      val=INVERT(mixerControl.mixer[mixerControl.output][mixerControl.input].Gain);
--      val+=y-mouseY;
--      mouseY=y;
--      // Gtk already limits the range of "val"
-+  if (GMixerRow<GMixerSection.Inputs) {
-+    val=INVERT(mixerControl.mixer[mixerControl.output][mixerControl.input].Gain);
-+    val+=y-mouseY;
-+    mouseY=y;
-+    // Gtk already limits the range of "val"
- #ifdef REVERSE
--      gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.input]), (gfloat)val);
-+    gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.input]), (gfloat)val);
- #else
--      gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.output]), (gfloat)val);
-+    gtk_adjustment_set_value(GTK_ADJUSTMENT(mixerControl.adj[mixerControl.output]), (gfloat)val);
- #endif
--    }
-   } else if (GMixerRow>=GMixerSection.VmixerFirst && GMixerRow<=GMixerSection.VmixerLast) {
--    if (mouseButton && Mixpixmap != NULL) {
--      val=INVERT(vmixerControl.mixer[vmixerControl.output][vmixerControl.vchannel].Gain);
--      val+=y-mouseY;
--      mouseY=y;
--      // Gtk already limits the range of "val"
-+    val=INVERT(vmixerControl.mixer[vmixerControl.output][vmixerControl.vchannel].Gain);
-+    val+=y-mouseY;
-+    mouseY=y;
- #ifdef REVERSE
--      gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.vchannel]), (gfloat)val);
-+    gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.vchannel]), (gfloat)val);
- #else
--      gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.output]), (gfloat)val);
-+    gtk_adjustment_set_value(GTK_ADJUSTMENT(vmixerControl.adj[vmixerControl.output]), (gfloat)val);
- #endif
--    }
-   } else if (GMixerRow==GMixerSection.LineOut) {
--    if (mouseButton && Mixpixmap != NULL) {
--      val=INVERT(lineoutControl.Gain[GMixerColumn]);
--      val+=y-mouseY;
--      mouseY=y;
--      // Gtk already limits the range of "val"
--      gtk_adjustment_set_value(GTK_ADJUSTMENT(lineoutControl.adj[GMixerColumn]), (gfloat)val);
--    }
-+    val=INVERT(lineoutControl.Gain[GMixerColumn]);
-+    val+=y-mouseY;
-+    mouseY=y;
-+    gtk_adjustment_set_value(GTK_ADJUSTMENT(lineoutControl.adj[GMixerColumn]), (gfloat)val);
-   }
- 
-   return(TRUE);
-@@ -1403,12 +1388,15 @@
-     // When I change the digital mode, the clock source can change too
-     gtk_option_menu_set_history(GTK_OPTION_MENU(clocksrcOpt), clocksrcVal=GetEnum(clocksrcId));
-   }
--  adat=ADATmode();
-+  adat=!memcmp(dmodeName[dmodeVal], "ADAT", 4);
-   SetSensitivity(adat);
--  if (adat)
--    GMixerSection.Monitor=nIn-1;
--  else
--    GMixerSection.Monitor=fdIn+2-1;	// S/PDIF has only 2 channels
-+  if (adat) {
-+    GMixerSection.Inputs=nIn;
-+    GMixerSection.Outputs=nLOut;
-+  } else {
-+    GMixerSection.Inputs=fdIn+2;	// S/PDIF has only 2 channels
-+    GMixerSection.Outputs=fdOut+2;
-+  }
- }
- 
- 
-@@ -1811,12 +1799,11 @@
- #ifndef REAL
- vmixerId=1000;
- vmixerControl.vchannels=12;
--vmixerControl.outputs=mixerControl.outputs=10;
-+vmixerControl.outputs=mixerControl.outputs=nLOut=10;
- metersStreams=3;
- metersNumber=16;
- metersTypes=2;
- nPOut=12;
--nLOut=10;
- fdOut=2;
- nIn=10;
- fdIn=2;
-@@ -1928,7 +1915,8 @@
-   Mixerw_geom.st=NOPOS;
-   Vmixerw_geom.st=NOPOS;
-   VUwindow=GMwindow=0;
--  GMixerSection.Monitor=fdIn+2-1;	// The correct value is set by Digital_mode_activate()
-+  GMixerSection.Inputs=fdIn+2;	// The correct value is set by Digital_mode_activate()
-+  GMixerSection.Outputs=fdOut+2;
-   GMixerSection.VmixerFirst=nIn;
-   GMixerSection.VmixerLast=nIn+vmixerControl.vchannels-1;
-   GMixerSection.LineOut=GMixerSection.VmixerLast+1;
-
 
 
 
