@@ -1,15 +1,15 @@
 From: Chris Smith <chris@realcomputerguy.com>
 Subject: Re: RME HDSP 9632 driver
-Date: Mon, 11 Aug 2003 11:57:08 -0400
+Date: Mon, 11 Aug 2003 11:32:10 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308111157.08772.chris@realcomputerguy.com>
-References: <32833.62.106.184.128.1060585201.squirrel@www.undata.org> <200308111132.10869.chris@realcomputerguy.com> <33325.62.106.184.128.1060616722.squirrel@www.undata.org>
+Message-ID: <200308111132.10869.chris@realcomputerguy.com>
+References: <32833.62.106.184.128.1060585201.squirrel@www.undata.org>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <33325.62.106.184.128.1060616722.squirrel@www.undata.org>
+In-Reply-To: <32833.62.106.184.128.1060585201.squirrel@www.undata.org>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,26 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Thomas Charbonnel <thomas@undata.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 11 August 2003 11:45, Thomas Charbonnel wrote:
+On Monday 11 August 2003 03:00, Thomas Charbonnel wrote:
+> > Is there an RME HDSP 9632 driver in development?
+> > The current hdsp driver from 0.9.6 will not load claiming the device is
+> > not  present.
+> 
+> No that I know of. The hdsp 9632 is quite different from the other hdsp
+> cards. Supporting it will require non-trivial driver adaptation. Right now
+> the driver claims the device is not present because it doesn't recognise
+> the card revision number (>= 0x96). I've asked RME about the card, I'll
+> let you know.
 
-> Adding a "case 0x96" wouldn't be enough for audio (though it could get
-> midi working, just don't touch audio) : the matrix mixer code and the
-> metering code are different, as well as the number of available audio
-> channels.
+I noticed the diff for the driver from rev 1.41 to 1.42 while browsing cvs 
+which added support for the rev 50 cards (I'm not a programmer, just a 
+curious sort). I'm guessing that I could add a "case 0x96" and the driver may 
+load, yet the card is so different it probably wouldn't work - especially 
+since the analog I/O is the main thing I'm looking to get as a starter.
 
-It didn't work.
- 
-> I've just got an answer from RME. Expect something to test soon :)
-
-Superb!
+If there's anything I can do to assist lease let me know.
 
 Thanks.
 
 Chris
+
 
 
 -------------------------------------------------------
