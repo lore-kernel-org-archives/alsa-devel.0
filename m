@@ -1,14 +1,13 @@
-From: Carlo Wood <carlo@alinoe.com>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
 Subject: Re: Bug in OSS simulation (ALSA 0.9.4)
-Date: Fri, 11 Jul 2003 00:36:40 +0200
+Date: Fri, 11 Jul 2003 01:49:49 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030710223640.GB20402@alinoe.com>
-References: <20030710013326.GA12086@alinoe.com> <3F0D66ED.3090509@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.44.0307110145380.5612-100000@ecabase.localdomain>
+References: <20030710013326.GA12086@alinoe.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3F0D66ED.3090509@superbug.demon.co.uk>
+In-Reply-To: <20030710013326.GA12086@alinoe.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,138 +16,97 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
+To: Carlo Wood <carlo@alinoe.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 10, 2003 at 02:15:25PM +0100, James Courtier-Dutton wrote:
-> Why don't you just use /proc/asound to gather all the info you need, 
-> like buffer and period sizes.
-> E.g.
-> While playing a sound file: -
-> cat /proc/asound/oss/sndstat
-> cat /proc/asound/card0/pcm0p/info
-> 
-> cat /proc/asound/card0/pcm0p/sub0/hw_params
-> cat /proc/asound/card0/pcm0p/sub0/info
-> cat /proc/asound/card0/pcm0p/sub0/status
-> cat /proc/asound/card0/pcm0p/sub0/sw_params
-> 
-> If recording a sound, use pcm0c instead of pcm0p
+On Thu, 10 Jul 2003, Carlo Wood wrote:
 
-I am recording.  This is the result:
+> But, when compiling it with:
+>   gcc -DUSE_DSP_SETFMT=1 troep.c
+> It stops rather quickly with reading data.
 
->cat /proc/asound/oss/sndstat
-Sound Driver:3.8.1a-980706 (ALSA v0.9.4 emulation code)
-Kernel: Linux ansset 2.5.74-debug #3 Wed Jul 9 14:16:52 CEST 2003 i686
-Config options: 0
+Hmm, I tested on my machine and this seems to work fine (ALSA 0.9.3c 
+/ 2.4.19 / SB128 (snd-ens1371 module).
 
-Installed drivers:
-Type 10: ALSA emulation
+> ~>a.out
+> Fragment size: 1024
+> Number of fragments: 32767
+> Number of channels: 1
+> Sample rate: 22050
+> Read 1024 bytes.
+> Number of full fragments that can be read or written without blocking: 0
+> Total number of fragments allocated for buffering: 2
+> Size of a fragment in bytes: 1024
+> Number of bytes that can be read or written immediately without blocking: 0
+> #fragments, #bytes: 0, 0
+> #fragments, #bytes: 1, 1632
+> Read 1024 bytes.
+> #fragments, #bytes: 2, 2048
+> Read 1024 bytes.
+> #fragments, #bytes: 1, 1024
+> Read 1024 bytes.
+> #fragments, #bytes: 0, 0
+> #fragments, #bytes: 0, 0
+> #fragments, #bytes: 0, 0
 
-Card config:
-Sound Blaster Live! (rev.8) at 0xa400, irq 9
+I get:
+--cut--
+Fragment size: 1024
+Number of fragments: 32767
+Number of channels: 1
+Sample rate: 22050
+Read 1024 bytes.
+Number of full fragments that can be read or written without blocking: 0
+Total number of fragments allocated for buffering: 64
+Size of a fragment in bytes: 1024
+Number of bytes that can be read or written immediately without blocking: 
+0
+#fragments, #bytes: 0, 0
+#fragments, #bytes: 1, 1696
+Read 1024 bytes.
+#fragments, #bytes: 2, 2432
+Read 1024 bytes.
+#fragments, #bytes: 3, 3168
+Read 1024 bytes.
+#fragments, #bytes: 3, 3904
+Read 1024 bytes.
+#fragments, #bytes: 4, 4640
+Read 1024 bytes.
+#fragments, #bytes: 5, 5376
+Read 1024 bytes.
+#fragments, #bytes: 5, 6112
+Read 1024 bytes.
+#fragments, #bytes: 6, 6848
+Read 1024 bytes.
+#fragments, #bytes: 7, 7584
+Read 1024 bytes.
+#fragments, #bytes: 8, 8320
+Read 1024 bytes.
+#fragments, #bytes: 8, 9056
+Read 1024 bytes.
+#fragments, #bytes: 9, 9792
+Read 1024 bytes.
+#fragments, #bytes: 10, 10528
+Read 1024 bytes.
+#fragments, #bytes: 11, 11264
+Read 1024 bytes.
+#fragments, #bytes: 11, 12000
+Read 1024 bytes.
+#fragments, #bytes: 12, 12736
+Read 1024 bytes.
+#fragments, #bytes: 13, 13472
+Read 1024 bytes.
+...
+--cut--
 
-Audio devices:
-0: EMU10K1 (DUPLEX)
-
-Synth devices: NOT ENABLED IN CONFIG
-
-Midi devices:
-0: EMU10K1 MPU-401 (UART)
-
-Timers:
-7: system timer
-
-Mixers:
-0: TriTech TR28602
-
->cat /proc/asound/card0/pcm0c/info
-card: 0
-device: 0
-subdevice: 0
-stream: CAPTURE
-id: emu10k1
-name: EMU10K1
-subname: subdevice #0
-class: 0
-subclass: 0
-subdevices_count: 1
-subdevices_avail: 0
-
->cat /proc/asound/card0/pcm0c/sub0/hw_params
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 1
-rate: 22050 (22050/1)
-period_size: 512
-buffer_size: 1024
-tick_time: 1000
-OSS format: S16_LE
-OSS channels: 1
-OSS rate: 22050
-OSS period bytes: 1024
-OSS periods: 2
-
->cat /proc/asound/card0/pcm0c/sub0/status
-state: XRUN
-trigger_time: 1057875818.000705646
-tstamp      : 1057875855.000974402
-delay       : 0
-avail       : 1024
-avail_max   : 0
------
-hw_ptr      : 1536
-appl_ptr    : 512
-
->cat /proc/asound/card0/pcm0c/sub0/sw_params
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 512
-xfer_align: 1
-start_threshold: 1
-stop_threshold: 1024
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
-
-
-
-At this moment the application (of which I have no source code
-thus) is calling
-
-  audio_buf_info info;
-  ioctl(fd, SNDCTL_DSP_GETISPACE, &info);
-
-in a loop and get returned in 'info'
-that there is no data to be read (info.bytes == 0).
-
-This seems to be caused by the fact that more than 2048
-bytes of data were available before the application started
-to actually read data; and because there is only a buffer
-of 2048 bytes:
-
-OSS period bytes: 1024
-OSS periods: 2
-
-Increasing the number of 'periods' would be nice.
-But I have no idea why I only GET 2 period - the request is
-for 'as much as possible' (0x7fff).
-See the call
-    res = 0x7fff000a;
-    if (ioctl(fd, SNDCTL_DSP_SETFRAGMENT, &res) == -1)
-in my test program.
-
-Changing that value to say '0x4000a' also just gives 2 'periods'
-instead of the requested 4.
-
-Can you please analyse the data of /proc/asound above
-and give a new hint of what to do next?
+More in the next post...
 
 -- 
-Carlo Wood <carlo@alinoe.com>
+ http://www.eca.cx
+ Audio software for Linux!
+
+
 
 
 -------------------------------------------------------
