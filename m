@@ -1,13 +1,13 @@
-From: p z oooo <pzad@pobox.sk>
+From: Giuliano Pochini <pochini@denise.shiny.it>
 Subject: Re: List of control parameters needed
-Date: Mon, 22 Mar 2004 12:35:56 +0100
+Date: Mon, 22 Mar 2004 12:52:38 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403221135.i2MBZuAc023897@www3.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.58.0403221246590.5648@denise.shiny.it>
+References: <003701c40fff$1e875800$f8b6a8c0@ent.ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <003701c40fff$1e875800$f8b6a8c0@ent.ti.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,27 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pavans@india.ti.com
+To: Pavana Sharma <pavans@india.ti.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Try to look at alsa-driver/alsa-kernel/Documentation/ControlNames.txt
-But warning, this is not complete list, rather recomendation. Most=20
-control names folows this recomendation, but there are some controls=20
-for some soundcards, that have diffrent names.
-
-Peter Zubaj
 
 
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
-alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
-somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
+On Mon, 22 Mar 2004, Pavana Sharma wrote:
+
+> Hello,
+>
+> I  am trying to export the controls to user space. I want to know the
+> complete list of controls
+> [...]
+> Where can I get the complete list of controls which an audio codec has
+> to support.
+
+There is not such a list because they depend on the hardware. But there
+is a list of common names that all drivers should respect.
+The list is: /alsa-kernel/Documentation/ControlNames.txt
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
