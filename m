@@ -1,7 +1,13 @@
-From: =?ISO-2022-JP?B?GyRCNVQkYSRpJGwkPyQsJGpFNztIIXkbKEI=?= <now@hiw.vig-seet.to>
-Subject: =?ISO-2022-JP?B?GyRCPyc1JCRIQDY9YyRJJEMkQSQsJCo5JSRfISkbKEI=?=
-Date: Wed, 23 Mar 2005 04:24:49 +0900 (KST)
-Message-ID: <20050322192449.4C76E138A8@year.ori-g.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
+Date: Wed, 23 Mar 2005 15:23:50 +0100
+Message-ID: <f4e2baed77faf8df2f5b9abf7f0a3748@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7A99826B
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:23:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -11,123 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.netalsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-メールカフェ====--====--====--====--====--====--====--====--====--==
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
+======================================================================
+Reported By:                Gregoire
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   668
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo amd64
+Kernel Version:             2.6.10-rc2
+======================================================================
+Date Submitted:             11-23-2004 16:04 CET
+Last Modified:              03-23-2005 15:23 CET
+======================================================================
+Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
+rc2
+Description: 
+I have checked the changelog but I don't know what exactly have changed to
+see which change breake the AC3 passtrough ?
+======================================================================
 
-～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆
+----------------------------------------------------------------------
+ tiwai - 11-23-04 16:08 
+----------------------------------------------------------------------
+Does AC3 passthru work when you compile ALSA 1.0.7 on 2.6.10-rc1?
 
-　　　　◆　◆　◆　あなたは清純派？それともお色気派？◆　◆　◆
+----------------------------------------------------------------------
+ jdthood - 03-23-05 15:23 
+----------------------------------------------------------------------
+Submitter: Does AC3 passthru work when you build and use the latest ALSA
+modules from the alsa-driver tarball instead of the modules that come with
+your 2.6 kernel?
 
-　　　　　　　　　　　◇　◇　◇　◇　◇　◇　◇　◇　◇　◇　
-
-～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆～・～・～・～☆
-
-　　　　http://koakuma.polty.cc/?z2nifui43j
-
-====--====--====--====--====--====--====--====--====--====--====-
-
-□□▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
-
-　 □　　純真無垢なハダカの天使と
-
-   □□　　　　　　　　　　お色気たっぷりの小悪魔ＧＡＬ達の競演。o○o。。o○o。
-
-　　　□□ 
-
-　 □□　　　　　ヌレヌレエッチな小悪魔が
-
-　 □　　　　　　　　　　　　　恥ずかしがる天使達をネットリ責める。o○o。。o○o。
-
-□□
-
-　 □　http://koakuma.polty.cc/?z2nifui43j
-
- 
-
-ヌレヌレ企画第１弾
-
-━━━━━━━━・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：★
-
-史上初！！ＰＣ版袋とじ企画第３弾
-
-　　　　　　　　　　　何が出るかはお楽しみ♪前回、前々回と想像を絶する反響
-
-　　　　　　　　　　　を呼んだアノ袋とじ企画の第３弾がついに上陸！！！！！！
-
- 
-
-ヌレヌレ企画第２弾
-
-━━━━━━━━・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：・・：：★
-
-　　　　http://koakuma.polty.cc/?z2nifui43j
-
- 
-
-ヴィーナス監禁・・・いたいけなヴィーナス達を監禁虜辱！想像を絶する責め苦に
-
-　　　　　　　　　　　次第に自我が崩壊し始める
-
- 
-
-恥辱小悪魔　・・・悪戯好きな小悪魔な女の子たちを、逆に辱め弄ぶ！どうしようもない
-
-　　　　　　　　　　　ほどの快感に喜びの声を上げる彼女達♪
-
- 
-
-エンジェル盗撮・・・可愛いエンジェル達の人に見せれない恥ずかしいトコロを
-
-　　　　　　　　　　　こっそり盗撮しちゃいました♪感度抜群の高性能カメラを設置
-
- 
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
- 
-
-　　　　乱れ飛ぶ彼女達の声や体液にとても正常ではいられない・・・・・。
-
-・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・・
-
-　　　　http://koakuma.polty.cc/?z2nifui43j
-
->>>>>>>>>>>>>>>>>>>>>>>>>>>>><<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-
-◆お・知・ら・せ◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆
-
- 
-
-・メールカフェはメールマガジンの配信スタンドとなっており、登録会員様に
-
-　定期的にメールマガジンを配信しております。
-
-・当局はご紹介先のサイトにおけるいかなるトラブルや損害に対しても
-
-　一切の責任を負いかねます。
-
-・掲載情報に関してのご質問には応じておりませんので予めご了承下さい。
-
-・当メールマガジンに掲載された記事の一部または全部を
-
-　許可なく転載することを禁止致します。
-
-・ 身に覚えのない配信はいたずらの可能性がございます
-
-　購読解除をご希望の方は、お手数ですが下記のアドレスよりログインし、
-
-　ご自身でお手続き下さい。
-
-========================== http://hiw.vig-seet.to/mail-cafe/
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-04 16:04 Gregoire       New Issue                                    
+11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
+11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
+11-23-04 16:08 tiwai          Note Added: 0002518                          
+03-23-05 15:23 jdthood        Note Added: 0004158                          
+======================================================================
 
 
-
-◆お・知・ら・せ◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆　◆
-
-====--====--====--====--====--====--====--====--====--==メールカフェ
 
 
 -------------------------------------------------------
