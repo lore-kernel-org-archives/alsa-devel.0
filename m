@@ -1,11 +1,10 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: snd-ens1371 driver failed assert
-Date: Tue, 19 Nov 2002 22:12:26 +0100
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Memory problems are back with SB Live!
+Date: Tue, 19 Nov 2002 21:55:16 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211192212.26739.plcl@telefonica.net>
+Message-ID: <20021119215516.8350.qmail@web40606.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,22 +20,57 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-The following lines are from my syslog after "modprobe snd-ens1371" with 
-current CVS alsa drivers:
+My box has now accumulated almost 3 weeks of uptime,
+and so the ALSA memory problem is back again:
 
-PCI: Found IRQ 9 for device 00:11.0
-ALSA ../alsa-kernel/core/control.c:227: BUG? (!(kcontrol->access & (1<<1)) || 
-kcontrol->put != ((void *)0)) (called from ca8f67a6)
+$ aplay /usr/lib/sounds/jungle_exit.wav 
+Playing WAVE '/usr/lib/sounds/jungle_exit.wav' :
+Signed 16 bit Little Endian, Rate 22050 Hz, Stereo
+ALSA lib pcm_hw.c:297:(snd_pcm_hw_hw_params)
+SNDRV_PCM_IOCTL_HW_PARAMS failed: Cannot allocate
+memory
+aplay: set_params:814: Unable to install hw params:
+ACCESS:  RW_INTERLEAVED
+FORMAT:  S16_LE
+SUBFORMAT:  STD
+SAMPLE_BITS: 16
+FRAME_BITS: 32
+CHANNELS: 2
+RATE: 22050
+PERIOD_TIME: 100000
+PERIOD_SIZE: 2205
+PERIOD_BYTES: 8820
+PERIODS: 5
+BUFFER_TIME: 500000
+BUFFER_SIZE: 11025
+BUFFER_BYTES: 44100
+TICK_TIME: 10000
 
-Mixer works, though. (With too much controls, i don't know what they are).
+Is that patch you sent me to hack^Wfix this still
+relevant, or will it make things worse? I've noticed a
+few changes to these parts of the kernel drivers.
 
-Regards,
-Pedro
+As an aside, my memory looks like this:
+$ free -t
+             total       used       free     shared   
+buffers     cached
+Mem:       1033544    1011004      22540          0   
+  53776     728244
+-/+ buffers/cache:     228984     804560
+Swap:       498004       8168     489836
+Total:     1531548    1019172     512376
 
--- 
-ALSA Library Bindings for Pascal
-http://alsapas.alturl.com
+Isn't Linux supposed to surrender disk-cache memory if
+another process requests it? Surely *some* of that
+1011004 KB cache must be usable!?
 
+Chris
+
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
