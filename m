@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Thu, 30 Sep 2004 02:00:58 +0200 (CEST)
+Date: Thu, 30 Sep 2004 02:11:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040930000058.148F09073@server.perex-int.cz>
+Message-ID: <20040930001113.F25FE9006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6842429E
-	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 02:00:58 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 55DBA2F4
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 02:11:14 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-30-2004 02:00 CEST
+Last Modified:              09-30-2004 02:11 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -382,6 +382,14 @@ jackit-devel mailing list recently
 Oh, just noticed Karsten's note about acpid and apmd. Those are not
 started. However ACPI modules are loaded.
 
+----------------------------------------------------------------------
+ karsten - 09-30-2004 02:11 CEST 
+----------------------------------------------------------------------
+relating
+usx2yhwdeppcm.c:77:activ frame status -18
+does it help if you run the laptop from batery?
+sometimes usb is fragile....
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -422,6 +430,7 @@ Date Modified  Username       Field                    Change
 09-30-04 01:25 rncbc          File Added: dmesg.out.8.jackd_XRUNS.txt                    
 09-30-04 01:44 karsten        Bugnote Added: 0001978                       
 09-30-04 02:00 rncbc          Bugnote Added: 0001979                       
+09-30-04 02:11 karsten        Bugnote Added: 0001980                       
 ======================================================================
 
 
