@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: pcm interfaces questions
-Date: Wed, 26 Mar 2003 21:32:12 +0100 (CET)
+From: Laurent Georget <lgeorget2@club-internet.fr>
+Subject: Re: possible ALSA bug/feature (was: important recording
+ broke. why?) (fwd)
+Date: Wed, 26 Mar 2003 21:53:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303262129230.2038-100000@pnote.perex-int.cz>
-References: <XFMail.20030326151822.pochini@shiny.it>
+Message-ID: <3E821332.7050703@club-internet.fr>
+References: <Pine.LNX.4.44.0303211610150.20651-100000@vaino.wakkanet.fi>	<s5h7kanpbpc.wl@alsa2.suse.de>	<3E80CB2E.7070204@club-internet.fr> <s5hznnio0ml.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20030326151822.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,43 +17,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 26 Mar 2003, Giuliano Pochini wrote:
-
+Takashi Iwai wrote:
+> At Tue, 25 Mar 2003 22:33:34 +0100,
+> Laurent Georget wrote:
 > 
-> On 26-Mar-2003 Takashi Iwai wrote:
-> > the "pcm substreams" belong to each pcm stream.  when you open a pcm
-> > device, one pcm substream will be used at each time.
-> > snd_pcm_new() takes the argument how many pcm substreams are created
-> > for each pcm stream.  you can give more than one here only if the
-> > hardware supports multiple-playback/capture, such as emu10k1.
-> > otherwise, these arguments must be 1 or 0.
+>>Takashi Iwai wrote:
+>>
+>>>At Fri, 21 Mar 2003 16:16:04 +0200 (EET),
+>>>Kai Vehmanen wrote:
+>>>
+>>>
+>>>>Hi,
+>>>>
+>>>>first please read the mail to ecasound-list below. 
+>>>>
+>>>>It seems that with newer ALSA versions, snd_pcm_read[in]()  sometimes
+>>>>returns -EIO even though documentation says nothing about this. After some
+>>>>testing this seems to not happen on direct hw-access, only with
+>>>>the pcm_plugin. The EIO comes from snd_pcm_wait(). 
+>>>>
+>>>>Is this a bug or or a feature?
+>>>
+>>>
+>>>i also don't know whether Jaroslav added as a feature or as an
+>>>unexpected bug.  anyway, this means that the poll failed and the pcm
+>>>status is abnormal, typically xruns...
+>>>
+>>>how about the attached patch?  (untested)
+>>>
+>>>
+>>>Takashi
+>>
+>>Hello!
+>>
+>>The problem I posted about is , I think, the same than Kai Vehmanem 
+>>tells about here, but  with Alsa level plugins
+>>(the plugin from Abramo, and Ameter from me (well , 95% of  the code is 
+>>from Abramo and Steve Harris)
+>>
+>>After 0.9rc7 , using level or ameter plugin with low (but valid) buffer 
+>>size gives an IO error :
+>>
+>>aplay -D level -B 10000 -v test.wav
+>>....
+>>aplay: pcm_write:1025: write error: Input/output error
 > 
-> The hw supports it. My cards has 8 analog outputs that can be used
-> indipendently or grouped. From inside hw_params callback I have no
-> way to know which channels the user wants to use. My idea is to tell
-> snd_pcm_new() to create 8 playback substreams. When an app opens
-> substream N, C channels wide, I use substream N, and I make
-> substreams from N+1 to N+C-1 not available.
+> 
+> ah, i forgot to tell that it was the fix for the capture.
+> 
+> for playback, you'll need to fix snd_pcm_write_areas() as well.
+> the patch attached below.  please give a try.
+> 
+> 
+> ciao,
+> 
+> Takashi
 
-It's a bit tricky. I'd prefer to allocate different PCM devices for this 
-behaviour:
+I applied the 2 patches : now it is ok for playing and recording with 
+any buffersize.
+Very cool !
 
-#0 - four stereo substreams
-#1 - one 8-channel substream
-#2 - eight mono substreams
-
-So the user has always equal substreams.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Laurent
 
 
 
