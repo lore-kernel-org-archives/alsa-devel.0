@@ -1,10 +1,11 @@
-From: Thorsten Leemhuis <fedora@leemhuis.info>
-Subject: alsa-oss devel-files and alsa-firmware license
-Date: Thu, 11 Dec 2003 13:59:32 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: alsa-oss devel-files and alsa-firmware license
+Date: Thu, 11 Dec 2003 23:55:21 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071147572.4567.56.camel@thl.ct.heise.de>
+Message-ID: <3FD88559.6010403@boosthardware.com>
+References: <1071147572.4567.56.camel@thl.ct.heise.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,35 +16,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thorsten Leemhuis <fedora@leemhuis.info>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Thorsten Leemhuis wrote:
+>
+> - What the purpose of
+> /usr/lib/libaoss.a
+> /usr/lib/libaoss.so
+> after compiling alsa-oss? Nobody should be compiling with them,
+> or missed I something? Maybe see bug
+> 
 
-I'm currently repacking alsa for the fedora.us repository.
+aoss is a clever little app which hijacks oss applications output before 
+it gets to the alsa emulation layer and translates it to native ALSA.
 
-I have two problems at the moment:
 
-- I can't find any license info in the alsa-firmware package. Is it
-freely redistributable? An if, under which license?  
-Current fedora.us bug:
-http://bugzilla.fedora.us/show_bug.cgi?id=1107
 
-- What the purpose of
-/usr/lib/libaoss.a
-/usr/lib/libaoss.so
-after compiling alsa-oss? Nobody should be compiling with them,
-or missed I something? Maybe see bug
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-http://bugzilla.fedora.us/show_bug.cgi?id=592
 
-for a better description of our current problem. I'm not enough a C
-developer and also don't know alsa so deep...
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
 
-Thanks for your help 
+United Press International
+Rockets on donkeys hit major Baghdad sites
 
-CU
-Thorsten Leemhuis
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
 
 
 
