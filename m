@@ -1,12 +1,14 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: ALSA CVS: cannot find uda1341.h
-Date: Wed, 17 Apr 2002 20:54:11 +0100 (BST)
+From: Roger E Critchlow Jr <rec@elf.org>
+Subject: Re: Fwd: Re: USB Quattro Linux support
+Date: Wed, 17 Apr 2002 20:25:48 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020417195411.57057.qmail@web13102.mail.yahoo.com>
+Message-ID: <15550.11949.76618.122338@elf2.elf.org>
+References: <20020417071207.05D6636FA@sitemail.everyone.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20020417071207.05D6636FA@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,42 +17,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: pshirkey@boosthardware.com
+Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Patrick Shirkey writes:
+ > --- Paul Davis <pbd@op.net> wrote:
+ > >Not at all. arecord(1) can capture audio, but it can't capture 26
+ > >channels of audio at 64 frames/interrupt. Handling latency is partly
+ > >an application issue, partly a kernel issue, and partly a requirement
+ > >that libraries in the way don't get in the way. It has very little to
+ > >do with whether you can do certain generic tasks or not.
+ > >
+ > 
+ > Sure. But usb audio devices are limited to a pretty low channel count.
+ > 
+ > eg. this usb quattro can only capture 1 channel at 96000,24 bit
+ > even though it has up to 4 channels. It would seem to be a limitaion
+ > of usb as a transfer protocol.  
+ > 
 
-I just tried to totally rebuild the latest alsa-driver
-modules from CVS, and I'm getting this error when I
-try to generate the dependencies:
+USB-1.1 devices are limited, but USB-2.0 controllers are already on
+the market and will be replacing USB-1.1 on new motherboards as the
+year progresses.  There's a 40 fold increase in raw bandwidth in
+USB-2.0, from 12Mbit/s to 480Mbit/s, so one could imagine plugging
+several CD-quality USB-1.1 audio devices into a USB-2.0 hub, or
+getting multiple channels of DVD quality from a USB-2.0 audio
+interface.
 
-gcc -E -M -DALSA_BUILD -D__KERNEL__ -DMODULE=1
--I/home/chris/Programs/alsa/alsa-driver/include
--I/lib/modules/2.4.18/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -D__SMP__
--DCONFIG_SMP -DLINUX -Wall -Wstrict-prototypes
--fomit-frame-pointer -pipe  uda1341.c > .depend
-In file included from uda1341.c:1:
-/home/chris/Programs/alsa/alsa-driver/alsa-kernel/i2c/l3/uda1341.c:37:25:
-linux/l3/l3.h: No such file or directory
-/home/chris/Programs/alsa/alsa-driver/alsa-kernel/i2c/l3/uda1341.c:41:21:
-uda1341.h: No such file or directory
-make[2]: *** [fastdep] Error 1
-make[2]: Leaving directory
-`/home/chris/Programs/alsa/alsa-driver/i2c/l3'
-make[1]: *** [_sfdep_l3] Error 2
-make[1]: Leaving directory
-`/home/chris/Programs/alsa/alsa-driver/i2c'
-make: *** [dep] Error 1
+So, sooner or later, your driver,too, will get its chance to be a
+latency bottleneck.
 
-I think that those uda1341.* files were added today.
-
-Cheers,
-Chris
-
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+-- rec --
