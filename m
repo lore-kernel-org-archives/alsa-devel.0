@@ -1,13 +1,14 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [PATCH] hdsp fixes #2
-Date: 27 Jan 2005 14:51:52 -0800
-Message-ID: <1106866312.11903.203.camel@cmn37.stanford.edu>
-References: <1106858333.11185.17.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000852]: alsa driver do not work on IBM thinkpad T42
+Date: Fri, 28 Jan 2005 05:26:32 +0100
+Message-ID: <26c8fa585c05191a42d79114e63f1838@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1106858333.11185.17.camel@localhost>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC53D21D
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 05:26:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,20 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: thomas charbonnel <thomas@undata.org>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-01-27 at 12:38, thomas charbonnel wrote:
-> Nando: this one should fix also the metering weirdnesses people were
-> seeing in hdspmixer, I hope you didn't build all those packages yet...
 
-First build tested, builds fine, finds firmware on reboot, level meters
-don't show any abnormal behavior! (short test, 9652+digiface)
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=852> 
+======================================================================
+Reported By:                lithium7456
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   852
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-28-2005 05:26 CET
+Last Modified:              01-28-2005 05:26 CET
+======================================================================
+Summary:                    alsa driver do not work on IBM thinkpad T42
+Description: 
+After the installation of slackware linux 10 ,I found that the alsa driver
+1.05(with slackware linux )do not work: when i run "alsamixer" it shows
+that "no mixer elems". So I downloaded driver 1.08 and had it installed.
+now I can run alsamixer without any error message but my computer does not
+play any sound at all(I have run alsaconf and it detected the soundcard as
+snd-intel8x0)
+What steps shall I
+take&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=65311;
+please Re to lithium7456@sohu.com
+Thank you
+======================================================================
 
-Very good!
-Thanks!!
--- Fernando
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-28-05 05:26 lithium7456    New Issue                                    
+======================================================================
 
 
 
