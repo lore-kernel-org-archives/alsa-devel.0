@@ -1,11 +1,14 @@
-From: alsa@0x00.my-ho.st
-Subject: Maestro 2E (rev 10) not found or device busy w/ 0.9.2
-Date: Wed, 26 Mar 2003 17:12:55 -0700 (MST)
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: possible ALSA bug/feature (was: important recording
+ broke. why?) (fwd)
+Date: Thu, 27 Mar 2003 02:42:32 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.50.0303261659330.8112-100000@0x00.my-ho.st>
+Message-ID: <Pine.LNX.4.44.0303270240430.3682-100000@ecabase.localdomain>
+References: <s5h7kanpbpc.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h7kanpbpc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,21 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, The Eye <the.eye@gmx.li>
 List-Id: alsa-devel@alsa-project.org
 
-The 'maestro' driver included with Linux 2.4.x loads, and for the most
-part works okay.  However trying to use the latest ALSA results in:
+On Tue, 25 Mar 2003, Takashi Iwai wrote:
 
-kernel: es1968: not attempting power management.
-kernel: ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1960: AC'97 0:0 does not respond - RESET
-kernel: ESS Maestro soundcard not found or device busy
+>> It seems that with newer ALSA versions, snd_pcm_read[in]()  sometimes
+>> returns -EIO even though documentation says nothing about this. After some
+> i also don't know whether Jaroslav added as a feature or as an
+> unexpected bug.  anyway, this means that the poll failed and the pcm
+> status is abnormal, typically xruns...
+[...]
+> how about the attached patch?  (untested)
 
-Anyone have any suggestions on how to fix this?
+Works fine here - no more -EIOs and recording is ultra-reliable again! :)
 
-If you need more info please let me know.  Thanks!
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
- - Ted
 
 
 -------------------------------------------------------
