@@ -1,13 +1,15 @@
-From: Abramo Bagnara <abramo@alsa-project.org>
-Subject: Re: Re: About integer64
-Date: Thu, 09 May 2002 15:56:43 +0200
+From: Paul Davis <pbd@op.net>
+Subject: snd-rme9652_mem and the H-DSP
+Date: Thu, 9 May 2002 08:57:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CDA801B.9A10FE99@alsa-project.org>
-References: <200205091339.g49Dd8907029@post2.fast.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <200205091257.g49CvTO16266@op.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA26246
+	for <alsa-devel@alsa-project.org>; Thu, 9 May 2002 14:56:38 +0200
+Received: from unknown (HELO op.net) ([209.92.99.108]) (envelope-sender <pbd@op.net>)
+          by newmx1.fast.net (qmail-ldap-1.03) with SMTP
+          for <alsa-devel@alsa-project.org>; 9 May 2002 12:56:31 -0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,55 +18,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
-> >b) if a 32 bit integer is not enough and a float is preferrable:
-> >considered that an ieee754 floating point is in the form (1+man)*2^exp
-> >what's the problem in converting it in your driver using ffs and some
-> >shift?
-> 
-> if the lkml crew see us using floating point in any form in the
-> kernel, we will attract complaints, even if we use integer operations
-> to do so. i am firmly convinced of this.
+both the hammerfall and hammerfall-dsp require exactly the same kind
+of memory allocation. the snd-rme9652_mem module, which allocates
+a contiguous chunk of about 1.2MB of physical RAM, uses the "driver
+index" to identify which snd-card is using a given buffer. this means
+that if we try to use both a hammerfall and a hammerfall-dsp, things
+don't work: both drivers pass "driver index" = 0 to the memory
+module, and the second try (whatever it is) concludes that it already
+has buffers allocated.
 
-I don't think so: try to fgrep for float in kernel source, you'll find
-several place where they're stored (and I suppose for good reason).
+i propose using the card->number value instead, so that the numbers are
+unique across all driver modules. 
 
-Also I've read a recent post from Alan Cox explaining *how* to use
-floating point in kernel space. This presuppose that it's not a serious
-sin if it's justified.
+the only other option i can see is to duplicate the code in
+snd-rme9652_mem, which seems really dumb.
 
-> >2) why use 64 bit integer
-> >
-> >Of course if a 64 bit integer is the best way to represent/report the
-> >value all is fine, but in this case I doubt that you don't have
-> >available the 64th bit for the sign.
-> 
-> that seems likely to me also. i suspect we have somewhere between 32
-> and 64 bits of information.
-> 
-> i didn't say that i conclusively needed the sign bit - i was noting
-> that the current API doesn't make unsigned values possible.
+i also propose renaming the module to snd-hammerfall_mem to clearly
+indicate its generic status, and moving it into its own directory. it
+will be built if either CONFIG_SND_CARD_RME9652 and/or
+CONFIG_SND_CARD_HDSP are defined.
 
-Please specify that then, you know, Jaroslav is faster than the dust to
-insert new features, if you make him to believe they're needed ;-)
+let me know if this sounds like the right solution, or if you have a
+better one.
 
-Better to insert them when and *if* they're needed: maintanance is
-easier in this way.
+--p
 
--- 
-Abramo Bagnara                       mailto:abramo@alsa-project.org
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
-ALSA project               http://www.alsa-project.org
-It sounds good!
 
 _______________________________________________________________
 
