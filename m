@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000460]: Oops on loading the es18xx module
-Date: Fri,  3 Sep 2004 05:12:41 +0200 (CEST)
+Subject: [ALSA - driver 0000478]: front/rear microphone switch button wrongly labeld
+Date: Thu,  2 Sep 2004 18:12:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903031241.A8F7B2D0BD@server.perex-int.cz>
+Message-ID: <20040902161256.A413114026@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DBD11C1
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 05:12:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 007C8253
+	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 18:12:56 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id B38241EB7B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Sep 2004 18:12:56 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,56 +23,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000460
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000478
 ======================================================================
-Reported By:                twhitehead
+Reported By:                dorchain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     460
-Category:                   ISA - es18xx
+Bug ID:                     478
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian SID
-Kernel Version:             2.6.8.1 (from kernel.org)
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-21-2004 21:48 CEST
-Last Modified:              09-03-2004 05:12 CEST
+Date Submitted:             09-02-2004 18:12 CEST
+Last Modified:              09-02-2004 18:12 CEST
 ======================================================================
-Summary:                    Oops on loading the es18xx module
+Summary:                    front/rear microphone switch button wrongly labeld
 Description: 
-Loading the es18xx module immediately (and always) results in an "Unable to
-handle kernel paging request at virtual address 00000000000000b0" message.
- The usage count then sticks at one and applications are not able to open
-the device files.
+This happens on an asus a7n8x motherboard builtin soundcard, pci id
+10de:006b, 10de:006a.
+To activate the front panel mic in, you have to enable the "Mic as
+Center/LFE" button. (The "Mic select" button does nothing.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-01-2004 23:05 CEST 
-----------------------------------------------------------------------
-Tried 1.0.6a?  How about compiling with CONFIG_SND_DEBUG?
-
-----------------------------------------------------------------------
- twhitehead - 09-03-2004 05:12 CEST 
-----------------------------------------------------------------------
--That was 1.0.6a (view advanced -> product version -- was that the correct
-field for that?).
--Compiling with CONFIG_SND_DEBUG produces no additional output.
--The same applies for CONFIG_SND_DEBUG_MEMORY and CONFIG_SND_DEBUG_DETECT.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-04 21:48 twhitehead     New Bug                                      
-08-21-04 21:48 twhitehead     Distribution              => Debian SID      
-08-21-04 21:48 twhitehead     Kernel Version            => 2.6.8.1 (from kernel.org)
-08-21-04 21:51 twhitehead     Bug Monitored: twhitehead                    
-09-01-04 23:05 tiwai          Bugnote Added: 0001679                       
-09-03-04 05:12 twhitehead     Bugnote Added: 0001686                       
+09-02-04 18:12 dorchain       New Bug                                      
 ======================================================================
 
 
