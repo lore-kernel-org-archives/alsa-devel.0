@@ -1,13 +1,11 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
-Subject: another problems with signed arithmetic snd_pcm_mmap_playback_avail
-Date: Wed, 10 Jul 2002 15:21:12 +0200 (CEST)
+From: Martijn Sipkema <msipkema@sipkema-digital.com>
+Subject: audiowerk2
+Date: Wed, 10 Jul 2002 15:39:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0207101449480.20469-100000@mailserver.intern.bfad.de>
-References: <Pine.LNX.4.33.0207101418080.504-100000@pnote>
+Message-ID: <200207101339.PAA08764@www.bluedns.nl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0207101418080.504-100000@pnote>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,68 +14,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> You cannot use unsigned values, because we need to sum samples (it means: 
-> add positive and substract negative ones). If we are in positive range, we 
-> can only add samples, so the final sum result is wrong.
+> > I have an AudiowerksII from Emagic. I was wondering what steps I could
+> > take to get this supported by Alsa. I have some programming experience
+> > but have never worked on device drivers before. I have contacted
+> Emagic. 
+> > What Next? 
 
-Since the bug database at sourceforge seems to be completely forgotten I am
-reposting it here: 
-http://sourceforge.net/tracker/?func=detail&aid=576153&group_id=27464&atid=390601
+Have Emagic supplied you with the specifications? You can download the specs
+on the SAA7146 from Philips. The Audiowerk2 is very much like the Audiowerk8,
+with some differences on the I/O and it also doesn\\\\\\\'t have the variable
+sample
+rate.
 
-snd_pcm_mmap_*_avail may return negative value on some 
-occasions. CONSIDER: 
+There is an Audiowerk8 driver for Linux at 
+http://www.landamore.com/audiowerk.html . It is based on a GPL (example)
+driver
+from Emagic.
 
- buffer_size=80 (0x50), then boundary=0x50000000 
- let *appl.ptr= 0 and *hw.ptr=0x80000051 
+If you did not receive any specs from Emagic, ask again. The documentation
+I have does not say anything about the Audiowerk2 and allthough it is very
+similar to the Audiowerk8 it will be different in setting the sample rate
+and use of the I2S (different time slot list) interface.
 
-      avail = *pcm->hw.ptr + pcm->buffer_size - 
-          *pcm->appl.ptr; 
-      // 0x80000001 == - 0x7FFFFFFF 
-      if (avail < 0) 
-          avail += pcm->boundary; 
-      else if ((snd_pcm_uframes_t) avail >= pcm->boundary) 
-          avail -= pcm->boundary; 
-      // here avail == 0xD0000001 == -0x2FFFFFFF 
+> if you got a hardware spec, then take a look at the sources already 
+> existing.  there are likely drivers with the similar chip design. 
+> then copy it, and modify it. 
 
-This is not theoretical case. My application playing at 
-8 kHz crashes after 3 days (0x10000000/1000 seconds) 
+The SAA7146 has 2 input and 2 output DMA channels that can use non-contiguous
+(it has a MMU) buffers with \\\\\\\'any\\\\\\\' number of periods per buffer.
 
-Q: should the driver guarantee hw.ptr < boundary ???
+> also, it would be better to ask Emagic whether the spec can be put on 
+> a public place, so that other developers can be involved with the 
+> development.
 
-I am keeping *appl.ptr at 0 and using 
-snd_pcm_mmap_*_avail to give me the position to write 
-into mmaped buffer. I am mixing streams directly in the 
-buffer, and do not care if some streams do not come. 
+I doubt they will do this. I can put the documentation that I have on my
+website next week.
 
-These functions should simply return 
-((unsigned long)avail) % boundary 
-instead of that funny += -= cases. 
+> AFAIK the card is pretty much unique.... 
+> The main logic chip is a 
+> PHILIPS 
+> SAA 7146A HZ
+> CA1950.0
+> ktD9917V2
 
-And why there is no function which just simply returns 
-the value of 
-((unsigned long)*pcm->hw.ptr)% boundary 
-that is all what I need. 
+It is used in some video boards (, that probably don\\\\\\\'t use the audio
+part
+of the chip).
 
-I have to use at the moment: 
+I am (slowly) working on a Audiowerk8 driver and when it is usable I\\\\\\\'ll
+put
+that on my website also.
 
-static inline int snd_pcm_gethwpos(snd_pcm_t *pcm) { 
-    snd_pcm_sframes_t ret = snd_pcm_avail_update(pcm); 
-    ret += snd_pcm_commited; 
-    if(ret<0) { 
-    	ret = ((unsigned long) 
-       	ret)%buffer_size; 
-    } 
-    return snd_pcm_avail_update(pcm)%buffer_size; 
-} 
+--martijn
 
-Best regards,
---
-Tomasz Motylewski
 
+
+
+
+Powered by ASHosting
 
 
 -------------------------------------------------------
