@@ -2,7 +2,7 @@ From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: ld10k1 audigy patch
 Date: Tue, 22 Jun 2004 21:04:54 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1087952646.5142.7.camel@mindpipe>
+Message-ID: <1087952694.5142.9.camel@mindpipe>
 References: <200406220610.i5M6ABEg016715@www5.pobox.sk>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -17,7 +17,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
+To: pzad@pobox.sk
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
