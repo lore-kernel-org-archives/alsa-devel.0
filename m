@@ -1,15 +1,12 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: playback audio overwritten before it is sent to the card
-Date: Fri, 26 Jul 2002 08:28:23 -0700 (PDT)
+From: Friedrich.Ewaldt@gmx.de
+Subject: S/P-DIF output seems to work with Terratec XFire (=> CS4624 => cs46xx)
+Date: Fri, 26 Jul 2002 21:14:55 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020726152823.73135.qmail@web11507.mail.yahoo.com>
+Message-ID: <18347.1027710895@www15.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web11507.mail.yahoo.com (web11507.mail.yahoo.com [216.136.172.39])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id RAA27657
-	for <alsa-devel@alsa-project.org>; Fri, 26 Jul 2002 17:28:30 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,74 +15,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: gorm@cucumelo.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Benny,
 
-I think that I got around understanding snd_pcm_update_hw_ptr_interrupt()=
- now.
-The reason of my enquiries is that I get a very strange behaviour while p=
-laying
-back audio on a sound card: the playback_copy() function is called too ma=
-ny
-times before audio is actually played out, thus overwriting the buffer. F=
-or
-instance, with 2 periods of 160 bytes (buffer_size =3D 320):
+I've just tested your CS46xx driver (alsa-driver-0.9.0rc2-bs20020723.tar.gz)
+with my Terratec XFire soundcard (CS4624). 
+Everything that worked before (alsa09beta9) seems to be working with the new
+driver, too :^)
 
-playback_prepare() on sound dev0
-snd_pci2103_mode() on sound dev0,  bsize:320  psize:160  pnsam:160
-playback_prepare() on sound dev0
-playback_copy() on sound dev0,  pos:0 ->160
-    from d0865000 to c19e0000: =FF =FF =FF =FF =FF =FF =FF =FF
-card 0: Sending Audio_Data  fmt:1  cnt:160 (160 bytes)  last:0  pos:160
-tasklet: send 24 bytes of dataPayload (including 0 bytes of mmTags)
-tasklet: send 160 bytes of extPayload from c19e0000 to 800020a0
-    =FF =FF =FF =FF =FF =FF =FF =FF
-playback_pointer() on sound dev0,  last:160  pos:160  ptr:160
-playback_prepare() on sound dev0
-playback_copy() on sound dev0,  pos:160 ->320
-    from d0865000 to c19e00a0: g =FF =FF =FF =FF =FF =FF =FF
-playback_pointer() on sound dev0,  last:160  pos:320  ptr:160
-playback_copy() on sound dev0,  pos:0 ->160
-    from d0865000 to c19e0000: g g [ [ [ S S S
-playback_prepare() on sound dev0
-playback_copy() on sound dev0,  pos:160 ->320
-    from d0865000 to c19e00a0: g g [ [ [ S S S
-playback_pointer() on sound dev0,  last:160  pos:320  ptr:160
-playback_copy() on sound dev0,  pos:0 ->160
-    from d0865000 to c19e0000: =DB =E7 =E7 =E7 =FF =FF =FF g
-playback_prepare() on sound dev0
-playback_copy() on sound dev0,  pos:160 ->320
-    from d0865000 to c19e00a0: =DB =E7 =E7 =E7 =FF =FF =FF g
-playback_pointer() on sound dev0,  last:160  pos:320  ptr:160
-playback_copy() on sound dev0,  pos:0 ->160
-    from d0865000 to c19e0000: =D3 =DB =DB =DB =DB =DB =DB =DB
-playback_prepare() on sound dev0
-playback_copy() on sound dev0,  pos:160 ->320
-    from d0865000 to c19e00a0: =D3 =DB =DB =DB =DB =DB =DB =DB
-card 0: Sending Audio_Data  fmt:1  cnt:160 (160 bytes)  last:160  pos:320
-tasklet: send 24 bytes of dataPayload (including 0 bytes of mmTags)
-tasklet: send 160 bytes of extPayload from c19e00a0 to 80002220
-    =D3 =DB =DB =DB =DB =DB =DB =DB
-playback_pointer() on sound dev0,  last:320  pos:320  ptr:0
+SPDIF output feature:
+Unmuting/muting the IEC 958 item in alsamixer switches the optical output of
+my soundcard on/off.
+To be more precisely: I can see the LED going on/off but do not know any
+digital audio data is send through it. (The only digital input device I have is
+my soundcard and the digital input is only working under windows up to
+now...).
+I can switch on/off the SPDIF output correctly approx. 10-20 times. After
+that, muting/unmuting the IEC 958 item with alsamixer causes the PCM output
+(line out) to switch on/off (unmuting SPDIF mutes the PCM. Sometimes I get a
+high frequency tone instead of the PCM output until I mute the SPDIF output).
+I've tried restarting alsa ("alsa restart" as root), but that didn't help.
+After rebooting, everything seems to be working allright as before (I can
+switch on/off the SPDIF several times before the error occurs again).
 
+Another question: Do you have any idea what's the reason for something that
+seems to be an DC offset of the PCM (changing the volume of pcm or master
+makes some noise)?
+Restarting alsa solves this problem until next reboot. (The same problem
+existed with the beta9 driver version)
 
-This is puzzling, and the fact that I moved from ALSA rc1 to rc2 at the s=
-ame
-time that I was changing some aspects of the driver make it more difficul=
-t to
-trace where the error comes from. Can any of you make something out of th=
-at
-log?
+cheers,
+fritz_e
 
-Guilhem.
+-- 
+GMX - Die Kommunikationsplattform im Internet.
+http://www.gmx.net
 
-
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Health - Feel better, live better
-http://health.yahoo.com
 
 
 -------------------------------------------------------
