@@ -1,16 +1,15 @@
 From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [ALSA - driver 0000901]: The onboard audigyls	chip
- on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sun, 13 Feb 2005 11:53:18 +0000
-Message-ID: <420F3FAE.6010301@superbug.co.uk>
-References: <9d29558e3c3fabff090c6db74666f973@bugtrack.alsa-project.org> <1108255628.3273.20.camel@krustophenia.net>
+Subject: Re: [PATCH] Add support for Audigy2LS on MSI motherboard.
+Date: Sun, 13 Feb 2005 12:05:33 +0000
+Message-ID: <420F428D.50402@superbug.co.uk>
+References: <420EA346.5030100@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC457219
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 12:53:19 +0100 (MET)
-In-Reply-To: <1108255628.3273.20.camel@krustophenia.net>
+Content-Type: multipart/mixed;
+ boundary="------------040008070005050507090805"
+Received: from anchor-post-36.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C58D22C
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 13:05:34 +0100 (MET)
+In-Reply-To: <420EA346.5030100@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,42 +19,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@alsa-project.org
+To: James Courtier-Dutton <James@superbug.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Sun, 2005-02-13 at 01:21 +0100, bugtrack@alsa-project.org wrote:
+This is a multi-part message in MIME format.
+--------------040008070005050507090805
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+Updated patch, using different name.
+
+Fixes Bug #0901
+Signed off by: James Courtier-Dutton <James@superbug.demon.co.uk>
+
+James Courtier-Dutton wrote:
+> Fixes Bug #0901
+> Signed off by: James Courtier-Dutton <James@superbug.demon.co.uk>
 > 
->>*nods*, seems to be better:
->>
->>0 [CA0106         ]: CA0106 - CA0106
->>                     Live! by MSI [SB0438] at 0xde00 irq 233
-> 
-> 
-> Since it's been established that the CA0106 based devices have basically
-> nothing in common with the SBLive/emu10k1, can we please, please not
-> call it "Live!"?  It's obvious from Creative's marketing that they want
-> to pass those cheap "software soundcards" off as equivalent to an
-> SBLive/Audigy.  Please, let's not help them.
-> 
-> Lee
 > 
 
-I have made the comment line as exact copy of the Creative marketing as 
-possible, so that people can provide better feedback.
-E.g. I see [SB0438] and know exactly which card the user has and the 
-"Live! by MSI" tells the user exactly what they have, and it should 
-match the box the sound card came in for easy identification.
+--------------040008070005050507090805
+Content-Type: text/plain;
+ name="ca0106-msi-sblive24-fix.diff.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ca0106-msi-sblive24-fix.diff.txt"
 
-In this case, the CA0106 is part of the motherboard.
-I suppose I could replace "Live! by MSI" with "MSI motherboard XYZ"
+Index: alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ca0106/ca0106_main.c,v
+retrieving revision 1.3
+diff -u -r1.3 ca0106_main.c
+--- alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c	4 Jan 2005 13:55:46 -0000	1.3
++++ alsa-driver/alsa-kernel/pci/ca0106/ca0106_main.c	13 Feb 2005 11:45:39 -0000
+@@ -1,7 +1,7 @@
+ /*
+  *  Copyright (c) 2004 James Courtier-Dutton <James@superbug.demon.co.uk>
+  *  Driver CA0106 chips. e.g. Sound Blaster Audigy LS and Live 24bit
+- *  Version: 0.0.21
++ *  Version: 0.0.22
+  *
+  *  FEATURES currently supported:
+  *    Front, Rear and Center/LFE.
+@@ -75,6 +75,8 @@
+  *  0.0.21
+  *    Add 4 capture channels. (SPDIF only comes in on channel 0. )
+  *    Add SPDIF capture using optional digital I/O module for SB Live 24bit. (Analog capture does not yet work.)
++ *  0.0.22
++ *    Add support for MSI K8N Diamond Motherboard with onboard SB Live 24bit without AC97. From kiksen, bug #901
+  *
+  *  BUGS:
+  *    Some stability problems when unloading the snd-ca0106 kernel module.
+@@ -169,6 +171,7 @@
+ 	 { 0x10051102, "AudigyLS [SB0310b]"} , /* Unknown AudigyLS that also says SB0310 on it */
+ 	 { 0x10061102, "Live! 7.1 24bit [SB0410]"} , /* New Sound Blaster Live! 7.1 24bit. This does not have an AC97. 53SB041000001 */
+ 	 { 0x10071102, "Live! 7.1 24bit [SB0413]"} , /* New Dell Sound Blaster Live! 7.1 24bit. This does not have an AC97.  */
++	 { 0x10091462, "MSI K8N Diamond MB [SB0438]"}, /* MSI K8N Diamond Motherboard with onboard SB Live 24bit without AC97 */
+ 	 { 0, "AudigyLS [Unknown]" }
+ };
+ 
+@@ -1133,7 +1136,9 @@
+         snd_ca0106_ptr_write(chip, CAPTURE_SOURCE, 0x0, 0x333300e4); /* Select MIC, Line in, TAD in, AUX in */
+ 	chip->capture_source = 3; /* Set CAPTURE_SOURCE */
+ 
+-        if ((chip->serial == 0x10061102) || (chip->serial == 0x10071102) ) { /* The SB0410 and SB0413 use GPIO differently. */
++        if ((chip->serial == 0x10061102) || 
++	    (chip->serial == 0x10071102) ||
++	    (chip->serial == 0x10091462)) { /* The SB0410 and SB0413 use GPIO differently. */
+ 		/* FIXME: Still need to find out what the other GPIO bits do. E.g. For digital spdif out. */
+ 		outl(0x0, chip->port+GPIO);
+ 		//outl(0x00f0e000, chip->port+GPIO); /* Analog */
+@@ -1200,7 +1205,9 @@
+ 		snd_card_free(card);
+ 		return err;
+ 	}
+-        if ((chip->serial != 0x10061102) && (chip->serial != 0x10071102) ) { /* The SB0410 and SB0413 do not have an ac97 chip. */
++        if ((chip->serial != 0x10061102) && 
++	    (chip->serial != 0x10071102) && 
++	    (chip->serial != 0x10091462) ) { /* The SB0410 and SB0413 do not have an ac97 chip. */
+ 		if ((err = snd_ca0106_ac97(chip)) < 0) {
+ 			snd_card_free(card);
+ 			return err;
 
-I will ask the bug reporter for that information.
-
-James
-
-
+--------------040008070005050507090805--
 
 
 -------------------------------------------------------
