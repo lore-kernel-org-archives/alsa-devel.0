@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: support for PCI_DEVICE_ID_INTEL_ICH6_15
-Date: Sat, 20 Nov 2004 15:38:44 -0500
-Message-ID: <1100983124.18021.24.camel@krustophenia.net>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D583@cm-msg-02.cmedia.com.tw>
-	 <419FAAE7.5080208@ens-lyon.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
+Date: Sat, 20 Nov 2004 22:25:08 +0100
+Message-ID: <2db5accdb150ab9360806d33ca208d43@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <419FAAE7.5080208@ens-lyon.fr>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB180264
+	for <alsa-devel@alsa-project.org>; Sat, 20 Nov 2004 22:25:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,19 +18,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brice.Goglin@ens-lyon.org
-Cc: "\"Tien, C.L. - =?Shift-JIS?Q?=93c=8F=B3=E2X=22?=" <cltien@cmedia.com.tw>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2004-11-20 at 21:36 +0100, Brice Goglin wrote:
-> Thank you both.
-> I just had a look in the ALSA CVS, and found my PCI id in azx.c.
 
-Did you try alsaconf?  If this doesn;t work then it probably needs to be
-updated to grok your PCI id.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
+======================================================================
+Reported By:                olivier55
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   659
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               mandrake 10.1
+Kernel Version:             2.6.8.1-10
+======================================================================
+Date Submitted:             11-20-2004 22:25 CET
+Last Modified:              11-20-2004 22:25 CET
+======================================================================
+Summary:                    configure: error: Unsupported soundcard cs4236
+Description: 
+when i do : 
+./configure --with-cards=cs4236 --with-sequencer=yes
 
-Lee
+i've this error : 
+configure: error: Unsupported soundcard cs4236
 
+my soundcard is a Crystal Audio CS4237 (cirrus logic)
+i have a laptop dell inspiron 8200
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-20-04 22:25 olivier55      New Issue                                    
+11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
+11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
+======================================================================
 
 
 
