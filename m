@@ -1,13 +1,10 @@
-From: Jindrich Makovicka <makovick@kmlinux.fjfi.cvut.cz>
-Subject: Re: [PATCH] remove emu10k1 pops/clicks at the     beginning and end
- of playback (fwd)
-Date: Sat, 05 Mar 2005 12:46:54 +0100
-Message-ID: <d0c5th$a56$1@sea.gmane.org>
-References: <Pine.LNX.4.58.0503040932460.1739@pnote.perex-int.cz> <1109960235.6442.9.camel@mindpipe> <d0bqba$esi$1@sea.gmane.org> <4229925C.6020009@superbug.co.uk>
+From: Ruben Garcia <ruben@ugr.es>
+Subject: bt87x new card
+Date: Sat, 05 Mar 2005 14:00:46 +0100
+Message-ID: <4229AD7E.1050704@ugr.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-2; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4229925C.6020009@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,23 +17,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> If it is of interest, the PCI transfers happen in blocks of 64 BYTES.
-> So, if the playback pointer is in the middle of a block of 64 BYTES, and 
-> you wish to send new samples to the card, without missing any of them, 
-> you should start sending them at the next 64 bytes boundry.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-AFAIK, emupcm (at least the part I try to fix) operates in DMA busmaster 
-mode, so "sending" samples is out of its jurisdiction. It just sets up 
-looping over the DMA buffer and lets the card do the rest.
+I have a Leadtek Winfast 2000 / XP
+The bt87x driver does not detect it; when probing all cards, it told me
+to post this information:
 
-FX8010 & ASIO is a different story, but I really don't know much in this 
-matter.
+- -card id 0x107d:0x6606
 
-Regards,
--- 
-Jindrich Makovicka
+When recording, I get no sound from the TV and radio; I have yet to try
+the line in in the card; I'll post when I find the correct digital_rate
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.6 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
 
+iD8DBQFCKa19jJvgg3iy84QRAnCZAJ9Pxiw6CKFpDWMlJEelBWqIfsS1OQCfY6oF
+xjAKb2LnV9AAxUJINDEZCf0=
+=n6eG
+-----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
