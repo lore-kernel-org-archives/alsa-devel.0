@@ -1,15 +1,13 @@
-From: Paul Davis <pbd@op.net>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: asound.conf pcm.tee, anyone know how to use it
-Date: Sun, 12 May 2002 22:33:04 -0400
+Date: Mon, 13 May 2002 09:57:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205130232.EAA31315@alsa.alsa-project.org>
+Message-ID: <abnroh$o59$2@main.gmane.org>
 References: <20020513004239.56478.qmail@web14108.mail.yahoo.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA31315
-	for <alsa-devel@alsa-project.org>; Mon, 13 May 2002 04:32:09 +0200
-In-Reply-To: Your message of "Sun, 12 May 2002 17:42:39 PDT."
-             <20020513004239.56478.qmail@web14108.mail.yahoo.com>
+In-Reply-To: <20020513004239.56478.qmail@web14108.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,33 +17,33 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Dave Andruczyk <djandruczyk@yahoo.com>
-Cc: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+Cc: ALSA development <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->Please someone correct me if I am mistaken.  Can the pcm.tee option in alsa.co
->n
->(/usr/share/alsa/alsa.conf) be setup so that the output of a program that uses
->alsa natively be monitored by connecting to this "tee" ??
+On Sun, 12 May 2002, Dave Andruczyk wrote:
 
-well, the "tee" type allows redirection but its only sane to do it to
-a file inode that allows (almost) endless non-blocking read/write. there are
-almost no such devices in POSIX unless its a regular file. so you
-can't really use it for loopback. its intended for instances where you
-want the output to go to an audio interface *and* a file.
+> Please someone correct me if I am mistaken.  Can the pcm.tee option in alsa.con
+> (/usr/share/alsa/alsa.conf) be setup so that the output of a program that uses
+> alsa natively be monitored by connecting to this "tee" ??
+> 
+> My primary app (eXtace) needs this sort of functionality, The old ALSA 0.5.x
+> called it loopback, can this do the same?  Can anyone offer tips for someone
+> who really doesn't understand the asound.conf syntax to possibly get it to
+> work?
 
-there is a way to do "loopback" in ALSA these days, but "tee" is not
-it. someone will fill in the blanks (or better yet, write/complete a
-HOWTO). 
+aplay -D tee:'plughw:0',a.raw ~/audio/audio_10.wav
 
---p
+All samples should go to 'a.raw' file, but as Paul mentioned, if you use a 
+pipe, the audio process can be blocked (possible underruns).
 
-<obJack>
-of course, JACK can do loopback, multiplexing, app-2-app and many
-other forms of data routing without any effort on the part of your
-application ...
-</obJack>
+						Jaroslav
 
-:)
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 _______________________________________________________________
 
