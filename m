@@ -1,13 +1,14 @@
-From: Paolo Losi <p.losi@hypersonic.it>
-Subject: Re: Event Based time synchronization with ALSA
-Date: Tue, 18 Jan 2005 12:47:11 +0100
-Message-ID: <41ECF73F.7070404@hypersonic.it>
-References: <41EB9874.4060407@hypersonic.it> <41EBEB8F.9030009@gardena.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000802]: ymfpci seems to export wrong values for period_count/period_size/buffer_size
+Date: Tue, 18 Jan 2005 13:28:58 +0100
+Message-ID: <7d31cc31ccea20cef64e9eb31ee3dbd4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41EBEB8F.9030009@gardena.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D357225E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 13:28:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,54 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benno Senoner <sbenno@gardena.net>
-Cc: alsa-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Benno,
 
-	thank you very much for you response.
-	
-Benno Senoner wrote:
-  > The above routine has the advantage that you can use any kind of
-> periodsize (fragment size) in ALSA
-> and the send_rtp packet() always gets 20msec worth of data.
-> But you must ensure that the ALSA period size must be <20msec , 
-> otherwise too much jitter is introduced.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=802> 
+======================================================================
+Reported By:                slomosnail
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   802
+Category:                   PCI - ymfpci
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             01-10-2005 18:42 CET
+Last Modified:              01-18-2005 13:28 CET
+======================================================================
+Summary:                    ymfpci seems to export wrong values for
+period_count/period_size/buffer_size
+Description: 
+See here: http://bugzilla.gnome.org/show_bug.cgi?id=162024
+======================================================================
 
-I see your point.... but I would have two objections:
-- I don't want/can't use threads
-- I get too much jitter
+----------------------------------------------------------------------
+ tiwai - 01-11-05 16:48 
+----------------------------------------------------------------------
+Its periods_min=3.  Maybe this confuses gstreamer?
 
-If I make poll timeout every 20ms in the main loop,
-I'm sure I get 20ms worth of data
-so I can busy loop to reading (in blocking mode) all samples
-(If I would want to enforced that period is power of two, I could
-choose the max power of two number of samples that is divider of the 
-required number of samples)
-That would be 8000HZ sampling for 20ms => 160 sample per packet
-=> 5 32samples reads
+----------------------------------------------------------------------
+ LeRoutier - 01-18-05 13:28 
+----------------------------------------------------------------------
+gst-plugins CVS now uses those min/max probing functions :
+snd_pcm_hw_params_get_[rate/periods/period_size]_[min/max]
 
-But I'd rather tell ALSA: "please wake up poll as soon as you have
-160 samples available". Is that feaseble? Can I expect to be always
-woken up?
+to probe the hardware caps.
 
-How
+unfortunatly, it seems that they return garbage for this driver :
+period_count : MIN= 0 & MAX=204522253
+period_size  : MIN=22 & MAX=4294967295
+buffer_size  : MIN=10 & MAX=4294967294
 
-snd_pcm_sw_params_set_avail_min
-snd_pcm_sw_params_set_sleep_min
-snd_pcm_sw_params_set_start_threshold  	
+so, unless i misused them in gst-plugins probing code, values this driver
+return are bad. (ad period_count < 3 won't work with this hardware)
 
-relates to my problem?
+i used those on my own hardware, and i got (nforce2/i810_ac97)
+hw:0	 from 1 to 1024 (real device)
+plughw:0 from 0 to 4294967295 (software device)
 
-I tried to read the API doc but, since I've no experience with audio
-programming, I didn't get all the points...
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-10-05 18:42 slomosnail     New Issue                                    
+01-11-05 16:48 tiwai          Note Added: 0003156                          
+01-18-05 13:28 LeRoutier      Note Added: 0003248                          
+======================================================================
 
-Can anyone point to a good poll based read example?
 
-	thanks again benno!
-
-	Paolo
 
 
 -------------------------------------------------------
