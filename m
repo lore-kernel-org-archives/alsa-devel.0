@@ -1,13 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000353]: No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Date: Tue, 17 Aug 2004 06:11:22 +0200 (CEST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Audigy + AC97 Master Volume
+Date: Tue, 17 Aug 2004 09:47:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040817041122.D4C121102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200408170747.i7H7kwv9006626@www6.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
+Mime-Version: 1.0
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97784024-1804289383-1092728821=:6625"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 345FD25E
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 06:11:23 +0200 (MEST)
+Received: from www6.pobox.sk (www6.pobox.sk [212.5.216.16])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0491328B
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 09:05:00 +0200 (MEST)
+Received: from www6.pobox.sk (www6.pobox.sk [212.5.216.16])
+	by www6.pobox.sk (8.12.9-20030917/8.12.9) with SMTP id i7H7kwv9006626
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 09:47:01 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,69 +25,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--97784024-1804289383-1092728821=:6625
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000353
-======================================================================
-Reported By:                JSchmitt
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     353
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             06-30-2004 19:36 CEST
-Last Modified:              08-17-2004 06:11 CEST
-======================================================================
-Summary:                    No sound as startup of KDE 3.2.3, errormessage in snd_pcm_hw.c
-Description: 
-When I try to start X with KDE 3.2.3, I will get the following error
-mesages:
+Hi,
 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+This patch sets AC97 Master  volume to 0 (0 dB). Previous value was
+0x0202 (-3 dB) (this was my misstake).
 
-I will not get any sound.
-======================================================================
+Peter Zubaj
 
-----------------------------------------------------------------------
- perex - 07-15-2004 14:20 CEST 
-----------------------------------------------------------------------
-Soundcard?
 
-----------------------------------------------------------------------
- JSchmitt - 07-15-2004 17:57 CEST 
-----------------------------------------------------------------------
-I have the following soundcard:
+=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
+ a bezpecna prevadzka=0A=0A=0A
+--97784024-1804289383-1092728821=:6625
+Content-Type: APPLICATION/octet-stream; name="ac97_master_volume.diff"
+Content-Transfer-Encoding: BASE64
 
-Ensoniq 5880 AudioPCI (rev 2)
+LS0tIGVtdW1peGVyLmMub2xkCTIwMDQtMDctMDUgMTc6MDc6MjMuMDAwMDAw
+MDAwICswMjAwCisrKyBlbXVtaXhlci5jCTIwMDQtMDgtMTYgMjA6MzE6MzEu
+MDAwMDAwMDAwICswMjAwCkBAIC01MjcsNyArNTI3LDcgQEAKIAkJCXJldHVy
+biBlcnI7CiAJCWlmIChlbXUtPmF1ZGlneSkgewogCQkJLyogc2V0IG1hc3Rl
+ciB2b2x1bWUgdG8gMCBkQiAqLwotCQkJc25kX2FjOTdfd3JpdGUoZW11LT5h
+Yzk3LCBBQzk3X01BU1RFUiwgMHgwMjAyKTsKKwkJCXNuZF9hYzk3X3dyaXRl
+KGVtdS0+YWM5NywgQUM5N19NQVNURVIsIDB4MDAwMCk7CiAJCQkvKiBzZXQg
+Y2FwdHVyZSBzb3VyY2UgdG8gbWljICovCiAJCQlzbmRfYWM5N193cml0ZShl
+bXUtPmFjOTcsIEFDOTdfUkVDX1NFTCwgMHgwMDAwKTsKIAkJCWMgPSBhdWRp
+Z3lfcmVtb3ZlX2N0bHM7Cg==
 
-----------------------------------------------------------------------
- samy - 08-17-2004 06:11 CEST 
-----------------------------------------------------------------------
-Hi everybody, I have the same problem. My sound card is ATI (driver atiixp)
-- Acer Travelmate 2000 notebook. However, I do have sound in KDE 3.2, also
-sound center does the sound test succesfully ;-). But I suspect that other
-applications do not work well, for example Xine player...
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-06-30-04 19:36 JSchmitt       New Bug                                      
-07-06-04 18:33 JSchmitt       Bug Monitored: JSchmitt                      
-07-15-04 14:20 perex          Bugnote Added: 0001433                       
-07-15-04 17:57 JSchmitt       Bugnote Added: 0001436                       
-08-17-04 06:11 samy           Bugnote Added: 0001572                       
-======================================================================
+--97784024-1804289383-1092728821=:6625--
 
 
 -------------------------------------------------------
