@@ -1,12 +1,14 @@
-From: Chris Rankin <rankincj@yahoo.com>
-Subject: Re: Audigy2 Microphone capture: alsa-driver-1.0.9rc1 works, alsa-driver-1.0.9rc2 doesn't
-Date: Thu, 31 Mar 2005 00:01:27 +0100 (BST)
-Message-ID: <20050330230127.47575.qmail@web52903.mail.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001025]: kernel panic when trying to load module snd-au8830
+Date: Thu, 31 Mar 2005 11:34:51 +0200
+Message-ID: <e48bd521e635b0fe7258c581fe8d822d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: 6667
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64BAE254
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 11:34:51 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,39 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---- James Courtier-Dutton <James@superbug.co.uk> wrote:
-> Chris Rankin wrote:
-> > I've just compared the results with the alsa-driver-1.0.9rc1 and alsa=
--driver-1.0.9rc2 tarballs
-> > with my Audigy2 sound card.
-> >=20
-> > The summary: I can record via the microphone with rc1, but can't with=
- rc2.
-> >=20
-> > The command I'm using is:
-> >=20
-> > $ arecord -d10 -f cd -t wav > test.wav
-> >=20
->=20
-> What does cat /proc/asound/cards  output?
 
-0 [Audigy2        ]: Audigy2 - Sound Blaster Audigy2
-                     Sound Blaster Audigy2 (rev.4, serial:0x10031102) at =
-0xccc0, irq 21
-1 [ICH            ]: ICH4 - Intel 82801DB-ICH4
-                     Intel 82801DB-ICH4 with AD1981B at 0xffa20400, irq 1=
-7
-2 [WebCam         ]: USB-Audio - USB Device 0x46d:0x8b4
-                     USB Device 0x46d:0x8b4 at usb-0000:00:1d.1-1, full s=
-peed
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1025> 
+======================================================================
+Reported By:                Osiris
+Assigned To:                mjander
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1025
+Category:                   PCI - au88x0
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.11.6
+======================================================================
+Date Submitted:             03-30-2005 22:50 CEST
+Last Modified:              03-31-2005 11:34 CEST
+======================================================================
+Summary:                    kernel panic when trying to load module snd-au8830
+Description: 
+kernel panic occurs on boot when system tries to load kernel module for
+Aureal Vortex 2. The same thing happens when driver is compiled into
+kernel, not module
+
+======================================================================
+
+----------------------------------------------------------------------
+ mjander - 03-31-05 11:34 
+----------------------------------------------------------------------
+Hi,
+
+I need more info. What kind of computer are you using (32bits, 64bits,
+x86, Sparc, x64) ? What kind other peripherals, CPU, amount of RAM,
+mainboard, etc ?
+
+Could also please indicate what kind of messages you get when your
+computer gets that kernel panic ? I know you may need to write it on
+paper, but i neeed that info to further assist you. Please be accurate on
+that.
+
+Another thing: Are you 100% sure your computer hardware is OK ? Does it
+work flawless without the aureal soundcard ? Does the aureal soundcard
+work with kernel 2.6.10 for example (which i know should work OK) ? Either
+your soundcard or computer may be broken, please proof/discard that cases
+first.
+Thanks.
+
+Best Regards
+Manuel Jander
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-05 22:50 Osiris         New Issue                                    
+03-30-05 22:50 Osiris         Distribution              => Debian          
+03-30-05 22:50 Osiris         Kernel Version            => 2.6.11.6        
+03-31-05 11:34 mjander        Note Added: 0004278                          
+======================================================================
 
 
-Send instant messages to your online friends http://uk.messenger.yahoo.co=
-m=20
 
 
 -------------------------------------------------------
