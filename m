@@ -1,14 +1,13 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Compiling but not installing Alsa
-Date: 08 Dec 2002 09:35:55 -0800
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Bug in pcm_lib.c ?? (using Xmms)
+Date: Sun, 8 Dec 2002 19:13:01 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1039368955.1410.46.camel@Godzilla>
-References: <1039368265.1410.42.camel@Godzilla>
+Message-ID: <Pine.LNX.4.33.0212081905470.629-100000@pnote.perex-int.cz>
+References: <3DF33EF4.5060207@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1039368265.1410.42.camel@Godzilla>
+In-Reply-To: <3DF33EF4.5060207@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Benny Sjostrand <gorm@cucumelo.org>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   I did my first Alsa CVS download this morning just to take a look at
-the code. I am a PlanetCCRMA user, but wanted to know more about Alsa.
+On Sun, 8 Dec 2002, Benny Sjostrand wrote:
 
-   I have not yet found a README or INSTALL file on how to do a build.
-Are there any written instructions in the CVS tree?
+> Hi!
+> 
+> Just updated CVS tree and recompiled. Everything works OK execpt that I 
+> got this message in log
+> when using Xmms with ALSA-plugin and OSS-plugin. Using aplay the message 
+> dont apear.
+> 
+> Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
+> BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
+> Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
+> BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
+> Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:110: 
+> BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
+> Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
+> BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
+> Dec  8 13:40:16 cactus kernel: ALSA ../alsa-kernel/core/pcm_lib.c:176: 
+> BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x200
+> Dec  8 13:40:16 cactus kernel: ALSA 
+> ../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:226: 
+> cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB0
+> Dec  8 13:40:16 cactus kernel: ALSA 
+> ../../alsa-kernel/pci/cs46xx/dsp_spos_scb_lib.c:226: 
+> cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB0
+> 
+> With the ALSA-plugin I got the message only one time, with the 
+> OSS-plugin it apears about a 1000 of times.
+> (have not done any changes to the cs46xx driver yet,  except what's in 
+> current CVS ;) )
 
-   I looked at the Makefile, which I can't read well, and I get the
-feeling that the default operation would be to build AND install the
-code. As a RPM based user I would like to build the code, but not
-install it until the Planet updates the appropriate RPM.
+It's definitely a bug in CS46xx driver. I've changed the test for the ring 
+buffer pointer to be in range 0 .. buffer_size-1 . pointer equal to 
+buffer_size doesn't make any sense and it should be really zero.
 
-   Is this possible with the current CVS code?
+						Jaroslav
 
-Thanks,
-Mark
-
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
