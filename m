@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000378]: Audigy LS - Video playback stutters the first 5 seconds
-Date: Fri, 27 Aug 2004 20:22:39 +0200 (CEST)
+Subject: [ALSA - driver 0000176]: Master volume does not alters center, LFE and surround channels on Creative Audigy
+Date: Fri, 27 Aug 2004 20:23:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827182239.710422C008@server.perex-int.cz>
+Message-ID: <20040827182338.B89442C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D9301F7
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:22:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 065351F7
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:23:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,53 +20,87 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug requires your FEEDBACK.
+The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000378
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000176
 ======================================================================
-Reported By:                Luke
-Assigned To:                jcdutton
+Reported By:                adarovsky
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     378
+Bug ID:                     176
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Gentoo
-Kernel Version:             2.6.7
+Status:                     closed
+Distribution:               Debian testing/unstable
+Kernel Version:             Vanilla 2.6.2
 ======================================================================
-Date Submitted:             07-12-2004 10:41 CEST
-Last Modified:              08-27-2004 20:22 CEST
+Date Submitted:             04-01-2004 07:27 CEST
+Last Modified:              08-27-2004 20:23 CEST
 ======================================================================
-Summary:                    Audigy LS - Video playback stutters the first 5 seconds
+Summary:                    Master volume does not alters center, LFE and surround channels on Creative Audigy
 Description: 
-When playing a video (doesn't matter what kind) with mplayer, the whole
-playback stutters approximately the first 5 seconds when the alsa modules
-are loaded. No difference when compiling mplayer w or w/o oss/alsa
-support.
+Changing master volume affects only
+front channels. All other channels stay unaffected.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 08-27-2004 20:08 CEST 
+ pzad - 04-02-2004 11:30 CEST 
 ----------------------------------------------------------------------
-Can you please verify which version of the audigyls.c file you have, by
-doing:
- grep Version ./alsa-driver/pci/emu10k1/audigyls.c
+upgrade to 2.6.3 or more
+or to alsa 1.0.4rc1
+in 2.6.2 is alsa 0.9.7 <- this is too old
+current alsa version 1.0.4rc2
 
-It should say:
- *  Version: 0.0.14
+----------------------------------------------------------------------
+ sdfg - 04-05-2004 04:37 CEST 
+----------------------------------------------------------------------
+I'm experiencing the same problem with the rear channels on my SoundBlaster
+Live! Value using 2.6.4 release candidate 2 with a patchset based on -mm. 
+The rear channel is only controlled by the Wave Surround mixer and outputs
+even with the Master and PCM mixers muted.  A consequence of this is that
+a volume level of 1 in the Wave Surround mixer is still too loud for me to
+use my headphones with the rear output, so it's particularly irksome to
+me.  I'll be trying the vanilla 2.6.5 at some point soon to see if there's
+any improvement.
+
+----------------------------------------------------------------------
+ tiwai - 04-16-2004 16:06 CEST 
+----------------------------------------------------------------------
+sb live and audigy have different mixer controls.
+
+another problem of emu10k1 is that the sensitivity of volume
+values are different between mixer elements.  we'll provide
+the dB volume control in future, so that this problem will be
+solved.
+
+----------------------------------------------------------------------
+ jcdutton - 08-27-2004 20:23 CEST 
+----------------------------------------------------------------------
+resolved
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-04 10:41 Luke           New Bug                                      
-07-12-04 10:41 Luke           Distribution              => Gentoo          
-07-12-04 10:41 Luke           Kernel Version            => 2.6.7           
-08-27-04 20:08 jcdutton       Bugnote Added: 0001649                       
-08-27-04 20:21 jcdutton       Assigned To              pzad => jcdutton    
-08-27-04 20:22 jcdutton       Status                   assigned => feedback
+04-01-04 07:27 adarovsky      New Bug                                      
+04-01-04 07:27 adarovsky      Distribution              => Debian testing/unstable
+04-01-04 07:27 adarovsky      Kernel Version            => Vanilla 2.6.2   
+04-02-04 11:30 pzad           Bugnote Added: 0000732                       
+04-05-04 04:37 sdfg           Bugnote Added: 0000751                       
+04-16-04 16:05 tiwai          Description Updated                          
+04-16-04 16:05 tiwai          Category                 CORE - control => PCI - emu10k1
+04-16-04 16:06 tiwai          Bugnote Added: 0000840                       
+04-19-04 16:50 perex          Status                   new => confirmed    
+04-19-04 21:23 perex          duplicate_id             0 => 154            
+04-19-04 21:23 perex          Assigned To               => perex           
+04-19-04 21:23 perex          Resolution               open => duplicate   
+04-19-04 21:23 perex          Status                   confirmed => resolved
+07-29-04 21:50 blaster999     Bug Monitored: blaster999                    
+08-27-04 20:23 jcdutton       Bugnote Added: 0001657                       
+08-27-04 20:23 jcdutton       Status                   resolved => closed  
 ======================================================================
 
 
