@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: snd_pcm_mmap_begin returns 0 but sets areas to NULL
-Date: Wed, 23 Jul 2003 08:57:19 +0200 (CEST)
+Date: Wed, 23 Jul 2003 09:00:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307230853020.6261-100000@pnote.perex-int.cz>
-References: <20030722135158.GA12258@alinoe.com>
+Message-ID: <Pine.LNX.4.44.0307230859450.6261-100000@pnote.perex-int.cz>
+References: <20030722143834.GA28051@alinoe.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030722135158.GA12258@alinoe.com>
+In-Reply-To: <20030722143834.GA28051@alinoe.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,22 +22,10 @@ List-Id: alsa-devel@alsa-project.org
 
 On Tue, 22 Jul 2003, Carlo Wood wrote:
 
-> Is it ever allowed that:
-> 
->     snd_pcm_channel_area_t const* areas;
->     snd_pcm_uframes_t offset;
->     snd_pcm_uframes_t size = period_size;
->     if (size > 0)
->     {
->       snd_pcm_uframes_t frames = size;
->       int err = snd_pcm_mmap_begin(handle, &areas, &offset, &frames);
-> 
-> returns err == 0, but results in areas == NULL ?
-> 
-> Or is that a bug in alsa?
+>   access = SND_PCM_ACCESS_RW_INTERLEAVED,
 
-Perhaps, you're in a bad state. Did you call hw_params() with a MMAP
-access request before?
+Again, access is your problem. You requested read/write access. You have 
+to request mmap interleaved one (SND_PCM_ACCESS_MMAP_INTERLEAVED).
 
 						Jaroslav
 
