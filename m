@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Tue, 7 Dec 2004 15:42:47 +0100
-Message-ID: <dfcd6430c9c90536c91bdba1a5c429d8@bugtrack.alsa-project.org>
+Date: Tue, 7 Dec 2004 15:38:42 +0100
+Message-ID: <9455ce5d46f11b706889e6fa902500a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B514383
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 15:42:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA9B5383
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 15:38:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
 ======================================================================
 Reported By:                henkie_
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   617
@@ -35,14 +35,12 @@ Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               SuSE 9.0
 Kernel Version:             2.4.26
-Resolution:                 fixed
-Fixed in Version:           
 ======================================================================
 Date Submitted:             10-30-2004 18:20 CEST
-Last Modified:              12-07-2004 15:42 CET
+Last Modified:              12-07-2004 15:38 CET
 ======================================================================
 Summary:                    Front / rear out of sync
 Description: 
@@ -66,14 +64,16 @@ pcm.ch40dup {
 ======================================================================
 
 ----------------------------------------------------------------------
+ tiwai - 12-06-04 20:53 
+----------------------------------------------------------------------
+Could you try another one (config2.diff)?
+
+The patches are already merged into ALSA CVS, BTW.
+
+----------------------------------------------------------------------
  darkbrain - 12-07-04 15:38 
 ----------------------------------------------------------------------
 ok perfect!
-
-----------------------------------------------------------------------
- tiwai - 12-07-04 15:42 
-----------------------------------------------------------------------
-Ok closing now.  Thanks for confirmation.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -100,10 +100,6 @@ Date Modified  Username       Field                    Change
 12-06-04 20:54 tiwai          File Added: cs46xx-front-dup-config2.diff         
           
 12-07-04 15:38 darkbrain      Note Added: 0002748                          
-12-07-04 15:42 tiwai          Status                   new => resolved     
-12-07-04 15:42 tiwai          Resolution               open => fixed       
-12-07-04 15:42 tiwai          Assigned To               => tiwai           
-12-07-04 15:42 tiwai          Note Added: 0002749                          
 ======================================================================
 
 
