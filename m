@@ -1,13 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_async_add_pcm_handler() and SND_PCM_ACCESS_MMAP_INTERLEAVED
-Date: Thu, 15 May 2003 11:11:07 +0200 (CEST)
+Subject: bug tracking?
+Date: Thu, 15 May 2003 11:21:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305151108590.9877-100000@pnote.perex-int.cz>
-References: <5.1.0.14.2.20030515095924.03421e38@pop.gmx.net>
+Message-ID: <Pine.LNX.4.44.0305151112200.9877-100000@pnote.perex-int.cz>
+References: <s5h3cjgfuwn.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <5.1.0.14.2.20030515095924.03421e38@pop.gmx.net>
+Received: from gate.perex.cz (gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA17926
+	for <alsa-devel@alsa-project.org>; Thu, 15 May 2003 11:30:31 +0200
+In-Reply-To: <s5h3cjgfuwn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,24 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Vollmer <remllov_@gmx.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Patrick Shirkey <pshirkey@boosthardware.com>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 15 May 2003, Peter Vollmer wrote:
+On Thu, 15 May 2003, Takashi Iwai wrote:
 
-> Hi all,
+> > Maybe that should be my next addition to the ALSA website. I get a lot 
+> > of bug reports through the docs page and it makes sense to reuse that 
+> > code for a bug reporting system.
+> > 
+> > Maybe it will have more psychological impact if it is hosted by ALSA 
+> > instead of sf.net (which seems to always have something wrong with it 
+> > anyway).
 > 
-> I am trying to use the mmap access method together with an async_handler 
-> function (ice1712 in multitrack mode),
-> but in a setting where multiple periods fit into a buffer, I get back the 
-> same address pointer to the accessible data in  snd_pcm_mmap_begin(...) in 
-> areas[x].addr multiple times (one for every period in the buffer, I guess) 
-> in the signal handler. I was following the pcm.c sinus generator demo more 
-> or less, but the combination of mmap/async_handler is not used there.
+> it would be really appreciated.
+> i personally dislike the current sf's bug-reporting system.
 
-I've added async_direct method to show you the right code. The updated 
-pcm.c is in CVS.
+The question is, if we have power to maintain such large bug reports.
+>From my experience, it works only few weeks until the system has many 
+unresolved reports. Then the database gets filled and only some bugs are 
+solved when our time permits. Also, when the database is large, it is
+a bit problematic to mark solved reports (especially old ones).
+
+I also think that we should definitely create a document what users should 
+describe to avoid many communication handshakes with the bug reporter.
 
 						Jaroslav
 
