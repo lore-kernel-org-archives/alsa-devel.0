@@ -1,17 +1,13 @@
-From: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Mon, 27 Sep 2004 00:21:57 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
+Date: Mon, 27 Sep 2004 00:33:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41574105.8090804@pg.gda.pl>
-References: <200409131305.i8DD5udm014503@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040926223329.7011D1200A@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91C932D6
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 00:22:48 +0200 (MEST)
-In-Reply-To: <200409131305.i8DD5udm014503@localhost.localdomain>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1136229
+	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 00:33:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,72 +16,127 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[2004-09-13 15:05] Paul Davis:
-> ...What is lost is the ability to
-> pretend that the h/w buffer is just a single contiguous chunk of
-> physical RAM that is always accessible to the application. As Jaroslav
-> and I have explained, you don't need to use the ALSA API "extras" for
-> mmap mode. The cost of not doing so is that you lose the ability to
-> get xrun detection, just as in OSS.
-First of all in OSS GETOPTR call returns hw_ptr and number of bytes 
-processed by device so xrun detection is not a problem! The number of 
-bytes value wraps after about an hour but this is not the case.
-Comparing previous values with the obtained one xrun detection is easy.
-You can even use a GETODELAY call if you don't want to calculate it.
-So your arguments about OSS are just not true.
 
->>>will not be portable to non-hardware devices or hardware that doesn't
->>>implement its hardware buffer in the way that this design
->>>assumes. why? precisely because there really *isn't* a single
->>>contiguous hardware buffer that works in the way that this programming
->>>model assumes.
-OK but we could simply emulate this in a kernel driver with continous 
-memory buffer and copying from it to real hw device period by period.
-We could modify data which is not sent to the hw device. Latency could 
-be as small as 1-1.5 of period size. With small enough periods it could 
-be a quite nice solution. It should be in kernel to obtain proper 
-scheduling and memory locking. An app using this approach may be a 
-normal app because it could modify data with a few samples after current
-playing position (minimal delay is one period) and write big chunks of data.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000510
+======================================================================
+Reported By:                ungod
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     510
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Debian GNU/Linux
+Kernel Version:             3.1
+======================================================================
+Date Submitted:             09-21-2004 09:41 CEST
+Last Modified:              09-27-2004 00:33 CEST
+======================================================================
+Summary:                    Utilization of AC'97 on Aureon 7.1 Space
+Description: 
+As of now, the Aureon driver lacks the capability to playback both analog
+input channels and the PCM channel, and the input channels have no
+seperate volume control, although the AC'97 chip on the board, STAC9744,
+apparently has the capability.
 
-Current in lib mixing means that all this kind of apps needs root 
-priviledges or specially patched kernel and capabilities to obtain RT 
-scheduling and memory locking - they should be specially written.
-So this is rather a disadvantage and probaly a security risk to promote 
-this kind of solution as a better then OSS future design.
-Also old or proprietary closed source apps will never work correctly 
-using this approach under big system load or when switching big apps
-- rescheduling and swapping effects will broke sound stream processing 
-and will make cracling and noises.
+I tried some commercial OSS drivers, and they worked properly, so I know
+that it is possible.
+======================================================================
 
-> there are audio interfaces (the RME/Marion PAD series come to mind, as
-> well as any non-busmaster devices) that will not let even the kernel
-> access the full range of the buffer at arbitrary times. your design
-> model can't handle these.
-As I wrote before it could be simulated by sending small periods of
-data to the real device. If the device could use continous DMA buffer 
-then use it and if not then emulate this behaviour.
+----------------------------------------------------------------------
+ tiwai - 09-21-2004 11:54 CEST 
+----------------------------------------------------------------------
+Unfortunately, no information from terratec at all about this.
 
-> if you decide you don't want this "overwrite data previously written"
-> functionality, then there is nothing in the existing ALSA API that
-> will cause you any problems. if you believe that the kernel will never
-> screw up scheduling, ignore snd_pcm_avail() and go with your
-> assumptions. if you don't care about xrun detection, ignore
-> snd_pcm_forward() and it should work fine.
-I need this functionality and xrun detection too. This is a multiuser, 
-multitasking system so I can't assume that schedulling is always
-on time. Generally nobody can assume this.
+----------------------------------------------------------------------
+ ungod - 09-23-2004 20:47 CEST 
+----------------------------------------------------------------------
+Which is sad.
 
-Regards
+Anyway, by looking at the GPIO pins after changing the volume of one of
+the analog inputs with the commercial drivers, the value which is to be
+stored in the AC'97 chip is stored on GPIO[7:0]. Not much help, but it
+gives an idear of how the XILINX chip is to be used. You probably define
+the register address on the same pins, toggle one of the other pins, and
+the puts the data on the pins and toggle another pin again.
 
--- 
-Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
-System  & Network Administration Group           ~~~~~~
-Computer Center,  Gdansk University of Technology, Poland
-PGP public key:   finger atlka@sunrise.pg.gda.pl
+I don't know. Purely speculations...
+
+edited on: 09-23-04 20:47
+
+----------------------------------------------------------------------
+ ungod - 09-27-2004 00:33 CEST 
+----------------------------------------------------------------------
+Wow. A whole week of testing and working and I have finally managed to get
+the AC'97 to work.
+Appararently I was not entirely wrong abount the utilization of the XILINX
+chip.
+
+Related GPIO pins:
+
+GPIO[7:0]  Data bits
+GPIO8      Data high toggle bit
+GPIO9      Data low toggle bit
+GPIO10     Address toggle bit
+GPIO11     Commit toggle bit
+GPIO16     STAC9744 RESET pin
+
+Initialization is done by setting GPIO[7:0] to zero and toggling the RESET
+pin low and then high.
+
+Writing to the chip is done as follows:
+Address is latched on GPIO[7:0]
+Address toggle bit (GPIO10) is toggled high and low
+Low-order data is latched on GPIO[7:0]
+Data low toggle bit (GPIO9) is toggled high and low
+High-order data is latch on GPIO[7:0]
+Data high toggle bit (GPIO8) is toggled high and low
+Commit bit (GPIO11) is toggled high and low.
+
+Unfortunately this interface leaves no option for reading from the AC'97
+chip (as far as I see, although the GPIO13 is also connected to the XILINX
+chip and may have some saying) so we must maintain a local (assumed) copy
+of the EEPROM - just as with the WM8770 chip.
+
+Anyway, since the PCM features is not used on the Aureon card, the only
+logical mixers to include would be Line/CD/Aux/Mic/Master and the Mic
+Boost. Maybe also the 3D settings.
+
+As to hearing both ADC and analogue input channels, this is actually
+performed by the WM8770. I noticed that it is capable of mixing the
+multiplexed analogue input channel and an AYX channel with the ADC
+channel, but the ALSA mixer did not have any option for this, so I added
+it, and noticed that the AC'97 chip was actually connected to the AUX1
+channel. But since the quality of the bypassed analogue channels was
+really bad compared to the AUX, I later removed that and simply hardcoded
+the front channel to mix the ADC signal and the AUX1 line.
+
+I've had problems where it seems like the WM8770 stalls or something and
+all sound disappear, however this is a thing I've noticed with both the
+(unmodified) ALSA drivers and 4Front's commercial OSS drivers, and also
+before I ever began playing with the sound card registers, so this may be
+a hardware problem only related to my card.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-21-04 09:41 ungod          New Bug                                      
+09-21-04 09:41 ungod          Distribution              => Debian GNU/Linux
+09-21-04 09:41 ungod          Kernel Version            => 3.1             
+09-21-04 11:54 tiwai          Bugnote Added: 0001796                       
+09-23-04 20:45 ungod          Bugnote Added: 0001848                       
+09-23-04 20:47 ungod          Bugnote Edited: 0001848                      
+09-23-04 20:47 ungod          Bugnote Edited: 0001848                      
+09-27-04 00:33 ungod          Bugnote Added: 0001929                       
+======================================================================
 
 
 -------------------------------------------------------
