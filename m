@@ -1,13 +1,14 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: hdsp9652+alsamixer -> kernel panic
-Date: Thu, 29 May 2003 18:57:23 +0300 (EEST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Single process freeze when opening capture device
+Date: Thu, 29 May 2003 14:49:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305291842040.856-100000@ecabase.localdomain>
-References: <E19LPK5-0006xv-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <3ED60FD4.3010801@superbug.demon.co.uk>
+References: <Pine.LNX.4.44.0305290907470.28435-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19LPK5-0006xv-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0305290907470.28435-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Arthur Peters <amp@singingwizard.org>, Alsa dev List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 29 May 2003, Paul Davis wrote:
+Jaroslav Kysela wrote:
+> 
+> 
+> It is limit of current alsa-lib configuration. We cannot distinct playback
+> and capture. But I am not sure, if returning an error helps you
+> (surround40 configuration is NOT valid for emu10k1). I suggest to fix jack
+> to allow different names for playback and capture with different count of
+> channels.
+> 
+> 						Jaroslav
+> 
+Surround40 playback seems to work on my SB Live emu10k1.
+Some SB Live cards have 2 stereo audio inputs, so in theory they should 
+be able to do Surround40 capture as well.
+Can the SB Live do 4 channel full duplex, or is there another factor 
+involved.
 
->>c0106298 __up_wakeup
->>c02bfff4 csum_partial_copy_generic_Rsmp_e8aa9a96
-> ah. are you running on an SMP system with current ALSA CVS? if so, its
-> broken within the "core" of ALSA. you will need to back up to April
-> 27th to get a working SMP version. nobody has a fix for this at this
-> time, despite the fact that it makes ALSA unusable on an SMP system.
-
-Hmm, anyway to easily and reliably reproduce the bug?
-
-I'm running the latest ALSA and JACK CVS (updated both today) and works
-fine on my SMP box (dual-celeron). And so do my other ALSA apps. And this
-is not just with one card, I've tested both with es1371 and ice1712
-(Delta44) and no panics yet.
-
--- 
- http://www.eca.cx
- Audio software for Linux!
+Cheers
+James
 
 
 
