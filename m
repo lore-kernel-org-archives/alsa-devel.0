@@ -1,13 +1,14 @@
-From: "Simon Bucher" <DocBexter@gmx.net>
-Subject: Terratec Aureon Sky 5.1
-Date: Mon, 15 Mar 2004 13:44:21 +0100 (MET)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: ALSA Test suite
+Date: Mon, 15 Mar 2004 15:45:40 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <26659.1079354661@www39.gmx.net>
-References: <E1B2esn-0005cY-Sm@sc8-sf-list2.sourceforge.net>
+Message-ID: <4055CFA4.4040600@superbug.demon.co.uk>
+References: <20040314095115.73922.qmail@web61103.mail.yahoo.com> <s5hptbeiecx.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hptbeiecx.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,28 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Takashi Iwai wrote:
+> 
+> 
+> there are test codes in alsa-lib/tests directory.
+> also James Courtier-Dutton wrote some neat test programs (i'd like to
+> include them too).
+> 
+> Takashi
+> 
 
-Ive been watching for news on this card (Terratec Aureon Sky 5.1) for some
-time now so i may get an answer before questioning...
+Although you have not asked me directly, feel free to include my test 
+programs. I assume you are talking about the ones from: -
+http://www.superbug.demon.co.uk/speaker-test/
+Just make sure that my name,copyright message appears at the top of each 
+source code file you use.
 
-so here is my question now:
+Please tell me as soon as they appear in the alsa cvs, because I need to 
+remove them from my site due to bandwidth limits.
 
-Does spdif input work on that card ? ( working with aplay and arecord spdif
-output works fine but i never recorded anything...)
-So do i have to wait for a driver update or should I work on it to get it
-runnung ?
-
-cheerz
-Simon Bucher
-
--- 
-+++ NEU bei GMX und erstmalig in Deutschland: TÜV-geprüfter Virenschutz +++
-100% Virenerkennung nach Wildlist. Infos: http://www.gmx.net/virenschutz
-
+Cheers
+James
 
 
 -------------------------------------------------------
