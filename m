@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000007]: alsa-kernel/pci does NOT contain bt87x driver
-Date: Wed, 28 Jan 2004 11:34:40 +0100 (CET)
+Subject: [ALSA - driver 0000006]: Machine locks up hard on rmmod snd_es1968
+Date: Wed, 28 Jan 2004 11:37:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040128103440.B42D030001@server.perex-int.cz>
+Message-ID: <20040128103758.7A31A30003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA07970
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 11:34:42 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA08085
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 11:38:00 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,72 +20,39 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+The following bug has been ASSIGNED.
 ======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000007
+http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000006
 ======================================================================
-Reporter:                   yahoo
+Reporter:                   Hai
 Handler:                    tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     7
-Category:                   OTHERS
+Bug ID:                     6
+Category:                   PCI - es1968
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not a bug
+Status:                     assigned
+Distribution:               SuSE 9.0
+Kernel Version:             2.6.1-4-default
 ======================================================================
-Date Submitted:             01-28-2004 05:01 CET
-Last Modified:              01-28-2004 11:34 CET
+Date Submitted:             01-27-2004 21:49 CET
+Last Modified:              01-28-2004 11:37 CET
 ======================================================================
-Summary:                    alsa-kernel/pci does NOT contain bt87x driver
+Summary:                    Machine locks up hard on rmmod snd_es1968
 Description: 
-alsa-kernel/pci does NOT contain bt87x driver it is however 
-present in alsa-driver/pci.
+When my init scripts rmmod snd_es1968 on shutdown, the machine locks up
+completely. SysRq-[TPUS] all do not work, only SysRq-[OB] work. This means
+I get an hang on every shutdown/reboot
 ======================================================================
-
-----------------------------------------------------------------------
- alexzapatka - 01-28-2004 06:46 CET 
-----------------------------------------------------------------------
-got tired of having to compile the kernel then recompile ALSA just for this
-driver, so here is a quick patch to add it. one file contains the latest
-ALSA bk patch from the ftp.alsa-project.org site
-(alsa-bk-2004-01-25-plus-bt87x-audio.patch.bz2), the other is just the
-patch that assumes you have ALREADY installed the latest bkpatch from the
-site (alsa-bt87x-audio.patch.bz2), it probably wont work unless you have
-2.6's alsa upgraded to 1.0.1 atleast, but who knows?
-
-----------------------------------------------------------------------
- alexzapatka - 01-28-2004 06:52 CET 
-----------------------------------------------------------------------
-sorry... get the ones marked "new"... typo in the last ones...
-
-----------------------------------------------------------------------
- tiwai - 01-28-2004 11:34 CET 
-----------------------------------------------------------------------
-it's intentional.
-
-a new driver always goes to alsa-driver tree first for tests.
-it will be moved to alsa-kernel tree, eventually submitted to
-2.6 kernel.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-04 05:01 yahoo          New Bug                                      
-01-28-04 06:43 alexzapatka    File Added: alsa-bk-2004-01-25-plus-bt87x-audio.patch.bz2                    
-01-28-04 06:43 alexzapatka    File Added: alsa-bt87x-audio.patch.bz2                    
-01-28-04 06:46 alexzapatka    Bugnote Added: 0000011                       
-01-28-04 06:52 alexzapatka    Bugnote Added: 0000012                       
-01-28-04 06:55 alexzapatka    File Added: alsa-bk-2004-01-25-plus-bt87x-audio.patch.new.bz2                    
-01-28-04 06:57 alexzapatka    File Added: alsa-bk-2004-01-25-plus-bt87x-audio.patch.new.bz2                    
-01-28-04 11:34 tiwai          Bugnote Added: 0000014                       
-01-28-04 11:34 tiwai          Assigned To               => tiwai           
-01-28-04 11:34 tiwai          Resolution               open => not a bug   
-01-28-04 11:34 tiwai          Status                   new => resolved     
+01-27-04 21:49 Hai            New Bug                                      
+01-28-04 11:37 tiwai          Assigned To               => tiwai           
+01-28-04 11:37 tiwai          Status                   new => assigned     
 ======================================================================
 
 
