@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Thu, 24 Feb 2005 16:37:57 +0100
-Message-ID: <3c27719ab8f777eda4fab6286bd70155@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000928]: Something missing in the Soundcard-Matrix?
+Date: Thu, 24 Feb 2005 20:48:42 +0100
+Message-ID: <920279ca76e391c81d7d6e5207e262e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D2CE214
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 16:37:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75806221
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 20:48:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,82 +21,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=813> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=928> 
 ======================================================================
-Reported By:                ilikejam
-Assigned To:                Clemens Ladisch
+Reported By:                gflash
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   813
-Category:                   USB - usb-audio
+Project:                    ALSA - WWW server
+Issue ID:                   928
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   text
 Priority:                   normal
-Status:                     resolved
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10 (ALSA compiled in)
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              02-24-2005 16:37 CET
+Date Submitted:             02-21-2005 05:43 CET
+Last Modified:              02-24-2005 20:48 CET
 ======================================================================
-Summary:                    Terratec USB surround broken
+Summary:                    Something missing in the Soundcard-Matrix?
 Description: 
-I'm using a Terratec USB 5.1 card. The 6 channels test correctly using
-'./speaker-test -c6', but any attempt to use 5.1 channel in Xine, or using
-'aplay -Dsurround51 file.wav' results in errors e.g.
------
-ALSA lib pcm.c:1851:(snd_pcm_open_conf) Invalid type for PCM surround51
-definition (id: surround51, value: cards.pcm.surround51)
-aplay: main:508: audio open error: Invalid argument
------
-Xine similarly fails saying the sound card is in use. Xine works fine for
-stereo audio, even when configured to use 5.1 channel sound.
+In my old Box i had a Sounblaster Live, or a Soundblaster Live Value... I'm
+not sure because the card was called by the vendor "Soundblaster Live
+Player! 1024" but a card with this name doesn't seem to exist.
+It ran with the emu10k1 driver, and it had no problems playing sounds from
+many applications at the same time. I could use Teamspeak with games, and
+hear mp3s at the same time, and for my understanding this is
+hardwaremixing.
+In the Soundcard Matrix is said, that the Soubblaster Lives doesn't
+support hardwaremixing. Is this a mistake? Or have i misunderstood
+"hardwaremixing"?
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-24-05 08:55 
+ gflash - 02-24-05 20:48 
 ----------------------------------------------------------------------
-The resampling is done by ALSA (if the device could do it, it would be
-indicated in the stream0 file).  Using ALSA device name "default" or
-"plughw" enables the "plug" plugin which does automatic resampling and
-sample format conversions.
-
-To prevent resampling, use "hw" which goes directly to the hardware.
-
-However, you won't be able to send 44.1 kHz in this way because with
-SPDIF, it's always the sending device that determines the speed.
-
-----------------------------------------------------------------------
- ilikejam - 02-24-05 16:33 
-----------------------------------------------------------------------
-Yup. Right again. (Chipmunks style music with -D hw)
-
-Thanks a lot for your help. I think I'll look for a more capable sound
-card...
-
-Dave
+So what? This can't be so hard to answer!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 19:41 ilikejam       New Issue                                    
-01-12-05 19:41 ilikejam       Distribution              => Fedora Core 3   
-01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
-in)
-01-26-05 09:02 ilikejam       Note Added: 0003413                          
-01-26-05 10:40 Clemens LadischNote Added: 0003414                          
-01-26-05 11:11 ilikejam       Note Added: 0003415                          
-01-31-05 20:52 ilikejam       Note Added: 0003458                          
-02-07-05 10:40 Clemens LadischNote Added: 0003528                          
-02-23-05 22:29 ilikejam       Note Added: 0003716                          
-02-24-05 08:55 Clemens LadischNote Added: 0003719                          
-02-24-05 16:33 ilikejam       Note Added: 0003722                          
-02-24-05 16:37 Clemens LadischStatus                   assigned => resolved
-02-24-05 16:37 Clemens LadischResolution               open => not an issue
+02-21-05 05:43 gflash         New Issue                                    
+02-22-05 09:52 perex          Project                  ALSA - driver => ALSA -
+WWW server
+02-24-05 20:48 gflash         Note Added: 0003723                          
 ======================================================================
 
 
