@@ -1,10 +1,13 @@
-From: <danny@mailmij.org>
-Subject: period/buffer bug on pmac ?
-Date: Thu, 11 Nov 2004 22:17:07 +0100 (CET)
-Message-ID: <Pine.LNX.4.33.0411112023320.16903-100000@luna.ellen.dexterslabs.com>
+From: K.Fetscher@t-online.de (Klaus Fetscher)
+Subject: Re: Cross Compile Problems
+Date: Thu, 11 Nov 2004 23:25:37 +0100
+Message-ID: <4193E6E1.9050106@fetron.de>
+References: <418FEF0E.8080304@fetron.de>	<s5h3bzjs9hr.wl@alsa2.suse.de>	<4191C315.7050206@fetron.de> <s5h654eav4a.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h654eav4a.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,39 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai schrieb:
 
-In the process of fixing up the alsa output plugin of bmp a bit I've come 
-upon a weird problem. The mp3s I was playing played to fast, with a 
-audible click each few millisecond. This seemed to only happen when the 
-period size was not a power of 2 (the output plugin used to set 
-period_time). I've now calculated the period_size myself from the rate and 
-set it to the nearest power of 2. Which seems to work fine, except in the 
-case that the mp3 i play is not your regular 441000 kbs encoded, but for 
-instance 32000. 
+>Hmm, I'm not clear why prefix must be specified in your case.
+>
+>If you set up the cross compiling environment, usually prefix isn't
+>needed but you just need to specify the proper compiler, etc.
+>And, installing to other root system will be done by adding
+>"DESTDIR=xxx" at make install.
+>
+>
+>  
+>
+You are right, I have installed the libraries wrong and now I have 
+corrected it. Anyway, I get always the same error result.
 
-No error occurs on setting the rate (and it gets set at 
-32000, although I doubt that the card, a pmac snapper, can do this) It 
-seems that period size and buffersize get downscaled with a factor 
-441000/32000. And the weird screwed up sound occurs again with these mp3s. 
-The strangest thing is that although snd_pcm_params_get_* returns, 
-for instance, 32000, 5944 and 763 for rate, buffersize and periodsize 
-respectively, a cat /proc/asound/card0/pcm0p/sub0/hw_params tells me that 
-actually the rate is 44100 and buffer 8192 and period 1015 (I also checked 
-on my x86 with sblive, but there the proc entry says that the rate is 
-32000, so I assume that card can downsample in hardware?).
+I think you are right with your last answer that the shared lib file 
+can't be read correctly because of the installed path.
 
-Is this a bug in the driver or normal behaviour? If it is the last, how 
-should I set the periodsize to something that both corresponds with the 
-users preferenced sample time and with the fact that it apparently, has to 
-be a power of 2?
+How can I check if the libs are correct ?
 
-danny
+Is it correct that I first compile and install the alsa-lib-1.0.7 (with --enable-shared=yes and --enable-static=yes --with-softfloat) and later alsa-utils-1.0.7. Is this correct ?
 
+Thanks,
 
-
+Klaus
 
 
 
