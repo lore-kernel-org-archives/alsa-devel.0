@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000645]: azx driver is a bit broken
-Date: Sun, 5 Dec 2004 23:46:47 +0100
-Message-ID: <08b5d21d99b8af25294cee1635401c76@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: [2.6 patch] ALSA: misc cleanups
+Date: Mon, 6 Dec 2004 01:12:21 +0100
+Message-ID: <20041206001221.GG2953__35156.8937571303$1102292075$gmane$org@stusta.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9F13391
-	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 23:46:47 +0100 (MET)
+Received: from mailout.stusta.mhn.de (emailhub.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 9C8B0323
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 01:12:23 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,148 +18,285 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch below contains the following changes in ALSA code not touched 
+by my previous patches:
+- make some needlessly global code static
+- remove the following unused global functions:
+  - sound/i2c/cs84: snd_cs8427_detect
+  - sound/synth/emux/emux_synth.c: snd_emux_release_voice
+  - sound/synth/emux/soundfont.: snd_soundfont_mem_used
+- remove the following unused EXPORT_SYMBOL's:
+  - sound/i2c/cs8427.c: snd_cs8427_detect
+  - sound/i2c/cs8427.c: snd_cs8427_reg_read
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=645> 
-======================================================================
-Reported By:                russell
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   645
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian/Ubuntu
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             11-12-2004 16:58 CET
-Last Modified:              12-05-2004 23:46 CET
-======================================================================
-Summary:                    azx driver is a bit broken
-Description: 
-The azx driver doesn't work well on the hardware which I have. It pretty
-much doesn't work at all in OSS emulation mode. The following patch
-improves its stability on my machine enormously (although it is still not
-100%), and makes OSS emulation work nicely. As a side effect, the code is
-simplified, and to my fairly untrained eyes seems a bit more efficient.
+Please review which of these changes are correct and which conflict with 
+pending patches.
 
-There are also a number of fixes in this patch which make the driver work
-more like my understanding of the Intel "High Definition Audio
-Specification Revision 1.0" document, and my limited understanding of the
-ALSA system. These include:
 
- - ALSA buffer size now matches the Cyclic Buffer Length (length of entire
-buffer)
- - ALSA period size now matches size of each BDL, the number of BDLs are
-properly set, and the BDLEs are not changed during playback (as suggested
-in the azx spec)
+diffstat output:
+ include/sound/cs8427.h          |    3 ---
+ include/sound/soundfont.h       |    1 -
+ include/sound/vx_core.h         |    1 -
+ sound/drivers/opl3/opl3_drums.c |    8 ++++----
+ sound/drivers/opl3/opl3_lib.c   |    4 ++--
+ sound/drivers/opl3/opl3_midi.c  |    2 +-
+ sound/drivers/opl3/opl3_seq.c   |    4 ++--
+ sound/drivers/vx/vx_cmd.c       |    2 +-
+ sound/drivers/vx/vx_cmd.h       |    2 --
+ sound/drivers/vx/vx_uer.c       |    2 +-
+ sound/i2c/cs8427.c              |   18 ++++--------------
+ sound/synth/emux/emux_synth.c   |   10 ----------
+ sound/synth/emux/soundfont.c    |    8 --------
+ 13 files changed, 15 insertions(+), 50 deletions(-)
 
-The #define'd STREAM_REST_BIT was renamed to STREAM_RESET_BIT (because
-that's what it is).
 
-This is a patch to azx.c only, and is against the current CVS version
-(1.11).
+Signed-off-by: Adrian Bunk <bunk@stusta.de>
 
-I have not done *ANY* work on the capture side of things -- most of my
-diffs for output can probably be translated almost directly for input.
-
-There are some other issues which should be addressed in this driver. Off
-the top of my head:
- - Will pci_set_dma_mask() be needed if the card is not capable of 64 bit
-addressing? Perhaps.
- - The mixer code in 1.0.7rc2 causes a crash on my system, I have pointed
-this out to Clemens Ladisch in email. I will work on this problem soon if
-nobody else has the time. Commenting out the mixer initialisation code is
-working well for me at the moment :)
- - The driver still does not work 100%. When my system is very idle, I get
-repeated sections of sound. I used to get a LOT of static, but with my
-changes it now just sounds like ALSA is never updating the buffer. I'm
-completely baffled by this, any suggestions for me to try, or hints on
-debugging this sort of behaviour would be appreciated!
-
-And one issue which I am unclear on, what does the fifo_size field in the
-snd_pcm_hardware_t struct actually define?
-======================================================================
-
-----------------------------------------------------------------------
- pforai - 11-28-04 12:48 
-----------------------------------------------------------------------
-@tiwai:
-
-when can we expact to see a working snd_azx ;) ?
-
-no working sound at all makes me go crazy! :D
-
-trying to run alsamixer produces this output: 
-
-Unable to handle kernel NULL pointer dereference at virtual address
-00000000
- printing eip:
-df023c81
-*pde = 00000000
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-PREEMPT SMP
-Modules linked in: smbus_arp eeprom i2c_i801 lm85 i2c_sensor i2c_core
-snd_azx snd_pcm snd_timer snd soundcore snd_page_alloc evdev i915
-intel_agp agpgart
-CPU:    1
-EIP:    0060:[<df023c81>]    Not tainted
-EFLAGS: 00210292   (2.6.8.1-ck9)
-EIP is at snd_azx_cap_select_info+0x3a/0x4d [snd_azx]
-eax: 00000000   ebx: ddf00400   ecx: dce90000   edx: d1676e4c
-esi: 00000000   edi: d1676ea4   ebp: ddf25e80   esp: d1676e2c
-ds: 007b   es: 007b   ss: 0068
-Process kdeinit (pid: 7261, threadinfo=d1676000 task=ddca7140)
-Stack: dd078400 dd07854c df010d15 ddf00400 d1676e4c 00000110 000001e6
-d1676000
-       00000004 00000002 00000000 00000000 74706143 20657275 72756f53
-00006563
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-Call Trace:
- [<df010d15>] snd_ctl_elem_info+0x79/0x1d9 [snd]
- [<df011cb7>] snd_ctl_ioctl+0x28c/0x388 [snd]
- [<c0169eee>] sys_ioctl+0x1ba/0x2c4
- [<c01040b9>] sysenter_past_esp+0x52/0x71
-Code: ac aa 84 c0 75 fa 31 c0 8b 34 24 8b 7c 24 04 83 c4 08 c3 53
- <4>mtrr: base(0xd0020000) is not aligned on a size(0x180000) boundary
-mtrr: 0xd0000000,0x10000000 overlaps existing 0xd0000000,0x400000
-snd_pcm_oss: Unknown symbol snd_mixer_oss_ioctl_card
-snd_pcm_oss: Unknown symbol snd_mixer_oss_ioctl_card
-
-edited on: 11-28-04 12:48
-
-----------------------------------------------------------------------
- pforai - 12-05-04 23:46 
-----------------------------------------------------------------------
-anyone got news?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-04 16:58 russell        New Issue                                    
-11-12-04 16:58 russell        File Added: azx.c.diff                       
-11-12-04 16:58 russell        Distribution              => Debian/Ubuntu   
-11-12-04 16:58 russell        Kernel Version            => 2.6.8.1         
-11-12-04 17:30 russell        Note Added: 0002399                          
-11-15-04 22:28 Grazy          Issue Monitored: Grazy                       
-11-23-04 21:53 footcow        Note Added: 0002531                          
-11-27-04 16:04 pforai         Note Added: 0002615                          
-11-27-04 16:06 pforai         Note Edited: 0002615                         
-11-27-04 19:32 tiwai          Note Added: 0002617                          
-11-28-04 12:39 pforai         Note Added: 0002622                          
-11-28-04 12:48 pforai         Note Edited: 0002622                         
-11-28-04 12:49 pforai         Issue Monitored: pforai                      
-12-02-04 22:24 swarren        Issue Monitored: swarren                     
-12-05-04 23:46 pforai         Note Added: 0002724                          
-======================================================================
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_drums.c.old	2004-12-05 23:33:26.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_drums.c	2004-12-05 23:34:13.000000000 +0100
+@@ -80,7 +80,7 @@
+ /*
+  * set drum voice characteristics
+  */
+-void snd_opl3_drum_voice_set(opl3_t *opl3, snd_opl3_drum_voice_t *data)
++static void snd_opl3_drum_voice_set(opl3_t *opl3, snd_opl3_drum_voice_t *data)
+ {
+ 	unsigned char op_offset = snd_opl3_regmap[data->voice][data->op];
+ 	unsigned char voice_offset = data->voice;
+@@ -114,7 +114,7 @@
+ /*
+  * Set drum voice pitch
+  */
+-void snd_opl3_drum_note_set(opl3_t *opl3, snd_opl3_drum_note_t *data)
++static void snd_opl3_drum_note_set(opl3_t *opl3, snd_opl3_drum_note_t *data)
+ {
+ 	unsigned char voice_offset = data->voice;
+ 	unsigned short opl3_reg;
+@@ -131,8 +131,8 @@
+ /*
+  * Set drum voice volume and position
+  */
+-void snd_opl3_drum_vol_set(opl3_t *opl3, snd_opl3_drum_voice_t *data, int vel,
+-			   snd_midi_channel_t *chan)
++static void snd_opl3_drum_vol_set(opl3_t *opl3, snd_opl3_drum_voice_t *data,
++				  int vel, snd_midi_channel_t *chan)
+ {
+ 	unsigned char op_offset = snd_opl3_regmap[data->voice][data->op];
+ 	unsigned char voice_offset = data->voice;
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_lib.c.old	2004-12-05 23:34:35.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_lib.c	2004-12-05 23:34:47.000000000 +0100
+@@ -37,7 +37,7 @@
+ 
+ extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
+ 
+-void snd_opl2_command(opl3_t * opl3, unsigned short cmd, unsigned char val)
++static void snd_opl2_command(opl3_t * opl3, unsigned short cmd, unsigned char val)
+ {
+ 	unsigned long flags;
+ 	unsigned long port;
+@@ -60,7 +60,7 @@
+ 	spin_unlock_irqrestore(&opl3->reg_lock, flags);
+ }
+ 
+-void snd_opl3_command(opl3_t * opl3, unsigned short cmd, unsigned char val)
++static void snd_opl3_command(opl3_t * opl3, unsigned short cmd, unsigned char val)
+ {
+ 	unsigned long flags;
+ 	unsigned long port;
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_midi.c.old	2004-12-05 23:35:01.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_midi.c	2004-12-05 23:35:09.000000000 +0100
+@@ -263,7 +263,7 @@
+ /*
+  * Start system timer
+  */
+-void snd_opl3_start_timer(opl3_t *opl3)
++static void snd_opl3_start_timer(opl3_t *opl3)
+ {
+ 	unsigned long flags;
+ 	spin_lock_irqsave(&opl3->sys_timer_lock, flags);
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_seq.c.old	2004-12-05 23:36:11.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/opl3/opl3_seq.c	2004-12-05 23:36:24.000000000 +0100
+@@ -96,7 +96,7 @@
+ 	up(&opl3->access_mutex);
+ }
+ 
+-int snd_opl3_synth_use(void *private_data, snd_seq_port_subscribe_t * info)
++static int snd_opl3_synth_use(void *private_data, snd_seq_port_subscribe_t * info)
+ {
+ 	opl3_t *opl3 = private_data;
+ 	int err;
+@@ -123,7 +123,7 @@
+ 	return 0;
+ }
+ 
+-int snd_opl3_synth_unuse(void *private_data, snd_seq_port_subscribe_t * info)
++static int snd_opl3_synth_unuse(void *private_data, snd_seq_port_subscribe_t * info)
+ {
+ 	opl3_t *opl3 = private_data;
+ 
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/vx/vx_cmd.h.old	2004-12-05 23:36:36.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/vx/vx_cmd.h	2004-12-05 23:36:47.000000000 +0100
+@@ -209,8 +209,6 @@
+ /*
+  *
+  */
+-extern struct vx_cmd_info vx_dsp_cmds[];
+-
+ void vx_init_rmh(struct vx_rmh *rmh, unsigned int cmd);
+ 
+ /**
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/vx/vx_cmd.c.old	2004-12-05 23:37:08.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/vx/vx_cmd.c	2004-12-05 23:37:15.000000000 +0100
+@@ -29,7 +29,7 @@
+ /*
+  * Array of DSP commands
+  */
+-struct vx_cmd_info vx_dsp_cmds[] = {
++static struct vx_cmd_info vx_dsp_cmds[] = {
+ [CMD_VERSION] =			{ 0x010000, 2, RMH_SSIZE_FIXED, 1 },
+ [CMD_SUPPORTED] =		{ 0x020000, 1, RMH_SSIZE_FIXED, 2 },
+ [CMD_TEST_IT] =			{ 0x040000, 1, RMH_SSIZE_FIXED, 1 },
+--- linux-2.6.10-rc2-mm4-full/include/sound/vx_core.h.old	2004-12-05 23:37:30.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/include/sound/vx_core.h	2004-12-05 23:37:38.000000000 +0100
+@@ -340,7 +340,6 @@
+  */
+ void vx_set_iec958_status(vx_core_t *chip, unsigned int bits);
+ int vx_set_clock(vx_core_t *chip, unsigned int freq);
+-void vx_change_clock_source(vx_core_t *chip, int source);
+ void vx_set_internal_clock(vx_core_t *chip, unsigned int freq);
+ int vx_change_frequency(vx_core_t *chip);
+ 
+--- linux-2.6.10-rc2-mm4-full/sound/drivers/vx/vx_uer.c.old	2004-12-05 23:37:52.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/drivers/vx/vx_uer.c	2004-12-05 23:37:59.000000000 +0100
+@@ -197,7 +197,7 @@
+  * vx_change_clock_source - change the clock source
+  * @source: the new source
+  */
+-void vx_change_clock_source(vx_core_t *chip, int source)
++static void vx_change_clock_source(vx_core_t *chip, int source)
+ {
+ 	unsigned long flags;
+ 
+--- linux-2.6.10-rc2-mm4-full/include/sound/cs8427.h.old	2004-12-05 23:38:27.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/include/sound/cs8427.h	2004-12-05 23:39:29.000000000 +0100
+@@ -186,12 +186,9 @@
+ #define CS8427_VERSHIFT		0
+ #define CS8427_VER8427A		0x71
+ 
+-int snd_cs8427_detect(snd_i2c_bus_t *bus, unsigned char addr);
+ int snd_cs8427_create(snd_i2c_bus_t *bus, unsigned char addr,
+ 		      unsigned int reset_timeout, snd_i2c_device_t **r_cs8427);
+-void snd_cs8427_reset(snd_i2c_device_t *cs8427);
+ int snd_cs8427_reg_write(snd_i2c_device_t *device, unsigned char reg, unsigned char val);
+-int snd_cs8427_reg_read(snd_i2c_device_t *device, unsigned char reg);
+ int snd_cs8427_iec958_build(snd_i2c_device_t *cs8427, snd_pcm_substream_t *playback_substream, snd_pcm_substream_t *capture_substream);
+ int snd_cs8427_iec958_active(snd_i2c_device_t *cs8427, int active);
+ int snd_cs8427_iec958_pcm(snd_i2c_device_t *cs8427, unsigned int rate);
+--- linux-2.6.10-rc2-mm4-full/sound/i2c/cs8427.c.old	2004-12-05 23:38:40.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/i2c/cs8427.c	2004-12-05 23:39:45.000000000 +0100
+@@ -30,6 +30,8 @@
+ #include <sound/cs8427.h>
+ #include <sound/asoundef.h>
+ 
++static void snd_cs8427_reset(snd_i2c_device_t *cs8427);
++
+ MODULE_AUTHOR("Jaroslav Kysela <perex@suse.cz>");
+ MODULE_DESCRIPTION("IEC958 (S/PDIF) receiver & transmitter by Cirrus Logic");
+ MODULE_LICENSE("GPL");
+@@ -65,16 +67,6 @@
+ 	return res;
+ }
+ 
+-int snd_cs8427_detect(snd_i2c_bus_t *bus, unsigned char addr)
+-{
+-	int res;
+-
+-	snd_i2c_lock(bus);
+-	res = snd_i2c_probeaddr(bus, CS8427_ADDR | (addr & 7));
+-	snd_i2c_unlock(bus);
+-	return res;
+-}
+-
+ int snd_cs8427_reg_write(snd_i2c_device_t *device, unsigned char reg, unsigned char val)
+ {
+ 	int err;
+@@ -89,7 +81,7 @@
+ 	return 0;
+ }
+ 
+-int snd_cs8427_reg_read(snd_i2c_device_t *device, unsigned char reg)
++static int snd_cs8427_reg_read(snd_i2c_device_t *device, unsigned char reg)
+ {
+ 	int err;
+ 	unsigned char buf;
+@@ -288,7 +280,7 @@
+  * put back AES3INPUT. This workaround is described in latest
+  * CS8427 datasheet, otherwise TXDSERIAL will not work.
+  */
+-void snd_cs8427_reset(snd_i2c_device_t *cs8427)
++static void snd_cs8427_reset(snd_i2c_device_t *cs8427)
+ {
+ 	cs8427_t *chip;
+ 	unsigned long end_time;
+@@ -573,11 +565,9 @@
+ module_init(alsa_cs8427_module_init)
+ module_exit(alsa_cs8427_module_exit)
+ 
+-EXPORT_SYMBOL(snd_cs8427_detect);
+ EXPORT_SYMBOL(snd_cs8427_create);
+ EXPORT_SYMBOL(snd_cs8427_reset);
+ EXPORT_SYMBOL(snd_cs8427_reg_write);
+-EXPORT_SYMBOL(snd_cs8427_reg_read);
+ EXPORT_SYMBOL(snd_cs8427_iec958_build);
+ EXPORT_SYMBOL(snd_cs8427_iec958_active);
+ EXPORT_SYMBOL(snd_cs8427_iec958_pcm);
+--- linux-2.6.10-rc2-mm4-full/sound/synth/emux/emux_synth.c.old	2004-12-05 23:40:23.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/synth/emux/emux_synth.c	2004-12-05 23:40:34.000000000 +0100
+@@ -363,16 +363,6 @@
+ 
+ 
+ /*
+- * for Emu10k1 - release at least 1 voice currently using
+- */
+-int
+-snd_emux_release_voice(snd_emux_t *emu)
+-{
+-	return 0;
+-}
+-
+-
+-/*
+  * terminate note - if free flag is true, free the terminated voice
+  */
+ static void
+--- linux-2.6.10-rc2-mm4-full/include/sound/soundfont.h.old	2004-12-05 23:40:49.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/include/sound/soundfont.h	2004-12-05 23:40:58.000000000 +0100
+@@ -112,7 +112,6 @@
+ 
+ int snd_soundfont_remove_samples(snd_sf_list_t *sflist);
+ int snd_soundfont_remove_unlocked(snd_sf_list_t *sflist);
+-int snd_soundfont_mem_used(snd_sf_list_t *sflist);
+ 
+ int snd_soundfont_search_zone(snd_sf_list_t *sflist, int *notep, int vel,
+ 			      int preset, int bank,
+--- linux-2.6.10-rc2-mm4-full/sound/synth/emux/soundfont.c.old	2004-12-05 23:41:07.000000000 +0100
++++ linux-2.6.10-rc2-mm4-full/sound/synth/emux/soundfont.c	2004-12-05 23:41:21.000000000 +0100
+@@ -1460,11 +1460,3 @@
+ 	return 0;
+ }
+ 
+-/*
+- * Return the used memory size (in words)
+- */
+-int
+-snd_soundfont_mem_used(snd_sf_list_t *sflist)
+-{
+-	return sflist->mem_used;
+-}
 
 
 
