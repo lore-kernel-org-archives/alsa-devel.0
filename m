@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Mon, 29 Nov 2004 17:19:28 +0100
-Message-ID: <de9c7f5f11f41b726ce62bc9c67a0a7a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000687]: Cannot build gentoo-ebuild for 1.0.7
+Date: Mon, 29 Nov 2004 17:20:32 +0100
+Message-ID: <9ce66454653fb34321eac92c833449d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB7D82A1
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 17:19:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FD872A1
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 17:20:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,105 +24,192 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=687> 
 ======================================================================
-Reported By:                bji
-Assigned To:                
+Reported By:                m_wright
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
+Issue ID:                   687
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9-ck2
 ======================================================================
-Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-29-2004 17:19 CET
+Date Submitted:             11-28-2004 19:06 CET
+Last Modified:              11-29-2004 17:20 CET
 ======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
+Summary:                    Cannot build gentoo-ebuild for 1.0.7
 Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
+The gentoo ebuild for 1.0.7-r1 (basically 1.0.7) fails on linux kernel
+2.6.9-ck2 with the following errors:
 
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
-
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
-
-I have tried the following:
-
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
-
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
-
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
-
+/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:
+In function `snd_compat_vmalloc_to_page':
+/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:41:
+warning: implicit declaration of function `VMALLOC_VMADDR'
+/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
+warning: implicit declaration of function `pte_offset'
+/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7/acore/memory_wrapper.c:47:
+warning: assignment makes pointer from integer without a cast
 ======================================================================
 
 ----------------------------------------------------------------------
- bji - 11-28-04 06:04 
+ m_wright - 11-29-04 16:41 
 ----------------------------------------------------------------------
-I could not get older versions of ALSA drivers to compile with kernel
-2.6.9.  The oldest that I successfully got to compile was 1.0.4.  It did
-not fix the problem, nor did 1.0.5.
+This is the output of configure from the ebuild, any help??
 
-Please let me know if there is something else I should try to diagnose
-this problem.  Thanks!
+Matt
+
+./configure --prefix=/usr --host=i686-pc-linux-gnu --mandir=/usr/share/man
+--inf odir=/usr/share/info --datadir=/usr/share --sysconfdir=/etc
+--localstatedir=/var /lib --with-oss --with-kernel=/usr/src/linux
+--with-build= --with-isapnp=yes --w ith-sequencer=yes
+--with-cards=emu10k1
+configure: WARNING: If you wanted to set the --build type, don't use
+--host.
+    If a cross compiler is detected then cross compile mode will be used.
+checking for i686-pc-linux-gnu-gcc... gcc
+checking for C compiler default output file name... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for i686-pc-linux-gnu-ranlib... no
+checking for ranlib... ranlib
+checking for a BSD-compatible install... /bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for egrep... grep -E
+checking for ANSI C header files... yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current directory...
+/var/tmp/portage/alsa-driver-1.0.7-r1/work/alsa-driver-1.0.7
+checking cross compile...
+checking for directory with kernel source... /usr/src/linux
+checking for directory with kernel build...
+checking for kernel version... 2.6.9-ck2
+checking for GCC version... Kernel compiler: gcc 3.3.3 20040412 (Gentoo
+Linux 3.3.3-r6, ssp-3.3.2-2, pi e-8.7.6) Used compiler: gcc (GCC) 3.3.3
+20040412 (Gentoo Linux 3.3.3-r6, ssp-3.3.2-2, pie-8.7.6)
+checking for built-in ALSA... "no"
+checking for existing ALSA module... "no"
+checking for Red Hat kernel... "auto"
+checking for Red Hat kernel... "no"
+checking for SUSE kernel... "auto"
+checking for SUSE kernel... "no"
+checking to modify of kernel linux/kmod.h... "no"
+checking for kernel linux/compiler.h... "yes"
+checking for kernel linux/pm.h... "yes"
+checking for kernel linux/spinlock.h... "yes"
+checking for kernel linux/irq.h... "yes"
+checking for kernel linux/threads.h... "yes"
+checking for kernel linux/rwsem.h... "yes"
+checking for kernel linux/gameport.h... "yes"
+checking for kernel linux/devfs_fs_kernel.h... "yes"
+checking for kernel linux/highmem.h... "yes"
+checking for kernel linux/workqueue.h... "yes"
+Removing a dummy linux/workqueue.h.
+checking for kernel linux/dma-mapping.h... "yes"
+Removing a dummy linux/dma-mapping.h.
+checking for kernel asm/hw_irq.h... "yes"
+checking for kernel linux/device.h... "yes"
+Removing a dummy linux/device.h.
+checking for kernel linux/jiffies.h... "yes"
+Removing a dummy linux/jiffies.h.
+checking for kernel linux/compat.h... "yes"
+Removing a dummy linux/compat.h.
+checking for kernel linux/adb.h... "yes"
+checking for kernel linux/cuda.h... "yes"
+checking for kernel linux/pmu.h... "yes"
+checking for kernel linux/moduleparam.h... "yes"
+Removing a dummy linux/moduleparam.h.
+checking for kernel linux/syscalls.h... "yes"
+Removing a dummy linux/syscalls.h.
+checking for kernel module symbol versions... "no"
+checking for PCI support in kernel... "yes"
+checking for I2C driver in kernel... module
+checking for input subsystem in kernel... yes
+checking for SGI/MIPS (HAL2) architecture... "no"
+checking for directory to store kernel modules...
+/lib/modules/2.6.9-ck2/kernel/sound
+checking for verbose printk... on
+checking for debug level... none
+checking for ISA support in kernel... "yes"
+checking for SMP... "yes"
+checking for Video device support in kernel... "no"
+checking for ISA PnP driver in kernel... yes
+checking for PnP driver in kernel... yes
+checking for Kernel ISA-PnP support... "no"
+checking for Kernel ISA-PnP module support... "no"
+checking for strlcpy... "yes"
+checking for snprintf... "yes"
+checking for scnprintf... "yes"
+checking for sscanf... "yes"
+checking for vmalloc_to_page... "no"
+checking for old kmod... "no"
+checking for PDE... "no"
+checking for pci_set_consistent_dma_mask... "no"
+checking for tty->count is the atomic type... "no"
+checking for remap_pfn_range... "no"
+checking for new remap_page_range... "no"
+checking for kcalloc... "no"
+checking for saved_config_space in pci_dev... "no"
+checking for acpi_register_gsi... "no"
+Removing local linux/pnp.h.
+checking for driver version... 1.0.7
+checking for sequencer support... yes
+checking for OSS/Free emulation... yes
+checking for RTC callback support in kernel... "yes"
+checking for Procfs support... "yes"
+checking for USB support... "yes"
+checking for kernel PCMCIA
+checking for PCMCIA support... "no"
+checking for PCMCIA module support... "no"
+checking for PC9800 support in kernel... "no"
+checking for parallel port support... "no"
+checking for parallel port module support... "no"
+checking for processor type... i686
+checking for i386 machine type... default
+checking for which soundcards to compile driver for... emu10k1
+configure: creating ./config.status
+config.status: creating version
+config.status: creating Makefile.conf
+config.status: creating snddevices
+config.status: creating utils/alsa-driver.spec
+config.status: creating utils/buildrpm
+config.status: creating toplevel.config
+config.status: creating utils/alsasound
+config.status: creating utils/alsasound.posix
+config.status: creating include/config.h
+config.status: creating include/config1.h
+config.status: creating include/version.h
+config.status: include/version.h is unchanged
+config.status: creating include/autoconf-extra.h
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 17:19 
+ tiwai - 11-29-04 17:20 
 ----------------------------------------------------------------------
-Could you try the patch stac9752.diff and change values in "Headphone Pin"
-and "Line-Out Pin" controls?
+Apparently the configure couldn't detect vmalloc_to_page().
+Do you have config.log for this check?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
-11-21-04 02:56 bji            File Added: proc_asound.txt                    
-11-21-04 03:16 bji            Note Added: 0002483                          
-11-21-04 03:19 bji            Note Added: 0002484                          
-11-23-04 16:20 tiwai          Note Added: 0002522                          
-11-23-04 23:23 IceRAM         Note Added: 0002537                          
-11-23-04 23:24 IceRAM         File Added: asound.state                     
-11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
-11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
-11-23-04 23:27 IceRAM         Note Added: 0002538                          
-11-23-04 23:28 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
-11-23-04 23:45 IceRAM         Note Added: 0002539                          
-11-23-04 23:45 IceRAM         File Added: .asoundrc                        
-11-23-04 23:46 IceRAM         Note Edited: 0002538                         
-11-24-04 12:32 bji            File Added: asound.state                     
-11-24-04 12:33 bji            Note Added: 0002550                          
-11-24-04 12:40 tiwai          Note Added: 0002552                          
-11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
-11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
-11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
-11-24-04 13:26 IceRAM         Note Added: 0002561                          
-11-24-04 14:57 tiwai          Note Added: 0002565                          
-11-25-04 07:07 bji            Note Added: 0002587                          
-11-28-04 04:24 bji            Note Added: 0002619                          
-11-28-04 06:04 bji            Note Added: 0002620                          
-11-29-04 17:19 tiwai          Note Added: 0002654                          
+11-28-04 19:06 m_wright       New Issue                                    
+11-28-04 19:06 m_wright       Distribution              => Gentoo Linux    
+11-28-04 19:06 m_wright       Kernel Version            => 2.6.9-ck2       
+11-29-04 15:27 tiwai          Note Added: 0002638                          
+11-29-04 16:41 m_wright       Note Added: 0002653                          
+11-29-04 17:20 tiwai          Note Added: 0002655                          
 ======================================================================
 
 
