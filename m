@@ -1,12 +1,11 @@
-From: Christof Damian <cdamian@guideguide.com>
-Subject: Re: Hoontech Audio DSP24 Value (+bracket)
-Date: Tue, 12 Feb 2002 16:37:52 +0000
-Message-ID: <20020212163752.C18197@stratus.london.guideguide.com>
-References: <0000723B.3C693976@oz.ridi.com>
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: Updating www.alsa-project.org?
+Date: Tue, 12 Feb 2002 18:53:21 +0200 (EET)
+Message-ID: <Pine.LNX.4.44.0202121823170.32090-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000723B.3C693976@oz.ridi.com>; from claus@ridi.com on Tue, Feb 12, 2002 at 02:49:33PM +0000
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20020212142244Z11404-696+8614@nic.funet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,30 +14,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: claus@ridi.com
-Cc: alsa-devel@alsa.alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 12 Feb 2002, claus@ridi.com wrote:
->
-> It is not possible to distinguish between a DSP24 Value and a DSP24
-> card in software. Also you cannot detect the converter on the card
-> (as it is not needed).
+On Tue, 12 Feb 2002, Juhana Sadeharju wrote:
 
-so it would be necessary to specify the type of card and/or number of
-boxes when the driver loads ?
+> We barely have any proper documentation. Checking source code is also
+> outdated.
 
-> > The DAC & ADC volume don't seem to work though.
-> 
-> The hardware does not provide any function to change the input or
-> output level of the analog I/O.
+We do have quite detailed documentation in the form of javadoc comments. =
+=20
+Not perfect but actually much better than docs of many other kernel
+subsystems.
 
-bugger. but the AK4524 supports changing the input gain, doesn't it ?
+Improving the documentation, writing howtos, updating the web site has
+been discussed many times here but so far not much has happened. What
+really is missing is coordination, or should I say leadership. The ALSA
+core dev team have they hands full with coding and kernel-integration wor=
+k
+and many of us active alsa-devel members have our own projects that take
+our time.
 
-christof
--- 
-Christof Damian         
-Technical Director, guideguide ltd.	            
+A prime example of what we need is the LAD web pages. J=F6rn Nettingsmeie=
+r=20
+took the job and made it happen (with excellent results should I add).=20
+In other words, we need someone who "leads the ALSA documentation=20
+project" and someone who is the "ALSA website maintainer".=20
+
+Any takers for these jobs?
+
+--=20
+ http://www.eca.cx
+ Audio software for Linux!
+
 
 _______________________________________________
 Alsa-devel mailing list
