@@ -1,15 +1,14 @@
-From: Andrew Morton <akpm@osdl.org>
-Subject: Re: [PATCH] Fix ALSA resume
-Date: Sat, 4 Dec 2004 23:51:55 -0800
-Message-ID: <20041204235155.3b8ad3fc.akpm@osdl.org>
-References: <1102195391.1560.65.camel@tux.rsn.bth.se>
-	<20041204172855.350100d0.akpm@osdl.org>
-	<41B282F0.3020704@triplehelix.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000707]: Incorrect suspend code
+Date: Sun, 5 Dec 2004 10:09:07 +0100
+Message-ID: <0032d9134542ae9c1d7b28b267d22d38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41B282F0.3020704@triplehelix.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 222C9348
+	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 10:09:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,24 +18,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Joshua Kwan <joshk@triplehelix.org>
-Cc: gandalf@wlug.westbo.se, torvalds@osdl.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Joshua Kwan <joshk@triplehelix.org> wrote:
->
-> Andrew Morton wrote:
-> > But Joshua crosses his heart and swears that the pci_disable_device() is
-> > also needed for a successful swsusp resume.
-> 
-> I never said I had any problems with resuming.
 
-OK, suspend was failing, yes?
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=707> 
+======================================================================
+Reported By:                Eric Valette
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   707
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             
+======================================================================
+Date Submitted:             12-05-2004 10:09 CET
+Last Modified:              12-05-2004 10:09 CET
+======================================================================
+Summary:                    Incorrect suspend code
+Description: 
+My laptop does not wakeup from suspend to RAM due to intel8xx
+driver. Many other are seeing the very same problem. It is due to
+incorrect suspend code.
 
-> That said, I tried removing the pci_disable_device call and things seem
-> to still work. So I guess it can be left out?
+In additionnal information there is a fix for this problem that I tested
+on my laptop and that indeed fix the problem.
+======================================================================
 
-Can you please test Martin's patch?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-05-04 10:09 Eric Valette   New Issue                                    
+12-05-04 10:09 Eric Valette   Distribution              => Debian          
+======================================================================
+
+
 
 
 -------------------------------------------------------
