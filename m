@@ -1,12 +1,19 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: RE: New azx driver: Problems in snd_mixer_load
-Date: Fri, 10 Dec 2004 09:20:18 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE1B5@hqemmail02.nvidia.com>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: [PATCH]snd-usb-usx2y 0.8.7: Use macro           
+     usb_maxpacket() for portability
+Date: Fri, 10 Dec 2004 17:42:22 -0000 (WET)
+Message-ID: <32844.192.168.1.5.1102700542.squirrel@192.168.1.5>
+References: <200412021319.20027.annabellesgarden@yahoo.de>
+    <200412072301.52065.annabellesgarden@yahoo.de>
+    <s5hoeh4a8nh.wl@alsa2.suse.de>
+    <200412091306.23970.annabellesgarden@yahoo.de>
+    <32799.192.168.1.5.1102694242.squirrel@192.168.1.5>
+    <s5hacsm872d.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C4DEDC.85C40174"
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <s5hacsm872d.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,139 +24,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Takashi Iwai wrote:
+> Rui Nuno Capela wrote:
+>>
+>> >
+>> > May I ask you to check CVS's version?
+>> > Keep in mind that jackd is now called like:
+>> > $ jackd -dusx2y -dhw:1,2
+>> > You might also change qjackctl to always append ",2" to the hw device
+>> > in the usx2y case.
+>> >
+>>
+>> Oh oh. Tried with alsa-kernel+driver CVS as of yesterday...
+>>
+>> First thing:
+>>
+>> - Missing SNDRV_HWDEP_IFACE_USX2Y_PCM definition (used to be defined
+>> under asound.h on the pre-CVS 0.8.6 prototypes)
+>
+> Already fixed.
+>
 
-------_=_NextPart_001_01C4DEDC.85C40174
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Thanks. I've fixed myself and went on... and it doesn't seem to be working
+at all: I get complaints about non existing /dev/snd/pcmC1D2c and
+/dev/snd/pcmC1D2p devices. That is, it fails whether I enter:
+  aplay -D hw:1,2 somefile.wav
+or:
+  jackd -R -dusx2y -dhw:1,2 -r44100 -p128 -n2
 
-> From: Takashi Iwai [mailto:tiwai@suse.de]=20
-> Ok, now it's on CVS.  Untested, as usual.  Please report any
-> problems.
+OTOH if I issue the good old jackd command line:
+  jackd -R -dusx2y -dhw:1 -r44100 -p128 -n2
+the complaint is:
+jackd: hwdep.c:263: snd_hwdep_poll_descriptors: Assertion 'hwdep' failed.
 
-Takashi,
+However, it works barely on this regular one:
+  jackd -R -dalsa -dhw:1 -r44100 -p1024 -n2
 
-I've installed the latest CVS drivers, CVS alsa-lib and CVS alsa-utils.
-I still get the same error during alsa-lib initialization whilst running
-alsamixer.
+All this to the bottom-line: this 0.8.7 seems broken, I'll revert to my
+own functional 0.8.6, for the time being ;)
 
-Specifically, this is caused by
-alsa-lib/src/mixer/simple.c:simple_add1() being called with the
-following sets of parameters, (plus others):
+Just for the record here goes some status info:
 
-name=3D"Mic", type=3DCTL_CAPTURE_SOURCE, value=3D2
+# cat /proc/asound/version
+Advanced Linux Sound Architecture Driver Version 1.0.7.
+Compiled on Dec 10 2004 for kernel 2.6.10-rc2-mm3-RT-V0.7.32-17.0.
 
-then later:
+# cat /proc/asound/cards
+0 [A5451          ]: ALI5451 - ALI 5451
+                     ALI 5451 at 0x1000, irq 5
+1 [USX2Y          ]: USB US-X2Y - TASCAM US-X2Y
+                     TASCAM US-X2Y (1604:8005 if 0 at 001/003)
 
-name=3D"Mic", type=3DCTL_CAPTURE_SOURCE, value=3D5
+# cat /proc/asound/devices
+  0: [0- 0]: ctl
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+  1:       : sequencer
+ 33:       : timer
+ 32: [1- 0]: ctl
+ 36: [1- 0]: hardware dependent
+ 48: [1- 0]: digital audio playback
+ 56: [1- 0]: digital audio capture
+ 40: [1- 0]: raw midi
 
-This fails at line 944:
+# cat /proc/asound/hwdep
+01-00: /proc/bus/usb/001/003
 
-   if (simple->ctls[type].elem) {
-       SNDERR("helem (%s,'%s',%li,%li,%li) appears twice or more",
-       ...
+# cat /proc/asound/pcm
+00-00: ALI 5451 : ALI 5451 : playback 32 : capture 1
+01-00: US-X2Y Audio : US-X2Y Audio #0 : playback 1 : capture 1
 
-Attached is the content of /proc/asound/card0/codec#2:
 
-Thanks for all your help.
+Bye now. bbl
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
---=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
-
-------_=_NextPart_001_01C4DEDC.85C40174
-Content-Type: text/plain;
-	name="codec2.txt"
-Content-Transfer-Encoding: base64
-Content-Description: codec2.txt
-Content-Disposition: attachment;
-	filename="codec2.txt"
-
-Q29kZWM6IEdlbmVyaWMgNDM0ZCBJRCA0OTgwCkFkZHJlc3M6IDIKVmVuZG9yIElkOiAweDQzNGQ0
-OTgwClN1YnN5c3RlbSBJZDogMHgwClJldmlzaW9uIElkOiAweDkwMDAyCkRlZmF1bHQgUENNOiBy
-YXRlcyAweDU0MCwgYml0cyAweDBlLCB0eXBlcyAweDEKRGVmYXVsdCBBbXAtSW4gY2FwczogTi9B
-CkRlZmF1bHQgQW1wLU91dCBjYXBzOiBvZnM9MHgwMCwgbnN0ZXBzPTB4MDAsIHN0ZXBzaXplPTB4
-MDAsIG11dGU9MQpOb2RlIDB4MDMgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MDU6IFN0ZXJlbyBB
-bXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6IDB4ODAgMHg4MApOb2Rl
-IDB4MDQgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MDU6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91
-dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6IDB4ODAgMHg4MApOb2RlIDB4MDUgW0F1ZGlvIE91
-dHB1dF0gd2NhcHMgMHg0MDU6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBB
-bXAtT3V0IHZhbHM6IDB4ODAgMHg4MApOb2RlIDB4MDYgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0
-MDU6IFN0ZXJlbyBBbXAtT3V0CiAgQW1wLU91dCBjYXBzOiBOL0EKICBBbXAtT3V0IHZhbHM6IDB4
-ODAgMHg4MApOb2RlIDB4MDcgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg2MTU6IFN0ZXJlbyBEaWdp
-dGFsIEFtcC1PdXQKICBBbXAtT3V0IGNhcHM6IE4vQQogIEFtcC1PdXQgdmFsczogMHg4MCAweDgw
-CiAgUENNOiByYXRlcyAweDAwMCwgYml0cyAweDAwLCB0eXBlcyAweDUKTm9kZSAweDA4IFtBdWRp
-byBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4KICBBbXAtSW4gY2Fwczogb2Zz
-PTB4MDAsIG5zdGVwcz0weDFlLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTEKICBBbXAtSW4gdmFsczog
-MHg4MCAweDgwCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDAyLCB0eXBlcyAweDAKICBDb25u
-ZWN0aW9uOiA5CiAgICAgMHgwYiAweDBjIDB4MGQgMHgwZSAweDBmIDB4MTAgMHgxMSAweDFmIDB4
-MjAKTm9kZSAweDA5IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4K
-ICBBbXAtSW4gY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDFlLCBzdGVwc2l6ZT0weDA1LCBtdXRl
-PTEKICBBbXAtSW4gdmFsczogMHg4MCAweDgwCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDAy
-LCB0eXBlcyAweDAKICBDb25uZWN0aW9uOiA5CiAgICAgMHgwYiAweDBjIDB4MGQgMHgwZSAweDBm
-IDB4MTAgMHgxMSAweDFmIDB4MjAKTm9kZSAweDBhIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA3
-OTE6IFN0ZXJlbyBEaWdpdGFsCiAgUENNOiByYXRlcyAweDE2MCwgYml0cyAweDBlLCB0eXBlcyAw
-eDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxMwpOb2RlIDB4MGIgW1BpbiBDb21wbGV4XSB3Y2Fw
-cyAweDQwMDU4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgzM2Y6ICBJTgogIE9VVAogIFBpbiBEZWZh
-dWx0IDB4MDEwMTQwMjA6IExpbmUgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xv
-ciA9IEdyZWVuCiAgUGluLWN0bHM6IDB4YzAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwMwpOb2Rl
-IDB4MGMgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4MTogU3RlcmVvCiAgUGluY2FwIDB4MDgz
-M2Y6ICBJTgogIE9VVAogIFBpbiBEZWZhdWx0IDB4MDE4MTMwMzA6IExpbmUgSW4gYXQgRXh0IFJl
-YXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmx1ZQogIFBpbi1jdGxzOiAweDIwCiAgQ29ubmVj
-dGlvbjogMQogICAgIDB4MDQKTm9kZSAweDBkIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1ODE6
-IFN0ZXJlbwogIFBpbmNhcCAweDA4MzNmOiAgSU4KICBPVVQKICBQaW4gRGVmYXVsdCAweDAxYTE5
-MDQwOiBNaWMgYXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gUGluawogIFBpbi1j
-dGxzOiAweDIwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MDUKTm9kZSAweDBlIFtQaW4gQ29tcGxl
-eF0gd2NhcHMgMHg0MDA1ODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MTAzM2Y6ICBJTgogIE9VVAog
-IFBpbiBEZWZhdWx0IDB4MDEwMTQwMjE6IExpbmUgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0g
-MS84LCBDb2xvciA9IEdyZWVuCiAgUGluLWN0bHM6IDB4MjAKICBDb25uZWN0aW9uOiAxCiAgICAg
-MHgwNgpOb2RlIDB4MGYgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4MTogU3RlcmVvCiAgUGlu
-Y2FwIDB4MDgzM2Y6ICBJTgogIE9VVAogIFBpbiBEZWZhdWx0IDB4NDIyMTQwNTA6IEhQIE91dCBh
-dCBFeHQgRnJvbnQKICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3JlZW4KICBQaW4tY3RsczogMHhj
-MAogIENvbm5lY3Rpb246IDQKICAgICAweDAzIDB4MDQgMHgwNSAweDA2Ck5vZGUgMHgxMCBbUGlu
-IENvbXBsZXhdIHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8KICBQaW5jYXAgMHgwODMzZjogIElOCiAg
-T1VUCiAgUGluIERlZmF1bHQgMHg0MmExOTA2MDogTWljIGF0IEV4dCBGcm9udAogICAgQ29ubiA9
-IDEvOCwgQ29sb3IgPSBQaW5rCiAgUGluLWN0bHM6IDB4YzAKICBDb25uZWN0aW9uOiA0CiAgICAg
-MHgwMyAweDA0IDB4MDUgMHgwNgpOb2RlIDB4MTEgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDAw
-MTogU3RlcmVvCiAgUGluY2FwIDB4MDg2MzogIElOCiAgUGluIERlZmF1bHQgMHg5OTMzZjE3MDog
-Q0QgYXQgSW50IEFUQVBJCiAgICBDb25uID0gQVRBUEksIENvbG9yID0gT3RoZXIKICBQaW4tY3Rs
-czogMHgwMApOb2RlIDB4MTIgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDMwMTogU3RlcmVvIERp
-Z2l0YWwKICBQaW5jYXAgMHgwODEwOiAgT1VUCiAgUGluIERlZmF1bHQgMHgwMTQ1MDAwMDogU1BE
-SUYgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0gT3B0aWNhbCwgQ29sb3IgPSBVbmtub3duCiAg
-UGluLWN0bHM6IDB4NDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgwNwpOb2RlIDB4MTMgW1BpbiBD
-b21wbGV4XSB3Y2FwcyAweDQwMDI4MTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwODMwOiAg
-SU4KICBPVVQKICBQaW4gRGVmYXVsdCAweDAxYzUwMDAwOiBTUERJRiBJbiBhdCBFeHQgUmVhcgog
-ICAgQ29ubiA9IE9wdGljYWwsIENvbG9yID0gVW5rbm93bgogIFBpbi1jdGxzOiAweDAwCk5vZGUg
-MHgxNCBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4
-MTUgW1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDE2
-IFtWZW5kb3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxNyBb
-VmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MTggW1Zl
-bmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDE5IFtWZW5k
-b3IgRGVmaW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxYSBbVmVuZG9y
-IERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MWIgW1ZlbmRvciBE
-ZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDFjIFtWZW5kb3IgRGVm
-aW5lZCBXaWRnZXRdIHdjYXBzIDB4ZjAwMDAwOiBNb25vCk5vZGUgMHgxZCBbVmVuZG9yIERlZmlu
-ZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MWUgW1ZlbmRvciBEZWZpbmVk
-IFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDFmIFtQaW4gQ29tcGxleF0gd2Nh
-cHMgMHg0MDAxODE6IFN0ZXJlbwogIFBpbmNhcCAweDA4MzNmOiAgSU4KICBPVVQKICBQaW4gRGVm
-YXVsdCAweDAxMDE5MDIyOiBMaW5lIE91dCBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29s
-b3IgPSBQaW5rCiAgUGluLWN0bHM6IDB4YzAKICBDb25uZWN0aW9uOiA0CiAgICAgMHgwMyAweDA0
-IDB4MDUgMHgwNgpOb2RlIDB4MjAgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDE4MTogU3RlcmVv
-CiAgUGluY2FwIDB4MDgzM2Y6ICBJTgogIE9VVAogIFBpbiBEZWZhdWx0IDB4MDEwMTMwMjM6IExp
-bmUgT3V0IGF0IEV4dCBSZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IEJsdWUKICBQaW4tY3Rs
-czogMHhjMAogIENvbm5lY3Rpb246IDQKICAgICAweDAzIDB4MDQgMHgwNSAweDA2Ck5vZGUgMHgy
-MSBbVmVuZG9yIERlZmluZWQgV2lkZ2V0XSB3Y2FwcyAweGYwMDAwMDogTW9ubwpOb2RlIDB4MjIg
-W1ZlbmRvciBEZWZpbmVkIFdpZGdldF0gd2NhcHMgMHhmMDAwMDA6IE1vbm8KTm9kZSAweDIzIFtC
-ZWVwIEdlbmVyYXRvciBXaWRnZXRdIHdjYXBzIDB4NzAwMDBjOiBNb25vIEFtcC1PdXQKICBBbXAt
-T3V0IGNhcHM6IG9mcz0weDBmLCBuc3RlcHM9MHgwZiwgc3RlcHNpemU9MHgwYiwgbXV0ZT0xCiAg
-QW1wLU91dCB2YWxzOiAweDBmCg==
-
-------_=_NextPart_001_01C4DEDC.85C40174--
 
 
 -------------------------------------------------------
