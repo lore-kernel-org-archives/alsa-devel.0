@@ -1,13 +1,16 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: status of usb audio driver
-Date: Wed, 12 Jun 2002 23:55:56 +0900
+Subject: Re: [Fwd:  Multiple cards.]
+Date: Thu, 13 Jun 2002 00:02:51 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D0760FC.5060906@boosthardware.com>
-References: <s5h7klfdlrn.wl@alsa2.suse.de>	<3D06D91D.1080104@boosthardware.com>	<s5hhek81vgl.wl@alsa2.suse.de>	<3D07564B.4050908@boosthardware.com> <s5hbsag1t5r.wl@alsa2.suse.de>
+Message-ID: <3D07629B.5050904@boosthardware.com>
+References: <3D071F9B.1090302@boosthardware.com>	<s5hk7p42158.wl@alsa2.suse.de>	<3D073B64.2010200@boosthardware.com>	<s5hit4o1vmv.wl@alsa2.suse.de>	<3D0752F3.7070907@boosthardware.com> <s5helfc1twc.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA26574
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2002 16:58:19 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,82 +20,55 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Wed, 12 Jun 2002 23:10:19 +0900,
+> At Wed, 12 Jun 2002 22:56:03 +0900,
 > Patrick Shirkey wrote:
 > 
 >>Takashi Iwai wrote:
 >>
->>>it's on cvs.  please give a try.
->>>btw, now descriptor proc was removed (one can use lsusb anyway).
->>>instead you'll see formats supported on each stream.
+>>>>----
+>>>># aplay  -f dat -D ttable /1REC/beastie_boys-track_8.wav
+>>>>Playing WAVE '/1REC/beastie_boys-track_8.wav' : Signed 16 bit Little 
+>>>>Endian, Rate 44100 Hz, Stereo
+>>>>aplay: set_params:737: Broken configuration for this PCM: no 
+>>>>configurations available
+>>>
+>>> 
+>>>the error came from snd_pcm_hw_params_any().
+>>>
+>>>i'm wondering why the second card has only one channel.
+>>>is it really correct?
+>>>
 >>>
 >>
->>Excellent work. I haven't tested the output yet but will soon. One thing 
->>that isn't correct is that this card has 4 channels. Is it me or does 
->>the following only find 3?
+>>It has one pcm device yes. hw1:0
+> 
+>  
+> but this pcm device has stereo channels, doesn't it?
 > 
 > 
-> can you check kernel debug (detection) messages?
-> perhaps it skipps an audio stream by some reason.
+> sorry, i still have not clear idea what you are exactly trying to do.
 > 
+> you have two consumer cards.  assuming sblive and cmipci.
+> and you'd like to combine these two cards as if 4 channel captures
+> (and playbacks).  or do you have any other wish?
 > 
-
-i have been testing the sound and I am getting playback although at this 
-point I can get sound out of hw:2,0 and hw:2,2 they are both the left 
-channels. The sound is scratchy but it is there :)
-
-This is from the kernel. It seems to be loading the devices unusually.
-
------
-#dmesg
-devfs_register(unknown): could not append to parent, err: -17
-devfs_register(unknown): could not append to parent, err: -17
-usb.c: registered new driver snd-usb-audio
-ALSA usbaudio.c:1756: adding an output interface 3:0:1
-ALSA usbaudio.c:1750: adding an input interface 3:0:2
-devfs_register(unknown): could not append to parent, err: -17
-devfs_register(unknown): could not append to parent, err: -17
-devfs_register(unknown): could not append to parent, err: -17
-ALSA usbaudio.c:1756: adding an output interface 3:3:4
-ALSA usbaudio.c:1750: adding an input interface 3:3:5
-ALSA usbaudio.c:1391: 3:4:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1391: 3:4:3 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1391: 3:5:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1391: 3:5:3 : non-supported sample bit 1 in 3 bytes
-devfs_register(unknown): could not append to parent, err: -17
-ALSA usbaudio.c:1756: adding an output interface 3:6:7
-ALSA usbaudio.c:1750: adding an input interface 3:6:8
-ALSA usbaudio.c:1391: 3:7:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1391: 3:7:3 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1391: 3:8:1 : non-supported sample bit 1 in 3 bytes
-ALSA usbaudio.c:1391: 3:8:3 : non-supported sample bit 1 in 3 bytes
------
-/var/log/messages
-
-Jun 12 23:44:24 mahine kernel: usb.c: registered new driver snd-usb-audio
-Jun 12 23:44:24 mahine kernel: ALSA usbaudio.c:1756: adding an output 
-interface 3:0:1
-Jun 12 23:44:24 mahine kernel: ALSA usbaudio.c:1750: adding an input 
-interface 3:0:2
-Jun 12 23:44:24 mahine kernel: ALSA usbaudio.c:1756: adding an output 
-interface 3:3:4
-Jun 12 23:44:24 mahine kernel: ALSA usbaudio.c:1750: adding an input 
-interface 3:3:5
-Jun 12 23:44:24 mahine kernel: ALSA usbaudio.c:1756: adding an output 
-interface 3:6:7
-Jun 12 23:44:24 mahine kernel: ALSA usbaudio.c:1750: adding an input 
-interface 3:6:8
------
-
-> Takashi
-> 
+> if yes, the exactly same as Joern's configuration should work...
 > 
 
+Sort of.  The cmipci has two stereo devices and the intel8x0 has one.
 
+If I want the cards ganged then I want to be able to use all the 
+playback channels. Unfortunately the cmipci doesn't have a corresponding 
+  capture device for pcmC0D1p which I think is what's causing the problems.
+
+I'm not sure that the .asoundrc file can deal with that or not. Is there 
+anything I can do to fake pcmC0D1c or alsa-lib into using pcmC0D0c 
+instead or can I just not use that device as part of a multishare dummy 
+card?
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
