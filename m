@@ -1,9 +1,17 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: Re: [Jackit-devel] Re: should i be able to abort in the middle of snd_pcm_mmap_{begin,commit} ?
-Date: Thu, 14 Feb 2002 15:59:54 -0500
-Message-ID: <200202142104.QAA18747@renoir.op.net>
-In-reply-to: Your message of "Thu, 14 Feb 2002 19:39:39 +0200."
-             <Pine.LNX.4.44.0202141930420.3739-100000@ecabase.localdomain>
+From: Peter Enderborg <pme@ufh.se>
+Subject: Re: Re: ALSA is in 2.5!!!
+Date: Thu, 14 Feb 2002 23:32:05 +0100
+Message-ID: <3C6C3AE5.B7FF35E7@ufh.se>
+References: <Pine.LNX.4.31.0202132208560.2382-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Received: from pescadero.ampr.org (c213-89-215-242.cm-upc.chello.se [213.89.215.242])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA11834
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 23:33:11 +0100
+Received: (from smap@localhost)
+	by pescadero.ampr.org (8.9.1/8.9.1) id WAA28909
+	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 22:32:34 GMT
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,20 +20,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: jackit-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->Normal 'snd_pcm_drop() -> snd_pcm_prepare() -> snd_pcm_start()' sequence 
->doesn't solve the problem. Audio is still garbled. I didn't try full 
->'close() -> ... -> open() -> ..' cycle yet, as that would involve quite a 
->lot of work (jackd's alsa_driver.c is a long piece of code).
 
-its my feeling that the error is in JACK somewhere. as far as i can
-tell, the drop/prepare/start sequence restores the hw and driver to
-the correct condition, but apparently not JACK's internals.
+This is realy nice. I do realy hope that we don't have to wait two or three
+years for 2.6!
 
---p
+
+--
+foo!
+
+
+
 
 _______________________________________________
 Alsa-devel mailing list
