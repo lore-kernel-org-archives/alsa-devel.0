@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
-Date: Tue, 13 Jul 2004 19:40:21 +0200
+From: <bbennetts@blueyonder.co.uk>
+Subject: RE: Known PCM bug in ymfpci on Tecra 8100
+Date: Tue, 13 Jul 2004 18:39:40 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7c39458ab2caf677ebe0e086860fedaa@bugtrack.alsa-project.org>
+Message-ID: <5B596E67A1B90F48A466D8DF19E1F49703713CED@ECOWV06M.Telewest.Internal>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+	charset="Windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,93 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>>=20
+>> >>=20
+>> >> Hi,
+>> >>=20
+>> >> Has anyone had any joy fixing this problem?  If not is there =
+anything I >can do=20
+>> >> to help?  I am willing to attempt debugging if someone will point =
+me at >a=20
+>> >> 'dummy's guide' to attaching a debugger to ALSA.=20
+>> >>=20
+>> >> Sorry if this was a dumb question, I can see the bug is known but =
+>couldn't=20
+>> >> find any open bug in the bug tracker.
+>> >
+>> >What kind of bug?  If you don't find one on BTS, please enter it.
+>> >
+>> >
+>> >thanks,
+>> >
+>> >Takashi
+>>=20
+>> Hmm, in the ymfpci description it has :
+>>=20
+>>   Known bugs
+>>=20
+>>   - pcm playback is not audible on toshiba tecra8100.=20
+>
+>Ah, that one...
+>
+>> I _do_ get sound, unfortunately its just crackly static noise:-(
+>>=20
+>> I shall raise it as a bug.
+>
+>Yes, please.
+>It's likely the lack of some register initiailzation, since OSS ymfpci
+>and the old ALSA 0.5.x ymfpci seem working.  The question is which
+>register affects this.
+>
+>
+>Takashi
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0383
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Luke
-Assigned To:                pzad
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     383
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:              =20
-Kernel Version:            =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-13-2004 17:45 CEST
-Last Modified:              07-13-2004 19:40 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Audigy LS - Capturing from Mic and kernel oop=
-s
-Description:=20
-I just updated my cvs repository and rebuilt the snd_audigyls module to
-check if my former reported bugs are fixed.
-Unfortunateley, my kernel oopsed once again.
+Raised : 384
 
-I tried to capture some voice of my mic with no success. Maybe I don't ge=
-t
-the explanation in the cvs log. I attached a screenshot to review my
-alsamixer settings. This is what I used to configure it:
+I'm happy to have a bash at debugging it, although I have never done any =
+driver dev so there may be an amount of hand holding required.  =
+Alternatively I can provide whatever outputs you want.
 
-"The MIC and LINE IN use the AC97 chip.
-
-The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
-controlling CAPTURE. Then, instead of sending that output to the
-speakers, it sends it to the Philips 1361T ADC. This results in high
-quality ADC conversion.
-E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
-Set MASTER volume.
-There is a new control for "CAPTURE feedback into PLAYBACK". If one does
-not want any feedback, leave it at it's minimum."
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- jcdutton - 07-13-2004 19:40 CEST=20
-----------------------------------------------------------------------
-Fixed in latest cvs.
-Fixed by:
-[alsa-cvslog] CVS: alsa-kernel/core memalloc.c,1.34,1.35
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-13-04 17:45 Luke           New Bug                                    =
- =20
-07-13-04 17:45 Luke           File Added: audigyoops                     =
- =20
-07-13-04 17:50 Luke           File Added: audigyscreen.png               =
-    =20
-07-13-04 19:40 jcdutton       Bugnote Added: 0001415                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+Cheers, Bry.
 
 
 -------------------------------------------------------
