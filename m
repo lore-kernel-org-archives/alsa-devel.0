@@ -1,13 +1,14 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
-Subject: Re: Oops in cs4281_suspend
-Date: Mon, 11 Nov 2002 17:19:14 +0100 (CET)
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: [PATCH] USB MIDI bugs
+Date: 11 Nov 2002 16:46:58 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0211111716180.1287-100000@mailserver.intern.bfad.de>
-References: <20021111143136.GB6862@localhost.localdomain>
+Message-ID: <1037062022.7805.129.camel@cmn37.Stanford.EDU>
+References: <Pine.HPX.4.33n.0211110905510.16551-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021111143136.GB6862@localhost.localdomain>
+In-Reply-To: <Pine.HPX.4.33n.0211110905510.16551-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,51 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-15?Q?Jos=E9?= Fonseca <j_r_fonseca@yahoo.co.uk>
-Cc: alsa-devel@lists.sourceforge.net, arip@bfad.de
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-> options (also attached), it shows that the problem is in the line:
-> 
-> 	chip->suspend_regs[i] = snd_cs4281_peekBA0(chip, saved_regs[i]);
+> This fixes sequencer input from USB MIDI. Both usbmidi.c and seq_midi.c
+> thought they could use substream->runtime->private_data for themselves.
 
-Very good report :-)
+Thanks! sequencer input is now working on Muse (both 0.5 and 0.6
+versions)! Regretfully output seems to not work now :-(
 
-I think the following patch should solve this problem. But since that
-suspend/resume seems to not have been tested at all for that driver, may be
-some other things will show up.
+If I turn on debugging in Muse I can see the input events (note on and
+note off) being accepted and then the attempt to send them to the output
+that fails with this error:
 
-Index: alsa-kernel/pci/cs4281.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/cs4281.c,v
-retrieving revision 1.29
-diff -u -r1.29 cs4281.c
---- alsa-kernel/pci/cs4281.c	21 Oct 2002 18:28:23 -0000	1.29
-+++ alsa-kernel/pci/cs4281.c	11 Nov 2002 16:14:53 -0000
-@@ -2109,7 +2109,7 @@
- 	snd_cs4281_pokeBA0(chip, BA0_HICR, BA0_HICR_CHGM);
- 
- 	/* remember the status registers */
--	for (i = 0; number_of(saved_regs); i++)
-+	for (i = 0; i < number_of(saved_regs); i++)
- 		if (saved_regs[i])
- 			chip->suspend_regs[i] = snd_cs4281_peekBA0(chip, saved_regs[i]);
- 
-@@ -2153,7 +2153,7 @@
- 	snd_cs4281_chip_init(chip, 0);
- 
- 	/* restore the status registers */
--	for (i = 0; number_of(saved_regs); i++)
-+	for (i = 0; i < number_of(saved_regs); i++)
- 		if (saved_regs[i])
- 			snd_cs4281_pokeBA0(chip, saved_regs[i], chip->suspend_regs[i]);
- 
+MidiAlsaDevice::putEvent(): midi write error, returns -19 expected 28:
+No such device
 
+This is the printout of the received event:
+MidiInput: port:0 chan:0 type:0x90 a=58 b=56
 
-Best regards,
---
-Tomasz Motylewski
-BFAD GmbH & Co. KG
+and the output event that precedes the error message:
+MidiOut: MidiAlsa: port:0 chan:0 type:0x90 a=58 b=56
+
+There are no error printed when Muse subscribes to the input and output
+ports. I'll see if I can repeat the error with some other software
+package. 
+
+Thanks again for all your help!
+-- Fernando
+
 
 
 
