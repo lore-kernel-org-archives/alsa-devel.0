@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 20:32:00 +0100
-Message-ID: <8179ca21741ff2c6cb686679df13d95b@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 20:39:26 +0100
+Message-ID: <c45c75465ab49eaf7284926ede805544@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E899274
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 20:32:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6284C2AC
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 20:39:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 20:31 CET
+Last Modified:              12-23-2004 20:39 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -79,16 +79,51 @@ Thomas Hood
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-23-04 14:56 
-----------------------------------------------------------------------
-Now back from lunch :)  The new patch is attached.
-
-----------------------------------------------------------------------
  jdthood - 12-23-04 20:31 
 ----------------------------------------------------------------------
 The new patch seems to fix the problem.  Without any sleep,
 the "alsactl restore" in the dev.d script succeeds in restoring
 the mixer levels.  Good work.
+
+----------------------------------------------------------------------
+ jdthood - 12-23-04 20:39 
+----------------------------------------------------------------------
+FYI here is how my syslog looks now (with your second patch):
+
+Dec 23 20:26:05 thanatos udev[28891]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 50 applied, 'timer' becomes
+'snd/%k'
+Dec 23 20:26:05 thanatos udev[28891]: creating device node
+'/dev/snd/timer'
+Dec 23 20:26:06 thanatos kernel: PCI: Found IRQ 11 for device
+0000:00:06.0
+Dec 23 20:26:06 thanatos kernel: PCI: Sharing IRQ 11 with 0000:00:02.0
+Dec 23 20:26:06 thanatos kernel: PCI: Sharing IRQ 11 with 0000:01:00.0
+Dec 23 20:26:06 thanatos udev[28910]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 49 applied, 'midiC0D0' becomes
+'snd/%k'
+Dec 23 20:26:06 thanatos udev[28910]: creating device node
+'/dev/snd/midiC0D0'
+Dec 23 20:26:06 thanatos udev[28918]: creating device node '/dev/midi'
+Dec 23 20:26:06 thanatos udev[28928]: creating device node '/dev/dmmidi'
+Dec 23 20:26:07 thanatos udev[28936]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0p' becomes
+'snd/%k'
+Dec 23 20:26:07 thanatos udev[28936]: creating device node
+'/dev/snd/pcmC0D0p'
+Dec 23 20:26:07 thanatos udev[28948]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 48 applied, 'pcmC0D0c' becomes
+'snd/%k'
+Dec 23 20:26:07 thanatos udev[28948]: creating device node
+'/dev/snd/pcmC0D0c'
+Dec 23 20:26:07 thanatos udev[28958]: creating device node '/dev/dsp'
+Dec 23 20:26:07 thanatos udev[28966]: creating device node '/dev/audio'
+Dec 23 20:26:07 thanatos udev[28978]: configured rule in
+'/etc/udev/rules.d/udev.rules' at line 46 applied, 'controlC0' becomes
+'snd/%k'
+Dec 23 20:26:07 thanatos udev[28978]: creating device node
+'/dev/snd/controlC0'
+Dec 23 20:26:07 thanatos udev[28988]: creating device node '/dev/mixer'
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -112,6 +147,7 @@ Date Modified  Username       Field                    Change
 12-23-04 14:57 tiwai          File Added: control-device-fix2.diff              
      
 12-23-04 20:31 jdthood        Note Added: 0002928                          
+12-23-04 20:39 jdthood        Note Added: 0002929                          
 ======================================================================
 
 
