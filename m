@@ -1,29 +1,20 @@
-From: Christoph Lukas <christoph.lukas@gmx.net>
-Subject: ACPI S3 support in intel8x0
-Date: Tue, 23 Mar 2004 22:46:35 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: Re: Problems running latencytest: "error setting freq
+	1024"
+Date: 23 Mar 2004 15:08:50 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1080078395.1080.51.camel@beja>
+Message-ID: <1080083330.32365.278.camel@cmn37.stanford.edu>
+References: <20040323205352.GA3246@fliwatut.scifi>
+	 <200403232133.i2NLXCZt015035@dhin.linuxaudiosystems.com>
+	 <20040323214205.GA4382@fliwatut.scifi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-AxXB4Dv7KUFBPDvDjIT1"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from moutng.kundenserver.de (moutng.kundenserver.de [212.227.126.184])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA04572
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2004 22:47:05 +0100
-Received: from [212.227.126.208] (helo=mrelayng.kundenserver.de)
-	by moutng.kundenserver.de with esmtp (Exim 3.35 #1)
-	id 1B5tjf-0000RW-00
-	for alsa-devel@alsa-project.org; Tue, 23 Mar 2004 22:46:59 +0100
-Received: from [217.235.144.27] (helo=endo.staad.pingworks.net)
-	by mrelayng.kundenserver.de with asmtp (TLSv1:EDH-RSA-DES-CBC3-SHA:168)
-	(Exim 3.35 #1)
-	id 1B5tjf-0003zb-00
-	for alsa-devel@alsa-project.org; Tue, 23 Mar 2004 22:46:59 +0100
-Received: from beja.staad.pingworks.net
-	([192.168.0.61] helo=sat1-w2k ident=cluk)
-	by endo.staad.pingworks.net with asmtp
-	(Cipher TLSv1:RC4-MD5:128) (Exim 3.35 #1 (Debian))
-	id 1B5tjI-0001al-00
-	for <alsa-devel@alsa-project.org>; Tue, 23 Mar 2004 22:46:36 +0100
+Received: from smtp3.Stanford.EDU (smtp3.Stanford.EDU [171.67.16.117])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA06430
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2004 00:08:57 +0100
+In-Reply-To: <20040323214205.GA4382@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -32,98 +23,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Frank Barknecht <fbar@footils.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+> > >$ measure -p ./out/x11.png -o ./out/x11.out -c 0 -f 1024 -n 2 -t 2
+> > >I get this error message: "error setting freq 1024"
+> > 
+> > probably a permissions problem. try it as root.
+> 
+> This is while runng at root. (Sorry for the "$" I typed that one by
+> hand). 
+> 
+> A tip from Tim Goetze to do: 
+> 
+>  # echo 2048 > /proc/sys/dev/rtc/max-user-freq
+> (^ sic!)
+> 
+> didn't help either yet. I did a strace on the measure run now, which
+> showed something equally strange (to my eyes): 
+> 
+> mlockall(MCL_CURRENT|MCL_FUTURE)        = 0
+> sched_get_priority_max(0x1)             = 99
+> sched_setscheduler(0, 0x1, 0xbfffe254)  = 0
+> open("/dev/midi0", O_RDWR)              = 3
+> ioctl(3, 0x40047401, 0x400)             = -1 ENOTTY (Inappropriate ioctl for device)
+> write(2, "error setting freq 1024\n", 24) = 24
+> exit_group(1)                           = ?
+> 
+> I'm still puzzled. Why "/dev/midi0"?
 
---=-AxXB4Dv7KUFBPDvDjIT1
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Takashi is apparently using that to communicate with the latency test
+kernel module (I think he mentions it in the README :-)
 
-Hi,
+I have it running here with no problems, will post pointers to some
+results (2.6.4 + 2.6.5rc2 + bk2 + lsm + drm lowlat patches, w and w/o
+preempt). 
 
-I have spent some time to get ACPI S3 working on my Dell Latitude D800.
-The remaining problem is that the soundcard does not work after resume.
+-- Fernando
 
-I am running a patched 2.6.3 Kernel with Alsa 1.0.2c.
-
-Without unloading the drivers before suspend I get lots of the following
-messages after resume:
-
-Mar 23 21:24:57 beja kernel: ALSA
-/usr/src/modules/alsa-driver/kbuild/../pci/int
-el8x0.c:606: codec_read 0: semaphore is not ready for register 0x2
-
-I found a posting[1] on acpi-devel@lists.sourceforge.net which seemed to
-describe a similar problem with the pci config space not being correctly
-saved and restored by the driver.
-
-I used a shell script to save and restore pci config space with
-lspci/setpci before suspend and after resume. 
-Using this script to restore the pci config space after resume and
-calling  
-alsactl power D3
-alsactl power D0
-after resume made the soundcard working again!
-
-Although I have hardly any C skills I then tried to fix the driver code.
-You can find my poor patch attached. But now it seems to me that
-snd_intel8x0_suspend isn't even called before suspend and I am a bit at
-a loss.
-
-Any hints appreciated.
-
-Christoph
-
-
-[1]:http://sourceforge.net/mailarchive/message.php?msg_id=7591163
-
-
-
-
---=-AxXB4Dv7KUFBPDvDjIT1
-Content-Disposition: attachment; filename=intel8x0.c.diff
-Content-Type: text/plain; name=intel8x0.c.diff; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
---- pci/intel8x0.c.orig	Tue Mar 23 20:04:03 2004
-+++ pci/intel8x0.c	Tue Mar 23 21:21:56 2004
-@@ -426,6 +426,7 @@
- 	
- #ifdef CONFIG_PM
- 	int in_suspend;
-+	u32 pm_state[16];
- #endif
- };
- 
-@@ -2182,13 +2183,25 @@
- static int snd_intel8x0_suspend(struct pci_dev *dev, u32 state)
- {
- 	intel8x0_t *chip = snd_magic_cast(intel8x0_t, pci_get_drvdata(dev), return -ENXIO);
-+	snd_printk("IN SUSPEND0\n");
- 	intel8x0_suspend(chip);
-+	
-+	snd_printk("IN SUSPEND\n");
-+	pci_save_state(dev, chip->pm_state);
-+	pci_disable_device(dev);
-+	pci_set_power_state(dev, state);
-+	
- 	return 0;
- }
- static int snd_intel8x0_resume(struct pci_dev *dev)
- {
- 	intel8x0_t *chip = snd_magic_cast(intel8x0_t, pci_get_drvdata(dev), return -ENXIO);
- 	intel8x0_resume(chip);
-+	
-+	snd_printk("IN RESUME\n");
-+	pci_set_power_state(dev, 0);
-+	pci_restore_state(dev, chip->pm_state);
-+	
- 	return 0;
- }
- #else
-
---=-AxXB4Dv7KUFBPDvDjIT1--
 
 
 
