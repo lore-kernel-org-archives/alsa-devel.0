@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000586]: AC3 pass thru SPDIF has DropOuts
-Date: Tue, 19 Oct 2004 20:27:59 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Q: Periodsize for capture, SBLive
+Date: Tue, 19 Oct 2004 16:28:08 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041019182759.028DC18009@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1098217687.23367.0.camel@krustophenia.net>
+References: <200410190807.i9J87NmG000466@www6.pobox.sk>
+	 <20041019081918.GB24099@stud.ntnu.no>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D75632B
-	for <alsa-devel@alsa-project.org>; Tue, 19 Oct 2004 20:28:00 +0200 (MEST)
+In-Reply-To: <20041019081918.GB24099@stud.ntnu.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,55 +18,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?Asbj=F8rn_S=E6b=F8?= <asbjs@stud.ntnu.no>
+Cc: Peter Zubaj <pzad@pobox.sk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2004-10-19 at 04:19, Asbjørn Sæbø wrote:
+> On Tue, Oct 19, 2004 at 10:07:23AM +0200, Peter Zubaj wrote:
+> > > OK.  Any idea why I get 384?
+> > I think hardware can't do less. If you need less latency use hw:0,2
+> > and set more channel count (1, 2, 4, 8, 16, 32)
+> 
+> Thanks for your advice.  I do however not think I understand this fully.
+> Why will increasing the channel count give lower latency?
+> 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000586
-======================================================================
-Reported By:                msc
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     586
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian/unstable
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             10-19-2004 14:55 CEST
-Last Modified:              10-19-2004 20:27 CEST
-======================================================================
-Summary:                    AC3 pass thru SPDIF has DropOuts
-Description: 
-i can't play AC3 thru (optical) SPDIF out anymore.
-external receiver has a lot of dropouts.
-======================================================================
+http://sourceforge.net/mailarchive/message.php?msg_id=9514175
 
-----------------------------------------------------------------------
- pzad - 10-19-2004 15:01 CEST 
-----------------------------------------------------------------------
-This bug was fixed in alsa 1.0.7rc2.
+Lee
 
-----------------------------------------------------------------------
- msc - 10-19-2004 20:27 CEST 
-----------------------------------------------------------------------
-ok thanks for info, i will check this within the next few days.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-19-04 14:55 msc            New Bug                                      
-10-19-04 14:55 msc            Distribution              => debian/unstable 
-10-19-04 14:55 msc            Kernel Version            => 2.6.8           
-10-19-04 15:01 pzad           Bugnote Added: 0002205                       
-10-19-04 20:27 msc            Bugnote Added: 0002208                       
-======================================================================
 
 
 -------------------------------------------------------
