@@ -1,17 +1,13 @@
-From: alsa@0x00.my-ho.st
-Subject: Re: Maestro 2E (rev 10) not found or device busy w/
- 0.9.2
-Date: Fri, 25 Apr 2003 11:02:07 -0600 (MDT)
+From: Glen Gee <ggeeggee@yahoo.com>
+Subject: Re: Envy24-VT1712 interleaved channels.
+Date: Fri, 25 Apr 2003 10:38:49 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0304251036470.0@0x00.my-ho.st>
-References: <Pine.LNX.4.50.0303261659330.8112-100000@0x00.my-ho.st>
- <s5hof3xnp8c.wl@alsa2.suse.de> <Pine.LNX.4.50.0303271039120.8112-100000@0x00.my-ho.st>
- <0304061234440.0@0x00.my-ho.st> <s5histpq7z0.wl@alsa2.suse.de>
- <0304081112590.0@0x00.my-ho.st> <s5hy92jpzd0.wl@alsa2.suse.de>
+Message-ID: <20030425173849.97413.qmail@web14301.mail.yahoo.com>
+References: <E198tch-0001hH-00@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy92jpzd0.wl@alsa2.suse.de>
+In-Reply-To: <E198tch-0001hH-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,66 +16,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 9 Apr 2003, Takashi Iwai wrote:
+Hi Jaroslav,
 
-> At Tue, 8 Apr 2003 12:15:42 -0600 (MDT),
-> alsa@0x00.my-ho.st wrote:
-> >
-> > >  (you can proceed the process there by
-> > > replacing 0x8a05 to 0x0a05...)
-> >
-> > This change allows the driver to load, but:
+We intend to use the Envy24-1712 chip to perform A/D
+conversion for the input capture channels.  Of the 0-7
+analog input channels we want to make them stereo
+pairs and thus end up with 4 input stereo channels. 
+The channels must be independant...meaning no
+mixing..orginal analog data must be preserved in
+digital form.  The digital data will be streamed over
+ethernet and thus latency is an issue as well.  All
+channels must perform A/D activity at the same time. 
+At this point we are trying to figure out if the alsa
+driver supports this...or if you can advise us on how
+to accomplish this.
+
+Thanks.
+
+> All input lines are captured at once in interleaved
+> sample frames.
+> There is 12 capture channels. Hardware vendors
+> usually connects 0-7 
+> channels as analog, 8-9 as S/PDIF and 10-11 is the
+> digital stereo mixer 
+> which contains result of playback and captured
+> channels controlled with
+> a matrix mixer.
+> 
+>       Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
+> 
+> 
 >
-> there are two places which check AC97_REC_GAIN.
-> line 1980 and line 2064 in the latest cvs.
-> you'll need to change both parts.
 
-Thanks, that seemed to do the trick.  I did have to force the building of
-the PC Speaker controls as well, but it seems to work okay now (the mixer
-controls actually seem to work better than with the 'maestro' kernel
-driver :)).
-
-It does seem that something still isn't quite right though.  I'm getting
-quite a few of these types of messages:
-
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156: Unexpected hw_pointer
-value (stream = 0, delta: -922, max jitter = 1024): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer
-value (stream = 0, delta: -998, max jitter = 1024): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156: Unexpected hw_pointer
-value (stream = 0, delta: -694, max jitter = 1024): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156: Unexpected hw_pointer
-value (stream = 0, delta: -1094, max jitter = 8192): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156: Unexpected hw_pointer
-value (stream = 0, delta: -972, max jitter = 8192): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer
-value (stream = 0, delta: -688, max jitter = 8192): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:156: Unexpected hw_pointer
-value (stream = 0, delta: -1488, max jitter = 8192): wrong interrupt
-acknowledge?
-kernel: ALSA ../alsa-kernel/core/pcm_lib.c:215: Unexpected hw_pointer
-value (stream = 0, delta: -532, max jitter = 8192): wrong interrupt
-acknowledge?
-
-I've also had the system hang once when unloading the ALSA kernel modules,
-as well as very rarely seeing these messages:
-
-kernel: spurious 8259A interrupt: IRQ7.
-kernel: spurious 8259A interrupt: IRQ15.
-
-Any thoughts on what might be the problem?  Thanks.
-
-  - Ted
+__________________________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo
+http://search.yahoo.com
 
 
 -------------------------------------------------------
