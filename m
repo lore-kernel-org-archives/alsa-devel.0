@@ -1,12 +1,15 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: No line in 2 or aux 2 for emu10k1
-Date: Fri, 25 Mar 2005 23:43:20 -0500
-Message-ID: <1111812200.24049.14.camel@mindpipe>
-References: <200503251824.10744.nightbreed@verizon.net>
+From: Jean Delvare <khali@linux-fr.org>
+Subject: Re: 2.6.12-rc1-mm3, sound card lost id
+Date: Sat, 26 Mar 2005 11:19:45 +0100
+Message-ID: <20050326111945.5eb58343.khali__39123.1487425559$1111832527$gmane$org@linux-fr.org>
+References: <20050325002154.335c6b0b.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503251824.10744.nightbreed@verizon.net>
+Received: from mallaury.noc.nerim.net (smtp-106-saturday.noc.nerim.net [62.4.17.106])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A12D22D
+	for <alsa-devel@alsa-project.org>; Sat, 26 Mar 2005 11:19:46 +0100 (MET)
+In-Reply-To: <20050325002154.335c6b0b.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +19,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: nightbreed@verizon.net
-Cc: alsa-devel@lists.sourceforge.net
+To: Andrew Morton <akpm@osdl.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2005-03-25 at 18:24 -0500, Gary Jones wrote:
-> With the latest build of the alsa drivers using the cvs on March 25, 2005 I 
-> can no longer get access to the line in 2 or aux 2. When I activate ld10k1 I 
-> can access it but, line in 1 and aux 1 vanishes. The 2 on the livedrive 
-> however, becomes very silent. I can hear noise but I can't adjust the volume 
-> on them. Well I mean I can move sliders on mixers but it does nothing for the 
-> volume. I have an audigy1.
+> ftp://ftp.kernel.org/pub/linux/kernel/people/akpm/patches/2.6/2.6.12-rc1/2.6.12-rc1-mm3/
+> (...)
+>  bk-alsa.patch
 
-It works for me.  What exactly is your test procedure?
+This one made /proc/asound/card0/id change from "Live" to "Unknown" on
+one of my systems, preventing alsatcl from properly restoring my mixer
+settings.
 
-Please try to establish when this stopped working.  You can build ALSA
-CVS from Feb 1, 2005 with "cvs update -D 2005-02-01" for example.
+I guess this wasn't exactly expected?
 
-Lee
+00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 06)
+        Subsystem: Creative Labs CT4832 SBLive! Value
+        Flags: bus master, medium devsel, latency 48, IRQ 5
+        I/O ports at 8800 [size=32]
 
+Class:     0401
+Device:    1102:0002
+Subsystem: 1102:8027
+
+Thanks,
+-- 
+Jean Delvare
 
 
 -------------------------------------------------------
