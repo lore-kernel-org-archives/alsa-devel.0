@@ -1,16 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
-Date: Thu, 12 Aug 2004 02:50:10 +0200 (CEST)
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Bluetooth headsets, and ALSA
+Date: Wed, 11 Aug 2004 20:07:58 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040812005010.E72F61102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040812030758.27108.qmail@web60803.mail.yahoo.com>
+References: <E1Bv5rp-0002iC-81@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43260173
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 02:50:11 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 0220717378
-	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 02:50:11 +0200 (MEST)
+In-Reply-To: <E1Bv5rp-0002iC-81@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,45 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm now playing around with bluetooth (quite fun, actually), and was
+wondering...
+Given that bluetooth headsets exist, and they do digitize sound (and reverse). 
+Has anyone gotten them to work (ALSA, or otherwise) to digitize sound into a
+file, or to playback something (just about anything might do).
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
-======================================================================
-Reported By:                snaketails
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     435
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             08-12-2004 02:50 CEST
-Last Modified:              08-12-2004 02:50 CEST
-======================================================================
-Summary:                    No current support for the ICH6R & ALC880 devices
-Description: 
-As this is a new mobo, there is no driver configuration that supports this
-newer buss interface devices, so there is no sound from the mobo.
-The inability for the mobo to run SATA under Linux is not an issue here,
-as I am using the SiS SATA driver, only issue is sound
-======================================================================
+Not that I have an immediate need, I was just wondering.
+Note:  The sound goes thru several layers before an application can see it when
+bluetooth is there.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-12-04 02:50 snaketails     New Bug                                      
-08-12-04 02:50 snaketails     Distribution              => Gentoo          
-08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
-======================================================================
+
+=====
+-- 
+Tom Watson
+tsw@johana.com
+
+
+		
+__________________________________
+Do you Yahoo!?
+Take Yahoo! Mail with you! Get it on your mobile phone.
+http://mobile.yahoo.com/maildemo 
 
 
 -------------------------------------------------------
