@@ -1,14 +1,12 @@
-From: rob buse <rcbuse@filter24.org>
-Subject: new sequencer
-Date: Wed, 19 Jun 2002 20:29:31 -0400
+From: Paul Davis <pbd@op.net>
+Subject: Re: prepare(substream)
+Date: Wed, 19 Jun 2002 22:35:49 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020620002931.GA6194@filter24.mshome.net>
-Reply-To: rcbuse@filter24.org
-Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <E17Krmk-0001yU-00@usw-sf-list1.sourceforge.net>
+References: <20020619184915.27895.qmail@web11508.mail.yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: Your message of "Wed, 19 Jun 2002 11:49:14 PDT."
+             <20020619184915.27895.qmail@web11508.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>I believe that I have misunderstood the meaning of this function, could anyone
+>explain?
 
+prepare is used to get the hardware ready to be started. 
 
-Hey everyone!
+>In a test of a driver, I see this sequence for playback:
 
-I just wanted to let everyone take a look at what Ive been working on.  
-Its a new midi sequencer that uses the 0.9.0 alsa sequencer interface.
-
-check it.
-
-http://www.filter24.org/seq24/index.html
-
-its not released yet, but it soon should be.
-
-cheers,
-.buse
-
-----------------------------------------------------------
-music + technology                     http://filter24.org
+>pointer()   << gets current h/w pointer location
+>copy()      << moves silence or initial data into h/w buffer
+>prepare()   << get h/w ready for starting
+>copy()      << copy more data
+>pointer()   << get current h/w pointer location
+>copy()      << etc. etc.
+>pointer()
+>pointer()
 
 
 -------------------------------------------------------
