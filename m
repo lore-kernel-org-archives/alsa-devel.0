@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000378]: Audigy LS - Video playback stutters the first 5 seconds
-Date: Fri, 27 Aug 2004 20:21:44 +0200 (CEST)
+Date: Fri, 27 Aug 2004 20:22:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827182144.1D0C72C008@server.perex-int.cz>
+Message-ID: <20040827182239.710422C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D8B11F7
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:21:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D9301F7
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:22:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been ASSIGNED.
+The following bug requires your FEEDBACK.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000378
 ======================================================================
@@ -33,12 +33,12 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     assigned
+Status:                     feedback
 Distribution:               Gentoo
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-12-2004 10:41 CEST
-Last Modified:              08-27-2004 20:21 CEST
+Last Modified:              08-27-2004 20:22 CEST
 ======================================================================
 Summary:                    Audigy LS - Video playback stutters the first 5 seconds
 Description: 
@@ -66,6 +66,7 @@ Date Modified  Username       Field                    Change
 07-12-04 10:41 Luke           Kernel Version            => 2.6.7           
 08-27-04 20:08 jcdutton       Bugnote Added: 0001649                       
 08-27-04 20:21 jcdutton       Assigned To              pzad => jcdutton    
+08-27-04 20:22 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
