@@ -1,13 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000401]: alsaconf correctly identifies the driver, but it fails to load properly
-Date: Thu, 22 Jul 2004 16:38:00 +0200 (CEST)
+From: "Wouters, Michael" <Michael.Wouters@measurement.gov.au>
+Subject: Random clicks at beginning of playback when audio length exceeds hardware buffer size
+Date: Fri, 23 Jul 2004 09:26:18 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040722143800.E97E430006@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <5AE60AD9CA268C49AC231924D4113193579269@s031pvmail.in.measurement.gov.au>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 486CA24F
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jul 2004 16:38:01 +0200 (MEST)
+Content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,73 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000401
-======================================================================
-Reported By:                ronis
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     401
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware-10.0
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             07-21-2004 18:30 CEST
-Last Modified:              07-22-2004 16:38 CEST
-======================================================================
-Summary:                    alsaconf correctly identifies the driver, but it fails to load properly
-Description: 
-alsaconf chooses this driver, but when it tries to load:
+(Looks like my first attempt to confirm subscription failed because of
+local email
+ problems so I'll try again)
 
- kernel: ATI IXP AC97 controller: probe of 0000:00:14.5 failed with error
--13
+Hello,
 
-No sound, needless to say.
+In my application, I am playing audio data which has an initial period
+of silence
+followed by audio of variable length and then finishing with a period of
+silence.
+I am playing sound data repeatedly, with breaks between each playback.
+There is about 6 s
+of 8 kHz audio, preceded by a few s of silence.
 
+I have noticed that there is a "random" pop at the beginning of audio
+playback when=20
+the length of the section following the initial silence is bigger than
+about 32 K (8 bit data). This amplitude of this pop is random.
+This seems to correspond to the size of the hardware buffer. If I try to
+set the hardware buffer bigger than 32K it is clamped to 32K so I assume
+this is as big as it can get.
+BTW the non-dependence on the initial period of silence suggests that
+there is some sort of compression to reduce I/O - is this right ?
 
-======================================================================
+In my application I am writing from a buffer in non-blocked mode,
+looping until the buffer is written.
 
-----------------------------------------------------------------------
- ronis - 07-21-2004 21:55 CEST 
-----------------------------------------------------------------------
-Oops, I just realized I'd pasted the wrong lines from lspci -vn:  
+I am using alsa 1.05a, SBLive!5.1 (emu10k1 driver) and a 2.4.18-5 kernel
+(don't ask).
 
-Here are the correct ones:
+Cheers
+Michael Wouters
 
-00:14.5 Class 0401: 1002:4341
-        Subsystem: 103c:006b
-        Flags: bus master, 66Mhz, slow devsel, latency 64, IRQ 5
-        Memory at d0003000 (32-bit, non-prefetchable) [size=256]
+Time and Frequency Section
+National Measurement Institute
+Bradfield Road
+Lindfield NSW 2070 Australia
+Ph  61 2 8467 3501
+Fax 61 2 8467 3610
 
-----------------------------------------------------------------------
- ronis - 07-22-2004 16:38 CEST 
-----------------------------------------------------------------------
-I've resolved the problem.  Installing the CVS version of the atiixp
-driver
-works.   I'd been using the driver that came with the 2.6.7 linux kernel
-sources.
-
-Guess you can close this one.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-21-04 18:30 ronis          New Bug                                      
-07-21-04 18:30 ronis          Distribution              => slackware-10.0  
-07-21-04 18:30 ronis          Kernel Version            => 2.6.7           
-07-21-04 21:55 ronis          Bugnote Added: 0001465                       
-07-22-04 16:38 ronis          Bugnote Added: 0001467                       
-======================================================================
 
 
 -------------------------------------------------------
