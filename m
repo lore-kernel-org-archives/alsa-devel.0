@@ -1,13 +1,10 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000866]: Can not install snd-intel8x0
-Date: Tue, 22 Mar 2005 15:12:27 +0100
-Message-ID: <5087a250e65bab540553c05c7ef02d91@bugtrack.alsa-project.org>
+From: support <Patrica@skynet.be>
+Subject: Re:
+Date: Wed, 23 Mar 2005 00:33:45 +0000
+Message-ID: <E1DDu4I-0000oP-MX@sc8-sf-mx2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5866928B
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:12:27 +0100 (MET)
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: quoted-printable
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,107 +14,97 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+---------->< >< ><-----------
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=866> 
-======================================================================
-Reported By:                ghostdaemon
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   866
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             01-31-2005 05:30 CET
-Last Modified:              03-22-2005 15:12 CET
-======================================================================
-Summary:                    Can not install snd-intel8x0
-Description: 
-I have to use Redhat Linux 7.3.I have  tried ALSA 1.0.8 and 0.9.6,but they
-all failed .when i extact driver package to ./config;make;make install
-,some errors infomation displayed.such as:
- unresolved symbol fasync_helper_Rsmp_0f820065
- unresolved symbol proc_symlink_Rsmp_515b8074
- ...........
- ...........
+~~ =CC=C8=D4 =C8=CB=C8 =D0=C5=C0=CB=DC=CD=CE=D1=D2=DC! ~~
+-------------------------
+=CA=E0=E6=E4=FB=E9 =F0=E0=E7, =EAo=E3=E4=E0 =EC=FB =E2=E8=E4=E8=EC =EFo =F2=
+=E5=EB=E5=E2=E8=E7o=F0=F3 =E8=EB=E8 =F7=E8=F2=E0=E5=EC =E2 =E3=E0=E7=E5=F2=
+=E5, =EA=E0=EA =F1 =EFo=EC=EE=F9=FC=FE =F1=F0=E5=E4=F1=F2=E2 =ED=E5=EB=E5=
+=E3=E0=EB=FC=ED=EE=E3=EE =F1=FA=E5=EC=E0 =E8=ED=F4=EE=F0=EC=E0=F6=E8=E8 =E1=
+=FB=EB =F0=E0=F1=EA=F0=FB=F2 =F7=E5=E9-=F2o =F1=E5=EA=F0=E5=F2, =EC=FB =EF=
+=F0o =F1=E5=E1=FF =E4=F3=EC=E0=E5=EC: "=CA =CD=C0=D8=C5=C9 =D0=C5=C0=CB=DC=
+=CD=CE=D1=D2=C8 =FD=F2=EE =ED=E5 =E8=EC=E5=E5=F2 =ED=E8=EA=E0=EA=EE=E3o o=
+=F2=EDo=F8=E5=ED=E8=FF! "=C6=F3=F7=EA=E8" - =FD=F2o =CC=C8=D4 =E8=EB=E8 =EC=
+=E0=EA=F1=E8=EC=F3=EC =E8=E3=F0=F3=F8=EA=E8 =F1=EF=E5=F6=F1=EB=F3=E6=E1 =E8=
+ =E1=EE=EB=FC=F8=EE=E3o =E1=E8=E7=ED=E5=F1=E0".
 
-when i use modpobe command:
-[root@localhost root]# modprobe snd-intel8x0
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-fasync_helper_Rsmp_0f820065
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-proc_symlink_Rsmp_515b8074
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-remove_proc_entry_Rsmp_18199406
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-kill_fasync_Rsmp_f866c12a
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-proc_root_Rsmp_c79b35f0
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-register_chrdev_Rsmp_10735b95
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-create_proc_entry_Rsmp_9cfe096c
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-register_sound_special_Rsmp_3a650025
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-remove_wait_queue_Rsmp_ca8842ea
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-add_wait_queue_Rsmp_2fd0ca84
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-__pollwait_Rsmp_4c541ea9
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod snd-intel8x0
-failed
-[root@localhost root]#
+=CA =F1=EE=E6=E0=EB=E5=ED=E8=FE "=E6=F3=F7=EA=E8" - =FD=F2o =D0=C5=C0=CB=DC=
+=CD=CE=D1=D2=DC. =D0=E5=E0=EB=FC=ED=EE=F1=F2=FC, =EAo=F2o=F0=E0=FF =F1 =F0=
+=E0=E7=EC=E0=F5o=EC =E2=F5=EE=E4=E8=F2 =E2 =ED=E0=F8=F3 =E6=E8=E7=ED=FC. =
+8 =E8=E7 1O =F7=E5=EBo=E2=E5=EA, =EF=EE=E7=E2o=ED=E8=E2=F8=E8=F5 =EFo =F0=
+=E5=EA=EB=E0=EC=E5 =E4=E5=F2=E5=EA=F2o=F0=EE=E2 =EF=EE=E4=F1=EB=F3=F8=E8=E2=
+=E0=FE=F9=E8=F5 =F3=F1=F2=F0=EE=E9=F1=F2=E2, =F5o=F2=FF=F2 =ED=E5 =E7=E0=F9=
+=E8=F2=E8=F2=FC =F1=E5=E1=FF o=F2 =ED=E5=EF=F0=EE=F8=E5=ED=EDo=E3o =EF=EE=
+=E4=F1=EB=F3=F8=E8=E2=E0=ED=E8=FF =E8 =EF=EE=E4=E3=EB=FF=E4=FB=E2=E0=ED=E8=
+=FF, =E0 =ED=E0=EE=E1o=F0o=F2 =F1=E0=EC=E8 =E8=ED=F2=E5=F0=E5=F1=F3=FE=F2=
+=F1=FF, =E3=E4=E5 =ECo=E6=EDo =EF=F0=E8o=E1=F0=E5=F1=F2=E8 "=E6=F3=F7=EE=EA=
+", =F7=F2o=E1=FB =F1 =EF=EE=ECo=F9=FC=FE =E5=E3o =F3=E7=ED=E0=F2=FC =F1=E5=
+=EA=F0=E5=F2=FB =E4=F0=F3=E3=E8=F5.
 
-My Motherboard is ASUS P4P800, AD1985 integrated on it.
+=D1=EFo=F0=FE, =F7=F2o =C2=FB =ED=E5 =F0=E0=E7 =F5=EE=F2=E5=EB=E8 =E1=FB =
+=EF=EE=E4=F1=EB=F3=F8=E0=F2=FC =F7=F3=E6o=E9 =F0=E0=E7=E3=EE=E2=EE=F0. =CD=
+=EE =EA=E0=EA =EE=E1=E5=E7o=EF=E0=F1=E8=F2=FC =F1=E0=ECo=E3=EE =F1=E5=E1=FF=
+ =EE=F2 =F7=F3=E6o=E3o =EB=FE=E1=EE=EF=FB=F2=F1=F2=E2=E0?
 
-Many thanks !
+=C5=E4=E8=ED=F1=F2=E2=E5=ED=ED=EE=E5, =F7=F2o =E2=FB=E4=E0=E5=F2 =F0=E0=E1=
+o=F2=F3 =E1=E5=F1=EF=F0=EE=E2=EE=E4=ED=EE=E3=EE "=E6=F3=F7=EA=E0" - =FD=F2=
+o =E8=E7=EB=F3=F7=E5=ED=E8=E5 =E2=F1=F2=F0=EE=E5=ED=ED=EE=E3=EE =EF=E5=F0=
+=E5=E4=E0=F2=F7=E8=EA=E0. =C8=E7o=E1=F0=E0=E6=E5=ED=E8=E5 =E8=EB=E8 =E7=E2=
+=F3=EA =EF=E5=F0=E5=E4=E0=FE=F2=F1=FF =F1 =EF=EE=ECo=F9=FC=FE =FD=EB=E5=EA=
+=F2=F0=EE=EC=E0=E3=ED=E8=F2=ED=FB=F5 =E2=EE=EB=ED =ED=E0 =EF=F0=E8=E5=EC=ED=
+=E8=EA =E7=EB=EE=F3=EC=FB=F8=EB=E5=ED=ED=E8=EA=E0. =C8=EC=E5=ED=ED=EE =FD=
+=F2=EE =E8 =F3=EB=E0=E2=EB=E8=E2=E0=E5=F2 =EA=E0=F0=EC=E0=ED=ED=FB=E9 =EE=
+=E1=ED=E0=F0=F3=E6=E8=F2=E5=EB=FC =F1=EA=F0=FB=F2=FB=F5 =E2=E8=E4=E5=EE=EA=
+=E0=EC=E5=F0 =E8 =EF=EE=E4=F1=EB=F3=F8=E8=E2=E0=FE=F9=E8=F5 =F3=F1=F2=F0o=
+=E9=F1=F2=E2 ANTIBUG=F2=EC.
 
+=C4=E5=F2=E5=EA=F2o=F0=FB =F1=E5=F0=E8=E8 ANTIBUG=F2=EC =ECo=E3=F3=F2 =E8=
+=F1=EF=EE=EB=FC=E7=EE=E2=E0=F2=FC=F1=FF =E4=EB=FF =EE=E1=ED=E0=F0=F3=E6=E5=
+=ED=E8=FF =F0=E0=E1=EE=F2=E0=FE=F9=E8=F5 "=E6=F3=F7=EA=EE=E2" =E2 =EB=FE=E1=
+o=E9 =F1=E8=F2=F3=E0=F6=E8=E8. =CF=F0=E8=E1=EE=F0=FB =EA=EE=EC=EF=E0=EA=F2=
+=ED=FB, =ED=E0=E4=E5=E6=ED=FB, =EF=F0o=F1=F2=FB =E2 o=E1=F0=E0=F9=E5=ED=E8=
+=E8 =E8 =F1=EEo=E1=F9=E0=FE=F2 =EE=E1 o=E1=ED=E0=F0=F3=E6=E5=ED=E8=E8 "=E6=
+=F3=F7=EA=E0" =F1=E2=E5=F2=EE=E2=FB=EC=E8 =E8 =E7=E2=F3=EAo=E2=FB=EC=E8 =F1=
+=E8=E3=ED=E0=EB=E0=EC=E8.
 
-======================================================================
+=C2 =EB=FE=E1o=EC =EC=E5=F1=F2=E5, =E2 =EB=FE=E1=EE=E5 =E2=F0=E5=EC=FF =E7=
+=E0 =F1=F7=E8=F2=E0=ED=ED=FB=E5 =EC=E8=ED=F3=F2=FB =C2=FB =F1=EC=EE=E6=E5=
+=F2=E5 o=E1=F1=EB=E5=E4o=E2=E0=F2=FC o=EA=F0=F3=E6=E0=FE=F9=E5=E5 =EF=F0o=
+=F1=F2=F0=E0=ED=F1=F2=E2o, =ED=E0=E9=F2=E8 =E8 =EE=E1=E5=E7=E2=F0=E5=E4=E8=
+=F2=FC "=E6=F3=F7=EAo=E2", =E7=E0=F9=E8=F2=E8=F2=FC =F1o=E1=F1=F2=E2=E5=ED=
+=ED=EE=E5 =EF=F0=E0=E2o =ED=E0 =ED=E5=EF=F0=E8=EA=EE=F1=ED=EE=E2=E5=ED=ED=
+o=F1=F2=FC =F7=E0=F1=F2=ED=EE=E9 =E6=E8=E7=ED=E8 =E8 =EAo=ED=F4=E8=E4=E5=ED=
+=F6=E8=E0=EB=FC=ED=EE=F1=F2=FC =F1=EB=F3=E6=E5=E1=EDo=E9 =E8=ED=F4=EE=F0=EC=
+=E0=F6=E8=E8.
 
-----------------------------------------------------------------------
- tiwai - 01-31-05 18:54 
-----------------------------------------------------------------------
-Possibly the linux kernel source tree (or its kernel config file) doesn't
-match with your running kernel.  Please check it.
+--------------------------------------
+007.POKUPKI.NET
+=F2=E5=EB. (095) 961-55-98=20
 
-----------------------------------------------------------------------
- jdthood - 03-19-05 10:01 
-----------------------------------------------------------------------
-This is most likely not an ALSA bug but a problem with modules
-being built against different sources than were used for building
-the running kernel.
+ =E4o=F1=F2=E0=E2=EA=E0 =EFo =CC=EE=F1=EA=E2=E5 - =E1=E5=F1=EF=EB=E0=F2=ED=
+=EE=20
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-31-05 05:30 ghostdaemon    New Issue                                    
-01-31-05 18:54 tiwai          Note Added: 0003452                          
-03-19-05 10:01 jdthood        Note Added: 0004029                          
-03-22-05 15:12 jdthood        Status                   new => resolved     
-03-22-05 15:12 jdthood        Resolution               open => not an issue
-======================================================================
+ =CE=F2=EF=F0=E0=E2=EA=E0 =E2 =F0=E5=E3=E8=EE=ED=FB =ED=E0=EBo=E6=E5=ED=ED=
+=FB=EC =EF=EB=E0=F2=E5=E6=EE=EC=20
+
+ -------------->< >< ><---------------
+ =CB=C8=D7=CD=C0=DF =C6=C8=C7=CD=DC =C4=CE=CB=C6=CD=C0 =CE=D1=D2=C0=C2=C0=
+=D2=DC=D1=DF =CB=C8=D7=CD=CE=C9!
 
 
+
+=00
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+This SF.net email is sponsored by: 2005 Windows Mobile Application Contes=
+t
+Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphone=
+s
+for the chance to win $25,000 and application distribution. Enter today a=
+t
+http://ads.osdn.com/?ad_id=3D6882&alloc_id=3D15148&op=3Dclick
