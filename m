@@ -1,14 +1,14 @@
-From: Thomas Fjellstrom <tfjellstrom@shaw.ca>
-Subject: Re: no output with 0.9.0beta12 rawmidi
-Date: Fri, 12 Apr 2002 01:26:51 -0600
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: Update on website.
+Date: Fri, 12 Apr 2002 01:46:41 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0GUG006711TYAV@l-daemon>
-References: <0GUG006L21R3KR@l-daemon>
+Message-ID: <20020412084641.85F2C2757@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <0GUG006L21R3KR@l-daemon>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,23 +20,40 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On April 12, 2002 01:23 am, you wrote:
-> HI!
->
-> Im trying to figure out the rawmidi API for a project. Unfortunatly I cant
-> hear anything when playing a midi with my code or with the alsa-lib rawmidi
-> demo. I have a soundfont loaded, and I can hear the midis if I play them
-> with pmidi, But rawmidi just doesn't want to work.
->
-> System:
-> SBLive! Value
-> MSI K7T Pro w/RAID
-> Linux 1.4.18 (+rml preempt)
-        ^^^^^^
+I just spent most of today making some improvements to the new index page, adding new links and generally tidying up.
 
-Duh... I meant 2.4.18...
+I added links to the ALSA WIKI, Dr. Nagornis' 0.9.0 howto, Paul Davis's API guide and the .asoundrc txt file.
 
--- 
-Thomas Fjellstrom
-tfjellstrom@shaw.ca
-http://strangesoft.net
+I also completed the new index page so that it updates when news is added. Nice system Jaroslav.
+
+I feel that the new index page is ready to go primetime now. I believe it covers everything that was discussed over the past 4 months as being necessary including:
+
+- Easy access to crucial marketing information on the main page.
+- A brief but consise explanation of what ALSA is and why.
+- Access to recent news easily for those who wish to view it.
+- A flowing design. On most monitors all the crucial information is shown in the first screen.
+- The links don't take up as much space as they do currently.
+- Some simple php tricks so that windows and netscape users get approximately the same design.
+- layout and color scheme are fitting with the popular php paradigm.
+
+If anyone has anymore they would like added to the design please let me know. Otherwise I will take it to mean that the new page is accepted and I will make the switch.
+
+I'm also looking for suggestions for additional documentation links and would like to hear from developers who are supporting the 0.9 series so I can add your APPs to the applications page.
+
+
+Best regards.
+
+
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
