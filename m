@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
-Date: Wed, 12 Jan 2005 15:14:44 +0100
-Message-ID: <4aa314107764c7f02c780a7efb08a3ad@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000809]: asfxload + aconnect called before dsp used causes dsp to be locked
+Date: Wed, 12 Jan 2005 15:16:16 +0100
+Message-ID: <d1deb8bcc66f904803d91516253afb39@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25D29318
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:14:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DB1731A
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:16:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=809> 
 ======================================================================
-Reported By:                mr-k
+Reported By:                vinyvat
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   761
-Category:                   OTHERS
-Reproducibility:            random
-Severity:                   crash
+Issue ID:                   809
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Distribution:               Debian testing
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             12-30-2004 13:13 CET
-Last Modified:              01-12-2005 15:14 CET
+Date Submitted:             01-12-2005 09:34 CET
+Last Modified:              01-12-2005 15:16 CET
 ======================================================================
-Summary:                    Driver and all sound aplications hangs
+Summary:                    asfxload + aconnect called before dsp used causes
+dsp to be locked
 Description: 
-I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
-alsa
-from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
-problems.
+PS: This bug is present in the alsa version in stock kernel 2.6.8.1 up to
+1.0.8-rc2.
 
-Sometimes (up to couple times a day) driver crash and all processes using
-sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
-the
-module by rmmod (it hangs also). When i try to shutdown the system, it
-stops
-when it try to remove the module. ps hangs when it try to get
-informations
-about other hung processes, also when i try to do it manualy (by
-/proc/pid/),
-it hangs. Everything else is working good. 
-There are no messages from the kernel in /var/log/messages and
-/var/log/dmesg or reported to the console. 
+For convienience I like to have my wavetable loaded and midi connections
+setup during bootup so I can use my midi keyboard by just turning on the
+computer.
 
+This worked OK with stock kernel 2.6.3 ( and whatever alsa version came
+with it ).
 
+Recently upgraded to stock 2.6.8.1 which had the modprobe
+snd-emu10k1-synth freeze bug, but was able to work around this by
+launching my wavetable loading script post the modprobe. Play back from my
+keyboard worked great.
+
+This is when I began to notice apps that accessed the dsp reporting that
+they were locked out ( and did not produce any sound ). First would be
+arts when kde started up, and then any dvd playing app ( ogle, mplayer,
+xine, all of them setup to use alsa ).
+
+Strangely though, alsaplayer still worked despite the fact that the other
+apps didn't - could it be using some other way of plugin to the emu10k1
+mixer ? 
+
+Have tried upgrading to alsa-driver-1.0.7 ( which didn't play any
+wavetable sounds at all - strange ), then to alsa-driver-1.0.8-rc2 ( which
+does play wavetable sounds ) but none of these fixes this problem.
+
+If I change the order of things - have artsd start up, start a dvd
+playback, and then call asfxload + aconnect, then everything is mixed and
+sounds great.
 ======================================================================
 
 ----------------------------------------------------------------------
- mr-k - 01-11-05 22:11 
+ tiwai - 01-12-05 15:16 
 ----------------------------------------------------------------------
-Here is dmesg after SysRq:Showstate after alsa hang. If there's anything
-else I should report, please tell me.
-
-----------------------------------------------------------------------
- tiwai - 01-12-05 15:14 
-----------------------------------------------------------------------
-It looks like the open semaphore.
-
-How does "driver crash" in the original message happens?  What do you mean
-exactly?
+Please elaborate the procedure causing the problem.
+Which command sequences did the crash?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 13:13 mr-k           New Issue                                    
-12-30-04 13:13 mr-k           Distribution              => Gentoo          
-12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
-12-30-04 13:15 mr-k           File Added: alsa-report                      
-12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
-12-30-04 15:09 tiwai          Note Added: 0003022                          
-01-01-05 22:21 mr-k           Note Added: 0003038                          
-01-07-05 22:41 mr-k           Note Added: 0003123                          
-01-11-05 22:11 mr-k           Note Added: 0003158                          
-01-11-05 22:12 mr-k           File Added: alsa.log                         
-01-12-05 15:14 tiwai          Note Added: 0003170                          
+01-12-05 09:34 vinyvat        New Issue                                    
+01-12-05 09:34 vinyvat        Distribution              => Debian testing  
+01-12-05 09:34 vinyvat        Kernel Version            => 2.6.8.1         
+01-12-05 15:16 tiwai          Note Added: 0003171                          
 ======================================================================
 
 
