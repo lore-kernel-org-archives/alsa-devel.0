@@ -1,13 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000992]: no supported card
-Date: Sun, 20 Mar 2005 20:28:11 +0100
-Message-ID: <f1a9808dfb41e26b428d04a0aeb4d47d@bugtrack.alsa-project.org>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: [PATCH] - emu10k1 external tram size
+Date: Sun, 20 Mar 2005 20:41:24 +0100
+Message-ID: <423DD1E4.5020400@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B686C25D
-	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 20:28:11 +0100 (MET)
+Content-Type: multipart/mixed;
+ boundary="------------090508050901020207080000"
+Received: from gwen.pobox.sk (gwen.pobox.sk [212.5.216.21])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5B4025D
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 20:35:11 +0100 (MET)
+Received: from [192.168.1.20] (NAT-pool_1.gaya.sk [62.168.75.5] (may be forged))
+	(authenticated bits=0)
+	by gwen.pobox.sk (8.12.10/8.12.9/relay) with ESMTP id j2KJZAKh018455
+	(version=TLSv1/SSLv3 cipher=RC4-MD5 bits=128 verify=NOT)
+	for <alsa-devel@alsa-project.org>; Sun, 20 Mar 2005 20:35:11 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,60 +25,51 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------090508050901020207080000
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
-======================================================================
-Reported By:                rav0r
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   992
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4
-======================================================================
-Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              03-20-2005 20:28 CET
-======================================================================
-Summary:                    no supported card
-Description: 
-I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
-this model ever be supported?
-======================================================================
+Hi,
 
-----------------------------------------------------------------------
- rav0r - 03-20-05 19:14 
-----------------------------------------------------------------------
-o.k., So you belive my kernel is configured badly?. I mean I just want to
-know if it is possible to install the drivers or if there will be an
-updated version. 
-Just asking for an advice..
+This patch fixes wrong size reported by driver for external tram. It 
+reports size in bytes and should report it in samples as for internal tram.
 
-----------------------------------------------------------------------
- mikma - 03-20-05 20:28 
-----------------------------------------------------------------------
-Can you upload your config.log? It should tell more about the problem.
+Signed off: Peter Zubaj <pzad@pobox.sk>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-14-05 21:52 rav0r          New Issue                                    
-03-14-05 21:52 rav0r          Kernel Version            => 2.4             
-03-14-05 22:57 mikma          Note Added: 0003910                          
-03-15-05 23:13 rav0r          Note Added: 0003925                          
-03-16-05 11:05 mikma          Note Added: 0003935                          
-03-17-05 00:51 rav0r          Note Added: 0003974                          
-03-20-05 19:14 rav0r          Note Added: 0004096                          
-03-20-05 20:28 mikma          Note Added: 0004099                          
-======================================================================
+--------------090508050901020207080000
+Content-Type: text/x-patch;
+ name="etram_size.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="etram_size.diff"
 
+diff -r -u o/alsa-kernel/pci/emu10k1/emufx.c n/alsa-kernel/pci/emu10k1/emufx.c
+--- o/alsa-kernel/pci/emu10k1/emufx.c	2004-11-23 16:11:54.000000000 +0100
++++ n/alsa-kernel/pci/emu10k1/emufx.c	2005-03-20 20:31:29.000000000 +0100
+@@ -2064,7 +2064,7 @@
+ 	memset(info, 0, sizeof(info));
+ 	info->card = emu->card_type;
+ 	info->internal_tram_size = emu->fx8010.itram_size;
+-	info->external_tram_size = emu->fx8010.etram_pages.bytes;
++	info->external_tram_size = emu->fx8010.etram_pages.bytes / 2;
+ 	fxbus = fxbuses;
+ 	extin = emu->audigy ? audigy_ins : creative_ins;
+ 	extout = emu->audigy ? audigy_outs : creative_outs;
+diff -r -u o/alsa-kernel/pci/emu10k1/emuproc.c n/alsa-kernel/pci/emu10k1/emuproc.c
+--- o/alsa-kernel/pci/emu10k1/emuproc.c	2004-11-23 16:06:17.000000000 +0100
++++ n/alsa-kernel/pci/emu10k1/emuproc.c	2005-03-20 20:29:40.000000000 +0100
+@@ -184,7 +184,7 @@
+ 	snd_iprintf(buffer, "Card                  : %s\n",
+ 		    emu->audigy ? "Audigy" : (emu->APS ? "EMU APS" : "Creative"));
+ 	snd_iprintf(buffer, "Internal TRAM (words) : 0x%x\n", emu->fx8010.itram_size);
+-	snd_iprintf(buffer, "External TRAM (words) : 0x%x\n", (int)emu->fx8010.etram_pages.bytes);
++	snd_iprintf(buffer, "External TRAM (words) : 0x%x\n", (int)emu->fx8010.etram_pages.bytes / 2);
+ 	snd_iprintf(buffer, "\n");
+ 	snd_iprintf(buffer, "Effect Send Routing   :\n");
+ 	for (idx = 0; idx < NUM_G; idx++) {
 
+--------------090508050901020207080000--
 
 
 -------------------------------------------------------
