@@ -1,16 +1,12 @@
-From: Sundaranathan S <snathan@siptech.co.in>
-Subject: Re: Regarding global.h
-Date: Thu, 26 Jun 2003 09:24:51 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: ES18xx and IRQ problem (fwd)
+Date: Thu, 26 Jun 2003 11:40:18 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EFB0233.D3C7B12@siptech.co.in>
-References: <Pine.LNX.4.44.0306230949440.1838-100000@pnote.perex-int.cz>
+Message-ID: <Pine.HPX.4.33n.0306251926300.12226-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from turaco.siptech.co.in ([202.54.138.194])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id FAA31882
-	for <alsa-devel@alsa-project.org>; Thu, 26 Jun 2003 05:44:35 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,65 +15,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav Kysela,
 
-    thanks  a lot for your reply. Now i am able to get rid of the errors
-and installed. Can you please tell me how do i test the libraries. I went
-through the documentation in the site but i was not able to get. Please
-can you tell me how do i test these installed libraries.
+(It seems this message didn't get past the list moderator.
+ The current moderator is still Dave Null, isn't it?
 
-thanks in advance,
-Sundaranathan S
-SIP Technologies & Exports Ltd.
+ Could the moderation message be changed to something like "your
+ message has gone to the bit bucket instead of alsa-devel", or could
+ posting from non-subscribers be disabled entirely?)
 
 
-Jaroslav Kysela wrote:
+----- Original Message -----
+From: Tyson Whitehead <twhitehe@uwo.ca>
+Date: Tue, 24 Jun 2003 22:20:05 +0200
+X-Original-Cc: debian-alpha@lists.debian.org
+X-Original-To: alsa-devel@lists.sourceforge.net
 
-> On Mon, 23 Jun 2003, Sundaranathan S wrote:
->
-> > Hi All,
-> >
-> >         While compiling ALSA libraries i am getting an error which is
-> > stated below
-> >
-> >                     control.c: In function `snd_ctl_open_conf':
-> >                     control.c:581: `_dlsym_control_001' undeclared
-> > (first use in this function)
-> >                     control.c:581: (Each undeclared identifier is
-> > reported only once
->
-> Could you try this patch?
->
-> Index: global.h
-> ===================================================================
-> RCS file: /cvsroot/alsa/alsa-lib/include/global.h,v
-> retrieving revision 1.19
-> diff -u -r1.19 global.h
-> --- global.h    23 Apr 2003 12:41:55 -0000      1.19
-> +++ global.h    23 Jun 2003 07:50:24 -0000
-> @@ -84,6 +84,11 @@
->
->  #endif
->
-> +#ifndef __STRING
-> +/** \brief Return 'x' argument as string */
-> +#define __STRING(x)     #x
-> +#endif
-> +
->  /** \brief Returns the version of a dynamic symbol as a string. */
->  #define SND_DLSYM_VERSION(version) __STRING(version)
->
->
->                                                 Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
+The latest version of alsa-driver (0.9.4) seems to have an IRQ problem on the
+DEC version of the ES1888.  Any PCM stuff I tried to play would just result
+in endless looping of the first bit of sound.
+
+Checking /proc/interrupts and revealed that the interrupt counter for the
+ES1888 would go to 4 upon loading the snd-es18xx module, and then remain
+there.
+
+Browsing through the source (es18xx.c), I discovered that, in the
+snd_es18xx_interrupt routine, some alternative interrupt source determination
+code (in the case of the chip not having a control port -- the only two of
+which seem to be the ES1887 and ES1888) was '#if 0'ed out.
+
+I re-enabled this code (and disabling the snd_es18xx_mixer_read source based
+code) and the driver now works fine on my Alpha box.
+
+Maybe someone more knowledgable then me could make some comment of relevance
+here?
+
+Later -T
+
+PS:  Very clean code layout in the alsa drivers guys and gals (or at least the
+es18xx driver -- I haven't looked at the rest *grin*).  I'm impressed.  Great
+job!
+
+PPS:  The alternative code seems to handle the mixer as well (or, at least, I
+can still change my mixer settings and hear the results). :-)
+
+-- 
+ Tyson Whitehead  (-twhitehe@uwo.ca -- WSC-)
+ Computer Engineer                        Dept. of Applied Mathematics,
+ Graduate Student- Applied Mathematics    University of Western Ontario,
+ GnuPG Key ID# 0x8A2AB5D8                 London, Ontario, Canada
+
 
 
 
