@@ -1,18 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: mantis - our bugtracking system
-Date: Wed, 28 Jan 2004 16:48:15 +0100 (CET)
+From: Mario Loritz <loritz@fh-furtwangen.de>
+Subject: Re: config bug with sbawe and --with-isapnp=no
+Date: Wed, 28 Jan 2004 16:45:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401281647390.2015@pnote.perex-int.cz>
-References: <Pine.LNX.4.58.0401271443180.3133@pnote.perex-int.cz>
- <007d01c3e586$a383d450$a501a8c0@computer2> <Pine.LNX.4.58.0401281108130.2015@pnote.perex-int.cz>
- <017d01c3e5b5$7838b750$a501a8c0@computer2>
+Message-ID: <200401281645.43184.loritz@fh-furtwangen.de>
+References: <200401221249.07577.loritz@fh-furtwangen.de> <200401241557.21770.loritz@fh-furtwangen.de> <s5hsmi3ufje.wl@alsa2.suse.de>
+Reply-To: loritz@fh-furtwangen.de
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA17767
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 16:47:19 +0100
-In-Reply-To: <017d01c3e5b5$7838b750$a501a8c0@computer2>
+In-Reply-To: <s5hsmi3ufje.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,30 +20,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andreas Kuckartz <A.Kuckartz@ping.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 28 Jan 2004, Andreas Kuckartz wrote:
+Am Montag, 26. Januar 2004 12:15 schrieb Takashi Iwai:
+> did you run cvscompile?  otherwise it won't work properly.
 
-> Jaroslav Kysela wrote:
-> 
-> > The problem is that your SMTP server does not accept e-mails from my
-> > machine because it thinks that it's dial-up.
-> 
-> I know that kind of problem from other SMTP servers which do not like to
-> accept *my* mails. Sending the mail again once or twice from the same
-> IP-address usually works in such situations. And as I wrote before: the
-> passwort mail from mantis finally arrived here.
+No, I didn't. 
+Mario
 
-I rerouted Mantis to send e-mail via another SMTP server.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
