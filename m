@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Hint request - custom comm channel
-Date: Sat, 10 May 2003 13:59:55 +0200 (CEST)
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: [Rosegarden-devel] Re: Sequencer port type flags
+Date: Sat, 10 May 2003 19:15:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305101358520.1203-100000@pnote.perex-int.cz>
-References: <1052573336.1226.27.camel@Jay>
+Message-ID: <200305101915.39513.plcl@telefonica.net>
+References: <Pine.LNX.4.44.0305091237280.1237-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1052573336.1226.27.camel@Jay>
+In-Reply-To: <Pine.LNX.4.44.0305091237280.1237-100000@pnote.perex-int.cz>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +19,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>, Chris Cannam <cannam@all-day-breakfast.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, rosegarden-devel <rosegarden-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On 10 May 2003, Giuliano Pochini wrote:
+On Friday 09 May 2003 12:43, Jaroslav Kysela wrote:
+> SNDRV_SEQ_PORT_TYPE_SYNTH define is for clients which can do direct
+> wavetable synthesis (used by modplayers etc.)
 
-> 
-> I need a way to exchange generic data between the lowlevel driver and
-> userspace apps.  What interface does ALSA provide for this kind of
-> things ?
-> (I want that the mixer moves syncronously all and only volume knobs of
-> channels that belong to the same substream, if the "gang" button is
-> pressed.)
+Emu chip based soundcards, as SoundBlaster AWE XX, are able to do wavetable 
+synthesis. Aren't it? The ALSA emu driver for these cards does not set 
+SNDRV_SEQ_PORT_TYPE_SYNTH flag. See emux_seq.c:55
 
-I think that this feature doesn't belong to the kernel space. The user 
-space should take care.
+OTOH, opl3 ALSA driver is for a family of FM synths that doesn't do wavetable 
+synthesis. This driver *sets* SNDRV_SEQ_PORT_TYPE_SYNTH flag. See  
+opl3_seq.c:204
 
-						Jaroslav
+This seems contradictory with your explanation. Could you clarify if i missed 
+something or if those drivers are wrong and need to be updated ?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Regards,
+Pedro
+
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
 
 
