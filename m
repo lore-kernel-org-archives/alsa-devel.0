@@ -1,12 +1,13 @@
-From: Warren Turkal <wturkal@cbu.edu>
-Subject: Fwd: RE: To ESS Tech Support
-Date: Wed, 11 Jun 2003 20:54:07 -0500
+From: Stephane Alnet <alsa-dev@shimaore.net>
+Subject: Re: snd-usb-audio: quirk for Edirol UA-5 in Advanced Mode
+Date: Wed, 11 Jun 2003 22:50:50 -0500 (CDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306110058.09727.wturkal@cbu.edu>
+Message-ID: <Pine.LNX.4.44.0306112244350.10270-100000@kani-keli.alnet.home>
+References: <Pine.LNX.4.44.0306102307170.26166-200000@kani-keli.alnet.home>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_/095+LD0J6pbHJo"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.44.0306102307170.26166-200000@kani-keli.alnet.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,131 +19,76 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+The error is as follows; I've tried to move a couple locks around but I
+can't figure it out.
 
---Boundary-00=_/095+LD0J6pbHJo
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+------------------------------------------>8
+bad: scheduling while atomic!
+Call Trace:
+ [<c0116c26>] schedule+0x3a6/0x3b0
+ [<c0121eda>] schedule_timeout+0x5a/0xb0
+ [<c0121e70>] process_timeout+0x0/0x10
+ [<d08afaff>] usb_start_wait_urb+0xaf/0x190 [usbcore]
+ [<c0116c80>] default_wake_function+0x0/0x30
+ [<d08af72f>] usb_alloc_urb+0x2f/0x50 [usbcore]
+ [<d08afc47>] usb_internal_control_msg+0x67/0x80 [usbcore]
+ [<d08afcee>] usb_control_msg+0x8e/0xb0 [usbcore]
+ [<d08b088d>] usb_set_interface+0xbd/0x220 [usbcore]
+ [<d08af2a0>] hcd_endpoint_disable+0x0/0x1c0 [usbcore]
+ [<d0960591>] set_format+0xd1/0x3a0 [snd_usb_audio]
+ [<d09608c4>] snd_usb_pcm_prepare+0x34/0x50 [snd_usb_audio]
+ [<d0948f25>] snd_pcm_do_prepare+0x15/0x40 [snd_pcm]
+ [<c013ecc2>] handle_mm_fault+0xe2/0x180
+ [<d09483a4>] snd_pcm_action_single+0x34/0x60 [snd_pcm]
+ [<d095cbe8>] snd_pcm_action_prepare+0x0/0x18 [snd_pcm]
+ [<d09484e6>] snd_pcm_action_lock_irq+0x96/0xa0 [snd_pcm]
+ [<d095cbe8>] snd_pcm_action_prepare+0x0/0x18 [snd_pcm]
+ [<d0948ff4>] snd_pcm_prepare+0x74/0x90 [snd_pcm]
+ [<d095cbe8>] snd_pcm_action_prepare+0x0/0x18 [snd_pcm]
+ [<d094bd00>] snd_pcm_playback_ioctl1+0x70/0x430 [snd_pcm]
+ [<c0121bc0>] run_timer_softirq+0x100/0x1a0
+ [<c015e280>] sys_ioctl+0x100/0x290
+ [<c010930b>] syscall_call+0x7/0xb
+------------------------------------------>8
 
-Dear ALSA developers,
-
-Here is a message from ESS regarding getting some information for the 
-ESS1988/Allegro-1 series cards in order to get better support for them in 
-linux. I hope that some others will help me badger the ESS people in order to 
-(A) release info needed to make the Linux driver or (B) release the Windows 
-driver source so that it can be used for ideas for the Linux driver.
-
-If you choose to reply to this, please CC me as I am not subscribed to this 
-list.
-
-Thanks, Warren Turkal
--- 
-Treasurer, GOLUM, Inc.
-http://www.golum.org
-
-
-
---Boundary-00=_/095+LD0J6pbHJo
-Content-Type: message/rfc822;
-  name="forwarded message"
-Content-Transfer-Encoding: 7bit
-Content-Description: TECHINFO <Techinfo@esstech.com>: RE: To ESS Tech Support
-
-Received: from polaris.cbu.edu (polaris.cbu.edu [192.168.10.34])
-	by cbu.edu (8.11.7+Sun/8.11.7) with SMTP id h5ANTLM02443
-	for <wturkal@cbu.edu>; Tue, 10 Jun 2003 18:29:22 -0500 (CDT)
-Received: from [209.172.108.133] ([209.172.108.133])
- by polaris.cbu.edu (SAVSMTP 3.1.1.32) with SMTP id M2003061018290804765
- for <wturkal@cbu.edu>; Tue, 10 Jun 2003 18:29:18 -0500
-Received: from essmail.esstech.com by [209.172.108.133]
-          via smtpd (for polaris.cbu.edu [66.192.88.32]) with SMTP; Tue, 10 Jun 2003 16:29:08 -0700
-Received: by essmail.esstech.com with Internet Mail Service (5.5.2653.19)
-	id <LCVN4B43>; Tue, 10 Jun 2003 16:24:49 -0700
-Message-ID: <02B8E281442ED6118527000103D16BFB01CA0CC7@essmail.esstech.com>
-From: TECHINFO <Techinfo@esstech.com>
-To: wturkal@cbu.edu
-Subject: RE: To ESS Tech Support
-Date: Tue, 10 Jun 2003 16:24:48 -0700
-MIME-Version: 1.0
-X-Mailer: Internet Mail Service (5.5.2653.19)
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Length: 1869
-X-Spam-Status: No, hits=0.0 required=5.0
-	tests=none
-	version=2.55
-X-Spam-Level: 
-X-Spam-Checker-Version: SpamAssassin 2.55 (1.174.2.19-2003-05-19-exp)
-Status: R 
-X-Status: N
-X-KMail-EncryptionState: 
-X-KMail-SignatureState: 
-
-Sorry, we don't have Linux driver to share with you.
-Regards,
+Stephane
 
 
- -----Original Message-----
-From: 	wturkal@cbu.edu [mailto:wturkal@cbu.edu] 
-Sent:	Friday, May 30, 2003 2:00 AM
-To:	techinfo@esstech.com
-Subject:	To ESS Tech Support
+On Tue, 10 Jun 2003, Stephane Alnet wrote:
+> Hi,
+>
+> (Hopefully this is the right place to post this!)
+>
+> Attached is a diff file for the Edirol UA-5 Advanced Mode against kernel
+> 2.5.70-bk14 sound/usb.
+>
+> I added a new QUIRK mode (QUIRK_AUDIOSTREAM_INTERFACE) which basically
+> forces an interface (and its altsettings) into Audio/AudioStream. When in
+> Advanced Mode, the UA-5 exposes all its interfaces in class 255/255
+> (Vendor/Vendor), but actually besides this all the descriptors are valid
+> USB Audio control/interfaces/endpoints/... So this quirk simply overwrites
+> the streaming interfaces class/subclass with the proper values. (My
+> understanding is that we don't need to care about the audiocontrol
+> interface.)
+>
+> Recording is working properly (tested with "arecord -c 2 -f S24_3LE -r
+> 96000" on x86, for example); playback is crashing due to a "bad:
+> scheduling while atomic!" problem I haven't looked at yet.
+>
+> (Note: this change only applies to Advanced Mode, which provides access to
+> 24bits samples and the 96kHz sampling rates. The non-Advanced Mode of the
+> UA-5 works just fine with the default driver at 44.1 and 48kHz, giving
+> 16bits samples, as far as I can tell.)
+>
+> Feel free to integrate the diff into the current distribution/kernel as
+> needed.
+>
+> I'd be interested in feedback on whether this is working for other people,
+> and also help in troubleshooting the playback crash.
+>
+> Thank you,
+> Stephane
 
-Tech Support Contact Form
----------------------------------------
-PERSONAL INFORMATION:
-First Name    : Warren
-Last Name     : Turkal
-Country    : USA
-Phone Number  : 901-372-3416
-Email Address : wturkal@cbu.edu
-
-ESS Chip ID       : es1988
-
-Windows Version?  : Linux
-
-Product Brand & Model of PC/Notebook or Add-in Board?  : Gateway 600ygr
-
-Current ESS Driver Version?  : Linux 2.5.70
-
-Contacted Product Manufacturer?   : yes
-
-Updated Driver?   : yes
-
-Read FAQ?         : yes
-
-Did FAQ Help?     : no
-
-SPECIFIC PROBLEM:
-Simple dsp audio i/o is supported in your es1988 under Linux, but I would
-like to add full support for the card.
-
-02:03.0 Multimedia audio controller: ESS Technology ES1988 Allegro-1 (rev
-12)
-        Subsystem: Gateway 2000: Unknown device 0600
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64 (500ns min, 6000ns max)
-        Interrupt: pin A routed to IRQ 5
-        Region 0: I/O ports at 5000 [size=256]
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1+,D2+,D3hot+,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-
-I have a technical document describing the es1988 with its registers. Do
-you have a document that has help for writing a driver for the es1988 in
-it? Source code to your driver would probably also make this easier, even
-if the driver is for a different OS.
-
-Please do not hesitate to email me with any questions.
-
-Thanks, Warren
-
---Boundary-00=_/095+LD0J6pbHJo--
 
 
 
