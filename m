@@ -1,13 +1,12 @@
-From: Adam K Kirchhoff <adamk@voicenet.com>
-Subject: Re: Re: Yamaha 754 question...
-Date: Tue, 14 May 2002 11:13:56 -0400 (EDT)
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Detecting alsa sequencer (dis)connects
+Date: Tue, 14 May 2002 17:55:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.10.10205141059020.5776-100000@sorrow.ashke.com>
-References: <Pine.LNX.4.10.10205131720120.3704-100000@sorrow.ashke.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E177ee9-0003uZ-00@bitone.upf.es>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.10.10205131720120.3704-100000@sorrow.ashke.com>
+Received: from iuamtg.upf.es (iuamtg.upf.es [193.145.55.151])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA28564
+	for <alsa-devel@alsa-project.org>; Tue, 14 May 2002 17:57:04 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,103 +15,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
 
-OK...  So I got around to testing how snd_ymfpci_ac3_init and
-snd_ymfpci_ac3_done are being handled.  You'll have to tell me if the
-results sound good, though.
+Hello,
 
-Playing back one small wav file (3930 bytes) with "play" (so it's not
-using any sound daemons) results in entering _init one and entering _done
-once.
+I want to have aconnectgui automatically update when changes have
+been mode in the alsa sequencer connections (for example by
+aconnect, or new applications being launched, or an application
+creating a new connection). What would be the correct way to do
+this? Maybe a polling alsa sequencer function that will tell
+me about changes?
 
-Playing back a slightly larger wav file (12250 bytes) results in entering
-_init 3 times, and _done once.
-
-An even larger wav file: _init 4 times, _done once...
-
-The largest wav file I can find will still only enter _init 4 times...
-_done only ever seems to get called once (as you'd expect).
-
-The results are similar for using xmms to play mp3s...  esd will also
-enter _init four times.
-
-Adam
-
-On Mon, 13 May 2002, Adam K Kirchhoff wrote:
-
-> 
-> On Mon, 13 May 2002, Takashi Iwai wrote:
-> 
-> > At Mon, 13 May 2002 08:54:57 -0400 (EDT),
-> > Adam K Kirchhoff wrote:
-> > > 
-> > > 
-> > > It's looking good so far :-)
-> > > 
-> > > I applied the patch and recompiled.  I haven't had much chance to test
-> > > since I had to leave for work (I'll test more tonight), but alsaplayer
-> > > worked without using the ch4dup bit from .asoundrc...  xmms worked fine,
-> > > with both the Alsa output plugin and the OSS plugin.  In all three cases,
-> > > I was getting four speaker output.
-> >  
-> > good.
-> > the only concern is whether snd_ymfpci_ac3_init/_done is properly
-> > handled.  could you check (by adding printk in these routines, for
-> > example) whether these functions are called only once per open/close
-> > devices?
-> 
-> I'll try that out tonight.
-> 
-> > also, could you check multiple playbacks?
-> 
-> I'm getting some interesting results with this :-)
-> 
-> I'm booted into KDE and I have artsd running...  As KDE starts up artsd
-> plays it's audio file fine, with all four speakers.
-> 
-> If I set xmms to use the OSS output plugin, the mp3 I'm playing starts up
-> fine with all four speakers...  Somewhere along the way, the rear channel
-> drops out completely.  It seems to be hit or miss.  Sometimes I can
-> actually get through the file without any problems.  Sometimes it drops
-> out nearly immediately.
-> 
-> A sure fire way to duplicate the problem, though, is to start up
-> alsaplayer with another song..  Both songs will now play on all four
-> speakers.  So now I have artsd running, xmms running with the OSS plugin,
-> and alsaplayer is running :-)  If I quit alsaplayer, the rear speakers
-> will cut out for the song playing on xmms.  If I then hit "x" to restart
-> the song, it begins again with all four speakers :-)
-> 
-> > > In addition, alsamixer shows a new option "4ch Duplication" so, in theory,
-> > > I can turn it off and have two alsaplayers going, one stream on the front
-> > > channel and a different one on the rear channel.  I haven't tested that
-> > > yet, though.
-> >  
-> > this is even possible without my patch.
-> 
-> Yeah, I did notice that too.  The only reason I mentioned it this time
-> around is because I thought it was nice that it was still possible to do
-> this by muting that switch :-)
-> 
-> Adam
-> 
-> 
-> _______________________________________________________________
-> 
-> Have big pipes? SourceForge.net is looking for download mirrors. We supply
-> the hardware. You get the recognition. Email Us: bandwidth@sourceforge.net
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-
-
-
+Maarten
 
 _______________________________________________________________
 
