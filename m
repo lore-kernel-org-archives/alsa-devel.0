@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000642]: Crash on trying to set "any" hw_params
-Date: Thu, 31 Mar 2005 20:47:41 +0200
-Message-ID: <d7f7f243c663bf066fcecd233223e892@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
+Date: Thu, 31 Mar 2005 20:49:18 +0200
+Message-ID: <6c937153e455ffe07f7f7c0b3fdd7334@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83E6C24B
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:47:41 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F2E024B
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 20:49:18 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,153 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ACKNOWLEDGED.
+The following issue has been CONFIRMED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=642> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
 ======================================================================
-Reported By:                rbultje
+Reported By:                jwrdegoede
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   642
-Category:                   ordinary pcm
-Reproducibility:            sometimes
-Severity:                   minor
+Issue ID:                   483
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   crash
 Priority:                   normal
-Status:                     acknowledged
+Status:                     confirmed
 ======================================================================
-Date Submitted:             11-11-2004 11:48 CET
-Last Modified:              03-31-2005 20:47 CEST
+Date Submitted:             09-06-2004 11:39 CEST
+Last Modified:              03-31-2005 20:49 CEST
 ======================================================================
-Summary:                    Crash on trying to set "any" hw_params
+Summary:                    alsa-libs samplerate-conversion causes assertion
+frames <= snd_pcm_mmap_avail
 Description: 
-Hi,
+When running xmame (x.mame.net) with alsa selected for sound output on my
+es1688. I get the following error:
+pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
+snd_pcm_mmap_avail(pcm)' failed.
 
-we received several similar bug reports in our bugzilla about ALSA-related
-crashers. It seems that the simple sequence of snd_pcm_hw_params_any()
-followed by snd_pcm_hw_params() will cause a floating point exception in
-libalsa. I can't reproduce it myself, but for backtraces and email
-addresses of people that can, see e.g.
-http://bugzilla.gnome.org/show_bug.cgi?id=151288 or
-http://bugzilla.gnome.org/show_bug.cgi?id=153227 (plus all the bug reports
-dupped to those).
+I checked the source for the alsa driver (I'm one of the xmame developers)
+and the number of frames it is passing to snd_pcm_writei is always smaller
+then or equal to the value
+returned by:
+err = snd_pcm_status(priv->pcm_handle, status);
+/* check err */
+frames = snd_pcm_status_get_avail(status);
 
-If you need any information, either from me or from the reporters, feel
-free to contact me, I'll try to get all information required to resolve
-this. I've added a workaround in GStreamer CVS, but still think that this
-is a bug.
+After some more testing I noticed that alsa returns 22050 as the actual
+acquired samplerate, but I know from the oss days that my card can only do
+22095 not 22050. So I thought this error might be caused by the
+alsa-lib-samplerate conversion code, which appearantly is default enabled
+(Fedora feature?)
+
+To test my hypothesis I tried creating an almost empty .asoundrc:
+pcm.!default {
+type hw
+card 0
+}
+
+ctl.!default {
+type hw
+card 0
+}
+
+And now alsa-lib returns 22095 as the acquired samplerate and everything
+works fine! So IMHO this problem is clearly somewhere in alsa-libs
+samplerate conversion.
+
+I've searched the internet for this assertion and I believe this bug has
+bitten more people and applications and needs fixing ASAP. (note I'm not
+saying this because I need it fixed, since the .asoundrc workaround works
+fine for me, but I'm saying this in the general interest)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-18-04 18:29 
+ jdthood - 03-19-05 19:26 
 ----------------------------------------------------------------------
-Please provide the alsa-lib version number they use.
-I guess this bug occurs when the rate plugin is used.
-Do you have any simple test case?
+What was in your /etc/asound.conf before you added the .asoundrc?
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:16 
+ jwrdegoede - 03-19-05 19:51 
 ----------------------------------------------------------------------
-Many bugs were filed in the GNOME BTS about this.  Lots of backtraces
-have been provided there.
+This was quite some time ago currently I have a different computer with a
+newer version of my distro (Fedora) but I believe that there was no
+/etc/asound.conf . Atleast the current Fedora doesn't have one.
 
-It looks as if GNOME has worked around the problem, though.  Ronald
-Bultje writes:
-> I have applied a workaround to CVS, I think version 0.8.6
-> of gst-plugins will fix this. Can you please test that once
-> it comes out?
-> Also, I'm still of the opinion that this is an ALSA bug, since
-> apparently the simple sequence of snd_pcm_hw_params_any()
-> followed by snd_pcm_hw_params() will cause crashes.
+----------------------------------------------------------------------
+ Belegdol - 03-20-05 13:49 
+----------------------------------------------------------------------
+Same problem here. Mandrake 10.1 Official, Gigabyte GA-8IPE1000 Pro-G
+motherboard (Intel 865PE). I have no /etc/asound.conf file but I have the
+following /etc/asound.state:
+
+state.ICH5 {
+  [...cut here - not related - perex...]
+}
+
+HTH
+
+
+
+----------------------------------------------------------------------
+ Belegdol - 03-20-05 22:19 
+----------------------------------------------------------------------
+I've also encountered this error when playing doom 3:
+
+[jsikorski@DOMOWY jsikorski]$ doom3-demo +set s_driver alsa +set
+s_numberOfSpeakers 2
+...
+--- Common Initialization Complete ---
+terminal support enabled ( use +set in_tty 0 to disabled )
+pid: 7663
+1008 MB System Memory
+guessing video ram ( use +set sys_videoRam to force ) ..
+found XNVCtrl extension 1.6
+128 MB Video Memory
+Async thread started
+snd_pcm_writei short write: 4095 out of 4096
+snd_pcm_writei short write: 4095 out of 4096
+snd_pcm_writei short write: 1022 out of 1024
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
+doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
+snd_pcm_mmap_avail(pcm)' failed.
+signal caught: Aborted
+si_code -6
+Trying to exit gracefully..
+--------- Game Map Shutdown ----------
+--------------------------------------
+double fault Segmentation fault, bailing out
+shutdown terminal support
+Shutting down sound hardware
+----------- Alsa Shutdown ------------
+close pcm
+dlclose
+--------------------------------------
+idRenderSystem::Shutdown()
+Segmentation fault
+[jsikorski@DOMOWY jsikorski]$
+
+The presence of .asoundrc file does not help here, though.
+
+
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-11-04 11:48 rbultje        New Issue                                    
-11-18-04 18:29 tiwai          Note Added: 0002457                          
-03-20-05 13:16 jdthood        Note Added: 0004078                          
-03-31-05 20:47 jdthood        Status                   new => acknowledged 
+09-06-04 11:39 jwrdegoede     New Issue                                    
+03-19-05 19:26 jdthood        Note Added: 0004067                          
+03-19-05 19:51 jwrdegoede     Note Added: 0004068                          
+03-20-05 09:43 Belegdol       Note Added: 0004075                          
+03-20-05 10:12 Belegdol       Note Edited: 0004075                         
+03-20-05 10:39 Belegdol       Note Edited: 0004075                         
+03-20-05 13:39 perex          Category                 ordinary pcm => pcm -
+digital audio
+03-20-05 13:49 perex          Note Edited: 0004075                         
+03-20-05 13:49 perex          Note Edited: 0004075                         
+03-20-05 22:12 Belegdol       Note Added: 0004102                          
+03-20-05 22:19 Belegdol       Note Edited: 0004102                         
+03-31-05 20:49 jdthood        Status                   new => confirmed    
 ======================================================================
 
 
