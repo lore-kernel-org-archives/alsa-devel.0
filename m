@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000438]: OpenOffice crashes with LD_PRELOAD=/usr/lib/libaoss.so
-Date: Mon, 21 Mar 2005 00:01:58 +0100
-Message-ID: <5947b23170ada70e13ff88053d1bb355@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000492]: EMU10K1 and OSS emulation PCM volume problem
+Date: Mon, 21 Mar 2005 00:02:40 +0100
+Message-ID: <0e6e9c6dcc2b5eeff7d1e773bfe4370d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19E8C25F
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 00:01:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C812F260
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 00:02:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,101 +23,45 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=438> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=492> 
 ======================================================================
-Reported By:                vslavik
+Reported By:                croiset
 Assigned To:                
 ======================================================================
 Project:                    ALSA - liboss
-Issue ID:                   438
+Issue ID:                   492
 Category:                   
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             08-13-2004 11:41 CEST
-Last Modified:              03-21-2005 00:01 CET
+Date Submitted:             09-09-2004 16:51 CEST
+Last Modified:              03-21-2005 00:02 CET
 ======================================================================
-Summary:                    OpenOffice crashes with
-LD_PRELOAD=/usr/lib/libaoss.so
+Summary:                    EMU10K1 and OSS emulation PCM volume problem
 Description: 
-I'm having problems with using ALSA's OSS library together with OpenOffice
-(version 1.1.1): it crashes early during startup. It doesn't happen if
-libaoss.so is not preloaded.
+when I use a sound card :
+0 [Live           ]: EMU10K1 - Sound Blaster Live!
+                     Sound Blaster Live! (rev.10) at 0x8400, irq 10
+when I use the oss emulation, the only way to have sound on the audio
+analog output, is to use the mixer call Wave (ALTPCM) instead of PCM like
+other cards. The mixer I used for the test is alsamixer.
 
-Ending parts of strace output are:
-...
-open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
-such file or directory)
-open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
-such file or directory)
-open("/opt/OpenOffice.org/program/libz.so.1", O_RDONLY) = -1 ENOENT (No
-such file or directory)
-open("i686/mmx/libz.so.1", O_RDONLY)    = -1 ENOENT (No such file or
-directory)
-open("i686/libz.so.1", O_RDONLY)        = -1 ENOENT (No such file or
-directory)
-open("mmx/libz.so.1", O_RDONLY)         = -1 ENOENT (No such file or
-directory)
-open("libz.so.1", O_RDONLY)             = -1 ENOENT (No such file or
-directory)
-open("/lib/libz.so.1", O_RDONLY)        = 3
-read(3, "\177ELF\1\1\1\0\0\0\0\0\0\0\0\0\3\0\3\0\1\0\0\0\300\23"..., 512)
-= 512
-fstat64(3, {st_mode=S_IFREG|0755, st_size=65412, ...}) = 0
-mmap2(NULL, 67388, PROT_READ|PROT_EXEC, MAP_PRIVATE, 3, 0) = 0x4203e000
-mmap2(0x4204e000, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED, 3,
-0xf) = 0x4204e000
-close(3)                                = 0
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
-= 0x4204f000
-mmap2(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0)
-= 0x42050000
-mprotect(0x4181d000, 8519680, PROT_READ|PROT_WRITE) = 0
-mprotect(0x4181d000, 8519680, PROT_READ|PROT_EXEC) = 0
-munmap(0x4108d000, 115564)              = 0
-modify_ldt(1, {entry_number:0, base_addr:0x411c8060, limit:1048575,
-seg_32bit:1, contents:0, read_exec_only:0, limit_in_pages:1,
-seg_not_present:0, useable:1}, 16) = 0
-getpid()                                = 7468
-rt_sigaction(SIGRTMIN, {0x411c2f90, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
-= 0
-rt_sigaction(SIGRT_1, {0x411c3070, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
-= 0
-rt_sigaction(SIGRT_2, {0x411c31e0, [], SA_RESTORER, 0x413d42a8}, NULL, 8)
-= 0
-rt_sigprocmask(SIG_BLOCK, [RTMIN], NULL, 8) = 0
-rt_sigprocmask(SIG_UNBLOCK, [RT_1], NULL, 8) = 0
-_sysctl({{CTL_KERN, KERN_VERSION}, 2, 0xbfffea64, 32, (nil), 0}) = 0
-brk(0)                                  = 0x80a66a4
-brk(0x80c76a4)                          = 0x80c76a4
-brk(0x80c8000)                          = 0x80c8000
---- SIGSEGV (Segmentation fault) @ 0 (0) ---
-+++ killed by SIGSEGV +++
+My tests are on alsa driver 1.0.5a.
 
-Some additional information can be found here (another reporter a few
-months ago):
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=234044
-Let me know if you need more information.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-21-05 00:01 
+ jdthood - 03-21-05 00:02 
 ----------------------------------------------------------------------
-I have justed tested this by running
-
-    aoss oowriter
-
-and there was no problem at all.  ALSA version is 1.0.8.
-
-Do you still encounter the problem or can this report be closed now?
+Submitter: Any improvement with later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-13-04 11:41 vslavik        New Issue                                    
-03-21-05 00:01 jdthood        Note Added: 0004105                          
+09-09-04 16:51 croiset        New Issue                                    
+03-21-05 00:02 jdthood        Note Added: 0004106                          
 ======================================================================
 
 
