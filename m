@@ -1,13 +1,13 @@
-From: thomas schorpp <t.schorpp@gmx.de>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: CMI8768 patch, softvol mixer slider
-Date: Sat, 19 Feb 2005 08:43:36 +0100
-Message-ID: <4216EE28.6040702@gmx.de>
+Date: Sat, 19 Feb 2005 02:56:49 -0500
+Message-ID: <1108799809.9005.3.camel@krustophenia.net>
 References: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
-Reply-To: t.schorpp@gmx.de
+	 <4216EE28.6040702@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=Big5
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <4216EE28.6040702@gmx.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,43 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: t.schorpp@gmx.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Tien, C.L. - =A5=D0=A9=D3=C2=A7 wrote:
-> Hi,
->=20
-> I made a patch for CM8768, which has the same PCI ID but there are
-> several HW diffecece, aas listed:
->=20
-> 1. 8768 has no PCM volume control.
-> 2. The ADC of 8768 can only record in 44.1kHz or 48kHz.
-> 3. 8768 can support up to 8 channels.
->=20
-> I made change for item 2 and 3, I want to use the softvol plugin but
-> don't know how to. The driver just don't generate the PCM volume slider
->  for now.
+On Sat, 2005-02-19 at 08:43 +0100, thomas schorpp wrote:
+> hmm, if read the docs right its userspace.
+> 
+> how about getting it in the kernel and calling it snd_x_csoftmix ?
 
-hmm, if read the docs right its userspace.
+Why?  It works fine in userspace.  The whole point of alsa-lib is to get
+things like software volume control and mixing and sample rate
+conversion that don't need to be in the kernel out of the kernel.
 
-how about getting it in the kernel and calling it snd_x_csoftmix ?
-
-heres a plugin builder PCM_PLUGIN_H
-
-softvol from userpaces lib adapted implemented in ../core/oss/softvol.c
-then?
-
-and we would need a control definition used then by snd_ctl_new1()
-
-the mixer build() s must determine then between real and soft controls...
-
->=20
-> The patch file is attached.
->=20
-> Sincerely,
-> ChenLi Tien
->=20
->=20
+Lee
 
 
 
@@ -61,4 +38,4 @@ the mixer build() s must determine then between real and soft controls...
 SF email is sponsored by - The IT Product Guide
 Read honest & candid reviews on hundreds of IT Products from real users.
 Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=3D6595&alloc_id=3D14396&op=3Dclick
+http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
