@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000184]: Driver fail to load
-Date: Tue, 22 Mar 2005 22:38:11 +0100
-Message-ID: <34db1943983f31de4b9abc036f7080cf@bugtrack.alsa-project.org>
+From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
+Subject: RE: no --with-cards parameter in alsa-driver CVS
+Date: Wed, 23 Mar 2005 07:31:42 +0800
+Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D6BE@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17426291
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:38:12 +0100 (MET)
+Content-Type: text/plain;
+	charset="big5"
+Content-Transfer-Encoding: quoted-printable
+Received: from cm-msg-02.cmedia.com.tw (61-30-17-228.static.tfn.net.tw [61.30.17.228])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BDA7729A
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 01:14:20 +0100 (MET)
+Content-Class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,62 +19,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=184> 
-======================================================================
-Reported By:                gnumdk
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   184
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             04-04-2004 14:46 CEST
-Last Modified:              03-22-2005 22:38 CET
-======================================================================
-Summary:                    Driver fail to load
-Description: 
-snd_emu10k1: falsely claims to have parameter max_synth_voices 
+I updated the CVS again by co command and the mips directory appear! It =
+cannot be created by the update command. There is nothing wrong with the =
+alsa-kernel or alsa-driver at all, sorry!
 
-No way to load module :(
-======================================================================
+Sincerely,
+ChenLi Tien
 
-----------------------------------------------------------------------
- tiwai - 04-20-04 12:54 
-----------------------------------------------------------------------
-no idea what's wrong.
+-----Original Message-----
+From:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
+Sent:	2005/3/22 [=ACP=B4=C1=A4G] =A4U=A4=C8 06:04
+To:	Takashi Iwai
+Cc:	alsa-devel@alsa-project.org
+Subject:	RE: [Alsa-devel] no --with-cards parameter in alsa-driver CVS
+I found that the command "make ALSAKERNELDIR=3D../alsa-kernel all-deps" =
+for CVS build cause problem.
 
-please show the corresponding options in /etc/modprobe.conf or so.
+utils/mod-deps --basedir =
+/home/cltien/work/alsa-cvs/alsa-driver/alsa-kernel --hiddendir =
+/home/cltien/work/alsa-cvs/alsa-driver --acinclude > acinclude.m4
+Unable to open file =
+/home/cltien/work/alsa-cvs/alsa-driver/alsa-kernel/mips/Kconfig: No such =
+file or directory
+Error reading Kconfig: No such file or directory
+make: *** [acinclude.m4] Error 1
 
-----------------------------------------------------------------------
- jdthood - 03-22-05 22:38 
-----------------------------------------------------------------------
-In the absence of further information, closing.
+So I create a path for mips and a empty file Kconfig inside it and the =
+acinclude.m4 is ok again. Now the --with-cards works again.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-04-04 14:46 gnumdk         New Issue                                    
-04-20-04 12:54 tiwai          Note Added: 0000878                          
-03-22-05 22:38 jdthood        Note Added: 0004142                          
-03-22-05 22:38 jdthood        Status                   new => closed       
-03-22-05 22:38 jdthood        Resolution               open => not an issue
-03-22-05 22:38 jdthood        View Status              @0@ => public       
-03-22-05 22:38 jdthood        Description Updated                          
-======================================================================
+There is no mips directory in the CVS.
+
+Sincerely,
+ChenLi Tien
+
+
+-----Original Message-----
+From:	Takashi Iwai [mailto:tiwai@suse.de]
+Sent:	2005/3/22 [=ACP=B4=C1=A4G] =A4U=A4=C8 03:50
+To:	Tien,  C.L. - =A5=D0=A9=D3=C2=A7
+Cc:	alsa-devel@alsa-project.org
+Subject:	Re: [Alsa-devel] no --with-cards parameter in alsa-driver CVS
+At Wed, 23 Mar 2005 03:18:27 +0800,
+Tien, C.L. wrote:
+>=20
+> Hi,
+>=20
+> I found there is no --with-cards parameter in CVS configure any
+> longer, although it is still in 1.0.9rc1, but it disappeared in CVS,
+> the document file INSTALL. Is this a mistake or will future version
+> find the card in kernel config?=20
+
+It works for me.
+
+Could you tell me what doesn't exactly work?
+
+
+Takashi
+
+
 
 
 
