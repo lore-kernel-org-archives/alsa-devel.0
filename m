@@ -1,10 +1,10 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Need some hints for simple MIDI communication
-Date: Fri, 8 Feb 2002 08:43:07 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202080842460.514-100000@pnote.perex-int.cz>
+Subject: Re: stupid question about pcm devices
+Date: Fri, 8 Feb 2002 08:42:24 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202080841410.514-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <E16YyMU-00028E-00@smtp.web.de>
+In-Reply-To: <XFMail.020208072444.guenther.sohler@newlogic.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,34 +13,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Frank Neumann <beachnase@web.de>
+To: Guenther Sohler <guenther.sohler@newlogic.com>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Feb 2002, Frank Neumann wrote:
+On Fri, 8 Feb 2002, Guenther Sohler wrote:
 
-> Hi,
-> I would like to know how I go about creating a small program that lets
-> me send /received patch sets ("banks") into my synthesizers via SysEx MIDI
-> communication.
+> I have seen that alsa provides nice pcm devices in /dev/snd directory
 >
-> I know all about the actual required SysEx parameters, and I had also once
-> written such a program for OSS (simply using read()/write() to/from
-> /dev/midi), but now I'd like to port this to ALSA.
->
-> As far as I can tell, there is either the "rawmidi" interface or the
-> more complex(?) way by going through snd_seq_open(...).
->
-> I have some problems with rawmidi; if I try the test program from the
-> current (0.9.0beta10) alsa-lib source the way it suggests, I always get:
->
-> franky@faramir:/u1/src/ALSA/0.9.0beta10/alsa-lib-0.9.0beta10/test> ./rawmidi -i 0 0
-> ALSA lib rawmidi.c:184:(snd_rawmidi_open_noupdate) Unknown RawMidi 0
-> snd_rawmidi_open 0 failed: -2
+> *They are split in playback and capture devices :) nice idea.
+> In Oss I was able to pipe data from and to them and therfore was
+> recording/playing back at a certain sample rate.
+> With alsa this is not possible anymore. it says the descriptor was in a bad
+> state. Is it possible ???
 
-It's a wrong syntax. You should use:
+Yes: arecord | aplay
 
-./rawmidi -i hw:0,0
+> *Is there something like aconnect for pcm devices ????
+
+Nope.
+
+> when I do a sfxload, it operates on /dev/sequencer, which makes the seq-oss
+> module automatically to load. Is there a way to load the patches in native alsa
+> ???
+
+No, it's under slow development.
 
 						Jaroslav
 
