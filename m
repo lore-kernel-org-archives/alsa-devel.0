@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000894]: No sound
-Date: Mon, 28 Mar 2005 09:11:06 +0200
-Message-ID: <eaeee8140833f3e6bb47be375316b310@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000567]: "Loudness" and "Sim. stereo" controls missing in mixer
+Date: Mon, 28 Mar 2005 11:46:31 +0200
+Message-ID: <2f54566e116da24af101db310bdf6dd7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5E5126C
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 09:11:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53708278
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 11:46:31 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=894> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=567> 
 ======================================================================
-Reported By:                trondhuso
+Reported By:                pmatil
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   894
-Category:                   ISA - es1688
+Issue ID:                   567
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.10-1.12_FC2
+Distribution:               Debian GNU/Linux
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             02-08-2005 23:13 CET
-Last Modified:              03-28-2005 09:11 CEST
+Date Submitted:             10-05-2004 17:47 CEST
+Last Modified:              03-28-2005 11:46 CEST
 ======================================================================
-Summary:                    No sound
+Summary:                    "Loudness" and "Sim. stereo" controls missing in
+mixer
 Description: 
-I'm trying to get sound on a Compaq Armada 1750 with an ess1688 soundcard.
-Card is not detected during boot.
-AlsaMixer finds it okay.
-xmms reports that no soundcard is detected
-"Soundcard Detection" reports that no soundcard is detected
-
-
+Since 1.0.4 (somewhere around there), the S/PDIF-controls have disappeared
+from the mixer... It has been there before and there IS one on my
+soundcard (Terratec DMX Xfire 1024, cs46xx)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-28-05 04:25 
+ pmatil - 10-20-04 21:32 
 ----------------------------------------------------------------------
-Submitter: Did you manage to solve this problem?
+In codec97#0-0 there is a line: Loudness: off and Sim. stereo: off. Can
+these be adjusted somewhere?
 
 ----------------------------------------------------------------------
- trondhuso - 03-28-05 09:11 
+ pmatil - 03-28-05 11:46 
 ----------------------------------------------------------------------
-jdthood: Nope. Haven't solved it yet. 
-tiwai: Where do I put this information then?
-
--trond-
+Since this topic has been brought up again, I thought I should mention
+this. I dont't know why but my mixer settings won't save (again). Also,
+the "Duplicate front" option has no effect. Also, should I have Loudness
+and Sim. Stereo controls also in the mixer?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-08-05 23:13 trondhuso      New Issue                                    
-02-08-05 23:13 trondhuso      Kernel Version            => 2.6.10-1.12_FC2 
-02-08-05 23:13 trondhuso      Issue Monitored: trondhuso                    
-02-14-05 14:11 trondhuso      Note Added: 0003590                          
-02-14-05 16:14 tiwai          Note Added: 0003594                          
-03-28-05 04:25 jdthood        Note Added: 0004234                          
-03-28-05 09:11 trondhuso      Note Added: 0004236                          
+10-05-04 17:47 pmatil         New Issue                                    
+10-05-04 17:47 pmatil         Distribution              => Debian GNU/Linux
+10-05-04 17:47 pmatil         Kernel Version            => 2.4.22          
+10-06-04 11:13 tiwai          Note Added: 0002018                          
+10-07-04 18:06 pmatil         File Added: asound.state                     
+10-07-04 18:20 pmatil         File Added: codec97#0                        
+10-07-04 18:23 pmatil         Note Added: 0002037                          
+10-11-04 14:07 tiwai          Note Added: 0002077                          
+10-11-04 14:08 tiwai          File Added: cs4298-spdif.diff                    
+10-13-04 13:05 pmatil         Note Added: 0002122                          
+10-13-04 15:50 tiwai          Note Added: 0002123                          
+10-14-04 13:11 pmatil         File Added: prev_+reg                        
+10-14-04 13:11 pmatil         File Added: current_+reg                     
+10-14-04 13:13 pmatil         Note Added: 0002143                          
+10-14-04 13:14 pmatil         Note Edited: 0002143                         
+10-14-04 14:27 tiwai          Note Added: 0002145                          
+10-14-04 14:39 tiwai          Note Added: 0002146                          
+10-14-04 16:20 pmatil         Note Added: 0002153                          
+10-14-04 16:31 tiwai          Note Added: 0002155                          
+10-14-04 18:08 pmatil         Note Added: 0002157                          
+10-15-04 13:53 pmatil         Note Edited: 0002157                         
+10-18-04 17:44 tiwai          Note Added: 0002196                          
+10-20-04 21:32 pmatil         Note Added: 0002219                          
+03-28-05 04:19 jdthood        Summary                  S/PDIF control missing in
+mixer => "Loudness" and "Sim. stereo" controls missing in mixer
+03-28-05 11:46 pmatil         Note Added: 0004237                          
 ======================================================================
 
 
