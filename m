@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000833]: [snd_via82xx] setting ac97_clock greater than 48000 should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Date: Tue, 18 Jan 2005 17:44:47 +0100
-Message-ID: <1511e327528c077f9354951f9baaf917@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: Maintaining sound card at a specific frequency
+Date: Tue, 18 Jan 2005 10:04:55 -0800
+Message-ID: <5bdc1c8b0501181004455c8e36@mail.gmail.com>
+References: <1105938846.41eb499ec3527@www3.webhosting.cx>
+	 <XFMail.20050118165036.pochini@shiny.it>
+	 <s5hacr6wun5.wl@alsa2.suse.de>
+	 <5bdc1c8b05011809013ebf438e@mail.gmail.com>
+	 <s5h651uwtp9.wl@alsa2.suse.de> <s5hy8eqvdan.wl@alsa2.suse.de>
+Reply-To: Mark Knecht <markknecht@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 366F3220
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 17:44:47 +0100 (MET)
+In-Reply-To: <s5hy8eqvdan.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,80 +22,171 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Giuliano Pochini <pochini@shiny.it>, Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi,
+   Since I'm on a PlanetCCRMA box I don't even have Alsa source code.
+It would be quite difficult for me to test this in any short time.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=833> 
-======================================================================
-Reported By:                t35t0r
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   833
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               gentoo
-Kernel Version:             2.6.10-gentoo-r5 (but error is reproducible in stock
-kernels also)
-======================================================================
-Date Submitted:             01-18-2005 17:35 CET
-Last Modified:              01-18-2005 17:44 CET
-======================================================================
-Summary:                    [snd_via82xx] setting ac97_clock greater than 48000
-should be ?ignored? but breaks sound output for kernels >= linux-2.6.9
-Description: 
-Please read: http://bugs.gentoo.org/show_bug.cgi?id=78327
+   Possibly someone else out there with an HDSP box or card can do this?
 
-Forwarded email below
+Sorry,
+Mark
 
-From: Jaroslav Kysela <perex@suse.cz>
-To: t35t0r@gmail.com
-Cc: Takashi Iwai <tiwai@suse.de>
-Date: Tue, 18 Jan 2005 10:40:56 +0100 (CET)
-Subject: Re: snd_via82xx ac97_clock=96000 parameter doesn't work for
-kernels >= linux-2.6.9 (fwd)
 
-> > Dear sir:
+On Tue, 18 Jan 2005 18:48:32 +0100, Takashi Iwai <tiwai@suse.de> wrote:
+> At Tue, 18 Jan 2005 18:08:50 +0100,
+> I wrote:
 > >
-> > If you get a chance can you look at
-> > http://bugs.gentoo.org/show_bug.cgi?id=78327 . It seems that setting
-> > ac97_clock=96000 no longer works for kernels >= linux-2.6.9. I didn't
-> > try any other ac97_clock settings since the 96000 setting was working
-> > for a 2.6.7 and 2.6.8.1 kernel. The url has some of my hardware
-> > specifications.
-
-It seems that the no-sound bug is caused with the AC'97 codec
-initialization. Specifying 96000 as ac97_clock parameter won't help,
-because this value must be from 8000 to 48000 otherwise it is ignored.
-Please, fill a bug to our bugtrack system.
-
-                                               Jaroslav
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-18-05 17:44 
-----------------------------------------------------------------------
-I guess your problem has nothing to do with ac97_clock.  Setting
-ac97_clock=96000 is simply wrong.  If this really works, then something
-else is broken...
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-18-05 17:35 t35t0r         New Issue                                    
-01-18-05 17:35 t35t0r         Distribution              => gentoo          
-01-18-05 17:35 t35t0r         Kernel Version            => 2.6.10-gentoo-r5 (but
-error is reproducible in stock kernels also)
-01-18-05 17:44 tiwai          Note Added: 0003252                          
-======================================================================
-
-
+> > If this works like you want, only the locking is missing...
+> 
+> The attached is an experimental patch to add this feature.
+> You can lock system clock via
+> 
+>         amixer cset iface=PCM,name="System Clock Source Locking" on
+> 
+> It's untested, as usual.
+> 
+> 
+> Takashi
+> 
+> 
+> Index: alsa-kernel/pci/rme9652/hdsp.c
+> ===================================================================
+> RCS file: /suse/tiwai/cvs/alsa/alsa-kernel/pci/rme9652/hdsp.c,v
+> retrieving revision 1.81
+> diff -u -r1.81 hdsp.c
+> --- alsa-kernel/pci/rme9652/hdsp.c      14 Jan 2005 19:50:48 -0000      1.81
+> +++ alsa-kernel/pci/rme9652/hdsp.c      18 Jan 2005 17:44:54 -0000
+> @@ -450,6 +450,7 @@
+>         u32                   control2_register;     /* cached value */
+>         u32                   creg_spdif;
+>         u32                   creg_spdif_stream;
+> +       int                   clock_source_locked;
+>         char                 *card_name;             /* digiface/multiface */
+>         HDSP_IO_Type          io_type;               /* ditto, but for code use */
+>          unsigned short        firmware_rev;
+> @@ -2159,7 +2160,7 @@
+>             if (val > 6) val = 6;
+>         }
+>         spin_lock_irq(&hdsp->lock);
+> -       if (val != hdsp_clock_source(hdsp)) {
+> +       if (val != hdsp_clock_source(hdsp) && ! hdsp->clock_source_locked) {
+>                 change = (hdsp_set_clock_source(hdsp, val) == 0) ? 1 : 0;
+>         } else {
+>                 change = 0;
+> @@ -2168,6 +2169,34 @@
+>         return change;
+>  }
+> 
+> +static int snd_hdsp_info_clock_source_lock(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t * uinfo)
+> +{
+> +       uinfo->type = SNDRV_CTL_ELEM_TYPE_BOOLEAN;
+> +       uinfo->count = 1;
+> +       uinfo->value.integer.min = 0;
+> +       uinfo->value.integer.max = 1;
+> +       return 0;
+> +}
+> +
+> +static int snd_hdsp_get_clock_source_lock(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
+> +{
+> +       hdsp_t *hdsp = snd_kcontrol_chip(kcontrol);
+> +
+> +       ucontrol->value.integer.value[0] = hdsp->clock_source_locked;
+> +       return 0;
+> +}
+> +
+> +static int snd_hdsp_put_clock_source_lock(snd_kcontrol_t * kcontrol, snd_ctl_elem_value_t * ucontrol)
+> +{
+> +       hdsp_t *hdsp = snd_kcontrol_chip(kcontrol);
+> +       int change;
+> +
+> +       change = (int)ucontrol->value.integer.value[0] != hdsp->clock_source_locked;
+> +       if (change)
+> +               hdsp->clock_source_locked = ucontrol->value.integer.value[0];
+> +       return change;
+> +}
+> +
+>  #define HDSP_DA_GAIN(xname, xindex) \
+>  { .iface = SNDRV_CTL_ELEM_IFACE_HWDEP, \
+>    .name = xname, \
+> @@ -3129,6 +3158,13 @@
+>  HDSP_SPDIF_NON_AUDIO("IEC958 Non-audio Bit", 0),
+>  /* 'Sample Clock Source' complies with the alsa control naming scheme */
+>  HDSP_CLOCK_SOURCE("Sample Clock Source", 0),
+> +{
+> +       .iface = SNDRV_CTL_ELEM_IFACE_PCM,
+> +       .name = "Sample Clock Source Locking",
+> +       .info = snd_hdsp_info_clock_source_lock,
+> +       .get = snd_hdsp_get_clock_source_lock,
+> +       .put = snd_hdsp_put_clock_source_lock,
+> +},
+>  HDSP_SYSTEM_CLOCK_MODE("System Clock Mode", 0),
+>  HDSP_PREF_SYNC_REF("Preferred Sync Reference", 0),
+>  HDSP_AUTOSYNC_REF("AutoSync Reference", 0),
+> @@ -3360,6 +3396,7 @@
+>         snd_iprintf (buffer, "System Clock Mode: %s\n", system_clock_mode);
+> 
+>         snd_iprintf (buffer, "System Clock Frequency: %d\n", hdsp->system_sample_rate);
+> +       snd_iprintf (buffer, "System Clock Locked: %s\n", hdsp->clock_source_locked ? "Yes" : "No");
+> 
+>         snd_iprintf(buffer, "\n");
+> 
+> @@ -3882,21 +3919,19 @@
+>                 spin_unlock_irq(&hdsp->lock);
+>                 return 0;
+> 
+> -       } else {
+> -               spin_unlock_irq(&hdsp->lock);
+>         }
+> 
+>         /* how to make sure that the rate matches an externally-set one ?
+>          */
+> 
+> -       spin_lock_irq(&hdsp->lock);
+> -       if ((err = hdsp_set_rate(hdsp, params_rate(params), 0)) < 0) {
+> -               spin_unlock_irq(&hdsp->lock);
+> -               _snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_RATE);
+> -               return err;
+> -       } else {
+> -               spin_unlock_irq(&hdsp->lock);
+> +       if (! hdsp->clock_source_locked) {
+> +               if ((err = hdsp_set_rate(hdsp, params_rate(params), 0)) < 0) {
+> +                       spin_unlock_irq(&hdsp->lock);
+> +                       _snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_RATE);
+> +                       return err;
+> +               }
+>         }
+> +       spin_unlock_irq(&hdsp->lock);
+> 
+>         if ((err = hdsp_set_interrupt_interval(hdsp, params_period_size(params))) < 0) {
+>                 _snd_pcm_hw_param_setempty(params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE);
+> @@ -4318,13 +4353,17 @@
+> 
+>         snd_pcm_hw_constraint_msbits(runtime, 0, 32, 24);
+>         snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, &hdsp_hw_constraints_period_sizes);
+> -       if (hdsp->io_type == H9632) {
+> -               runtime->hw.channels_min = hdsp->qs_out_channels;
+> -               runtime->hw.channels_max = hdsp->ss_out_channels;
+> +       if (hdsp->clock_source_locked) {
+> +               runtime->hw.rate_min = runtime->hw.rate_max = hdsp->system_sample_rate;
+> +       } else if (hdsp->io_type == H9632) {
+>                 runtime->hw.rate_max = 192000;
+>                 runtime->hw.rates = SNDRV_PCM_RATE_KNOT;
+>                 snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE, &hdsp_hw_constraints_9632_sample_rates);
+>         }
+> +       if (hdsp->io_type == H9632) {
+> +               runtime->hw.channels_min = hdsp->qs_out_channels;
+> +               runtime->hw.channels_max = hdsp->ss_out_channels;
+> +       }
+> 
+>         snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+>                              snd_hdsp_hw_rule_out_channels, hdsp,
+> 
+> 
+>
 
 
 -------------------------------------------------------
