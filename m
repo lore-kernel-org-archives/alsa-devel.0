@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Is there plans to support SiS7019?
-Date: Mon, 16 Aug 2004 11:42:33 +0200 (METDST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000445]: 1.0.6 breaks redhat alsasound script
+Date: Mon, 16 Aug 2004 12:06:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0408161131450.27899-100000@studcom.urz.uni-halle.de>
-References: <1709.192.168.0.30.1092440735.squirrel@dev.datamax.co.in>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Message-ID: <20040816100639.ED13B1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1709.192.168.0.30.1092440735.squirrel@dev.datamax.co.in>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3EDEE224
+	for <alsa-devel@alsa-project.org>; Mon, 16 Aug 2004 12:06:40 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,42 +16,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Vrihad Shoonya <vrihad@softhome.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Vrihad Shoonya wrote:
-> > I think (and from alsa source), looks like it is not supported for now.
-> > Maybe it is similiar to 7018, maybe someone could try to add it to
-> > trident module.
->
-> From where I can confirm that it is similar to 7018?
 
-Well, the number looks very similar.  ;-)
+The following bug has been RESOLVED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000445
+======================================================================
+Reported By:                deathpudding
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     445
+Category:                   CORE - sequencer
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               redhat
+Kernel Version:             
+Resolution:                 fixed
+======================================================================
+Date Submitted:             08-15-2004 19:25 CEST
+Last Modified:              08-16-2004 12:06 CEST
+======================================================================
+Summary:                    1.0.6 breaks redhat alsasound script
+Description: 
+I compiled the driver with sequencer support. The alsasound script uses the
+content of /proc/asound/seq/drivers to know which sequencer drivers to
+load. But, since installing the 1.0.6 driver, the seq/drivers file repeats
+the list of drivers infinitely, for example:
 
-You can try to go into the alsa-kernel/pci/trident directory and
-replace all occurrences of 7018 with 7019 (70 lines in three files).
-If the driver works with your card after recompiling, it is similar.
+snd-emu10k1-synth,loaded,requested,1
+snd-seq-midi,loaded,requested,1
+snd-seq-oss,loaded,requested,1
+snd-emu10k1-synth,loaded,requested,1
+snd-seq-midi,loaded,requested,1
+snd-seq-oss,loaded,requested,1
+...
 
-> I have specs for this particular hardware.
+and therefore the alsasound script gets stuck in an infinite loop,
+printing out this:
 
-published anywhere?
+FATAL: Module snd_emu10k1_synth already in kernel.
+FATAL: Module snd_seq_midi already in kernel.
+FATAL: Module snd_emu10k1_synth already in kernel.
+FATAL: Module snd_seq_midi already in kernel.
+...
+======================================================================
 
-> Can someone help me in identifying the scope and area of work
-> needed to get its support in alsa?
+----------------------------------------------------------------------
+ c0ff - 08-15-2004 23:13 CEST 
+----------------------------------------------------------------------
+It's a bug in alsa /proc read function (core/info.c). 2.6.8-rc4 kernel does
+not have this bug, but alsa-driver-1.0.5a has.
 
-If the driver can just pretend it's an 7018, then it's trival.
+----------------------------------------------------------------------
+ perex - 08-16-2004 12:06 CEST 
+----------------------------------------------------------------------
+Fixed in 1.0.6a.
 
-> As I understand this chip supports six channel audio.
-
-If it's an AC'97 controller then we should look at the intel8x0
-instead ...
-
-
-HTH
-Clemens
-
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-15-04 19:25 deathpudding   New Bug                                      
+08-15-04 19:25 deathpudding   Distribution              => redhat          
+08-15-04 23:13 c0ff           Bugnote Added: 0001568                       
+08-16-04 12:06 perex          Bugnote Added: 0001570                       
+08-16-04 12:06 perex          Assigned To               => perex           
+08-16-04 12:06 perex          Resolution               open => fixed       
+08-16-04 12:06 perex          Status                   new => resolved     
+======================================================================
 
 
 -------------------------------------------------------
