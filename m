@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Fri, 3 Dec 2004 00:55:31 +0100
-Message-ID: <315e18c3be78623303a8e2470c2a0dae@bugtrack.alsa-project.org>
+Date: Fri, 3 Dec 2004 01:18:31 +0100
+Message-ID: <e5144b17d40ee22c1c7cd55ec7e41b0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E589028A
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:55:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87FF4250
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 01:18:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-02-2004 02:56 CET
-Last Modified:              12-03-2004 00:55 CET
+Last Modified:              12-03-2004 01:18 CET
 ======================================================================
 Summary:                    Random beeps, ticks and clicks
 Description: 
@@ -78,26 +78,6 @@ not only normal load.
 Especially the clicking and ticking noise appear more frequent when
 downloading large amount of data with high transfer-rates.
 ======================================================================
-
-----------------------------------------------------------------------
- moonlite - 12-03-04 00:49 
-----------------------------------------------------------------------
-0000:00:00.0 Host bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-KT266/A/333]
-0000:00:01.0 PCI bridge: VIA Technologies, Inc. VT8366/A/7 [Apollo
-KT266/A/333 AGP]
-0000:00:0c.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
-(rev 0a)
-0000:00:0c.1 Input device controller: Creative Labs SB Live! MIDI/Game
-Port (rev 0a)
-0000:00:0d.0 Ethernet controller: 3Com Corporation 3c905C-TX/TX-M
-[Tornado] (rev 74)
-
-It was a while ago that i bought the system so i couldn't recall really,
-but a fast google told me that it was kt266.
-Anyway. The problem goes away as soon as i do a "rmmod 3c59x".
-So really. It has something to do with my networks-card and
-kernel-versions >2.4.19
 
 ----------------------------------------------------------------------
  moonlite - 12-03-04 00:55 
@@ -190,6 +170,29 @@ Controller (rev 1b) (prog-if 00 [UHCI])
         Capabilities: [dc] Power Management version 2
         Capabilities: [f0] AGP version 2.0
 
+----------------------------------------------------------------------
+ moonlite - 12-03-04 01:18 
+----------------------------------------------------------------------
+I did this:
+
+setpci -v -d *:* latency_timer=b0      #all cards
+setpci -v -s 01:00.0 latency_timer=ff  #graphics-card
+setpci -v -s 00:0d.0 latency_timer=ff  #network-card
+
+It was explained in an article by daniel robbins on ibm.com.
+I have no real clue to if these values are good or bad in any way.
+He used it to make sound work when an AGP-card that had agp turned of
+(thus putting LOTS of data on the pci-bus) would make his soundcard make
+distorted sound.
+He wanted to keep his graphics-card and network-card being able to put
+lots of data on the bus but still making more room for other stuf or
+something.
+
+Anyway. It seems to work pretty ok. 
+But, if anyone has some other, maybe more sensible, values for my
+pci-latency settings, please post them! :)
+But for now i'm just glad it all seems to work.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -205,6 +208,7 @@ Date Modified  Username       Field                    Change
 12-03-04 00:35 rlrevell       Note Added: 0002703                          
 12-03-04 00:49 moonlite       Note Added: 0002704                          
 12-03-04 00:55 moonlite       Note Added: 0002705                          
+12-03-04 01:18 moonlite       Note Added: 0002706                          
 ======================================================================
 
 
