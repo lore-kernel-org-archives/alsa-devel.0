@@ -1,33 +1,45 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 2.6.10-rc2 on VAIO laptop and PowerMac 8500/G3
-Date: Sat, 20 Nov 2004 14:11:42 -0500
-Message-ID: <1100977903.6879.56.camel@krustophenia.net>
-References: <E1CVYZM-0000Fi-00@penngrove.fdns.net>
-	 <20041120185100.GA1205@elf.ucw.cz>
+Subject: Re: support for PCI_DEVICE_ID_INTEL_ICH6_15
+Date: Sat, 20 Nov 2004 14:37:09 -0500
+Message-ID: <1100979429.6879.65.camel@krustophenia.net>
+References: <419F7E9F.6040807@ens-lyon.fr>
+	 <1100975509.6879.31.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S263164AbUKTT1d@vger.kernel.org>
-In-Reply-To: <20041120185100.GA1205@elf.ucw.cz>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: John Mock <kd6pag@qsl.net>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel <alsa-devel@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1100975509.6879.31.camel@krustophenia.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Brice.Goglin@ens-lyon.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Please cc: alsa-devel on ALSA issues (we now allow posts from non
-subscribers! :-P).
+On Sat, 2004-11-20 at 13:31 -0500, Lee Revell wrote:
+> If this is the case "ICH 6 Family" is misleading, as this needs a
+> completely different driver.
 
-On Sat, 2004-11-20 at 19:51 +0100, Pavel Machek wrote:
-> Hi!
-> 
-> > The software suspend issue was long and tedious to narrow down.  Yep, as
-> > you suspected, it appears to be specific a driver (or group thereof).  It
-> > appears to happen when the sound subsystem is included.  Attached below 
-> > is the .config and a 'diff' from the losing one to one which works.
-> 
-> Okay, this is for the alsa team then. Somewhere between 2.6.10-rc1 and
-> 2.6.10-rc2, ALSA started breaking swsusp :-(.
-> 								Pavel
-> 
--- 
-Lee Revell <rlrevell@joe-job.com>
+Sorry, rereading the posts from Intel, ICH6 == HD Audio, ICH5 is the
+intel8x0 driver.
+
+It looks like some ICH6 devices are claimed by the intel8x0 driver and
+some by azx.  Sorry I can't help more, I don't have the hardware myself.
+
+Lee
+
+
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: InterSystems CACHE
+FREE OODBMS DOWNLOAD - A multidimensional database that combines
+robust object and relational technologies, making it a perfect match
+for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
