@@ -1,16 +1,12 @@
-From: ljp <ljp@llornkcor.com>
-Subject: Re: pause and resume
-Date: Mon, 10 Feb 2003 06:45:26 -0700
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: M-Audio Revolution 7.1
+Date: Mon, 10 Feb 2003 08:55:25 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302100645.26455.ljp@llornkcor.com>
-References: <1044738808.12267.2.camel@spiritship.localhost> <s5hbs1k4hn2.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <E18iELL-0000tm-00@sc8-sf-list1.sourceforge.net>
+References: <s5h8ywo4hdd.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbs1k4hn2.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-reply-to: Your message of "Mon, 10 Feb 2003 10:25:34 +0100."
+             <s5h8ywo4hdd.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,35 +16,21 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-RME Digi96/8 PST
+>i'll try to contact with m-audio people...
 
+when i was at NAMM, i went up and personally thanked the m-audio guys
+for creating devices that we could use under linux. i told them that
+although i generally recommend the hammerfall series to people with
+large channel requirements, anytime someone wanted a smaller number of
+channels, i always recommended the delta 1010. the reps there hugged
+me!
 
-On Monday February 10 2003 02:19 am, Takashi Iwai wrote:
-> At 08 Feb 2003 14:13:28 -0700,
->
-> L.J. Potter <ljp@llornkcor.com> wrote:
-> > Is it usual for a card to be able to pause, but not be able to resume?
->
-> if so, it's likely a bug of the driver.  on which sound card?
->
->
-> Takashi
+:))
 
--- 
-My cat's a debugger....
-
-Potter, Lorn, "ljp"
-core member / Web Administrator
-Project OPIE- the Open Palmtop Integrated Environment
-http://opie.handhelds.org 
-IRC: irc.freenode.net #opie #opie.de
-
-llornkcor@handhelds.org
-llornkcor@helixcommunity.org
-
+--p
 
 
 -------------------------------------------------------
