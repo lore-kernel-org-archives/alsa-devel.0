@@ -1,10 +1,13 @@
-From: "Doris Perdue" <Katelin@gcgpr.com>
-Subject: Great Phaarrmacy for you
-Date: Tue, 1 Feb 2005 03:37:08 -0400
-Message-ID: <E1CvoHD-0007Zs-Nr@sc8-sf-mx1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000837]: Mute LED for the HP/Compaq nc8000
+Date: Tue, 1 Feb 2005 10:16:07 +0100
+Message-ID: <15da998071ea2bd220b9e82a470bed96@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_0013_0667D844.6323ABE9"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1464D1EC
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 10:16:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,78 +17,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Bartlomiej Parson <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_0013_0667D844.6323ABE9
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=837> 
+======================================================================
+Reported By:                linus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   837
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             01-19-2005 20:15 CET
+Last Modified:              02-01-2005 10:16 CET
+======================================================================
+Summary:                    Mute LED for the HP/Compaq nc8000
+Description: 
+I noticed that the quirk introduced for HP/Compaq nc6000 among
+others isn't applied for HP/Compaq nc8000 (most probably because
+you don't have the PCI ID. By the way both the model nc6000
+and nc8000 should be with small letters (not that it matters to
+anyone else than the logo designer)
 
-"The very idea, Aileen Butler!" exclaimed Mamie.  "You'll do noth
-of the sort.  You'll come here and live with me as my guest."
-"No, I won't! If I can't pay I won't come," replied Aileen.  "You
-have to let me do that."  She knew that the Calligans could not
-afford to keep her.
-"Well, we'll not talk about that now, anyhow," replied Mrs. Calli
-"You can come when you like and stay as long as you like.  Reach
+So I've had a user obtain the PCI ID. The subsystem is: 103c:088c
 
+Long lspci -v and -v -n here:
 
-Have a nice day!
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB/DBL/DBM
+(ICH4/ICH4-L/ICH4-M) AC'97 Audio Controller (rev 03)
+	Subsystem: Hewlett-Packard Company: Unknown device 088c
 
-------=_NextPart_000_0013_0667D844.6323ABE9
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+0000:00:1f.5 0401: 8086:24c5 (rev 03)
+	Subsystem: 103c:088c
+	Flags: bus master, medium devsel, latency 0, IRQ 11
+	I/O ports at 3000 [size=256]
+	I/O ports at 3880 [size=64]
+	Memory at a0100000 (32-bit, non-prefetchable) [size=512]
+	Memory at a0180000 (32-bit, non-prefetchable) [size=256]
+	Capabilities: <available only to root>
+======================================================================
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Hello, Welcome to Health Suite!</FONT></DI=
-V>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT size=3D4>Vi</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>ra&nbsp;</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>al</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>Xa</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>x&nbsp;</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT size=3D4>cod</FONT></TD>
-    <TD><FONT size=3D4></FONT></TD></TR>
-  <TR vAlign=3Dbottom>
-    <TD><FONT size=3D4>ag</FONT></TD>
-    <TD><FONT size=3D4>Ci</FONT></TD>
-    <TD><FONT size=3D4>is&nbsp;</FONT></TD>
-    <TD><FONT size=3D4>na</FONT></TD>
-    <TD><FONT size=3D4>Vi</FONT></TD>
-    <TD><FONT size=3D4>in</FONT></TD></TR></TBODY></TABLE></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>And many other at&nbsp;<A=20
-href=3D"http://www.fantasy.researchisneeded.com"><font color=3D"red"><b>Mai=
-lScanner has detected a possible fraud attempt from "www.fantasy.researchis=
-needed.com" claiming to be</b></font> http://www.fantasy</A></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D3>Save Yourself a Huge 70% Off All 0rders Wi=
-th us.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Have a nice day!</FONT></DIV></BODY></HTML>
+----------------------------------------------------------------------
+ linus - 02-01-05 10:16 
+----------------------------------------------------------------------
+I saw this has been fixed in the CVS! Thanks.
 
-------=_NextPart_000_0013_0667D844.6323ABE9--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-19-05 20:15 linus          New Issue                                    
+01-19-05 20:15 linus          Distribution              => Fedora Core 3   
+01-19-05 20:15 linus          Kernel Version            => 2.6.10          
+01-19-05 21:06 orange         Issue Monitored: orange                      
+02-01-05 10:16 linus          Note Added: 0003460                          
+======================================================================
+
 
 
 
