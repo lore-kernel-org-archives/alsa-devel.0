@@ -1,12 +1,12 @@
-From: =?iso-8859-1?Q?Robert_Br=FCckmann?= <robert.brueckmann@stud.tu-ilmenau.de>
-Subject: Re: latency timer
-Date: Wed, 27 Feb 2002 08:48:13 +0100
-Message-ID: <001501c1bf63$23656680$0300a8c0@wgilmenau>
-References: <200202262319.SAA08267@renoir.op.net>
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: Re: Status of ALSA documentation?
+Date: Wed, 27 Feb 2002 00:19:30 -0800 (PST)
+Message-ID: <20020227081930.2BDDF3ECC@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,24 +15,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>, alsa-devel@lists.sourceforge.net
+To: pd@op.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> i would also mention that you may have potential problems doing this
-> with word-clock synced interfaces. its likely that they will generate
-> interrupts sufficiently close in time that you could be severely
-> stressing the full compliance of the PCI interrupt detect/CPU notify
-> system. basically, each card is going to reach the interrupt point at
-> almost exactly the same time, and this could cause problems even
-> though it theoretically should not (the APIC should buffer the 2nd
-> interrupt while the first is processed).
-> 
-> i would be very suprised if even RME have tried this experiment: I
-> don't think ASIO has any way to link two physical devices together in
-> the way that ALSA permits. i may be wrong about that.
+Paul sent me a revised edition of the alsa home page with more of a current feel than the previous version so you can find it here:
 
-So do you mean there is another way of synchronizing the cards?
+http://www.boosthardware.com/LAU/alsa/index4-pd.html
 
+I have retained the link to the LAU-guide because I know it helps new users to find needed information. However for those of you who are anti my link to Boost Hardware being so prominent I have restructured the page slightly.
+
+I intend to start getting in knee deep on the alsa-howto wiki which Mark created.
+Once that is in more of a working condition I will add that and the new midi howto (at the linux doc project) to the LAU-guide too.
+
+I will also attempt to create a docbook version of all the info in the alsa-howto wiki. Once I get cosy with docbook markup. 
+
+
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+You deserve a better email address! Get personalized email @yourname
+or @yourcompany from Everyone.net --> http://www.everyone.net?tag
 
 _______________________________________________
 Alsa-devel mailing list
