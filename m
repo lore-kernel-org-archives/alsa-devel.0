@@ -1,11 +1,11 @@
-From: Simon Bucher <DocBexter@gmx.net>
-Subject: X-Runs
-Date: Sun, 14 Sep 2003 00:38:26 +0200 (MEST)
+From: AthlonRob <athlonrob@data.4t3.com>
+Subject: Multiple Sound Streams out of a single card
+Date: 13 Sep 2003 20:44:09 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <19535.1063492706@www15.gmx.net>
+Message-ID: <1063511049.30701.164.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,34 +15,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hey list-
 
-Im new to Alsa and my current code basically just uses the simple
-input/output examples for Full Duplex io. It works really well ... the latency is <=
-0.5ms without underruns except in two situations:
+I'm wondering exactly how things work, playing multiple streams of audio
+out of a single card/chip.
 
-Disk IO:
-Only a small disk access ruins the stream - is there a way to disable disk
-io while the app is running ? I really dont need the disk ( no swap and so on
-... )
+In Windows, I'm able to have WinAmp running in the background and still
+hear event sounds from other applications.
 
-Scrolling up in "mcedit" ( == small coloured text editor ) also gives me a
-100% underun.
-How can this be ? Im using sched_fifo @ 99 and a small text editor preempts
-my code ?!
+In Linux, only one thing can play at a time, without the use of
+high-latency audio servers.
 
-greetz
-Simon
+Why is this?  I understand some alsa drivers support playing multiple
+streams.. dependent upon driver support and a certain property of
+hardware (which I have been told doesn't exist on the nForce, although
+I've read elsewhere it does... and doesn't exist on any i8x0 based
+chips).
 
--- 
-COMPUTERBILD 15/03: Premium-e-mail-Dienste im Test
---------------------------------------------------
-1. GMX TopMail - Platz 1 und Testsieger!
-2. GMX ProMail - Platz 2 und Preis-Qualitätssieger!
-3. Arcor - 4. web.de - 5. T-Online - 6. freenet.de - 7. daybyday - 8. e-Post
+I only question this because about six months ago I was told, flat out,
+that the hardware didn't support playing multiple audio streams at
+once.  On one machine, I have an i8x0 chip, and on another an nForce
+chip (which uses the i8x0 driver).  Both play multiple audio streams at
+once in Windows, but neither seem capable with either OSS or ALSA
+drivers.
+
+Is this a fundamental difference between Windows and ALSA driver
+architectures, something the Alsa or OSS people haven't gotten around to
+yet, a big mystery, or what?  Maybe Windows runs some fairly low-latency
+sound server type setup?
+
+Inquiring minds want to know.  :-)
+
+Rob
 
 
 
