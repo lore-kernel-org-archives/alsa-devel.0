@@ -1,66 +1,39 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: [PATCH]snd-usb-usx2y 0.7.1 against cvs head:      
-         please test it!
-Date: Wed, 14 Jul 2004 12:37:55 +0100 (WEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <42174.195.245.190.94.1089805075.squirrel@www.rncbc.org>
-References: <200407131155.43747.annabellesgarden@yahoo.de><s5hwu17andn.wl@alsa2.suse.de><32788.192.168.1.5.1089756746.squirrel@www.rncbc.org>
-    <s5hiscr9dio.wl@alsa2.suse.de>
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: [Alsa-devel] Bizarre audio behavior
+Date: Wed, 14 Jul 2004 14:20:52 +0200
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040714142052.4b421488@mango.fruits.de>
+References: <1089773762.2729.24.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hiscr9dio.wl@alsa2.suse.de>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org-S267219AbUGNMNJ@vger.kernel.org>
+In-Reply-To: <1089773762.2729.24.camel@mindpipe>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, paul@linuxaudiosystems.com, linux-kernel <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Rui Nuno Capela wrote:
->>
->> Erm... I get the following while modprobing snd-usb-usx2y:
->>
->> WARNING: Error inserting snd_hwdep
->> (/lib/modules/2.6.7-cko6.0smp/kernel/sound/acore/snd-hwdep.ko): Unknown
->> symbol in module, or unknown parameter (see dmesg)
->> FATAL: Error inserting snd_usb_usx2y
->> (/lib/modules/2.6.7-cko6.0smp/kernel/sound/snd-usb-usx2y.ko): Unknown
->> symbol in module, or unknown parameter (see dmesg)
->>
->> Then the relevant dmesg says:
->>
->> snd_hwdep: Unknown symbol snd_kcalloc
->> snd_usb_usx2y: Unknown symbol snd_hwdep_new
->
-> Did you run cvscompile?  configure script must be regenerated.
->
->
+On Tue, 13 Jul 2004 22:56:03 -0400
+Lee Revell <rlrevell@joe-job.com> wrote:
 
-Yes, I've ran ./cvscompile. My steps were just the following:
+> Ok, this is absolutely bizarre.  If I run JACK from a GNOME terminal,
+> even with a large period size, all I get are these error messages:
+> If I run if from an xterm or a text console, it works perfectly, even 
+> with a really small buffer:
+> 
+> 
+> I have no idea where this bug could be, it seems like it would have to be 
+> display-related.
+> 
+> Lee 
+> 
 
-  cvs co alsa-kernel
-  cvs co alsa-driver
-  cd alsa-driver
-  export ALSAKERNELDIR=../alsa-kernel
-  ./cvscompile
-  su -c "make install"
 
-Something wrong?
+Hmm, maybe in one case LD_ASSUME_KERNEL is set?
+
+flo
+
+
 -- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
--------------------------------------------------------
-This SF.Net email sponsored by Black Hat Briefings & Training.
-Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
-digital self defense, top technical experts, no vendor pitches, 
-unmatched networking opportunities. Visit www.blackhat.com
+Palimm Palimm!
+http://affenbande.org/~tapas/wiki
