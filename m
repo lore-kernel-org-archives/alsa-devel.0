@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Thu, 30 Sep 2004 01:44:12 +0200 (CEST)
+Date: Thu, 30 Sep 2004 02:00:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929234412.B287F9073@server.perex-int.cz>
+Message-ID: <20040930000058.148F09073@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 234532F1
-	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 01:44:13 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6842429E
+	for <alsa-devel@alsa-project.org>; Thu, 30 Sep 2004 02:00:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-30-2004 01:44 CEST
+Last Modified:              09-30-2004 02:00 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -337,6 +337,51 @@ or enter:
 $/etc/init.d/acpid stop
 $/etc/init.d/apmd stop
 
+----------------------------------------------------------------------
+ rncbc - 09-30-2004 02:00 CEST 
+----------------------------------------------------------------------
+Things are really coming out of the dark tunnel :)
+
+After untarring (usx2y_linux-2.6.9-rc2-mm4-S7.tar.gz) and arrange a proper
+kernel source tree patch (linux-2.6.9-rc2-mm4-S7_usx2y.patch.gz), I
+succeeded for the very first time to get my US-224 to work on my OHCI
+based laptop without a kernel oops. HURRAY! Kudos to Karsten, you're a
+champ!
+
+OK. We're getting close to karma :)
+
+However (there's always a but), running jackd is not even near perfection.
+Summary is: 
+
+1. jackd -R (realtime) is a NO GO -- see dmesg.out.7.jackd-R_ABORTS.txt. 
+
+2. jackd (non realtime) is prone to XRUNS, if not annoyingly unreliable --
+see dmesg.out.7.jackd-XRUNS.txt. 
+
+Common thing in both modes, is the following jackd output message:
+
+ALSA lib pcm_hw.c:521:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed:
+Broken pipe
+
+This seems that I'm now on par of bugs https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549 and https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000541, which is
+good news to say the least, given the showstopping I had before ;)
+
+As a side note, the jackd backend driver used in my tests wre the new alsa
+experimental one, specific to usx2y and named as such (-d usx2y), while
+using a latest patched jackd release (notice my custom versioning:
+0.99.0usx2y). 
+
+OTOH, the same kernel, patch and jackd works on my SUSE 9.1 Pro box, P4
+2.8GHz/HT SMP, UHCI based, with much less fuss -- can even run jackd -R -p
+128 -n 2. However (yes, yet another but) it seems to suffer from some
+periodic xruns (something like a burst of 2 consecutive xruns each 10
+minutes) than before. I mean before as the original stuff posted on
+jackit-devel mailing list recently
+(http://sourceforge.net/mailarchive/message.php?msg_id=9597926).
+
+Oh, just noticed Karsten's note about acpid and apmd. Those are not
+started. However ACPI modules are loaded.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -376,6 +421,7 @@ Date Modified  Username       Field                    Change
 09-30-04 01:24 rncbc          File Added: dmesg.out.7.jackd-R_ABORTS.txt                    
 09-30-04 01:25 rncbc          File Added: dmesg.out.8.jackd_XRUNS.txt                    
 09-30-04 01:44 karsten        Bugnote Added: 0001978                       
+09-30-04 02:00 rncbc          Bugnote Added: 0001979                       
 ======================================================================
 
 
