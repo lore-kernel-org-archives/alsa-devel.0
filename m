@@ -1,12 +1,14 @@
-From: Elbarto <thelastman@despammed.com>
-Subject: SB Live and master volume
-Date: Sat, 12 Jun 2004 13:57:51 +0200
+From: Bernhard Rosenkraenzer <bero@arklinux.org>
+Subject: 1.0.5a on VIA 8235 breaks mplayer
+Date: Sat, 12 Jun 2004 16:30:40 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040612135751.7c71eed0@localhost>
+Message-ID: <200406121630.40754.bero@arklinux.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,14 +20,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I think this should be a common question, but after google and mailng- lists
-searching i really can't find an answer (just a lot of questions): there's a
-way to control the master volume in SB Live, ie the volume of all the
-speakers, and to play midi and cd to all the speakers,  using a right
-asoundrc, or the problem must be fixed in the driver? If it's a driver
-problem, there are plans to fix it?
-Thank's a lot
-Luca
+Hi,
+after updating from ALSA 1.0.4 to 1.0.5a on a VIA EPIA-M board (VIA 
+8235/ICEnsemble VT1616i chip), mplayer starts acting really oddly 
+(complaining about "alsa-space: xrun of at least 29.847 msecs. resetting 
+stream" after every other frame).
+
+Switching mplayer to use ALSA's OSS emulation rather than native ALSA still 
+works.
+
+Any ideas?
+
+LLaP
+bero
 
 
 -------------------------------------------------------
