@@ -1,13 +1,9 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: DAC Direct Mode on ALi 5451
-Date: Sun, 11 May 2003 20:41:02 +0200 (CEST)
+From: Daniel Pouzzner <douzzer@mega.nu>
+Subject: Re: [PATCH] standard control names for the rme96
+Date: Sun, 11 May 2003 15:19:58 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305112039550.1304-100000@pnote.perex-int.cz>
-References: <3EBE9534.9060203@signal.uu.se>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200305111919.h4BJJwlI038695@mail.mega.nu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EBE9534.9060203@signal.uu.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +12,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Fredrik Lingvall <fl@signal.uu.se>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: martin-langer@gmx.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 11 May 2003, Fredrik Lingvall wrote:
+Did this get resolved?  I have an RME96 on which I can test code for
+you if you still need that done.
 
-> Hi!
-> 
-> The Cirrus Logic CS4299 audio chip used in the ALi 5451 chipset has a 
-> DAC Direct Mode which sends the DAC output directly to the line output
-> drivers. Does anyone know how to enable this mode? I have tried the
-> alsamixer (and gnome-alsamixer) but there is no such switch in these
-> apps.
-> 
-> Background: I want to process the adio data from the ADC:s (eg. FIR 
-> filter the audio data) and then send the processed audio stream to the 
-> DAC:s and the line out on my laptop (Acer TM 636). To do this I must 
-> mute the PCM line in the mixer which otherwise feeds back into the ADC:s 
-> (see Figure 8.mixer diagram in: 
-> http://www.alsa-project.org/alsa/ftp/manuals/cirrus/cs4299-4.pdf)
-> but this also kills the PCM output. However, if the DAC Direct Mode bit 
-> is set (bit 8 in the AC Mode Control Register (5Eh)) the PCM stream will
-> be send to the line out by-passing the mixer.
-
-Is not this sequence enough to solve your problem?
-
-- set Line to mute ('m' in alsamixer)
-- set Line to capture (space in alsamixer)
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+>> here is a patch for the Digi96 driver "alsa-kernel/pci/rme96.c" against
+>> latest CVS. It will change the "Clock Mode" switch to standard names.
+>> 
+>> My machine compiles fine with this patch, but I have no rme96 card for
+>> trying it out. 
+>> 
+>
+>now (nearly a month later):
+>Do we have today one rme96 user for testing out?
+>
+>Or is that patch not wanted and everybody would prefer an additional "if"
+>in the control tool code instead of introducing standard names for rme96?
 
 
 -------------------------------------------------------
