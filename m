@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000272]: Sound playback fast
-Date: Fri, 16 Jul 2004 12:54:15 +0200 (CEST)
+Subject: [ALSA - driver 0000245]: Intel 82801DB (ICH4) AC'97 broken in Linux kernel 2.6.5 and above.
+Date: Fri, 16 Jul 2004 12:51:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105415.0F22526008@server.perex-int.cz>
+Message-ID: <20040716105128.2D03D26005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84B5D217
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:54:15 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2992255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:51:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,304 +22,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000272
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000245
 ======================================================================
-Reported By:                r_f_o_t
+Reported By:                mooky
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     272
-Category:                   PCI - via82xx
+Bug ID:                     245
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Slackware current
-Kernel Version:             2.4.26
+Distribution:               Slackware
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             05-13-2004 00:09 CEST
-Last Modified:              07-16-2004 12:54 CEST
+Date Submitted:             04-28-2004 22:03 CEST
+Last Modified:              07-16-2004 12:51 CEST
 ======================================================================
-Summary:                    Sound playback fast
+Summary:                    Intel 82801DB (ICH4) AC'97 broken in Linux kernel 2.6.5 and above.
 Description: 
-Sound files playback at higher than normal pitch using both pre-compiled
-Slackware packages and self-compiled sources. Downgraded to 1.0.3 and no
-problems.
+I had AlSA working in kernel 2.6.3 and 2.6.4, but sometime after 2.6.4 it
+broke.   Even the most recent 2.6.6rc3, sound is broken.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 05-13-2004 12:55 CEST 
+ tiwai - 04-30-2004 10:37 CEST 
 ----------------------------------------------------------------------
-show the ac97 codec info/registers in /proc/asound/card0/codec97#0/* files.
+make sure that intel8x0m (modem) module is not loaded via hotplug.
+hotplug tends to load it automatically, and it breaks the preferred
+order of modules.
 
-----------------------------------------------------------------------
- r_f_o_t - 05-13-2004 23:58 CEST 
-----------------------------------------------------------------------
-info:
-0-0/0: Realtek ALC101
-
-Capabilities     :
-DAC resolution   : 16-bit
-ADC resolution   : 16-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0
-Extended status  :
-
-registers:
-Version 1.0.3
-
-0:00 = 5800
-0:02 = 0707
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 001e
-0:0c = 001f
-0:0e = 005f
-0:10 = 1f1f
-0:12 = 0303
-0:14 = 0000
-0:16 = 1f1f
-0:18 = 0303
-0:1a = 0606
-0:1c = 0000
-0:1e = 0000
-0:20 = 2000
-0:22 = 0000
-0:24 = 0000
-0:26 = 800f
-0:28 = 0600
-0:2a = 0000
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0002
-0:70 = 0002
-0:72 = 0058
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 414c
-0:7e = 4730
-
-Version 1.0.4
-
-0:00 = 5800
-0:02 = 0707
-0:04 = 0000
-0:06 = 0000
-0:08 = 0000
-0:0a = 001e
-0:0c = 001f
-0:0e = 005f
-0:10 = 1f1f
-0:12 = 0303
-0:14 = 0000
-0:16 = 1f1f
-0:18 = 0303
-0:1a = 0606
-0:1c = 0000
-0:1e = 0000
-0:20 = 2000
-0:22 = 0000
-0:24 = 0000
-0:26 = 000f
-0:28 = 0600
-0:2a = 0000
-0:2c = 0000
-0:2e = 0000
-0:30 = 0000
-0:32 = 0000
-0:34 = 0000
-0:36 = 0000
-0:38 = 0000
-0:3a = 0000
-0:3c = 0000
-0:3e = 0000
-0:40 = 0000
-0:42 = 0000
-0:44 = 0000
-0:46 = 0000
-0:48 = 0000
-0:4a = 0000
-0:4c = 0000
-0:4e = 0000
-0:50 = 0000
-0:52 = 0000
-0:54 = 0000
-0:56 = 0000
-0:58 = 0000
-0:5a = 0000
-0:5c = 0000
-0:5e = 0000
-0:60 = 0000
-0:62 = 0000
-0:64 = 0000
-0:66 = 0000
-0:68 = 0000
-0:6a = 0000
-0:6c = 0000
-0:6e = 0002
-0:70 = 0002
-0:72 = 0058
-0:74 = 0000
-0:76 = 0000
-0:78 = 0000
-0:7a = 0000
-0:7c = 414c
-0:7e = 4730
-
-Difference is line 20, v1.0.3 800f, v1.0.4 000f
-Hope this is what you wanted.
-
-P.S. I did not mean to make the "View Status" private.
-
-edited on: 05-13-04 23:58
+you can avoid hotplugging of intel8x0m by adding snd-intel8x0m
+and snd_intel8x0m to /etc/hotplug/blacklist.  the file may be dependent
+on the distribution.
 
 ----------------------------------------------------------------------
- tiwai - 05-14-2004 12:20 CEST 
+ mooky - 05-01-2004 10:03 CEST 
 ----------------------------------------------------------------------
-is the info identical between 1.0.3 and 1.0.4?
-the register 0x26 should be ok, it's EAPD bit.
+Fixed.  The exclusion name is actually:     snd-intel8x0m
 
-if the info is correct, the chip doesn't support VRA, so it
-supports only 48k Hz.  if you play mp3 with hw:0, you *MUST*
-have fast playback.
+Is this a bug known kernel bug?  I hope they get that fixed sometime, oh
+well, it's unbroken now. Cheers.
 
-what didn't work exactly and what DID work with 1.0.3?
+edited on: 05-01-04 10:03
 
 ----------------------------------------------------------------------
- r_f_o_t - 05-14-2004 16:16 CEST 
+ tiwai - 05-01-2004 10:30 CEST 
 ----------------------------------------------------------------------
-the info is identical
+sorry, i added mistakenly a wrong reply (deleted now).
 
-wav files playback fine in 1.0.3 but playback fast in 1.0.4
-
-----------------------------------------------------------------------
- tiwai - 05-14-2004 16:35 CEST 
-----------------------------------------------------------------------
-which app did you use?
-try "aplay some-44khz.wav" as the test.
-
-if you still get a fast playback, check 
-/proc/asound/card0/pcm0p/sub0/hw_params
-during the playback, whether the sample rate 48000 is set
-correctly.
-
-----------------------------------------------------------------------
- r_f_o_t - 05-14-2004 18:04 CEST 
-----------------------------------------------------------------------
-OK, it's seems to be KDE's arts daemon (1.2.2) that is not playing nice
-with 1.0.4 With 1.0.3, it sets the sample rate correctly at 48000, but
-with 1.0.4, it sets the sample rate at 44100. When I kill X, it stays at
-the wrong rate.
-Tried in gnome, xfce, console, with aplay and play, all good. Start kde,
-fast playback until reboot. If I set custom sample rate in kde, it works
-fine until killing X, then it's wrong in console again.
-
-----------------------------------------------------------------------
- tiwai - 05-25-2004 18:47 CEST 
-----------------------------------------------------------------------
-ok close now this bug, since it's a KDE specific problem.
-
-----------------------------------------------------------------------
- r_f_o_t - 05-25-2004 19:07 CEST 
-----------------------------------------------------------------------
-I'm sorry, I don't understand how this is not a bug. As I noted in bugnote
-of 05-14-04 18:04, version 1.0.3 works fine, version 1.0.4 does not. The
-only change was alsa from 1.0.3 - 1.0.4, while all KDE stuff, including
-artsd stayed the same.
-Thanks, Chuck
-
-----------------------------------------------------------------------
- tiwai - 05-25-2004 19:36 CEST 
-----------------------------------------------------------------------
-the problem is that you set 'IEC958 Output Switch' on, regardless of
-the ALSA version...  it's fixed now on CVS.  will appear on 1.0.5-rc2.
-
-----------------------------------------------------------------------
- r_f_o_t - 05-25-2004 19:47 CEST 
-----------------------------------------------------------------------
-Thanks very much for the clarification.
-Chuck
-
-----------------------------------------------------------------------
- tiwai - 05-26-2004 14:40 CEST 
-----------------------------------------------------------------------
-closing this again :)
-
-if you still have problems with 1.0.5, reopen once more...
+this the problem of hotplug, not of the kernel nor the ALSA.
+the hotplug must be fixed.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-13-04 00:09 r_f_o_t        New Bug                                      
-05-13-04 00:09 r_f_o_t        Distribution              => Slackware current
-05-13-04 00:09 r_f_o_t        Kernel Version            => 2.4.26          
-05-13-04 00:10 r_f_o_t        Bug Monitored: r_f_o_t                       
-05-13-04 12:55 tiwai          Bugnote Added: 0001102                       
-05-13-04 18:26 r_f_o_t        Bugnote Added: 0001105                       
-05-13-04 23:58 r_f_o_t        Bugnote Edited: 0001105                      
-05-14-04 12:20 tiwai          Bugnote Added: 0001109                       
-05-14-04 16:16 r_f_o_t        Bugnote Added: 0001112                       
-05-14-04 16:35 tiwai          Bugnote Added: 0001113                       
-05-14-04 18:04 r_f_o_t        Bugnote Added: 0001115                       
-05-25-04 18:47 tiwai          Bugnote Added: 0001228                       
-05-25-04 18:47 tiwai          Assigned To               => tiwai           
-05-25-04 18:47 tiwai          Resolution               open => not a bug   
-05-25-04 18:47 tiwai          Status                   new => resolved     
-05-25-04 19:02 r_f_o_t        Bug End Monitor: r_f_o_t                     
-05-25-04 19:02 r_f_o_t        Bug Monitored: r_f_o_t                       
-05-25-04 19:07 r_f_o_t        Bugnote Added: 0001229                       
-05-25-04 19:07 r_f_o_t        Resolution               not a bug => reopened
-05-25-04 19:07 r_f_o_t        Status                   resolved => feedback
-05-25-04 19:36 tiwai          Bugnote Added: 0001233                       
-05-25-04 19:47 r_f_o_t        Bugnote Added: 0001234                       
-05-26-04 14:40 tiwai          Bugnote Added: 0001258                       
-05-26-04 14:40 tiwai          Resolution               reopened => fixed   
-05-26-04 14:40 tiwai          Status                   feedback => resolved
-07-16-04 12:54 tiwai          Status                   resolved => closed  
+04-28-04 22:03 mooky          New Bug                                      
+04-28-04 22:03 mooky          Distribution              => Slackware       
+04-28-04 22:03 mooky          Kernel Version            => 2.6             
+04-30-04 10:37 tiwai          Bugnote Added: 0000971                       
+05-01-04 10:02 mooky          Bugnote Added: 0000990                       
+05-01-04 10:03 mooky          Bugnote Edited: 0000990                      
+05-01-04 10:28 tiwai          Bugnote Added: 0000991                       
+05-01-04 10:29 tiwai          Bugnote Deleted: 0000991                     
+05-01-04 10:30 tiwai          Bugnote Added: 0000992                       
+05-01-04 10:30 tiwai          Assigned To               => tiwai           
+05-01-04 10:30 tiwai          Resolution               open => fixed       
+05-01-04 10:30 tiwai          Status                   new => resolved     
+07-16-04 12:51 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
