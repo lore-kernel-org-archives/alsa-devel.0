@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Fri,  8 Oct 2004 22:30:28 +0200 (CEST)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] emu10k1 multichannel PCM - still not quite working
+Date: Fri, 08 Oct 2004 16:32:06 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008203028.4CF964800E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1097267526.1442.47.camel@krustophenia.net>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=-EBskVk+RPkpWuuyxWvsi"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D7FF6258
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 22:30:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,562 +14,602 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: perex@suse.cz, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000425
-======================================================================
-Reported By:                rncbc
-Assigned To:                karsten
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     425
-Category:                   USB - usb-usx2y
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Mandrake 10.0 Official
-Kernel Version:             2.6.8-rc2
-======================================================================
-Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              10-08-2004 22:30 CEST
-======================================================================
-Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
-Description: 
-As of ALSA 1.0.6rc1, the US-x2y PCM device driver module exposes a hard
-conflict on OHCI based USB controllers, causing a complete system lockup
--- kernel oops on an interrupt handler -- exactly upon starting or
-openning the PCM device for audio playback. 
-======================================================================
+--=-EBskVk+RPkpWuuyxWvsi
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+
+Here is my first attempt at adding multichannel PCM playback support to
+the emu10k1.  It does not quite seem to work and I am not sure why. 
+This has 16 non-interleaved channels.  Since the playback interrupt is
+driven by the capture, we call snd_pcm_period_elapsed in the efx capture
+interrupt handler.  Since playback and capture are synced, first 16
+channels must be enabled for recording using the EFX voices mask
+control.
+
+I start JACK like so:
+
+ jackd -v -R -d alsa -C hw:0,2 -P hw:0,3 -S -p 32
+
+and it correctly opens 16 playback and 16 capture channels.  However,
+the pointer callback and the interrupt handler only get called once; the
+jackd watchdog thread kills jackd eventually.  Looks like only the first
+period is handled, then it hangs.  I added some printks:
+
+Oct  6 14:54:23 krustophenia kernel: in snd_emu10k1_efx_playback_prepare - start_addr 0x1000 end_addr 0x1800
+Oct  6 14:54:23 krustophenia kernel: init voice - master 1 extra 0 start_addr 0x800 end_addr 0x840
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x840 end_addr 0x880
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x880 end_addr 0x8c0
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x8c0 end_addr 0x900
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x900 end_addr 0x940
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x940 end_addr 0x980
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x980 end_addr 0x9c0
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0x9c0 end_addr 0xa00
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xa00 end_addr 0xa40
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xa40 end_addr 0xa80
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xa80 end_addr 0xac0
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xac0 end_addr 0xb00
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xb00 end_addr 0xb40
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xb40 end_addr 0xb80
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xb80 end_addr 0xbc0
+Oct  6 14:54:23 krustophenia kernel: init voice - master 0 extra 0 start_addr 0xbc0 end_addr 0xc00
+Oct  6 14:54:23 krustophenia kernel: ptr = 0x83c, ccca_start_addr = 0x83c
+Oct  6 14:54:23 krustophenia kernel: ptr = 0x0, buffer_size = 0x40, period_size = 0x20
+Oct  6 14:54:23 krustophenia kernel: in capture efx irq handler, updating playback stream
+
+The first "ptr" is the one read from the hardware in the pointer
+callback, the second is the pointer we return.
+
+The patch is attached.  It is definitely incomplete but AFAICS it should
+work at this point.
+
+Lee 
+
+--=-EBskVk+RPkpWuuyxWvsi
+Content-Disposition: attachment; filename=emu10k1-multichannel-pcm.patch
+Content-Type: text/x-patch; name=emu10k1-multichannel-pcm.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
+
+Index: alsa-kernel/include/emu10k1.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/include/emu10k1.h,v
+retrieving revision 1.46
+diff -u -r1.46 emu10k1.h
+--- alsa-kernel/include/emu10k1.h	6 Sep 2004 15:05:18 -0000	1.46
++++ alsa-kernel/include/emu10k1.h	8 Oct 2004 20:16:35 -0000
+@@ -781,6 +781,7 @@
+ typedef struct _snd_emu10k1_pcm emu10k1_pcm_t;
+ 
+ typedef enum {
++	EMU10K1_EFX,
+ 	EMU10K1_PCM,
+ 	EMU10K1_SYNTH,
+ 	EMU10K1_MIDI
+@@ -792,6 +793,7 @@
+ 	int use: 1,
+ 	    pcm: 1,
+ 	    synth: 1,
++	    efx: 1,
+ 	    midi: 1;
+ 	void (*interrupt)(emu10k1_t *emu, emu10k1_voice_t *pvoice);
+ 
+@@ -800,6 +802,7 @@
+ 
+ typedef enum {
+ 	PLAYBACK_EMUVOICE,
++	PLAYBACK_EFX,
+ 	CAPTURE_AC97ADC,
+ 	CAPTURE_AC97MIC,
+ 	CAPTURE_EFX
+@@ -809,7 +812,7 @@
+ 	emu10k1_t *emu;
+ 	snd_emu10k1_pcm_type_t type;
+ 	snd_pcm_substream_t *substream;
+-	emu10k1_voice_t *voices[2];
++	emu10k1_voice_t *voices[16];
+ 	emu10k1_voice_t *extra;
+ 	unsigned short running;
+ 	unsigned short first_ptr;
+@@ -999,6 +1002,7 @@
+ 	snd_pcm_substream_t *pcm_capture_substream;
+ 	snd_pcm_substream_t *pcm_capture_mic_substream;
+ 	snd_pcm_substream_t *pcm_capture_efx_substream;
++	snd_pcm_substream_t *pcm_playback_efx_substream;
+ 
+ 	emu10k1_midi_t midi;
+ 	emu10k1_midi_t midi2; /* for audigy */
+@@ -1017,6 +1021,7 @@
+ int snd_emu10k1_pcm(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
+ int snd_emu10k1_pcm_mic(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
+ int snd_emu10k1_pcm_efx(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
++int snd_emu10k1_pcm_multi(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
+ int snd_emu10k1_fx8010_pcm(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
+ int snd_emu10k1_mixer(emu10k1_t * emu);
+ int snd_emu10k1_fx8010_new(emu10k1_t *emu, int device, snd_hwdep_t ** rhwdep);
+Index: alsa-kernel/pci/emu10k1/emu10k1.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1.c,v
+retrieving revision 1.27
+diff -u -r1.27 emu10k1.c
+--- alsa-kernel/pci/emu10k1/emu10k1.c	2 Jul 2004 13:22:12 -0000	1.27
++++ alsa-kernel/pci/emu10k1/emu10k1.c	8 Oct 2004 20:16:35 -0000
+@@ -121,6 +121,10 @@
+ 		snd_card_free(card);
+ 		return err;
+ 	}		
++	if ((err = snd_emu10k1_pcm_multi(emu, 3, NULL)) < 0) {
++		snd_card_free(card);
++		return err;
++	}		
+ 	if ((err = snd_emu10k1_mixer(emu)) < 0) {
+ 		snd_card_free(card);
+ 		return err;
+Index: alsa-kernel/pci/emu10k1/emupcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
+retrieving revision 1.32
+diff -u -r1.32 emupcm.c
+--- alsa-kernel/pci/emu10k1/emupcm.c	16 Sep 2004 10:36:44 -0000	1.32
++++ alsa-kernel/pci/emu10k1/emupcm.c	8 Oct 2004 20:16:36 -0000
+@@ -82,35 +82,50 @@
+ 	}
+ #endif
+ 	snd_pcm_period_elapsed(emu->pcm_capture_efx_substream);
++	if (emu->pcm_playback_efx_substream != NULL) {
++	    snd_pcm_period_elapsed(emu->pcm_playback_efx_substream);
++	    printk("in capture efx irq handler, updating playback stream\n");
++	}
+ }
+ 
+ static int snd_emu10k1_pcm_channel_alloc(emu10k1_pcm_t * epcm, int voices)
+ {
+-	int err;
++	int err, i;
+ 
++	printk("pcm_channel_alloc: voices=%d\n", voices);
+ 	if (epcm->voices[1] != NULL && voices < 2) {
+ 		snd_emu10k1_voice_free(epcm->emu, epcm->voices[1]);
+ 		epcm->voices[1] = NULL;
+ 	}
+ 	if (voices == 1 && epcm->voices[0] != NULL)
+-		return 0;		/* already allocated */
++		return 0;		/* mono, already allocated */
+ 	if (voices == 2 && epcm->voices[0] != NULL && epcm->voices[1] != NULL)
+-		return 0;
++		return 0;		/* stereo, already allocated */
+ 	if (voices > 1) {
+ 		if (epcm->voices[0] != NULL && epcm->voices[1] == NULL) {
+ 			snd_emu10k1_voice_free(epcm->emu, epcm->voices[0]);
+ 			epcm->voices[0] = NULL;
+ 		}
+ 	}
+-	err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_PCM, voices > 1, &epcm->voices[0]);
++	if (epcm->type == PLAYBACK_EMUVOICE) {
++	    err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_PCM, voices, &epcm->voices[0]);
++	} else if (epcm->type == PLAYBACK_EFX) {
++	    err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_EFX, voices, &epcm->voices[0]);
++	} else {
++	    err = 0;
++	}
++	
++	
+ 	if (err < 0)
+ 		return err;
+ 	epcm->voices[0]->epcm = epcm;
+ 	if (voices > 1) {
+-		epcm->voices[1] = &epcm->emu->voices[epcm->voices[0]->number + 1];
+-		epcm->voices[1]->epcm = epcm;
++		for (i = 1; i < voices; i++) {
++		    epcm->voices[i] = &epcm->emu->voices[epcm->voices[0]->number + i];
++		    epcm->voices[i]->epcm = epcm;
++		}
+ 	}
+-	if (epcm->extra == NULL) {
++	if (epcm->extra == NULL && epcm->type != PLAYBACK_EFX) {
+ 		err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_PCM, 0, &epcm->extra);
+ 		if (err < 0) {
+ 			// printk("pcm_channel_alloc: failed extra: voices=%d, frame=%d\n", voices, frame);
+@@ -232,6 +247,7 @@
+ 				       unsigned int start_addr,
+ 				       unsigned int end_addr)
+ {
++	//printk("init voice - master %d extra %d start_addr 0x%x end_addr 0x%x\n", master, extra, start_addr,end_addr);
+ 	snd_pcm_substream_t *substream = evoice->epcm->substream;
+ 	snd_pcm_runtime_t *runtime = substream->runtime;
+ 	emu10k1_pcm_mixer_t *mix = &emu->pcm_mixer[substream->number];
+@@ -309,6 +325,7 @@
+ 	} else
+ 		snd_emu10k1_ptr_write(emu, FXRT, voice,
+ 				      snd_emu10k1_compose_send_routing(send_routing));
++	printk("init voice - master %d extra %d start_addr 0x%x end_addr 0x%x\n", master, extra, start_addr,end_addr);
+ 	// Stop CA
+ 	// Assumption that PT is already 0 so no harm overwriting
+ 	snd_emu10k1_ptr_write(emu, PTRX, voice, (send_amount[0] << 8) | send_amount[1]);
+@@ -355,8 +372,10 @@
+ 	emu10k1_pcm_t *epcm = runtime->private_data;
+ 	int err;
+ 
++	/* allocate voices */
+ 	if ((err = snd_emu10k1_pcm_channel_alloc(epcm, params_channels(hw_params))) < 0)
+ 		return err;
++	/* allocate the DMA buffer */
+ 	if ((err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params))) < 0)
+ 		return err;
+ 	if (err > 0) {	/* change */
+@@ -403,6 +422,30 @@
+ 	return 0;
+ }
+ 
++static int snd_emu10k1_efx_playback_hw_free(snd_pcm_substream_t * substream)
++{
++	emu10k1_t *emu = snd_pcm_substream_chip(substream);
++	snd_pcm_runtime_t *runtime = substream->runtime;
++	emu10k1_pcm_t *epcm;
++	int i;
++
++	if (runtime->private_data == NULL)
++		return 0;
++	epcm = runtime->private_data;
++	for (i=0; i< 16; i++) {
++	    if (epcm->voices[i]) {
++		snd_emu10k1_voice_free(epcm->emu, epcm->voices[i]);
++		epcm->voices[i] = NULL;
++	    }
++	}
++	if (epcm->memblk) {
++		snd_emu10k1_free_pages(emu, epcm->memblk);
++		epcm->memblk = NULL;
++		epcm->start_addr = 0;
++	}
++	snd_pcm_lib_free_pages(substream);
++	return 0;
++}
+ static int snd_emu10k1_playback_prepare(snd_pcm_substream_t * substream)
+ {
+ 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
+@@ -426,6 +469,35 @@
+ 	return 0;
+ }
+ 
++static int snd_emu10k1_efx_playback_prepare(snd_pcm_substream_t * substream)
++{
++	emu10k1_t *emu = snd_pcm_substream_chip(substream);
++	snd_pcm_runtime_t *runtime = substream->runtime;
++	emu10k1_pcm_t *epcm = runtime->private_data;
++	unsigned int start_addr, end_addr;
++	unsigned int channel_size;
++	int i;
++
++	start_addr = epcm->start_addr;
++	end_addr = epcm->start_addr + snd_pcm_lib_buffer_bytes(substream);
++	printk("in snd_emu10k1_efx_playback_prepare - start_addr 0x%x end_addr 0x%x\n", start_addr,end_addr);
++
++	/*
++	 * now we need to divide the buffer into 16 chunks and initialize 
++	 * 16 voices to make the noninterleaved 16 channel stream
++	 */
++	channel_size = ( end_addr - start_addr ) / 16;
++	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0],
++	    			   start_addr, start_addr+channel_size);
++	start_addr += channel_size;
++	for (i = 1; i < 16; i++) {
++	    snd_emu10k1_pcm_init_voice(emu, 0, 0, epcm->voices[i],
++	    			   start_addr, start_addr+channel_size);
++	    start_addr += channel_size;
++	}
++	return 0;
++}
++
+ static int snd_emu10k1_capture_hw_params(snd_pcm_substream_t * substream,
+ 					 snd_pcm_hw_params_t * hw_params)
+ {
+@@ -598,6 +670,45 @@
+ 	return result;
+ }
+ 
++static int snd_emu10k1_efx_playback_trigger(snd_pcm_substream_t * substream,
++				        int cmd)
++{
++	emu10k1_t *emu = snd_pcm_substream_chip(substream);
++	snd_pcm_runtime_t *runtime = substream->runtime;
++	emu10k1_pcm_t *epcm = runtime->private_data;
++	int i = 0;
++	int result = 0;
++
++	// printk("trigger - emu10k1 = 0x%x, cmd = %i, pointer = %i\n", (int)emu, cmd, substream->ops->pointer(substream));
++	spin_lock(&emu->reg_lock);
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++		for (i = 0; i < 16; i++) {	
++		    snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i]);
++		}
++		/* follow thru */
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[i], 1, 0);
++		for (i = 1; i < 16; i++) {	
++		    snd_emu10k1_playback_trigger_voice(emu, epcm->voices[i], 0, 0);
++		}
++		epcm->running = 1;
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		epcm->running = 0;
++		for (i = 0; i < 16; i++) {	
++		    snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
++		}
++		break;
++	default:
++		result = -EINVAL;
++		break;
++	}
++	spin_unlock(&emu->reg_lock);
++	return result;
++}
++
+ static int snd_emu10k1_capture_trigger(snd_pcm_substream_t * substream,
+ 				       int cmd)
+ {
+@@ -685,6 +796,32 @@
+ 	return ptr;
+ }
+ 
++static snd_pcm_uframes_t snd_emu10k1_efx_playback_pointer(snd_pcm_substream_t * substream)
++{
++	emu10k1_t *emu = snd_pcm_substream_chip(substream);
++	snd_pcm_runtime_t *runtime = substream->runtime;
++	emu10k1_pcm_t *epcm = runtime->private_data;
++	unsigned int ptr;
++
++	if (!epcm->running)
++		return 0;
++	ptr = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
++	printk("ptr = 0x%x, ccca_start_addr = 0x%x\n", ptr, epcm->ccca_start_addr);
++	ptr += runtime->buffer_size;
++	ptr -= epcm->ccca_start_addr;
++	ptr %= runtime->buffer_size;
++	/*if (ptr < epcm->ccca_start_addr)
++		ptr += runtime->buffer_size - epcm->ccca_start_addr;
++	else {
++		ptr -= epcm->ccca_start_addr;
++		if (ptr >= (runtime->buffer_size))
++			ptr -= runtime->buffer_size;
++	}
++	*/
++	printk("ptr = 0x%x, buffer_size = 0x%x, period_size = 0x%x\n", ptr, (unsigned int)runtime->buffer_size, (unsigned int)runtime->period_size);
++	return ptr;
++}
++
+ static snd_pcm_uframes_t snd_emu10k1_capture_pointer(snd_pcm_substream_t * substream)
+ {
+ 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
+@@ -725,6 +862,25 @@
+ 	.fifo_size =		0,
+ };
+ 
++static snd_pcm_hardware_t snd_emu10k1_efx_playback =
++{
++	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_NONINTERLEAVED |
++				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				 SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE),
++	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
++	.rates =		SNDRV_PCM_RATE_48000,
++	.rate_min =		48000,
++	.rate_max =		48000,
++	.channels_min =		16,
++	.channels_max =		16,
++	.buffer_bytes_max =	(32*128*1024),
++	.period_bytes_min =	(64*16),
++	.period_bytes_max =	(16*128*1024),
++	.periods_min =		2,
++	.periods_max =		2,
++	.fifo_size =		0,
++};
++
+ /*
+  *  Capture support device description
+  */
+@@ -818,6 +974,26 @@
+ 	return 0;
+ }
+ 
++static int snd_emu10k1_efx_playback_open(snd_pcm_substream_t * substream)
++{
++	emu10k1_t *emu = snd_pcm_substream_chip(substream);
++	emu10k1_pcm_t *epcm;
++	snd_pcm_runtime_t *runtime = substream->runtime;
++
++	epcm = kcalloc(1, sizeof(*epcm), GFP_KERNEL);
++	if (epcm == NULL)
++		return -ENOMEM;
++	epcm->emu = emu;
++	epcm->type = PLAYBACK_EFX;
++	epcm->substream = substream;
++	emu->pcm_playback_efx_substream = substream;
++	runtime->private_data = epcm;
++	runtime->private_free = snd_emu10k1_pcm_free_substream;
++	runtime->hw = snd_emu10k1_efx_playback;
++
++	return 0;
++}
++
+ static int snd_emu10k1_playback_close(snd_pcm_substream_t * substream)
+ {
+ 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
+@@ -828,6 +1004,19 @@
+ 	return 0;
+ }
+ 
++static int snd_emu10k1_efx_playback_close(snd_pcm_substream_t * substream)
++{
++	emu10k1_t *emu = snd_pcm_substream_chip(substream);
++	/*
++	emu10k1_pcm_mixer_t *mix = &emu->pcm_mixer[substream->number];
++
++	mix->epcm = NULL;
++	snd_emu10k1_pcm_mixer_notify(emu, substream->number, 0); */
++    
++	emu->pcm_playback_efx_substream = NULL;
++	return 0;
++}
++
+ static int snd_emu10k1_capture_open(snd_pcm_substream_t * substream)
+ {
+ 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
+@@ -964,6 +1153,20 @@
+ 	.page =			snd_pcm_sgbuf_ops_page,
+ };
+ 
++/* EFX playback */
++static snd_pcm_ops_t snd_emu10k1_efx_playback_ops = {
++	.open =			snd_emu10k1_efx_playback_open,
++	.close =		snd_emu10k1_efx_playback_close,
++	.ioctl =		snd_pcm_lib_ioctl,
++	.hw_params =		snd_emu10k1_playback_hw_params,
++	.hw_free =		snd_emu10k1_efx_playback_hw_free,
++	.prepare =		snd_emu10k1_efx_playback_prepare,
++	.trigger =		snd_emu10k1_efx_playback_trigger,
++	.pointer =		snd_emu10k1_efx_playback_pointer,
++	.page =			snd_pcm_sgbuf_ops_page,
++};
++
++
+ static snd_pcm_ops_t snd_emu10k1_capture_ops = {
+ 	.open =			snd_emu10k1_capture_open,
+ 	.close =		snd_emu10k1_capture_close,
+@@ -1366,6 +1569,7 @@
+ 	.ack =			snd_emu10k1_fx8010_playback_transfer,
+ };
+ 
++
+ static void snd_emu10k1_pcm_efx_free(snd_pcm_t *pcm)
+ {
+ 	emu10k1_t *emu = pcm->private_data;
+@@ -1404,3 +1608,35 @@
+ 
+ 	return 0;
+ }
++
++int __devinit snd_emu10k1_pcm_multi(emu10k1_t * emu, int device, snd_pcm_t ** rpcm)
++{
++	snd_pcm_t *pcm;
++	snd_pcm_substream_t *substream;
++	int err;
++
++	if (rpcm)
++		*rpcm = NULL;
++
++	if ((err = snd_pcm_new(emu->card, "emu10k1", device, 1, 0, &pcm)) < 0)
++		return err;
++
++	pcm->private_data = emu;
++	pcm->private_free = snd_emu10k1_pcm_free;
++
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1_efx_playback_ops);
++
++	pcm->info_flags = 0;
++	pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
++	strcpy(pcm->name, "EMU10K1 multichannel EFX");
++	emu->pcm = pcm;
++
++	for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next)
++		if ((err = snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV_SG, snd_dma_pci_data(emu->pci), 64*1024, 64*1024)) < 0)
++			return err;
++
++	if (rpcm)
++		*rpcm = pcm;
++
++	return 0;
++}
+Index: alsa-kernel/pci/emu10k1/voice.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/voice.c,v
+retrieving revision 1.5
+diff -u -r1.5 voice.c
+--- alsa-kernel/pci/emu10k1/voice.c	12 Aug 2002 08:43:47 -0000	1.5
++++ alsa-kernel/pci/emu10k1/voice.c	8 Oct 2004 20:16:36 -0000
+@@ -30,13 +30,26 @@
+ #include <sound/core.h>
+ #include <sound/emu10k1.h>
+ 
+-static int voice_alloc(emu10k1_t *emu, emu10k1_voice_type_t type, int pair, emu10k1_voice_t **rvoice)
++static int voice_alloc(emu10k1_t *emu, emu10k1_voice_type_t type, int number, emu10k1_voice_t **rvoice)
+ {
+ 	emu10k1_voice_t *voice, *voice2;
+-	int idx;
+-
+ 	*rvoice = NULL;
+-	for (idx = 0; idx < 64; idx += pair ? 2 : 1) {
++	int idx,pair;
++	pair = ( number == 2 ) ? 1 : 0;
++	if (type == EMU10K1_EFX) { /* multichannel pcm */
++	    for (idx = 0; idx < 16; idx++) {
++		voice = &emu->voices[idx];
++		printk("voice alloc - %i, %i of %i\n", voice->number, idx, number);
++		if (voice->use) /* error, nothing else should touch the 1st 16 voices */
++		    return -ENOMEM;
++		voice->use = 1;
++		voice->efx = 1;
++	    }
++	    *rvoice = &emu->voices[0];
++	    return 0;
++	}
++		
++	for (idx = 16; idx < 64; idx += pair ? 2 : 1) {
+ 		voice = &emu->voices[idx];
+ 		voice2 = pair ? &emu->voices[idx+1] : NULL;
+ 		if (voice->use || (voice2 && voice2->use))
+@@ -56,8 +69,10 @@
+ 		case EMU10K1_MIDI:
+ 			voice->midi = 1;
+ 			break;
++		case EMU10K1_EFX:
++			break;
+ 		}
+-		// printk("voice alloc - %i, pair = %i\n", voice->number, pair);
++		printk("voice alloc - %i, number = %i\n", voice->number, number);
+ 		*rvoice = voice;
+ 		return 0;
+ 	}
+@@ -70,12 +85,12 @@
+ 	int result;
+ 
+ 	snd_assert(rvoice != NULL, return -EINVAL);
+-	snd_assert(!pair || type == EMU10K1_PCM, return -EINVAL);
++	snd_assert(!pair || type == EMU10K1_PCM || type==EMU10K1_EFX, return -EINVAL);
+ 
+ 	spin_lock_irqsave(&emu->voice_lock, flags);
+ 	for (;;) {
+ 		result = voice_alloc(emu, type, pair, rvoice);
+-		if (result == 0 || type != EMU10K1_PCM)
++		if (result == 0 || type == EMU10K1_SYNTH || type == EMU10K1_MIDI)
+ 			break;
+ 
+ 		/* free a voice from synth */
+@@ -84,7 +99,7 @@
+ 			if (result >= 0) {
+ 				emu10k1_voice_t *pvoice = &emu->voices[result];
+ 				pvoice->interrupt = NULL;
+-				pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = 0;
++				pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = pvoice->efx = 0;
+ 				pvoice->epcm = NULL;
+ 			}
+ 		}
+@@ -103,7 +118,7 @@
+ 	snd_assert(pvoice != NULL, return -EINVAL);
+ 	spin_lock_irqsave(&emu->voice_lock, flags);
+ 	pvoice->interrupt = NULL;
+-	pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = 0;
++	pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = pvoice->efx = 0;
+ 	pvoice->epcm = NULL;
+ 	snd_emu10k1_voice_init(emu, pvoice->number);
+ 	spin_unlock_irqrestore(&emu->voice_lock, flags);
+
+--=-EBskVk+RPkpWuuyxWvsi--
 
-----------------------------------------------------------------------
- rncbc - 08-06-2004 12:16 CEST 
-----------------------------------------------------------------------
-Just to add, that this issue does not occur as of previous
-alsa-driver-1.0.5a, same platform, kernel or hardware. Seems to have been
-introduced on CVS semewhere since mid-July. Something about "no sleeping"
-in ALSA's pcm START/STOP callbacks, but no sure.
-
-----------------------------------------------------------------------
- karsten - 09-23-2004 20:52 CEST 
-----------------------------------------------------------------------
-that seams to have something to do with a threaded IRQ10?
-Does it also happen with hardirq_preempting off?
-Please geneate oops traces from the 2.6.9-rc2-mmx-Sy kernel also. 
-If those traces also happen in non usx2y-module area,
-find out, which snd_*() call triggers the oops.
-Check wether it happens if you disable hyperthreads.
-Erm, did I fail to include some important errorchecks after calling
-kernel/usb functions?
-Run with at least ALSA debug options enabled. Other kernel debug options
-may help too.
-
-----------------------------------------------------------------------
- rncbc - 09-24-2004 09:43 CEST 
-----------------------------------------------------------------------
-Please note that this problem is not related to the voluntary-preempt
-kernel patch nor is SMP/HT related. The machine where its beeing exposed
-is a Compaq Presario 2516EA (laptop), P4 2.533GHz (UP, no-HT enabled).
-
-Also FWIW, it doesn't matter if ACPI is enabled or not. The point where
-the kernel oops occurs seems to be always under ohci_hcd (see
-hard-screenshot).
-
-----------------------------------------------------------------------
- rncbc - 09-25-2004 17:18 CEST 
-----------------------------------------------------------------------
-Now using 2.6.9-rc2-mm3-S6 (voluntary-preempt).
-
-One thing I've noticed, but just related to VP, is that while having
-hardirq-preempt=1 and /proc/irq/10/ohci_hcd/threaded=1, the kernel
-doesn't
-crash when opening the PCM hw device (either via jackd or aplay). But
-still useless or zombie anyway. It does crash however when I unplug my
-US-224 (switch its power down).
-
-With hardirq-preempt=0 or /proc/irq/10/ohci_hcd/threaded=0, I get the
-same
-old bad behavior: a kernel oops somewhere on the ohci_irq handling,
-almost
-immediately when the PCM device is open (e.g. by jackd or aplay). Yet
-another screenshot added here (usx2y-oops4.png).
-
-----------------------------------------------------------------------
- karsten - 09-26-2004 15:26 CEST 
-----------------------------------------------------------------------
-its always dl_done_list().
-Please post unassembly of the oops.
-Look in linux/Documentation/oops-tracing.txt.
-Do:
-$gdb /lib/modules/2.6.9-rc2-mm3-S6/kernel/usb/host/ohci_hcd.ko
-$disassemble dl_done_list
-
-Or find out the point up until evrything is still ok.
-Calling snd_pcm_open from i.e. jackd's alsa or usx2y driver should not
-harm anything as no usb_thingy is triggered, no?
-That like snd_pcm_hw_params_*() should still be ok.
-Most likely things crash in snd_pcm_prepare().
-
-Place exit() calls or debug breaks before those alsa-lib calls. 
-Step by step check corresponding snd_usb_usx2y functions:
-Place return -EFAULT in those functions before usb subsystem calls.
-Ok, erm sounds like complicated?
-
-Mmh, there is this CONFIG_KEXEC kernel option.
-http://marc.theaimsgroup.com/?i=<20040915125041.GA15450%20()%20in%20!%20ibm%20!%20com>
-Could help if it already works.
-
-Might also set a smaller console font to get more screen estate.
-making visible alsa-debug statements being dumped immediately before the
-oops.
-
-Or get yourself a pcmcia rs232 card.
-
-edited on: 09-26-04 15:26
-
-----------------------------------------------------------------------
- rncbc - 09-26-2004 15:28 CEST 
-----------------------------------------------------------------------
-After some netconsole sessions, I have uploaded here the respective output
-logs, which would be a bit more intelligible than the actual but
-incomplete screenshots.
-
-Both traces are from US-224 power up and firmware initial loads and then
-the kernel oops that results from issuing just a simple aplay -D hw:1
-somefile.wav.
-
-netconsole.out.0.txt traces a session with all system modules loaded for a
-full functional laptop; netconsole.out.1.txt results from a session
-without pcmcia and ohci1394 related stuff loaded (and therefore saving
-some irq claims).
-
-Hope this eases the search for a solution :)
-
-----------------------------------------------------------------------
- karsten - 09-26-2004 15:43 CEST 
-----------------------------------------------------------------------
-Please update all of alsa-kernel/usb from cvs head.
-"Badness in usb_unlink_urb at drivers/usb/core/urb.c:457" should vanish.
-Redo netconsole logs.
-
-----------------------------------------------------------------------
- rncbc - 09-28-2004 22:02 CEST 
-----------------------------------------------------------------------
-Just uploaded netconsole.out.2.txt which is the result after updating to
-full ALSA 1.0.7rc1 CVS (full update: alsa-kernel, alsa-driver, alsa-lib,
-alsa-oss, alsa-tools, alsa-utils and alsa-firmware).
-
-The ohci_hcd oops remains, but the badness on usb_unlink_urb has vanished,
-as Karsten predicted.
-
-Some other run-time info that someone might find useful:
-
---
-# uname -a
-
-Linux lambda 2.6.9-rc2-mm3-S6.3 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 Sun Sep 26 12:54:30 WEST 2004 i686
-unknown unknown GNU/Linux
-
---
-# cat /proc/asound/version
-
-Advanced Linux Sound Architecture Driver Version 1.0.7rc1.
-Compiled on Sep 26 2004 for kernel 2.6.9-rc2-mm3-S6.3.
-
---
-# cat /proc/asound/cards
-
-0 [A5451          ]: ALI5451 - ALI 5451
-                     ALI 5451 at 0x1000, irq 5
-1 [USX2Y          ]: USB US-X2Y - TASCAM US-X2Y
-                     TASCAM US-X2Y (1604:8005 if 0 at 001/003)
-
---
-# grep . /proc/asound/*/*/xrun_debug
-
-/proc/asound/A5451/pcm0c/xrun_debug:2
-/proc/asound/A5451/pcm0p/xrun_debug:2
-/proc/asound/card0/pcm0c/xrun_debug:2
-/proc/asound/card0/pcm0p/xrun_debug:2
-/proc/asound/card1/pcm0c/xrun_debug:2
-/proc/asound/card1/pcm0p/xrun_debug:2
-/proc/asound/USX2Y/pcm0c/xrun_debug:2
-/proc/asound/USX2Y/pcm0p/xrun_debug:2
-
---
-# cat /proc/interrupts
-
-           CPU0       
-  0:     165578          XT-PIC  timer  0/65578
-  1:        309          XT-PIC  i8042  1/309
-  2:          0          XT-PIC  cascade  0/0
-  5:          1          XT-PIC  ALI 5451  0/0
-  8:          1          XT-PIC  rtc  0/1
-  9:         21          XT-PIC  acpi  0/21
- 10:       4760          XT-PIC  ohci_hcd, ohci_hcd, ohci1394, eth0 
-0/4760
- 11:          5          XT-PIC  yenta  5/5
- 12:        114          XT-PIC  i8042  0/114
- 14:       4156          XT-PIC  ide0  0/4156
- 15:         11          XT-PIC  ide1  0/11
-NMI:          0 
-LOC:          0 
-ERR:          0
-MIS:          0
-
---
-# grep . /proc/irq/*/*/threaded
-
-/proc/irq/10/eth0/threaded:1
-/proc/irq/10/ohci1394/threaded:1
-/proc/irq/10/ohci_hcd/threaded:0
-/proc/irq/10/ohci_hcd/threaded:0
-/proc/irq/11/yenta/threaded:1
-/proc/irq/12/i8042/threaded:0
-/proc/irq/14/ide0/threaded:1
-/proc/irq/15/ide1/threaded:1
-/proc/irq/1/i8042/threaded:0
-/proc/irq/5/ALI 5451/threaded:0
-/proc/irq/8/rtc/threaded:0
-/proc/irq/9/acpi/threaded:1
-
---
-# grep . /sys/block/hd*/queue/max_sectors_kb
-
-/sys/block/hda/queue/max_sectors_kb:16
-/sys/block/hdc/queue/max_sectors_kb:16
-
---
-# grep . /proc/sys/kernel/*_preemption
-
-/proc/sys/kernel/hardirq_preemption:1
-/proc/sys/kernel/kernel_preemption:1
-/proc/sys/kernel/softirq_preemption:1
-/proc/sys/kernel/voluntary_preemption:1
-
-edited on: 09-28-04 22:02
-
-----------------------------------------------------------------------
- karsten - 09-26-2004 22:18 CEST 
-----------------------------------------------------------------------
-erm, found the bug:
-snd-usb-usx2y currently really can't cope with ohci,
-as ohci_hcd doesn't use specified urb->start_frame values.
-Only ISO_ASAP is supported and start_frame is 16Bit where
-uhci start_frame is 10Bit.
-... <bulb crackling> ...
-
-----------------------------------------------------------------------
- karsten - 09-27-2004 13:51 CEST 
-----------------------------------------------------------------------
-Rui, please test "snd-usb-usx2y.patch.0.7.3+ohci" and feed back.
-This patch applies to cvs-head only, not the experimental branch.
-
-----------------------------------------------------------------------
- rncbc - 09-27-2004 23:49 CEST 
-----------------------------------------------------------------------
-OK. First results are that we're halfway there :)
-
-Applied and installed the "snd-usb-usx2y.patch.0.7.3+ohci" patch on my
-laptop, taking alsa-kernel/driver CVS HEAD as of yesterday (2004-09-26),
-giving it a local version 1.0.7rc1.1.
-
-First tests with aplay gives it a thumbs up SUCCESS! Can play and hear
-actual sound from audio output (headphones), while using the intended hw:1
-alsa native interface--netconsole log capture of this historic event is
-engraved on "netconsole.out.3.aplay_OK.txt".
-
-Second round, now with jackd, shows that there's still work to be done.
-The edited netconsole session is given by
-"netconsole.out.4.jackd_HANGS.txt". Obviously, no sound could be heard or
-worked out, as the jack "alsa" backend seems to hang/loop endlessly in
-usbusx2yaudio.c:844:snd_usX2Y_pcm_prepare(dbcd6794).
-
-The exact jackd startup command line is shown as inserted on the log
-capture file.
-
-Nevertheless, given that the main showstopper (kernel oops) is about to
-being solved, I'm now seeing the light at end of the tunnel ;) I hope its
-not a train coming :)
-
-Thanks Karsten.
-
-----------------------------------------------------------------------
- karsten - 09-28-2004 15:16 CEST 
-----------------------------------------------------------------------
-Rui, please test "snd-usb-usx2y.patch.0.7.3+ohci_1" and feed back.
-Again, this patch applies to cvs-head only, not the experimental branch.
-
-----------------------------------------------------------------------
- rncbc - 09-28-2004 22:01 CEST 
-----------------------------------------------------------------------
-Applied "snd-usb-usx2y.patch.0.7.3+ohci_1" and there's the corresponding
-sample netconsole outputs:
-
-  netconsole.out.5.aplay_OOPS.txt
-  netconsole.out.6.jackd_OOPS.txt
-
-As you may infer from the filenames, I get kernel oops on both aplay and
-jackd.
-
-Maybe this was just another train passing over towards the light ;)
-
-----------------------------------------------------------------------
- karsten - 09-30-2004 01:44 CEST 
-----------------------------------------------------------------------
-Just checked:
- dmesg.out.7.jackd-R_ABORTS.txt
- dmesg.out.8.jackd_XRUNS.txt
-two things to lessen xruns:
-1) You can disable disable debug output by
-removing or uncommenting the snd_printd and snd_printdd macros and
-rebuilding
-without alsa debugging options.
-2) Make shure that acpid and apmd are shutdown.
-Here I run at a customized runlevel 4, where those are disabled.
-or enter:
-$/etc/init.d/acpid stop
-$/etc/init.d/apmd stop
-
-----------------------------------------------------------------------
- rncbc - 09-30-2004 11:44 CEST 
-----------------------------------------------------------------------
-In the meanwhile, Karsten has written:
-> 
-> just prepare a plain linux-2.6.9-rc2-mm4-VP-S7 and cp -r the contents
-of
-> the tar.gz into the linux tree.
->
-> Works stably here on uhci_hcd with lsa and usx2y jackd.
-> Had evil things happening here when using
-> 	CONFIG_USB_DEBUG
-> 	CONFIG_USB_BANDWIDTH
-> 	CONFIG_REGPARM
-> So at first don't use any of those options.
-> 	CONFIG_CPU_FREQ is maybe also a showstopper.
-> 
-
-Things are really coming out of the dark tunnel :)
-
-Following the suggestion above, the new kernel has been configured as:
-
- 	CONFIG_USB_DEBUG not set
- 	CONFIG_USB_BANDWIDTH not set
- 	CONFIG_REGPARM not set (not available by VP patch, BTW)
- 	CONFIG_CPU_FREQ not set
-
-In all my previous trials, I was using CONFIG_USB_DEBUG set to Y for
-obvious reasons: I was trying to collect all the USB debug info I could
-get, to hand you :) I'll check soon if having back on this option makes
-any difference at all (besides verbosity).
-
-All aboard?
-
-After untarring (usx2y_linux-2.6.9-rc2-mm4-S7.tar.gz) and arrange a proper
-kernel source tree patch (linux-2.6.9-rc2-mm4-S7_usx2y.patch.gz), I
-succeeded for the very first time to get my US-224 to work on my OHCI
-based laptop without a kernel oops. HURRAY! Kudos to Karsten, you're a
-champ!
-
-OK. We're getting close to karma :)
-
-However (there's always a but), running jackd is not even near perfection.
-Summary is: 
-
-1. jackd -R (realtime) is a NO GO -- see dmesg.out.7.jackd-R_ABORTS.txt. 
-
-2. jackd (non realtime) is prone to XRUNS, if not annoyingly unreliable --
-see dmesg.out.7.jackd-XRUNS.txt. 
-
-Common thing in both modes, is the following jackd output message:
-
-ALSA lib pcm_hw.c:521:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed:
-Broken pipe
-
-This seems that I'm now on par of bugs https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549 and https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000541, which is
-good news to say the least, given the showstopping I had before ;)
-
-As a side note, the jackd backend driver used in my tests wre the new alsa
-experimental one, specific to usx2y and named as such (-d usx2y), while
-using a latest patched jackd release (notice my custom versioning:
-0.99.0usx2y). 
-
-OTOH, the same kernel, patch and jackd works on my SUSE 9.1 Pro box, P4
-2.8GHz/HT SMP, UHCI based, with much less fuss -- can even run jackd -R -p
-128 -n 2. However (yes, yet another but) it seems to suffer from some
-periodic xruns (something like a burst of 2 consecutive xruns each 10
-minutes) than before. I mean before as the original stuff posted on
-jackit-devel mailing list recently
-(http://sourceforge.net/mailarchive/message.php?msg_id=9597926).
-
-Oh, just noticed Karsten's note about acpid and apmd. Those are not
-started. However ACPI modules are loaded.
-
-edited on: 09-30-04 11:44
-
-----------------------------------------------------------------------
- karsten - 09-30-2004 02:11 CEST 
-----------------------------------------------------------------------
-relating
-usx2yhwdeppcm.c:77:activ frame status -18
-does it help if you run the laptop from batery?
-sometimes usb is fragile....
-
-----------------------------------------------------------------------
- karsten - 10-01-2004 01:23 CEST 
-----------------------------------------------------------------------
-please recheck version 0.8.0, which I posted to the alsa-devel list.
-
-----------------------------------------------------------------------
- rncbc - 10-07-2004 10:42 CEST 
-----------------------------------------------------------------------
-Uploaded here my linux kernel patches as for snd-usb-usx2y-0.8.3 and
-respective jackd sessions outputs.
-
-These were my latest results on running jackd -R, which still hangs and
-bails out in less than a minute (jack_watchdog timeout). I can see now
-really badness going on ;) Take a look on the dmesg outputs attached in
-the jackd*out.tar.gz archives.
-
-Patches are based on alsa-sound kernel tree as of
-linux-2.6.9-rc3-mm1(-S8), and should be applied in the following batch
-sequence:
-
-For usx2y-0.8.3:
-
-  1.+ linux-2.6.9-usx2y-0.8.3.patch.gz
-
-For usx2y-0.8.3a (with new hwdep pcm interface added):
-
-  2.+ linux-2.6.9-usx2y-0.8.3a.patch.gz
-  3.+ linux-2.6.9-usx2y-0.8.3a_rawusb.patch.gz
-
-Yet again, I find worth of notice that this jackd -R showstopping behavior
-only happens on my OHCI based laptop. On my desktop, about the same kernel
-and patches, but UHCI based, I get excellent results when compared with
-this, erm... as someone else said on alsa-devel list, nightmare ;)
-
-No hard feelings, I must recognize we've come a long way, and I'm sure
-we'll square all this out very shortly. Karsten is doing a hell of a job.
-
-Many thanks.
-
-----------------------------------------------------------------------
- roswel - 10-07-2004 15:55 CEST 
-----------------------------------------------------------------------
-I'm acutally having a UHCI based laptop, and i still run in trouble after a
-random time (mostly around one hour). But I'm just discovering that my bug
-stories continue in this one, so i will test the last karsten patch,
-because i just tried 0.8.0.
-
-I would also thank karsten for his hard work!
-
-----------------------------------------------------------------------
- roswel - 10-07-2004 19:51 CEST 
-----------------------------------------------------------------------
-So i still run in problem on my UHCI based laptop with patch 0.8.3a. I got
-exactly the same error that reported in bug 0000549. I would just had that
-when i plug my tascam us122, my ehci driver died because of a fatal error
-:
-ehci_hcd 0000:00:1d.7: fatal error
-ehci_hcd 0000:00:1d.7: HC died; cleaning up
-
-----------------------------------------------------------------------
- behappy_ - 10-08-2004 03:40 CEST 
-----------------------------------------------------------------------
-i tried the -0.8.3a patches, alsa audio is fine, alsa oss emulation too,
-jack just wont work, it will exit because:
-
-
-willy@Zeryn:~/Samples$ jackd -d alsa -d plughw:0
-jackd 0.98.1
-[...]
-creating alsa driver ...
-plughw:0|plughw:0|1024|2|48000|0|0|nomon|swmeter|-|32bit
-[...]
-could not complete playback of 1024 frames: error = -32
-cycle execution failure, exiting
-DRIVER NT: could not run driver cycle
-jack main caught signal 12
-
-whit -s option jack works, but the sound is very very dirty. in no cases i
-get kernel oops or driver's dmesg output, but i havent compiled support
-for alsa debug neither for usb debug, i'm using an ohci usb controller on
-a ppc architecture
-
-----------------------------------------------------------------------
- karsten - 10-08-2004 22:30 CEST 
-----------------------------------------------------------------------
-Just uploaded usx2y_linux-2.6.9-rc2-mm4-S7_041008.tar.gz.
-As before, this is for in kernel alsa compilation and holds all files
-different.
-New here is the use of an atomic_t state variable.
-I fear, its only relevant for smp systems, nobody of us has?
-The problems "sequence error ...." will propably remain the same.
-Anyhow I'm looking forward to new reports based in this ;-)
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-06-04 10:53 rncbc          New Bug                                      
-08-06-04 10:53 rncbc          File Added: usx2y-oops3.png                    
-08-06-04 10:53 rncbc          Distribution              => Mandrake 10.0 Official
-08-06-04 10:53 rncbc          Kernel Version            => 2.6.8-rc2       
-08-06-04 12:16 rncbc          Bugnote Added: 0001538                       
-09-23-04 20:52 karsten        Bugnote Added: 0001849                       
-09-24-04 09:43 rncbc          Bugnote Added: 0001858                       
-09-25-04 17:13 rncbc          File Added: usx2y-oops4.png                    
-09-25-04 17:18 rncbc          Bugnote Added: 0001911                       
-09-25-04 17:45 karsten        Bugnote Added: 0001912                       
-09-26-04 14:54 karsten        Bugnote Edited: 0001912                      
-09-26-04 15:15 rncbc          File Added: netconsole.out.0.txt                    
-09-26-04 15:16 rncbc          File Added: netconsole.out.1.txt                    
-09-26-04 15:26 karsten        Bugnote Edited: 0001912                      
-09-26-04 15:28 rncbc          Bugnote Added: 0001921                       
-09-26-04 15:43 karsten        Bugnote Added: 0001922                       
-09-26-04 21:52 rncbc          File Added: netconsole.out.2.txt                    
-09-26-04 22:00 rncbc          Bugnote Added: 0001925                       
-09-26-04 22:18 karsten        Bugnote Added: 0001927                       
-09-27-04 13:48 karsten        File Added: snd-usb-usx2y.patch.0.7.3+ohci                    
-09-27-04 13:51 karsten        Bugnote Added: 0001936                       
-09-27-04 23:22 rncbc          File Added: netconsole.out.3.aplay_OK.txt                    
-09-27-04 23:22 rncbc          File Added: netconsole.out.4.jackd_HANGS.txt                    
-09-27-04 23:49 rncbc          Bugnote Added: 0001943                       
-09-28-04 15:13 karsten        File Added: snd-usb-usx2y.patch.0.7.3+ohci_1                    
-09-28-04 15:16 karsten        Bugnote Added: 0001945                       
-09-28-04 21:52 rncbc          File Added: netconsole.out.5.aplay_OOPS.txt                    
-09-28-04 21:52 rncbc          File Added: netconsole.out.6.jackd_OOPS.txt                    
-09-28-04 22:01 rncbc          Bugnote Added: 0001957                       
-09-28-04 22:02 rncbc          Bugnote Edited: 0001925                      
-09-29-04 12:38 rncbc          Bug Monitored: rncbc                         
-09-30-04 01:19 rncbc          File Added: usx2y_linux-2.6.9-rc2-mm4-S7.tar.gz                    
-09-30-04 01:22 rncbc          File Added: linux-2.6.9-rc2-mm4-S7_usx2y.patch.gz                    
-09-30-04 01:24 rncbc          File Added: dmesg.out.7.jackd-R_ABORTS.txt                    
-09-30-04 01:25 rncbc          File Added: dmesg.out.8.jackd_XRUNS.txt                    
-09-30-04 01:44 karsten        Bugnote Added: 0001978                       
-09-30-04 02:00 rncbc          Bugnote Added: 0001979                       
-09-30-04 02:11 karsten        Bugnote Added: 0001980                       
-09-30-04 11:43 rncbc          Bugnote Edited: 0001979                      
-09-30-04 11:44 rncbc          Bugnote Edited: 0001979                      
-10-01-04 01:23 karsten        Bugnote Added: 0001988                       
-10-07-04 10:24 rncbc          File Added: linux-2.6.9-usx2y-0.8.3.patch.gz                    
-10-07-04 10:24 rncbc          File Added: linux-2.6.9-usx2y-0.8.3a.patch.gz                    
-10-07-04 10:25 rncbc          File Added: linux-2.6.9-usx2y-0.8.3a_rawusb.patch.gz                    
-10-07-04 10:26 rncbc          File Added: jackd-usx2y-0.8.3-out.tar.gz                    
-10-07-04 10:26 rncbc          File Added: jackd-usx2y-0.8.3a-out.tar.gz                    
-10-07-04 10:42 rncbc          Bugnote Added: 0002029                       
-10-07-04 15:55 roswel         Bugnote Added: 0002033                       
-10-07-04 19:51 roswel         Bugnote Added: 0002038                       
-10-07-04 19:52 roswel         Bug Monitored: roswel                        
-10-08-04 03:40 behappy_       Bugnote Added: 0002041                       
-10-08-04 04:07 behappy_       Bug Monitored: behappy_                      
-10-08-04 22:24 karsten        File Added: usx2y_linux-2.6.9-rc2-mm4-S7_041008.tar.gz                    
-10-08-04 22:30 karsten        Bugnote Added: 0002058                       
-======================================================================
 
 
 -------------------------------------------------------
