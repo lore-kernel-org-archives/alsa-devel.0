@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
-Date: Tue, 31 Aug 2004 13:36:15 +0200 (CEST)
+Subject: [ALSA - driver 0000345]: Echo with SB Audigy and microphone input
+Date: Tue, 31 Aug 2004 23:25:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040831113615.99D453F019@server.perex-int.cz>
+Message-ID: <20040831212558.D49613F019@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8790C275
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 13:38:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41E1C298
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 23:25:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,48 +22,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000472
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000345
 ======================================================================
-Reported By:                Dawid Gajownik
-Assigned To:                
+Reported By:                quinn
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     472
-Category:                   PCI - via82xx
+Bug ID:                     345
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
+Status:                     feedback
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-29-2004 21:34 CEST
-Last Modified:              08-31-2004 13:36 CEST
+Date Submitted:             06-26-2004 11:57 CEST
+Last Modified:              08-31-2004 23:25 CEST
 ======================================================================
-Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Summary:                    Echo with SB Audigy and microphone input
 Description: 
-Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
-ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
-ALSA kernel module).
-
-Is there any possibility, that it would be set up automatically by the
-alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
-structure in via82xx.c source file).
+When in "loopback" recording mode, where the recorded audio from the
+microphone is played back (Easiest example would be the Recorder plugin
+for XMMS), even when every other capture channel is at zero volume and the
+sound is output through headphones, microphone input still echos
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-31-2004 13:36 CEST 
+ pzad - 07-12-2004 13:37 CEST 
 ----------------------------------------------------------------------
-The same PCI subsystem ID is already used for ASrock board, so
-I don't see the solution, so far.
+I tested this. You get echo, but this is ok.
+You probably have "Mic volume" not set to 0 and echo comes from record
+loopback (this is where delay comes from). When you set "Mic volume" to 0
+you will hear delayed mic signal, but without echo.
+
+----------------------------------------------------------------------
+ pzad - 08-06-2004 15:03 CEST 
+----------------------------------------------------------------------
+Helped this ???
+
+----------------------------------------------------------------------
+ quinn - 08-06-2004 15:15 CEST 
+----------------------------------------------------------------------
+I'm sorry, I missed the first reply.
+
+No, that didn't help. I have microphone output completely muted as well.
+(And am using headphones, so no analog feedback is present.)
+
+----------------------------------------------------------------------
+ pzad - 08-30-2004 12:14 CEST 
+----------------------------------------------------------------------
+I missed your reply :-)
+
+I will try this again.
+
+Test if you have Mic Volume to 0.
+
+If echo is still there, try to set AnalogMix volume to 0. 
+Helped this ???
+
+----------------------------------------------------------------------
+ quinn - 08-31-2004 23:25 CEST 
+----------------------------------------------------------------------
+Yes, I am completely and utterly sure that microphone output is set to
+zero. Zeroing out either Analog Mix playback or recording does not help
+either.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 21:34 Dawid Gajownik New Bug                                      
-08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
-08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
-08-31-04 13:36 tiwai          Bugnote Added: 0001673                       
+06-26-04 11:57 quinn          New Bug                                      
+07-12-04 13:37 pzad           Bugnote Added: 0001410                       
+08-06-04 15:03 pzad           Bugnote Added: 0001541                       
+08-06-04 15:03 pzad           Status                   assigned => feedback
+08-06-04 15:15 quinn          Bugnote Added: 0001542                       
+08-30-04 12:14 pzad           Bugnote Added: 0001668                       
+08-31-04 23:25 quinn          Bugnote Added: 0001675                       
 ======================================================================
 
 
