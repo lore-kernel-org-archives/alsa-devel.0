@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000622]: snd-ens1371 hisses and garbled sound
-Date: Thu, 11 Nov 2004 18:38:49 +0100
-Message-ID: <83c9632bacd533b0a0127ae9e26df3fe@bugtrack.alsa-project.org>
+From: Linus Torvalds <torvalds@osdl.org>
+Subject: Re: The ALSA Situation
+Date: Thu, 11 Nov 2004 10:23:44 -0800 (PST)
+Message-ID: <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+References: <200411102113.iAALDLUN001061@localhost.localdomain>
+ <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
+ <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
+ <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org> <s5his8cfiot.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org> <s5hhdnwfgbz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94671242
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 18:38:49 +0100 (MET)
+In-Reply-To: <s5hhdnwfgbz.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   622
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-01-2004 11:29 CET
-Last Modified:              11-11-2004 18:38 CET
-======================================================================
-Summary:                    snd-ens1371 hisses and garbled sound
-Description: 
-Please see Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=239575:
 
-    http://bugs.debian.org/239575
+On Thu, 11 Nov 2004, Takashi Iwai wrote:
+> 
+> Oh, that's hard to tell what should be the "default" parameters.
+> This strongly depends on the board.
 
-The submitter writes in part:
+Which is exactly why apps should not even try to set them.
 
-------------------------------------------------------
-Before installing [Debian] sarge I happily used the ALSA sound system on a
-2.4.20 [kernel] with my SB PCI 128 soundcard. With the 2.4.24 kernel [...]
-the following problems occur:
-After initilization of the snd-ens1371 module a loud hiss comes out of the
-speakers. The artsd fails and displays a message that it will use the null
-output device. All ALSA or arts enabled apps either crash, remain in a
-infinite loop  initializing or start with sound disabled.
-------------------------------------------------------
+My point is that the driver can select some default parameters, and then 
+users just use them by default, and thus there are no issues of 
+synchronizing between them.
 
-Another person adds:
+> ALSA tries to provide as much function as possible.  This results in
+> variety of configurations, i.e. the famous complexity.
 
-------------------------------------------------------
-Sound system is working rather properly but I get continual hisses out of
-my soundcard, some sound is coming out as well but is completely garbled.
-------------------------------------------------------
+That may or may not be a valid excuse.
 
-Any idea what might be wrong?
-======================================================================
+Complexity also often arises from bad decisions. And the decision to only 
+have one user open at a time appears like a pretty fundamentally bad one.
 
-----------------------------------------------------------------------
- tiwai - 11-11-04 17:56 
-----------------------------------------------------------------------
-Yes, it's a KDE issue which turns on the IEC958 control.
-This is off default in ALSA.
-
-----------------------------------------------------------------------
- jdthood - 11-11-04 18:03 
-----------------------------------------------------------------------
-If you don't consider this to be an ALSA bug _at all_ then please accept my
-thanks for your help and close the report.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-04 11:29 jdthood        New Issue                                    
-11-02-04 21:27 jdthood        Note Added: 0002299                          
-11-09-04 18:54 tiwai          Note Added: 0002335                          
-11-09-04 18:55 tiwai          Note Added: 0002336                          
-11-11-04 13:19 jdthood        Note Added: 0002383                          
-11-11-04 17:56 tiwai          Note Added: 0002390                          
-11-11-04 18:03 jdthood        Note Added: 0002391                          
-11-11-04 18:38 tiwai          Status                   new => resolved     
-11-11-04 18:38 tiwai          Resolution               open => not an issue
-11-11-04 18:38 tiwai          Assigned To               => tiwai           
-======================================================================
-
-
+		Linus
 
 
 -------------------------------------------------------
