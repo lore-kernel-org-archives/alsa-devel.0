@@ -1,15 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: oss raw midi emulation
-Date: Sun, 28 Nov 2004 16:22:53 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411281622150.11615@pnote.perex-int.cz>
-References: <200411281214.24321.carlosjosepita@yahoo.com.ar>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
+Date: Sun, 28 Nov 2004 14:55:46 +0100
+Message-ID: <9e7f019915a940a5efab2f40dd21c9ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A14126E
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 16:21:13 +0100 (MET)
-In-Reply-To: <200411281214.24321.carlosjosepita@yahoo.com.ar>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EF95D1F1
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 14:55:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,23 +18,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlos Pita <carlosjosepita@yahoo.com.ar>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 28 Nov 2004, Carlos Pita wrote:
 
-> which suggests that /dev/midi?? shouldn't be symlinked as I'm
-> doing with /dev/midi10.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   685
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               debian
+Kernel Version:             2.6.9-nitro4
+======================================================================
+Date Submitted:             11-28-2004 14:55 CET
+Last Modified:              11-28-2004 14:55 CET
+======================================================================
+Summary:                    Doom3 doesn't work with alsa backend
+Description: 
+Latest doom3 client for linux has alsa support built in but doesn't work
+with my Hercules Fortissimo II (cs4624).
 
-No, debian or snddevices script in the driver package does right job.
+The game show me this error:
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
 
-						Jaroslav
+dmesg output:
+ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
+ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
+start
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
+"SrcTask_SCB1"
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
+SrcTask_SCB1 rate to 44100
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<SrcTask_SCB1>
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
+"PCMReader_SCB2" (1)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<PCMReader_SCB2>
+ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
+buffer_size(32768)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-28-04 14:55 darkbrain      New Issue                                    
+11-28-04 14:55 darkbrain      Distribution              => debian          
+11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
+======================================================================
+
+
 
 
 -------------------------------------------------------
