@@ -1,13 +1,18 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Re: USB recording - repetitive peaks
-Date: Sat, 06 Jul 2002 03:37:18 +0900
+From: John covici <covici@ccs.covici.com>
+Subject: Re: controls for the ice1712
+Date: Fri, 5 Jul 2002 15:09:39 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D25E75E.6010109@boosthardware.com>
-References: <3D208C5C.36649172@ladisch.de>	<s5hhejibem0.wl@alsa2.suse.de>	<3D21B878.8090902@boosthardware.com>	<s5hy9curxdr.wl@alsa2.suse.de>	<3D21C827.2060602@boosthardware.com>	<s5hwuseruac.wl@alsa2.suse.de>	<3D21D6CA.7000308@boosthardware.com>	<s5hu1nirsni.wl@alsa2.suse.de>	<3D21DDFD.6000206@boosthardware.com>	<3D21EB37.7070008@boosthardware.com>	<s5hpty5ry0y.wl@alsa2.suse.de>	<3D247676.8090309@boosthardware.com>	<s5hu1nfqx22.wl@alsa2.suse.de>	<3D2482BB.5020506@boosthardware.com> <s5h1yaiwapw.wl@alsa2.suse.de> <3D25E34B.6000100@boosthardware.com>
+Message-ID: <15653.61171.491789.920166@ccs.covici.com>
+References: <m37kka5j0w.fsf@ccs.covici.com>
+	<87bs9mql1s.fsf@anima.lensflare.org>
+	<15653.53156.683885.482594@ccs.covici.com>
+	<87k7oaks2i.fsf@anima.lensflare.org>
+Reply-To: covici@ccs.covici.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <87k7oaks2i.fsf@anima.lensflare.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,64 +21,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Andrew Nesbit <alnesbit@optushome.com.au>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
-> Takashi Iwai wrote:
-> 
->>
->> i (hopefully) found the spot.
->> it happend when snd_pcm_stop() is called during complete callbacks, so
->> the working urb won't be released properly.
->> now the fixed version is on cvs.
->>
-> 
-> Apparently not the g-spot.
-> 
-> I just tried using jack+ardour and the system hung again. This time it 
-> may have been triggered when I tried to switch virtual desktops. (I'm 
-> running enlightenment).
-> 
-> Everything was working (apart from peaks in the sound quality similar to 
-> the ones we were hearing natively only more pronounced). When I tried to 
-> switch into another part of the desktop everything hung.
-> 
-> I will try again because it may have been a time issue and therefore a 
-> complete coincidence.
-> 
-> 
+Well, this tool uses gtk -- unless there is an ncurses version of gtk
+I am out of luck.  I cannot yet access X apps because I need speech
+output to tell me what is on the screen -- it may be coming, but not
+soon.
 
-It seems to be directly related to stress on xfree which causes an xrun 
-in jackd.
-
-This time when I started up I had a clear signal and could switch 
-screens without dropouts but when I downloaded some messages I caused an 
-xrun and then the sound got all choppy. Still no hang so I tried moving 
-the ardour editor window to a different screen and that was it.
-
-I have a usb mouse and am using the nvidia drivers for my video card 
-which is a 64MB geforce2. Plus I was running jackd as normal user.
-
-However I can get normal recording and xfree performance if I don't use 
-jack. That is whether I am root user or not.
-
-So it sounds like you have sorted the problem (unless you can think of 
-anything else) and I need to do some serious fine tuning to get JACK 
-working correctly.
-
-We still need a way to access all four channels at the same time though.
-
-
-
+on  07/06/2002 Andrew Nesbit(alnesbit@optushome.com.au) wrote
+ > John covici <covici@ccs.covici.com> writes:
+ > 
+ > > What is this package -- I never heard of it whatsoever  alsa-tools.
+ > > Its nnot on the normal ftp site maybe its in cvs or something?
+ > > 
+ > 
+ > ftp://ftp.alsa-project.org/pub/tools/alsa-tools-0.9.0rc1.tar.bz2
+ > 
+ > > And what does envy24 do?
+ > 
+ > envy24control.  It's the ALSA equivalent of the M-Audio control panel
+ > utility that you find in MS Windows.  It lets you access all(?) of the
+ > functionality of your ice1712-based card.
+ > 
+ > Andrew.
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+         John Covici
+         covici@ccs.covici.com
 
 
 -------------------------------------------------------
