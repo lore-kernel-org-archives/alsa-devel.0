@@ -1,15 +1,16 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: ALSA 1.0.5
-Date: Tue, 1 Jun 2004 22:07:29 +0200
+From: Thomas Witzel <witzel.thomas@comcast.net>
+Subject: Re: Programming the unknow P16v chip on the Audigy2
+Date: Tue, 1 Jun 2004 15:15:28 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406012207.29689.plcl@telefonica.net>
-References: <E1BUbHW-0005Wg-PQ@sc8-sf-list2.sourceforge.net> <200405311258.53199.plcl@telefonica.net> <s5h1xkzsmaz.wl@alsa2.suse.de>
+Message-ID: <200406011515.34504.witzel.thomas@comcast.net>
+References: <40B789D7.8060704@superbug.demon.co.uk>
+Reply-To: witzel.thomas@comcast.net
 Mime-Version: 1.0
-Content-Type: text/plain;
+Content-Type: Text/Plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h1xkzsmaz.wl@alsa2.suse.de>
+In-Reply-To: <40B789D7.8060704@superbug.demon.co.uk>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,27 +20,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 01 June 2004 10:40, Takashi Iwai wrote:
-> Pedro Lopez-Cabanillas wrote:
-> > Anybody using the same hardware should avoid the 1.0.5 driver, IMO.
-> > Relevant sources are ac97_codec.c and ac97_patch.c. The problem was
-> > related to a mutex deadlock.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+On Friday 28 May 2004 01:49 pm, James Courtier-Dutton wrote:
+> Basically, one writes the register address to PTR, and then read or
+> write to DATA.
 >
-> yep, sorry, my bad.
-> the bug hits AC97 codecs with paging, ALC655/658/850 and STAC9758.
+> On the Audigy2 there is a similar setup for 0x20 and 0x24. I suspect
+> that this is used to program the p16v chip.
+I guess that is correct.=20
+> Had anyone looked into those registers, and tried to guess what they do ?
+With virtually no information this would be difficult. It seems like that=20
+playback over the P16V would be an easier goal than getting the inputs
+to work, but I have no idea how to make a PCM extension for the P16V.
+The routing diagram shown on the kX webpage indicates that there should be=
+=20
+direct playback not using the 10k2 at all. They have made a special effects=
+=20
+module which allows input coming through the P16V to be routed into the 10k=
+2,
+but normally there doesn't seem to be a connection.
 
-There is some risk on the bleeding edge of any software, but I'm very happy to 
-say that it's worth to try the 1.0.5a driver if you own that hardware. Once 
-the annoying bug has been sorted out, the integrated sound of my Gigabyte 
-works very well now. Thanks!
+												Thomas
 
-Regards,
-Pedro
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.4 (GNU/Linux)
 
+iD8DBQFAvOPkErlRqeo9RVURAtmxAJ4tgZDpge2ccMwlbXiwuEuTMewzvQCfdYJo
+cg5An6CWYX9ari21NEVgGug=3D
+=3D+WsE
+=2D----END PGP SIGNATURE-----
 
 
 -------------------------------------------------------
