@@ -1,7 +1,7 @@
 From: "Luuk van Dijk" <lvd@mndmttr.nl>
-Subject: full/half duplex support
-Date: Mon, 15 Nov 2004 17:03:21 +0100
-Message-ID: <courier.4198D349.0001155D@outpost.mndmttr.nl>
+Subject: =?utf-8?Q?=22soft=22?= spdiff support
+Date: Mon, 15 Nov 2004 17:21:13 +0100
+Message-ID: <courier.4198D779.00011623@outpost.mndmttr.nl>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -24,19 +24,16 @@ I am currently writing a driver for the ADI 1836 on the (ongoing)
 blackfin/uclinux port (blackfin.uclinux.org) and I have some questions (that 
 I'll post in separate mails, so that they may be separate threads) 
 
-The particular hardware configuration I am programming for is full-duplex in 
-principle, i.e. it should be no problem to send and receive pcm bitstreams 
-simultaneously, except that it requires that both dma channels are started 
-simultaneously.  Currently, I configure an unused substream with a dummy dma 
-buffer, but the alsa mid layer seems to handle this badly: it appears to 
-re-triggers the last-started substream when it finds out that the dma is at 
-an other address than it expects. 
+With this particular hardware configuration, I have access to a 'raw' 
+sp/diff datastream through a PCM channel.  is there a generic sp/diff 
+encaps/decaps layer in the ALSA driver?  Are there maybe other (eg userland) 
+software implementations of this? 
 
-my question is: is there a way around this, i.e. can I tell the mid layer to 
-resync itself with the dma instead of the other way around? 
+otherwise: is it hard to write/can anyone send me a pointer to a public 
+version of the spec? 
 
-thanks
-   Luuk van Dijk
+Thanks,
+  Luuk
 
 
 -------------------------------------------------------
