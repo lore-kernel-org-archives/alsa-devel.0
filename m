@@ -1,10 +1,13 @@
 From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: stupid question about pcm devices
-Date: Fri, 8 Feb 2002 08:42:24 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202080841410.514-100000@pnote.perex-int.cz>
+Subject: Re: support for CS4630 2nd AC97 codec?
+Date: Fri, 8 Feb 2002 08:44:35 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202080843150.514-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <XFMail.020208072444.guenther.sohler@newlogic.com>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA00843
+	for <alsa-devel@alsa-project.org>; Fri, 8 Feb 2002 08:45:03 +0100
+In-Reply-To: <Pine.SOL.4.05.10202071456120.10633-100000@babu.pcisys.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,31 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Guenther Sohler <guenther.sohler@newlogic.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Brian Hall <brihall@pcisys.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Feb 2002, Guenther Sohler wrote:
+yOn Thu, 7 Feb 2002, Brian Hall wrote:
 
-> I have seen that alsa provides nice pcm devices in /dev/snd directory
 >
-> *They are split in playback and capture devices :) nice idea.
-> In Oss I was able to pipe data from and to them and therfore was
-> recording/playing back at a certain sample rate.
-> With alsa this is not possible anymore. it says the descriptor was in a bad
-> state. Is it possible ???
+> I saw this question on the alsa-devel list, I thought I would forward the
+> information the the datasheet for the 2nd codec (the cs4294) is
+> downloadable from the cirrus website at:
+>
+> http://www.cirrus.com/pubs/pubs_current/cs4294.pdf
+>
+> If this is useful you may want to forward it to the alsa-devel list- I am
+> not currently subscribed; I just bought a Santa Cruz and I've been
+> "Cruz-ing" for information on getting more of its features working under
+> Linux (I am aware of the cs46xx driver).
 
-Yes: arecord | aplay
-
-> *Is there something like aconnect for pcm devices ????
-
-Nope.
-
-> when I do a sfxload, it operates on /dev/sequencer, which makes the seq-oss
-> module automatically to load. Is there a way to load the patches in native alsa
-> ???
-
-No, it's under slow development.
+We have datasheets for AC97 codecs. We need an updated firmware for
+CS46xx chips to support 2nd codec. Unfortunately, Cirrus Logic denies to
+release firmware and updated specifications or a DSP description with
+instruction set and memory organization to develop full support for CS46xx
+chips.
 
 						Jaroslav
 
