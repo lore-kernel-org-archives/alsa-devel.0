@@ -1,11 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Multiple Audio Streams
-Date: Mon, 07 Oct 2002 20:44:50 +0900
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: Why do I get broken pipe on write to a pcm in  
+ statePREPARED?
+Date: Mon, 07 Oct 2002 14:07:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA173B2.9020706@boosthardware.com>
-References: <3D9F3D84.4040102@boom.org.il> <1033859918.1118.24.camel@duron> <3DA15968.1000205@superbug.demon.co.uk> <3DA160E7.10608@boom.org.il>
+Message-ID: <3DA178F1.769C6FFA@libero.it>
+References: <Pine.HPX.4.33n.0209171615490.1084-100000@studcom.urz.uni-halle.de>
+		<200209181957.g8IJvS008300@d1o87.telia.com>
+		<200210040814.g948E9015465@d1o87.telia.com>
+		<s5hy99e4ayc.wl@alsa2.suse.de>
+		<3D9DD810.7C3960C4@libero.it> <s5h65we4ksf.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,75 +21,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Sagi Bashari <sagi@boom.org.il>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, AthlonRob <athlonrob@data.4t3.com>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Anders Torger <torger@ludd.luth.se>, Jaroslav Kysela <perex@suse.cz>, Tim Goetze <tim@quitte.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Sagi Bashari wrote:
+Takashi Iwai wrote:
+> 
+> it CAN happen if you have multi-threads.
+> the problem is that we have no option to block the poll.
 
-> This is what I get:
-> 
-> [sagi@beep pcm0p]$ cat info
-> card: 0
-> device: 0
-> subdevice: 0
-> stream: PLAYBACK
-> id: CS46xx
-> name: CS46xx
-> subname: subdevice #0
-> class: 0
-> subclass: 0
-> subdevices_count: 1
-> subdevices_avail: 1
-> [sagi@beep pcm0p]$
-> 
->>
->>
->> As you can see, my old sound card can only handle one stream at once 
->> in hardware. Alsa does not do any software mixing.
->> I also have a SB Live in another machine, the subdevices_avail is then 
->> 32 because the SB Live can handle 32 streams at once in hardware.
-> 
-> 
-> 
-> Yes, that's the strange thing. According to the output it only supports 
-> 1 subdevice, but the soundcard matrix says it does support hardware 
-> mixing (and I know that it does, it works perfectly on other OSs).
-> 
-> Does this mean that there's no real ALSA support for the Hardware mixing 
-> using this chip? If yes, why is it listed in the website with this option?
-> 
+If you have multi-thread you have other alternative to do that.
+OTOH application can't detect *why* poll is blocking with the change you
+advocate.
 
-It's there because the author of the driver wrote to me and told me it 
-has support. It could be that your version of the card has something 
-funky going on.
-
->>
->>
->> There are other applications/tools you can use, one of which is "JACK" 
->> that allows for multiple audio streams mixed in software and lots of 
->> other cool stuff.
+> > That apart I'm sure that to make a change in actual behaviour between
+> > rcX and 1.0 is a professional suicide. However it's _your_ professional
+> > suicide so... ;-)))
 > 
+> yes, i know it well ;)
 > 
-> I used ARTS until now. But I don't want to use software mixing. The 
-> latency is bad and it eats CPU for nothing, why use it when you have 
-> hardware support?
+> i don't like to change this inevitably, too.
+> and as mentioned above, i don't mind to add an option as sw_params,
+> etc. for the new behavior.
 > 
+> but the current behavior is incorrect from the interpretation of
+> POSIX.  so this must be a bug.
+> if we have to change it, then i would choose the new one, because it's
+> more intuitive without exception.
 
-
+As pointed by Clemens the current is the proper POSIX behaviour.
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
-
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
