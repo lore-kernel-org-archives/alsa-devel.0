@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: mpu401_pnp
-Date: Wed, 9 Feb 2005 17:46:10 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502091741060.14773-100000@studcom.urz.uni-halle.de>
-References: <4207C02C.2060602@free.fr>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000899]: Cannot aplay to Sound Galaxy card with alsa-lib 1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
+Date: Wed, 9 Feb 2005 17:56:58 +0100
+Message-ID: <6a41c09acee27265edc0d6bb3e7840c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mailgate.uni-halle.de (mailgate.urz.Uni-Halle.DE [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC25226D
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:46:11 +0100 (MET)
-In-Reply-To: <4207C02C.2060602@free.fr>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7F7D926D
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 17:56:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +17,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: matthieu castet <castet.matthieu@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-matthieu castet wrote:
-> Clemens Ladisch wrote:
-> > matthieu castet wrote:
-> >
-> >>Ok, I found a bug in your patch : when you call pnp_register_driver, you
-> >>should check that it is >= 0. If not you shouldn't call
-> >>pnp_unregister_driver.
-> >
-> > I just copied this from the other ALSA PnP drivers.  It seems those
-> > have all the same bug.
->
-> only old oss driver seem to use it, the other alsa driver use
-> pnp_register_card_driver that seem only provide >= 0 res
 
-It seems both pnp_register_driver() and pnp_register_card_driver()
-can return a negative value (when CONFIG_PNP isn't set).  I'll fix it
-when I've found out how the 2.2/2.4 wrappers behave.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=899> 
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   899
+Category:                   general
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-09-2005 17:14 CET
+Last Modified:              02-09-2005 17:56 CET
+======================================================================
+Summary:                    Cannot aplay to Sound Galaxy card with alsa-lib
+1.0.8: looks for "/usr/share/alsa/cards/Sound Galaxy.conf"
+Description: 
+This is forwarded Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=293907.  Please see
+http://bugs.debian.org/293907 for the full report.
 
+The submitter says that with his Sound Galaxy card he cannot get aplay
+to work.  He gets the following error when he runs aplay:
 
-Best regards,
-Clemens
+-------------- error message ----------------------
+
+ALSA lib conf.c:2792:(snd_config_hook_load) "/usr/share/alsa/cards/Sound
+Galaxy.conf" is not a word
+ALSA lib conf.c:2672:(snd_config_hooks_call) function
+snd_config_hook_load_for_all_cards returned error: Invalid argument
+ALSA lib pcm.c:1947:(snd_pcm_open_conf) Invalid type for PCM default
+definition (id: default, value: cards.pcm.default)
+aplay: main:508: audio open error: Invalid argument
+
+------------ end error message ---------------------
+
+There is no "Sound Galaxy.conf" file, but the user doesn't get an error
+message when he uses alsa-lib 1.0.7.
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 17:56 
+----------------------------------------------------------------------
+The attached patch fixes the problem.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-05 17:14 jdthood        New Issue                                    
+02-09-05 17:56 tiwai          Note Added: 0003560                          
+======================================================================
+
 
 
 
