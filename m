@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Wed, 6 Apr 2005 19:20:52 +0200
-Message-ID: <167c479df578a50d0aaad7c8d37176b9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000325]: Attempted use of arecord causes complete system lockup. Only a hard reset recovers.
+Date: Thu, 7 Apr 2005 00:07:46 +0200
+Message-ID: <df9d6d4a5b63e3790ac3859a13a5b2bb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14E6D227
-	for <alsa-devel@alsa-project.org>; Wed,  6 Apr 2005 19:20:52 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 191DF204
+	for <alsa-devel@alsa-project.org>; Thu,  7 Apr 2005 00:07:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,47 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=325> 
 ======================================================================
-Reported By:                twinsen
-Assigned To:                perex
+Reported By:                meg
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1014
-Category:                   0_compilation problem_!!!
+Issue ID:                   325
+Category:                   ISA - sb16/sbawe
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               custom: PXA255/uClibc
-Kernel Version:             2.6.11.5
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.5-1.358
 ======================================================================
-Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              04-06-2005 19:20 CEST
+Date Submitted:             06-06-2004 23:49 CEST
+Last Modified:              04-07-2005 00:07 CEST
 ======================================================================
-Summary:                    card detect function is never called in pxa2xx-ac97
+Summary:                    Attempted use of arecord causes complete system
+lockup. Only a hard reset recovers.
 Description: 
-Hi there,
-I have a some problem with this driver. The environment:
-ALSA source: alsa-driver-1.0.9rc1
-Kernel source: linux-2.6.11.5 (stock)
-
-I cross compiled the kernel and the alsa source for arm target with a 
-toolchain from handhelds.org. I used the following configure command
-line:
-
-./configure --with-cards=pxa2xx-ac97 
---with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
-
-config runs without problems, when running make gcc complains about
-"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
-orig: include/linux/pci.h), but compiles ok. 
-
-The problem:
-I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
-snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
-/proc/asound/cards.
-I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
-module init function registers the new driver:
-driver_register(&pxa2xx_ac97_driver);
-
-The driver struct contains a probe function:
-.probe          = pxa2xx_ac97_probe,
-but it's never called, so the driver doesn't even check the existance of
-the sound card. Why is that? Did I srcew up the cross compiling?
-Thanks:
-	George
+This is a bone stock Fedora Core 2 system. The sound card is a SB16 P&P.
+Any attempted use of arecord, either from a console or xterm, results in a
+complete system lockup. It is 100% reproducible. aplay can play a test
+sound. alsamixer seems to work as well. The microphone can be heard
+through the speakers and can be adjusted using alsamixer.
 ======================================================================
 
 ----------------------------------------------------------------------
- twinsen - 04-04-05 20:51 
+ jdthood - 04-07-05 00:07 
 ----------------------------------------------------------------------
-I've tested some applications that use the lagacy /dev/dsp interface, and
-they work fine (plax[sox], madplay). So the driver and the OSS emulation
-woks, problem is in the native alsa part.
-
-----------------------------------------------------------------------
- twinsen - 04-06-05 19:20 
-----------------------------------------------------------------------
-Anyone reading this, BTW? :)
+Submitter: Was there any improvement in later ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 00:04 twinsen        New Issue                                    
-03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
-03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
-03-29-05 16:25 tiwai          Note Added: 0004247                          
-03-29-05 23:43 twinsen        Note Added: 0004259                          
-04-03-05 21:47 twinsen        Note Added: 0004321                          
-04-03-05 22:28 twinsen        Note Added: 0004322                          
-04-04-05 20:51 twinsen        Note Added: 0004330                          
-04-06-05 19:20 twinsen        Note Added: 0004351                          
+06-06-04 23:49 meg            New Issue                                    
+06-06-04 23:49 meg            Distribution              => Fedora Core 2   
+06-06-04 23:49 meg            Kernel Version            => 2.6.5-1.358     
+06-07-04 06:02 meg            Issue Monitored: meg                         
+04-07-05 00:07 jdthood        Note Added: 0004352                          
 ======================================================================
 
 
