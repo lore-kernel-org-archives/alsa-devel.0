@@ -1,16 +1,19 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: Re: Start us224control via hotplug. was: Re: Tascam US-224 support
-Date: Mon, 23 Feb 2004 16:49:01 +0100
+From: Pawel Rozanski <tokugawa@wp.pl>
+Subject: Re: alsa-lib & oss 1.0.3rc1
+Date: Mon, 23 Feb 2004 22:43:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402231649.01896.annabellesgarden@yahoo.de>
-References: <20040216212352.GA566@tuba.home> <200402200040.33176.annabellesgarden@yahoo.de> <s5hfzd6uisc.wl@alsa2.suse.de>
+Message-ID: <403A7411.2060102@wp.pl>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfzd6uisc.wl@alsa2.suse.de>
-Content-Disposition: inline
+Received: from smtp.wp.pl (smtp.wp.pl [212.77.101.160])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA12953
+	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2004 22:42:07 +0100
+Received: from aav34.neoplus.adsl.tpnet.pl (HELO wp.pl) (tokugawa@[83.27.5.34])
+          (envelope-sender <tokugawa@wp.pl>)
+          by mta-2 (wp-smtpd) with SMTP
+          for <alsa-devel@alsa-project.org>; 23 Feb 2004 22:41:23 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,99 +22,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net, David <david@robot-droid.com>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 20. Februar 2004 11:50 schrieb Takashi Iwai:
-> At Fri, 20 Feb 2004 00:40:32 +0100,
->
-> Karsten Wiese wrote:
-> > this is a patch against /alsa-tools/usx2yloader/tascam_fpga.in:
-> >
-> >
-> > Index: tascam_fpga.in
-> > ===================================================================
-> > RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
-> > retrieving revision 1.4
-> > diff -u -r1.4 tascam_fpga.in
-> > --- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
-> > +++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
-> > @@ -23,6 +23,9 @@
-> >  1604/8001/*)
-> >  	CONTROLLER=@bindir@/us428control
-> >  	;;
-> > +1604/8005/*)
-> > +	CONTROLLER=@bindir@/us224control
-> > +	;;
-> >  *)
-> >  	;;
-> >  esac
-> > <<<<<<
-> >
-> > unfortunately this patch is only half of what it should be:
-> > "us224control" is meant to be created from "ln -s us428control
-> > us224control"
->
-> is it necessary for performance except for the sane naming?
-> for example, in the case of aplay/arecord, both of them are the same
-> binary but perform differently according to the executed name.
-> if it's not the case, i'd like to keep the same name.
-sane naming only so far.
+Jaroslav Kysela wrote:
+ >
+ > changes. It would be nice, if you can test my changes and report me bugs
+ > or comments (especially to the new OSS redirector code).
+ >
+I couldn't find, so i'll ask. Are there any tests for alsa and friends?
+I upgraded to 1.0.3rc1 and it works almost well with my via82xx. Of
+course I can't run quake3 with it but this will be bug report (but i
+don't have time right now to make a good one).
 
->
-> > how would we integrate this "ln -s us428control us224control" into
-> > Makefile.am ? or should we just cp the symbolic link? but then: can you
-> > put the symbolic link created by "ln -s us428control us224control" into
-> > CVS?
-> >
-> > if nobody knows, here is what works out of the box:
-> >
-> >
-> > Index: tascam_fpga.in
-> > ===================================================================
-> > RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
-> > retrieving revision 1.4
-> > diff -u -r1.4 tascam_fpga.in
-> > --- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
-> > +++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
-> > @@ -23,6 +23,9 @@
-> >  1604/8001/*)
-> >  	CONTROLLER=@bindir@/us428control
-> >  	;;
-> > +1604/8005/*)
-> > +	CONTROLLER=@bindir@/us428control
-> > +	;;
-> >  *)
-> >  	;;
-> >  esac
->
-> that's fine.
+Tests, not only as "this will compile". But for eg sine generator or
+some sort of sounds to test sampling rates, dxs....
 
-please commit the 'fine' version:
+I think this would be good help for tests. Now I can say frozen-bubble
+works ok, but I can hear clicks in wesnoth (both are SDL based games).
 
->>>>>>
-Index: tascam_fpga.in
-===================================================================
-RCS file: /cvsroot/alsa/alsa-tools/usx2yloader/tascam_fpga.in,v
-retrieving revision 1.4
-diff -u -r1.4 tascam_fpga.in
---- tascam_fpga.in	19 Jan 2004 18:49:21 -0000	1.4
-+++ tascam_fpga.in	19 Feb 2004 22:16:04 -0000
-@@ -23,6 +23,9 @@
- 1604/8001/*)
- 	CONTROLLER=@bindir@/us428control
- 	;;
-+1604/8005/*)
-+	CONTROLLER=@bindir@/us428control
-+	;;
- *)
- 	;;
- esac
-<<<<<<
+thanks for all your work,
+Pawel Rozanski
 
-thanks,
-Karsten
 
 
 -------------------------------------------------------
