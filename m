@@ -1,23 +1,13 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: [off topic] WSOLA
-Date: Wed, 15 Jan 2003 18:54:52 +1100
+From: Guido Bakker <guido.bakker@sogeti.nl>
+Subject: terratec dmx xfire 1024 ac3
+Date: Wed, 15 Jan 2003 09:04:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030115075452.GC14261@ee.unsw.edu.au>
+Message-ID: <200301150904.21901.guido.bakker@sogeti.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA26199
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2003 08:18:24 +0100
-Received: from smtp.unsw.edu.au (antivirus-02.services.comms.unsw.EDU.AU [149.171.193.81])
-	by smtp3.unsw.edu.au (8.11.2/8.11.2) with ESMTP id h0F7I9p07128
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2003 18:18:09 +1100 (EST)
-Received: from maillationax ([149.171.37.159])
-	by smtp.unsw.edu.au (8.11.2/8.11.2) with ESMTP id h0F7Hte06950
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2003 18:18:09 +1100 (EST)
-Received: from flatmax by maillationax with local (Exim 3.36 #1 (Debian))
-	id 18YiNw-0003kx-00
-	for <alsa-devel@alsa-project.org>; Wed, 15 Jan 2003 18:54:52 +1100
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -27,34 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: core sound <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello list,
+hi,
 
-I know that this is a off topic, however some of the developers of alsa 
-also develop GPL audio apps.
+i'm trying to use the optical out of my terratec dmx xfire 1024 with an ac3 
+stream.
 
-WSOLA - which speeds and slows audio without altering pitch - just broke 
-the real time barrier and has migrated to v3.0 'Mature' from 
-v2.7 'Stable'. Essentially it processes audio six times faster then real 
-time (800MHz CPU with coprocessor).
+root@thebox:~/alsa/alsa-tools-0.9.0rc6/ac3dec# ./ac3dec -C test.ac3
+Using PCM device 'iec958:AES0=0x2,AES1=0x82,AES2=0x0,AES3=0x2'
+ALSA lib pcm.c:1719:(snd_pcm_open_conf) Invalid type for PCM 
+iec958:AES0=0x2,AES1=0x82,AES2=0x0,AES3=0x2 definition (id: iec958, value: 
+cards.pcm.iec958)
+snd_pcm_open: Invalid argument
+Output open failed
 
-It is now ready for incorporation into audio apps which would like the 
-added feature of a slider or knob for speeding up and slowing down the 
-audio. Like I say, CPU utilisation is now very low.
+i'm getting this error, any ideas?
 
-It is possible to speed or slow the audio +-100% without too much 
-distortion to the sound content.
+i'm running alsa rc6.
 
-Matt
 -- 
-http://mffm.darktech.org
+Guido Bakker
 
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
+Interne Automatisering
+Sogeti Nederland B.V.
+T: +31 (0)20 660 66 00 + nakiesnummer 0281
+e-mail: guido.bakker@sogeti.nl
+
+panic("sun_82072_fd_inb: How did I get here?");
+        2.2.16 /usr/src/linux/include/asm-sparc/floppy.h
+
 
 
 -------------------------------------------------------
