@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Typo in configure.in : dummy sequencer
-Date: Thu, 20 Mar 2003 09:28:50 +0100 (CET)
+From: Andrei Boros <andrei@srr.ro>
+Subject: Re: dummy sequencer module problems
+Date: Thu, 20 Mar 2003 10:28:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303200928390.1318-100000@pnote.perex-int.cz>
-References: <3E797921.410C8222@srr.ro>
+Message-ID: <3E797BC9.F4EB1348@srr.ro>
+References: <3E784A3C.133F177B@srr.ro> <s5h7kavtwzs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E797921.410C8222@srr.ro>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrei Boros <andrei@srr.ro>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Mar 2003, Andrei Boros wrote:
+<<<<<<< Makefile.conf.in
+CONFIG_SND_SEQ_DUMMY    = @CONFIG_SND_SEQ_DUMMY@
+=======
+CONFIG_SND_SEQ_DUMMY    = @CONFIG_SND_SEQUENCER@
+>>>>>>> 1.52
 
-> make: Nothing to be done for `all-deps'.
-> autoconf: Undefined macros:
-> configure.in:797:  AC_DEFINE_CONFIG_SND_SEQ_DUMMY)
-> 
-> Should read : AC_DEFINE(CONFIG_SND_SEQ_DUMMY)
+I got again this inconsistency in Makefile.conf.in when updateing the
+cvs tree. 
 
-I have this line in my tree:
+I am wandering, this looks to me that snd-seq-dummy.o will be built
+always if sequencer is built, regardless of the fact that the dummy
+soundcard driver is built or not. I checked the Makefile in
+alsa-kernel/core/seq.
 
-AC_DEFINE(CONFIG_SND_SEQ_DUMMY_MODULE)
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
