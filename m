@@ -1,16 +1,16 @@
-From: jfm3 <jfm3@ouroboros-complex.org>
-Subject: Re: ALSA CVS and JACK?
-Date: 26 Feb 2003 14:25:17 -0500
+From: Duncan Sands <baldrick@wanadoo.fr>
+Subject: Re: cs46xx: alsa-docs note
+Date: Wed, 26 Feb 2003 20:53:54 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046287523.1101.4.camel@localhost.localdomain>
-References: <Pine.LNX.4.44.0302251856280.2277-100000@pnote.perex-int.cz>
-	<E18nkIs-0002Oa-00@sc8-sf-list1.sourceforge.net>
-	<s5hsmubxv48.wl@alsa2.suse.de>
+Message-ID: <200302262053.54462.baldrick@wanadoo.fr>
+References: <3E5D0073.3020903@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmubxv48.wl@alsa2.suse.de>
+In-Reply-To: <3E5D0073.3020903@boosthardware.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,38 +19,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel <alsa-devel@lists.sourceforge.net>, mail@richardstevens.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2003-02-26 at 04:13, Takashi Iwai wrote:
-> At Tue, 25 Feb 2003 14:02:05 -0500,
-> Paul Davis wrote:
-> > 
-> > >Can we see reports? I don't see any reason for crashes.
-> > 
-> > nobody that this has happened to so far has had an oops trace. they
-> > are always running graphical apps and do not have a serial console. i
-> > am too nervous (:) to try it myself (hence i still have ALSA CVS from
-> > way back). apparently it may it also be connected to a particular
-> > kernel version.
->  
-> isn't it the 2.4.20+ext3 problem?
-> 
+On Wednesday 26 February 2003 18:59, Patrick Shirkey wrote:
+> Sorry I must have missed sending this here.
+>
+> The following has been submitted as a note for the documentation of cs46xx.
+>
+> sender: 	mail_NoSPaM_@richard_NOSPAM_stevens.de
+> date:   	Friday, 03 January 2003
+>
+> Terratec DMX XFire 1024:
+>
+> The DMX XFire 1024 doesn't get initialized correctly the first time
+> the alsa modules are loaded. Sound is heavily distorted. Usually
+> reloading the modules solves this problem. One can do that
+> autmatically by loading, unloading and reloading the modules in
+> the bootscripts.
 
-OK, I switched to ext2 on all file systems. Now I can run latencytest to
-completion, although oddly it complains about how it can't kill top. The
-upper bound for audio latency on this crusoe-based c1mw is presently
-6.8ms, both according to latencytest and the pd latency measuring patch.
-The cpu latency is reported at around 1.5ms.
+I have this card, and I've never seen this problem.  I suggest you
+change it to:
 
-Jack and freqtweak still make the system hang, although I have to try
-several times to start freqtweak at all without getting the error
-message that freqtweak was "shut down" by the jack server.
+The DMX XFire 1024 may not get initialized correctly the first time...
 
--- 
-(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
+All the best,
 
+Duncan.
 
 
 -------------------------------------------------------
