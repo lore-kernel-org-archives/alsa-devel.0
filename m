@@ -1,13 +1,12 @@
-From: Mark_H_Johnson@raytheon.com
-Subject: Re: Re: 2.6.10-mm1: ALSA ac97 compile error with CONFIG_PM=n
-Date: Wed, 5 Jan 2005 12:15:50 -0600
-Message-ID: <OF26B98961.8FD70ADB-ON86256F80.00645396-86256F80.006453DD@raytheon.com>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: [PATCH - attached this time] azx/realtek: Cleanup of the W810 system support.
+Date: Wed, 5 Jan 2005 12:40:41 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B003CE102C@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: multipart/mixed;
+	boundary="----_=_NextPart_001_01C4F366.D2E06C7D"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dfw-gate2.raytheon.com (dfw-gate2.raytheon.com [199.46.199.231])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8D129203
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2005 20:49:34 +0100 (MET)
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +16,189 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org, Adrian Bunk <bunk@stusta.de>, lkml <linux-kernel@vger.kernel.org>, perex@suse.cz
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> At Wed, 5 Jan 2005 08:21:20 -0600,
-> Mark_H_Johnson@raytheon.com wrote:
-[snip - back & forth on the blocking behavior]
-> > I suppose there was a "good reason" for changing the user level
-> > interface in this way. Could you [or someone else] explain that and
-> > if you would consider changing it back (to stop breaking old
-applications)?
->
-> It was discussed on alsa-devel in November.  Unfortunately, I can't
-> find ML archive any longer...
->
-> The blocking behavior of OSS is a feature which is nowehre defined.
-> Some OSS drivers open in the blocking mode and some don't.
-> So, apps shouldn't depend on this feature.
->
-> We had implemented OSS emulation in the blocking manner since we
-> intepreted the POSIX definition in that way.  But Linus pointed out
-> that it's a misreading.
->
-> BTW, you can enable the blocking mode again via module/boot option.
-> See OSS-Emulation.txt.
->
-Thanks for the explanation and the suggested work around. Thanks
-also to Lee Revell for his other suggestion (using fuser). I should
-be able to work around this OK for now.
+This is a multi-part message in MIME format.
 
-> > > [snip - rehash of symptoms]
-> Please provide the hardware details (I don't see your original post to
-> lkml).  Otherwise it'll be a vapor discusson...
+------_=_NextPart_001_01C4F366.D2E06C7D
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 
-Details provided separately. Basically it is a two CPU system (866 Mhz
-Pentium III) with an Ensoniq sound card. I use this system primarily
-for comparative tests of kernels (for RT latency) before moving a
-kernel update to other system for more comprehensive tests.
+Clean-ups of the W810 support in azx/patch_realtek.c
 
-  --Mark
+* Correctly size a couple of static data arrays.
 
+* Fix alc880_ch_mode_get so it only accesses index 0 of
+spec->channel_mode,
+  in case there's only one entry.
+
+* Add separate mute switch for headphone/speaker output pin of the W810
+
+* Set all amps to be zero-volume, and pins to be muted, in the
+initialization
+  verb sequence, like a standard ALSA driver.
+
+* Enable SPDIF object creation (set dig_out_nid)
+
+* Fix a lot of W810-specific comments to be more accurate.
+
+Signed-off-by: Stephen Warren <swarren@nvidia.com>
+---
+
+Notes:
+
+I hadn't realized that I'd included W810 support in my previous patch -
+I'd meant to send that in later! This patch cleans up some of the
+work-in-progress.
+
+SPDIF output doesn't work on this system. The IEC958 muting control does
+show up in alsamixer. This may be our application problem - I think
+what's happening is that we can't open plug:iec958:... and just fall
+back to analog mode.
+
+DAC NID 0x02 is routed to both pin NID 0x14 (rear jack named "front")
+and to pin NID 0x1b (connected to internal speakers, and headphone
+jack). I've created a mixer element named "Headphone Playback Switch" to
+allow the control of the mute for pin NID 0x1b. Is this the right way to
+do this? Thanks for feedback.
+
+Sorry about creating that bug in hda_codec.c!
+
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
+
+------_=_NextPart_001_01C4F366.D2E06C7D
+Content-Type: application/octet-stream;
+	name="w810-cleanup.diff"
+Content-Transfer-Encoding: base64
+Content-Description: w810-cleanup.diff
+Content-Disposition: attachment;
+	filename="w810-cleanup.diff"
+
+SW5kZXg6IHBhdGNoX3JlYWx0ZWsuYwo9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09ClJDUyBmaWxlOiAvY3Zzcm9vdC9hbHNh
+L2Fsc2EtZHJpdmVyL3BjaS9hengvcGF0Y2hfcmVhbHRlay5jLHYKcmV0cmlldmluZyByZXZpc2lv
+biAxLjgKZGlmZiAtdSAtcjEuOCBwYXRjaF9yZWFsdGVrLmMKLS0tIHBhdGNoX3JlYWx0ZWsuYwkz
+IEphbiAyMDA1IDE3OjIzOjE2IC0wMDAwCTEuOAorKysgcGF0Y2hfcmVhbHRlay5jCTUgSmFuIDIw
+MDUgMjA6Mjg6MTIgLTAwMDAKQEAgLTg2LDcgKzg2LDcgQEAKIAkweDAyLCAweDA1LCAweDA0LCAw
+eDAzCiB9OwogCi1zdGF0aWMgaGRhX25pZF90IGFsYzg4MF93ODEwX2RhY19uaWRzWzRdID0gewor
+c3RhdGljIGhkYV9uaWRfdCBhbGM4ODBfdzgxMF9kYWNfbmlkc1szXSA9IHsKIAkvKiBmcm9udCwg
+cmVhci9zdXJyb3VuZCwgY2xmZSAqLwogCTB4MDIsIDB4MDMsIDB4MDQKIH07CkBAIC0yNTYsNyAr
+MjU2LDcgQEAKIH07CiAKIC8qCi0gKiBjaGFubmVsIHNvdXJjZSBzZXR0aW5nICg2LzggY2hhbm5l
+bCBzZWxlY3Rpb24gZm9yIFc4MTApCisgKiBjaGFubmVsIHNvdXJjZSBzZXR0aW5nIGZvciBXODEw
+IHN5c3RlbQogICoKICAqIFc4MTAgaGFzIHJlYXIgSU8gZm9yOgogICogRnJvbnQgKERBQyAwMikK
+QEAgLTI2NCwxNSArMjY0LDIzIEBACiAgKiBDZW50ZXIvTEZFIChEQUMgMDQpCiAgKiBEaWdpdGFs
+IG91dCAoMDYpCiAgKgotICogSXQgYWxzbyBoYXMgYSBwYWlyIG9mIGludGVybmFsIHNwZWFrZXJz
+LCBhbmQgYSBoZWFkcGhvbmUgamFjaywKLSAqIGJvdGggY29ubmVjdGVkIHRvIExpbmUyIG9uIHRo
+ZSBjb2RlYy4gVGhpcyBvdXRwdXQgaGFzIGEgaGFyZHdhcmUKLSAqIHZvbHVtZSBjb250cm9sICh2
+YXJpYWJsZSByZXNpc3RvciAtIG5vIHNvZnR3YXJlIEFQSSkuCisgKiBUaGUgc3lzdGVtIGFsc28g
+aGFzIGEgcGFpciBvZiBpbnRlcm5hbCBzcGVha2VycywgYW5kIGEgaGVhZHBob25lIGphY2suCisg
+KiBUaGVzZSBhcmUgYm90aCBjb25uZWN0ZWQgdG8gTGluZTIgb24gdGhlIGNvZGVjLCBoZW5jZSB0
+byBEQUMgMDIuCisgKiAKKyAqIFRoZXJlIGlzIGEgdmFyaWFibGUgcmVzaXN0b3IgdG8gY29udHJv
+bCB0aGUgc3BlYWtlciBvciBoZWFkcGhvbmUKKyAqIHZvbHVtZS4gVGhpcyBpcyBhIGhhcmR3YXJl
+LW9ubHkgZGV2aWNlIHdpdGhvdXQgYSBzb2Z0d2FyZSBBUEkuCisgKgorICogUGx1Z2dpbmcgaGVh
+ZHBob25lcyBpbiB3aWxsIGRpc2FibGUgdGhlIGludGVybmFsIHNwZWFrZXJzLiBUaGlzIGlzCisg
+KiBpbXBsZW1lbnRlZCBpbiBoYXJkd2FyZSwgbm90IHZpYSB0aGUgZHJpdmVyIHVzaW5nIGphY2sg
+c2Vuc2UuIEluCisgKiBhIHNpbWlsYXIgZmFzaGlvbiwgcGx1Z2dpbmcgaW50byB0aGUgcmVhciBz
+b2NrZXQgbWFya2VkICJmcm9udCIgd2lsbAorICogZGlzYWJsZSBib3RoIHRoZSBzcGVha2VycyBh
+bmQgaGVhZHBob25lcy4KICAqCiAgKiBGb3IgaW5wdXQsIHRoZXJlJ3MgYSBtaWNyb3Bob25lIGph
+Y2ssIGFuZCBhbiAiYXVkaW8gaW4iIGphY2suCi0gKiBUaGVzZSBtYXkgbm90IGRvIGFueXRoaW5n
+IHVzZWZ1bCB3aXRoIHRoaXMgZHJpdmVyIHlldC4KKyAqIFRoZXNlIG1heSBub3QgZG8gYW55dGhp
+bmcgdXNlZnVsIHdpdGggdGhpcyBkcml2ZXIgeWV0LCBiZWNhdXNlIEkKKyAqIGhhdmVuJ3Qgc2V0
+dXAgYW55IGluaXRpYWxpemF0aW9uIHZlcmJzIGZvciB0aGVzZSB5ZXQuLi4KICAqLwogCi1zdGF0
+aWMgc3RydWN0IGFsY19jaGFubmVsX21vZGUgYWxjODgwX3c4MTBfbW9kZXNbMl0gPSB7CitzdGF0
+aWMgc3RydWN0IGFsY19jaGFubmVsX21vZGUgYWxjODgwX3c4MTBfbW9kZXNbMV0gPSB7CiAJeyA2
+LCAwIH0KIH07CiAKQEAgLTMwMSw3ICszMDksNyBAQAogCiAJc25kX2Fzc2VydChzcGVjLT5jaGFu
+bmVsX21vZGUsIHJldHVybiAtRU5YSU8pOwogCXVjb250cm9sLT52YWx1ZS5lbnVtZXJhdGVkLml0
+ZW1bMF0gPQotCQkoc3BlYy0+bXVsdGlvdXQubWF4X2NoYW5uZWxzID09IHNwZWMtPmNoYW5uZWxf
+bW9kZVsxXS5jaGFubmVscykgPyAxIDogMDsKKwkJKHNwZWMtPm11bHRpb3V0Lm1heF9jaGFubmVs
+cyA9PSBzcGVjLT5jaGFubmVsX21vZGVbMF0uY2hhbm5lbHMpID8gMCA6IDE7CiAJcmV0dXJuIDA7
+CiB9CiAKQEAgLTM5MSw2ICszOTksNyBAQAogCUhEQV9DT0RFQ19WT0xVTUVfTU9OTygiTEZFIFBs
+YXliYWNrIFZvbHVtZSIsIDB4MGUsIDIsIDB4MCwgSERBX09VVFBVVCksCiAJSERBX0NPREVDX01V
+VEVfTU9OTygiQ2VudGVyIFBsYXliYWNrIFN3aXRjaCIsIDB4MTYsIDEsIDB4MCwgSERBX09VVFBV
+VCksCiAJSERBX0NPREVDX01VVEVfTU9OTygiTEZFIFBsYXliYWNrIFN3aXRjaCIsIDB4MTYsIDIs
+IDB4MCwgSERBX09VVFBVVCksCisJSERBX0NPREVDX01VVEUoIkhlYWRwaG9uZSBQbGF5YmFjayBT
+d2l0Y2giLCAweDFiLCAweDAsIEhEQV9PVVRQVVQpLAogCUhEQV9DT0RFQ19WT0xVTUUoIkNhcHR1
+cmUgVm9sdW1lIiwgMHgwNywgMHgwLCBIREFfSU5QVVQpLAogCUhEQV9DT0RFQ19NVVRFKCJDYXB0
+dXJlIFN3aXRjaCIsIDB4MDcsIDB4MCwgSERBX0lOUFVUKSwKIAlIREFfQ09ERUNfVk9MVU1FX0lE
+WCgiQ2FwdHVyZSBWb2x1bWUiLCAxLCAweDA4LCAweDAsIEhEQV9JTlBVVCksCkBAIC01OTEsNDkg
+KzYwMCw0OSBAQAogfTsKIAogc3RhdGljIHN0cnVjdCBoZGFfdmVyYiBhbGM4ODBfdzgxMF9pbml0
+X3ZlcmJzW10gPSB7Ci0JLyogZnJvbnQgY2hhbm5lbCBzZWxlY3Rvci9hbXA6IGlucHV0IDA6IERB
+QzogVW5tdXRlZCwgKG5vIHZvbHVtZSBzZWxlY3Rpb24pICovCisJLyogZnJvbnQgY2hhbm5lbCBz
+ZWxlY3Rvci9hbXA6IGlucHV0IDA6IERBQzogdW5tdXRlZCwgKG5vIHZvbHVtZSBzZWxlY3Rpb24p
+ICovCiAJezB4MGMsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIDB4NzAwMH0sCiAKLQkvKiBm
+cm9udCBjaGFubmVsIHNlbGVjdG9yL2FtcDogaW5wdXQgMTogQ2FwdHVyZSBtaXg6IFVubXV0ZWQs
+IChubyB2b2x1bWUgc2VsZWN0aW9uKSAqLworCS8qIGZyb250IGNoYW5uZWwgc2VsZWN0b3IvYW1w
+OiBpbnB1dCAxOiBjYXB0dXJlIG1peDogbXV0ZWQsIChubyB2b2x1bWUgc2VsZWN0aW9uKSAqLwog
+CXsweDBjLCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCAweDcxODB9LAogCi0JLyogZnJvbnQg
+Y2hhbm5lbCBzZWxlY3Rvci9hbXA6IG91dHB1dCAwOiBVbm11dGVkLCBtYXggdm9sdW1lICovCi0J
+ezB4MGMsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIDB4YjA0MH0sCisJLyogZnJvbnQgY2hh
+bm5lbCBzZWxlY3Rvci9hbXA6IG91dHB1dCAwOiB1bm11dGVkLCBtYXggdm9sdW1lICovCisJezB4
+MGMsIEFDX1ZFUkJfU0VUX0FNUF9HQUlOX01VVEUsIDB4YjAwMH0sCiAKLQkvKiBmcm9udCBvdXQg
+cGluOiB1bm11dGVkLCAobm8gdm9sdW1lIHNlbGVjdGlvbikgICovCi0JezB4MTQsIEFDX1ZFUkJf
+U0VUX0FNUF9HQUlOX01VVEUsIDB4YjAwMH0sCisJLyogZnJvbnQgb3V0IHBpbjogbXV0ZWQsIChu
+byB2b2x1bWUgc2VsZWN0aW9uKSAgKi8KKwl7MHgxNCwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVU
+RSwgMHhiMDgwfSwKIAotCS8qIGZyb250IG91dCBwaW46IGhlYWRwaG9uZSBlbmFibGUsIG91dCBl
+bmFibGUsIHZyZWYgZGlzYWJsZWQgKi8KKwkvKiBmcm9udCBvdXQgcGluOiBOT1QgaGVhZHBob25l
+IGVuYWJsZSwgb3V0IGVuYWJsZSwgdnJlZiBkaXNhYmxlZCAqLwogCXsweDE0LCBBQ19WRVJCX1NF
+VF9QSU5fV0lER0VUX0NPTlRST0wsIDB4NDB9LAogCiAKLQkvKiBzdXJyb3VuZCBjaGFubmVsIHNl
+bGVjdG9yL2FtcDogaW5wdXQgMDogREFDOiBVbm11dGVkLCAobm8gdm9sdW1lIHNlbGVjdGlvbikg
+Ki8KKwkvKiBzdXJyb3VuZCBjaGFubmVsIHNlbGVjdG9yL2FtcDogaW5wdXQgMDogREFDOiB1bm11
+dGVkLCAobm8gdm9sdW1lIHNlbGVjdGlvbikgKi8KIAl7MHgwZCwgQUNfVkVSQl9TRVRfQU1QX0dB
+SU5fTVVURSwgMHg3MDAwfSwKIAotCS8qIHN1cnJvdW5kIGNoYW5uZWwgc2VsZWN0b3IvYW1wOiBp
+bnB1dCAxOiBDYXB0dXJlIG1peDogVW5tdXRlZCwgKG5vIHZvbHVtZSBzZWxlY3Rpb24pICovCisJ
+Lyogc3Vycm91bmQgY2hhbm5lbCBzZWxlY3Rvci9hbXA6IGlucHV0IDE6IGNhcHR1cmUgbWl4OiBt
+dXRlZCwgKG5vIHZvbHVtZSBzZWxlY3Rpb24pICovCiAJezB4MGQsIEFDX1ZFUkJfU0VUX0FNUF9H
+QUlOX01VVEUsIDB4NzE4MH0sCiAKLQkvKiBzdXJyb3VuZCBjaGFubmVsIHNlbGVjdG9yL2FtcDog
+b3V0cHV0IDA6IFVubXV0ZWQsIG1heCB2b2x1bWUgKi8KLQl7MHgwZCwgQUNfVkVSQl9TRVRfQU1Q
+X0dBSU5fTVVURSwgMHhiMDQwfSwKKwkvKiBzdXJyb3VuZCBjaGFubmVsIHNlbGVjdG9yL2FtcDog
+b3V0cHV0IDA6IHVubXV0ZWQsIG1heCB2b2x1bWUgKi8KKwl7MHgwZCwgQUNfVkVSQl9TRVRfQU1Q
+X0dBSU5fTVVURSwgMHhiMDAwfSwKIAotCS8qIHN1cnJvdW5kIG91dCBwaW46IHVubXV0ZWQsIChu
+byB2b2x1bWUgc2VsZWN0aW9uKSAgKi8KLQl7MHgxNSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVU
+RSwgMHhiMDAwfSwKKwkvKiBzdXJyb3VuZCBvdXQgcGluOiBtdXRlZCwgKG5vIHZvbHVtZSBzZWxl
+Y3Rpb24pICAqLworCXsweDE1LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCAweGIwODB9LAog
+Ci0JLyogc3Vycm91bmQgb3V0IHBpbjogaGVhZHBob25lIGVuYWJsZSwgb3V0IGVuYWJsZSwgdnJl
+ZiBkaXNhYmxlZCAqLworCS8qIHN1cnJvdW5kIG91dCBwaW46IE5PVCBoZWFkcGhvbmUgZW5hYmxl
+LCBvdXQgZW5hYmxlLCB2cmVmIGRpc2FibGVkICovCiAJezB4MTUsIEFDX1ZFUkJfU0VUX1BJTl9X
+SURHRVRfQ09OVFJPTCwgMHg0MH0sCiAKIAotCS8qIGMvbGZlIGNoYW5uZWwgc2VsZWN0b3IvYW1w
+OiBpbnB1dCAwOiBEQUM6IFVubXV0ZWQsIChubyB2b2x1bWUgc2VsZWN0aW9uKSAqLworCS8qIGMv
+bGZlIGNoYW5uZWwgc2VsZWN0b3IvYW1wOiBpbnB1dCAwOiBEQUM6IHVubXV0ZWQsIChubyB2b2x1
+bWUgc2VsZWN0aW9uKSAqLwogCXsweDBlLCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCAweDcw
+MDB9LAogCi0JLyogYy9sZmUgY2hhbm5lbCBzZWxlY3Rvci9hbXA6IGlucHV0IDE6IENhcHR1cmUg
+bWl4OiBVbm11dGVkLCAobm8gdm9sdW1lIHNlbGVjdGlvbikgKi8KKwkvKiBjL2xmZSBjaGFubmVs
+IHNlbGVjdG9yL2FtcDogaW5wdXQgMTogY2FwdHVyZSBtaXg6IG11dGVkLCAobm8gdm9sdW1lIHNl
+bGVjdGlvbikgKi8KIAl7MHgwZSwgQUNfVkVSQl9TRVRfQU1QX0dBSU5fTVVURSwgMHg3MTgwfSwK
+IAotCS8qIGMvbGZlIGNoYW5uZWwgc2VsZWN0b3IvYW1wOiBvdXRwdXQgMDogVW5tdXRlZCwgbWF4
+IHZvbHVtZSAqLwotCXsweDBlLCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCAweGIwNDB9LAor
+CS8qIGMvbGZlIGNoYW5uZWwgc2VsZWN0b3IvYW1wOiBvdXRwdXQgMDogdW5tdXRlZCwgbWF4IHZv
+bHVtZSAqLworCXsweDBlLCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCAweGIwMDB9LAogCi0J
+LyogYy9sZmUgb3V0IHBpbjogdW5tdXRlZCwgKG5vIHZvbHVtZSBzZWxlY3Rpb24pICAqLwotCXsw
+eDE2LCBBQ19WRVJCX1NFVF9BTVBfR0FJTl9NVVRFLCAweGIwMDB9LAorCS8qIGMvbGZlIG91dCBw
+aW46IG11dGVkLCAobm8gdm9sdW1lIHNlbGVjdGlvbikgICovCisJezB4MTYsIEFDX1ZFUkJfU0VU
+X0FNUF9HQUlOX01VVEUsIDB4YjA4MH0sCiAKIAkvKiBjL2xmZSBvdXQgcGluOiBOT1QgaGVhZHBo
+b25lIGVuYWJsZSwgb3V0IGVuYWJsZSwgdnJlZiBkaXNhYmxlZCAqLwogCXsweDE2LCBBQ19WRVJC
+X1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIDB4NDB9LApAQCAtNjQyLDI0ICs2NTEsMTMgQEAKIAkv
+KiBocGhvbmUvc3BlYWtlciBpbnB1dCBzZWxlY3RvcjogZnJvbnQgREFDICovCiAJezB4MTMsIEFD
+X1ZFUkJfU0VUX0NPTk5FQ1RfU0VMLCAweDB9LAogCi0JLyogaHBob25lL3NwZWFrZXIgb3V0IHBp
+bjogdW5tdXRlZCwgKG5vIHZvbHVtZSBzZWxlY3Rpb24pICAqLwotCXsweDFiLCBBQ19WRVJCX1NF
+VF9BTVBfR0FJTl9NVVRFLCAweGIwMDB9LAorCS8qIGhwaG9uZS9zcGVha2VyIG91dCBwaW46IG11
+dGVkLCAobm8gdm9sdW1lIHNlbGVjdGlvbikgICovCisJezB4MWIsIEFDX1ZFUkJfU0VUX0FNUF9H
+QUlOX01VVEUsIDB4YjA4MH0sCiAKIAkvKiBocGhvbmUvc3BlYWtlciBvdXQgcGluOiBOT1QgaGVh
+ZHBob25lIGVuYWJsZSwgb3V0IGVuYWJsZSwgdnJlZiBkaXNhYmxlZCAqLwogCXsweDFiLCBBQ19W
+RVJCX1NFVF9QSU5fV0lER0VUX0NPTlRST0wsIDB4NDB9LAogCiAKLSNpZiAwCi0JLyogZ3BpbyBk
+aXJlY3Rpb246IGdwaW8wIGlucHV0LCBncGlvMSBvdXRwdXQgKi8KLQl7MHgwMSwgMHg3MTcsIDJ9
+LAotCi0JLyogZ3BpbyBkYXRhOiBncGlvMDogMCwgZ3BpbzE6IDEgKi8KLQl7MHgwMSwgMHg3MTUs
+IDJ9LAotCi0JLyogZ3BpbyBlbmFibGU6IGdwaW8wIG5vLCBncGlvMSB5ZXMgKi8KLQl7MHgwMSwg
+MHg3MTYsIDJ9LAotI2VuZGlmCi0KIAl7IH0KIH07CiAKQEAgLTk2OCw2ICs5NjYsNyBAQAogCXN3
+aXRjaCAoYm9hcmRfY29uZmlnKSB7CiAJY2FzZSBBTEM4ODBfM1NUX0RJRzoKIAljYXNlIEFMQzg4
+MF81U1RfRElHOgorCWNhc2UgQUxDODgwX1c4MTA6CiAJCXNwZWMtPm11bHRpb3V0LmRpZ19vdXRf
+bmlkID0gQUxDODgwX0RJR09VVF9OSUQ7CiAJCWJyZWFrOwogCWRlZmF1bHQ6Cg==
+
+------_=_NextPart_001_01C4F366.D2E06C7D--
 
 
 -------------------------------------------------------
