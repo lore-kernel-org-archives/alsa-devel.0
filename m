@@ -1,14 +1,11 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Re: The obsolence of OSS, Was: big smile
-Date: Wed, 25 Feb 2004 15:03:22 +0100 (CET)
+From: Will <walsac2@liam2.demon.co.uk>
+Subject: Re: [PATCH] add aplaymidi & arecordmidi utils
+Date: Wed, 25 Feb 2004 14:11:24 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040225150322.pochini@shiny.it>
-References: <20040225112021.GE8820@sunrise.pg.gda.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Message-ID: <200402251411.OAA12812@liam2.demon.co.uk>
+References: <403CAA12.4070003@superbug.demon.co.uk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040225112021.GE8820@sunrise.pg.gda.pl>
+In-Reply-To: <403CAA12.4070003@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,53 +14,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
-Cc: Alsa-devel@lists.sourceforge.net
+To: James@superbug.demon.co.uk
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
+>Will wrote:
+>> Is the following a correct way of updating the ALSA in Linux 2.6.3?
+>
+>I have just updated the alsa.opensrc.org wiki.
+>Use option 1] on
+>http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
 
-On 25-Feb-2004 Adam Tla/lka wrote:
-> On Tue, Feb 24, 2004 at 10:54:58PM +0100, Benno Senoner wrote:
->> for those that are too lazy to browse the forums:
->>
->> http://www.4front-tech.com/forum/viewtopic.php?t=25
->> -----
->> ....
->> far more advanced ???
->> Ok I'd like see Ardour runnnig with multiple 24bit cards, all the 
->> switches for hardware monitoring etc under OSS.
-> nice but many people just haven't this hardware and want to use
-> normal PCI sound cards or even matherboard build in codecs
-> and mix many applications PCM sound together [...]
+Thanks.  The section describing option 1 is still a bit confusing because
+it seems to contradict itself firstly by saying alsa-driver is needed (at
+the first paragraph) and secondly by saying it might not be needed (at
+the end of the section).  It also doesn't say you should not install
+alsa-kernel which presumably you shouldn't do.
 
-Actually, I have far less xruns with ALSA than OSS. Are you sure the
-buffer has the same length ? Otherwise the comparison is unfair. The
-tar test does measure mainly the quality of the VM subsystem and the
-speed of the harddisk. The sound stops because the application runs
-out of data to play because the disk is busy. If the app freezes it
-means there are bugs somewhere.
-And yes, OSS is simpler for the end user because it has far more
-features and it's not flexible. It's the Windows philosophy :))
+Quick summary
+1. Install alsa-driver from ALSA CVS
+2. Disable ALSA in kernel (#CONFIG_SND is not set)
+3. Enable sound in kernel (CONFIG_SOUND=y)
+4. make and install from kernel source
+5. configure/install alsa-lib alsa-firmware alsa-oss alsa-tools alsa-utils
 
->> So this will slowly but surely render OSS totally obsolete. I'm
->> sorry but that's the truth that you cannot escape from.
-> Maybe but now functionalty of ALSA and just ease of use is not
-> so good to satisfy us. Mixing in lib is bad in my opinion and works nice
-> only if we have enough free CPU cycles. But we use many applications at
-> the same time compiling kernel, transfering data, looking in the
-> archives, doing backups etc.
-
-The code that runs inside the kernel doesn't execute faster. Instead,
-you have far less control over it and it can cause high latencies.
-
-And about the cuckoo thing, it's an ALSA-over-OSS frankenstein monster
-that cannot be as good as both OSS or ALSA alone. They're trying to
-keep OSS alive as long as they can.
-
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
