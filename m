@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
-Date: Fri, 7 Jan 2005 00:00:35 +0100
-Message-ID: <91ece466b88b44be54779b4f492b82e8@bugtrack.alsa-project.org>
+Date: Fri, 7 Jan 2005 00:30:05 +0100
+Message-ID: <554fcadd0c90dc69cef810674de3ae5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C86EE222
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:00:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 01E5A258
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 00:30:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
 Date Submitted:             05-25-2004 20:35 CEST
-Last Modified:              01-07-2005 00:00 CET
+Last Modified:              01-07-2005 00:30 CET
 ======================================================================
 Summary:                    compiles, but no sound comes out
 Description: 
@@ -54,54 +54,48 @@ moved.
 ======================================================================
 
 ----------------------------------------------------------------------
- Quietti - 01-06-05 19:43 
+ Quietti - 01-07-05 00:19 
 ----------------------------------------------------------------------
-I never try CVS, so I cannot say.  I only test stable Linux 2.6 release
-kernels.
+You asked me a while ago to confirm whether certain tests worked. I pasted
+them and got no response. Since you are still assigned to this issue, I
+would like to know what is your situation. Thanks.
 
 ----------------------------------------------------------------------
- Quietti - 01-07-05 00:00 
+ Quietti - 01-07-05 00:30 
 ----------------------------------------------------------------------
-The content of CVS and kernel 2.6.10 completely match for the PPC drivers
-(CVS cruft shows up as the only difference):
+'hwinfo' mentions the following about the sound hardware of this vintage
+iMac:
 
-diff -ruN linux-2.6.10/sound/ppc/CVS/Entries alsa-kernel/ppc/CVS/Entries
---- linux-2.6.10/sound/ppc/CVS/Entries  1970-01-01 02:00:00.000000000
-+0200
-+++ alsa-kernel/ppc/CVS/Entries 2005-01-06 21:10:26.000000000 +0200
-@@ -0,0 +1,15 @@
-+/Kconfig/1.5/Mon Sep 13 07:14:59 2004//
-+/Makefile/1.6/Mon Aug  2 10:06:38 2004//
-+/awacs.c/1.26/Wed Aug 18 09:50:49 2004//
-+/awacs.h/1.3/Wed May 15 16:31:40 2002//
-+/beep.c/1.1/Mon Aug  2 10:06:38 2004/-ko/
-+/burgundy.c/1.13/Tue Jul 20 15:54:28 2004//
-+/burgundy.h/1.2/Sun Dec 30 09:26:48 2001//
-+/daca.c/1.14/Tue Nov 30 14:44:30 2004//
-+/keywest.c/1.17/Fri Apr 23 14:18:25 2004//
-+/pmac.c/1.43/Tue Dec 21 10:52:47 2004//
-+/pmac.h/1.18/Tue Nov 30 14:44:30 2004//
-+/powermac.c/1.20/Mon Aug  2 10:06:38 2004//
-+/tumbler.c/1.35/Tue Nov 30 14:44:30 2004//
-+/tumbler_volume.h/1.2/Tue Aug 27 13:46:15 2002/-ko/
-+D
-diff -ruN linux-2.6.10/sound/ppc/CVS/Repository
-alsa-kernel/ppc/CVS/Repository
---- linux-2.6.10/sound/ppc/CVS/Repository       1970-01-01
-02:00:00.000000000 +0200
-+++ alsa-kernel/ppc/CVS/Repository      2005-01-06 21:10:26.000000000
-+0200
-@@ -0,0 +1 @@
-+alsa-kernel/ppc
-diff -ruN linux-2.6.10/sound/ppc/CVS/Root alsa-kernel/ppc/CVS/Root
---- linux-2.6.10/sound/ppc/CVS/Root     1970-01-01 02:00:00.000000000
-+0200
-+++ alsa-kernel/ppc/CVS/Root    2005-01-06 21:10:26.000000000 +0200
-@@ -0,0 +1 @@
-+:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa
+11: None 00.0: 0401 Multimedia audio controller
+  [Created at prom.409]
+  Unique ID: AT0p.4TqZ9X2iLH0
+  Parent ID: LxCh.xWNNVcdS2SF
+  Hardware Class: sound
+  Model: "Apple Integrated Sound (burgundy)"
+  Vendor: int 0x0401 "Apple"
+  Device: int 0x0012 "Integrated Sound (burgundy)"
+  PROM id: pci@80000000/mac-io@10/davbus@14000/sound
+  IRQ: 17 (1 event)
+  Driver Info https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0:
+    Driver Status: dmasound is not active
+    Driver Activation Cmd: "modprobe dmasound"
+  Config Status: cfg=new, avail=yes, need=no, active=unknown
+  Attached to: https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
+(Unclassified device)
 
-
-...therefore, yes, even what's in CVS is broken.
+07: PCI 10.0: ff00 Unclassified device
+  [Created at pci.244]
+  Unique ID: LxCh.xWNNVcdS2SF
+  SysFS ID: /devices/pci0000:00/0000:00:10.0
+  SysFS BusID: 0000:00:10.0
+  Hardware Class: unknown
+  Model: "Apple Paddington Mac I/O"
+  Vendor: pci 0x106b "Apple Computer Inc."
+  Device: pci 0x0017 "Paddington Mac I/O"
+  Driver: "macio"
+  PROM id: pci@80000000/mac-io@10
+  Memory Range: 0x80800000-0x8087ffff (rw,non-prefetchable)
+  Config Status: cfg=new, avail=yes, need=no, active=unknown
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -121,6 +115,8 @@ vanilla.
 01-06-05 18:27 rlrevell       Note Added: 0003094                          
 01-06-05 19:43 Quietti        Note Added: 0003095                          
 01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
 ======================================================================
 
 
