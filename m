@@ -1,23 +1,14 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: 0.9.1 release
-Date: Wed, 12 Mar 2003 00:05:40 +0100
+From: Andrew de Quincey <adq_dvb@lidskialf.net>
+Subject: Patch to fix LIN_OUT1 on Audigy2 cards (+ others)
+Date: Tue, 11 Mar 2003 23:23:58 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030311230540.GA11875@fliwatut.scifi>
-References: <Pine.LNX.4.44.0303112255040.6200-100000@pnote.perex-int.cz>
+Message-ID: <200303112323.58656.adq_dvb@lidskialf.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp.netcologne.de (smtp.netcologne.de [194.8.194.112])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA25171
-	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2003 00:06:18 +0100
-Received: from fliwatut.scifi (dial-194-8-205-66.netcologne.de [194.8.205.66])
-	by smtp.netcologne.de (Postfix) with ESMTP id D1B3986767
-	for <alsa-devel@alsa-project.org>; Wed, 12 Mar 2003 00:05:38 +0100 (MET)
-Received: (from freak@localhost)
-        by fliwatut.scifi (8.12.0.Beta5/8.12.0.Beta5/Debian 8.12.0-1) id h2BN5edc011979
-        for alsa-devel@alsa-project.org; Wed, 12 Mar 2003 00:05:40 +0100
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0303112255040.6200-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -26,22 +17,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Jaroslav Kysela hat gesagt: // Jaroslav Kysela wrote:
+Hi, this patch is in three parts.
 
-> I have just released the first 0.9 "final" packages. 
+1) The changes to emufx.c make LIN_OUT1 work on the Audigy2. It seems to be the AC97 thing again... in fact there 
+was even a line in there helpfully commented out ready to be used :)
 
-Hoohoo! I think, for most 'users' this is even a bigger
-step than the inclusion into the kernel was. 
+2) The changes to emu10k1_main.c. This is setting the card to use Analogue out instead of Digital. This is the 
+HCFG/A_IOCFG thing on Audigy cards again... I've checked the rest of the emu10k1 code however, and it is fine.
 
-Congratulations.
+3) Finally, the changes to emumixer.c cause the code NOT to create an AC97 mixer device on Audigy2 cards, since 
+it seems to be kinda worthless and confusing.
 
-ciao
+
+
+--- CUT HERE ---
+Index: pci/emu10k1/emu10k1_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1_main.c,v
+retrieving revision 1.23
+diff -r1.23 emu10k1_main.c
+241c241
+< 	
+---
+> 
+243,244c243,249
+< 		unsigned int reg = inl(emu->port + HCFG);
+< 		outl(reg | HCFG_GPOUT0, emu->port + HCFG);
+---
+> 		if (!emu->audigy) {
+> 			unsigned int reg = inl(emu->port + HCFG);
+> 			outl(reg | HCFG_GPOUT0, emu->port + HCFG);
+> 		} else {
+> 			unsigned int reg = inl(emu->port + A_IOCFG);
+> 			outl(reg | A_IOCFG_GPOUT0, emu->port + A_IOCFG);
+> 		}
+Index: pci/emu10k1/emufx.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emufx.c,v
+retrieving revision 1.30
+diff -r1.30 emufx.c
+1505,1506c1505,1509
+< 	//A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+< 	A_PUT_STEREO_OUTPUT(A_EXTOUT_AC97_L, A_EXTOUT_AC97_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+---
+> 	if (emu->audigy && emu->revision == 4) { /* audigy2 */
+> 		A_PUT_STEREO_OUTPUT(A_EXTOUT_AFRONT_L, A_EXTOUT_AFRONT_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+> 	} else {
+> 		A_PUT_STEREO_OUTPUT(A_EXTOUT_AC97_L, A_EXTOUT_AC97_R, playback + SND_EMU10K1_PLAYBACK_CHANNELS);
+> 	}
+Index: pci/emu10k1/emumixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
+retrieving revision 1.14
+diff -r1.14 emumixer.c
+427c427
+< 	if (!emu->APS) {
+---
+> 	if ((!emu->APS) && (!(emu->audigy && emu->revision == 4))) {	
+435c435
+< 	} else {
+---
+> 	} else if (emu->APS) {
+436a437,438
+> 	} else if (emu->audigy && emu->revision == 4) {
+> 		strcpy(emu->card->mixername, "Audigy 2");
+--- CUT HERE ---
+
+
+
 -- 
- Frank Barknecht                               _ ______footils.org__
+adq
 
 
 -------------------------------------------------------
