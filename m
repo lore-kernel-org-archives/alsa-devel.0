@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000520]: [PATCH] 91_debian_alsaconf_noclear
-Date: Wed, 22 Sep 2004 18:24:55 +0200 (CEST)
+Subject: [ALSA - utils 0000522]: [PATCH] 15_alsaconf_doc_config
+Date: Wed, 22 Sep 2004 18:29:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040922162455.363083200A@server.perex-int.cz>
+Message-ID: <20040922162935.D17B73200A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87249368
-	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 18:24:55 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 363CC2F6
+	for <alsa-devel@alsa-project.org>; Wed, 22 Sep 2004 18:29:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,42 +20,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000520
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000522
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Bug ID:                     520
+Bug ID:                     522
 Category:                   alsaconf
 Reproducibility:            always
-Severity:                   minor
+Severity:                   text
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             09-21-2004 20:03 CEST
-Last Modified:              09-22-2004 18:24 CEST
+Date Submitted:             09-21-2004 23:29 CEST
+Last Modified:              09-22-2004 18:29 CEST
 ======================================================================
-Summary:                    [PATCH] 91_debian_alsaconf_noclear
+Summary:                    [PATCH] 15_alsaconf_doc_config
 Description: 
-This is a patch for alsaconf which makes it not clear the
-screen, but print a newline instead.  The advantage is that
-error messages are not cleared.
+Here is a patch that makes alsaconf.8 mention the new --config
+option.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-22-2004 18:24 CEST 
+ tiwai - 09-22-2004 18:29 CEST 
 ----------------------------------------------------------------------
-Why overwrite clear() even if no error state?
+This was already fixed on cvs.
+
+Please check all your patches for cvs version.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:03 jdthood        New Bug                                      
-09-21-04 20:03 jdthood        File Added: 91_debian_alsaconf_noclear.dpatch                    
-09-22-04 18:24 tiwai          Bugnote Added: 0001816                       
+09-21-04 23:29 jdthood        New Bug                                      
+09-21-04 23:29 jdthood        File Added: 15_alsaconf_doc_config.dpatch                    
+09-22-04 18:29 tiwai          Bugnote Added: 0001817                       
+09-22-04 18:29 tiwai          Assigned To               => tiwai           
+09-22-04 18:29 tiwai          Resolution               open => fixed       
+09-22-04 18:29 tiwai          Status                   new => resolved     
 ======================================================================
 
 
