@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000363]: USB webcam microphone recognized but not working
-Date: Wed, 7 Jul 2004 13:12:50 +0200
+Date: Wed, 7 Jul 2004 13:11:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3a4d5b7893286a4669c204a4cbf6f6db@bugtrack.alsa-project.org>
+Message-ID: <fe68e646c4ee7c2fd67ee75b004781b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -46,7 +46,7 @@ Kernel Version:             2.6.6-1.435.2.1
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-03-2004 18:44 CEST
-Last Modified:              07-07-2004 13:12 CEST
+Last Modified:              07-07-2004 13:11 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -144,11 +144,6 @@ THANK YOU!!!
 
 that did the trick!!
 
-----------------------------------------------------------------------
- sehh - 07-07-2004 13:12 CEST=20
-----------------------------------------------------------------------
-(we may close this bug now, though i can't find a way to do it)
-
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -164,8 +159,6 @@ Date Modified  Username       Field                    Change            =
 07-06-04 18:48 Clemens LadischBugnote Added: 0001386                     =
  =20
 07-07-04 13:11 sehh           Bugnote Added: 0001391                     =
- =20
-07-07-04 13:12 sehh           Bugnote Added: 0001392                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
