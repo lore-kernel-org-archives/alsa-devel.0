@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000627]: alsactl store doesn't work
-Date: Thu, 16 Dec 2004 18:14:08 +0100
-Message-ID: <fe5f1dadf842a89869b773031d4ed869@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000598]: Audigy 2 Value detected
+Date: Thu, 16 Dec 2004 18:14:53 +0100
+Message-ID: <2c3a2a49ad8f691bb0e9783b6e6c7d1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9D3C5245
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:14:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4FDF9245
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:14:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=627> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=598> 
 ======================================================================
-Reported By:                deglog
-Assigned To:                tiwai
+Reported By:                mohammed_imran
+Assigned To:                pzad
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   627
-Category:                   alsactl
+Project:                    ALSA - driver
+Issue ID:                   598
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Resolution:                 won't fix
+Distribution:               
+Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  597
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-03-2004 17:05 CET
+Date Submitted:             10-23-2004 09:06 CEST
 Last Modified:              12-16-2004 18:14 CET
 ======================================================================
-Summary:                    alsactl store doesn't work
+Summary:                    Audigy 2 Value detected
 Description: 
-"alsactl store" outputs "Terminated" after about 30 seconds.
+I have tried pzad's suggestion and added the PCI ID to the table along with
+some modifications (support to detect rev 8 and 0 as audigy 2)
+(emu->rev==0)..
 
-The file asound.state is full of garbage.
+RedHat Linux 9 reports the card having rev 0 do i added rev 0 support. Now
+it detects the card as an audigy 2, alsa mixer runs but no sound out put
+is given when i play sound using xmms/aplay/realplayer...perhaps some more
+modifications needed? or a new driver needed?
 
-Apart from that sounds work OK, although I do see
+Also: PCI ID for Audigy 2 card is not 1102:1008 as i saw in the forum
+reports but it is: 1102:0008 as listed by cat /proc/pci:
 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
+ Bus  3, device   2, function  0:
+    Multimedia audio controller: PCI device 1102:0008 (Creative Labs) (rev
+0).
+      IRQ 12.
+      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=20.
+      I/O at 0xc800 [0xc83f].
 
-in .xsession_errors.
+please correct me if i am wrong.
+
+Tested on RedHat Linux 9
 ======================================================================
-
+Relationships       ID      Summary
 ----------------------------------------------------------------------
- deglog - 11-09-04 21:47 
-----------------------------------------------------------------------
-Yes that fixed it. Thanks.
-
-----------------------------------------------------------------------
- tiwai - 11-10-04 12:09 
-----------------------------------------------------------------------
-The broken pipe message is from artsd.  It's a known bug of arts.
+duplicate of        0000597 Audigy 2 Value detected
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 17:05 deglog         New Issue                                    
-11-09-04 15:49 tiwai          Note Added: 0002324                          
-11-09-04 21:47 deglog         Note Added: 0002353                          
-11-10-04 12:09 tiwai          Status                   new => resolved     
-11-10-04 12:09 tiwai          Resolution               open => won't fix   
-11-10-04 12:09 tiwai          Assigned To               => tiwai           
-11-10-04 12:09 tiwai          Note Added: 0002364                          
+10-23-04 09:06 mohammed_imran New Issue                                    
+11-10-04 12:53 tiwai          Relationship added       duplicate of 0000597
+11-10-04 12:53 tiwai          Duplicate ID             0 => 597            
+11-10-04 12:53 tiwai          Status                   assigned => resolved
+11-10-04 12:53 tiwai          Resolution               open => duplicate   
 12-16-04 18:14 tiwai          Status                   resolved => closed  
 ======================================================================
 
