@@ -1,15 +1,12 @@
-From: Nicola Orru' <nigu@itadinanta.it>
-Subject: Re: emufxtool, formerly ld10k1
-Date: Wed, 30 Jul 2003 22:53:50 +0200
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: mmaped play in multichannel mode (fwd)
+Date: Wed, 30 Jul 2003 16:36:18 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030730225350.3341ee6e.nigu@itadinanta.it>
-References: <Pine.LNX.4.44.0307302045290.9821-100000@pnote.perex-int.cz>
-	<Pine.LNX.4.44.0307302054090.9821-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <200307302036.h6UKaJ6p001930@localhost.localdomain>
+References: <Pine.LNX.4.53.0307302236410.14824@spring>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0307302054090.9821-100000@pnote.perex-int.cz>
+In-reply-to: Your message of "Wed, 30 Jul 2003 22:37:14 +0200."
+             <Pine.LNX.4.53.0307302236410.14824@spring>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,26 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: barat@medien.uni-weimar.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> If it is possible, can you guys settle details about linker communication
-> (and probably finish it)? We can integrate both projects then.
+>i have written some code for mmaped-play. it works so far for up to 2 
+>channels, but in multichannel-mode i get some mismatch about available 
+>buffersize or exactly a snd_pcm_mmap_commit error.
+>the essential part is the following:
+>
+>  snd_pcm_mmap_begin(alsa_handler, &area, &offset, &frames_transmit);
+>
+>  /* this is specific to interleaved streams (or non-interleaved
+>   * streams with only one channel) */
+>  outbuffer = ((char *) area->addr + (area->first + area->step * offset) / 
+>8);
+>
+>  //write data
+>  memcpy(outbuffer, data, (frames_transmit * bytes_per_sample));
+> 
+>  commitres = snd_pcm_mmap_commit(alsa_handler, offset, frames_transmit);
+>
+>i guess that outbuffer has a wrong size. does somebody have any idea about 
+>this outbuffer calculation?
 
-I didn't know about Peter's ld10k1 existence, but it seems to be what I thought initially of emufxtool, before starting to improve the assembly/disassembly core and the file format.
+i don't know exactly why you're spending time doing this. whether you
+decide to use it or not, JACK (http://jackit.sf.net/) has full,
+working code that shows how to do this. but i'd personally recommend
+that you consider using it instead of reinventing the wheel, etc.
 
-I think it is a good idea, at least there will not duplicated code and, if I understand correctly, emufxtool might use ld10k1 as a "backend" to load patches onto the DSP.
-
-I am just downloading ld10k1 from sf. Will take more than a look at that.
-
-...stay tuned...
-
--- 
-Ciao,
-Nicola
---------------------------------------------------------------------
-* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
---------------------------------------------------------------------
+--p
 
 
 -------------------------------------------------------
