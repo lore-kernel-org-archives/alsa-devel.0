@@ -1,15 +1,18 @@
 From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: More CS4630 improvements, finally multi PCM channel support
-Date: Wed, 31 Jul 2002 16:55:55 -0700
+Subject: Re: More CS4630, secondary CODEC output.
+Date: Wed, 31 Jul 2002 18:14:50 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020731235555.GA5646@porky>
-References: <3D48607D.5020406@cucumelo.org>
+Message-ID: <20020801011450.GC5646@porky>
+References: <3D41D4DC.60004@cucumelo.org> <20020727003649.GA5560@porky> <3D4245A1.3020302@cucumelo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.gotnet.net (mail.gotnet.net [207.173.88.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id DAA30590
+	for <alsa-devel@alsa-project.org>; Thu, 1 Aug 2002 03:22:57 +0200
 Content-Disposition: inline
-In-Reply-To: <3D48607D.5020406@cucumelo.org>; from gorm@cucumelo.org on Wed, Jul 31, 2002 at 15:11:09 -0700
+In-Reply-To: <3D4245A1.3020302@cucumelo.org>; from gorm@cucumelo.org on Sat, Jul 27, 2002 at 00:02:57 -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,36 +22,33 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.07.31 15:11 Benny Sjostrand wrote:
-> Hi!
+On 2002.07.27 00:02 Benny Sjostrand wrote:
+>>    And to those with Santa Cruz cards, after my first (quick) test the 
+>> rear
+>> channel doesn't seem to work... yet.
 > 
-> I've implemented multi PCM channel support for cs46xx based soundcards, 
-> the PCM multichannel  should work on any soundcard
-
-    The surprises just don't stop coming!
-
-[...]
-> That's it, ending up here, the aditional feutures should be:
-> - PCM multichannel.
-> - Secondary CODEC, ALSA mixer, front && rear output (same output from 
-> rear && front).
-> - SPDIF output. (i believe that i need some more help from Cirrus and 
-> maybe Hercules and other card manufacturers to get  SPDIF input working)
+> Well, you dont seems to any luck ... no SPDIF, no rear sound -:(
 
 
-    Currently, SPDIF and rear-out is not functional on the Santa Cruz. But
-multichannel PCM works great!
-    I'm waiting for Turtle Beach to respond to a request for Santa Cruz
-documentation. If this fails, I will try to contact Videologic for some 
-docs
-on the Sonic Fury, the same card with a different name. Hopefully they will
-provide some information that will help getting SPDIF and rear-out working.
+    I just recalled something that may help with this problem. Crystal
+released a driver that had support for the second codec; that driver worked
+fine with my Santa Cruz, so we may be able to compare the setup and find
+the problem.
+    I'll start looking, but if anybody else wants to help feel free. The
+Crystal driver is available at:
 
+ftp1.cirrus.com
+username: ftppclink
+password: cSPxQMd
 
-Thanks Benny,
+    It's under the folder "cs46xx-02a-secondcodec". Also, there's another
+datasheet available that was previously on that FTP site, but has recently
+been removed. If anyony would like a copy, you can e-mail me for one. It
+contains very useful documentation on the CS4630.
+
 
 -- Peter Heatwole
 "Murphy was just a well known pessimist."
