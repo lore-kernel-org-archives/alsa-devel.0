@@ -1,16 +1,14 @@
 From: Bob Ham <node@users.sourceforge.net>
-Subject: Re: [ardour-dev] Re: guitar + sblive + ardour + ladspa
-	effects
-Date: 29 Jul 2002 22:09:04 +0100
+Subject: Re: guitar + sblive + ardour + ladspa effects
+Date: 29 Jul 2002 22:25:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1027976945.10076.95.camel@insanity>
-References: <1027973318.10978.62.camel@insanity>
-	<3D45A636.4030000@boosthardware.com>
+Message-ID: <1027977926.10978.104.camel@insanity>
+References: <E17ZHUa-0008M8-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D45A636.4030000@boosthardware.com>
+In-Reply-To: <E17ZHUa-0008M8-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,25 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
+To: Paul Davis <pbd@op.net>
 Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Ardour Devel Mailing List <ardour-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2002-07-29 at 21:31, Patrick Shirkey wrote:
+On Mon, 2002-07-29 at 21:53, Paul Davis wrote:
 
-> Have a read of the arecord quicktoot
-> 
-> http://www.boosthardware.com/LAU/quicktoots
-> 
-> That will give you some info about using alsamixer correctly.
+> you will also probably want to turn down the line-in level, so that
+> the direct feed is not audible. that is also an sblive issue.
 
-Getting ardour to be able to record/modify the incoming sound isn't the
-issue.  It's getting ardour to do that without it going through the
-speakers beforehand.  I don't want to hear any sound if I put the mixer
-slider down to nothing in ardour.  At the moment, I hear the original,
-clean guitar signal.  I assume the line input is getting routed to both
-jack's alsa_pcm inputs and the soundcard's amp.  I want it only to go to
-jack, and then the ladspaified signal to the amp afterwards.
+It's, unfortunately, the only issue :/
+
+> >If it's not possible to this with only the sblive, I have the
+> >motherboard's "soundcard" as well but how do I get jackd to deal with
+> >more that one bit of hardware?  
+> 
+> jackd -d alsa -d hw:N
+> 
+> where N is the relevant card number for the motherboard audio
+> interface.
+
+Err.. I mean have *both* cards in jack.  I have a ~/.asoundrc with
+"platinum51" and "via" devices defined.  I normally do "jackd -d alsa -d
+platinum51".  Doing "jackd -d alsa -d platinum51 -d via" makes it only
+use the via card.  How can I tell it to use both?
 
 Bob
 
