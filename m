@@ -1,15 +1,16 @@
 From: Giuliano Pochini <pochini@shiny.it>
 Subject: Re: Interrupt handler
-Date: 19 Mar 2003 01:15:34 +0000
+Date: 19 Mar 2003 09:38:03 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1048036537.7424.17.camel@Jay>
+Message-ID: <1048066686.5765.2.camel@Jay>
 References: <s5h1y16uphm.wl@alsa2.suse.de>
 	<XFMail.20030317152245.pochini@shiny.it>  <s5hisugu7es.wl@alsa2.suse.de>
+	<1048036537.7424.17.camel@Jay>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hisugu7es.wl@alsa2.suse.de>
+In-Reply-To: <1048036537.7424.17.camel@Jay>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,34 +23,12 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On mar, 2003-03-18 at 13:32, Takashi Iwai wrote:
-> also, don't forget to unlock the spinlock during calling
-> snd_pcm_period_elapsed() if a single lock is used for callbacks.
 
-Yes, I'm following the tutorial and it's clear about that.
+> Look at the physical addresses. They're spaced by 4KB, but the periods
+> are 11KB long and 11026*3<44100 !! You can imagine how beatiful sound I
+> get... What am I missing ?
 
-Now I have another weird problem. This is a peice of my hw_param
-function:
-
-static int pcm_hw_params(){
-  printk("pcm_hw_params bytes=%d\n",params_buffer_bytes(hw_params));
-  for (per=0; per<params_periods(hw_params); per++) {
-    printk("pcm_hw_params Add%d (%x - %d)\n",
-            per,
-            sgbuf->table[per].addr,
-            params_period_bytes(hw_params));
-  }
-}
-
-Mar 19 00:48:33 localhost kernel: pcm_hw_params bytes=44100
-Mar 19 00:48:33 localhost kernel: pcm_hw_params Add0 (3a1d000 - 11026)
-Mar 19 00:48:33 localhost kernel: pcm_hw_params Add1 (3a1c000 - 11026)
-Mar 19 00:48:33 localhost kernel: pcm_hw_params Add2 (3a1b000 - 11026)
-Mar 19 00:48:33 localhost kernel: pcm_hw_params OK
-
-Look at the physical addresses. They're spaced by 4KB, but the periods
-are 11KB long and 11026*3<44100 !! You can imagine how beatiful sound I
-get... What am I missing ?
+Ehm, I found the problem, ignore my previous msg.
 
 
 Bye.
