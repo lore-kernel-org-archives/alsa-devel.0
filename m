@@ -1,12 +1,11 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/core/oss
- mixer_oss.c,1.38,1.39
-Date: Thu, 10 Mar 2005 10:42:04 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0503101036190.20935-100000@studcom.urz.uni-halle.de>
-References: <1110399750.10129.1.camel@mindpipe>
+Subject: Re: snd-intel8x0
+Date: Thu, 10 Mar 2005 10:43:22 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503101042510.20935-100000@studcom.urz.uni-halle.de>
+References: <1110418594.5334.7.camel@209.90.108.253.airwired.net>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <1110399750.10129.1.camel@mindpipe>
+In-Reply-To: <1110418594.5334.7.camel@209.90.108.253.airwired.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Koby Andersen <koby@razordata.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> > Clemens Ladisch wrote:
-> > > Summary: fix forgotten release of semaphore in error path
-> > >
-> > > In snd_mixer_oss_get_volume1_vol and snd_mixer_oss_put_volume1_vol,
-> > > card->controls_rwsem wouldn't be released if the boolean type
-> > > check fails.
+Koby Andersen wrote:
+> I am having trouble with all recent versions of ALSA (currently running
+> 1.0.6, but have run all the way up to 1.0.8 with more recent kernels as
+> well) and my SIS7012 sound card with the SIS 735 (technically its a SIS
+> 650 in a PC Club laptop).
 >
-> Clemens, should this patch fix OSDL bug 4282?  You mentioned that was
-> related to a forgotten semaphore release in the same code.
+> My sound card works properly so long as no headphones are attached.  As
+> soon as I plug in headphones all sound is muted to both the speakers and
+> the headphones.
 
-Neither this fix nor my earlier one in snd_mixer_oss_build_input looks
-like it could be related to that bug.  A semaphore that wasn't
-released would result in a deadlock, not in a crash.
-
-I would guess that the bug is caused by using something that hasn't
-been initialized yet.
+Which codec does your sound card use?  (see /proc/asound/cards or the
+"Chip" line in alsamixer)
 
 
 Regards,
