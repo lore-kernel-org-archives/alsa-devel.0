@@ -1,15 +1,12 @@
-From: Roger Williams <raw@qux.com>
-Subject: Re: CVS
-Date: 19 Jan 2003 13:33:38 -0500
+From: Mark Knecht <markknecht@attbi.com>
+Subject: amixer question - numid=2
+Date: 19 Jan 2003 10:59:39 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m38yxh9egt.fsf@grouper.coelacanth.com>
-References: <200301171316.06597.pieter.palmers@student.kuleuven.ac.be>
-	<m3wul3r6wp.fsf@grouper.coelacanth.com>
-	<m3lm1jr5u0.fsf@grouper.coelacanth.com> <3E2AE4C6.9070500@iriXx.org>
+Message-ID: <1042973979.1448.43.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E2AE4C6.9070500@iriXx.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,28 +15,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: m@iriXx.org
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->>>>> m@iriXx writes:
+Hi,
+   On my HDSP 9652 system executing the command 
 
-  > do these require following the same instructions for compilation
-  > as ordinary CVS?
+amixer controls
 
-  >> http://www.tux.org/pub/sites/ftp.alsa-project.org/cvsexport/2003-01-14.tar.bz2
+yields a list that appears to be 166 items long, starting with numid=1
+and ending with numid=166. However, closer study shows numid=2 seems to
+be missing.
 
-Yes, the archives in cvsexport are checked-out development trees, so
-you'll want to run 'cvscompile' in each directory, just as if you'd
-checked them out with CVS yourself.
+Is this an issue with amixer or my card? What function might normally be
+associated with numid=2?
 
-(The archives in cvsroot are images of the CVS repository itself, and
-aren't what you want.)
+Thanks,
+Mark
 
--- 
-Roger Williams <raw@qux.com>
-Qux Tool & Die, Middleborough, Massachusetts
-// Omne tulit punctum qui misquit utile dulci //
+
+
 
 
 -------------------------------------------------------
