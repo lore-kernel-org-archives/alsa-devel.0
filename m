@@ -1,11 +1,10 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: meaning of EMU10K1_MIDI vs. EMU10K1_SYNTH
-Date: Fri, 25 Mar 2005 09:08:42 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503250907050.1791@pnote.perex-int.cz>
-References: <1111690690.8268.17.camel@mindpipe>
+From: Edson Pereira <ewp_jp@ybb.ne.jp>
+Subject: Burr Brown PCM290x USB CODEC
+Date: Fri, 25 Mar 2005 21:11:40 +0900
+Message-ID: <4243FFFC.9040907@ybb.ne.jp>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <1111690690.8268.17.camel@mindpipe>
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,33 +14,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 24 Mar 2005, Lee Revell wrote:
 
-> I noticed that EMU10K1_MIDI (and voice->use->midi) is never used.  The
-> wavetable synth uses EMU10K1_SYNTH / voice->use->synth.
-> 
-> Can I remove it?  I cannot see where you would want to make a
-> distinction.  AFAICT it's needless bloat.
+Greetings,
 
-Well, the names might be misleading, but the difference should be:
+I am in the process of implementing a small software defined radio 
+receiver using the PCM2903 codec and have a question for the 
+alsa-developers.
 
-1) voice allocated for MIDI (usually dynamic assignment)
-2) voice allocated for wavetable synth (usually static assigment - 
-   modplayers etc.)
+The ALSA USB-Audio interface is working very well. The audio quality of 
+the chip is quite good, but the chip has a bug! The audio stream of one 
+channel is delayed by one sample in respect to the other channel. This 
+is drastic for the mentioned application since the phase correlation 
+between channels is critical. I have contacted Burr Brown technical 
+support and they have acknowledged the problem. The error is in the FIFO 
+addressing hardware and is present in the ADC as well in the DAC (but in 
+reversed channels).
 
-I think, the later support is not implemented in emu10k1, but it is 
-implemented for example in trident (where the midi support is mising).
+The problem is quite easy to get around in the application, but this 
+prevents the hardware interface being used with other programs (testing 
+software for example). My question is: Where in the system software 
+chain could a work around be implemented? In the ALSA snd-usb-audio? Or 
+is there any other more appropriate place?
 
-						Jaroslav
+Thanks and best regards,
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+-- Edson
+
+ 
 
 
 -------------------------------------------------------
