@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000330]: Is Audigy 2 supported by ALSA?
-Date: Fri, 12 Nov 2004 12:26:07 +0100
-Message-ID: <01add9b9cf0f94aa4982d07abdb2a6c4@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000412]: Matrix does not show that Ensoniq 5880 uses ens1371 driver
+Date: Fri, 12 Nov 2004 12:26:24 +0100
+Message-ID: <f407d4b87a1500bd98506f24ffbded5f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12EF4280
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:26:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C77AE285
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:26:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,45 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=330> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=412> 
 ======================================================================
-Reported By:                digthemdeep
+Reported By:                oanjao
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   330
+Issue ID:                   412
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             06-10-2004 01:40 CEST
+Date Submitted:             07-29-2004 00:31 CEST
 Last Modified:              11-12-2004 12:26 CET
 ======================================================================
-Summary:                    Is Audigy 2 supported by ALSA?
+Summary:                    Matrix does not show that Ensoniq 5880 uses ens1371
+driver
 Description: 
-Audigy 2 is not listed in the soundcard matrix, however it is claimed by
-opensource.creative.com that ALSA supports these cards (almost all of
-them). (Also I find it hard to believe that Audigy 2 is not in the
-matrix... perhaps the matrix is just out of date?)
-
-I wonder if there might also be some Terratec (like Phase 88) products not
-listed which are, in fact, supported. Is E-Mu entirely unsupported? It's
-too bad, I've heard good things about E-Mu.
+Please add the Ensoniq 5880 chipset to the list.  It uses the snd-ens1371
+driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-13-04 08:12 
+ perex - 10-13-04 08:16 
 ----------------------------------------------------------------------
-Yes, but the support is limited (no 96kHz) added to matrix.
+Added also to Ensoniq table - 5880 is Creative value for newer versions of
+Ensoniq chips.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-04 01:40 digthemdeep    New Issue                                    
-06-10-04 02:21 digthemdeep    Issue Monitored: digthemdeep                    
-10-13-04 08:12 perex          Status                   new => resolved     
-10-13-04 08:12 perex          Resolution               open => fixed       
-10-13-04 08:12 perex          Assigned To               => perex           
-10-13-04 08:12 perex          Note Added: 0002111                          
+07-29-04 00:31 oanjao         New Issue                                    
+10-13-04 08:16 perex          Status                   new => resolved     
+10-13-04 08:16 perex          Resolution               open => fixed       
+10-13-04 08:16 perex          Assigned To               => perex           
+10-13-04 08:16 perex          Note Added: 0002112                          
 11-12-04 12:26 tiwai          Status                   resolved => closed  
 ======================================================================
 
