@@ -1,33 +1,130 @@
-From: Ingo Molnar <mingo@elte.hu>
-Subject: Re: [patch] Real-Time Preemption, -RT-2.6.10-rc1-mm3-V0.7.25-1
-Date: Mon, 15 Nov 2004 16:40:59 +0100
-Message-ID: <20041115154059.GA31143@elte.hu>
-References: <20041025104023.GA1960@elte.hu> <20041027001542.GA29295@elte.hu> <20041103105840.GA3992@elte.hu> <20041106155720.GA14950@elte.hu> <20041108091619.GA9897@elte.hu> <20041108165718.GA7741@elte.hu> <20041109160544.GA28242@elte.hu> <20041111144414.GA8881@elte.hu> <20041111215122.GA5885@elte.hu> <61930.195.245.190.94.1100529227.squirrel@195.245.190.94>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
+Date: Mon, 15 Nov 2004 15:41:38 +0100
+Message-ID: <c2e6b9c2a27e63db97e20f018c47d117@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S261615AbUKOOml@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <61930.195.245.190.94.1100529227.squirrel@195.245.190.94>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rui Nuno Capela <rncbc@rncbc.org>
-Cc: linux-kernel@vger.kernel.org, Lee Revell <rlrevell@joe-job.com>, mark_h_johnson@raytheon.com, "K.R. Foley" <kr@cybsft.com>, Bill Huey <bhuey@lnxw.com>, Adam Heath <doogie@debian.org>, Florian Schmidt <mista.tapas@gmx.net>, Thomas Gleixner <tglx@linutronix.de>, Michal Schmidt <xschmi00@stud.feec.vutbr.cz>, Fernando Pablo Lopez-Lezcano <nando@ccrma.stanford.edu>, Karsten Wiese <annabellesgarden@yahoo.de>, Gunther Persoons <gunther_persoons@spymac.com>, emann@mrv.com, Shane Shrybman <shrybman@aei.ca>, Amit Shah <amit.shah@codito.com>, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19BCD28E
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 15:41:39 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-* Rui Nuno Capela <rncbc@rncbc.org> wrote:
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
+======================================================================
+Reported By:                pancogi
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   650
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             11-15-2004 11:59 CET
+Last Modified:              11-15-2004 15:41 CET
+======================================================================
+Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
+Description: 
+hi
+my Sb Live do not work with emu10k1, lspci -v say:
 
->   2) Serial console (or netconsole, if that matters) aren't showing
-> anything relevant for debugging; SysRq-T is just silent, only printing
-> a "Show State" one liner. No traces, no dumps.
+0000:00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 08)
+        Subsystem: Creative Labs CT4760 SBLive! OEM version
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at d800 [size=32]
+        Capabilities: [dc] Power Management version 2
 
-next time around could you try SysRq-D first?
+lspci -n, say:
 
-> OK. Just some last resort questions: is there any plans (or recipe) on
-> merging the RT patch(es) against the 2.6.10(-rc1) vanilla kernel? Or,
-> at least for my laptop's sake, on top of this late and "well" behaved
-> -mm2 ?
+0000:00:0d.0 Class 0401: 1102:0002 (rev 08)
 
-there should be an -rc2-mm1 kernel out within the next day or two, at
-which point i'll merge. (-rc1-mm5 has some problems.)
+dmesg after modprobe snd-emu10k1,
 
-	Ingo
+PCI: Found IRQ 5 for device 00:0d.0
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1905: AC'97 0 does not
+respond - RESET
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1913: AC'97 0 access is not
+valid [0x0], removing mixer.
+
+dmesg after modprobe oss modules emu10k1, say:
+
+emu10k1: EMU10K1 rev 8 model 0x8028 found, IO at 0xd800-0xd81f, IRQ 5
+ac97_codec: AC97  codec, id: 0x0000:0x0000 (Unknown)
+
+but no sound output.
+with kernel 2.6.9, the same.
+
+thanks,
+giovanni.
+======================================================================
+
+----------------------------------------------------------------------
+ pancogi - 11-15-04 15:07 
+----------------------------------------------------------------------
+ok, source modified, compiled.
+
+now module snd-emu10k1 is loaded, and alsamixer show me some control.
+the pc is far from me, and now i can't hear sound, may be this evening.
+if you want report from /proc/asound, ask
+
+perhaps i can find a sister of this CT4760 working, and try if is a true
+hardware problem.
+
+> will recomend to swap soundcard.
+
+thanks, which one?
+
+anyhow, thanks a lot, and forgive my english.
+
+----------------------------------------------------------------------
+ pzad - 11-15-04 15:41 
+----------------------------------------------------------------------
+> thanks, which one?
+
+Working one. :-)
+
+This card looks damaged.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-15-04 11:59 pancogi        New Issue                                    
+11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
+11-15-04 12:20 pancogi        Note Added: 0002411                          
+11-15-04 12:47 pancogi        Issue Monitored: pancogi                     
+11-15-04 12:53 pzad           Note Added: 0002412                          
+11-15-04 13:30 pancogi        Note Added: 0002413                          
+11-15-04 13:43 pzad           Note Added: 0002414                          
+11-15-04 13:45 pzad           Note Edited: 0002414                         
+11-15-04 15:07 pancogi        Note Added: 0002415                          
+11-15-04 15:41 pzad           Note Added: 0002416                          
+======================================================================
+
+
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: InterSystems CACHE
+FREE OODBMS DOWNLOAD - A multidimensional database that combines
+robust object and relational technologies, making it a perfect match
+for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
