@@ -1,13 +1,15 @@
-From: Markus Plail <plail@web.de>
-Subject: Re: ANNOUNCE: ALSA driver for Compaq iPAQ
-Date: Thu, 28 Mar 2002 11:32:51 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-driver 0.9.0beta12 / make dep on x86
+Date: Thu, 28 Mar 2002 20:13:43 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87pu1pvv70.fsf@www.gitteundmarkus.de>
-References: <Pine.BSF.4.44.0203281110400.42547-100000@fest.stud.fee.vutbr.cz>
+Message-ID: <Pine.LNX.4.33.0203282013370.504-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0203272247440.16913-100000@pc24.sr.bham.ac.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.BSF.4.44.0203281110400.42547-100000@fest.stud.fee.vutbr.cz> (Kasparek
- Tomas's message of "Thu, 28 Mar 2002 11:14:20 +0100 (CET)")
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05605
+	for <alsa-devel@alsa-project.org>; Thu, 28 Mar 2002 20:13:48 +0100
+In-Reply-To: <Pine.LNX.4.44.0203272247440.16913-100000@pc24.sr.bham.ac.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,23 +18,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Mark Cooke <mpc@star.sr.bham.ac.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+On Wed, 27 Mar 2002, Mark Cooke wrote:
 
-* Kasparek Tomas writes:
-> Hi all,
+> Hi everyone,
+> 
+> Just to note that the buildrpm script / cvscompile is currently 
+> failing on x86 for the uda1341.c (ARM-specific) module.
+> 
+> gcc -E -M -DALSA_BUILD -D__KERNEL__ -DMODULE=1 
+> -I/var/BUILD/alsa-driver-0.9.0beta12/include 
+> -I/lib/modules/2.4.18-19pre4ac2c1/build/include -O2 
+> -mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall 
+> -Wstrict-prototypes -fomit-frame-pointer -pipe  uda1341.c > .depend
+> uda1341.c:32:25: linux/l3/l3.h: No such file or directory
+> make[2]: *** [fastdep] Error 1
+> 
+> This causes the rpm building to bomb, as any error bombs out of the 
+> bulding process during rpm generation.
+> 
+> Perhaps a framework is needed for fastdep to be taught about 
+> architectural exclusions ?
 
-> first, partly usable, version of ALSA driver for Compaq iPAQ with
-> Philips UDA1341TS sound chip is avaiable in ALSA CVS (alsa-driver/arm,
-> alsa-driver/i2c/l3)
+Fixed. Thanks.
 
-May it be that there is the l3.h file missing in CVS? Or that there is
-an unneeded include? At least I had to comment the 
-#include <linux/l3/l3.h> 
-out to make it compile.
+						Jaroslav
 
-Regards
-Markus
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
