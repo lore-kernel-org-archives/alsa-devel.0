@@ -1,15 +1,15 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: double speed (ADAT), and hw params ordering
-Date: Sat, 20 Jul 2002 08:54:18 +0200 (CEST)
+Date: Sat, 20 Jul 2002 08:57:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0207200851280.809-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.33.0207200854490.809-100000@pnote.perex-int.cz>
 References: <s5hlm88q9u1.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA07308
-	for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2002 08:54:32 +0200
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA07338
+	for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2002 08:58:08 +0200
 In-Reply-To: <s5hlm88q9u1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -41,7 +41,8 @@ On Fri, 19 Jul 2002, Takashi Iwai wrote:
 >  
 > i vote for this idea.
 
-Paul, what's wrong to offer all possible configurations? Could
+Paul, what's wrong to offer all possible configurations? Could you explain 
+the problems?
 
 > > if anyone objects to this model, please let me know. right now, its
 > > more or less impossible to get access to the higher rates.
@@ -57,20 +58,13 @@ Paul, what's wrong to offer all possible configurations? Could
 > agreed that it's good to have such one.
 > but how to implement this?
 > from the design of hw_constraint, i don't think it's so easy...
-> 
-> 
-> Takashi
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+
+I think that this implementation will create a big mess for the 
+application developers. Also, I'm not sure, if it's really needed, because 
+our refining code should already reduce the available configurations. 
+Applications should use *_near() functions in order of their priority. You 
+can't predict, if rate or count of channels or any other parameter is more 
+important for a specific application.
 
 						Jaroslav
 
@@ -79,6 +73,7 @@ Jaroslav Kysela <perex@suse.cz>
 Linux Kernel Sound Maintainer
 ALSA Project  http://www.alsa-project.org
 SuSE Linux    http://www.suse.com
+
 
 
 
