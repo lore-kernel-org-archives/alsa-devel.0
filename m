@@ -1,12 +1,15 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: External PCM plugin SDK
-Date: Wed, 09 Feb 2005 15:14:18 +0100
-Message-ID: <1107958458.13863.43.camel@pegasus>
-References: <s5hd5vau4c3.wl@alsa2.suse.de>
+From: matthieu castet <castet.matthieu@free.fr>
+Subject: Re: mpu401_pnp
+Date: Wed, 09 Feb 2005 15:17:20 +0100
+Message-ID: <420A1B70.2090709@free.fr>
+References: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hd5vau4c3.wl@alsa2.suse.de>
+Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19D3A260
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 15:17:27 +0100 (MET)
+In-Reply-To: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,40 +19,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi,
 
-> I now commited a patch to add the external PCM plugin SDK to
-> alsa-lib.  This allows you to create ALSA PCM plugin outside the
-> alsa-lib tree.  It's still a draft version, and currently only the I/O
-> plugin (e.g. for implementation of user-space driver) is provided.
-> The filter-type plugin SDK (e.g. for effects) and the control plugin
-> SDK will follow later.
-> 
-> No documentation yet.  Look at the code :)
-> 
-> Example I/O plugins are found in alsa-plugins tree.  So far, two
-> plugins, OSS and JACK plugins.  The former one is the plugin to
-> emulate ALSA API with the OSS driver.  The latter is almost identical
-> with the one in alsa-lib/src/pcm/ext.
-> 
-> I think this SDK can be used for better implementaion of BT-SCO and
-> FireWire.
+could you apply my patch in the cvs or if you don't like it, just 
+correct the bug ?
 
-I wrote a quick and dirty prototype using SBC over RFCOMM for now. It is
-working with aplay and the alsaplayer, but not with xmms or beep. Are
-there any known problem with these ALSA plugins?
 
-We also talked about making these IO plugins visible when ALSA is
-listing its hardware devices. Is this possible now?
+Thanks,
 
-Regards
-
-Marcel
-
+Matthieu
 
 
 
