@@ -1,15 +1,14 @@
-From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
-Subject: Re: Attn Soundcard matrix maintainer.
-Date: Tue, 5 Aug 2003 19:52:04 +0100
+From: Antti Boman <antti.boman@mindcom.fi>
+Subject: Re: anybody else OK with current CVS *and* SMP?
+Date: Tue, 05 Aug 2003 23:37:01 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308051952.04677.adrian@mcmen.demon.co.uk>
-References: <20030804160546.3004.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <3F30156D.9060508@mindcom.fi>
+References: <200308051417.h75EHwpr020319@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030804160546.3004.h007.c012.wm@mail.icqmail.com.criticalpath.net>
+In-Reply-To: <200308051417.h75EHwpr020319@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 05 August 2003 00:05, Eliot Blennerhassett wrote:
-> For AudioScience cards
+This seems like the problem I've always had with my single processor 
+with JACK and SCHED_FIFO, with 2.4.20 kernel. I haven't tried the 
+realtime setting for a while, though.
 
-[snip]
+Maybe there's some other thing causing these? Should we gather a bit 
+more in-depth information on our computers?
 
-Just noticed this matrix.
+-a
 
-Could you add (In green?) the "AICA Super Intelligent Sound Processor" to=
- the=20
-matrix - either under Sega (it is the Dreamcast's sound card) or Yamaha (=
-who=20
-actually manufactured the thing).
+Paul Davis wrote:
+> i am having a repeated problem with system lockups using current CVS
+> with JACK running SCHED_FIFO on an SMP system, with the Planet's
+> 2.4.21 kernel.
+> 
+> can anyone report that a similar configuration is working for them?
+> there is no way to diagnose the situation, because the kernel hangs
+> totally and completely, and its not possible to get the output from
+> either an oops or the magic-request key(s).
+> 
+> it seems to be less of a problem when JACK is running without
+> SCHED_FIFO. 
+> 
+> --p
 
-I wrote the OSS/Free driver for this thing for the Linux 2.4 kernels and =
-I am=20
-currently working on an ALSA driver for 2.6, but no code to release just =
-yet=20
-- hopefully that will be rectified shortly.
-
-Adrian
 
 
 -------------------------------------------------------
