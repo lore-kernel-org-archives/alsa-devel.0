@@ -1,11 +1,11 @@
-From: Christoph Haderer <chris_web@gmx.at>
-Subject: [PATCH] aureon.c - adc mux, master vol
-Date: Sat, 03 Jul 2004 17:46:24 +0200
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000363]: USB webcam microphone recognized but not working
+Date: Sat, 3 Jul 2004 18:44:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40E6D4D0.6000206@gmx.at>
+Message-ID: <9bbeaa2bd9a7d3063993f5ded0acc676@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050505090305050507090701"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,82 +15,133 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------050505090305050507090701
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-The attached patch fixes a problem in adc_mux_put (without these
-changes, wrong values a written to the right input mux);
-it also reverts the changes of dac_vol_get and dac_vol_put which where
-introduced in revision 1.11, because in the current version changing the
-Master Volume control affects only DAC1 volume (IMHO WM_DAC_MASTER_ATTEN
-is the right location - not WM_DAC_ATTEN).
+The following bug has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0363
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                sehh
+Assigned To:                Clemens Ladisch
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     363
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.6-1.435.2.1
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-03-2004 18:44 CEST
+Last Modified:              07-03-2004 18:44 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    USB webcam microphone recognized but not work=
+ing
+Description:=20
+Logitech QuickCam 3000 Pro (USB)
 
-Regards,
-Christoph Haderer
+This USB webcam has an internal microphone which is
+properly recognized by the USB stack as well as
+ALSA which loads the snd-usb-audio driver properly.
+
+Unfortunately the microphone doesn't seem to work though
+and there is no way to access it. The AlsaMixer only
+shows the microphone of the onboard sound card and has
+the option to change from Mic1 to Mic2, which has no
+effect.
+
+No ALSA compatible application can find the new microphone.
+
+The following are some messages produced in /var/log/messages:
+
+Jul  3 00:20:15 system kernel: pwc Philips PCA645/646 + PCVC675/680/690 +
+PCVC730/740/750 webcam module version 8.12 loaded.
+Jul  3 00:20:15 system kernel: pwc Also supports the Askey VC010, various
+Logitech QuickCams, Samsung MPC-C10 and MPC-C30,
+Jul  3 00:20:16 system kernel: pwc the Creative WebCam 5, SOTEC Afina Eye
+and Visionite VCS-UC300 and VCS-UM100.
+Jul  3 00:20:16 system kernel: pwc Logitech QuickCam Pro 3000 USB webcam
+detected.
+Jul  3 00:20:16 system kernel: pwc Registered as /dev/video0.
+Jul  3 00:20:16 system kernel: usbcore: registered new driver Philips
+webcam
+Jul  3 00:20:16 system kernel: usbaudio: device 2 audiocontrol interface =
+1
+has 1 input and 0 output AudioStreaming interfaces
+Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting =
+0
+FORMAT_TYPE descriptor not found
+Jul  3 00:20:16 system kernel: usbaudio: valid input sample rate 44100
+Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
+1: format 0x00000010 sratelo 44100 sratehi 44100 attributes 0x00Jul  3
+00:20:16 system kernel: usbaudio: valid input sample rate 22050
+Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
+2: format 0x00000010 sratelo 22050 sratehi 22050 attributes 0x00Jul  3
+00:20:16 system kernel: usbaudio: valid input sample rate 11025
+Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
+3: format 0x00000010 sratelo 11025 sratehi 11025 attributes 0x00Jul  3
+00:20:16 system kernel: usbaudio: valid input sample rate 8000
+Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
+4: format 0x00000010 sratelo 8000 sratehi 8000 attributes 0x00
+Jul  3 00:20:16 system kernel: usbaudio: registered dsp 14,19
+Jul  3 00:20:16 system kernel: usbaudio: warning: found 1 of 0 logical
+channels.
+Jul  3 00:20:16 system kernel: usbaudio: assuming the channel found is th=
+e
+master channel (got a Philips camera?). Should be fine.
+Jul  3 00:20:16 system kernel: usbaudio: registered mixer 14,16
+Jul  3 00:20:16 system kernel: usbcore: registered new driver audio
+Jul  3 00:20:16 system kernel: drivers/usb/class/audio.c: v1.0.0:USB Audi=
+o
+Class driver
+Jul  3 00:20:16 system kernel: usbcore: registered new driver
+snd-usb-audio
+
+My /etc/modprobe.conf contains the following:
+alias snd-card-0 snd-via82xx
+alias snd-card-1 snd-usb-audio
+
+install snd-via82xx /sbin/modprobe --ignore-install snd-via82xx &&
+/usr/sbin/alsactl restore >/dev/null 2>&1 || :
+remove snd-via82xx { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-via82xx
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-03-04 18:44 sehh           New Bug                                    =
+ =20
+07-03-04 18:44 sehh           Distribution              =3D> Fedora Core =
+2  =20
+07-03-04 18:44 sehh           Kernel Version            =3D> 2.6.6-1.435.=
+2.1=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 
---------------050505090305050507090701
-Content-Type: text/plain;
- name="aureon.c-patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="aureon.c-patch"
-
---- aureon.c.old	2004-07-03 14:13:05.000000000 +0200
-+++ aureon.c	2004-07-03 17:18:40.000000000 +0200
-@@ -227,7 +227,10 @@
- 	unsigned short vol;
- 
- 	down(&ice->gpio_mutex);
--	idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
-+	if (kcontrol->private_value)
-+		idx = WM_DAC_MASTER_ATTEN;
-+	else
-+		idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
- 	vol = wm_get(ice, idx) & 0x7f;
- 	if (vol <= 0x1a)
- 		ucontrol->value.integer.value[0] = 0;
-@@ -245,7 +248,10 @@
- 	int change;
- 
- 	snd_ice1712_save_gpio_status(ice);
--	idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
-+	if (kcontrol->private_value)
-+		idx = WM_DAC_MASTER_ATTEN;
-+	else
-+		idx  = snd_ctl_get_ioffidx(kcontrol, &ucontrol->id) + WM_DAC_ATTEN;
- 	nvol = ucontrol->value.integer.value[0] + 0x1a;
- 	ovol = wm_get(ice, idx) & 0x7f;
- 	change = (ovol != nvol);
-@@ -374,8 +380,7 @@
- 
- 	down(&ice->gpio_mutex);
- 	val = wm_get(ice, WM_ADC_MUX);
--	ucontrol->value.integer.value[0] = val & 7;
--	ucontrol->value.integer.value[1] = (val >> 4) & 7;
-+	ucontrol->value.integer.value = val & 7;
- 	up(&ice->gpio_mutex);
- 	return 0;
- }
-@@ -389,8 +394,8 @@
- 	snd_ice1712_save_gpio_status(ice);
- 	oval = wm_get(ice, WM_ADC_MUX);
- 	nval = oval & ~0x77;
--	nval |= ucontrol->value.integer.value[0] & 7;
--	nval |= (ucontrol->value.integer.value[1] & 7) << 4;
-+	nval |= ucontrol->value.integer.value & 7;
-+	nval |= (ucontrol->value.integer.value & 7) << 4;
- 	change = (oval != nval);
- 	if (change)
- 		wm_put(ice, WM_ADC_MUX, nval);
-
---------------050505090305050507090701--
 
 
 -------------------------------------------------------
