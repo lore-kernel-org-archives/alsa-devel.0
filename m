@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Fri, 18 Feb 2005 21:13:18 +0100
-Message-ID: <7b957c29a807a8a282b25299c5673d78@bugtrack.alsa-project.org>
+Date: Fri, 18 Feb 2005 21:16:52 +0100
+Message-ID: <4e5ddb6be5aa235e888c033e42b62fa9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA28D242
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 21:13:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1380A242
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 21:16:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Ununtu
 Kernel Version:             2.6.11-rc3
 ======================================================================
 Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-18-2005 21:13 CET
+Last Modified:              02-18-2005 21:16 CET
 ======================================================================
 Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
@@ -79,20 +79,6 @@ Christophe
 ======================================================================
 
 ----------------------------------------------------------------------
- christophe - 02-18-05 20:50 
-----------------------------------------------------------------------
-But our symptoms seems very similar and your card has an ac'97 chipset
-too.
-Perhaps we have something in common:
-Are you using acpi or apm? I am using ACPI and the only time I tried APM
-the sound was fine after a suspend/resume cycle.
-I never tried to play something while doing a suspend/resume. I will try
-next time.
-Do you also somethimes have no sound at all after a resume? Is changing
-the PCM volume doing something (good or bad) after a resume? Do you have
-sometimes only one channel (left/right) working?
-
-----------------------------------------------------------------------
  alexs81 - 02-18-05 21:13 
 ----------------------------------------------------------------------
 > Are you using acpi or apm?
@@ -110,6 +96,15 @@ resume?
 NO way. it does not matter.
 > Do you have sometimes only one channel (left/right) working?
 No, I always get this effect after a resume.
+
+----------------------------------------------------------------------
+ christophe - 02-18-05 21:16 
+----------------------------------------------------------------------
+Looks like we have different problems.
+
+Did you try APM?
+
+I will try again to see if the problem disappears with APM.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -129,6 +124,7 @@ Date Modified  Username       Field                    Change
 02-18-05 20:35 alexs81        Note Added: 0003659                          
 02-18-05 20:50 christophe     Note Added: 0003660                          
 02-18-05 21:13 alexs81        Note Added: 0003661                          
+02-18-05 21:16 christophe     Note Added: 0003662                          
 ======================================================================
 
 
