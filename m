@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Tue, 25 Jan 2005 15:22:41 +0100
-Message-ID: <31b1e5422d8e094266705d475b5ca4d4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000844]: init.c forgotten newline in "choose_default_id"
+Date: Tue, 25 Jan 2005 15:27:55 +0100
+Message-ID: <9e48c42b289a3faa05488903b084f0dd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 649321AF
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:22:41 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC0B5263
+	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 15:27:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=844> 
 ======================================================================
-Reported By:                aquarichy
-Assigned To:                
+Reported By:                Henne
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   750
-Category:                   PCI - via82xx
+Issue ID:                   844
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             2.6.9+
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              01-25-2005 15:22 CET
+Date Submitted:             01-23-2005 21:25 CET
+Last Modified:              01-25-2005 15:27 CET
 ======================================================================
-Summary:                    no sound since 2.6.8.1
+Summary:                    init.c forgotten newline in "choose_default_id"
 Description: 
-Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
-compile  any newer stable kernel, there is no sound.  Compilation executes
-without complaints.  No Sound related options change.  I have even tried
-saying No to all the new options 2.6.9 and .10 provided in fear that one
-of those might be interfering, but nada.  
+The line:
+
+snd_printk(KERN_ERR "unable to choose default card id (%s)", id);
+
+should imho be replaced with:
+
+snd_printk(KERN_ERR "unable to choose default card id (%s)\n", id);
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- FrankS - 01-24-05 04:10 
+ tiwai - 01-25-05 15:27 
 ----------------------------------------------------------------------
-I have the same system, and am seeing the same problem on debian
-distributions.  If I add a file to my /etc/modprobe.d that sets the
-ac97_quirk=0 option, life is wonderful and there is sound.  I searched for
-other files setting this option and found none.  I downloaded and compiled
-other versions of the alsa drivers, for me  it broke between 1.0.5a and
-1.0.6rc1 (kernel 2.6.7 ). I did not verify the fix on .6rc1, but I did on
-.6a.  The fix worked on both MEPIS and Ubuntu beta releaes.  I have
-several test partitions setup, and would be more than willing to test any
-potential fixes and or run experiments.
-
-Frank
-
-----------------------------------------------------------------------
- tiwai - 01-25-05 15:22 
-----------------------------------------------------------------------
-Looks like the PCI sub ID confliction.  There is already the quirk entry
-for ECS L7VMM2.  The h/w vendor assigned the identical ID without deep
-consideration...
-
-Sorry, no way to avoid this as default as the system appears identical
-from the driver side.
+Thanks, fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:20 aquarichy      New Issue                                    
-12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
-12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
-12-29-04 08:23 aquarichy      Note Added: 0002993                          
-12-29-04 14:12 tiwai          Note Added: 0002996                          
-12-29-04 19:02 aquarichy      Note Added: 0003007                          
-12-29-04 19:17 aquarichy      Note Added: 0003008                          
-12-29-04 19:37 aquarichy      Note Added: 0003009                          
-12-29-04 20:39 aquarichy      Note Added: 0003011                          
-12-29-04 20:46 rlrevell       Note Added: 0003012                          
-12-30-04 00:07 aquarichy      Note Added: 0003015                          
-12-30-04 06:05 aquarichy      Note Edited: 0003015                         
-12-30-04 06:36 aquarichy      Note Added: 0003017                          
-12-30-04 13:02 tiwai          Note Added: 0003018                          
-12-31-04 06:30 aquarichy      Note Added: 0003024                          
-01-03-05 12:07 tiwai          Note Added: 0003053                          
-01-03-05 20:30 aquarichy      Note Added: 0003074                          
-01-24-05 04:10 FrankS         Note Added: 0003389                          
-01-25-05 15:22 tiwai          Note Added: 0003403                          
+01-23-05 21:25 Henne          New Issue                                    
+01-25-05 15:27 tiwai          Status                   new => resolved     
+01-25-05 15:27 tiwai          Resolution               open => fixed       
+01-25-05 15:27 tiwai          Assigned To               => tiwai           
+01-25-05 15:27 tiwai          Note Added: 0003405                          
 ======================================================================
 
 
