@@ -1,14 +1,12 @@
-From: <maniacdavid@cableone.net>
-Subject: Audigy2 Status/Help
-Date: Mon, 19 May 2003 13:00:16 -0700
+From: David Stuart <dave@sipquest.com>
+Subject: buffer questions
+Date: Mon, 19 May 2003 19:35:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2265a01c31e41$44429e70$2c00740a@cableone.net>
+Message-ID: <3EC96A3F.4080802@sipquest.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,54 +18,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- I have an Audigy2 Platinum eX. I have been trying to get the alsa card =
-to recognize it. I have been compiling the 2.5 kernel and 2.4 kernel =
-tons of times to see if anything would work. I still can not get it to =
-work. I can get the emu10k1-cvs drivers to work right away. I really =
-need ALSA because I'm going to be doing a lot of audio editing with jack =
-applications.
+Greetings All,
 
-I would like to know if there is ANY Audigy2 support in the drivers? I =
-go through the source code and there were references to "Audigy2".  Has =
-anyone got this working and with what version (reg., plat, plat. ex)?
+Having had some of my previous questions answered, I now understand that 
+a harware buffer is made up of periods, a period is made up of frames, 
+and a frame is made up of x number of samples, where x is the same as 
+the number of channels.
 
-I use 2.4.20-ac2 kernel. (although I have tried 2.5.69 and =
-2.4.20vanilla).  I think what I have kind of noticed is that it all =
-comes back to the ac97 stuff. I have been using the latest =
-alsa-driver-0.9.3a(and b) as well as tried the alsa-drive-0.9.2. The =
-kernel has compiled in sound and no oss. (I have tried sound as a module =
-as well).
-It seems like other people get it working but maybe that's because they =
-have just a regular audigy2 and not the eX.
+But, I have further (newbie-ish) types of questions which should be easy 
+for you guys to answer :)
 
-When I "modprobe snd-emu10k1" I get the following:
+o If I make a buffer in my program, does it have to match the size of 
+the hardware buffer? Is it good practice to do so?
+o The readi function takes an integer representing the number of frames 
+to read. Is it a good idea to read an entire period at once, all 
+periods, or just a few frames?
+o How does one determine the size to set for the period and the hw buffer?
+o One of the alsa tutorials 
+(http://www.equalarea.com/paul/alsa-audio.html) does a readi using "128" 
+as the number of frames, but the buffer is declared as "short buf[128]". 
+Does this work because there is only 1 channel?
 
-/lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: init_module: =
-No such device
-Hint: insmod errors can be caused by incorrect module parameters, =
-including invalid IO or IRQ parameters.
-You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod =
-/lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o failed
-/lib/modules/2.4.20/kernel/sound/pci/emu10k1/snd-emu10k1.o: insmod =
-snd-emu10k1 failed
+Dave
 
-This is from /var/log/everything/current (dmesg):
-
-[kernel] EMU10K1/Audigy soundcard not found or device busy
-[kernel] ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2046: AC'97 0:0 =
-does not respond - RESET
-[kernel] EMU10K1/Audigy soundcard not found or device busy
-[kernel] devfs_mk_dir(snd): using old entry in dir: c1c175c0 ""
-[kernel] devfs_register(snd/controlC0): could not append to parent, err: =
--17
-[kernel] devfs_register(snd/timer): could not append to parent, err: -17
-[kernel] ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2046: AC'97 0:0 =
-does not respond - RESET
-[kernel] EMU10K1/Audigy soundcard not found or device busy
-
-David
-maniacdavid@cableone.net
 
 
 -------------------------------------------------------
