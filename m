@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: MTP/AV / Sequencer MIDI problem... design issue?
-Date: Sat, 11 Jan 2003 15:46:15 +0100 (CET)
+From: Mark Knecht <markknecht@attbi.com>
+Subject: HDSP 9652 MIDI - A timing disaster?
+Date: 11 Jan 2003 07:49:16 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0301111543330.613-100000@pnote.perex-int.cz>
-References: <20030110113711.06e8ee2d.rpav@nwlink.com>
+Message-ID: <1042300157.1986.15.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030110113711.06e8ee2d.rpav@nwlink.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +15,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ryan Pavlik <rpav@nwlink.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Alsa-List <linux-audio-user@music.columbia.edu>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 10 Jan 2003, Ryan Pavlik wrote:
+Hi,
+   I asked about this two weeks ago but got no responses. I'm hoping
+this time I hear something back from other owners of the same hardware.
 
-> Basically, the problem is this.  The MTP/AV protocol takes messages
-> like this:
-> 
->    Dn B1 ... Bn
-> 
-> Where Dn is the device number, and B1..Bn are the midi message bytes.
-> This, at least, is what I gather from talking to Michael Mayers, the
-> original driver developer.
-> 
-> You may see the problem now.  When multiple threads talk to the device
-> at once, you have a problem:
-> 
-> A:  Dn B1 ,, ,, B2 ...
-> B:        Dn B1 ,, ...
-> 
-> The userland solution, when writing raw midi, is to just put a mutex
-> on the device and never write an incomplete message.
+   I recently purchased an RME HDSP 9652 card. The card is working fine
+for audio, but the MIDI interface is a timing disaster. The interface
+works, but won't keep time. A 2 minute song is Rosegarden takes abut
+2:45 to play every time. You can hear how the HDSP isn't delivering
+closely spaced MIDI events together, but is sort of smearing them out.
 
-ALSA driver should handle this correctly (at least current CVS code).
-The write sequence is locked.
+   My machine is set up using the PlanetCCRMA system. According to
+Synaptic my Alsa driver is from CVS:20021216. Jack is 0.44. This machine
+works just fine with the MidiMan 2x2 interface. No timing problems at
+all.
 
-						Jaroslav
+   Has anyone else purchased this card? Used the MIDI interface on this
+card? Gotten better results with this card?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+   Can anyone suggest how I could go about fixing this myself? I'm not a
+programmer, so really hacking the code is doubtful, but this driver is
+acting like there is just a basic mistake somewhere. Possibly I could
+find it if I knew where to look.
+
+   I hope someone will respond to this email so we can get something
+going to get this fixed. I really need this interface to operate soon.
+
+Thanks in advance,
+Mark
+
+   
+
+
 
 
 
