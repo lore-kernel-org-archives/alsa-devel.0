@@ -1,15 +1,15 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: cs46xx experimental DSP drivers
-Date: Tue, 24 Sep 2002 19:03:43 -0700
+From: Shaju Abraham <shaju@multitech.co.in>
+Subject: exactly when is interrupt raised?
+Date: Wed, 25 Sep 2002 10:41:25 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020925020343.GC4779@porky>
-References: <3D8F7F59.6030105@prism.gatech.edu> <3D90A8D8.7070103@cucumelo.org> <3D90B54F.20402@prism.gatech.edu> <3D90D641.7050200@cucumelo.org> <3D90FEF4.2040309@prism.gatech.edu> <20020925010013.GC990@porky> <3D911550.1000309@prism.gatech.edu>
+Message-ID: <3D91457D.D42CCBBD@multitech.co.in>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3D911550.1000309@prism.gatech.edu>; from gte733z@prism.gatech.edu on Tue, Sep 24, 2002 at 18:45:52 -0700
+Received: from mtsslvpngway ([202.54.39.98])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id HAA21698
+	for <alsa-devel@alsa-project.org>; Wed, 25 Sep 2002 07:12:55 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,25 +18,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Weijia Yang <gte733z@prism.gatech.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.09.24 18:45 Weijia Yang wrote:
-> Thanks for the tip--everything compiles fine now.  Now, how exactly do I 
-> go about testing these EGPIO settings? I see several EGPIO options in 
-> alsamixer--do I just adjust these and find something that works? Thanks
+Hi all,
+        We are working with a cm8738 which is built into the
+motherboard. We could not find the data sheets for the chipset. If
+someone could direct us to the data sheets of cm8738 it will be great
+else one doubt that we have about the card is -
 
-    I suppose so. I just leave an MP3 playing in XMMS, and restart it after
-making a change (though this isn't required for all changes; I'm just
-cautious).
-    I _think_ you modify each pin using the "EGPIO On/Off" to turn each pin
-on and off, and select the different pins using "EGPIO select".
-    When I have more time I will try to learn more about this, and may be
-able to help more.
+when exactly does the card raise the interrupt in playback mode. Is it
+after physically playing out and thus finishing the period_size number
+of frames or is it after the period_size number of frames are copied
+into the hw buffers(?) of the card?
 
--- Peter Heatwole
-"Murphy was just a well known pessimist."
+Exactly at what point does the cm8738 card raise an interrupt?
+
+--Shaju Abraham
 
 
 
