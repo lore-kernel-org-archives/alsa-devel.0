@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Can't set 88.2/96kHz samplerate with Hammerfall
-Date: Fri, 05 Dec 2003 09:30:15 -0500
+From: Mark Knecht <markknecht@comcast.net>
+Subject: Re: aoss failures under Alsa-1.0.0rc1
+Date: Fri, 05 Dec 2003 07:05:07 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312051430.hB5EUFfj025740@oud.linuxaudiosystems.com>
-References: <XFMail.20031205145725.pochini@shiny.it>
+Message-ID: <1070636690.1793.13.camel@Wizard.knechthome.com>
+References: <Pine.HPX.4.33n.0312051406500.21103-100000@studcom.urz.uni-halle.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 05 Dec 2003 14:57:25 +0100."
-             <XFMail.20031205145725.pochini@shiny.it>
+In-Reply-To: <Pine.HPX.4.33n.0312051406500.21103-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,47 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Arve Knudsen <aknuds-1@broadpark.no>, alsa-devel@lists.sourceforge.net, Mark Knecht <mknecht@controlnet.com>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->
->> Actually, I'm not completely opposed to the idea. But I am totally
->> clueless when it comes to writing device drivers, and would have no
->> idea where to start.
->
->Start here: http://www.alsa-project.org/documentation.php3#Driver
->
->You don't have to start writing the driver from scratch. You only
->have to fix the current driver so you can also select 96KHz from
->the PCM interface. The API is not difficult to learn.
+On Fri, 2003-12-05 at 05:10, Clemens Ladisch wrote:
 
-there's almost no API work to do. the problem is really simple and
-already solved in a closely related driver.
+> > I don't know if this is an Alsa problem, a driver problem, or just
+> > something that will never work because of my card's capabilities?
+> 
+> An aoss problem, I think.  Are you using the latest CVS version?
+> (You can update this single package independantly of the other ALSA
+> packages.)
+> 
 
-when you change between an SS (44.1/48) and DS rate (88.2/96), it
-changes the channel count. this would be a bad thing if the PCM device
-is open, because it alters all the addresses of the channel buffers
-etc. etc. so the driver prevents you from doing this if the PCM device
-is open. this creates a paradox, because you've already got the device
-open.
+I am using 1.0.0.rc1 on Gentoo with a 2.4.20-r9 kernel. I got the same
+behavior on 0.9.8 and reported it but never got a response.
 
-the hdsp driver takes a different approach to this, even though it
-faces an identical problem. its a better design, one based on our
-experience with the digi9652 driver and its shortcomings. i'd love to
-go in and fix the digi9652, but short of some compelling reason for me
-to do so, with the work on ardour+jack at the level it is right now, i
-just don't have time.
+Thanks,
+Mark
 
->> Do you know if RME were forthcoming with specs?
->
->I asked for infos one year ago, but they just said no.
-
-they don't want to get involved with lots of people being sent
-specs. the driver itself is the best source of documentation - its
-more accurate than the information they sent me :)
-
---p
 
 
 -------------------------------------------------------
