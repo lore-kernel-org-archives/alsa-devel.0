@@ -1,13 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Audigy 2 NX USB
-Date: Thu, 13 Jan 2005 18:46:23 +0000
-Message-ID: <41E6C1FF.7010404@superbug.co.uk>
+Date: Thu, 13 Jan 2005 15:00:59 -0500
+Message-ID: <1105646459.3457.14.camel@krustophenia.net>
 References: <d27697d605011308157a93b066@mail.gmail.com>
+	 <41E6C1FF.7010404@superbug.co.uk>
+	 <d27697d60501131104456027fa@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <d27697d605011308157a93b066@mail.gmail.com>
+In-Reply-To: <d27697d60501131104456027fa@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,20 +23,25 @@ To: Vlad - Andrei Lazar <clusty1@gmail.com>
 Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Vlad - Andrei Lazar wrote:
-> Hello,
-> 
-> Before I asked about an Audicy ZS PCMCIA and sadlly figured out that
-> it has no (and will never have) support for linux.
-> 
-> Is there or will there be any support for the Audigy 2 NX USB soundcard?
-> If not, what is the latest SB card that is supported.
-> 
-> Best,
-> Vlad
+On Thu, 2005-01-13 at 20:04 +0100, Vlad - Andrei Lazar wrote:
+> I just bought the Audigy 2 NX USB because I thought there ain;t gonna
+> be any support. Now I see that my new soundcard sounds really like
+> shit (tons of glitches and some funny distorsions). Please guys come
+> up with some driver. I would do it myself if I would know how to make
+> it :-D.
 > 
 
-There might be Audigy ZS PCMCIA support if someone donates a card to me.
+Please don't complain to the ALSA developers, complain to Creative.
+Their newer stuff is not well supported because they won't release any
+docs.
+
+They have been helpful in the past, years ago the emu10k1 was one of the
+very first cards to be well supported in Linux (it's still the only
+supported hardware wavetable synth AFAIK) because Creative wrote and
+released a driver.  Maybe they could be convinced to do it again if
+enough users complain.
+
+Lee
 
 
 
