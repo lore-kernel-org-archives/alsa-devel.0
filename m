@@ -1,14 +1,16 @@
-From: Ove Kaaven <ovek@transgaming.com>
-Subject: Re: PCM hw mixing with volume
-Date: Mon, 08 Mar 2004 22:29:08 +0100
+From: Ann Patterson <annp322@sbcglobal.net>
+Subject: Re: M-Audio Revolution and MythTV
+Date: Mon, 08 Mar 2004 20:58:27 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078781348.18057.85.camel@renegade>
-References: <200403081620.i28GKH2M004996@dhin.linuxaudiosystems.com>
+Message-ID: <1078808306.5620.17.camel@localhost.localdomain>
+References: <1078107493.5239.19.camel@localhost.localdomain>
+	 <Pine.LNX.4.58.0403010917310.1870@pnote.perex-int.cz>
+	 <1078285146.5239.59.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403081620.i28GKH2M004996@dhin.linuxaudiosystems.com>
+In-Reply-To: <1078285146.5239.59.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,51 +19,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-man, 08.03.2004 kl. 17.20 skrev Paul Davis:
-> The kinds of features you seem to expect from hardware didn't exist in
-> most devices 2 years ago. Its likely that features currently
-> considered "experimental" in hardware right now (matrix mixing springs
-> to mind) will become more common 2 years from now.
+On Tue, 2004-03-02 at 19:39, Ann Patterson wrote:
+> On Mon, 2004-03-01 at 00:17, Jaroslav Kysela wrote:
+> > On Sun, 29 Feb 2004, Ann Patterson wrote:
+> > 
+> > > I installed a M-Audio Revolution 7.1 (snd-ice1724) in my mythtv box. I
+> > > had mythtv working fine with the machine's onboard sound (snd-trident)
+> > > using OSS emulation. The revo works correctly for things like xine,
+> > > mplayer, aplay (of course), play, etc. In mythtv, however, I get no
+> > > sound. 
+> > > 
+> > > I dug into the mythtv code, and found that it is doing a call to
+> > > ioctl(audiofd, SNDCTL_DSP_GETOSPACE, &info) and using the info.bytes
+> > > value that is returned to determine whether or not to write to the card.
+> > > The first call to SNDCTL_DSP_GETOSPACE appears to return a reasonable
+> > > number, but from that point, the numbers returned are all over the
+> > > place, and are often negative. So, mythtv, of course, won't write to the
+> > > card. I find that if I comment out the code that checks the values
+> > > returned from GETOSPACE, I get sound, but it is out of sync with the
+> > > video (sound slightly behind video).
+> > > 
+> > 
+> > Can you write a nice small test code which shows this problem? You may 
+> > modify code in alsa-oss/test/osstest.c .
+> > 
+> > 						Jaroslav
+<snip>
+> 
+> Let me know if you need anything else, or if I'm doing something wrong.
+> 
+> Ann P.
+> 
 
-Sounds interesting.
+I have this sorted out. According to the OSS docs, the values returned
+by SNDCTL_DSP_GETOSPACE are only defined if the application is writing
+full fragments. Mythtv was writing partial fragments, then checking the
+value returned from GETOSPACE. For pretty much every other card, this
+works fine. For the M-Audio card, bad things happen. When I changed
+mythtv to write full fragments, the problem went away.
 
-> Does your manager think it wise to be writing software that is so tied
-> into a particular model of what audio interfaces can do that it will
-> be obsolete by the time processors run about 4 times as fast as they
-> do now?
-
-To the extent your assumptions are true: Yes. It's even pretty nearly a
-part of the job description.
-
-> People wrote game engines that did all this "multistream+backfill"
-> stuff years before any cards provided hardware mixing, and they did
-> most of it in software on CPU's that were 10-40 times slower than
-> todays leading edge game-friendly processors. You are going to burn a
-> lot of time trying to find common ways to access the slightly
-> different functionality provided by *some* audio interfaces that
-> pertains to multistreaming, and then find that you've still left a lot
-> of users in the dark. The number of cycles you will lose by doing this
-> in software rather than trying to abstract the h/w capability will
-> probably be available to your users for no extra cost by the end of
-> your work.
-
-And by that time, games will be even more demanding than before, and
-still want to use those cycles for itself rather than software sound
-processing, so just sitting idle waiting for the ultimate
-infinite-megahertz cpu, that can do everything in no time, gains nobody
-anything... at least our business won't.
-
-Nobody is asking you to like that, we don't even ask people to like us
-or our business (generally the most we ask is to dislike it for the
-right reasons), but working on more or less suboptimal designs is part
-of the job, and no amount of argumentation is going to change that. Yes,
-we try to avoid bad designs whenever we can, but that's often not
-possible.
-
+Ann P.
 
 
 
