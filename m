@@ -1,12 +1,13 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: vmalloc_to_page and building alsa 0.9.2 on kernel 2.4.18
-Date: Tue, 22 Apr 2003 16:10:31 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: rme9652: possible deadlock
+Date: Tue, 22 Apr 2003 16:16:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030422141031.GA9845@fliwatut.scifi>
+Message-ID: <Pine.LNX.4.44.0304221613310.1351-100000@pnote.perex-int.cz>
+References: <200304141847.h3EIl2T0014979@sith.maoz.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <200304141847.h3EIl2T0014979@sith.maoz.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,64 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: 190052@bugs.debian.org
+To: Jeremy Hall <jhall@maoz.com>
+Cc: "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
+On Mon, 14 Apr 2003, Jeremy Hall wrote:
 
-I'm struggling with building alsa-0.9.2 on my trusted old kernel
-2.4.18. Here's some info, cc'ed to the Debian-ALSA team. Regardless of
-what I do I always get unresolved symbols for snd-page-alloc:
+> Hi,
+> 
+> Consider the following:
+> 
+> Two RME9652's are running together and on different interrupts.
+> 
+> The master, in interrupt context, acquires its runtime->lock and begins 
+> snd_pcm_update_hw_ptr_interrupt()
+> 
+> At the same time, the second card, the slave, is behind, still in play 
+> mode, and wants to XRUN.  To do that, it must stop and restart all the 
+> substreams connected to it.  To do that, it must acquire the runtime lock 
+> of each, but the capture substream is locked in another interrupt.
 
-# depmod -ae
-depmod: *** Unresolved symbols in /lib/modules/2.4.18/alsa/snd-page-alloc.o
-depmod:         vmalloc_to_page
+Yes, there is possible deadlock. Fortunately, we can simply disable 
+interrupts for local CPU for critical area (spin_lock -> 
+spin_lock_irqsave). Fixed in CVS and thank you for the notice.
 
+						Jaroslav
 
-This is a warning I get for this while compiling the modules with
-gcc-3.2.3: 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-sgbuf.c: In function `store_page_tables':
-sgbuf.c:70: warning: implicit declaration of function `vmalloc_to_page'
-sgbuf.c:70: warning: assignment makes pointer from integer without a cast
-
-I'm using the sources from the Debian packages, but as I read about a
-bug in the Makefiles, for which Clemens submitted a patch, I also
-tried building with the (a)core Makefiles from CVS, but without
-success.
-
-Then I searched the web, what this "vmalloc_to_page" is, and I found,
-that it should be defined in the Kernel-sources. But a "grep -rl
-vmalloc_to_page /usr/src/linux/" returns no hits! So 2.4.18 doesn't
-seem to have this function.
-
-This also is, what the configure script detects. From "config.log":
-
-configure:3735: checking for vmalloc_to_page
-configure:3761: gcc -c -g -O2 -I/usr/src/linux/include  conftest.c >&5
-configure: In function `main':
-configure:3753: `vmalloc_to_page' undeclared (first use in this function)
-configure:3753: (Each undeclared identifier is reported only once
-configure:3753: for each function it appears in.)
-
-
-Now alsa-driver/acore/sgbuf.c checks for a version number, before
-using vmalloc_to_page, for example like this:
-
-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
-                page = vmalloc_to_page(vmaddr + (i << PAGE_SHIFT));
-
-
-I don't know if that matters, though, it just raised my interest:
-Could this be a wrong check? 
-
-And more importantly to me: How can I get alsa-0.9.2 to work on
-2.4.18?
-
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
