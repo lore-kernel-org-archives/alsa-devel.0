@@ -1,14 +1,11 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000391]: Built-in sound card not seen.
-Date: Sat, 1 Jan 2005 19:51:09 +0100
-Message-ID: <86165a8136b54529ea4b0f37974731cb@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Date: Sat, 1 Jan 2005 20:35:26 +0100
+Message-ID: <20050101193526.94B44350@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 08F7934F
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 19:51:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94B44350
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 20:35:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,74 +18,78 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
+Message-ID: <99045b84ed8c2c96e22b159b8dffff2c@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=391> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
 ======================================================================
-Reported By:                PhilTR
+Reported By:                hodgesw
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   391
-Category:                   OTHERS
+Issue ID:                   773
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.4.20-31.9
+Distribution:               1.08rc1
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             07-16-2004 00:21 CEST
-Last Modified:              01-01-2005 19:51 CET
+Date Submitted:             01-01-2005 01:21 CET
+Last Modified:              01-01-2005 20:35 CET
 ======================================================================
-Summary:                    Built-in sound card not seen.
+Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
+(12/30/2004)
+Audigy2 Value - SB0400 card
+Audigy2 Value- AUX-In and LINE-IN no sound
 Description: 
-I can't say that this is really a bug although its got me bugged. I
-installed a new mother board (GA-8IPE 1000 Pro) which has a built-in
-RealTek sound card:
-02:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139
-C+ (rev 10)
-        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        I/O ports at 9000 [size=256]
-        Memory at fb004000 (32-bit, non-prefetchable)       [size=256]
-        Capabilities: [50] Power Management version 2
-
-Linux dutifully loaded w/o incident and after loggin in I received the
-following error message: 'Couldn't open mixer device /dev/sound/mixer" 
-
-I've been receiving help at <a
-href="http://www.linuxquestions.org/questions/showthread.php?s=&threadid=203196&perpage=15&pagenumber=1">LinuxQuestions.org<a/>
-but, to get to the point, I'm wondering if anyone here has a fix? I've
-downloaded "alsa-xxxx-1.0.5" (firmware is: 1.0.4) Set-up proceeded w/o
-incident. Running "alsaconf" got me: "No supported PnP or PCI card dound"
-and "No legacy drivers found." 
-
-Your kind patience is appreciated. philtr (rabne@pipeline.com)
+Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
+Audigy2 Value - SB0400 card
+After trying many modprobe.preload/modprobe.conf alternatives I
+manually loaded driver  using  "modprobe -v snd-emu10k1"
+with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
+After setting alsamixer volumes
+"speakertest" works; "aplay" produces good sound; mic produces good
+sound;
+"line in" does not work; "auxin" does nor work.
+kde configure plays sound.
+xmms cannot find sound card.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-30-04 17:09 
+ rlrevell - 01-01-05 18:44 
 ----------------------------------------------------------------------
-Make sure that you configured no OSS modules beforehand.
+Are you *sure* you pushed F4 in alsamixer and set all of the capture
+controls to maximum?
 
 ----------------------------------------------------------------------
- PhilTR - 01-01-05 19:51 
+ pzad - 01-01-05 20:35 
 ----------------------------------------------------------------------
-Problem fixed with new sound card that was not plug-n-pray.
+Set "Analog Mix" slider - best set it to 100 %
+You can control volumes by "Line In" and "Aux" slider - make sure, they
+are unmuted.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-04 00:21 PhilTR         New Issue                                    
-07-16-04 00:21 PhilTR         Kernel Version            => 2.4.20-31.9     
-07-16-04 11:55 tiwai          Note Added: 0001440                          
-07-24-04 21:00 PhilTR         Note Added: 0001472                          
-07-30-04 17:09 tiwai          Note Added: 0001495                          
-01-01-05 19:51 PhilTR         Note Added: 0003034                          
+01-01-05 01:21 hodgesw        New Issue                                    
+01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
+01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
+01-01-05 02:27 rlrevell       Note Added: 0003029                          
+01-01-05 16:13 hodgesw        Note Added: 0003032                          
+01-01-05 18:44 rlrevell       Note Added: 0003033                          
+01-01-05 20:35 pzad           Note Added: 0003035                          
 ======================================================================
 
 
