@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000028]: ALSA OSS Sequencer is broken for recording from external MIDI devices
-Date: Fri, 27 Aug 2004 15:26:46 +0200 (CEST)
+Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
+Date: Fri, 27 Aug 2004 15:41:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827132646.2B9012C008@server.perex-int.cz>
+Message-ID: <20040827134128.67F282C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DA991F5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 15:26:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B50071F5
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 15:41:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,62 +20,104 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been ASSIGNED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000028
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
 ======================================================================
-Reported By:                Will
-Assigned To:                Clemens Ladisch
+Reported By:                Cyrille
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     28
-Category:                   CORE - sequencer
+Bug ID:                     432
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     assigned
-Distribution:               any
-Kernel Version:             2.4.x and 2.6.x
+Distribution:               Slackware 10
+Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             02-02-2004 13:51 CET
-Last Modified:              08-27-2004 15:26 CEST
+Date Submitted:             08-08-2004 19:02 CEST
+Last Modified:              08-27-2004 15:41 CEST
 ======================================================================
-Summary:                    ALSA OSS Sequencer is broken for recording from external MIDI devices
+Summary:                    Impossible de se connecter : NODIALTONE
 Description: 
-Recording using ALSA's /dev/sequencer OSS emulation is very broken. The
-times of note-on and note-off events are severely corrupted in MIDI
-recordings that contain a sequence of chords of _two or more_ different
-notes played at the same time.  However, interestingly, MIDI recordings
-which contain only a sequence of _single_ notes (only one note at a time),
-work ok, presumably because the bug was partially fixed in
-alsa-driver-0.9.1 released around 15th March 2003.
+I've got a TOSHIBA SATELITTE A30 222 laptop
+Sound card and modem are based upon ATI IXP
+But I'm not able to run modem in spite of the differents bug-report on
+ALSA web site
+(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+-
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+ -
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
+) and on Unixtrix.com (http://www.unixtrix.com/)
 
-Only MIDI recording from ALSA's /dev/sequencer OSS emulation is broken,
-e.g. when using an OSS sequencer client. However, MIDI recording from
-ALSA's /dev/snd/midi* using an ALSA sequencer client like the new
-Rosegarden4
-(http://heanet.dl.sourceforge.net/sourceforge/rosegarden/rosegarden-4-0.9.6.tar.bz2)
-works fine.
+Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+-, I'm always in the same situation : compilation is OK, modem driver OK
+but I'm not able to connect : NODIALTONE
 ======================================================================
 
 ----------------------------------------------------------------------
- Will - 02-02-2004 13:58 CET 
+ sashak - 08-25-2004 19:11 CEST 
 ----------------------------------------------------------------------
-For details of how to reproduce this bug please see the "Advanced View":
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=28
+There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
+bit in ATI_REG_CMD register (reg 003, bit 27 - look in
+'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
+to reported here - DMA works ok, line still be disconnected.
 
-I would like to stop using the old OSS sound driver but I cannot do that
-until ALSA's OSS emulation of /dev/sequencer is working correctly. Any
-help would be greatly appreciated.
+Uploaded patch solves the problem.
+
+----------------------------------------------------------------------
+ netstar - 08-26-2004 01:18 CEST 
+----------------------------------------------------------------------
+Additional problems with patch when applied to alsa CVS.  All conditions
+necessary are met.
+
+----------------------------------------------------------------------
+ netstar - 08-26-2004 18:54 CEST 
+----------------------------------------------------------------------
+Forget that, now working fine, congratulations.
+
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:46 CEST 
+----------------------------------------------------------------------
+Concretrely, does it mean the current version of alsa driver will not run
+with this hardware ?
+Thanx
+
+----------------------------------------------------------------------
+ Cyrille - 08-26-2004 21:47 CEST 
+----------------------------------------------------------------------
+Oups, I've got not see the last Netstar message...
+I try to test it...
+
+----------------------------------------------------------------------
+ Cyrille - 08-27-2004 15:41 CEST 
+----------------------------------------------------------------------
+Hello
+I have try Sashak's tip but the upload patch don't solve the problem.
+Always the same error message : NODIALTONE.
+(with alsa-driver/lib/... 1.0.6 ; test with slmodem-2.9.9 unless patch and
+with Ronis's patch).
+At your mind, is there really no hope to run it ?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-02-04 13:51 Will           New Bug                                      
-02-02-04 13:51 Will           File Added: ossall-bugs                      
-02-02-04 13:58 Will           Bugnote Added: 0000104                       
-08-27-04 15:26 Clemens LadischAssigned To               => Clemens Ladisch 
-08-27-04 15:26 Clemens LadischStatus                   new => assigned     
+08-08-04 19:02 Cyrille        New Bug                                      
+08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
+08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
+08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
+08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
+08-25-04 19:11 sashak         Bugnote Added: 0001624                       
+08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
+08-26-04 01:18 netstar        Bugnote Added: 0001630                       
+08-26-04 18:54 netstar        Bugnote Added: 0001634                       
+08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
+08-26-04 21:47 Cyrille        Bugnote Added: 0001637                       
+08-27-04 15:41 Cyrille        Bugnote Added: 0001644                       
 ======================================================================
 
 
