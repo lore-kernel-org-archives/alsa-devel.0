@@ -1,16 +1,18 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: usb audio sound quality
-Date: Fri, 08 Nov 2002 19:17:16 +0900
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: bugs in usb midi alsa code?
+Date: Fri, 8 Nov 2002 11:04:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DCB8F2C.4060402@boosthardware.com>
-References: <Pine.LNX.4.44.0211060959140.1126-100000@cmn37.stanford.edu> <3DC97C55.6000507@boosthardware.com> <3DCAE7C8.5030808@boosthardware.com> <3DCB8155.5000202@boosthardware.com>
+Message-ID: <20021108100427.GA502@tuba.home>
+References: <20021107231105.GC560@tuba.home> <Pine.HPX.4.33n.0211080859300.22689-100000@studcom.urz.uni-halle.de>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA05837
-	for <alsa-devel@alsa-project.org>; Fri, 8 Nov 2002 11:28:32 +0100
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id LAA05534
+	for <alsa-devel@alsa-project.org>; Fri, 8 Nov 2002 11:04:01 +0100
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0211080859300.22689-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,39 +21,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>, nando@ccrma.Stanford.EDU, ws@seh.de, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Patrick Shirkey wrote:
+On Fri, Nov 08, 2002 at 09:17:45AM +0100, Clemens Ladisch wrote:
+> Martin Langer wrote:
 > 
-> I guess that ssm (and possibly JACK) has some mem leaks. 
+> BTW: Does input through the sequencer work?
+
+yes it's working with the same keyboard using classical MIDI OUT jack, not
+USB. I have done this:
+
+tuba:~# aconnect 64:0 73:0    /* using classical midi jack works great */
+tuba:~# aconnect -x
+tuba:~# aconnect 80:0 73:0    /* using usb jack doesn't work: no sound */
+tuba:~# aconnect -x
+tuba:~# aconnect 64:0 73:0    /* using midi jack works great as before */
+
+
+> >
+> > tuba:/usr/local/src/alsa-cvs/alsa-lib/test# ./rawmidi -v -i hw:2,0,0
+> > Using:
+> > Input: device hw:2,0,0
+> > Output: NONE
+> > ALSA lib rawmidi_hw.c:247:(snd_rawmidi_hw_open) SNDRV_RAWMIDI_IOCTL_INFO failed: No such device
+> > snd_rawmidi_open hw:2,0,0 failed: -19
+> > Closing
+> 
+> This happens when you remove the bugfix I mentioned yesterday. Without the
+> fix, snd_rawmidi_hw_open always asks for the output stream information.
+> (If you do have that bugfix, you're using some older version of alsa-lib.)
 > 
 
-It seems I spoke too soon. I'm seeing memory leaks while using 
-alsaplayer or xmms. Alsaplayer connected via the alsa driver and xmms 
-through oss.
+ooops, my fault. now "rawmidi -v -i hw:2,0,0" runs fine.
 
-I'm going through about 1 MB/min :(
+> > Yes, "rawmidi -v -i hw:2,0" does his job without
+> > problems and the message is also different to Fernando's output.
+> 
+> In theory, that means when you use current CVS as it is (with the bugfix),
+> everything should work on your machine?
+> 
 
-Is this an alsa issue or should I be looking on the usb lists, going for 
-a new kernel...?
+Now using cvs checkout from today and it's impossible to produce an error
+message with rawmidi. so far it's ok.
 
+With rawmidi I can influence my counter at /proc/asound/card2/midi0 but not
+with keyboard playing (the bytes number is constant).
+
+martin
 
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
-
+"2b|!2b"
 
 
 -------------------------------------------------------
