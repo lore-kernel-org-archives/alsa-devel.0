@@ -1,8 +1,14 @@
-From: "Gerald C. Simmons" <simmons@darykon.cet.com>
-Subject: Problems with ESS1879 in SuSE Linux 7.3
-Date: Mon, 11 Mar 2002 22:22:22 -0800 (PST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: aplay crash in alsa-*-0.9.0beta12
+Date: Tue, 12 Mar 2002 08:06:41 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200203120622.g2C6MMH01237@dakkon.darykon.cet.com>
+Message-ID: <Pine.LNX.4.33.0203120806340.1021-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA10853
+	for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2002 08:07:07 +0100
+In-Reply-To: <16kZrk-1VaOzgC@fmrl04.sul.t-online.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -11,38 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Markus Schoder <markus_schoder@yahoo.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have an Hitachi Laptop with an ESS1879 sound system on board. I have installed
-SuSE Linux 7.3, but I'm having great difficulty in getting the sound support up
-and running. 
+On Tue, 12 Mar 2002, Markus Schoder wrote:
 
-My laptop's BIOS has settable parameters for the chipset representing IRQ, DMA's,
-and I/O addresses for the Sound Port (0x220) and the MPU-401 port (0x330.) Also,
-the ability to disable the FM Synthesizer.
+> Hi!
+> 
+> I experienced crashes with aplay from alsa-*-0.9.0beta12 when playing a
+> .wav file.  I tracked it down to the snd_pcm_plugin_write_areas
+> function in pcm/pcm_plugin.c of libasound.
+> 
+> The result variable in the loop can get larger than size.  It is
+> subtracted from size but since size is unsigned it will wrap
+> around to an insanely high value and either loop forever or
+> eventually crash.
+> 
+> The reason for this behaviour seems to be that slave_frames can get
+> bigger than frames due to some resampling being done in the function
+> snd_pcm_rate_expand in pcm/pcm_rate.c.
+> 
+> I patched the snd_pcm_plugin_write_areas function by not allowing more
+> than frames to be subtracted from size.  This fixed the crash but I am
+> now experiencing some garbage being played at the end of the .wav.
+> 
+> Any ideas?
 
-I used YaST2 and the Sound module to set it up. I select ESS 1879, and use the
-Advanced Setup options to set all the above parameters. The sound drivers load
-O.K., but when I press the Test Button (after turning the volume up,) a short
-burst of the music (300-500msec) comes out and starts repeating, and would never
-stop unless I press Test again and it muddles it's way to the end of the tune
-(sounding Badly.) 
+It's fixed in CVS.
 
-I let the sound module finish installing the sound system, but I don't get any
-sound out of any apps. under KDE.
+						Jaroslav
 
-I've tried different IRQ's different DMA channels; I even disabled the FM
-Synthesizer. Nothing seems to have an effect.
-
-Can you give me any clues as to what to try to get this to work?
-
-BTW, all this hardware works fine under ANY Microsoft Windows OS.
-
-Thanks in advance for any assistance you can offer!
-
-Gerry Simmons
-gerry@darykon.cet.com
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 _______________________________________________
