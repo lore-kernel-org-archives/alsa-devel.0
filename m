@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Tue, 21 Sep 2004 14:53:53 +0200 (CEST)
+Date: Tue, 21 Sep 2004 15:07:21 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040921125353.F3A2E48009@server.perex-int.cz>
+Message-ID: <20040921130721.CA7FD48008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56D11302
-	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 14:53:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5EB7F302
+	for <alsa-devel@alsa-project.org>; Tue, 21 Sep 2004 15:07:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Debian
 Kernel Version:             2.4.25
 ======================================================================
 Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-21-2004 14:53 CEST
+Last Modified:              09-21-2004 15:07 CEST
 ======================================================================
 Summary:                    ac3 passthrough not working
 Description: 
@@ -295,6 +295,32 @@ about what's going on)
 
 Martin
 
+----------------------------------------------------------------------
+ tiwai - 09-21-2004 15:07 CEST 
+----------------------------------------------------------------------
+Well, you seem confused indeed :)
+There is no volume control for IEC958, of course.  That's digital.
+
+Usually this kind of bug happens when the IEC958 status bits are not
+transferred
+correctly to the receiver even if the proper data signal is sent.  Some
+receivers
+check the signature bytes and detect the AC3 signals regardless of IEC958
+setting.  But some recevers don't.
+Another possibility is that the signal is modified via SRC, but this is
+not
+the case on ICH chip, which itself doesn't do SRC.
+
+Please check /proc/asound/card0/codec97#0/ac97#0-0+regs file during
+playing AC3
+via ac3dec -C.  Also, run iecset during it, too.  They will show whether
+the IEC958 status bits are set correctly by "iec958" (alias "spdif") PCM
+interface.
+
+Also, attach /proc/asound/card0/codec97#0/ac97#0-0 and /etc/asound.state,
+too,
+for more information.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -321,6 +347,7 @@ Date Modified  Username       Field                    Change
 09-21-04 14:44 m_stolle       Bugnote Added: 0001803                       
 09-21-04 14:47 m_stolle       Bugnote Added: 0001804                       
 09-21-04 14:53 m_stolle       Bugnote Added: 0001805                       
+09-21-04 15:07 tiwai          Bugnote Added: 0001806                       
 ======================================================================
 
 
