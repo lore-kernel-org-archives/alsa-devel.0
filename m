@@ -1,13 +1,15 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH] emu10k1: fix P16V breakage for	non	Audigy2
- cards
-Date: Fri, 18 Mar 2005 19:52:58 +0000
-Message-ID: <423B319A.8080306@superbug.co.uk>
-References: <1110950511.19984.9.camel@mindpipe>	 <1110950832.19984.13.camel@mindpipe>  <4238A516.7070802@superbug.co.uk> <1111074813.23171.11.camel@mindpipe>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: fix P16V breakage
+	for	non	Audigy2 cards
+Date: Fri, 18 Mar 2005 14:54:34 -0500
+Message-ID: <1111175674.11341.5.camel@mindpipe>
+References: <1110950511.19984.9.camel@mindpipe>
+	 <1110950832.19984.13.camel@mindpipe>  <4238A516.7070802@superbug.co.uk>
+	 <1111074813.23171.11.camel@mindpipe>  <423B319A.8080306@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1111074813.23171.11.camel@mindpipe>
+In-Reply-To: <423B319A.8080306@superbug.co.uk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,30 +19,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: James Courtier-Dutton <James@superbug.co.uk>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Wed, 2005-03-16 at 21:28 +0000, James Courtier-Dutton wrote:
+On Fri, 2005-03-18 at 19:52 +0000, James Courtier-Dutton wrote:
+> Lee Revell wrote:
+> > On Wed, 2005-03-16 at 21:28 +0000, James Courtier-Dutton wrote:
+> > 
+> >>Thank you for fixing the bug.
+> >>The "unhandled interrupt" should be commented out. It is used for 
+> >>reverse engineering certain features.
+> >>
+> > 
+> > 
+> > OK, updated patch attached.
+> > 
+> > Please apply to CVS ASAP, this is a bad bug!
+> > 
+> > Lee
+> > 
+> > 
 > 
->>Thank you for fixing the bug.
->>The "unhandled interrupt" should be commented out. It is used for 
->>reverse engineering certain features.
->>
-> 
-> 
-> OK, updated patch attached.
-> 
-> Please apply to CVS ASAP, this is a bad bug!
-> 
-> Lee
-> 
+> I think that this "bad bug" will also effect Audigy 1 cards.
+> Does that new if statement in the irq handler correctly exclude Audigy 1 
+> cards ?
 > 
 
-I think that this "bad bug" will also effect Audigy 1 cards.
-Does that new if statement in the irq handler correctly exclude Audigy 1 
-cards ?
+Yes it uses the same logic you used to detect the P16V, if (emu->audigy
+&& emu->revision==4) IIRC.
+
+Lee
+
 
 
 -------------------------------------------------------
