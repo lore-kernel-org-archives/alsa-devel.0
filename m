@@ -1,14 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_open hangs intermittently?
-Date: Mon, 11 Mar 2002 15:31:58 +0100 (CET)
+From: "Ulrich Zadow" <ulrich.zadow@ARTCOM.DE>
+Subject: AW: snd_pcm_open hangs intermittently?
+Date: Mon, 11 Mar 2002 15:38:49 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203111529011.550-100000@pnote.perex-int.cz>
+Message-ID: <C1E3CFAE25BBCB45AAB06733BDC048DF13FA93@tempo.INTERN.ARTCOM.DE>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA24788
-	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2002 15:32:20 +0100
-In-Reply-To: <C1E3CFAE25BBCB45AAB06733BDC048DF18BBCC@tempo.INTERN.ARTCOM.DE>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Received: from tempo.artcom.de ([192.76.129.23])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA24866
+	for <alsa-devel@alsa-project.org>; Mon, 11 Mar 2002 15:38:54 +0100
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +19,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ulrich Zadow <ulrich.zadow@ARTCOM.DE>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 11 Mar 2002, Ulrich Zadow wrote:
+> > The output of this piece of code is just "Opening sound=20
+> device...". We're pretty sure that we're closing the device=20
+> correctly before this happens.
+> >=20
+> > Any ideas?
+>=20
+> It looks like that another task uses given device (perhaps=20
+> some daemon=20
+> like arts).
 
-> Hi,
-> 
-> snd_pcm_open() hangs on our machines about 1/10 of the time (ALSA 0.9.12, RME and VIA686 cards). Our code looks about like this:
-> 
->   snd_pcm_t * myDevice;
->   cerr << "Opening sound device...";
->   err = snd_pcm_open (&myDevice, "plughw:0,0", SND_PCM_PLAYBACK, 0);
->   if (err < 0) {
->     cerr << "failed." << endl;
->   } else {
->     cerr << "ok." << endl;
->   }
-> 
-> The output of this piece of code is just "Opening sound device...". We're pretty sure that we're closing the device correctly before this happens.
-> 
-> Any ideas?
+Is there a way to
+  a) find out who's using it? and/or
+  b) tell snd_pcm_open() to return with an error in this case?
 
-It looks like that another task uses given device (perhaps some daemon 
-like arts).
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
-
+  Uli
 
 _______________________________________________
 Alsa-devel mailing list
