@@ -1,11 +1,15 @@
-From: dzln11/Bang_&_Olufsen/DK <dzln11/Bang_&_Olufsen/DK@bang-olufsen.dk>
-Subject: Report to Recipient(s)
-Date: Fri, 29 Oct 2004 12:48:46 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000616]: codec read/write timeout is reported on module load, and card is not detected
+Date: Fri, 29 Oct 2004 17:09:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <OFD18EA410.E6751D7E-ONC1256F3C.003B65C3@bang-olufsen.dk>
+Message-ID: <4a4ec11c31bd4f54449a25f3039e3b38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17F4326A
+	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 17:09:47 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,25 +18,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=616> 
+======================================================================
+Reported By:                jcpetruzza
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   616
+Category:                   PCI - ens1371
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8-gentoo-r3
+======================================================================
+Date Submitted:             10-29-2004 17:09 CEST
+Last Modified:              10-29-2004 17:09 CEST
+======================================================================
+Summary:                    codec read/write timeout is reported on module load,
+and card is not detected
+Description: 
+My Ensoniq 1371 rev 7 based card is not detected.
 
+dmesg shows:
 
+PCI: Found IRQ 12 for device 0000:00:09.0
+codec write timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+.
+.
+.
+codec write timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+AC'97 0 does not respond - RESET
+es1371: codec read timeout at 0xec14 [0x40000000]
+es1371: codec read timeout at 0xec14 [0x40000000]
+AC'97 0 access is not valid [0x0], removing mixer.
+ENS1371: probe of 0000:00:09.0 failed with error -5
 
-Incident Information:-
+======================================================================
 
-Originator: alsa-devel-admin@lists.sourceforge.net
-Recipients: alsa-devel@lists.sourceforge.net
-Subject:    Alsa-devel digest, Vol 1 #2294 - 6 msgs
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-29-04 17:09 jcpetruzza     New Issue                                    
+10-29-04 17:09 jcpetruzza     Kernel Version            => 2.6.8-gentoo-r3 
+======================================================================
 
-WARNING:  The file mime001.txt (000051e3.eml) you received was infected
-with the Exploit-MIME.gen.c virus.  The file attachment was not
-successfully cleaned. Attachment was quarantined.
-WARNING:  The file mime001.txt (message.scr) you received was infected with
-the W32/Netsky.p@MM virus.  The file attachment was not successfully
-cleaned. Attachment was quarantined.
 
 
 
