@@ -1,8 +1,8 @@
 From: Antti Boman <antti.boman@mindcom.fi>
 Subject: Re: snd-cmipci with Jack not working
-Date: Thu, 30 Jan 2003 12:00:32 +0200
+Date: Thu, 30 Jan 2003 12:07:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E38F7C0.9000904@mindcom.fi>
+Message-ID: <3E38F95D.5090607@mindcom.fi>
 References: <3E379E8A.10502@mindcom.fi>	<s5hsmvblw0e.wl@alsa2.suse.de>	<3E386842.5000908@mindcom.fi> <s5hn0ljkm4g.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
@@ -21,53 +21,8 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 30 Jan 2003 01:48:18 +0200,
-> Antti Boman wrote:
->>>>
->>>>- I have the lowlat patch installed in kernel, but using or not using it
->>>> doesn't seem to change anything.
->>> 
->>>most likely the kernel scheduler is irrelevant.
->>
->>The only effect it had was locking the whole machine when using 
->>playback/capture only.
-> 
-> do you mean with LL-patch?  or with preempt patch?
+Confirming that it's Andrew Morton's low-latency patch.
 
-Andrew Morton's 
-(http://www.zip.com.au/~akpm/linux/schedlat.html#downloads) patch. Sorry 
-about the flaws in terminology, I'm kind of half-dumb with these. If 
-there are even difference with those ones, I have to check them out 
-tonight and tell you then.
-
->>>>- Using jackd with playback/capture only, it produces the following
->>>> message:
->>>>  jackd: pcm.c:5851: snd_pcm_mmap_commit: Assertion 'pcm' failed
->>> 
->>>that's weird.
->>
->>Yes, and as you most probably know, it refers to alsa-lib/src/pcm/pcm.c
->  
-> if the above function is directly called from jack, then it should be
-> a bug of jack.  the error above says the passed argument is a null
-> pointer.
-
-I know. But I don't know if it's directly called from jackd. I'll try 
-and ask more on jackit-devel or try to find things myself. May be 
-another dead-end, though.
-
-> ah, sorry, what do you mean "kernel real-time patches"?
-> preempt-patch?
-> 
-> then i don't know.  i don't use them together with 2.4 kernels.
-
-Then again, even without enabling low latency (whatsoever) it doesn't 
-work. I'm just afraid this won't be solved. And I'm not afraid for 
-myself, just for the fact that 8738 is a highly used chip. Have you 
-tried running jackd with the one of yours?
-
-Cheers,
 -a
 
 
