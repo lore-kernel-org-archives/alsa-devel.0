@@ -1,12 +1,13 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: I thought it would simple....
-Date: Tue, 22 Jul 2003 23:54:49 -0700 (PDT)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: snd_pcm_mmap_begin returns 0 but sets areas to NULL
+Date: Wed, 23 Jul 2003 08:57:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030723065449.40812.qmail@web21508.mail.yahoo.com>
-Reply-To: tsw@johana.com
+Message-ID: <Pine.LNX.4.44.0307230853020.6261-100000@pnote.perex-int.cz>
+References: <20030722135158.GA12258@alinoe.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030722135158.GA12258@alinoe.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +16,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: Carlo Wood <carlo@alinoe.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I am attempting to write a "simple" audio playback program.  Well, I
-thought it would be, but...
-Somehow (thru strace) the 'snd_pcm_writei' call goes and eventually
-does a system 'poll' call, but it doesn't return indicating that a
-write is OK to do.
-I've used similar parameters in 'aplay' and I see that it works.
+On Tue, 22 Jul 2003, Carlo Wood wrote:
 
-The basis of the program I'm writing is the one described in _A
-Tutorial on Using the ALSA API_
-(http://equalarea.com/paul/alsa-audio.html), section entitled "A
-Minimal Playback Program".
+> Is it ever allowed that:
+> 
+>     snd_pcm_channel_area_t const* areas;
+>     snd_pcm_uframes_t offset;
+>     snd_pcm_uframes_t size = period_size;
+>     if (size > 0)
+>     {
+>       snd_pcm_uframes_t frames = size;
+>       int err = snd_pcm_mmap_begin(handle, &areas, &offset, &frames);
+> 
+> returns err == 0, but results in areas == NULL ?
+> 
+> Or is that a bug in alsa?
 
-One thing I've noted:  Some of the data printed out by "snd_pcm_dump"
-is different between my program and 'aplay'.  I suspect that there is a
-clue somewhere, but what is the "magic"??
+Perhaps, you're in a bad state. Did you call hw_params() with a MMAP
+access request before?
 
-If necessary, I can provide the 'strace' or the output from
-'snd_pcm_dump', but in the interest of brevity...
+						Jaroslav
 
-Any "great clue" would be appreciated.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-Thanks.
-
-=====
--- 
-Tom Watson
-tsw@johana.com
-
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
 
 
 -------------------------------------------------------
