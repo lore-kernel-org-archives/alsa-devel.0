@@ -1,14 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: How to display mixer controls to the user? was:Re:
-	[PATCH/RFC] emu10k1 multichannel PCM
-Date: Mon, 15 Nov 2004 12:29:33 -0500
-Message-ID: <1100539773.3669.14.camel@krustophenia.net>
-References: <200411151349.iAFDnTj8024003@www3.pobox.sk>
+From: Alexandre B <wackysalut@bourget.cc>
+Subject: arecordmidi and aplaymidi
+Date: Mon, 15 Nov 2004 20:26:51 -0500
+Message-ID: <200411152026.51451.wackysalut@bourget.cc>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411151349.iAFDnTj8024003@www3.pobox.sk>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,39 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: James@superbug.co.uk, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-11-15 at 14:49 +0100, Peter Zubaj wrote:
-> > .....
-> 
-> emu10k1 is only one chip with complex mixer without own mixer app.
-> 
+I have a couple of suggestions for arecordmidi and aplaymidi, maybe to the 
+last one who sent some patches (Pedro Lopez-Cabanillas) for these programs.
 
-Yeah this was going to be my other suggestion.  But, if there are plans
-to improve the ALSA mixer API in the near future, this might be wasted
-effort.  Maybe it is not possible to have a powerful enough mixer API to
-work for any card.
+I'd like to use arecordmidi and aplaymidi to pipe MIDI events to a Perl 
+script, which in turn would control light spots for a play.
 
-If the ALSA mixer API is not intended to be enough for complex devices,
-then this is fine. we can write an emumixer app.  This seems to be how
-it works on Windows - simple devices just use the generic Windows mixer,
-others have their own custom mixer app.  For example every ASIO driver
-is required to implement a control panel.
+For now, arecordmidi has a --dump option, which suits my needs perfectly, but 
+it seems it *has* to save a file. It would be even more fun if the saving of 
+the .mid file would be optionnal when --dump is passed. Even though I can 
+just delete the file afterwards.
 
-Anyway since we need hwdep apps like the DSP loader and soundfont stuff
-anyway, maybe it would just be easiest to subsume the emu10k1 mixer into
-qlo10k1 like the kX driver does.
+Also.. it would be even better if aplaymidi could just pipe events in text 
+form (perhaps another --dump ?) to standard output, just like the 
+"arecordmidi --dump" output.. that way.. it would be possible to *save* 
+lighting effects into a .midi file.. and recall them back using a single Perl 
+script or so, since both outputs (arecordmidi and aplaymidi) would be the 
+same.
 
-That being said I still think containers for mixer elements would be an
-easy and useful enhancement to the mixer API.  We could at least
-eliminate confusion by distinguishing 'Advanced' from 'Standard'
-controls and stuffing the former in the 'Advanced' menu.  Most users
-only touch 3 or 4 mixer elements, ever.
 
-Lee
+I'd be very pleased to see those features introduced in the next release!
 
+Thanks to all for your excellent work!
+
+
+Alexandre Bourget
 
 
 -------------------------------------------------------
