@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000915]: When compiled with SND_HWDEP enabled, the intel8x0 driver is no longer able to share an IRQ with other devices
-Date: Thu, 17 Feb 2005 18:39:01 +0100
-Message-ID: <22d1267d5d1c28be92474c55a65c1f3e@bugtrack.alsa-project.org>
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: Re: Re: [alsa-cvslog] CVS: BEFORE REVERT  [SUCCESS]
+   C-Media CMI9761 -A- type, WORKING MASTER, PCM ON 1. DXS SLIDER!
+Date: Thu, 17 Feb 2005 19:06:56 +0100
+Message-ID: <4214DD40.3070102@gmx.de>
+References: <E1D1Ttl-0000lb-In@sc8-pr-cvs1.sourceforge.net>	<4213BB44.5060702@gmx.de> <s5hbrajs9zj.wl@alsa2.suse.de>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CCF623D
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 18:39:01 +0100 (MET)
+In-Reply-To: <s5hbrajs9zj.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,75 +18,147 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Wed, 16 Feb 2005 22:29:40 +0100,
+> thomas schorpp wrote:
+> 
+>>- arts works with pcm fine
+>>- working master vol slider(!) (kmix)
+>>- working pcm vol regulation on 1. dxs slider (rest 3 no sound reaction)
+> 
+> 
+> (snip)
+> 
+> 
+>>>Revert the last addition for CM9761A support.  The codec doesn't
+>>>support the real control of Master
+>>
+>>yes, it does fine for my chip , sorry.
+>>
+>>/PCM volumes, too.
+> 
+> 
+> Hmm, I'm really confused.  Both the comments above look
+> contradictionary.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=915> 
-======================================================================
-Reported By:                Jochen
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   915
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10-gentoo-r7
-======================================================================
-Date Submitted:             02-17-2005 10:17 CET
-Last Modified:              02-17-2005 18:39 CET
-======================================================================
-Summary:                    When compiled with SND_HWDEP enabled, the intel8x0
-driver is no longer able to share an IRQ with other devices
-Description: 
-On my System an intel8x0 card and a Intel PRO Wireless 2200BG card share
-irq5 which works perfectly with SND_HWDEP.
+me too ;). so let me first excuse for that "thing" i called patch v0.1 
+tonight. im sorry i cant afford a prebuild-kernel distributors 
+requirements and better read your comprehensive docs on the homepage 
+before coding again. i thank you again for getting my chip to work based 
+on 1.73 cvs. i can live with custom patched kernels for my own needs.
 
-I recently enabled SND_HWDEP for another audio driver. since then all
-commands the ipw2200 driver issues to the wlan card time out, the audio
-driver however is still working.
+although i would gladly help you out by providing verified infos on this 
+newer chip 1000s of users may have got, so you can work out a common 
+solution.
 
-Since I didn't change the ipw2200 driver but only an alsa related option,
-I guess it's an alsa bug
-======================================================================
+so much for priorities and requirements.
 
-----------------------------------------------------------------------
- Jochen - 02-17-05 18:33 
-----------------------------------------------------------------------
-Yes, but since the bluetooh driver needs SND_HWDEP I "selected" it by
-compiling SND_USB_USX2Y (everything as module)
+> 
+> Let me ask again:  In the older version, does PCM volume work, that
+> is, it really changes the output volume (not only mute/unmute)?
+> Does Master volume work as well on your chip?
 
-with this I get the hwdep module, I need for using the bluetooth driver -
-but lose my wlan card. Note that the sound card is still working.
+which version?  i repeat my notices from tonight:
 
-----------------------------------------------------------------------
- tiwai - 02-17-05 18:39 
-----------------------------------------------------------------------
-Then correct your driver's Kconfig file to select SND_HWDEP.
+2.6.10 kernel.org kernel:
+- master vol slider drives real volume at least for looped through 
+lines. (dont know if a real hardware gain driver exists, i cant find the 
+list mentioned sw volume code.)
+- master pcm slider exists but seems no affect, but typical hardware 
+switching noise on enable/disable knob
+- no output on pcm dac audio (tried workarounds for hours)
 
-Anyway, this sounds like a false positive.
-hwdep module can't influence on intel8x0 or any other drivers.  It's a
-core module and have no h/w access by itself.
-Check whether any other drivers are loaded casually and conflict.
+patch.c cvs rev 1.73 et al:
+- master vol slider drives real volume for looped through lines. no 
+affect on pcm.
+-alsa pcm volume working on dxs 1 slider.
+-oss pcm volume working on dxs 2 slider.
+- master pcm slider missing. (which code determines this?)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-17-05 10:17 Jochen         New Issue                                    
-02-17-05 10:17 Jochen         Distribution              => Gentoo          
-02-17-05 10:17 Jochen         Kernel Version            => 2.6.10-gentoo-r7
-02-17-05 10:56 Jochen         Note Added: 0003627                          
-02-17-05 18:18 tiwai          Note Added: 0003629                          
-02-17-05 18:33 Jochen         Note Added: 0003633                          
-02-17-05 18:39 tiwai          Note Added: 0003634                          
-======================================================================
+rev 1.74:
+- master / pcm sliders missing, cant affect any volumes, lines looped 
+through, input regulateable with cd and aux input sliders.
+- pcm not working.
 
+> 
+> 
+> Note that the Master and PCM volumes are _removed_ because they don't
+> work and are only confusing.  It's intentional.  They _must_ disappear
+> in the latest version.
+> 
+> If CM9761-A- provides the real PCM/Master volume control, we should
+> get them back again.  But, this essential information has been
+> missing.   Please let me know _this_ clearly above all subtle things!
+> 
+
+see above. "real" means hardware, yes?
+
+btw: you got my 2 mails from tonight? windos driver reports rev 8D for 
+this chip.
+
+pls answer this question: what are those 32bit xxxxxxxx_rev ids?
+have you defined it?
+where do you get it from the chip?
+cant find the function asking the chip. ac97->id reads only defines 
+doesnt it?
+
+> 
+> 
+>>>Instead, fixed the default multi-channel register setting now.
+>>>
+>>
+>>why?
+>>not verified. source of info? are you sure thats the -A- type, you got 
+>>for testing? who verified?
+> 
+> 
+> Very much confision of debug information...
+
+ok. you stated you got rev 83 mine should be 8d.
+that would be clearer then.
+
+> 
+> 
+> 
+>>oops! sound gone after doing this:
+> 
+> 
+> How about the attached patch?
+
+would try it, but pls comment those reg bit setting(?) in short.
+you stated you got no register specs, is this guessed?
+
+tom
+
+> 
+> 
+> Takashi
+> 
+> 
+> ------------------------------------------------------------------------
+> 
+> Index: alsa-kernel/pci/ac97/ac97_patch.c
+> ===================================================================
+> RCS file: /suse/tiwai/cvs/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
+> retrieving revision 1.76
+> diff -u -r1.76 ac97_patch.c
+> --- alsa-kernel/pci/ac97/ac97_patch.c	16 Feb 2005 18:25:30 -0000	1.76
+> +++ alsa-kernel/pci/ac97/ac97_patch.c	17 Feb 2005 11:11:01 -0000
+> @@ -2038,8 +2038,8 @@
+>  
+>  	/* CM9761 has no Master and PCM volume although the register reacts */
+>  	ac97->flags |= AC97_HAS_NO_MASTER_VOL | AC97_HAS_NO_PCM_VOL;
+> -	snd_ac97_write_cache(ac97, AC97_MASTER, XXXXXXX 0x8000 XXXXXXXXXX); <----(?)
+> -	snd_ac97_write_cache(ac97, AC97_PCM, 0x8000);
+> +	snd_ac97_write_cache(ac97, AC97_MASTER, 0x8808);
+> +	snd_ac97_write_cache(ac97, AC97_PCM, 0x8808);
+>  
+>  	ac97->spec.dev_flags = 0; /* 1 = model 82 revision B */
+>  	if (ac97->id == AC97_ID_CM9761_82) {
 
 
 
