@@ -1,13 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Q: is the ALSA-lib API thread-safe
-Date: Thu, 5 Aug 2004 14:51:13 +0200 (CEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: 1.0.6rc1 packages
+Date: Thu, 5 Aug 2004 21:29:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408051440270.1906@pnote.perex-int.cz>
-References: <200408051231.i75CVUt8027083@localhost.localdomain>
+Message-ID: <20040805192913.GA509@tuba.home>
+References: <s5hk6wdj4yt.wl@alsa2.suse.de> <Pine.HPX.4.33n.0408051208270.18069-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408051231.i75CVUt8027083@localhost.localdomain>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 8F738216
+	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 21:27:52 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0408051208270.18069-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,43 +20,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 5 Aug 2004, Paul Davis wrote:
-
-> >Daniel Schnell wrote:
-> >> is the ALSA-Lib-API thread-safe concerning the following scenario:
-> >>
-> >> in thread 1 the audio-processing takes place via snd_pcm_avail_update(),
-> >> snd_pcm_begin(), snd_pcm_commit(). In thread 2 I call the functions:
-> >> snd_pcm_hwsync(), snd_pcm_avail_update() to get the actual delay via
-> >> bufferframes - snd_pcm_avail_update().
+On Thu, Aug 05, 2004 at 12:17:08PM +0200, Clemens Ladisch wrote:
+> Takashi Iwai wrote:
+> > Martin Langer wrote:
+> > > usbusx2yaudio.c:492: __old_i_usX2Y_urb_complete undeclared
 > >
-> >The snd_pcm_t* handle which you're using in both threads refers to one
-> >data structure in alsa-lib which isn't protected against concurrent
-> >accesses.
+> > This one should fix.
+> >
+> > -#define snd_usb_complete_callback(x) __old_ ## x
+> > +#define snd_usb_complete_callback(x) x ## __old_
+> >  static void i_usX2Y_urb_complete__old_(struct urb *urb);
 > 
-> how true. its a bit ironic that one of the big advances of ALSA's
-> kernel code over OSS is the addition of thread safety, and that
-> another is the use of a user-space library to mediate access. the
-> combination of the two, however, eliminates thread safety :(
+> Oops, I didn't read your mail before committing my patch which changes
+> the function names instead.  Well, now it's consistent with
+> usbaudio.c.  :-)
 
-Above scenario seems worth to support. Also I cannot imagine other 
-useability to make other functions reentrant.
+Yep. It's fixed. 
+Just updating my OHCI-PowerBook I detected another problem:
 
-The avail_update() + mmap + r/w functions are not much reentrant, but 
-you may use in the second thread snd_pcm_delay() which should be
-(not verified) reentrant and callable at any time without influence
-for avail_update() + r/w operations.
+./cvscompile --with-cards=powermac
 
-						Jaroslav
+fails with
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+checking for which soundcards to compile driver for... configure: error:
+Unsupported soundcard powermac
+
+
+martin
 
 
 -------------------------------------------------------
