@@ -1,14 +1,17 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Q: is the ALSA-lib API thread-safe
-Date: Thu, 05 Aug 2004 12:06:55 +0200 (METDST)
+Subject: Re: 1.0.6rc1 packages
+Date: Thu, 05 Aug 2004 12:17:08 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0408051203210.18069-100000@studcom.urz.uni-halle.de>
-References: <1e2101c47ac1$ca702340$2c0aa8c0@lumpidu>
+Message-ID: <Pine.HPX.4.33n.0408051208270.18069-100000@studcom.urz.uni-halle.de>
+References: <s5hk6wdj4yt.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1e2101c47ac1$ca702340$2c0aa8c0@lumpidu>
+Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.Uni-Halle.DE [141.48.3.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54C0621F
+	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 12:17:11 +0200 (MEST)
+In-reply-to: <s5hk6wdj4yt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +20,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Schnell <daniel.schnell@gmx.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Martin Langer <martin-langer@gmx.de>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Daniel Schnell wrote:
-> is the ALSA-Lib-API thread-safe concerning the following scenario:
+Takashi Iwai wrote:
+> Martin Langer wrote:
+> > usbusx2yaudio.c:492: __old_i_usX2Y_urb_complete undeclared
 >
-> in thread 1 the audio-processing takes place via snd_pcm_avail_update(),
-> snd_pcm_begin(), snd_pcm_commit(). In thread 2 I call the functions:
-> snd_pcm_hwsync(), snd_pcm_avail_update() to get the actual delay via
-> bufferframes - snd_pcm_avail_update().
+> This one should fix.
+>
+> -#define snd_usb_complete_callback(x) __old_ ## x
+> +#define snd_usb_complete_callback(x) x ## __old_
+>  static void i_usX2Y_urb_complete__old_(struct urb *urb);
 
-The snd_pcm_t* handle which you're using in both threads refers to one
-data structure in alsa-lib which isn't protected against concurrent
-accesses.
-
-> Is there any difference concerning thread-safety between the hw:
-> layer or the plug: layer ?
-
-No, both go through alsa-lib.
+Oops, I didn't read your mail before committing my patch which changes
+the function names instead.  Well, now it's consistent with
+usbaudio.c.  :-)
 
 
-HTH
 Clemens
+
+-- 
+Index: alsa-driver/usb/usx2y/usbusx2yaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2yaudio.c,v
+retrieving revision 1.18
+retrieving revision 1.19
+diff -u -r1.18 -r1.19
+--- alsa-driver/usb/usx2y/usbusx2yaudio.c     3 Aug 2004 14:24:05 -0000       1.18
++++ alsa-driver/usb/usx2y/usbusx2yaudio.c     5 Aug 2004 09:43:40 -0000       1.19
+@@ -13,7 +13,7 @@
+
+ #ifdef OLD_USB
+ #define snd_usb_complete_callback(x) __old_ ## x
+-static void i_usX2Y_urb_complete__old_(struct urb *urb);
++static void __old_i_usX2Y_urb_complete(struct urb *urb);
+ #endif
+
+ #include "../../alsa-kernel/usb/usx2y/usbusx2yaudio.c"
+@@ -22,7 +22,7 @@
+  * compatible layers
+  */
+ #ifdef OLD_USB
+-static void i_usX2Y_urb_complete__old_(struct urb *urb)
++static void __old_i_usX2Y_urb_complete(struct urb *urb)
+ {
+ 	i_usX2Y_urb_complete(urb, NULL);
+ }
 
 
 
