@@ -1,14 +1,14 @@
-From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Wed, 18 Sep 2002 15:26:01 +0300
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] usbaudio.c steals interfaces from other drivers
+Date: Wed, 18 Sep 2002 14:52:31 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020918152601.A2654@sci.fi>
-References: <Pine.LNX.4.33.0209181054350.534-100000@pnote.perex-int.cz> <20020918120235.49273.qmail@web40601.mail.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0209181438180.20324-100000@studcom.urz.uni-halle.de>
+References: <Pine.HPX.4.33n.0209181036450.6852-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020918120235.49273.qmail@web40601.mail.yahoo.com>; from rankincj@yahoo.com on Wed, Sep 18, 2002 at 01:02:35PM +0100
+In-reply-to: <Pine.HPX.4.33n.0209181036450.6852-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 18, 2002 at 01:02:35PM +0100, Chris Rankin wrote:
-> So maybe we could have a --with-compat-rc3 option for
-> alsa-utils as well?
 
-I don't think there has been any other changes. Just use rc3 alsa-utils.
+The USB audio driver claims the streaming interfaces of the device even if
+they have already been claimed by another driver. (See the thread
+"snd-usb-midi, midi input, oss, oops!" for the gory details.)
 
-> And I doubt that wine and xine will get updated before
-> -rc4 is released.
 
-> (Unless there's a document somewhere
-> explaining the relationship between the old and new
-> API functions, in which case I could submit patches
-> myself.)
+Index: usbaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
+retrieving revision 1.8
+diff -u -r1.8 usbaudio.c
+--- alsa-kernel/usb/usbaudio.c	13 Sep 2002 08:39:08 -0000	1.8
++++ alsa-kernel/usb/usbaudio.c	18 Sep 2002 12:35:47 -0000
+@@ -1829,6 +1829,10 @@
+ 			continue;
+ 		}
+ 		iface = &config->interface[j];
++		if (usb_interface_claimed(iface)) {
++			snd_printdd(KERN_INFO "%d:%d:%d: skipping, already claimed\n", dev->devnum, ctrlif, j);
++			continue;
++		}
+ 		if (iface->altsetting[0].bInterfaceClass == USB_CLASS_AUDIO &&
+ 		    iface->altsetting[0].bInterfaceSubClass == USB_SUBCLASS_MIDI_STREAMING) {
+ 			if (snd_usb_create_midi_interface(chip, j, NULL) < 0) {
 
-As I understand it the change was pretty trivial. Just compare the header
-files or aplay for example. Or just don't use the latest cvs stuff.
-
--- 
-Ville Syrjälä
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
 
 
 -------------------------------------------------------
