@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000370]: CMedia 8768 Support
-Date: Wed, 13 Oct 2004 16:37:32 +0200 (CEST)
+Date: Wed, 13 Oct 2004 16:37:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013143732.30CE31B00B@server.perex-int.cz>
+Message-ID: <20041013143706.1F3661B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 870CE2ED
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 16:37:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C28E22A
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 16:37:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -253,11 +253,6 @@ The register dump is all ff, that is, the driver is reading wrong I/O
 ports.
 Can you show the output of "lspci -xvv" ?
 
-----------------------------------------------------------------------
- tiwai - 10-13-2004 16:37 CEST 
-----------------------------------------------------------------------
-Also, please use 1.0.7-rc2 for avoid unnecessary differences.
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -285,7 +280,6 @@ Date Modified  Username       Field                    Change
 10-10-04 04:48 robg           Bugnote Added: 0002064                       
 10-10-04 04:57 robg           Bugnote Added: 0002065                       
 10-13-04 16:37 tiwai          Bugnote Added: 0002126                       
-10-13-04 16:37 tiwai          Bugnote Added: 0002127                       
 ======================================================================
 
 
