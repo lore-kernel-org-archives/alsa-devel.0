@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] core/pcm.c: fixes for runtime->status
-Date: Mon, 22 Jul 2002 10:30:32 +0200
+Subject: [PATCH] core/timer.c fixes
+Date: Mon, 22 Jul 2002 10:30:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D3BC2A8.9C6D8089@ladisch.de>
+Message-ID: <3D3BC2AF.9042C098@ladisch.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
@@ -19,60 +19,44 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-runtime->status is initialized with the wrong size (not really, because it's
-one page anyway), and an error handler uses the wrong function to free it.
+The snd_timer_limit module parameter isn't used.
 
-The snd_pcm_notify function already checks that n_register and
-n_unregister are set, so we don't need the extra checks in
-snd_pcm_dev_(un)register.
+Leading zeros in the fractional part of the timer hardware resolution
+are omitted.
 
 
-Index: core/pcm.c
+Index: core/timer.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/pcm.c,v
-retrieving revision 1.14
-diff -u -r1.14 pcm.c
---- core/pcm.c	26 Jun 2002 02:02:49 -0000	1.14
-+++ core/pcm.c	22 Jul 2002 08:14:46 -0000
-@@ -753,16 +753,15 @@
- 		kfree(runtime);
- 		return -ENOMEM;
- 	}
-+	memset((void*)runtime->status, 0, size);
+RCS file: /cvsroot/alsa/alsa-kernel/core/timer.c,v
+retrieving revision 1.10
+diff -u -r1.10 timer.c
+--- core/timer.c	29 Apr 2002 13:51:35 -0000	1.10
++++ core/timer.c	22 Jul 2002 08:14:46 -0000
+@@ -35,13 +35,10 @@
+ #include <linux/kerneld.h>
+ #endif
  
- 	size = PAGE_ALIGN(sizeof(snd_pcm_mmap_control_t));
- 	runtime->control = snd_malloc_pages(size, GFP_KERNEL);
- 	if (runtime->control == NULL) {
--		kfree((void *)runtime->status);
-+		snd_free_pages((void*)runtime->status, PAGE_ALIGN(sizeof(snd_pcm_mmap_status_t)));
- 		kfree(runtime);
- 		return -ENOMEM;
- 	}
--
--	memset((void*)runtime->status, 0, size);
- 	memset((void*)runtime->control, 0, size);
+-int snd_timer_limit = 1;
+ MODULE_AUTHOR("Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>");
+ MODULE_DESCRIPTION("ALSA timer interface");
+ MODULE_LICENSE("GPL");
+ MODULE_CLASSES("{sound}");
+-MODULE_PARM(snd_timer_limit, "i");
+-MODULE_PARM_DESC(snd_timer_limit, "Maximum global timers in system. (1 by default)");
  
- 	init_waitqueue_head(&runtime->sleep);
-@@ -840,8 +839,7 @@
- 	list_for_each(list, &snd_pcm_notify_list) {
- 		snd_pcm_notify_t *notify;
- 		notify = list_entry(list, snd_pcm_notify_t, list);
--		if (notify->n_register)
--			notify->n_register(-1 /* idx + SNDRV_MINOR_PCM */, pcm);
-+		notify->n_register(-1 /* idx + SNDRV_MINOR_PCM */, pcm);
- 	}
- 	snd_pcm_lock(1);
- 	return 0;
-@@ -878,8 +876,7 @@
- 	list_for_each(list, &snd_pcm_notify_list) {
- 		snd_pcm_notify_t *notify;
- 		notify = list_entry(list, snd_pcm_notify_t, list);
--		if (notify->n_unregister)
--			notify->n_unregister(-1 /* SNDRV_MINOR_PCM + idx */, pcm);
-+		notify->n_unregister(-1 /* SNDRV_MINOR_PCM + idx */, pcm);
- 	}
- 	snd_pcm_devices[idx] = NULL;
- 	snd_pcm_lock(1);
+ typedef struct {
+ 	snd_timer_instance_t *timeri;
+@@ -876,7 +873,7 @@
+ 		}
+ 		snd_iprintf(buffer, "%s :", timer->name);
+ 		if (timer->hw.resolution)
+-			snd_iprintf(buffer, " %lu.%luus (%lu ticks)", timer->hw.resolution / 1000, timer->hw.resolution % 1000,
+timer->hw.ticks);
++			snd_iprintf(buffer, " %lu.%03luus (%lu ticks)", timer->hw.resolution / 1000, timer->hw.resolution % 1000,
+timer->hw.ticks);
+ 		if (timer->hw.flags & SNDRV_TIMER_HW_SLAVE)
+ 			snd_iprintf(buffer, " SLAVE");
+ 		snd_iprintf(buffer, "\n");
 
 
 -------------------------------------------------------
