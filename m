@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Fri, 26 Nov 2004 15:17:12 +0100
-Message-ID: <1dff3eece993938a0651c7e41a8f3dff@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000676]: Unsupported soundcard au8820
+Date: Fri, 26 Nov 2004 15:37:35 +0100
+Message-ID: <8903700db4854d0f0c602315d914d64a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A66F5235
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 15:17:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56263235
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 15:37:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,119 +22,257 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=676> 
 ======================================================================
-Reported By:                bons78
-Assigned To:                
+Reported By:                coldspringc
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   676
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Status:                     resolved
+Distribution:               Red Hat?
+Kernel Version:             2.4.21-20.EL
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-26-2004 15:17 CET
+Date Submitted:             11-24-2004 19:32 CET
+Last Modified:              11-26-2004 15:37 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    Unsupported soundcard au8820
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+Sirs
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+I'm am trying to install your driver to support my Au8820 sound card. I am
+a newbie at this so I have enclosed a complete copy of the  process.  I
+have just reinstalled the operating system to insure I did not have any
+latent files screwing things up.  Using the procdures listed under the
+quick install for the Aureal 8820 I get the error.  "checking for which
+soundcards to compile driver for... configure: error: Unsupported
+soundcard au8820"
 
+Before I stated the process I did a modinfo soundcore to check if I need
+to recomplite the kernel.  Based on the feed back from modinfo (see below)
+and your install instuctions I believe I do not have to recompile.  
+
+Can you please help!  I have been at this for over a week!
+
+
+[root@localhost root]# modinfo soundcore
+filename:    /lib/modules/2.4.21-20.EL/kernel/drivers/sound/soundcore.o
+description: "Core sound module"
+author:      "Alan Cox"
+license:     "GPL"
+[root@localhost root]# cd /usr/src
+[root@localhost src]# mkdir alsa
+[root@localhost src]# cd alsa
+[root@localhost alsa]# wget
+ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.7.tar.bz2
+--13:09:42-- 
+ftp://ftp.alsa-project.org/pub/driver/alsa-driver-1.0.7.tar.bz2
+           => `alsa-driver-1.0.7.tar.bz2'
+Resolving ftp.alsa-project.org... done.
+Connecting to ftp.alsa-project.org[160.217.9.25]:21... connected.
+Logging in as anonymous ... Logged in!
+==> SYST ... done.    ==> PWD ... done.
+==> TYPE I ... done.  ==> CWD /pub/driver ... done.
+==> PASV ... done.    ==> RETR alsa-driver-1.0.7.tar.bz2 ... done.
+Length: 1,829,053 (unauthoritative)
+ 
+100%[====================================>] 1,829,053     50.07K/s    ETA
+00:00
+ 
+13:10:20 (50.07 KB/s) - `alsa-driver-1.0.7.tar.bz2' saved [1829053]
+ 
+[root@localhost alsa]# dir
+alsa-driver-1.0.7.tar.bz2
+[root@localhost alsa]# bunzip2 alsa-driver-1.0.7.tar.bz2
+[root@localhost alsa]# dir
+alsa-driver-1.0.7.tar
+[root@localhost alsa]# tar -xf alsa-driver-1.0.7.tar
+[root@localhost alsa]# cd alsa-driver-1.0.7
+[root@localhost alsa-driver-1.0.7]# ./configure --with-cards=au8820
+--with-sequencer=yes;make;make install
+checking for gcc... gcc
+checking for C compiler default output... a.out
+checking whether the C compiler works... yes
+checking whether we are cross compiling... no
+checking for suffix of executables...
+checking for suffix of object files... o
+checking whether we are using the GNU C compiler... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to accept ANSI C... none needed
+checking for ranlib... ranlib
+checking for a BSD-compatible install... /usr/bin/install -c
+checking how to run the C preprocessor... gcc -E
+checking for egrep... grep -E
+checking for ANSI C header files... yes
+checking for an ANSI C-conforming const... yes
+checking for inline... inline
+checking whether time.h and sys/time.h may both be included... yes
+checking whether gcc needs -traditional... no
+checking for current directory... /usr/src/alsa/alsa-driver-1.0.7
+checking cross compile...
+checking for directory with kernel source...
+/lib/modules/2.4.21-20.EL/build
+checking for directory with kernel build...
+checking for kernel version... 0.0.0
+checking for GCC version... Kernel compiler:  Used compiler: gcc (GCC)
+3.2.3 20030502 (Red Hat Linux 3.2.3-42)
+ 
+*** NO PREDEFINED KERNEL COMPILER IS DETECTED
+*** Assuming the same compiler is used with the current system compiler.
+ 
+*** Please make sure that the same compiler version was used for building
+kernel.
+ 
+checking for built-in ALSA... "no"
+checking for existing ALSA module... "no"
+checking for Red Hat kernel... "auto"
+checking for Red Hat kernel... "no"
+checking for SUSE kernel... "auto"
+checking for SUSE kernel... "no"
+checking to modify of kernel linux/kmod.h... "yes"
+cat: /lib/modules/2.4.21-20.EL/build/include/linux/kmod.h: No such file or
+directory
+checking for kernel linux/compiler.h... "no"
+Creating a dummy <linux/compiler.h>...
+checking for kernel linux/pm.h... "no"
+Creating a dummy <linux/pm.h>...
+checking for kernel linux/spinlock.h... "no"
+Creating a dummy <linux/spinlock.h>...
+checking for kernel linux/irq.h... "no"
+Creating a dummy <linux/irq.h>...
+checking for kernel linux/threads.h... "no"
+Creating a dummy <linux/threads.h>...
+checking for kernel linux/rwsem.h... "no"
+Creating a dummy <linux/rwsem.h>...
+checking for kernel linux/gameport.h... "no"
+Creating a dummy <linux/gameport.h>...
+checking for kernel linux/devfs_fs_kernel.h... "no"
+Creating a dummy <linux/devfs_fs_kernel.h>...
+checking for kernel linux/highmem.h... "no"
+Creating a dummy <linux/highmem.h>...
+checking for kernel linux/workqueue.h... "no"
+checking for kernel linux/dma-mapping.h... "no"
+checking for kernel asm/hw_irq.h... "no"
+Creating a dummy <asm/hw_irq.h>...
+checking for kernel linux/device.h... "no"
+checking for kernel linux/jiffies.h... "no"
+checking for kernel linux/compat.h... "no"
+checking for kernel linux/adb.h... "no"
+Creating <linux/adb.h>...
+checking for kernel linux/cuda.h... "no"
+Creating <linux/cuda.h>...
+checking for kernel linux/pmu.h... "no"
+Creating <linux/pmu.h>...
+checking for kernel linux/moduleparam.h... "no"
+checking for kernel linux/syscalls.h... "no"
+checking for exported symbol dump_stack... grep:
+/lib/modules/2.4.21-20.EL/build/kernel/ksyms.c: No such file or directory
+"no"
+checking for kernel module symbol versions... "no"
+checking for PCI support in kernel... "no"
+checking for I2C driver in kernel... unknown
+checking for SGI/MIPS (HAL2) architecture... "no"
+checking for directory to store kernel modules... /lib/modules/0.0.0/misc
+checking for verbose printk... on
+checking for debug level... none
+checking for processor type... "unknown"
+checking for SMP... "no"
+checking for ISA PnP driver in kernel... no
+checking for PnP driver in kernel... no
+checking for ISA PnP support... yes
+checking for strlcpy... "no"
+checking for snprintf... "no"
+checking for scnprintf... "no"
+checking for sscanf... "no"
+checking for vmalloc_to_page... "no"
+checking for old kmod... "yes"
+checking for PDE... "no"
+checking for pci_set_consistent_dma_mask... "no"
+checking for tty->count is the atomic type... "no"
+checking for remap_pfn_range... "no"
+checking for new remap_page_range... "no"
+checking for kcalloc... "no"
+checking for saved_config_space in pci_dev... "no"
+checking for acpi_register_gsi... "no"
+checking for old kill_fasync... "no"
+checking for dma_addr_t... "no"
+checking for MUTEX macros... "no"
+Symlinking <linux/isapnp.h>...
+checking for driver version... 1.0.7
+checking for sequencer support... yes
+checking for OSS/Free emulation... yes
+checking for RTC callback support in kernel... "no"
+checking for Procfs support... "no"
+checking for USB support... "no"
+checking for USB module support... "no"
+checking for kernel PCMCIA
+checking for PCMCIA support... "no"
+checking for PCMCIA module support... "no"
+checking for PC9800 support in kernel... "no"
+checking for parallel port support... "no"
+checking for parallel port module support... "no"
+checking for which soundcards to compile driver for... configure: error:
+Unsupported soundcard au8820
+make all-deps
+make[1]: Entering directory `/usr/src/alsa/alsa-driver-1.0.7'
+make[1]: Nothing to be done for `all-deps'.
+make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.7'
+ 
+Please, run the configure script as first...
+ 
+rm -f /snd*.*o /persist.o /isapnp.o
+make[1]: Entering directory `/usr/src/alsa/alsa-driver-1.0.7/acore'
+Makefile:6: /usr/src/alsa/alsa-driver-1.0.7/Makefile.conf: No such file or
+directory
+make[1]: *** No rule to make target
+`/usr/src/alsa/alsa-driver-1.0.7/Makefile.conf'.  Stop.
+make[1]: Leaving directory `/usr/src/alsa/alsa-driver-1.0.7/acore'
+make: *** [install-modules] Error 1
+[root@localhost alsa-driver-1.0.7]#
 
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-26-04 12:40 
+ coldspringc - 11-26-04 04:03 
 ----------------------------------------------------------------------
-Hmm, the lockup seems happening because of stack shortage.
+OK, please be patent we me, I am a newbie but, what does not having a
+proper kernel source tree mean?  If it means that I must have the kernel
+source installed on my system.    You are correct I do not have the kernel
+source on my system. I can install the kernel source all thought the
+install instuctions do not call that out as a requirement. If that is
+required please let me know and I will down load and install the kernel
+source from Red Hat.  If it means something else please give me some more
+details.
 
-Your patch is doing wrong: convert_from/to_32() can't be used for
-conversion between kernel and user spaces.  They are for between user
-spaces.
+----------------------------------------------------------------------
+ tiwai - 11-26-04 15:37 
+----------------------------------------------------------------------
+Yes, you need definitely to install the kernel source.
+See alsa-driver/INSTALL Quick install section.
 
-----------------------------------------------------------------------
- tiwai - 11-26-04 15:17 
-----------------------------------------------------------------------
-The attached (hack3) includes fix and more improvements.  Doublly
-kmalloc()'s are reduced in control and pcm ioctls.
+Anyway, this is not a bug.  For further questions about installation,
+please consult alsa-users ML.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
-11-24-04 13:01 eradicator     Note Added: 0002556                          
-11-24-04 13:01 tiwai          Note Added: 0002557                          
-11-24-04 13:09 tiwai          Note Added: 0002559                          
-11-24-04 14:29 eradicator     Note Added: 0002563                          
-11-24-04 14:52 tiwai          Note Added: 0002564                          
-11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
-         
-11-24-04 23:24 eradicator     Note Added: 0002582                          
-11-24-04 23:31 eradicator     Note Added: 0002583                          
-11-25-04 12:22 tiwai          Note Added: 0002588                          
-11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
-          
-11-26-04 08:26 eradicator     Note Added: 0002594                          
-11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
-       
-11-26-04 09:22 eradicator     File Added: alsa.strace                      
-11-26-04 09:22 eradicator     Note Added: 0002595                          
-11-26-04 12:40 tiwai          Note Added: 0002604                          
-11-26-04 15:17 tiwai          Note Added: 0002606                          
+11-24-04 19:32 coldspringc    New Issue                                    
+11-24-04 19:32 coldspringc    Distribution              => Red Hat?        
+11-24-04 19:32 coldspringc    Kernel Version            => 2.4.21-20.EL    
+11-25-04 15:53 tiwai          Note Added: 0002592                          
+11-26-04 04:03 coldspringc    Note Added: 0002593                          
+11-26-04 15:37 tiwai          Status                   assigned => resolved
+11-26-04 15:37 tiwai          Resolution               open => not an issue
+11-26-04 15:37 tiwai          Note Added: 0002607                          
 ======================================================================
 
 
