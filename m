@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000385]: Rate conversion plugin generates noise on frequency reduction
-Date: Mon, 22 Nov 2004 14:44:36 +0100
-Message-ID: <95cc502f715ecd0423ff606badb6533b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000181]: ./alsa-kernel/pci/au88x0/Makefile: No such file or directory
+Date: Mon, 22 Nov 2004 14:45:23 +0100
+Message-ID: <28d4493872caeefaed5f9696fdc63e4c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 829982B3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:44:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A1D102B4
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:45:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,94 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=385> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=181> 
 ======================================================================
-Reported By:                fmoraes
+Reported By:                pashgan
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   385
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   181
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Resolution:                 open
+Distribution:               
+Kernel Version:             
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-13-2004 19:46 CEST
-Last Modified:              11-22-2004 14:44 CET
+Date Submitted:             04-03-2004 11:22 CEST
+Last Modified:              11-22-2004 14:45 CET
 ======================================================================
-Summary:                    Rate conversion plugin generates noise on frequency
-reduction
+Summary:                    ./alsa-kernel/pci/au88x0/Makefile: No such file or
+directory
 Description: 
-When reducing the frequency, the pcm_rate plugin causes noise on the output
-data. This has been tested with both the snd-cs46xx and snd-emu10k1x
-drivers and the following .asoundrc can be used to recreate the output in
-a file:
+Compilation stop at:
+/home/pashgan/source/drivers/alsa-driver/kbuild/../pci/au88x0/Makefile:8:
+/home/pashgan/source/drivers/alsa-driver/alsa-kernel/pci/au88x0/Makefile:
+No such file or directory
 
-pcm.CS46xx {
-	type hw
-	card 0
-}
-
-pcm.filetest {
-	type file
-	slave {
-		pcm "CS46xx"
-	}
-	file "/home/fmoraes/test-out.raw"
-	format "raw"
-}
-
-pcm.test {
-	type rate
-	slave {
-		pcm "filetest"
-		format "S16_LE"
-		rate 8000
-	}
-}
-
-Playing a 48Khz file will cause noticeable noise on the output (noise is
-more noticeable the lower the target frequency is).
 ======================================================================
 
 ----------------------------------------------------------------------
- Tobias Diedrich - 10-21-04 17:01 
+ tiwai - 04-23-04 17:23 
 ----------------------------------------------------------------------
-I second that.  Downsampling even from 48000Hz to 44100Hz produces very
-noticable artifacts, which sound very much like nearest neighbour
-resampling artifacts and are especially evident in high pitched vocals. 
-It would also be nice to implement better resampling methods than just
-linear resampling, AFAICS from the source polyphase and bandlimited
-resampling are planned but not yet implemented.
+it works fine on 1.0.4 with my system.
+
+please confirm with 1.0.4 release?
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:34 
+ perex - 10-22-04 16:43 
 ----------------------------------------------------------------------
-The reported problem should be solved in 1.0.7rc releases.
-
-At the time, we don't have free resources to write code for another
-resampling method. Also, there are several problems to use methods based
-on sample history.
+I cannot duplicate.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 19:46 fmoraes        New Issue                                    
-07-15-04 14:07 perex          Status                   new => assigned     
-07-15-04 14:07 perex          Assigned To               => perex           
-10-21-04 16:57 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
- 
-10-21-04 17:01 Tobias DiedrichNote Added: 0002223                          
-10-22-04 16:19 perex          Project                  ALSA - driver => ALSA -
-lib
-10-22-04 16:20 perex          Category                 OTHERS => pcm - digital
-audio
-10-22-04 16:34 perex          Note Added: 0002244                          
-10-22-04 16:35 perex          Status                   assigned => resolved
-11-22-04 14:44 tiwai          Status                   resolved => closed  
+04-03-04 11:22 pashgan        New Issue                                    
+04-23-04 17:23 tiwai          Note Added: 0000904                          
+10-22-04 16:43 perex          Status                   assigned => resolved
+10-22-04 16:43 perex          Resolution               open => unable to
+duplicate
+10-22-04 16:43 perex          Note Added: 0002246                          
+11-22-04 14:45 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
