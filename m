@@ -1,13 +1,15 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: new alsa docs.
-Date: Wed, 14 Aug 2002 00:01:43 +0900
+From: hugo.ferreira@mail.telepac.pt
+Subject: Re: Re: Opti 931: Med931 ver.2.0
+Date: Tue, 13 Aug 2002 16:00:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D591F57.1060601@boosthardware.com>
-References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D52949C.6030706@boosthardware.com> <3D53606D.3020201@mindcom.fi> <3D5366C4.9050101@boosthardware.com> <3D53DF67.40709@boosthardware.com> <3D591A58.11ABEA9@ladisch.de>
+Message-ID: <20020813150041.BBKX12516.fep06-svc.mail.telepac.pt@[127.0.0.1]>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from fep06-svc.mail.telepac.pt (fep06-svc.mail.telepac.pt [194.65.5.211])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA23577
+	for <alsa-devel@alsa-project.org>; Tue, 13 Aug 2002 17:01:19 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +19,55 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> I didn't bother to report USB MIDI devices - until now:
+Clemens,
+
+Thanks, this will save me quite a bit of time.
+
+Regards,
+Hugo Ferreira.
+
 > 
-
-Thanks. I'm collecting them for now until I or Dan get the energy to add 
-them to the matrix.
-
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+> De: Clemens Ladisch <clemens@ladisch.de>
+> Data: 13/08/2002 14:05:46
+> Para: hugo.ferreira@mail.telepac.pt
+> CC: alsa-devel@alsa-project.org
+> Assunto: Re: [Alsa-devel] Opti 931: Med931 ver.2.0
+> 
+> hugo.ferreira@mail.telepac.pt wrote:
+> > > > 1. How may I compile/make and install just the modules that I am 
+> > > > interested in (--with-card ?)
+> > > 
+> > > You can use --with-cards or edit a file in the root directory of the alsa
+> > > kernel source. sorry, can't remember the name and I'm not on my home
+> > > computer right now.
+> > 
+> > You mean I can do a "./cvscompile --with-cards=snd-opti93x" ?
+> > 
+> > > Seems like I did "make modules" and "make modules
+> > > install" just like
+> > 
+> > I'll try this and see what happens. Takashi said
+> > a "make install" would suffice though.
+> 
+> I'm using the following commands to compile and install the USB MIDI
+> driver:
+> 
+> ~/alsa-driver/usb# make snd-usb-midi.o
+> ~/alsa-driver/usb# cp snd-usb-midi.o /lib/modules/2.4.18/kernel/sound/usb/
+> 
+> (modify file/directory names appropriately)
+> 
+> This only works if the package already had been installed, and if the
+> changes only affect one module, but this seems to be just what you want
+> to do.
+> 
+> 
+> HTH
+> Clemens
+> 
 
 
 
