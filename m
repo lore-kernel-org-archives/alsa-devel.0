@@ -1,14 +1,11 @@
-From: AthlonRob <athlonrob@data.4t3.com>
-Subject: Multiple Audio Streams
-Date: 05 Oct 2002 16:18:38 -0700
+From: Albert Jongkit Wong <awong@cs.washington.edu>
+Subject: ppc usb-audio problems
+Date: Sat, 5 Oct 2002 18:05:50 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1033859918.1118.24.camel@duron>
-References: <3D9F3D84.4040102@boom.org.il>
+Message-ID: <20021005180442.Q4046-100000@fiji.cs.washington.edu>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D9F3D84.4040102@boom.org.il>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,48 +14,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Sagi Bashari <sagi@boom.org.il>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2002-10-05 at 12:29, Sagi Bashari wrote:
-> No answer on the users list, forwarding to devel.
+I'm using gentoo linux ver 1.4rc1 on a G4 cube with gcc3.2 and
+alsa-0.9.0rc3 and am having some major problems getting alsa to work
+properly.
 
-Yes... let me go ahead and re-hash this for those who don't want to read
-through the earlier email.
+When trying to use the native alsa interface, most programs either give 
+out just static or if they manage to play something coherent, the output 
+is noisy and sounds as if it has been clipped.
 
-Sagi and I have two different soundcards with somewhat similar, yet
-different, problems.  (Ambigious enough?)
+If I try to use the OSS emulation, I get error messages like:
+	No supported rate found
+or 
+	** WARNING **: SNDCTL_DSP_SETFMT ioctl failed: Invalid argument 
+(The first is from mpg123 and the second is from xmms).
 
-His soundcard theoretically supports hardware mixing both in actual
-hardware and in the ALSA drivers, yet when he tries to open a second
-audio stream, the application attempting to do so simply hangs until the
-resource is free.  I think he said his card was a GTXP... I am
-unfamiliar with it.
+After this message, mpg123 just quits.  Xmms however, continues to 
+function and actually gives clear, coorect output.  So far, no other 
+program works.
 
-My soundcard also supports hardware mixing, but only in the hardware..
-not in the ALSA drivers.  Perhaps two threads would be ideal.  Oh well. 
-I'm running on an nForce board using its integrated audio.  The drivers
-nVidia provided (for OSS) simply consisted of an Intel i810 audio
-patch.  I guess y'all on the ALSA team were able to utilize the
-nVidia-released patch and do the same thing to the ALSA i810 drivers.
+Any ideas on what might be happening?  I had a similar effect with 
+alsa-0.9.0rc2 on gentoo linux 1.2 using gcc-2.95.3.
 
-Anyway... Sagi needs to know how to get the multiple streams working on
-his card, globally.
+Thanks,
+Albert
 
-I need to know if it is possible to get the nForce (using the patched
-i810 driver) to support hardware mixing so I can send many audio streams
-to it at once.  I have basically no programming experience, but may have
-a few friends who could help me if I had some clue of the how or the why
-of it.  Alternatively, since I cannot afford to send anybody hardware...
-if somebody was really interested in working on this, I could give you
-ssh access and work with me, here, physically... but I don't know how
-useful or feasable such a thing would be.
 
-Anyway... input on either or both topics by you guys who really know
-what you're doing would be much apperciated!  :-)
-
-Rob
 
 
 
