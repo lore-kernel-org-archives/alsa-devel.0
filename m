@@ -1,16 +1,14 @@
-From: Niek van der Maas <webmaster@refstart.nl>
+From: =?iso-8859-1?Q?Ren=E9_Kermis?= <kermis@gmx.de>
 Subject: Re: Updated: via8233 driver -- testers wanted
-Date: Fri, 31 May 2002 15:52:58 +0300
+Date: Fri, 31 May 2002 16:03:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205311552.58957.webmaster@refstart.nl>
-References: <004401c20880$5f095b40$6abc5f86@kermit> <00ea01c2089f$59cb1960$6abc5f86@kermit> <010201c208a6$0a2d00b0$6abc5f86@kermit>
-Reply-To: webmaster@refstart.nl
+Message-ID: <014c01c208ab$f3097bb0$6abc5f86@kermit>
+References: <004401c20880$5f095b40$6abc5f86@kermit><s5hit54h9ip.wl@alsa2.suse.de><200205311336.55102.webmaster@refstart.nl><00da01c2089c$96239570$6abc5f86@kermit> <s5hbsawh2ae.wl@alsa2.suse.de> <013701c208aa$254274d0$6abc5f86@kermit>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <010201c208a6$0a2d00b0$6abc5f86@kermit>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,19 +17,86 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-YES!!!!!!
+Hi,
 
-I downloaded revision 1.19 of the via8233.c file, and it works!!!
-Really great work!
+I tested the recording function, no problems, I can record via mic and line
+in.
+Perfect work!!!
 
-Takashi, thanks a lot for writing this driver!
+Thanks a lot,
+René
 
-Greetings,
+----- Original Message -----
+From: "René Kermis" <kermis@gmx.de>
+To: "Takashi Iwai" <tiwai@suse.de>
+Cc: <alsa-devel@lists.sourceforge.net>
+Sent: Friday, May 31, 2002 3:50 PM
+Subject: Re: [Alsa-devel] Updated: via8233 driver -- testers wanted
 
-Niek.
+
+> Congratulations!!!
+>
+> It's running, I have many unresolved symbols, but that does not matter,
+the
+> card runs without trouble, quality is better than from commerical
+> oss-module. I don't hear a difference to my SB 128 PCI with es1370. Now I
+> will try to use the recording function.
+>
+> Thank you very much!
+> René
+>
+> ----- Original Message -----
+> From: "Takashi Iwai" <tiwai@suse.de>
+> To: "René Kermis" <kermis@gmx.de>
+> Cc: <alsa-devel@lists.sourceforge.net>
+> Sent: Friday, May 31, 2002 3:31 PM
+> Subject: Re: [Alsa-devel] Updated: via8233 driver -- testers wanted
+>
+>
+> > Hi,
+> >
+> > At Fri, 31 May 2002 14:13:28 +0200,
+> > René Kermis wrote:
+> > >
+> > > Hi,
+> > >
+> > > I tried to to record from mic and line in. I have no problems with
+> > > recording, but the file is empty.
+> > >
+> > > Some very strange things happend on my machine. I tried to use the oss
+> > > module and it worked without problems. Then I uninstalled the
+evaluation
+> > > version and removed the modules from memory and reloaded your modules.
+> Now I
+> > > can playback sounds without getting an error, but the sound is too
+fast,
+> > > exactly 2x faster than it should be. Is it possible, that it is only
+an
+> > > initialization problem of the sound chip?
+> >
+> > now found out obvious typos - patch attached (already on cvs).
+> > hopefull this fixes the problem...
+> >
+> >
+> > Takashi
+> >
+>
+>
+> _______________________________________________________________
+>
+> Don't miss the 2002 Sprint PCS Application Developer's Conference
+> August 25-28 in Las Vegas -- http://devcon.sprintpcs.com/adp/index.cfm
+>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+
 
 _______________________________________________________________
 
