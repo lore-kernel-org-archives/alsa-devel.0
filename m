@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000673]: alternate CS4235 ident string
-Date: Fri, 26 Nov 2004 12:32:00 +0100
-Message-ID: <364d0f0b613558e0bd87e1a51abdfeb7@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Driver Programming
+Date: Fri, 26 Nov 2004 12:39:07 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411261226040.3150-100000@studcom.urz.uni-halle.de>
+References: <41A60B97.3010809@fetron.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 845BE235
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:32:00 +0100 (MET)
+In-Reply-To: <41A60B97.3010809@fetron.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,65 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Klaus Fetscher <K.Fetscher@t-online.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Klaus Fetscher wrote:
+> I want to programm an driver for the Cirrus CS42516. This Codec
+> communicates with an ARM9 CPU over 3 I2S channels. I want to use 3
+> stereo channels for playing and two stereo channels for receiving the
+> data. All three channels are working with the same clock-rate.
+>
+> I have read the documentation "Writing an Alsa Driver" but I am confused
+> about the meaning of PCM Streams and Substreams. What must I declare,
+> one PCM Stream with three Substreams or 3 PCM Streams ?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=673> 
-======================================================================
-Reported By:                basic
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   673
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-24-2004 07:45 CET
-Last Modified:              11-26-2004 12:31 CET
-======================================================================
-Summary:                    alternate CS4235 ident string
-Description: 
-Found a CS4235 on a SiS530 based mainboard (no longer have the box, so no
-idea who built it), alsaconf could detect it but the driver would not
-load. Here's the patch, got the strings with isapnptools (pnpdump).
-======================================================================
+When an application opens a PCM device without specifying a substream
+(the standard case), ALSA chooses the first free substream.
+Therefore, substreams are usually only used with chips that do
+hardware mixing on them and route them to the same output.
 
-----------------------------------------------------------------------
- tiwai - 11-24-04 12:15 
-----------------------------------------------------------------------
-Could you provide the summary, description and signed-off-by lines for your
-patch (as written in the main page)?
+If the channels are independent, it's better to use separate streams.
 
-Thanks.
+> Is there any existing driver with a similar configuration (more than one
+> channel)?
 
-----------------------------------------------------------------------
- tiwai - 11-26-04 12:31 
-----------------------------------------------------------------------
-Now applied to CVS.  Thanks.
+The cmipci driver handles cards with two DACs.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-04 07:45 basic          New Issue                                    
-11-24-04 07:45 basic          File Added: cs4236.c.patch                    
-11-24-04 12:15 tiwai          Note Added: 0002545                          
-11-26-04 09:46 basic          File Added: cs4236.c.patch                    
-11-26-04 12:31 tiwai          Note Added: 0002601                          
-11-26-04 12:31 tiwai          Status                   new => resolved     
-11-26-04 12:31 tiwai          Resolution               open => fixed       
-11-26-04 12:31 tiwai          Assigned To               => tiwai           
-======================================================================
 
+HTH
+Clemens
 
 
 
