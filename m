@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
-Date: Mon, 29 Nov 2004 15:28:09 +0100
-Message-ID: <63d7e39599248b7162e0ad37a6d0e611@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000684]: unresolver symbols for gus interwave
+Date: Mon, 29 Nov 2004 15:35:26 +0100
+Message-ID: <4257670fab1642be085feac1ea11681c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F1072BA
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:28:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 538142C2
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:35:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,54 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=684> 
 ======================================================================
-Reported By:                d637e16c5433737884c13889afdeaf34
-Assigned To:                
+Reported By:                led
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   682
-Category:                   PCI - RME 96
+Issue ID:                   684
+Category:                   ISA - GUS (classic, max, extreme, interwave)
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               redhat
+Kernel Version:             self compiled 2.4.27 and 2.4.28
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-27-2004 00:59 CET
-Last Modified:              11-29-2004 15:28 CET
+Date Submitted:             11-28-2004 14:54 CET
+Last Modified:              11-29-2004 15:35 CET
 ======================================================================
-Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
+Summary:                    unresolver symbols for gus interwave
 Description: 
-As it's impossible to use the alsamixer with the rme96 driver here's a
-small patch for it to make it work. (it's not from me, it's from undog
-#alsa on irc.freenode.org)
-
-This patch will break rmedigicontrol, so i made a small patch for
-rmedigicontrol that'll fix this, too.
-
-Adding is trivial, it's just editing 8 lines of source.
-
-
-Regards,
-Matthias
-
-PS: Added patch for rme96.c
+Since alsa driver 1.0.6 there are unresolved symbols for gus interwave
+driver. I include console report from restarting the driver showing the
+problem. In 1.0.7 version is the same. 1.0.5 works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- martin - 11-28-04 18:41 
+ tiwai - 11-29-04 15:35 
 ----------------------------------------------------------------------
-The patch is similar to the one of bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=570
-
-----------------------------------------------------------------------
- tiwai - 11-29-04 15:28 
-----------------------------------------------------------------------
-The only question is backward compatibility.  I don't mind to change this
-at all.
+It's the missing dependency in Makefile.
+Fixed on CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
-           
-11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
-           
-11-28-04 18:41 martin         Note Added: 0002628                          
-11-29-04 15:28 tiwai          Note Added: 0002639                          
+11-28-04 14:54 led            New Issue                                    
+11-28-04 14:54 led            File Added: alsa_unresolved_symbols.ascii         
+          
+11-28-04 14:54 led            Distribution              => redhat          
+11-28-04 14:54 led            Kernel Version            => self compiled 2.4.27
+and 2.4.28
+11-28-04 16:31 led            Issue Monitored: led                         
+11-29-04 15:35 tiwai          Status                   assigned => resolved
+11-29-04 15:35 tiwai          Resolution               open => fixed       
+11-29-04 15:35 tiwai          Note Added: 0002640                          
 ======================================================================
 
 
