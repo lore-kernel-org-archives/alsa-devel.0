@@ -1,12 +1,13 @@
-From: Carlo Wood <carlo@alinoe.com>
-Subject: [PATCH] OSS Layer: restart stream after xrun once stream is drained.
-Date: Sun, 13 Jul 2003 04:38:47 +0200
+From: Stephane Alnet <alsa-dev@shimaore.net>
+Subject: [PATCH] work on usb_submit_urb returning -22 and "bad: scheduling
+ while atomic!"
+Date: Sat, 12 Jul 2003 23:45:08 -0500 (CDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030713023847.GA7992@alinoe.com>
+Message-ID: <Pine.LNX.4.44.0307122309230.1504-101000@kani-keli.alnet.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: MULTIPART/MIXED; BOUNDARY="-1463811839-2102518888-1058071104=:1504"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Content-ID: <Pine.LNX.4.44.0307122338460.1504@kani-keli.alnet.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,174 +16,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "xvoice@yahoogroups.com" <xvoice@yahoogroups.com>, "kai.vehmanen@wakkanet.fi" <kai.vehmanen@wakkanet.fi>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Jul 12, 2003 at 08:56:16PM +0200, Jaroslav Kysela wrote:
-> Yes, but at another level - in the OSS emulation code.
-> 
-> > What is the correct way to recover from this, to continue
-> > recording in this case, after the xrun?
-> 
-> Call read() or poll(POLLIN) again. I think that your problem might be that 
-> poll(POLLIN) does not trigger the input in the current ALSA code. Please, 
-> try this patch with ViaVoice (the patch is also in the ALSA CVS tree):
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+  Send mail to mime@docserver.cac.washington.edu for more info.
 
-Hi Jaroslav,
+---1463811839-2102518888-1058071104=:1504
+Content-Type: TEXT/PLAIN; CHARSET=US-ASCII
+Content-ID: <Pine.LNX.4.44.0307122338461.1504@kani-keli.alnet.home>
 
-I wrote a patch for sound/core/oss/pcm_oss.c, that fixes the ViaVoice
-problem.
+Hi,
 
-Problem:
+I couldn't get my UA-5 to work even in standard mode for playback
+(recording is fine in either standard or advanced mode based on the quirk
+I submitted recently and Clemens helped put in CVS) so I spent some time
+working on this problem tonight.
 
-When an xrun happens, the stream is stopped.
-The OSS layer (read1) changes the xrun state into a draining state,
-but never restarts the stream.
+I hit two different problems; the first one has already been mentioned on
+the list a couple days ago and shows up as:
 
-This patch restart the stream once so much had been drained
-from the stream that less than one fragement remains.
-It is not safe to wait till the stream is empty (although it should
-be when the application only reads full fragments) because it
-might be that the application only calls read() when there is
-at least one fragment ... kind of a contradiction, but then
-why not like this.
+ALSA sound/usb/usbaudio.c:685: cannot submit datapipe for urb 0, err = -22
+(-22 is -EINVAL)
 
+After some parsing of usb_submit_urb, I added some debugs in usbaudio.c
+and found out that urb->interval was set to 0, an invalid value. So I
+forced it to 1 and things started to work. (Obviously the proper fix may
+be to find why it's not properly initialized in the first place.)
 
---- linux-2.5.74/sound/core/oss/pcm_oss.c	2003-07-13 04:01:16.000000000 +0200
-+++ linux-2.5.74-debug/sound/core/oss/pcm_oss.c	2003-07-13 04:23:52.260709528 +0200
-@@ -627,8 +627,21 @@
- 			}
- 			continue;
- 		}
--		if (ret != -ESTRPIPE)
-+		if (ret != -ESTRPIPE) {
-+			if (runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
-+				snd_pcm_status_t status;
-+				memset(&status, 0, sizeof(status));
-+				int err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_STATUS, &status);
-+				if (!err && status.avail < runtime->period_size) {
-+					err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_PREPARE, 0);
-+					if (!err)
-+						snd_pcm_start(substream);
-+				}
-+				if (err < 0)
-+					ret = err;
-+			}
- 			break;
-+		}
- 	}
- 	return ret;
- }
+However I still had the "bad: scheduling while atomic!" problem I reported
+earlier on the list; sometimes I'd also get "Debug: sleeping function
+called from illegal context at kernel/sched.c:1489". Looking at the output
+from my debugs I saw that in some cases we were calling usb_submit_urb
+with a non-NULL urb->hcpriv, which isn't valid either.
 
+So, I'm not sure what the root cause for this last problem is (besides the
+fact that schedule() is called within schedule()), but I kind of worked
+around it by guarding all the usb_submit_urb calls with a check for a NULL
+urb->hcpriv. I still get the same oopses when opening the device, and
+sound quality gets down under load (lost packets), but otherwise things
+seem to be working much better.
 
-The attached test program gives, WITHOUT this patch the following output
-(This test case reads SLOW, to make sure that xruns happen frequently):
+Attached are the diffs I made; it's getting late here so I'll check back
+on it tomorrow, but hopefully that'll give somebody some ideas of what I
+did. :-]
 
-gment size: 1024
-Number of fragments: 32767
-Number of channels: 1
-Sample rate: 22050
-Number of full fragments that can be read or written without blocking: 0
-Total number of fragments allocated for buffering: 2
-Size of a fragment in bytes: 1024
-Number of bytes that can be read or written immediately without blocking: 0
-space: bytes = 32, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 1056, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 30635.751683
-space: bytes = 928, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2016, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 16124.799227
-space: bytes = 0, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 0, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 0, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 0, periods = 0, fragstotal = 2, fragsize = 1024
-[...]
+Tested with Kernel 2.5.75 + alsa-kernel CVS as of tonight.
 
-WITH the above patch it does this:
+Stephane
 
-Fragment size: 1024
-Number of fragments: 32767
-Number of channels: 1
-Sample rate: 22050
-Number of full fragments that can be read or written without blocking: 0
-Total number of fragments allocated for buffering: 2
-Size of a fragment in bytes: 1024
-Number of bytes that can be read or written immediately without blocking: 0
-space: bytes = 32, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 1088, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 29704.837189
-space: bytes = 928, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 14847.537252
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 15708.954795
-space: bytes = 800, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 12830.954678
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 13536.438665
-space: bytes = 832, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 12074.536003
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 12573.210712
-space: bytes = 832, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11650.397069
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 12040.231304
-space: bytes = 928, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11327.103292
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11590.736089
-space: bytes = 928, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11034.144344
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11272.664653
-space: bytes = 992, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 10823.670013
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11022.745850
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11211.084341
-space: bytes = 1056, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11387.316413
-space: bytes = 1056, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11569.761392
-space: bytes = 960, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11186.543811
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11377.988481
-space: bytes = 864, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11060.036340
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11234.400773
-space: bytes = 864, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 10955.674898
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11107.524306
-space: bytes = 896, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 10858.584314
-space: bytes = 1024, periods = 1, fragstotal = 2, fragsize = 1024
-Read 1024 bytes.  Average bytes/second read: 11011.375394
-space: bytes = 864, periods = 0, fragstotal = 2, fragsize = 1024
-space: bytes = 2048, periods = 2, fragstotal = 2, fragsize = 1024
-[...etc...]
+---1463811839-2102518888-1058071104=:1504
+Content-Type: APPLICATION/OCTET-STREAM; NAME="lowcpu.diff.gz"
+Content-Transfer-Encoding: BASE64
+Content-ID: <Pine.LNX.4.44.0307122338240.1504@kani-keli.alnet.home>
+Content-Description: 
+Content-Disposition: ATTACHMENT; FILENAME="lowcpu.diff.gz"
 
-The real rate being 8000, we have 16 kb/s of input
-from the soundcard, but only read (on average) 11 kb/s, from
-which we can conclude that the stream is stopped 31% of the time.
-
--- 
-Carlo Wood <carlo@alinoe.com>
+H4sICJPhED8AA2xvd2NwdS5kaWZmAOVV207bQBB9Dl8xRaKysR3shCSQNFEK
+olVVSqtQHqq2snxZYJVkvdq1oyLIv3fWa+dCEogq2pdashzP7pw9Z86M4zgO
+yCRjcTUR9OYgk6G6gyymSTWq1Fy37rgtx3PBa7S9WvvwqOqWFzhuw3V3LMvS
+CBuTa1Crt2tNzF9J7vfBabTqdhOsRqtpex70+ztQqQiSZoJ18Ce9BuMVyCyU
+Tk9kjFF2Y8LBPkQBg5CATBPOSQxxJnAFMI8KgoujURhEQ9g/WESzcjTIROj0
+biMu6ARMDN7jXZEs9jHC0tj4eDa48M8GA9hVwSgZ8xFJiY9pbWAJcy6uzs9B
+5/9gu6bCXThiWpA2iBDQLZgnXFa5IDwQxFARO4+nggTjXFZKx8RWxEwT3oAL
+Dw+IAngVKFhWHzPGNFU0DLxteP/ui//26+dPH051kgn3SuxaIVgtlqSgIdQ5
+JfBebKIGG/ANheR2HB8pO5ru/2GHL+9Y9Kwn/8AUxeNpZ5qtI9s7RmuOPbt+
+mFuD2EteYJ6nbLpOBBgU39wOUOShNzGElxiwLEXLqSwW5pEYnRAHaYBv3+nP
+6kyd4n92PleHMHN5w43yFBSnnICipmTuxbm2XGkulJZaFeJNkibg+xhIRO4o
+GpNFeevuQ3pLpWI583OZZ76/3OP0kBYRk2Cka2Mp1cZ8VTeOEoIrFezktVpO
+grg9Y61Tunu/sGOGlHOseylgBbejeh6Rp0BGkhSnvETZFc4L1z2HLJDXQ6+p
+QDmP6oWFvIvLmKQe6R0n6il53J0fVcBXHlfKngdKyIUQy8YhEX5y7XP8jpBU
+2qv+2qqWSqo6eMFhFTIX9sdk4vQkJyQuNU/1Y6XnigVJUj+kqYHsX2uDgiil
+E+KPAzk01bjhRmebfeXHSK+qic/J6W/E45m9/HZx6l8NTi4XJ/bZ3lGg24zs
+Nr1TEtxyZtcU8MmpXabaKUZj42z+veFcns4XKfETQ/THNdaYq0Uu+3fWf2CB
+19zcrLpbt94+LRpX/6did+78Br3vXFU1CgAA
+---1463811839-2102518888-1058071104=:1504--
 
 
 -------------------------------------------------------
