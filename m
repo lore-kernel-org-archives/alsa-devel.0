@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000580]: usb midi devices invisible to aconnect
-Date: Wed, 13 Oct 2004 19:33:58 +0200 (CEST)
+From: Oliver Freyd <Oliver.Freyd@gmx.de>
+Subject: Re: trident (Hoontech 4d Wave NX) dropouts with small buffersize.
+Date: Wed, 13 Oct 2004 22:02:45 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013173358.157FE1B00B@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20041013200245.GA1416@gmx.de>
+References: <20041005201351.GA25577@gmx.de> <s5hacuyu1b1.wl@alsa2.suse.de> <20041008071505.GA3394@gmx.de> <s5hacux5fl5.wl@alsa2.suse.de> <20041009184135.GA1612@gmx.de> <s5hd5zp46mz.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68CDE2B7
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 19:33:58 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <s5hd5zp46mz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,58 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Oct 11, 2004 at 05:27:32PM +0200, Takashi Iwai wrote:
+ 
+> Ok, to be sure, please try the attached patch.
+> This will make the driver ignoring the check of 2 periods and always
+> allocatint an extra voice.
+> 
+> 
+> Takashi
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000580
-======================================================================
-Reported By:                carmen
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     580
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian
-Kernel Version:              2.6.8.1 x86_64
-======================================================================
-Date Submitted:             10-13-2004 07:39 CEST
-Last Modified:              10-13-2004 19:33 CEST
-======================================================================
-Summary:                    usb midi devices invisible to aconnect
-Description: 
-midi devices such as Fastlane/Midisport USB, pass simple connection tests
-w/ amidi, and create output on /dev/midi01, etc. but they are unpatchable
-as they do not appear in aconnect...
-======================================================================
+Hello Takashi,
 
-----------------------------------------------------------------------
- Clemens Ladisch - 10-13-2004 18:20 CEST 
-----------------------------------------------------------------------
-Apparently, the snd-seq-midi module isn't loaded.
+I've applied your patch. It works great, no more missed buffers and dropouts
+when buffer_size=2*period (tried with aplay).
+The games sound nicely, too!!
 
-----------------------------------------------------------------------
- carmen - 10-13-2004 19:33 CEST 
-----------------------------------------------------------------------
-yep that was it. please mark closed. everything checks out clean with
-usb-audio on x86_64 (1.07-CVS) except the 0-padding i already emailed
-about. (address 731/1001/1 reported as 0731/1001/0001 to shell cript..)
+So your idea was correct. Only thing I don't quite understand is why is there
+an extra voice to generate interrupts in the first place, and why not in that
+special case. But you'll know why anyway...
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-13-04 07:39 carmen         New Bug                                      
-10-13-04 07:39 carmen         Distribution              => debian          
-10-13-04 07:39 carmen         Kernel Version            =>  2.6.8.1 x86_64 
-10-13-04 18:20 Clemens LadischBugnote Added: 0002129                       
-10-13-04 19:33 carmen         Bugnote Added: 0002134                       
-======================================================================
+well, that's it for now,
+
+   best regards, Oliver
 
 
 -------------------------------------------------------
