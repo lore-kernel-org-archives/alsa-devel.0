@@ -1,11 +1,11 @@
-From: Mark Knecht <markknecht@comcast.net>
-Subject: -Dplughw:0 & alsamixer...
-Date: 24 Jul 2003 16:48:11 -0700
+From: Daniel Sheltraw <sheltraw@unm.edu>
+Subject: RME HDSP 9652 vs DIGI 9652
+Date: Thu, 24 Jul 2003 20:27:54 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1059090491.1874.4.camel@Wizard.knechthome.com>
+Message-ID: <1059100074.3f2095aaafe13@webdjn.unm.edu>
 Mime-Version: 1.0
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,28 +15,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   Just checking. Should the volume levels I hear when using the command
+Hello ALSA list
 
-aplay -Dplughw:0 -r 44100 data/wave/seque~10.wav
+Are the registers of RME HDSP 9652 and DIGI 9652 identical. If
+not does anyone have datasheets for the HDSP 9652. I need them
+for a custom application and I just noticed that RME discontinued
+the DIGI 9652. If not, do you have an email address for the RME
+engineer that could provide the datasheets.
 
-be controlled by alsmixer? alsaplayer is being, but this command is not,
-at least right now.
-
-   Also, on a multichannel card, how do I direct the above command to a
-specific channel?
-
-   If there's an explanation fit for a simpleton like me about the
-difference between plughw and hw, please point me there so I can learn.
-
-   Thanks in advance.
-
-Cheers,
-Mark
-
+Thanks for your help,
+Daniel
 
 
 -------------------------------------------------------
