@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: PCM questions
-Date: Fri, 05 Mar 2004 10:01:28 +0100 (CET)
+Date: Fri, 5 Mar 2004 10:00:46 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040305100128.pochini@shiny.it>
-References: <s5hishkl9s8.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0403050959280.1869@pnote.perex-int.cz>
+References: <XFMail.20040305100128.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hishkl9s8.wl@alsa2.suse.de>
+In-Reply-To: <XFMail.20040305100128.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,44 +16,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Ove Kaaven <ovek@transgaming.com>, Jaroslav Kysela <perex@suse.cz>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 5 Mar 2004, Giuliano Pochini wrote:
 
-On 04-Mar-2004 Takashi Iwai wrote:
+> required features, at least the basic ones. Device dependent
+> stuff is not a good idea IMHO.
 
->> > > It is wavetable synthesizer API not PCM API. This part of ALSA is still
->> > > in the development phase.
->> >
->> > But when that gets fully developed, would I have to use the rawmidi API
->> > to do this then?
->>
->> I think that sequencer API is more appropriate, but as I said, we don't
->> have a clear design at this time. It's also possible that we will hide
->> these things in alsa-lib and the kernel API will be hardware specific
->> using the hwdep interface.
->
-> i feel hwdep would be more appropriate.
->
-> i guess he wants the sound engine, mixing of several streams and
-> running efficiently (almost in background) for games, etc.
-> it's less music-oriented, but would need just a sample load and
-> loop playback function (with panning, volume effect if possible).
-> at least, it wouldn't be too difficult to implement it for emu10k1
-> (and maybe trident and ymfpci, too, if the sample size is small).
+The abstraction will be in alsa-lib, so the application will have common 
+access to this API. But the hardware is too much different in this area
+and we don't want to put much code in kernel, so alsa-lib will handle
+the differences.
 
-On the Amiga :) it was simple. You only need to tell the hw
-to play a block of data at given sample rate, volume, etc.
-But most of the cards can't do that. I think one good solution
-is to run an "sfx mixer" in a separate thread. That mixer
-must provide emulation code if the hardware lacks some of the
-required features, at least the basic ones. Device dependent
-stuff is not a good idea IMHO.
+						Jaroslav
 
-
---
-Giuliano.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
