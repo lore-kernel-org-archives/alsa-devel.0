@@ -1,16 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: spin_lock_irqwhat ?
-Date: Thu, 13 May 2004 20:57:51 +0200
+From: Adam Tla/lka <atlka@pg.gda.pl>
+Subject: Re: mixer device
+Date: Thu, 13 May 2004 19:10:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040513205751.6b61e53c.pochini@shiny.it>
-References: <s5h3c68hbvc.wl@alsa2.suse.de>
-	<XFMail.20040510165124.pochini@shiny.it>
-	<s5hfza8fhfi.wl@alsa2.suse.de>
+Message-ID: <20040513171025.GF6913@sunrise.pg.gda.pl>
+References: <20040513153457.GE6913@sunrise.pg.gda.pl> <XFMail.20040513182817.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfza8fhfi.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <XFMail.20040513182817.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,27 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, May 13, 2004 at 06:28:17PM +0200, Giuliano Pochini wrote:
+> Good question. The current approach is based on the control
+> names but sometimes they're not enough. What do you suggest ?
+I am testing changed aoss lib which uses dmix plugin 
+to play simultaniously many stereo sound sources.
+Now I can use JavaSoundDemo, sound in Flash pages in mozilla,
+Q1, Q2 and Q3, xmms and mplayer at once. Of course playing 
+simulaniously many Quake games is resource consuming and has no 
+practical sense but for demonstration purposes its ok.
 
-On Mon, 10 May 2004 17:08:49 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+OK - there is many different hardware on the market and some cards
+are multichannel, some are not, some of them have limited mixers or none.
 
-> prepare and trigger callbacks are already in irq-disabled.
-> i.e. you need only spin_lock() in them.
+So maybe we could create an abstract sound card which has a mixer and is
+a multichannel one (and could mix many 5.1 sources too ;-)).
+Now if a real card has ability to do this we use hardware, and if not
+we emulate functionality in software. Example of doing mixer functions
+on open PCM stream is a good one. Typical sound program just opens
+it's PCM stream, sets the volume level, plays sounds and exits closing
+stream. Of course we have programs which need know more about hardware.
+OK and this all should be supported too. But typical desktop usage
+is to play a few sounds simultaniously (desktop events, Internet music,
+browser sounds etc..) and set their volume independently.
+There are some sound daemons of course. But we have different daemons
+working with different desktops (KDE, GNOME) and even supporting
+particular group of programs. All of this is a big mess. So maybe better
+solution is to implement this functions at the sound card level.
 
-Does it mean that ALSA acquires the lock only when it calls PCM callbacks,
-that is trigger(), etc., are atomic only wrt other PCM functions ?
+Regards
 
-
-hdsp.c and rme9652.x use spin_*lock_irq() inside prepare().
-
-
---
-Giuliano.
-
+-- 
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
