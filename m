@@ -1,8 +1,8 @@
 From: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
 Subject: Re: dsnoop, dshare and dmix plugins
-Date: Fri, 21 Mar 2003 01:10:44 +0200
+Date: Fri, 21 Mar 2003 01:12:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030321011044.A2990@sci.fi>
+Message-ID: <20030321011213.B2990@sci.fi>
 References: <E18vjIM-0006pL-00@sc8-sf-list2.sourceforge.net> <3E7A3CFE.4A6293A5@sun.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
@@ -20,13 +20,12 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
 On Thu, Mar 20, 2003 at 02:13:18PM -0800, Florian Bomers wrote:
 > just to clarify: all 3 plugins will not enable several processes to use=
  the same
 > soundcard's channels, i.e. software mixing?
 
-dmix does just that. Works fine here, ipc_key stuff and all :)
+dmix does just that. Works fine here. ipc_key stuff and all :)
 
 --=20
 Ville Syrj=E4l=E4
