@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Q: Periodsize for capture, SBLive
-Date: Mon, 18 Oct 2004 09:42:11 -0400
+From: Gerd Knorr <kraxel@suse.de>
+Subject: Re: Problem with Avermedia 771
+Date: Mon, 18 Oct 2004 15:01:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410181342.i9IDgC44003811@localhost.localdomain>
-References: <20041018133613.GA14810@stud.ntnu.no>
+Message-ID: <20041018130114.GA5476@bytesex>
+References: <416ED29A.7060200@qanu.de> <20041015101119.GH3866@bytesex> <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 18 Oct 2004 15:36:14 +0200."
-             <20041018133613.GA14810@stud.ntnu.no>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,21 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Asbj rn S b  <asbjs@stud.ntnu.no>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Holger Waechtler <holger@qanu.de>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I open the sound card (a SoundBlaster Live) for capture, and=20
->request a period size (using set_period_size_near()) of 8 frames,
->but what I get is a period size of 384 frames. =20
+On Fri, Oct 15, 2004 at 01:03:07PM +0200, Jaroslav Kysela wrote:
+> On Fri, 15 Oct 2004, Gerd Knorr wrote:
+> 
+> I think that the database should be on one central place.
+> I suggest to create a simple function in a standalone module:
+> 
+> #define BTTV_CAP_AUDIOISVIDEO	(1<<0)
+> 
+> unsigned int bttv_caps(struct pci_dev *bttv, char **name);
 
-the SBlive can't go below 64 at best. 8 is about the minimum anyone
-has ever used with any device, and that requires a fully patched 2.6
-kernel with ingo's latest patches. very few devices can accept that
-setting: 64 is the typical minimum.
+Hmm, I was thinking about that as well, I'm not sure it is really a good
+idea through.  We have three different different bt878 cards:
 
---p
+  (1) The ones where you can get audio data out of PCI function .1
+  (2) The ones which use PCI function .1 for DVB.
+  (3) The ones which use PCI function .1 for other data transfers,
+      the first WinTV PVR card for example (which isn't supported by
+      Linux at the moment, at least not the mpeg stuff).
+  (4) Cards where PCI function .1 is simply unused, i.e. you get either
+      nothing or just noise if you try to record audio from there.
 
+I think the alsa driver should only try to use cards which fall into
+group (1), not everything but (2).  Problem with that is that it simply
+isn't known for most cards whenever they are in group (1) or (4).
+
+There are no overlaps between the different card groups, so if every
+driver whitelists the IDs for "known-good" hardware there should be no
+overlaps between the lists (and thus no point in having a central list).
+
+The whitelist approach would also have the advantage that you can stick
+the IDs into a struct pci_device_id list, so they will show up in
+/lib/modules/$(uname -r)/modules.pcimap, which will make the hardware
+probing easier for the distributions.
+
+  Gerd
 
 
 
