@@ -1,13 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000443]: OSS emulation and nonblocking write to /dev/dsp
-Date: Sun, 29 Aug 2004 12:26:55 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: What to do?
+Date: Fri, 03 Sep 2004 14:16:23 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040829102655.8F72D39006@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.HPX.4.33n.0409031411560.16124-100000@studcom.urz.uni-halle.de>
+References: <000e01c491ac$5b5adb60$4f015d0a@asuya>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC9EA24D
-	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2004 12:26:55 +0200 (MEST)
+Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19DD4289
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:16:32 +0200 (MEST)
+In-reply-to: <000e01c491ac$5b5adb60$4f015d0a@asuya>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,58 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?koi8-r?B?4c7E0mnKIPHSxc3Lzw==?= <and@if.energy.gov.ua>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+=E1=CE=C4=D2i=CA =F1=D2=C5=CD=CB=CF wrote:
+> ...
+> checking for current directory... /usr/src/linux-2.4.18/alsa-driver=
+-1.0.0rc2/alsa-driver-1.0.0rc2
+> ...
+> checking for directory with kernel source... /usr/src/linux
+> checking for kernel version... 2.2.19-3.asp
+> checking for GCC version... Kernel compiler: gcc egcs-2.91.66 19990=
+314/Linux (egcs-1.1.2 release) Used compiler: 2.96
+> Fatal error: Compiler type does not match
+> Decoded kernel compiler: type=3Degcs version=3D2.91.66
+> Decoded used compiler: type=3Dgcc version=3D2.96
 
-The following bug has been ASSIGNED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000443
-======================================================================
-Reported By:                serge
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     443
-Category:                   CORE OSS - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             08-15-2004 12:19 CEST
-Last Modified:              08-29-2004 12:26 CEST
-======================================================================
-Summary:                    OSS emulation and nonblocking write to /dev/dsp
-Description: 
-When you open '/dev/dsp' in nonblocking mode (O_NONBLOCK) and write too
-much data to it, it seems that write operation always returns success and
-pretends that all data was written. But calls to ioctl(oss_fd,
-SNDCTL_DSP_GETOSPACE, &bufinfo) start returning weird information. Test
-program that reproduces the bug is attached.
-======================================================================
+If the kernel you're compiling ALSA for is not the kernel currently
+running, you have to tell the configure script which kernel to use
+with the --with-kernel option.  In your case, it's probably
+--with-kernel=3D/usr/src/linux-2.4.18.  And you might consider using
+ALSA 1.0.6 instead of 1.0.0rc2.
 
-----------------------------------------------------------------------
- serge - 08-26-2004 19:54 CEST 
-----------------------------------------------------------------------
-Just tested and reproduced the same problem on 'snd-intel8x0' (nforce2
-chipset), so this is not 'snd-via82xx' specific (KT133A chipset). Please
-anybody replace the summary of this bug with 'OSS emulation & nonblocking
-write to /dev/dsp'.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-15-04 12:19 serge          New Bug                                      
-08-15-04 12:19 serge          File Added: oss-bug.cpp                      
-08-15-04 12:26 serge          Bug Monitored: serge                         
-08-26-04 19:54 serge          Bugnote Added: 0001635                       
-08-27-04 14:01 Clemens Ladischsummary                  OSS emulation on 'snd-via82xx' & nonblocking write to /dev/dsp => OSS emulation and nonblocking write to /dev/dsp
-08-29-04 12:26 perex          Assigned To               => perex           
-08-29-04 12:26 perex          Status                   new => assigned     
-======================================================================
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
