@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000560]: Error 2
-Date: Mon, 22 Nov 2004 14:46:43 +0100
-Message-ID: <c36d25e3c1b0364aeac96cf88c6a0b22@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000428]: unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
+Date: Mon, 22 Nov 2004 14:48:10 +0100
+Message-ID: <ed44bdd478b6dfa5556dec93ab6fa9da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B24C32B3
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:46:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F127C2B4
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 14:48:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,53 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=560> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=428> 
 ======================================================================
-Reported By:                kensmith
+Reported By:                svetljo
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   560
+Issue ID:                   428
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 open
+Distribution:               Mandrake cooker
+Kernel Version:             2.6.7
+Resolution:                 unable to duplicate
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-03-2004 01:47 CEST
-Last Modified:              11-22-2004 14:46 CET
+Date Submitted:             08-06-2004 21:15 CEST
+Last Modified:              11-22-2004 14:48 CET
 ======================================================================
-Summary:                    Error 2
+Summary:                    unresolved symbols in snd-pcm.ko on alpha
+linux-2.6.7
 Description: 
-make reports:
+trying to compile latest alsa driver 1.0.6-rc1
+results in unresolved symbols at module link time
+in snd-pcm.ko
 
-make: *** [include/sndversions.h] Error 2
+gcc-3.4 , linux-2.6.7
+
+here is the message:
+*** Warning: "__ioremap" [sound/core/snd-pcm.ko] undefined!
+*** Warning: "virt_to_phys" [sound/core/snd-pcm.ko] undefined!
+
+which results in unusable alsa drivers
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:46 
+ svetljo - 08-13-04 14:40 
 ----------------------------------------------------------------------
-Can you reproduce with 1.0.7rc2?
+general /*probably stupid */ question
+
+why don't you use remap_page_range instead of io_remap_page_range 
+wouldn't this solve the problem
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 14:46 
+ perex - 10-22-04 16:49 
 ----------------------------------------------------------------------
-No response from reporter.
-Closing now.
+Please, reopen if this bug still exists with 1.0.7rc2..
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-03-04 01:47 kensmith       New Issue                                    
-10-22-04 16:46 perex          Note Added: 0002247                          
-10-22-04 16:46 perex          Status                   assigned => feedback
-10-25-04 18:15 ma13860        Issue Monitored: ma13860                     
-11-22-04 14:46 tiwai          Status                   feedback => closed  
-11-22-04 14:46 tiwai          Note Added: 0002504                          
+08-06-04 21:15 svetljo        New Issue                                    
+08-06-04 21:15 svetljo        Distribution              => Mandrake cooker 
+08-06-04 21:15 svetljo        Kernel Version            => 2.6.7           
+08-11-04 19:31 svetljo        Issue Monitored: svetljo                     
+08-12-04 11:09 svetljo        Note Added: 0001552                          
+08-12-04 11:35 perex          Note Added: 0001553                          
+08-12-04 11:42 svetljo        Note Added: 0001554                          
+08-12-04 11:54 perex          Note Added: 0001555                          
+08-12-04 12:06 svetljo        Note Added: 0001556                          
+08-12-04 12:45 svetljo        Note Added: 0001557                          
+08-12-04 14:07 svetljo        Note Added: 0001558                          
+08-13-04 14:40 svetljo        Note Added: 0001563                          
+10-22-04 16:49 perex          Status                   assigned => resolved
+10-22-04 16:49 perex          Resolution               open => unable to
+duplicate
+10-22-04 16:49 perex          Note Added: 0002249                          
+11-22-04 14:48 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
