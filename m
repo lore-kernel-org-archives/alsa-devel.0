@@ -1,40 +1,42 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [ALSA - driver 0000454]: cvs site is down
-Date: Thu, 19 Aug 2004 01:33:52 -0400
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092893631.8432.90.camel@krustophenia.net>
-References: <20040818143544.58F5B1102F@server.perex-int.cz>
-	 <s5hsmakv6dq.wl@alsa2.suse.de>  <1092855379.8432.39.camel@krustophenia.net>
-	 <1092889578.8432.70.camel@krustophenia.net>
+Subject: alsamixer idea
+Date: Thu, 19 Aug 2004 02:46:28 -0400
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <1092897987.8432.98.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1092889578.8432.70.camel@krustophenia.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-08-19 at 00:26, Lee Revell wrote:
-> On Wed, 2004-08-18 at 14:56, Lee Revell wrote:
-> Speaking as an ISP veteran, I am not sure I buy the line about a
-> hardware problem.  That would have been fixed by now.  Seems more likely
-> the machine got compromised.
-> 
+With my soundcard (emu10k1), and a 21" monitor, running in a maximized
+xterm with a small font, only about half the mixer controls fit on the
+screen - I have to scroll to the right to see the rest.  Worse, the
+names are truncated to 8 letters!  Yet, the screen is mostly empty
+space.
 
-The hardware-problem explanation becomes even more implausible when you
-consider sf.net is on the west coast, they don't even have to have parts
-overnighted, they can drive and pick it up.
+Why not just make the mixer controls horizontal?  You would easily be
+able to fit them all on the screen, with the full names, or at least you
+could truncate them to something reasonable like 32 characters, and you
+would still have the same amount of space for the mixer.  The only
+drawback I see is that it might not be cross-cultural, though I don't
+see why the volume increasing left to right is any less intuitive than
+bottom to top.
 
-Lee 
+At the very least it could have a horizontal mode that could be toggled.
+
+Lee
+
 
 
 
