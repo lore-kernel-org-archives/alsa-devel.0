@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000634]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
-Date: Tue, 9 Nov 2004 18:28:33 +0100
-Message-ID: <7977f25a406a03a32f443dabefe8e772@bugtrack.alsa-project.org>
+Date: Tue, 9 Nov 2004 18:29:22 +0100
+Message-ID: <d0589bdd4eb181a0eb977b399e1afff9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F6762B6
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 18:28:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC3BA2B6
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 18:29:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A new RELATIONSHIP has been added to the following issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=634> 
 ======================================================================
 Reported By:                betak
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   634
@@ -35,12 +35,15 @@ Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Fedora Core 2
 Kernel Version:             2.6.9
+Resolution:                 duplicate
+Duplicate:                  635
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-07-2004 21:28 CET
-Last Modified:              11-09-2004 18:28 CET
+Last Modified:              11-09-2004 18:29 CET
 ======================================================================
 Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
 converters and GPIO not ready (0x1)
@@ -72,6 +75,10 @@ Date Modified  Username       Field                    Change
 11-07-04 21:28 betak          Distribution              => Fedora Core 2   
 11-07-04 21:28 betak          Kernel Version            => 2.6.9           
 11-09-04 18:28 tiwai          Relationship added       duplicate of 0000635
+11-09-04 18:29 tiwai          Duplicate ID             0 => 635            
+11-09-04 18:29 tiwai          Status                   new => resolved     
+11-09-04 18:29 tiwai          Resolution               open => duplicate   
+11-09-04 18:29 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
