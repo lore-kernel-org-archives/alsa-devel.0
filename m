@@ -1,14 +1,16 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: [PATCH] Edirol UA-20 PCM support
-Date: Mon, 24 Feb 2003 15:39:02 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: New PCM API extension
+Date: Mon, 24 Feb 2003 16:20:55 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030224143902.GA8502@fliwatut.scifi>
-References: <20030224122354.GA9568@fliwatut.scifi> <Pine.HPX.4.33n.0302241409180.20472-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.44.0302241605410.1142-100000@pnote.perex-int.cz>
+References: <3E59562F.62929578@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0302241409180.20472-100000@studcom.urz.uni-halle.de>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA24210
+	for <alsa-devel@alsa-project.org>; Mon, 24 Feb 2003 16:21:11 +0100
+In-Reply-To: <3E59562F.62929578@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,49 +19,77 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
+On Mon, 24 Feb 2003, Abramo Bagnara wrote:
 
-before I go on, I must say: I decided to send the UA-20 back to my
-dealer and probably buy a Quattro instead. This seems to be the more
-flexible device with the only drawback, that it's not USB-powered and
-more expensive. I'm getting a bit tired from being Edirol's laboratory
-animal. Why didn't they implement the standard they wrote? But what's
-more important, I discovered, that I might need 4-channel output soon.
-4-channel and 4-channel and midi seems to be supported best on the
-Quattro. 
-
-And what's the most important thing to me: Pd doesn't seem to like the
-24-bit-depth or so either, and it doesn't support the plugin layer of
-ALSA yet. So I cannot use Pd, which is the audio software that is
-running here 12/7.
-
-Clemens Ladisch hat gesagt: // Clemens Ladisch wrote:
-
-> So PCM works.  :-)
-
-Yep. 
-
-> > OSS-emulation doesn't work.
+> Jaroslav Kysela wrote:
+> > 
+> > I think that I have one present problem. It was not possible to write,
+> > something like the dmix plugin does (in the server/client model): Transfer
+> > data to different areas in the ring buffer. Imagine that client1 wants to
+> > write data at the end of the ring buffer (assume that server don't change
+> > the r/w pointer). Then client2 comes with some data to be placed at the
+> > start of the buffer later (server rewinds the stream position). Then
+> > hardware processed a period and client1 wants to continue (server forwards
+> > the stream position at the end of the ring buffer).
+> > 
+> > I can imagine more examples where "later" samples might be wanted to be
+> > processed before "quick" ones.
 > 
-> OSS doesn't support 24-bit sample formats.
+> Your examples appears a little confused at my eyes, but if I've
+> understood correctly don't you think this might be solved by
+> snd_pcm_rewind done by server?
 
-I suspected that. Might be one more reason to get a Quattro. 
+And you'll need to commit the same samples later which seems to me quite 
+ineffective (extra copy + processing (if required)).
 
-> > I cannot use or see the midi devices (anymore).
+I probably don't explain clearly my point:
+
+We have data for time T, T+1 and T+2. The application might want to write
+data in this order: T+1, T, T+2. While we going back to T position, we can
+use snd_pcm_rewind(), but going to T+2 (without changing T+1 data)  
+requires writting (or commiting) of same samples now. That's exactly what
+I want to eliminate.
+
+> At least this is how it works in pcm_share.
 > 
-> Are there any messages in /var/log/messages? Is interface #3 in use by the
-> snd-usb-audio driver (see /proc/bus/usb/devices)?
+> > > > I'm also going to propose next extension: Actually, the appl_ptr managing
+> > > > routines - snd_pcm_reset(), snd_pcm_rewind(), snd_pcm_forward() always
+> > > > uses an ioctl for it's operation. I think that it wouldn't be a bad idea
+> > > > to implement these function in the lightweight variant, too. I mean that
+> > > > they will operate only with the actual hw_ptr without calling the kernel
+> > > > code. We have already functions to synchronize the hw_ptr with the
+> > > > hardware (snd_pcm_delay(), snd_pcm_hwsync()). Because it's late to change
+> > > > this behaviour in alsa-lib, I propose to create a function
+> > > > 'snd_pcm_fast_rw_change()' (better name?) which tells the alsa-lib that no
+> > > > accurate operation is required. Especially lowlatency applications will
+> > > > benefit that we removed more 'user<->kernel' switches.
+> > >
+> > > Note that the assumption of monotonic direction of appl_ptr is spread
+> > > everywhere so I doubt that this is feasible for snd_pcm_rewind.
+> > 
+> > I don't understand here. I've looked to the ioctl implementation and there
+> > are no problems to change appl_ptr in the user space only as well.
+> 
+> Have you thought what happens if appl_ptr is changed backward during
+> interrupt handler?
 
-It says: "Sub=03 Prot=00 Driver=(None)" at the Edirol, whereas the
-other interfaces are claimed by snd-usb-audio. I have a kernel without
-any OSS sound modules besides soundcore. 
+I see only one problem: XRUN detection might fail, but we can add a check 
+to the user space the after appl_ptr change, so we will eliminate this 
+problem. There might be a problem with hardware using indirect ring 
+buffers (CS46xx, emufx), but the slow function will be still available to 
+solve these problems as well.
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
