@@ -1,23 +1,13 @@
-From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: current CVS: compile error
-Date: 06 Jan 2005 18:16:11 -0800
-Message-ID: <1105064170.26216.102.camel@cmn37.stanford.edu>
+From: Eric Dantan Rzewnicki <eric@zhevny.com>
+Subject: Re: Re: new home for alsa-devel archive?
+Date: Thu, 06 Jan 2005 23:26:20 -0500
+Message-ID: <41DE0F6C.4070503@zhevny.com>
+References: <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050106145356.GA18725@infradead.org> <20050106150941.GE1830@wotan.suse.de> <20050106151429.GA19155@infradead.org> <1105024942.13396.4.camel@krustophenia.net> <20050106153147.GB19324@infradead.org> <1105025938.14990.4.camel@krustophenia.net> <20050106154327.GA19781@infradead.org> <1105028473.15126.4.camel@krustophenia.net> <yw1xoeg2phli.fsf@ford.inprovide.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.Stanford.EDU (smtp3.Stanford.EDU [171.67.16.138])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5586527B
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 03:16:16 +0100 (MET)
-Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
-	by smtp3.Stanford.EDU (8.12.11/8.12.11) with ESMTP id j072GBoO025344
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jan 2005 18:16:13 -0800
-Received: from cmn37.stanford.edu (cmn37.stanford.edu [171.64.197.186])
-	by cm-mail.stanford.edu (8.11.6/8.11.6) with ESMTP id j072GBH27532
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jan 2005 18:16:11 -0800
-Received: from localhost (localhost [127.0.0.1])
-	by cmn37.stanford.edu (8.12.8/8.12.5) with ESMTP id j072GBDJ026945
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jan 2005 18:16:11 -0800
+In-Reply-To: <yw1xoeg2phli.fsf@ford.inprovide.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,34 +17,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?ISO-8859-1?Q?M=E5ns_Rullg=E5rd?= <mru@inprovide.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm getting this error while building current CVS (one FC3):
+M=E5ns Rullg=E5rd wrote:
+> Lee Revell <rlrevell@joe-job.com> writes:
+>>[re-added alsa-devel to cc:]
+>>On Thu, 2005-01-06 at 15:43 +0000, Christoph Hellwig wrote:
+>>>On Thu, Jan 06, 2005 at 10:38:58AM -0500, Lee Revell wrote:
+>>>>The only working up to date archive I know of is the sourceforge one,
+>>>>not my favorite interface:
+>>>>http://sourceforge.net/mailarchive/forum.php?forum_id=3D1752
+>>>Indeed, I'd even say it's horrible.  Maybe Alsa folks could ask whethe=
+r
+>>>http://marc.theaimsgroup.com/ could host the new alsa lists?  They onl=
+y
+>>>have the dead really old list currently.
+>>This would be great.  I guess the first step is to find someone with a
+>>local copy of the archive, in mbox format, preferably despammed.  I onl=
+y
+>>have back to June.  Anyone?
+> There are archives at gmane, too.  Not perfect but infinitely better
+> than sf.net.
 
-  CC [M] 
-/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/darla20.o
-  CC [M] 
-/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/cs46xx/dsp_spos_scb_lib.o
-In file included from
-/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/darla20.c:109:
-/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:
-In function `load_firmware':
-/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio.h:424:
-sorry, unimplemented: inlining failed in call to 'free_firmware':
-function body not available
-/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/echoaudio_dsp.c:544: sorry, unimplemented: called from here
-make[5]: ***
-[/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio/darla20.o] Error
-1
-make[4]: *** [/usr/src/rpm/BUILD/alsa-driver-1.0.8rc2/pci/echoaudio]
-Error 2
-make[4]: *** Waiting for unfinished jobs....
+Sorry for jumping in late on this thread. I missed the beginning of it.
 
+I'm not sure if anyone has expressed an opinion about mailman, but if=20
+the community is open to it I can offer techweb.rfa.org as a host for=20
+the lists and archives. We already host the portaudio list.
 
--- Fernando
+http://techweb.rfa.org/mailman/listinfo
 
+Please CC me on any reply. I rarely have time to read alsa lists lately=20
+and might miss it otherwise.
 
+-Eric Rz.
 
 
 -------------------------------------------------------
