@@ -1,17 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: User land drivers.
-Date: Fri, 3 Sep 2004 15:11:12 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: hardware channel mixing
+Date: Fri, 03 Sep 2004 14:59:26 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903151112.0aa754c2@mango.fruits.de>
-References: <413456AE.7000007@superbug.demon.co.uk>
+Message-ID: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.58.0408291058200.4131@pat.dumaisnet.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4E90F29A
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:58:45 +0200 (MEST)
-In-Reply-To: <413456AE.7000007@superbug.demon.co.uk>
+In-reply-to: <Pine.LNX.4.58.0408291058200.4131@pat.dumaisnet.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,28 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@alsa-project.org
+To: Patrick Dumais <pat@dumaisnet.ca>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 31 Aug 2004 11:45:02 +0100
-James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
+Patrick Dumais wrote:
+> When I read a description of what the soundblaster Live features, I notice
+> they say "131 hardware channels". Now is this what I think it is? does it
+> mean that I can actualy write multiple (upto 131) sounds and let the card
+> mix it by itself?
+
+Essentially, yes, but the real number is 64 voices, and each stereo
+stream needs two of them, so you can play 32 streams simultaneously.
+
+> If so, I haven't seen any documentation about this.
+
+On the SB Live, the PCM device has 32 subdevices.  The subdevice
+number can be specified as the third number in the "hw:x,y,z" device
+name when opening the device.  If you don't specify a subdevice
+number, the default is -1 which means "pick the first free one".
 
 
-> Would it be possible to have userland processes creating /dev/ files ?
-> Alternatively, could we provide a new plugin method, so we can add 
-> userland PCMs, Mixer, etc.
-> 
-> Any ideas?
+HTH
+Clemens
 
-have a look for userspace file systems. I suppose many of the techniques
-can be adopted to this..
-
-http://www.circlemud.org/~jelson/software/fusd/
-
-for example
-
-flo
 
 
 -------------------------------------------------------
