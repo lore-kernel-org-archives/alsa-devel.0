@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Hammerfall HDSP multiface doesn't work with latest driver?
-Date: Tue, 27 May 2003 08:47:36 -0400
+From: d <dieb13@klingt.org>
+Subject: Re: Hammerfall HDSP multiface doesn't work with latest
+ driver?
+Date: Tue, 27 May 2003 14:51:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19Kdng-0006e9-00@sc8-sf-list1.sourceforge.net>
-References: <3ED3284A.FE3C1AF3@users.sourceforge.net>
+Message-ID: <3ED35F50.30102@klingt.org>
+References: <E19Kdng-0006e9-00@sc8-sf-list1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 27 May 2003 11:56:42 +0300."
-             <3ED3284A.FE3C1AF3@users.sourceforge.net>
+In-Reply-To: <E19Kdng-0006e9-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,25 +18,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "M. Nentwig" <nentwig@users.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: "M. Nentwig" <nentwig@users.sourceforge.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hello,
->
->I just compiled alsa-lib and alsa-drivers yesterday. Now my hammerfall
->hdsp multiface doesn't load the firmware anymore. The red LED remains
->on, 'modprobe' ends with 'waiting for firmware'.
->I reverted to an earlier version of alsalib and alsadrivers, and it
->works again. Any ideas?
 
-you need to get alsa-tools, and run the hdsploader program.
+> you need to get alsa-tools, and run the hdsploader program.
 
-this change was made because we can't (and/or don't want to)
-distribute non-GPL'ed firmware in the kernel, so the firmware has be
-loaded from user-space.
+btw: my kernel freezes when i try to upload the firmware a second time
+i use 2.4.20 with capabilities and lowlatency patches and a 
+hdsp+multiface (latest alsa from cvs)
 
---p
+sorry if this has been reported allready
+
+regards
+d13b
+
 
 
 -------------------------------------------------------
