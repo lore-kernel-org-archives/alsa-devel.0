@@ -1,13 +1,11 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Re: 2.6.0-test1: ALSA problem
-Date: Tue, 15 Jul 2003 17:33:14 +0200 (CEST)
+From: Carlos Sierra <csierra@eresmas.net>
+Subject: Leadtek nForce2 Motherboards sound problems
+Date: 15 Jul 2003 20:09:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307151732280.26334-100000@pnote.perex-int.cz>
-References: <s5h7k6j3jvk.wl@alsa2.suse.de>
+Message-ID: <1058292565.1024.12.camel@xavier.micasa>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative; boundary="=-8QmvE0kUAmQz8iMn1fKw"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7k6j3jvk.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,56 +14,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Chris Meadors <twrchris@hereintown.net>, Amit Shah <shahamit@gmx.net>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 15 Jul 2003, Takashi Iwai wrote:
 
-> At 15 Jul 2003 10:57:55 -0400,
-> Chris Meadors wrote:
-> > 
-> > On Tue, 2003-07-15 at 01:18, Amit Shah wrote:
-> > > I don't know what the problem is exactly, since alsa shows it found one 
-> > > card... I'm using debian woody with alsa-base installed. Even if alsa shows 
-> > > one card detected, it doesn't play. (It doesn't recognize /dev/dsp?)
-> > > 
-> > > 
-> > > Advanced Linux Sound Architecture Driver Version 0.9.4 (Mon Jun 09 12:01:18 
-> > > 2003 UTC).
-> > > kobject_register failed for Ensoniq AudioPCI (-17)
-> > > Call Trace:
-> > >  [<c01f6b8a>] kobject_register+0x32/0x48
-> > >  [<c0248a1b>] bus_add_driver+0x3f/0xa0
-> > >  [<c0248e0a>] driver_register+0x36/0x3c
-> > >  [<c01fb236>] pci_register_driver+0x6a/0x90
-> > >  [<c04117ba>] alsa_card_ens137x_init+0xe/0x3c
-> > >  [<c03f86f5>] do_initcalls+0x39/0x94
-> > >  [<c03f876c>] do_basic_setup+0x1c/0x20
-> > >  [<c010509b>] init+0x33/0x188
-> > >  [<c0105068>] init+0x0/0x188
-> > >  [<c0107145>] kernel_thread_helper+0x5/0xc
-> > > 
-> > > ALSA device list:
-> > >   #0: Intel 82801BA-ICH2 at 0xe800, irq 17
-> > 
-> > I see exactly the same thing with my Sound Blaster 16 PCI.
-> 
-> 
-> hmm, something gets wrong when no irq is generated and the pcm stream
-> is forced to be closed.  i'll check this.
-> 
-> are you using a UP kernel or an SMP kernel?
+--=-8QmvE0kUAmQz8iMn1fKw
+Content-Type: text/plain; charset=
+Content-Transfer-Encoding: quoted-printable
 
-It might be related that we have not initialized the owner field from the 
-pci_dev structure for 2.6 kernels. I will fix that soon.
+Hi, I recently buyed a Leadted Winfast K7NCR18G PRO booard with NVIDIA
+NForce2 MCP-T chip. This board comes with integrated:
+=C2=B7 network
+=C2=B7 video=20
+=C2=B7 audio
 
-						Jaroslav
+I has no problem neither with video nor net but the audio has problems.
+The driver matching this card is snd-intel8x0, and I have read that
+people having other motherboards with the same chipset have made in work
+correctly, but people owning Leadtek boards have encountered problems.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+The problem I have is the next:
+    Usually, when I start to play some sound, card works perfectly but
+when I stop and start sound again, either stopping and starting the
+player program or toggling pause, the playback becomes faster and the
+tone higher. Stopping and starting the playback will toggle the
+behaviour between right and wrong playback.=20
+
+I tried both kernel and alsa drivers and with both of them the card
+behaves the same.
+I tried with almost every parameter the drivers accepts with no luck.=20
+
+As a hint, when I request strict_clocking and set clocking to a lower
+freq I obtained slow playback (when before it played right) and fastest
+playback (when before it played wrong) so no solution found.
+
+I would like to know whether this is a know problem and whether it has a
+solution via driver or whether it is a hardware issue...
+
+Thanks...
+
+--=-8QmvE0kUAmQz8iMn1fKw
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 TRANSITIONAL//EN">
+<HTML>
+<HEAD>
+  <META HTTP-EQUIV="Content-Type" CONTENT="text/html; CHARSET=UTF-8">
+  <META NAME="GENERATOR" CONTENT="GtkHTML/3.0.5">
+</HEAD>
+<BODY>
+Hi, I recently buyed a Leadted Winfast K7NCR18G PRO booard with NVIDIA NForce2 MCP-T chip. This board comes with integrated:<BR>
+&#183; network<BR>
+&#183; video <BR>
+&#183; audio<BR>
+<BR>
+I has no problem neither with video nor net but the audio has problems.<BR>
+The driver matching this card is snd-intel8x0, and I have read that people having other motherboards with the same chipset have made in work correctly, but people owning Leadtek boards have encountered problems.<BR>
+<BR>
+The problem I have is the next:<BR>
+&nbsp;&nbsp;&nbsp; Usually, when I start to play some sound, card works perfectly but when I stop and start sound again, either stopping and starting the player program or toggling pause, the playback becomes faster and the tone higher. Stopping and starting the playback will toggle the behaviour between right and wrong playback. <BR>
+<BR>
+I tried both kernel and alsa drivers and with both of them the card behaves the same.<BR>
+I tried with almost every parameter the drivers accepts with no luck. <BR>
+<BR>
+As a hint, when I request strict_clocking and set clocking to a lower freq I obtained slow playback (when before it played right) and fastest playback (when before it played wrong) so no solution found.<BR>
+<BR>
+I would like to know whether this is a know problem and whether it has a solution via driver or whether it is a hardware issue...<BR>
+<BR>
+Thanks...
+</BODY>
+</HTML>
+
+--=-8QmvE0kUAmQz8iMn1fKw--
 
 
 
