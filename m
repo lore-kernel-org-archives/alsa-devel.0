@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Tue, 1 Feb 2005 21:35:25 +0100
-Message-ID: <b28172a4d302649554f501564027745d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000021]: HDSP 9652 not recognized on boot 80-90% of the time
+Date: Tue, 1 Feb 2005 21:41:01 +0100
+Message-ID: <0e82efa274ad0529cc0b684c020b50ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C836914B
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:35:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D48E91E7
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:41:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,81 +23,105 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21> 
 ======================================================================
 Reported By:                Mark Knecht
 Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   818
+Issue ID:                   21
 Category:                   PCI - RME HDSP
-Reproducibility:            always
+Reproducibility:            random
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Distribution:               Gentoo
+Kernel Version:             2.4.22-rc2 &amp; others
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              02-01-2005 21:35 CET
+Date Submitted:             01-31-2004 23:13 CET
+Last Modified:              02-01-2005 21:41 CET
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    HDSP 9652 not recognized on boot 80-90% of the time
 Description: 
-In my setup I's using 3 computers:
-
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
-
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
-
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
-
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
+The HDSP 9652 is not recognized 80-90% of the time on boot. Restarting Alsa
+in an xterm produces the same messages. Out of at least 20 boots this
+afternoon only one has found the device. 
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 21:35 
+ charbonnel - 02-01-05 21:12 
 ----------------------------------------------------------------------
 Hi Mark,
 
->From what I understand, the card is not in use from the alsa point of
-view, you just use the matrix routing. Then it may happen when mozilla
-encounters a page using flash that wants to output audio, if it's setup to
-do so through the hdsp, that it sets a different audio clock (e.g 44100
-vs. 48000). This is normal, and happens also under windows from what I
-read on the RME forums. The anwser from the support team is invariably
-'disable system sounds' or 'don't use the hdsp as the system default audio
-device'.
+Do you still experience the problem with alsa 1.0.8 ? If so could you
+please try alsa-cvs ?
 
+Thanks,
 Thomas
+
+----------------------------------------------------------------------
+ Mark Knecht - 02-01-05 21:41 
+----------------------------------------------------------------------
+Hi Thomas,
+   I'll just report that I haven't seen this problem for a very long time.
+Alsa and basic hdsp 9652 support for me is very good these days. I drive
+my Pro Tools hardware everyday with the HDSP 9652 and things work great
+here.
+
+- Mark
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
+01-31-04 23:13 Mark Knecht    New Issue                                    
+01-31-04 23:14 Mark Knecht    Note Added: 0000081                          
+01-31-04 23:17 Mark Knecht    Note Added: 0000083                          
+02-01-04 08:21 perex          Assigned To               => charbonnel      
+02-01-04 08:21 perex          Status                   new => assigned     
+02-01-04 08:21 perex          Category                 PCI - RME Digi9652/9636
+=> PCI - RME HDSP
+02-01-04 13:11 charbonnel     File Added: hdsp9652.patch                    
+02-01-04 13:12 charbonnel     Note Added: 0000089                          
+02-01-04 13:36 Mark Knecht    Note Added: 0000090                          
+02-01-04 13:52 Mark Knecht    Note Added: 0000091                          
+02-01-04 14:01 charbonnel     File Added: hdsp9652_2.patch                    
+02-01-04 14:02 charbonnel     Note Added: 0000092                          
+02-01-04 14:15 Mark Knecht    Note Added: 0000093                          
+02-01-04 14:16 Mark Knecht    Note Edited: 0000093                         
+02-01-04 14:18 Mark Knecht    Note Added: 0000094                          
+02-01-04 14:53 charbonnel     Note Added: 0000095                          
+02-01-04 15:05 Mark Knecht    Note Added: 0000096                          
+02-01-04 15:42 charbonnel     File Added: hdsp9652_3.patch                    
+02-01-04 15:43 charbonnel     Note Added: 0000097                          
+02-01-04 17:55 Mark Knecht    Note Added: 0000099                          
+02-01-04 17:59 Mark Knecht    Note Added: 0000100                          
+02-01-04 18:00 Mark Knecht    Note Edited: 0000099                         
+02-01-04 18:09 charbonnel     Note Added: 0000101                          
+02-02-04 04:01 Mark Knecht    Note Added: 0000103                          
+02-02-04 04:01 Mark Knecht    File Added: alsa-driver-1.0.2a.ebuild             
+      
+02-02-04 04:03 Mark Knecht    Note Edited: 0000103                         
+02-02-04 04:04 Mark Knecht    Note Edited: 0000103                         
+02-08-04 23:04 Mark Knecht    Note Added: 0000206                          
+03-09-04 18:48 perex          Status                   assigned => resolved
+03-09-04 18:48 perex          Resolution               open => suspended   
+03-09-04 18:48 perex          Assigned To              charbonnel => perex 
+03-09-04 18:48 perex          Note Added: 0000556                          
+03-09-04 21:20 Mark Knecht    Status                   resolved => feedback
+03-09-04 21:20 Mark Knecht    Resolution               suspended => reopened
+03-09-04 21:21 Mark Knecht    Note Added: 0000558                          
+03-12-04 12:50 perex          Assigned To              perex => charbonnel 
+03-15-04 12:14 perex          Status                   feedback => assigned
+05-08-04 03:36 charbonnel     Note Added: 0001067                          
+05-08-04 06:14 Mark Knecht    Note Added: 0001068                          
+05-08-04 06:14 nquit          Note Added: 0001069                          
+05-09-04 21:30 charbonnel     Note Added: 0001073                          
+05-09-04 23:08 Mark Knecht    Note Added: 0001074                          
+05-09-04 23:53 nquit          Note Added: 0001075                          
+05-09-04 23:58 nquit          Note Added: 0001076                          
+05-12-04 11:32 charbonnel     Note Added: 0001091                          
+02-01-05 21:12 charbonnel     Note Added: 0003464                          
+02-01-05 21:41 Mark Knecht    Note Added: 0003468                          
 ======================================================================
 
 
