@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000863]: Feature request: Mixing channels in software
-Date: Sun, 30 Jan 2005 22:16:41 +0100
-Message-ID: <090f55e7d6817fbecd24787bd8ea4115@bugtrack.alsa-project.org>
+Date: Sun, 30 Jan 2005 22:31:23 +0100
+Message-ID: <ebfffcea5942dca276a038539fd1034f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A7D419D
-	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 22:16:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0EA471AB
+	for <alsa-devel@alsa-project.org>; Sun, 30 Jan 2005 22:31:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-30-2005 22:02 CET
-Last Modified:              01-30-2005 22:16 CET
+Last Modified:              01-30-2005 22:31 CET
 ======================================================================
 Summary:                    Feature request: Mixing channels in software
 Description: 
@@ -62,11 +62,19 @@ Wrong.  ALSA certainly does have this feature.  Google for dmix.
 
 Please, do some basic research before filing a bug report.
 
+----------------------------------------------------------------------
+ rounin - 01-30-05 22:31 
+----------------------------------------------------------------------
+In that case, I request for it to be working out of the box. :) Thanks for
+the information, though. It seems like it should be possible for the
+advanced user, at least.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-30-05 22:02 rounin         New Issue                                    
 01-30-05 22:16 rlrevell       Note Added: 0003443                          
+01-30-05 22:31 rounin         Note Added: 0003444                          
 ======================================================================
 
 
