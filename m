@@ -1,10 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH/RFC] emu10k1 multichannel PCM
-Date: Fri, 12 Nov 2004 18:07:36 -0500
-Message-ID: <1100300857.19038.14.camel@krustophenia.net>
+From: scwry <scwry@lgmy.com>
+Subject: =?WINDOWS?B?eHNhbWjE+taqtcDC8KO/?=
+Date: Sat, 13 Nov 2004 09:13:36 +0900
+Message-ID: <E1CSlrz-0000ZW-SD@sc8-sf-mx2.sourceforge.net>
+Reply-To: ccfzn@yahoo.com
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--=_eZEHEe_002_3570_qFYjkX.KE1m9Y"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,812 +16,121 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds a 16 channel non-interleaved PCM playback device to the
-emu10k1 driver.  The device is hw:0,3.  The playback is driven by the
-EFX buffer full/half full interrupts, so the IRQ handler ends up looking
-similar to the RME drivers.
+This is a multi-part message in MIME format.
 
-In order to eliminate phase errors between the voices, we set loop stop
-on all 16, wait a bit, then clear loop stop on all voices in the trigger
-start.  My tests show that this causes all 16 voices to be in sync.
-Additionally the playback and capture should be sample-synced.
+----=_eZEHEe_002_3570_qFYjkX.KE1m9Y
+Content-Type: text/plain; charset="GB2312"
+Content-Transfer-Encoding: base64
 
-This is a full duplex device (maybe "joint duplex" is the better term?).
-If you try to run JACK with only the playback device it will timeout
-because the playback is driven by the capture stream.  In the future I
-will add a check for playback_pid == capture_pid like in the RME
-drivers.
 
-This patch is still missing a few things, like dynamic voice allocation
-and correctly setting the send routing, but it does work with JACK, and
-should not interfere with the operation of the other devices.   I tested
-it like so:
+----=_eZEHEe_002_3570_qFYjkX.KE1m9Y
+Content-Type: text/html; charset="GB2312"
+Content-Transfer-Encoding: base64
 
-jackd -v -R -d alsa -P hw:0,3 -C hw:0,2 -p 64 -S
+PGh0bWw+DQoNCjxib2R5IGxhbmc9WkgtQ04gbGluaz1ibHVlIHZsaW5rPWJsdWUgc3R5bGU9J3Rh
+Yi1pbnRlcnZhbDoyMS4wcHQ7dGV4dC1qdXN0aWZ5LQ0KdHJpbToNCnB1bmN0dWF0aW9uJz4NCg0K
+PHA+DQo8YSANCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96dmVlYmUu
+cmNicHVndnpyZi5wYnovdG8vNC8xMS8xMC9uNzE0MDkNCjEuaHRtIg0KdGFyZ2V0PSJfYmxhbmsi
+PsjVPCFtPrG+PCE5PrqjPCFNPtPyPCFuPreiPCFxPs/WPCFTPrK7PCFMPsP3PCFtPsexPCFIPr2i
+PCEyPqGhPCFMPsjVPCFDPsyoPCFkPr30PCFNPtXFKLTzLbzNLdSqKTwvYT4NCjwvcD4NCg0KPHA+
+DQo8YQ0KaHJlZj0iaHR0cHM6Ly93d3cxLmhlc2hhbjE4LmNvbS9kbS91Z2djL2pqai5lcmF6dmFv
+bmIucGJ6L2V6by9uZWd2cHlyZi8yMDA0LzExLw0KMTAvMzMxMzYuaHRtbCINCnRhcmdldD0iX2Js
+YW5rIj7B9TwhZz67qjwhUj7H5TwhcD7JzzwhOD69qzwhZj6y7jwhUj614zwhZj6w0Twhcj69rVjD
+8Twhdz7SrTwhNz7LwDwhWT6jqDwhNj7NvDwhZT6jqSjIyy3D8S2xqCk8L2E+DQo8L3A+DQoNCjxw
+Pg0KPGENCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy9qamouZXJhenZh
+b25iLnBiei9lem8vbmVndnB5cmYvMjAwNC8xMS8NCjEwLzMzMTM1Lmh0bWwiDQp0YXJnZXQ9Il9i
+bGFuayI+va08IWs+wt48IVE+uro8IWU+1LQ8IUY+0vU8IXk+xLE8IUc+xsY8IWk+svogufk8ITM+
+sq48IVc+0Ns8IVo+s/Y8IWc+tq88IW8+x7E8IWo+y648IXE+zac8IVc+vsg8IUU+vN08IWo+o6g8
+IVI+tuA8IWw+zbw8ITQ+o6koyMstw/EtsagpPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJo
+dHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9uYi5wYnovZXpvL25l
+Z3ZweXJmLzIwMDQvMTEvDQoxMC8zMzEzMS5odG1sIg0KdGFyZ2V0PSJfYmxhbmsiPrq6PCFjPtS0
+PCFlPqG4PCFEPrGpPCE2PsLSPCE1PqG5PCFBPrflPCFtPrvYPCFZPsK3PCE4PteqINbQPCFVPtHr
+PCFWPsjnPCFqPrrOPCFtPrSmPCF2PtbOPCFUPsLePCFjPrjJPCFDPrG4PCFjPsrcPCFrPrnYPCFx
+PteiKMjLLcPxLbGoKTwvYT4NCjwvcD4NCg0KPHA+DQo8YQ0KaHJlZj0iaHR0cHM6Ly93d3cxLmhl
+c2hhbjE4LmNvbS9kbS91Z2djL2pqai54bmFtdWJhdHRoYi5wYnovYXJqZi9uZWd2cHlyZi80LzEx
+Lw0KOC83NTEyMy5odG1sIg0KdGFyZ2V0PSJfYmxhbmsiPsi6PCFOPtbaMTXN8nZzubI8IWw+vvw8
+IXA+0rs8IVA+uPY8IW8+yqY8IXM+o78ov7Qt1tAtufopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpo
+cmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9uYi5wYnov
+ZXpvL25lZ3ZweXJmLzIwMDQvMTEvDQoxMC8zMzEzOC5odG1sIg0KdGFyZ2V0PSJfYmxhbmsiPrTz
+PCE5PsK9PCF6Pr38PCFzPsC0PCFFPrHkPCExPruvPCFPPr6qPCFWPsjLPCFYPqOhPCFXPrzNPCF0
+Ps6vPCFGPsrQPCFpPs6vPCFrPsOsPCE1Ps23PCFCPta4PCF2Ps/yPCFpPqGwNjEwobE8IU4+o6g8
+IWo+zbw8IVg+o6koyMstw/EtsagpPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczov
+L3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvenZlZWJlLnJjYnB1Z3Z6cmYucGJ6L3RvLzQvMTEv
+MTAvbjcxMzIzDQowLmh0bSINCnRhcmdldD0iX2JsYW5rIj7GyDwhaT66pjwhOD63qCvC1iu5pjwh
+aT6xuzwhTT6/2CC4yjwhTT7L4DwhZT7KoTwhMT7OrzwhTT7K6TwhWT68xzwhVj7U3jwheT6xyDwh
+OT7RxzwhMj65+jwhcD69+zwhYT6z9jwhUz6+syi08y28zS3Uqik8L2E+DQo8L3A+DQoNCjxwPg0K
+PGENCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy9qamouZXJhenZhb25i
+LnBiei9lem8vbmVndnB5cmYvMjAwNC8xMS8NCjEwLzMzMTMzLmh0bWwiDQp0YXJnZXQ9Il9ibGFu
+ayI+1tA8ITQ+xM88IXA+uqM8IWE+1fIr0bk8IXo+t6grwtYruaY8IWI+1f48IWQ+st88IUs+vLQ8
+IXo+vas8ITY+t6I8IW4+yfo8IUw+1tg8IVE+tPM8ITU+seQ8IWE+u68oyMstw/EtsagpPC9hPg0K
+PC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2Mv
+ampqLnhuYW11YmF0dGhiLnBiei9hcmpmL25lZ3ZweXJmLzQvMTEvDQo0Lzc0ODgzLmh0bWwiDQp0
+YXJnZXQ9Il9ibGFuayI+ubI8ITQ+svo8ITM+wew8IWQ+0OQ8IU4+w8c8ITQ+tcQ8IUw+y708IWs+
+yfo8IUQ+u+4ov7Qt1tAtufopPC9hPiA8L3A+DQoNCjxwPg0KPGENCmhyZWY9Imh0dHBzOi8vd3d3
+MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96dmVlYmUucmNicHVndnpyZi5wYnovdG8vNC8xMS85L243
+MTI2NjkNCi5odG0iDQp0YXJnZXQ9Il9ibGFuayI+yrc8IWY+tO88IWc+o7o8IU4+uro8IXY+1LQ8
+IVo+1OI8IUI+0/Y8IXA+1b0g1tA8IUk+ubI8ITk+xfY8IWU+yc88IVA+wcs8IXQ+09A8IXA+yfo8
+IW0+waY8ITk+wb8otPMtvM0t1KopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczov
+L3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLnhuYW11YmF0dGhiLnBiei9hcmpmL25lZ3Zw
+eXJmLzQvMTEvDQo3Lzc1MDUxLmh0bWwiDQp0YXJnZXQ9Il9ibGFuayI+va1Yw/E8IWI+yc88IVE+
+uqM8ITE+w/w8IW4+we48ITQ+y8A8IWY+ytgguqM8IUY+xM88IXg+yqE8IXU+zq88IVg+yuk8IXQ+
+vMc8IXM+tfc8IWs+tvg8IUU+srs8IVg+tq8ov7Qt1tAtufopPC9hPg0KPC9wPg0KDQo8cD4NCjxh
+DQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9uYi5w
+YnovZXpvL25lZ3ZweXJmLzIwMDQvMTEvDQo5LzMzMTI5Lmh0bWwiDQp0YXJnZXQ9Il9ibGFuayI+
+va08IXU+stk8ITI+1908IWE+zuU8ITA+tPM8IXQ+vvw8IWM+x/g8IXA+uOM8IU8+xNo8ITI+wtIg
+yc88IXg+uqM8IUY+vfQ8ITA+vLE8IUw+sbg8IXU+1b08IUg+t8A8IVQ+tbw8IXY+ta8oyMstw/Et
+sagpPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29t
+L2RtL3VnZ2MvampqLnhuYW11YmF0dGhiLnBiei9hcmpmL25lZ3ZweXJmLzQvMTEvDQo1Lzc0OTA1
+Lmh0bWwiDQp0YXJnZXQ9Il9ibGFuayI+9qY8IVc+xa48IUI+ytQ8ITU+tKk8IW0+xNo8IUM+0sI8
+IUs+yrE8IXM+1OI8IVU+tb08IWk+ytY8IWk+u/o8IW0+zbU8IVA+xcQgwuM8IVQ+1dU8IU0+yc88
+IUs+zfg8IWQ+0N88IUY+yOg8IUM+xNE8IUI+tbEov7Qt1tAtufopPC9hPg0KPC9wPg0KDQo8cD4N
+CjxhDQpocmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvampqLmVyYXp2YW9u
+Yi5wYnovZXpvL25lZ3ZweXJmLzIwMDQvMTEvDQo5LzMzMTI1Lmh0bWwiDQp0YXJnZXQ9Il9ibGFu
+ayI+xNo8IU4+xLs8IXo+o6E8ITc+wt48IXk+uMk8ITY+1vc8ITQ+tq88ITc+x+s8IUc+1b0gva08
+IWI+0qo8IUQ+wK08IWk+uvo8IWM+0rs8IXY+v+k8IUU+tvk8IUQ+y8AoyMstw/EtsagpPC9hPg0K
+PC9wPg0KDQo8cD4NCjxhIA0KaHJlZj0iaHR0cHM6Ly93d3cxLmhlc2hhbjE4LmNvbS9kbS91Z2dj
+L3p2ZWViZS5yY2JwdWd2enJmLnBiei90by80LzExLzkvbjcxMjI2Ng0KLmh0bSINCnRhcmdldD0i
+X2JsYW5rIj7W0DwhdT7R6zwhaD7BvTwhVz7SqjwhMD7UsTwhOD64sDwhcz7LxDwhVj60qDwhZz7V
+2TwhTz699DwhbD68sTwhRD674TwhUj7S6Si08y28zS3Uqik8L2E+DQo8L3A+DQoNCjxwPg0KPGEN
+CmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96dmVlYmUucmNicHVndnpy
+Zi5wYnovdG8vNC8xMS85L243MTIyNDMNCi5odG0iDQp0YXJnZXQ9Il9ibGFuayI+0+A8IU4+u6o8
+IVE+o7o8IUg+uro8ITU+1LQ8IWw+v6o8IXM+x7k8IWk+wcs8IUs+o6EgztI8IXQ+1eY8IXc+tcQ8
+IVY+t988ITE+xa08IWU+wcs8IWk+o6EotPMtvM0t1KopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpo
+cmVmPSJodHRwczovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvenZlZWJlLnJjYnB1Z3Z6cmYu
+cGJ6L3RvLzQvMTEvOS9uNzEyMzQwDQouaHRtIg0KdGFyZ2V0PSJfYmxhbmsiPrrTPCFvPsTPPCF4
+Pr25PCFCPtf3PCFSPsz6PCFnPsK3PCFuPsfFPCF4PreiPCFpPsn6PCFrPsGsPCE5Pru3PCFuPrGs
+PCF0PtWoKLTzLbzNLdSqKTwvYT4NCjwvcD4NCg0KPHA+DQo8YQ0KaHJlZj0iaHR0cHM6Ly93d3cx
+Lmhlc2hhbjE4LmNvbS9kbS91Z2djL3p2ZWViZS5yY2JwdWd2enJmLnBiei90by80LzExLzEwL243
+MTM2MA0KNC5odG0iDQp0YXJnZXQ9Il9ibGFuayI+wao8IWs+sO48IW4+zag8IU0+0bY8IXA+zq88
+IUk+1LE8IUk+u+E8IXc+0Ps8IXc+srw8IXo+vas8IUo+udw8IXI+z708IVc+u6U8ITY+wao8IWU+
+zfg8ITc+tec8IWw+u7AotPMtvM0t1KopPC9hPg0KPC9wPg0KDQo8cD4NCjxhDQpocmVmPSJodHRw
+czovL3d3dzEuaGVzaGFuMTguY29tL2RtL3VnZ2MvenZlZWJlLnJjYnB1Z3Z6cmYucGJ6L3RvLzQv
+MTEvMTAvbjcxMzE0DQoyLmh0bSINCnRhcmdldD0iX2JsYW5rIj6wojwhcz7ArTwhdT63qDwhcD7M
+2DwhcD638jwhRD7IyyCwrjwhZz7Hrjwhcj6yuzwhTj7SqjwhUj7IqCi08y28zS3Uqik8L2E+DQo8
+L3A+DQoNCjxwPg0KPGENCmhyZWY9Imh0dHBzOi8vd3d3MS5oZXNoYW4xOC5jb20vZG0vdWdnYy96
+dmVlYmUucmNicHVndnpyZi5wYnovdG8vNC8xMS8xMC9uNzEzODUNCjEuaHRtIg0KdGFyZ2V0PSJf
+YmxhbmsiPqG4PCFKPtbQPCFVPrn6PCFrPtX9PCFjPsb4PCFaPs34PCFUPqG5PCFyPsSqPCE1PsP7
+PCE3PrG7PCFFPrnYILi6PCFIPtTwPCFSPsjLPCFDPsnPPCEyPrfDPCFCPs7ePCExPtCnKLTzLbzN
+LdSqKTwvYT4NCjwvcD4NCg0KPHA+IDxmb250IHNpemU9NSBjb2xvcj0iIzgwMDBmZiI+PGENCmhy
+ZWY9Imh0dHBzOi8vd3d3My5oZXNoYW4xOC5jb20vZG0vdWdnYy95dm9lbmVsLnp2YXR1aHYuYmV0
+L3BuZ3J0YmVsLzMyLDk1LDEuaHQNCm0idGFyZ2V0PSJfYmxhbmsiPg0KxPo8IVA+1qo8IW0+tcA8
+IXM+wvA8IXA+o788L3A+PGZvbnQgc2l6ZT01IGNvbG9yPVJlZD4NCrTTMTk5OcTqN9TCPCFSPtbB
+MjAwNMTqMTHUwjwhMD6jrDwhaT68xjY0uPY8IW0+1MI8ITQ+xto8IXM+vOQ8ITI+o6w8Zm9udCBz
+aXplPTYgY29sb3I9RnVjaHNpYT65sjExMTPD+zxmb250IA0Kc2l6ZT01IGNvbG9yPVJlZD63qG/C
+1m+5pm/RpzwhZD7UsTwhUj6xuzwhQj7GyC26pi3Wwi3LwDwhOD6hozwvcD4NCtDUPCFxPrHwPCFi
+PrHIPCFHPsD9PCFxPqO6PCFzPsWuPCFiPqO6NTczyMs8IVM+o6w8IUg+1bw1MS43MSWjuzwheD7E
+0DwhQT6jujUzMMjLPCFHPqOsPCFzPtW8NDcuODMlOyDOtDwhZT7WqjogNcjLPCFYPqOsPCE4PtW8
+MC40NSWhozwvcD4NCrG7PCEyPrqmPCFsPtbCPCE4PsvAPCFuPsqxPCFUPrXEPCE0Psa9PCFCPr75
+PCFOPsTqPCFOPsHkPCE5PqO6NDbL6jwhZj6juzwhMz7Frjwhdz7Q1DwhVj7GvTwhMT6++TwhVj7E
+6jwhdT7B5DwhTD6jujQ3y+o8ITU+o7s8IWg+xNA8IWs+0NQ8IWc+xr08IVY+vvk8IUE+xOo8IWg+
+weQ8IUE+o7o0NMvqPCFZPqGjPC9wPg0Kxr08IXA+vvk8ITg+o7o8Zm9udCBzaXplPTYgY29sb3I9
+RnVjaHNpYT4xN8jLL9TCPCE0PqGjPC9wPjwvYT48L3A+PC9mb250Pg0KDQoNCjwvYm9keT4NCg0K
+PC9odG1sPg0Kag0K
 
-...
-
-loading driver ..
-new client: alsa_pcm, id = 1 type 1 @ 0x8057858 fd = -1
-creating alsa driver ... hw:0,3|hw:0,2|64|2|48000|0|0|nomon|swmeter|-|16bit
-control device hw:0
-configuring for 48000Hz, period = 64 frames, buffer = 2 periods
-new buffer size 64
-registered port alsa_pcm:capture_1, offset = 256
-registered port alsa_pcm:capture_2, offset = 512
-registered port alsa_pcm:capture_3, offset = 768
-registered port alsa_pcm:capture_4, offset = 1024
-registered port alsa_pcm:capture_5, offset = 1280
-registered port alsa_pcm:capture_6, offset = 1536
-registered port alsa_pcm:capture_7, offset = 1792
-registered port alsa_pcm:capture_8, offset = 2048
-registered port alsa_pcm:capture_9, offset = 2304
-registered port alsa_pcm:capture_10, offset = 2560
-registered port alsa_pcm:capture_11, offset = 2816
-registered port alsa_pcm:capture_12, offset = 3072
-registered port alsa_pcm:capture_13, offset = 3328
-registered port alsa_pcm:capture_14, offset = 3584
-registered port alsa_pcm:capture_15, offset = 3840
-registered port alsa_pcm:capture_16, offset = 4096
-registered port alsa_pcm:playback_1, offset = 0
-registered port alsa_pcm:playback_2, offset = 0
-registered port alsa_pcm:playback_3, offset = 0
-registered port alsa_pcm:playback_4, offset = 0
-registered port alsa_pcm:playback_5, offset = 0
-registered port alsa_pcm:playback_6, offset = 0
-registered port alsa_pcm:playback_7, offset = 0
-registered port alsa_pcm:playback_8, offset = 0
-registered port alsa_pcm:playback_9, offset = 0
-registered port alsa_pcm:playback_10, offset = 0
-registered port alsa_pcm:playback_11, offset = 0
-registered port alsa_pcm:playback_12, offset = 0
-registered port alsa_pcm:playback_13, offset = 0
-registered port alsa_pcm:playback_14, offset = 0
-registered port alsa_pcm:playback_15, offset = 0
-registered port alsa_pcm:playback_16, offset = 0
-++ jack_rechain_graph():
-client alsa_pcm: internal client, execution_order=0.
--- jack_rechain_graph()
-32170 waiting for signals
-load = 1.9130 max usecs: 51.000, spare = 1282.000
-load = 1.6317 max usecs: 18.000, spare = 1315.000
-
-Also I think the memory allocation is wasteful; we end up allocating the
-same memory twice for the regular playback device and this one.
-
-I am posting this now before it gets too much bigger to get some
-feedback.
-
-Index: alsa-kernel/include/emu10k1.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/include/emu10k1.h,v
-retrieving revision 1.50
-diff -u -r1.50 emu10k1.h
---- alsa-kernel/include/emu10k1.h	10 Nov 2004 09:49:11 -0000	1.50
-+++ alsa-kernel/include/emu10k1.h	12 Nov 2004 22:53:24 -0000
-@@ -782,6 +782,7 @@
- typedef struct _snd_emu10k1_pcm emu10k1_pcm_t;
- 
- typedef enum {
-+	EMU10K1_EFX,
- 	EMU10K1_PCM,
- 	EMU10K1_SYNTH,
- 	EMU10K1_MIDI
-@@ -792,6 +793,7 @@
- 	int number;
- 	int use: 1,
- 	    pcm: 1,
-+	    efx: 1,
- 	    synth: 1,
- 	    midi: 1;
- 	void (*interrupt)(emu10k1_t *emu, emu10k1_voice_t *pvoice);
-@@ -801,6 +803,7 @@
- 
- typedef enum {
- 	PLAYBACK_EMUVOICE,
-+	PLAYBACK_EFX,
- 	CAPTURE_AC97ADC,
- 	CAPTURE_AC97MIC,
- 	CAPTURE_EFX
-@@ -810,7 +813,7 @@
- 	emu10k1_t *emu;
- 	snd_emu10k1_pcm_type_t type;
- 	snd_pcm_substream_t *substream;
--	emu10k1_voice_t *voices[2];
-+	emu10k1_voice_t *voices[16];
- 	emu10k1_voice_t *extra;
- 	unsigned short running;
- 	unsigned short first_ptr;
-@@ -993,6 +996,7 @@
- 	void (*capture_interrupt)(emu10k1_t *emu, unsigned int status);
- 	void (*capture_mic_interrupt)(emu10k1_t *emu, unsigned int status);
- 	void (*capture_efx_interrupt)(emu10k1_t *emu, unsigned int status);
-+	// FIXME: can go away - uses ALSA timer API now
- 	void (*timer_interrupt)(emu10k1_t *emu);
- 	void (*spdif_interrupt)(emu10k1_t *emu, unsigned int status);
- 	void (*dsp_interrupt)(emu10k1_t *emu);
-@@ -1000,6 +1004,7 @@
- 	snd_pcm_substream_t *pcm_capture_substream;
- 	snd_pcm_substream_t *pcm_capture_mic_substream;
- 	snd_pcm_substream_t *pcm_capture_efx_substream;
-+	snd_pcm_substream_t *pcm_playback_efx_substream;
- 
- 	snd_timer_t *timer;
- 
-@@ -1020,6 +1025,7 @@
- int snd_emu10k1_pcm(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
- int snd_emu10k1_pcm_mic(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
- int snd_emu10k1_pcm_efx(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
-+int snd_emu10k1_pcm_multi(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
- int snd_emu10k1_fx8010_pcm(emu10k1_t * emu, int device, snd_pcm_t ** rpcm);
- int snd_emu10k1_mixer(emu10k1_t * emu);
- int snd_emu10k1_timer(emu10k1_t * emu, int device);
-Index: alsa-kernel/pci/emu10k1/emu10k1.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1.c,v
-retrieving revision 1.29
-diff -u -r1.29 emu10k1.c
---- alsa-kernel/pci/emu10k1/emu10k1.c	10 Nov 2004 09:49:12 -0000	1.29
-+++ alsa-kernel/pci/emu10k1/emu10k1.c	12 Nov 2004 22:53:24 -0000
-@@ -130,6 +130,11 @@
- 		return err;
- 	}
- 
-+	if ((err = snd_emu10k1_pcm_multi(emu, 3, NULL)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}		
-+
- 	if (emu->audigy) {
- 		if ((err = snd_emu10k1_audigy_midi(emu)) < 0) {
- 			snd_card_free(card);
-Index: alsa-kernel/pci/emu10k1/emupcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
-retrieving revision 1.33
-diff -u -r1.33 emupcm.c
---- alsa-kernel/pci/emu10k1/emupcm.c	30 Sep 2004 10:06:53 -0000	1.33
-+++ alsa-kernel/pci/emu10k1/emupcm.c	12 Nov 2004 22:53:26 -0000
-@@ -42,13 +42,19 @@
- 		return;
- 	if (epcm->substream == NULL)
- 		return;
--#if 0
--	printk("IRQ: position = 0x%x, period = 0x%x, size = 0x%x\n",
--			epcm->substream->runtime->hw->pointer(emu, epcm->substream),
--			snd_pcm_lib_period_bytes(epcm->substream),
--			snd_pcm_lib_buffer_bytes(epcm->substream));
--#endif
-+	/*
-+    	printk("in snd_emu10k1_pcm_interrupt, voice %i, WC = %i, master voice ptr %i\n",
-+	    voice->number, 
-+	    snd_emu10k1_wc(emu), 
-+	    snd_emu10k1_ptr_read(emu, CCCA, voice->number) & CCCA_CURRADDR_MASK);
-+	    */
- 	snd_pcm_period_elapsed(epcm->substream);
-+	/*
-+	printk("in snd_emu10k1_pcm_interrupt, done with period_elapsed, voice %i, WC = %i, master voice ptr %i\n",
-+	    voice->number, 
-+	    snd_emu10k1_wc(emu), 
-+	    snd_emu10k1_ptr_read(emu, CCCA, voice->number) & CCCA_CURRADDR_MASK);
-+	*/
- }
- 
- static void snd_emu10k1_pcm_ac97adc_interrupt(emu10k1_t *emu, unsigned int status)
-@@ -81,12 +87,60 @@
- 			return;
- 	}
- #endif
-+
- 	snd_pcm_period_elapsed(emu->pcm_capture_efx_substream);
-+
-+        if (emu->pcm_playback_efx_substream == NULL) {
-+	    printk("in capture efx irq handler, playback stream not start.  WC = %i\n",
-+	     snd_emu10k1_wc(emu));
-+	    return;
-+	}
-+
-+	emu10k1_pcm_t *epcm = emu->pcm_playback_efx_substream->runtime->private_data;
-+	if (epcm == NULL || !epcm->running) {
-+	    return;
-+	} else {
-+	    if (epcm->first_ptr == 1) {
-+		epcm->first_ptr = 0;
-+		printk("in irq handler, first_ptr = 1\n");
-+		return;
-+	    }
-+	    snd_pcm_period_elapsed(emu->pcm_playback_efx_substream);
-+	}
-+}	 
-+
-+static snd_pcm_uframes_t snd_emu10k1_efx_playback_pointer(snd_pcm_substream_t * substream)
-+{
-+	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1_pcm_t *epcm = runtime->private_data;
-+	unsigned int ptr;
-+
-+	if (!epcm->running)
-+		return 0;
-+	ptr = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
-+	/*
-+	 printk("efx playback pointer: curraddr = %i, start_addr = %i, WC = %i\n",
-+	    (unsigned int)ptr,
-+	    (unsigned int)epcm->ccca_start_addr,
-+	    snd_emu10k1_wc(emu));
-+	*/
-+	ptr += runtime->buffer_size;
-+	ptr -= epcm->ccca_start_addr;
-+	ptr %= runtime->buffer_size;
-+	/*
-+	printk("efx_playback_pointer is %i (buffer_size = %i, period_size = %i)\n",
-+		ptr, 
-+		(unsigned int) runtime->buffer_size,
-+		(unsigned int) runtime->period_size);
-+	*/
-+	return ptr;
- }
- 
- static int snd_emu10k1_pcm_channel_alloc(emu10k1_pcm_t * epcm, int voices)
- {
--	int err;
-+	int err, i;
-+	printk("pcm_channel_alloc: voices=%d\n", voices);
- 
- 	if (epcm->voices[1] != NULL && voices < 2) {
- 		snd_emu10k1_voice_free(epcm->emu, epcm->voices[1]);
-@@ -102,13 +156,22 @@
- 			epcm->voices[0] = NULL;
- 		}
- 	}
--	err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_PCM, voices > 1, &epcm->voices[0]);
-+	if (epcm->type == PLAYBACK_EMUVOICE) {
-+	    err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_PCM, voices, &epcm->voices[0]);
-+	} else if (epcm->type == PLAYBACK_EFX) {
-+	    err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_EFX, voices, &epcm->voices[0]);
-+	} else {
-+	    err = 0;
-+	}
-+	
- 	if (err < 0)
- 		return err;
- 	epcm->voices[0]->epcm = epcm;
- 	if (voices > 1) {
--		epcm->voices[1] = &epcm->emu->voices[epcm->voices[0]->number + 1];
--		epcm->voices[1]->epcm = epcm;
-+		for (i = 1; i < voices; i++) {
-+		    epcm->voices[i] = &epcm->emu->voices[epcm->voices[0]->number + i];
-+		    epcm->voices[i]->epcm = epcm;
-+		}
- 	}
- 	if (epcm->extra == NULL) {
- 		err = snd_emu10k1_voice_alloc(epcm->emu, EMU10K1_PCM, 0, &epcm->extra);
-@@ -232,6 +295,7 @@
- 				       unsigned int start_addr,
- 				       unsigned int end_addr)
- {
-+	printk("init voice - master %i extra %i start_addr %i end_addr %i\n", master, extra, start_addr,end_addr);
- 	snd_pcm_substream_t *substream = evoice->epcm->substream;
- 	snd_pcm_runtime_t *runtime = substream->runtime;
- 	emu10k1_pcm_mixer_t *mix = &emu->pcm_mixer[substream->number];
-@@ -272,11 +336,13 @@
- 		memcpy(send_amount, &mix->send_volume[tmp][0], 8);
- 	}
- 
-+	unsigned int ccis = stereo ? 28 : 30;
-+	if (w_16)
-+	    ccis *= 2;
-+	
- 	if (master) {
--		unsigned int ccis = stereo ? 28 : 30;
--		if (w_16)
--			ccis *= 2;
- 		evoice->epcm->ccca_start_addr = start_addr + ccis;
-+		//evoice->epcm->ccca_start_addr = start_addr;
- 		if (extra) {
- 			start_addr += ccis;
- 			end_addr += ccis;
-@@ -315,7 +381,7 @@
- 	snd_emu10k1_ptr_write(emu, DSL, voice, end_addr | (send_amount[3] << 24));
- 	snd_emu10k1_ptr_write(emu, PSST, voice, start_addr | (send_amount[2] << 24));
- 	pitch_target = emu10k1_calc_pitch_target(runtime->rate);
--	snd_emu10k1_ptr_write(emu, CCCA, voice, evoice->epcm->ccca_start_addr |
-+	snd_emu10k1_ptr_write(emu, CCCA, voice, (start_addr + ccis) |
- 			      emu10k1_select_interprom(pitch_target) |
- 			      (w_16 ? 0 : CCCA_8BITSELECT));
- 	// Clear filter delay memory
-@@ -403,6 +469,35 @@
- 	return 0;
- }
- 
-+static int snd_emu10k1_efx_playback_hw_free(snd_pcm_substream_t * substream)
-+{
-+	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1_pcm_t *epcm;
-+	int i;
-+
-+	if (runtime->private_data == NULL)
-+		return 0;
-+	epcm = runtime->private_data;
-+	if (epcm->extra) {
-+		snd_emu10k1_voice_free(epcm->emu, epcm->extra);
-+		epcm->extra = NULL;
-+	}
-+	for (i=0; i< 16; i++) {
-+	    if (epcm->voices[i]) {
-+		snd_emu10k1_voice_free(epcm->emu, epcm->voices[i]);
-+		epcm->voices[i] = NULL;
-+	    }
-+	}
-+	if (epcm->memblk) {
-+		snd_emu10k1_free_pages(emu, epcm->memblk);
-+		epcm->memblk = NULL;
-+		epcm->start_addr = 0;
-+	}
-+	snd_pcm_lib_free_pages(substream);
-+	return 0;
-+}
-+
- static int snd_emu10k1_playback_prepare(snd_pcm_substream_t * substream)
- {
- 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-@@ -426,6 +521,74 @@
- 	return 0;
- }
- 
-+static int snd_emu10k1_efx_playback_prepare(snd_pcm_substream_t * substream)
-+{
-+	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1_pcm_t *epcm = runtime->private_data;
-+	unsigned int start_addr, end_addr;
-+
-+	start_addr = epcm->start_addr;
-+	end_addr = epcm->start_addr + snd_pcm_lib_buffer_bytes(substream);
-+	printk("in snd_emu10k1_efx_playback_prepare - start_addr 0x%x end_addr 0x%x\n", start_addr,end_addr);
-+
-+	/*
-+	 * now we need to divide the buffer into 16 chunks and initialize 
-+	 * 16 voices to make the noninterleaved 16 channel stream
-+	 *
-+	 * the kX driver leaves some space between voices
-+	 */
-+	unsigned int channel_size;
-+	int i;
-+	channel_size = ( end_addr - start_addr ) / 16;
-+
-+	/* only difference wit the master voice is we use it for the pointer */
-+	snd_emu10k1_pcm_init_voice(emu, 1, 0, epcm->voices[0],
-+				   start_addr, start_addr + channel_size);
-+
-+	start_addr += channel_size;
-+	for (i = 1; i < 16; i++) {
-+	    snd_emu10k1_pcm_init_voice(emu, 0, 0, epcm->voices[i],
-+	    			   start_addr, start_addr+channel_size);
-+	    start_addr += channel_size;
-+	}
-+
-+	return 0;
-+}
-+
-+static snd_pcm_hardware_t snd_emu10k1_efx_playback =
-+{
-+	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_NONINTERLEAVED |
-+				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
-+				 SNDRV_PCM_INFO_MMAP_VALID | SNDRV_PCM_INFO_PAUSE /* | SNDRV_PCM_INFO_SYNC_START */ ),
-+	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
-+	.rates =		SNDRV_PCM_RATE_48000,
-+	.rate_min =		48000,
-+	.rate_max =		48000,
-+	.channels_min =		16,
-+	.channels_max =		16,
-+	.buffer_bytes_max =	(64*1024),
-+	.period_bytes_min =	64,
-+	.period_bytes_max =	(64*1024),
-+	.periods_min =		2,
-+	.periods_max =		2,
-+	.fifo_size =		0,
-+};
-+
-+
-+
-+static int snd_emu10k1_efx_playback_close(snd_pcm_substream_t * substream)
-+{
-+	/*emu10k1_t *emu = snd_pcm_substream_chip(substream);
-+	emu10k1_pcm_mixer_t *mix = &emu->pcm_mixer[substream->number];
-+
-+	mix->epcm = NULL;
-+	snd_emu10k1_pcm_mixer_notify(emu, substream->number, 0); */
-+	return 0;
-+}
-+
-+
-+
- static int snd_emu10k1_capture_hw_params(snd_pcm_substream_t * substream,
- 					 snd_pcm_hw_params_t * hw_params)
- {
-@@ -444,6 +607,7 @@
- 	emu10k1_pcm_t *epcm = runtime->private_data;
- 	int idx;
- 
-+	/* zeroing the buffer size will stop capture */
- 	snd_emu10k1_ptr_write(emu, epcm->capture_bs_reg, 0, 0);
- 	switch (epcm->type) {
- 	case CAPTURE_AC97ADC:
-@@ -536,12 +700,15 @@
- 	snd_emu10k1_ptr_write(emu, IFATN, voice, attn);
- 	snd_emu10k1_ptr_write(emu, VTFT, voice, (mix->attn[tmp] << 16) | 0xffff);
- 	snd_emu10k1_ptr_write(emu, CVCF, voice, (mix->attn[tmp] << 16) | 0xffff);
--	snd_emu10k1_voice_clear_loop_stop(emu, voice);		
--	if (extra)
-+	if (evoice->epcm->type == PLAYBACK_EFX) 
-+	    snd_emu10k1_voice_set_loop_stop(emu, voice);		
-+	else
-+	    snd_emu10k1_voice_clear_loop_stop(emu, voice);		
-+	if (extra && evoice->epcm->type != PLAYBACK_EFX)
- 		snd_emu10k1_voice_intr_enable(emu, voice);
- 	snd_emu10k1_ptr_write(emu, DCYSUSV, voice, 0x7f7f);
- 	snd_emu10k1_ptr_write(emu, PTRX_PITCHTARGET, voice, pitch_target);
--	if (master)
-+	if (master || evoice->epcm->type == PLAYBACK_EFX)
- 		snd_emu10k1_ptr_write(emu, CPF_CURRENTPITCH, voice, pitch_target);
- 	snd_emu10k1_ptr_write(emu, IP, voice, pitch);
- }
-@@ -574,7 +741,7 @@
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
--		snd_emu10k1_playback_invalidate_cache(emu, epcm->extra);	/* do we need this? */
-+		// snd_emu10k1_playback_invalidate_cache(emu, epcm->extra);	/* do we need this? */
- 		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0]);
- 		/* follow thru */
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-@@ -606,10 +773,17 @@
- 	emu10k1_pcm_t *epcm = runtime->private_data;
- 	int result = 0;
- 
--	// printk("trigger - emu10k1 = %p, cmd = %i, pointer = %i\n", emu, cmd, substream->ops->pointer(substream));
-+	/*printk("capture trigger - emu10k1 = 0x%x, cmd = %i, pointer = %i, WC = %i\n", 
-+	    (int)emu, 
-+	    cmd, 
-+	    (int)substream->ops->pointer(substream), 
-+	    snd_emu10k1_wc(emu));
-+	*/
-+	
- 	spin_lock(&emu->reg_lock);
- 	switch (cmd) {
- 	case SNDRV_PCM_TRIGGER_START:
-+		// hmm this should cause full and half full interrupt to be raised?  
- 		outl(epcm->capture_ipr, emu->port + IPR);
- 		snd_emu10k1_intr_enable(emu, epcm->capture_inte);
- 		// printk("adccr = 0x%x, adcbs = 0x%x\n", epcm->adccr, epcm->adcbs);
-@@ -685,6 +859,111 @@
- 	return ptr;
- }
- 
-+
-+static int snd_emu10k1_efx_playback_trigger(snd_pcm_substream_t * substream,
-+				        int cmd)
-+{
-+	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+	emu10k1_pcm_t *epcm = runtime->private_data;
-+	int i = 0;
-+	int result = 0;
-+        unsigned int ptr0, ptr1, sol;
-+
-+	printk("trigger - emu10k1 = 0x%x, cmd = %i, pointer = %i, WC = %i\n", 
-+	    (int)emu, 
-+	    cmd, 
-+	    (int)substream->ops->pointer(substream), 
-+	    snd_emu10k1_wc(emu));
-+
-+	spin_lock(&emu->reg_lock);
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_START:
-+		// prepare voices
-+		for (i = 0; i < 16; i++) {	
-+		    snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[i]);
-+		}
-+		// start em - this will also set loop stop
-+		for (i = 0; i < 16; i++) {	
-+		    snd_emu10k1_playback_trigger_voice(emu, epcm->voices[i], 0, 0);
-+		}
-+		// check 1st and last voice position
-+		ptr0 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
-+		ptr1 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[15]->number) & 0x00ffffff;
-+		printk("start - about to clear loop stop.  channel 0 curraddr = %i, channel 15 = %i, WC = %i\n", 
-+			ptr0, 
-+			ptr1, 
-+			snd_emu10k1_wc(emu));
-+		// wait a bit for all to reach loop end
-+		snd_emu10k1_wait(emu, 100);
-+		// check 1st and last voice position
-+		ptr0 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
-+		ptr1 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[15]->number) & 0x00ffffff;
-+		printk("start - waited a bit more.  channel 0 curraddr = %i, channel 15 = %i, WC = %i\n", 
-+			ptr0, 
-+			ptr1, 
-+			snd_emu10k1_wc(emu));
-+		// go
-+		outl(SOLEL << 16, emu->port + PTR);
-+		sol = inl(emu->port + DATA);
-+		sol &= ~0xffff;
-+		outl(sol, emu->port + DATA);
-+		epcm->first_ptr = 1;
-+		epcm->running = 1;
-+		break;
-+		/* follow thru */
-+	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
-+		for (i = 0; i < 16; i++) {	
-+		    snd_emu10k1_playback_trigger_voice(emu, epcm->voices[i], 0, 0);
-+		}
-+		epcm->running = 1;
-+		break;
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		ptr0 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
-+		ptr1 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[15]->number) & 0x00ffffff;
-+		printk("stop - about to set loop stop and wait 1024 ticks.  channel 0 curraddr = %i, channel 15 = %i, WC = %i\n", 
-+			ptr0, 
-+			ptr1, 
-+			snd_emu10k1_wc(emu));
-+		// set loop stop on all voices
-+		outl(SOLEL << 16, emu->port + PTR);
-+		sol = inl(emu->port + DATA);
-+		sol |= 0xffff;
-+		outl(sol, emu->port + DATA);
-+		// wait a bit for all to reach loop end
-+		snd_emu10k1_wait(emu, 1024);
-+		// ok they should be in sync here
-+		ptr0 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[0]->number) & 0x00ffffff;
-+		ptr1 = snd_emu10k1_ptr_read(emu, CCCA, epcm->voices[15]->number) & 0x00ffffff;
-+		printk("stopped - channel 0 curraddr = %i, channel 15 = %i, WC = %i\n", 
-+			ptr0, 
-+			ptr1, 
-+			snd_emu10k1_wc(emu));
-+		for (i = 0; i < 16; i++) {	
-+		    snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
-+		}
-+		epcm->running = 0;
-+		break;
-+	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
-+		epcm->running = 0;
-+		// set loop stop on all voices
-+		outl(SOLEL << 16, emu->port + PTR);
-+		sol = inl(emu->port + DATA);
-+		sol |= 0xffff;
-+		outl(sol, emu->port + DATA);
-+		for (i = 0; i < 16; i++) {	
-+		    snd_emu10k1_playback_stop_voice(emu, epcm->voices[i]);
-+		}
-+		break;
-+	default:
-+		result = -EINVAL;
-+		break;
-+	}
-+	spin_unlock(&emu->reg_lock);
-+	return result;
-+}
-+
-+
- static snd_pcm_uframes_t snd_emu10k1_capture_pointer(snd_pcm_substream_t * substream)
- {
- 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-@@ -698,8 +977,15 @@
- 		udelay(50);	// hack, it takes awhile until capture is started
- 		epcm->first_ptr = 0;
- 	}
--	ptr = snd_emu10k1_ptr_read(emu, epcm->capture_idx_reg, 0) & 0x0000ffff;
--	return bytes_to_frames(runtime, ptr);
-+	ptr = bytes_to_frames(runtime, (snd_emu10k1_ptr_read(emu, epcm->capture_idx_reg, 0) & 0x0000ffff));
-+	
-+#if 0
-+	printk("capture_pointer: %i frames (%i WC ticks) since last irq\n", 
-+		(ptr + runtime->buffer_size - emu->last_capture_ptr) % runtime->buffer_size, 
-+		ticks - emu->last_irq_time);
-+#endif
-+
-+	return ptr;
- }
- 
- /*
-@@ -733,7 +1019,7 @@
- {
- 	.info =			(SNDRV_PCM_INFO_MMAP | SNDRV_PCM_INFO_INTERLEAVED |
- 				 SNDRV_PCM_INFO_BLOCK_TRANSFER |
--				 SNDRV_PCM_INFO_MMAP_VALID),
-+				 SNDRV_PCM_INFO_MMAP_VALID /* | SNDRV_PCM_INFO_SYNC_START */),
- 	.formats =		SNDRV_PCM_FMTBIT_S16_LE,
- 	.rates =		SNDRV_PCM_RATE_8000_48000,
- 	.rate_min =		8000,
-@@ -781,6 +1067,27 @@
- 		kfree(epcm);
- }
- 
-+
-+static int snd_emu10k1_efx_playback_open(snd_pcm_substream_t * substream)
-+{
-+	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-+	emu10k1_pcm_t *epcm;
-+	snd_pcm_runtime_t *runtime = substream->runtime;
-+
-+	epcm = kcalloc(1, sizeof(*epcm), GFP_KERNEL);
-+	if (epcm == NULL)
-+		return -ENOMEM;
-+	epcm->emu = emu;
-+	epcm->type = PLAYBACK_EFX;
-+	epcm->substream = substream;
-+	emu->pcm_playback_efx_substream = substream;
-+	runtime->private_data = epcm;
-+	runtime->private_free = snd_emu10k1_pcm_free_substream;
-+	runtime->hw = snd_emu10k1_efx_playback;
-+	// snd_pcm_set_sync(substream);
-+	
-+	return 0;
-+}
- static int snd_emu10k1_playback_open(snd_pcm_substream_t * substream)
- {
- 	emu10k1_t *emu = snd_pcm_substream_chip(substream);
-@@ -940,6 +1247,7 @@
- 	emu->capture_efx_interrupt = snd_emu10k1_pcm_efx_interrupt;
- 	emu->pcm_capture_efx_substream = substream;
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES, &hw_constraints_capture_period_sizes);
-+	// snd_pcm_set_sync(substream);
- 	return 0;
- }
- 
-@@ -975,6 +1283,19 @@
- 	.pointer =		snd_emu10k1_capture_pointer,
- };
- 
-+/* EFX playback */
-+static snd_pcm_ops_t snd_emu10k1_efx_playback_ops = {
-+	.open =			snd_emu10k1_efx_playback_open,
-+	.close =		snd_emu10k1_efx_playback_close,
-+	.ioctl =		snd_pcm_lib_ioctl,
-+	.hw_params =		snd_emu10k1_playback_hw_params,
-+	.hw_free =		snd_emu10k1_efx_playback_hw_free,
-+	.prepare =		snd_emu10k1_efx_playback_prepare,
-+	.trigger =		snd_emu10k1_efx_playback_trigger,
-+	.pointer =		snd_emu10k1_efx_playback_pointer,
-+	.page =			snd_pcm_sgbuf_ops_page,
-+};
-+
- static void snd_emu10k1_pcm_free(snd_pcm_t *pcm)
- {
- 	emu10k1_t *emu = pcm->private_data;
-@@ -1018,6 +1339,39 @@
- 	return 0;
- }
- 
-+int __devinit snd_emu10k1_pcm_multi(emu10k1_t * emu, int device, snd_pcm_t ** rpcm)
-+{
-+	snd_pcm_t *pcm;
-+	snd_pcm_substream_t *substream;
-+	int err;
-+
-+	if (rpcm)
-+		*rpcm = NULL;
-+
-+	if ((err = snd_pcm_new(emu->card, "emu10k1", device, 1, 0, &pcm)) < 0)
-+		return err;
-+
-+	pcm->private_data = emu;
-+	pcm->private_free = snd_emu10k1_pcm_free;
-+
-+	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &snd_emu10k1_efx_playback_ops);
-+
-+	pcm->info_flags = 0;
-+	pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
-+	strcpy(pcm->name, "EMU10K1 multichannel EFX");
-+	emu->pcm = pcm;
-+
-+	for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next)
-+		if ((err = snd_pcm_lib_preallocate_pages(substream, SNDRV_DMA_TYPE_DEV_SG, snd_dma_pci_data(emu->pci), 64*1024, 64*1024)) < 0)
-+			return err;
-+
-+	if (rpcm)
-+		*rpcm = pcm;
-+
-+	return 0;
-+}
-+
-+
- static snd_pcm_ops_t snd_emu10k1_capture_mic_ops = {
- 	.open =			snd_emu10k1_capture_mic_open,
- 	.close =		snd_emu10k1_capture_mic_close,
-Index: alsa-kernel/pci/emu10k1/voice.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/voice.c,v
-retrieving revision 1.5
-diff -u -r1.5 voice.c
---- alsa-kernel/pci/emu10k1/voice.c	12 Aug 2002 08:43:47 -0000	1.5
-+++ alsa-kernel/pci/emu10k1/voice.c	12 Nov 2004 22:53:26 -0000
-@@ -30,13 +30,27 @@
- #include <sound/core.h>
- #include <sound/emu10k1.h>
- 
--static int voice_alloc(emu10k1_t *emu, emu10k1_voice_type_t type, int pair, emu10k1_voice_t **rvoice)
-+static int voice_alloc(emu10k1_t *emu, emu10k1_voice_type_t type, int number, emu10k1_voice_t **rvoice)
- {
- 	emu10k1_voice_t *voice, *voice2;
--	int idx;
- 
- 	*rvoice = NULL;
--	for (idx = 0; idx < 64; idx += pair ? 2 : 1) {
-+	int idx,pair;
-+	pair = ( number == 2 ) ? 1 : 0;
-+	if (type == EMU10K1_EFX) { /* multichannel pcm */
-+	    for (idx = 0; idx < 16; idx++) {
-+		voice = &emu->voices[idx];
-+		printk("voice alloc - %i, %i of %i\n", voice->number, idx, number);
-+		if (voice->use) /* error, nothing else should touch the 1st 16 voices */
-+		    return -ENOMEM;
-+		voice->use = 1;
-+		voice->efx = 1;
-+	    }
-+	    *rvoice = &emu->voices[0];
-+	    return 0;
-+	}
-+		
-+	for (idx = 16; idx < 64; idx += pair ? 2 : 1) {
- 		voice = &emu->voices[idx];
- 		voice2 = pair ? &emu->voices[idx+1] : NULL;
- 		if (voice->use || (voice2 && voice2->use))
-@@ -56,8 +70,10 @@
- 		case EMU10K1_MIDI:
- 			voice->midi = 1;
- 			break;
-+		case EMU10K1_EFX:
-+			break;
- 		}
--		// printk("voice alloc - %i, pair = %i\n", voice->number, pair);
-+		printk("voice alloc - %i, pair = %i\n", voice->number, pair);
- 		*rvoice = voice;
- 		return 0;
- 	}
-@@ -70,12 +86,12 @@
- 	int result;
- 
- 	snd_assert(rvoice != NULL, return -EINVAL);
--	snd_assert(!pair || type == EMU10K1_PCM, return -EINVAL);
-+	snd_assert(!pair || type == EMU10K1_PCM || type==EMU10K1_EFX, return -EINVAL);
- 
- 	spin_lock_irqsave(&emu->voice_lock, flags);
- 	for (;;) {
- 		result = voice_alloc(emu, type, pair, rvoice);
--		if (result == 0 || type != EMU10K1_PCM)
-+		if (result == 0 || type == EMU10K1_SYNTH || type == EMU10K1_MIDI)
- 			break;
- 
- 		/* free a voice from synth */
-@@ -84,7 +100,7 @@
- 			if (result >= 0) {
- 				emu10k1_voice_t *pvoice = &emu->voices[result];
- 				pvoice->interrupt = NULL;
--				pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = 0;
-+				pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = pvoice->efx = 0;
- 				pvoice->epcm = NULL;
- 			}
- 		}
-@@ -103,7 +119,7 @@
- 	snd_assert(pvoice != NULL, return -EINVAL);
- 	spin_lock_irqsave(&emu->voice_lock, flags);
- 	pvoice->interrupt = NULL;
--	pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = 0;
-+	pvoice->use = pvoice->pcm = pvoice->synth = pvoice->midi = pvoice->efx = 0;
- 	pvoice->epcm = NULL;
- 	snd_emu10k1_voice_init(emu, pvoice->number);
- 	spin_unlock_irqrestore(&emu->voice_lock, flags);
-
- 
--- 
-Lee Revell <rlrevell@joe-job.com>
-
+----=_eZEHEe_002_3570_qFYjkX.KE1m9Y--
 
 
 -------------------------------------------------------
