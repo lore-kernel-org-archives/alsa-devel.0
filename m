@@ -1,12 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Audigy LS support
-Date: Wed, 12 May 2004 14:55:23 +0100
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: General Info. PCI Audio devices that are handled
+ by the OpenSound OSS drivers, but not handled by ALSA.
+Date: Wed, 12 May 2004 15:55:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A22CCB.1050703@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0405121511230.21321@denise.shiny.it>
+References: <40A1A873.8090304@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <40A1A873.8090304@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,18 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Does anyone have an Audigy LS lying around that they are not using, and 
-would like to donate it to me, so I can add support for it in ALSA ?
 
-I just need a card to try out some Kung Fu on it.
+On Wed, 12 May 2004, James Courtier-Dutton wrote:
 
-Cheers
-James
+> Just for general info.
+
+> pci10b5,1142 NOT-HANDLED "lynxone"
+
+Add the LynxTWO, Lynx L22 and Lynx AES16. LynxStudio provides programming
+info only under a NDA that doesn't allow the licencee to release anything
+in source form.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
