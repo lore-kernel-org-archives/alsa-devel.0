@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa opl3 api
-Date: Fri, 04 Jul 2003 12:44:17 +0200 (METDST)
+From: Justin Cormack <justin@street-vision.com>
+Subject: Re: hdsp driver status
+Date: 04 Jul 2003 13:43:29 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0307041241420.23661-100000@studcom.urz.uni-halle.de>
-References: <20030704020832.GG24005@dbz.icequake.net>
+Message-ID: <1057322609.7193.65.camel@lotte>
+References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
+	<3F044FF5.2010602@boosthardware.com> <3F0456A5.9000600@boosthardware.com>
+	<1057252106.7192.61.camel@lotte>
+	<32866.81.50.18.84.1057263312.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20030704020832.GG24005@dbz.icequake.net>
+In-Reply-To: <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +20,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ryan Underwood <nemesis-lists@icequake.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: pshirkey@boosthardware.com, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ryan Underwood wrote:
-> I'm curious, how the OPL3 userspace API in ALSA is operated.  I see that
-> in the "Writing an ALSA driver":
-> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1207.htm
-> Is the only OPL3 API presented through OSS /dev/dmfm in userspace, or is
-> there an alsa-lib interface that I am overlooking?
+On Thu, 2003-07-03 at 21:15, Thomas Charbonnel wrote:
+> >> >> Remaining:
+> >> >> * HDSP9652: the matrix mixer isn't yet handled right.
+> >> >> * Rev11 + Multiface: either the firmware file is wrong or the
+> >> io-box firmware upload scenario has changed for this card revision.
+> >> Has anyone ever had success with this combination (or rev11 +
+> >> Digiface) ?
+> >> >>
+> >
+> > you mean 0xb? I have one that works on 0.9.0rc5, but wont work on
+> > 0.9.4/todays cvs.
+> 
+> That's surprising. Does the matrix mixer work with 0.9.0rc5 ?
 
-You can use the "hardware dependent" API (snd_hwdep_open,
-snd_hwdep_ioctl) to issue SNDRV_DM_FM_IOCTL_xxx ioctls to the device.
+Yes its fine. But I though it was only the 9652 that had a matrix mixer
+problem...
 
-
-HTH
-Clemens
+Justin
 
 
 
