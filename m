@@ -1,15 +1,19 @@
-From: Juergen Kreileder <jk@blackdown.de>
-Subject: Re: ioctl32 on ppc64
-Date: Tue, 14 Sep 2004 17:11:37 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: configure doesn't accept --with-cards=powermac
+Date: Tue, 14 Sep 2004 19:40:40 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <871xh4q40m.fsf@blackdown.de>
-References: <87fz5notfg.fsf@blackdown.de> <s5hoek9rv63.wl@alsa2.suse.de>
-	<s5hfz5lrlv8.wl@alsa2.suse.de> <s5hu0u0x6qy.wl@alsa2.suse.de>
+Message-ID: <20040914194040.1f406191.pochini@shiny.it>
+References: <20040912113743.283b28be.pochini@shiny.it>
+	<Pine.LNX.4.58.0409121328010.10059@pnote.perex-int.cz>
+	<20040913212445.401b5917.pochini@shiny.it>
+	<s5hy8jdrzdp.wl@alsa2.suse.de>
+	<Pine.LNX.4.58.0409141112410.17743@denise.shiny.it>
+	<s5hpt4prve7.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu0u0x6qy.wl@alsa2.suse.de> (Takashi Iwai's message of "Tue,
-	14 Sep 2004 16:30:45 +0200")
+In-Reply-To: <s5hpt4prve7.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,46 +23,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: pochini@denise.shiny.it, perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+On Tue, 14 Sep 2004 12:34:56 +0200
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> At Tue, 14 Sep 2004 16:00:43 +0200,
-> I wrote:
->> Could you try the attached patch?
->> With the patch, mmapping of PCM status/control records is disabled
->> on 32bit mode.
+> > > > Yes, they're both enabled, but config.log shows that CONFIG_INPUT is an
+> > > > empty string  ,8-/  ?? It's "y" in the kernel .config file.
+> > >
+> > > What about linux/autoconf.h?
+> > > configure checks only this header file instead of .config.
+> >
+> > It was "1" IIRC. I can't verify right now because I'm not at home, but I'm
+> > pretty sure it was 1.
 >
-> Sorry, it included a typo.
-> The fixed patch is below.
+> It looks like configure doesn't check CONFIG_INPUT indeed.
+> Could you try the attached patch?
 
-Thanks, it works now!
-I just had to make one small fix:
-
---- sound/core/ioctl32/pcm32.c.orig     2004-09-14 17:01:41.817995464 +0200
-+++ sound/core/ioctl32/pcm32.c  2004-09-14 17:01:48.864989384 +0200
-@@ -480,7 +480,7 @@ enum {
-        SNDRV_PCM_IOCTL_READN_FRAMES32 = _IOR('A', 0x53, struct sndrv_xfern32),
-        SNDRV_PCM_IOCTL_HW_REFINE_OLD32 = _IOWR('A', 0x10, struct sndrv_pcm_hw_params_old32),
-        SNDRV_PCM_IOCTL_HW_PARAMS_OLD32 = _IOWR('A', 0x11, struct sndrv_pcm_hw_params_old32),
--       SNDRV_PCM_IOCTL_SYNC_PTR32 = _IOWR('A', 0x23, struct sndrv_pcm_sync_ptr),
-+       SNDRV_PCM_IOCTL_SYNC_PTR32 = _IOWR('A', 0x23, struct sndrv_pcm_sync_ptr32),
- 
- };
- 
-=
-
-So rate conversion now works in the mixed 32-/64-bit environment.
-dmix still doesn't work but that happens in pure 32-bit and 64-bit
-environments too.
+Yes, it works. Tnx.
 
 
-        Juergen
-
--- 
-Juergen Kreileder, Blackdown Java-Linux Team
-http://www.blackdown.org/java-linux/java2-status/
+--
+Giuliano.
 
 
 -------------------------------------------------------
