@@ -1,27 +1,16 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Configuration system and Resource Manager. Was: Re: The ALSA
- Situation
-Date: Fri, 19 Nov 2004 23:16:34 -0300
-Message-ID: <1100916994.2782.3.camel@localhost>
-References: <200411102113.iAALDLUN001061@localhost.localdomain>
-	 <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
-	 <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
-	 <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org>
-	 <s5his8cfiot.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org>
-	 <s5hhdnwfgbz.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
-	 <s5hekizfo0n.wl@alsa2.suse.de>
-	 <Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org>
-	 <20041112230617.41c5073e@mango.fruits.de>
-	 <1100308501.2337.54.camel@localhost>
-	 <Pine.LNX.4.58.0411131133300.1736@pnote.perex-int.cz>
-Reply-To: mjander@users.sourceforge.net
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] emu10k1: add per-voice PTR register
+	dump	to /proc entry
+Date: Fri, 19 Nov 2004 19:10:24 -0500
+Message-ID: <1100909425.13712.50.camel@krustophenia.net>
+References: <1100394086.2458.18.camel@krustophenia.net>
+	 <s5hlld0smj2.wl@alsa2.suse.de> <1100709062.6930.5.camel@krustophenia.net>
+	 <s5hmzxfqok5.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411131133300.1736@pnote.perex-int.cz>
+In-Reply-To: <s5hmzxfqok5.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -31,27 +20,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-> > IMHO, ALSA requires a resource manager. And before someone starts
-> > hacking any shit, please let us design something well done.
+On Thu, 2004-11-18 at 14:22 +0100, Takashi Iwai wrote:
+> > 
+> > Sure, will do.  One file per voice for the PTR registers (and one file
+> > for FN0) might actually be most useful.  This way you can diff them.
 > 
-> Exactly. We need a configuration manager for alsa-lib.
-> We can discuss it right now.
+> Yes, that makes sense.
 > 
 
-Well, I started drawing some lines. For everyone interested, take a look and feel free to modify.
-This preliminary.
+OK regarding the previous message, I figured out how to create a
+directory under the card root (just set S_IFDIR).  However there is no
+way to create files under that directory because snd_card_proc_new makes
+the following assumption (from alsa-kernel/core/info.c):
 
-http://alsa.opensrc.org/index.php?page=DrawingBoard
+    852  *
+    853  * The parent is assumed as card->proc_root.
+    854  *
 
+So, I think the API has to be modified to allow a parent to be
+specified.
 
--- 
-Manuel Jander
-Electronic Engineer
+Lee
 
 
 
