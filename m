@@ -1,12 +1,13 @@
-From: Tony Senerchia <asenerchia@gmail.com>
-Subject: Re: Re: SB Live! 24-bit (Frans Ketelaars)
-Date: Fri, 10 Dec 2004 21:30:14 +0000
-Message-ID: <ea6472360412101330560002a2@mail.gmail.com>
-Reply-To: Tony Senerchia <asenerchia@gmail.com>
+From: "Stephen Warren" <SWarren@nvidia.com>
+Subject: RE: New azx driver: Problems in snd_mixer_load
+Date: Fri, 10 Dec 2004 14:16:45 -0800
+Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B0033AE20A@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-class: urn:content-classes:message
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,28 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks!
+OK. Now I really have the latest code, and it works well for me. Weird
+there's no volume control in the HW!
 
-I've seen this actually. The link you gave me:
-http://alsa.opensrc.org/index.php?page=audigyls
-doesn't work (permission denied). 
+I have a reproducable kernel oops though.
 
-I understand that it is not fully supported (I'm willing to do what I
-can and wait if necessary), but I don't know exactly what I need to do
-to recompile. Which .diff file am I using to patch? Am I patching the
-kernel directly? I compiled alsa-1.0.7, like I said- do I need to try
-to compile the CVS?
+I run alsamixer, and it gives me "columns" for:
 
-How do I go about patching the kernel (do I just need to search for
-"alsa-kernel/alsa-***" like in the post from jdc? )
+PCM Surround Center LFE Capture Capture "Input Source" "Input Source"
 
-Thanks so very much for all your help already- the alsa project has
-done a lot for sound in Linux!!!
+As expected, I can manipulate the mute on the first 4, but not adjust
+the volume value.
 
-T
+If I select the first "Input Source", and change the selected source, it
+starts out by default as "Front Mic", then changes to "Rear Mic", then
+to "CD", then if I attempt to change it once more, I get a kernel oops.
+
+Unfortunately, I can't get ksymoops to do anything really useful - it
+refuses to load symbols from /proc/kallsyms... What version should I be
+used of ksymoops? The latest I can find is 2.4.10, and I also tried
+2.4.9, since the kernel.org directory it's in said that was the latest
+even though there was a newer version...
+
+--=20
+Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
+swarren@nvidia.com        http://www.nvidia.com/
+swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
 
 
 -------------------------------------------------------
