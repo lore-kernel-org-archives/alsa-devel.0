@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Thu, 2 Dec 2004 19:34:31 +0100
-Message-ID: <b0c93fb62e5ae2973a6e05b1af9a8dda@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
+Date: Thu, 2 Dec 2004 19:36:18 +0100
+Message-ID: <c8183bd6195a2360365389a788e98aa2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F693245
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:34:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D906D245
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:36:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,85 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
 ======================================================================
-Reported By:                brentcfisher
+Reported By:                linus
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
+Issue ID:                   667
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              12-02-2004 19:34 CET
+Date Submitted:             11-23-2004 15:27 CET
+Last Modified:              12-02-2004 19:36 CET
 ======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Summary:                    How to integrate turning on and off LED:s on laptops
 Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
+This machine, an HP Compaq NC6000 (also on other models
+such as NC8000) has a mute LED that
+turns on and off when mute is activated/deactivated.
+It is accomplished by way of the "External Amplifier"
+setting - this has been wired to a LED instead of an
+amplifier, so the "mute" function should (theoretically)
+activate/deactivate the "External Amplifier" when muting
+is selected for the device. The chip used is AD1981B.
 
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
+This script shows how it is done:
 
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
+if ( amixer sget "External Amplifier"|grep off > /dev/null )
+then
+           # Toggles the LED, no actual volume change
+           amixer set "External Amplifier" unmute > /dev/null
+           # Toggles the audio level
+           amixer set "Master" unmute > /dev/null
+else
+           amixer set "External Amplifier" mute > /dev/null
+           amixer set "Master" mute > /dev/null
+fi
+
+The question of how this is to be implemented remains. Is
+this an issue for ALSA or shall it be handled on a higher,
+user-space level? I also have a bug open in GNOME for the
+same thing, I need to decide how to finally resolve this
+and need input from the ALSA team on the best solution.
+
+(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
 ======================================================================
 
 ----------------------------------------------------------------------
- squarooticus - 11-25-04 06:45 
+ Clemens Ladisch - 11-24-04 18:47 
 ----------------------------------------------------------------------
-I enabled debugging, but don't see any interesting messages when this
-problem occurs.  (I've seen similar invalid ptr messages from the
-intel_8x0 code, but they don't always occur in relation to this problem. 
-I think the two are separate, though they may be triggered by the same
-conditions.)
+Here is a user-space tool that I originally wrote for other purposes. Use
+it until the driver does the syncing.
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:34 
+ tiwai - 12-02-04 19:36 
 ----------------------------------------------------------------------
-Hmm, intel8x0 driver doesn't have such messages.
-
-In the case of via82xx, the DMA pointer reported by the hardware is
-confused.  It happend often on a machine with broken ACPI support.
-
-Anyway, try to enable POINTER_DEBUG in via82xx.c and recompile the driver.
- Then you'll get more detailed debug information.
-Also, please show /proc/asound/card0/pcm0p/sub0/hw_params during the run.
+Well, if Clemens's neat program does enough job, the change of the driver
+wouldn't be necessary?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-11-25-04 06:45 squarooticus   Note Added: 0002586                          
-12-02-04 19:34 tiwai          Note Added: 0002694                          
+11-23-04 15:27 linus          New Issue                                    
+11-23-04 15:27 linus          Distribution              => Fedora Core 3   
+11-23-04 15:27 linus          Kernel Version            => 2.6.9           
+11-23-04 15:41 tiwai          Note Added: 0002516                          
+11-23-04 21:28 linus          Note Added: 0002528                          
+11-24-04 12:22 tiwai          Note Added: 0002549                          
+11-24-04 13:00 IceRAM         Note Added: 0002555                          
+11-24-04 13:07 tiwai          Note Added: 0002558                          
+11-24-04 14:27 linus          Note Added: 0002562                          
+11-24-04 15:07 linus          Note Added: 0002567                          
+11-24-04 18:47 Clemens LadischFile Added: muteled.c                        
+11-24-04 18:47 Clemens LadischNote Added: 0002580                          
+12-02-04 19:36 tiwai          Note Added: 0002695                          
 ======================================================================
 
 
