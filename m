@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
-Date: Wed, 2 Feb 2005 12:40:59 +0100
-Message-ID: <65f12054796491c09041e4e06b6a9215@bugtrack.alsa-project.org>
+Date: Wed, 2 Feb 2005 12:46:02 +0100
+Message-ID: <c6d57b53f929795aa9d04444161f803b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 534D0211
-	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 12:40:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9F913211
+	for <alsa-devel@alsa-project.org>; Wed,  2 Feb 2005 12:46:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Kernel Version:             # uname -a<br />
 Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
 Date Submitted:             02-01-2005 16:17 CET
-Last Modified:              02-02-2005 12:40 CET
+Last Modified:              02-02-2005 12:46 CET
 ======================================================================
 Summary:                    Can't get nm256 up & running
 Description: 
@@ -115,15 +115,6 @@ Saving the mixer setup used for this in /var/lib/alsa/asound.state.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-02-05 11:18 
-----------------------------------------------------------------------
-Check the kernel message.
-
-The error message "FATAL: Error..." doesn't come from alsaconf script but
-from your /etc/init.d/alsasound script.  Check whether you have a broken
-"install" line in your module configuration file.
-
-----------------------------------------------------------------------
  Jean-Louis Crouzet - 02-02-05 12:40 
 ----------------------------------------------------------------------
 First many thanks for that so prompt answer, actually apreciated after a so
@@ -146,6 +137,16 @@ cs: memory probe 0x0c0000-0x0fffff: excluding 0xc0000-0xcbfff
 0xdc000-0xfffff
 .../
 
+----------------------------------------------------------------------
+ tiwai - 02-02-05 12:46 
+----------------------------------------------------------------------
+As the driver told you, the chip has no AC97 codec but most likely it's
+connected to another ISA codec chip.
+
+Run alsaconf and proceed to probe legacy ISA device.  Then choose cs4232
+and cs4236.  If it can't detect, check BIOS setting which parameters are
+used.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -155,6 +156,7 @@ Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 02-02-05 11:18 tiwai          Note Added: 0003483                          
 02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
 ======================================================================
 
 
