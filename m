@@ -1,18 +1,14 @@
-From: <fmoraes74@netzero.net>
-Subject: Cracks during capture
-Date: Thu, 10 Jun 2004 00:17:05 GMT
+From: Carlos Pita <cpitaar@yahoo.com.ar>
+Subject: hw/plughw strange behaviour
+Date: Thu, 10 Jun 2004 02:19:58 -0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040609.171735.24877.22607@webmail11.nyc.untd.com>
+Message-ID: <200406100219.58760.cpitaar@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from outbound20-2.nyc.untd.com (outbound20-2.nyc.untd.com [64.136.20.160])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id F1A451EC
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2004 02:18:29 +0200 (MEST)
-Received: from outbound21-sr.nyc.untd.com (webmail11.nyc.untd.com [10.140.30.153])
-	by smtpout03.nyc.untd.com with SMTP id AABANRLGCATJK8PA
-	for <alsa-devel@alsa-project.org> (sender <fmoraes74@netzero.net>);
-	Wed,  9 Jun 2004 17:18:10 -0700 (PDT)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,23 +17,115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-I am trying to add capture to the emu10k1x driver based on the Audigy LS driver. It seems to be working, but when I use arecord to capture at the defaults (8Khz mono), I get some cracking sound in the capture. 
+I have a problem using the plughw device with slave the hw:0,0 device: a pcm 
+in an AWE 64 Gold. When invoking snd_pcm_hw_params on plughw:0,0 I get an 
+'Invalid argument' error (-22). However, running the same program directly on 
+hw:0,0 works fine. Also, both versions run without complaints in another PC 
+with a VIA686A (but when adding a simple sinusoidal wave playback test, hw 
+and plughw sound with different pitch, suggesting a problem with frequencies 
+perhaps due to conversions having place in plughw). Both PCs are running 
+Mandrake 10, which provides:
 
-If I capture at 48Khz, the sound seems better. Any ideas/suggestions?
+linux-2.6.3-7mdk
+libalsa2-1.0.2-3mdk
 
-I am going to clean up the code a bit so that I can submit the patch with the current support.
+Below are the source code for the program and the output of running it, first 
+with hw:0,0, then using plughw:0,0, for the AWE 64 Gold.
 
-Francisco
+Thank you in advace.
+Regards,
+Carlos.
 
-________________________________________________________________
-The best thing to hit the Internet in years - NetZero HiSpeed!
-Surf the Web up to FIVE TIMES FASTER!
-Only $14.95/ month -visit www.netzero.com to sign up today!
+test-alsa.c
+-----------
+
+#include <stdio.h>
+#include <alsa/asoundlib.h>
+
+int main() {
+   
+   snd_pcm_t *handle;          
+   snd_pcm_hw_params_t *hwparams;
+
+   #define device "hw:0,0"
+   //#define device "plughw:0,0"
+   
+   #define requested_rate 44100
+   int rate = requested_rate;
+   int dir = 1; /* exact_rate > rate  => dir = 1 */
+  
+   #define numchannels 2
+   #define numperiods 2
+   #define periodsize (8192 / 4)
+   #define requested_buffersize (numperiods * periodsize)
+   snd_pcm_uframes_t buffersize = requested_buffersize;
+  
+   int errnum;
+   snd_output_t *output;
+      
+   snd_pcm_open(&handle, "plughw:0,0", SND_PCM_STREAM_PLAYBACK, 0);
+   
+   /* set hw params */
+   snd_pcm_hw_params_malloc(&hwparams);
+   snd_pcm_hw_params_any(handle, hwparams);   
+   snd_pcm_hw_params_set_access(handle, hwparams, 
+SND_PCM_ACCESS_RW_INTERLEAVED);
+   snd_pcm_hw_params_set_format(handle, hwparams, SND_PCM_FORMAT_S16_LE);
+   snd_pcm_hw_params_set_rate_near(handle, hwparams, &rate, &dir);
+   printf("Rate = %d, requested rate = %d.\n", rate, requested_rate);
+   snd_pcm_hw_params_set_channels(handle, hwparams, numchannels);
+   snd_pcm_hw_params_set_periods(handle, hwparams, numperiods, 0);
+   snd_pcm_hw_params_set_buffer_size_near(handle, hwparams, &buffersize);
+   printf("Buffer size: %d, requested buffer size: %d.\n", buffersize, 
+requested_buffersize);   
+   if ((errnum = snd_pcm_hw_params(handle, hwparams)) < 0) {
+      fprintf(stderr, "Error (%d) setting parameters: %s.\n", errnum, 
+snd_strerror(errnum));
+      return(-1);
+   }
+   snd_pcm_hw_params_free(hwparams);
+
+   /* dump device */
+   snd_output_stdio_attach(&output, stdout, 0);
+   snd_pcm_dump_hw_setup(handle, output);
+   fflush(stdout);
+
+   // play(handle, periodsize);
+
+   snd_pcm_close(handle);
+}
+
+Output for hw:0,0
+-----------------
+
+Rate = 44100, requested rate = 44100.
+Buffer size: 4096, requested buffer size: 4096.
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 4096
+period_size  : 2048
+period_time  : 46439
+tick_time    : 1000
+
+Output for plughw:0,0
+---------------------
+
+Rate = 44100, requested rate = 44100.
+Buffer size: 4096, requested buffer size: 4096.
+Error (-22) setting parameters: Invalid argument.
+
+
 
 
 -------------------------------------------------------
