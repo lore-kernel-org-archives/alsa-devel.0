@@ -1,11 +1,14 @@
-From: "cjs 2895" <cjs2895@hotmail.com>
-Subject: Requesting guidance
-Date: Mon, 15 Apr 2002 22:36:14 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1
+ emu10k1_main.c,1.12,1.13
+Date: Tue, 16 Apr 2002 09:15:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F38tK01svuQRg5YbhEH00010225@hotmail.com>
+Message-ID: <Pine.LNX.4.33.0204160911040.509-100000@pnote.perex-int.cz>
+References: <873cxxmmjt.fsf@www.gitteundmarkus.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <873cxxmmjt.fsf@www.gitteundmarkus.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,36 +17,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Markus Plail <plail@web.de>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Howdy folks,
+On Mon, 15 Apr 2002, Markus Plail wrote:
 
-I've got an idea for a game I'd like to build for my kids. To make it work 
-like I want I need to have four mono sound channels feeding into four 
-physical speakers. To make that work it looks like my options are:
-  1) Use four separate sound cards (PCI or USB)
-  2) Do some coding to use each channel in a sound card to drive a
-     separate speaker.
-I like option two the best because its cost effective, and I think the newer 
-Sound Blaster cards will drive four speakers (even if not, two cards is 
-better then four). Unfortunately I don't
-think Linux's OSS can handle either of these options so now I'm looking to 
-Alsa as a solution. From reading the Alsa manual it looks like I can do what 
-I want by interleaving the sound buffers in one memory space. Is that the 
-best approach? Its been a week since I read the manual, so I don't recall if 
-I can do something like a select() loop to feed data to the sound cards as 
-needed, but I'm thinking that would be easier if the method is available. 
-Can anyone give me some guidance on how to proceed? I would appreciate it. 
-Also, I haven't bought any sound cards yet, so if there is another make that 
-might be better suited for this application (and is also cheap) please clue 
-me in.
+> Hi Takashi!
+> 
+> * Takashi Iwai writes:
+> > At Thu, 11 Apr 2002 15:42:23 +0100,
+> > James Courtier-Dutton wrote:
+> >> 
+> >> [1  <text/plain; us-ascii (7bit)>]
+> >> Takashi Iwai wrote:
+> >> 
+> >> >Update of /cvsroot/alsa/alsa-kernel/pci/emu10k1
+> >> >In directory usw-pr-cvs1:/tmp/cvs-serv9192
+> >> >
+> >> >Modified Files:
+> >> >	emu10k1_main.c 
+> >> >Log Message:
+> >> >fixed default mask values
+> >> >(these change won't affect the actual behavior, though)
+> 
+> [snip]
+> 
+> >> This seems to have fixed AC3 Passthru mode on SB Live (rev 7) cards.
+> >> Just so you know, all SB Live cards worked before for AC3 Passthru 
+> >> except the rev 7 cards.
+> >> I just got a report on the xine-user list about it.
+> >> Ok, so you did not know you were fixing it, but well done anyway!!!! ;-)
+> > err, frankly speaking, i still don't figure out why with this change
+> > the pass-through works.  i'm glad to to hear a good news, anyway ;)
+> 
+> Just wanted to let you know that it wasn't the changes in emu10k1_main.c,
+> but the changes in emumixer.c that made my (I was the one reporting it on
+> the xine ML) rev07 card working.
 
-Thanks,
-Christopher
+The joke is, that this behaviour is caused by a mistake. Here is the right 
+patch against current CVS:
+
+Index: emumixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
+retrieving revision 1.9
+diff -u -r1.9 emumixer.c
+--- emumixer.c  8 Apr 2002 12:21:45 -0000       1.9
++++ emumixer.c  16 Apr 2002 07:10:59 -0000
+@@ -369,7 +369,7 @@
+        int change;
+
+        spin_lock_irqsave(&emu->reg_lock, flags);
+-       if (emu->audigy) {
++       if (!emu->audigy) {
+                reg = inl(emu->port + HCFG);
+                val = ucontrol->value.integer.value[0] & 1 ? 0 : HCFG_GPOUT0;
+                change = (reg & HCFG_GPOUT0) != val;
 
 
+At least, we know that for rev07 cards we shouldn't modify GPOUT0. These 
+cards have separated the digital output or shared with an analog output?
 
-_________________________________________________________________
-MSN Photos is the easiest way to share and print your photos: 
-http://photos.msn.com/support/worldwide.aspx
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
