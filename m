@@ -1,83 +1,85 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] intel8x0 - fixes 'periodical noisy output'
-Date: Mon, 26 Apr 2004 09:55:22 +0200 (METDST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0404260950420.20041-100000@studcom.urz.uni-halle.de>
-References: <1082492527.1407.131.camel@deeli.eee.strath.ac.uk>
+From: Lukas Degener <AFBLukas-Mmb7MZpHnFY@public.gmane.org>
+Subject: [Fwd: Re: [linux-audio-user] DSP2000 C-PORT and
+	MIDI input]
+Date: Mon, 26 Apr 2004 11:40:39 +0200
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <408CD917.3070700@gmx.de>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1082492527.1407.131.camel@deeli.eee.strath.ac.uk>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arek Korbik <arek.korbik@eee.strath.ac.uk>
-Cc: ALSA Devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1v5P9MsFVvkkBB/WhxxnpHQ@public.gmane.org>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1aFUAG64dwko@public.gmane.org>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfocZ5a6xMsm1+iqrErVy8Mf2+df2TVCvIA@public.gmane.org>
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: LAD Mail <linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Arek Korbik wrote:
-> To summarise: hardware generates an interrupt when it should not - the
-> driver should handle it (the simplest solution: ignore). The attached
-> patch:
->  - adds interrupt-on-FIFOE handling(/ignoring) to handler routine
+Hi everybody and sorry for posting this to both, lad and alsa-dev,
+i was not sure which one fits better.
 
-IMNSHO it's better to check for the buffer completion interrupt status
-bit because that is the actual event we want to handle.
+Concerning the issue with non-functional midi in on the DSP2000 c-port:
+Someone on lau(Clemens?) said the problem is a lack of information an 
+how to enable some interrupts.
+Matthew Skinner contacted me a couple of days ago (actualy replying to a 
+thread on lau, i think), offereing to provide the missing info + 
+additional help.
 
-The patch below has been applied to CVS.
+Anyone interested and able to do the required changes should contact 
+him: matt-h1laINijYsWj7JPsHwAtPg@public.gmane.org
 
+the original "dialog" is attached below. I'm sorry, it is a little 
+cluttered by my mail client :-) hope you can read it anyway.
+
+Kind Regards,
+Lukas
+
+
+----- Original Message ----- 
+From: "Lukas Degener" <AFBLukas-Mmb7MZpHnFY@public.gmane.org>
+To: "Matthew Skinner, Sound and Music Tech Support" <matt-h1laINijYsWj7JPsHwAtPg@public.gmane.org>
+Sent: Saturday, April 24, 2004 5:50 AM
+Subject: Re: [linux-audio-user] DSP2000 C-PORT and MIDI input
+
+
+> Matthew Skinner, Sound and Music Tech Support wrote:
+>
+> > If you can program in c++ and want to get the midi io working on the
+> > cport then let me know what you need.
+>
+> I doubt my programming skills are sufficient to perform ad-hoc
+> modifications on the alsa driver layer, at least not without a
+> exorbitant amount of spare time, which i currently heavily lack :-)
+>
+> As for what is needed/missing: As Clemens said on lau:
+>
+> > Currently, this bug cannot be fixed because nobody knows how to enable
+> > MIDI interrupts on this card.
+>
+> I'm not familiar with driver programming, so i can only vaguely guess,
+> that there is a lack of specifications on certain parts of the c-port
+> hardware.
+> If you can provide this information, i imagine the alsa developers would
+> much apreciate it. It would propably make sense to post your offer on
+> one of their mailing lists.
+>
+> Kind regards,
+> Lukas
+>
+>
+I dont know the best mailinglist to post to or I probably would do so. I can
+provide the missing information and some more help.
+
+If you want to find someone with the time, knowledge and passion to write
+the extra code for linux then get them to contact myself.
 
 Regards,
-Clemens
 
-
--- 
-Index: intel8x0.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/intel8x0.c,v
-retrieving revision 1.136
-diff -u -r1.136 intel8x0.c
---- intel8x0.c	21 Apr 2004 18:18:27 -0000	1.136
-+++ intel8x0.c	26 Apr 2004 07:41:50 -0000
-@@ -775,11 +775,14 @@
- static inline void snd_intel8x0_update(intel8x0_t *chip, ichdev_t *ichdev)
- {
- 	unsigned long port = ichdev->reg_offset;
--	int civ, i, step;
-+	int status, civ, i, step;
- 	int ack = 0;
-
-+	status = igetbyte(chip, port + ichdev->roff_sr);
- 	civ = igetbyte(chip, port + ICH_REG_OFF_CIV);
--	if (civ == ichdev->civ) {
-+	if (!(status & ICH_BCIS)) {
-+		step = 0;
-+	} else if (civ == ichdev->civ) {
- 		// snd_printd("civ same %d\n", civ);
- 		step = 1;
- 		ichdev->civ++;
-@@ -813,7 +816,8 @@
- 		snd_pcm_period_elapsed(ichdev->substream);
- 		spin_lock(&chip->reg_lock);
- 	}
--	iputbyte(chip, port + ichdev->roff_sr, ICH_FIFOE | ICH_BCIS | ICH_LVBCI);
-+	iputbyte(chip, port + ichdev->roff_sr,
-+		 status & (ICH_FIFOE | ICH_BCIS | ICH_LVBCI));
- }
-
- static irqreturn_t snd_intel8x0_interrupt(int irq, void *dev_id, struct pt_regs *regs)
-
-
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: The Robotic Monkeys at ThinkGeek
-For a limited time only, get FREE Ground shipping on all orders of $35
-or more. Hurry up and shop folks, this offer expires April 30th!
-http://www.thinkgeek.com/freeshipping/?cpg=12297
+Matthew Skinner
+Sound and Music Technical Support
