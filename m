@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000617]: Front / rear out of sync
-Date: Thu, 2 Dec 2004 14:32:06 +0100
-Message-ID: <78d272d5cdaf06e4f51e6a207999b17c@bugtrack.alsa-project.org>
+Date: Thu, 2 Dec 2004 14:55:28 +0100
+Message-ID: <613678f08dc823c3aecc6c12a08f01c0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E2E8221
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 14:32:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 37F5922B
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 14:55:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               SuSE 9.0
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             10-30-2004 18:20 CEST
-Last Modified:              12-02-2004 14:32 CET
+Last Modified:              12-02-2004 14:55 CET
 ======================================================================
 Summary:                    Front / rear out of sync
 Description: 
@@ -64,13 +64,6 @@ pcm.ch40dup {
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 12:17 
-----------------------------------------------------------------------
-Oh thanks for finding it out.
-Do you have any regression by disabling it?
-e.g. does 4.0 output still work?
-
-----------------------------------------------------------------------
  lemoncurry - 12-02-04 14:32 
 ----------------------------------------------------------------------
 I'm using a Terratec XFire which is cs46xx based.
@@ -80,6 +73,18 @@ to the rear channels.
 
 It would be very nice to have a mixer control for setting the EAM status
 anytime using an alsa mixing app.
+
+----------------------------------------------------------------------
+ tiwai - 12-02-04 14:55 
+----------------------------------------------------------------------
+Yes, it sounds reasonable.
+
+The first patch is to alsa-kernel tree, which adds "Duplicate Front" mixer
+control.  The second patch is for alsa-lib, which modifies the CS46xx card
+config to change the new switch automatically off when rear or 4.0 PCM is
+used.
+
+Give it a try.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -94,6 +99,7 @@ Date Modified  Username       Field                    Change
 12-02-04 02:02 henkie_        Note Added: 0002673                          
 12-02-04 12:17 tiwai          Note Added: 0002678                          
 12-02-04 14:32 lemoncurry     Note Added: 0002680                          
+12-02-04 14:55 tiwai          Note Added: 0002681                          
 ======================================================================
 
 
