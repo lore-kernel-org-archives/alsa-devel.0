@@ -1,14 +1,15 @@
 From: James Tappin <james@tappin.me.uk>
 Subject: Re: the last changes to trident driver
-Date: Tue, 7 Jan 2003 19:33:19 +0000
+Date: Tue, 7 Jan 2003 20:00:45 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030107193319.608f79c3.james@tappin.me.uk>
+Message-ID: <20030107200045.1fa654d3.james@tappin.me.uk>
 References: <s5hn0md9c9s.wl@alsa2.suse.de>
+	<20030107193319.608f79c3.james@tappin.me.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn0md9c9s.wl@alsa2.suse.de>
+In-Reply-To: <20030107193319.608f79c3.james@tappin.me.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,35 +22,47 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 07 Jan 2003 17:04:47 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+On Tue, 7 Jan 2003 19:33:19 +0000
+James Tappin <james@tappin.me.uk> wrote:
 
-> Hi,
+> On Tue, 07 Jan 2003 17:04:47 +0100
+> Takashi Iwai <tiwai@suse.de> wrote:
 > 
-> if someone has a Trident 4DNX (not DX), could you test the latest CVS
-> driver?  i hope my last change doesn't break, but i couldn't test the
-> board atm...
+> > Hi,
+> > 
+> > if someone has a Trident 4DNX (not DX), could you test the latest CVS
+> > driver?  i hope my last change doesn't break, but i couldn't test the
+> > board atm...
+> > 
+> > 
+> > thanks in advance,
+> > 
+> > Takashi
 > 
+> Hi Takashi.
 > 
-> thanks in advance,
+> I get a problem with the gameport options not resolving with the
+> following build.
 > 
-> Takashi
+> 00:09.0 Multimedia audio controller: Trident Microsystems 4DWave NX (rev
+> 02)
+> 
+> ./cvscompile --with-cards=trident --with-sequencer --without-isapnp
+> --with-oss
+> 
+> gabrielle:/gsoft/build/ALSA/CVS/alsa-driver# /sbin/depmod -ae 2.4.20
+> depmod: *** Unresolved symbols in
+> /lib/modules/2.4.20/kernel/sound/pci/trident/snd-trident.o depmod:      
+>   gameport_unregister_port_R70daab68
+> depmod:         gameport_register_port_R98692e58
+> 
+> Best regards,
+> 	James
 
-Hi Takashi.
+Ooops dumbcluck error -- /usr/src/linux was pointing to the 2.5 sources,
+I'll try again with the right settings.
 
-I get a problem with the gameport options not resolving with the following build.
-
-00:09.0 Multimedia audio controller: Trident Microsystems 4DWave NX (rev 02)
-
-./cvscompile --with-cards=trident --with-sequencer --without-isapnp --with-oss
-
-gabrielle:/gsoft/build/ALSA/CVS/alsa-driver# /sbin/depmod -ae 2.4.20
-depmod: *** Unresolved symbols in /lib/modules/2.4.20/kernel/sound/pci/trident/snd-trident.o
-depmod:         gameport_unregister_port_R70daab68
-depmod:         gameport_register_port_R98692e58
-
-Best regards,
-	James
+James
 
 -- 
 James Tappin,             O__      "I forget the punishment for using
