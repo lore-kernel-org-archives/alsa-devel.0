@@ -1,13 +1,10 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: various (mostly trivial) small
-	cleanups
-Date: Mon, 14 Mar 2005 18:56:18 -0500
-Message-ID: <1110844578.15588.12.camel@mindpipe>
-References: <Pine.HPX.4.33n.0503140920520.15356-100000@studcom.urz.uni-halle.de>
+Subject: Using hardware timers for the ALSA sequencer
+Date: Mon, 14 Mar 2005 19:07:16 -0500
+Message-ID: <1110845236.15588.23.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.HPX.4.33n.0503140920520.15356-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,29 +14,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2005-03-14 at 09:23 +0100, Clemens Ladisch wrote:
-> Lee Revell wrote:
-> > timer.c ... I just copied and pasted from the ymfpci driver &
-> > changed the registers.
-> 
-> BTW: Does the Emu10k1 have some sample/tick counter that runs even if
-> no PCMs are running?  If so, it would be possible to detect lost timer
-> interrupts.
+Hey,
 
-In practice I have found that interrupts are basically never lost.  The
-only time I ever saw this happen was when the VIA Unichrome XAA (yep,
-userspace!) driver had a FIFO related bug where it would temporarily
-stall the PCI bus.
+The emu10k1 timer thread reminded me of an idea I had.
 
-I guess I am wondering whether this would be worth implementing.  Do
-you think the overhead of reading the wall clock register on every timer
-interrupt is worth it?
+Currently the ALSA sequencer always uses the system timer by default.
+If your sound cards timer is supported by ALSA (emu10k1 and ymfpci),
+this provides 50-100x better resolution.  But in order to get the ALSA
+sequencer to use it you have to use the seq_default_timer_*  options
+(which BTW I had never heard of on the list, I stumbled across them
+reading the source).
+
+How hard would it be to get the sequencer to prefer the hardware timer
+by default and fall back to the system timer otherwise?  Probably would
+not be noticeable for a MIDI keyboard, but for applications like sending
+MIDI clock/MTC, the system timer resolution can be inadequate.
+
+Would this be a good idea?
 
 Lee
+
 
 
 
