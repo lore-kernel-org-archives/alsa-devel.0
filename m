@@ -1,37 +1,62 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: unregister_ioctl32_conversion and modules. ioctl32 revisited.
-Date: Wed, 15 Dec 2004 13:30:59 -0500
-Message-ID: <1103135460.18982.68.camel@krustophenia.net>
-References: <20041215065650.GM27225@wotan.suse.de>
-	 <20041215074635.GC11501@mellanox.co.il>  <s5hbrcvqv7r.wl@alsa2.suse.de>
+From: <danny@mailmij.org>
+Subject: RE: snd-powermac produces only low quality dirty so
+Date: Wed, 15 Dec 2004 19:32:19 +0100 (CET)
+Message-ID: <Pine.LNX.4.33.0412151929380.14428-100000@luna.ellen.dexterslabs.com>
+References: <XFMail.20041215111002.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262439AbULOSbI@vger.kernel.org>
-In-Reply-To: <s5hbrcvqv7r.wl@alsa2.suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Michael S. Tsirkin" <mst@mellanox.co.il>, Andi Kleen <ak@suse.de>, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel <alsa-devel@lists.sourceforge.net>, Ingo Molnar <mingo@elte.hu>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.mailmij.org (a62-216-27-249.adsl.cistron.nl [62.216.27.249])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F34124E
+	for <alsa-devel@alsa-project.org>; Wed, 15 Dec 2004 19:32:20 +0100 (MET)
+In-Reply-To: <XFMail.20041215111002.pochini@shiny.it>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Olaf Hering <olh@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-12-15 at 19:20 +0100, Takashi Iwai wrote:
-> At Wed, 15 Dec 2004 09:46:35 +0200,
-> Michael S. Tsirkin wrote:
-> > 
-> > There were two additional motivations for my patch:
-> > 1. Make it possible to avoid the BKL completely by writing
-> >    an ioctl with proper internal locking.
-> > 2. As noted by  Juergen Kreileder, the compat hash does not work
-> >    for ioctls that encode additional information in the command, like this:
-> > 
-> > #define EVIOCGBIT(ev,len)  _IOC(_IOC_READ, 'E', 0x20 + ev, len)
+On Wed, 15 Dec 2004, Giuliano Pochini wrote:
+
 > 
-> I like the idea very well.  Other benifits in addition:
+> On 14-Dec-2004 Olaf Hering wrote:
 > 
+> > All 2.6 versions I tried so far produce only "dirty" low quality sound
+> > when playing mp3 with xmms with either the alsa or oss plugin.
+> > But it works as expected when I use dmasound_pmac and the liboss plugin.
+> >
+> > Any ideas how to debug it?
+> 
+> It seems that the chip is not happy with some period/buffer sizes.
+> Someone was trying to find the right constraints to set for those
+> parameters. Maybe the attached patch fixes it (untested).
+> 
+O yes, I forgot to send it. Will do later tonight. It doesn't have to be a 
+power of 2 though, at least not on my Snapper.
+However, the problem never occured with oss emulation, so I doubt above 
+problem is the same. Low quality sound was happening a few versions ago, 
+but latest ALSA produces very reasonable sound, only distortion when 
+I turn up PCM too much (and DRC Range is set high).
 
-How does this all relate to Ingo's ->unlocked_ioctl stuff which is "an
-official way to do BKL-less ioctls"?
+So:
+-what version (libs+driver)
+-what is "dirty" low quality?
 
-http://lkml.org/lkml/2004/12/14/53
+d.
 
-Lee
+ 
+
+
+
+-------------------------------------------------------
+SF email is sponsored by - The IT Product Guide
+Read honest & candid reviews on hundreds of IT Products from real users.
+Discover which products truly live up to the hype. Start reading now. 
+http://productguide.itmanagersjournal.com/
