@@ -1,20 +1,23 @@
-From: Lee Revell <rlrevell@joe-job.com>
+From: Frank Barknecht <fbar@footils.org>
 Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 14:29:22 -0400
+Date: Tue, 10 Aug 2004 21:00:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092162561.782.39.camel@mindpipe>
-References: <200408100636.i7A6aMAo030159@www4.pobox.sk>
-	 <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi>
-	 <4118ED57.50302@free.fr> <1092155904.861.3.camel@mindpipe>
-	 <411900D4.7090806@free.fr>
+Message-ID: <20040810190022.GA5349@fliwatut.scifi>
+References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi> <4118ED57.50302@free.fr> <20040810174036.GB4342@fliwatut.scifi> <411911F4.6020204@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 49887213
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 20:29:05 +0200 (MEST)
-In-Reply-To: <411900D4.7090806@free.fr>
+Received: from smtp2.netcologne.de (smtp2.netcologne.de [194.8.194.218])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72092213
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 21:01:01 +0200 (MEST)
+Received: from fliwatut.scifi (xdsl-213-196-243-250.netcologne.de [213.196.243.250])
+	by smtp2.netcologne.de (Postfix) with ESMTP id D3B2E44E9
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 21:00:59 +0200 (MEST)
+Received: from freak by fliwatut.scifi with local (Exim 4.34)
+	id 1BubrD-0001PV-7i
+	for alsa-devel@alsa-project.org; Tue, 10 Aug 2004 21:00:23 +0200
+Content-Disposition: inline
+In-Reply-To: <411911F4.6020204@free.fr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,46 +26,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: geeceezee@free.fr
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-08-10 at 13:07, GCZ wrote:
-> Lee Revell wrote:
+Hallo,
+GCZ hat gesagt: // GCZ wrote:
+
+> Frank Barknecht wrote:
 > 
-> > No, this is why ALSA provides OSS emulation, so every legacy app doesn't
-> > have to be recoded.  For gaming you should use the closed-source Nvidia
-> > drivers and ALSA's OSS emulation.  I don't think anyone can make a
+> >IMO the right thing libre-wise to do in that case is not to buy
+> >hardware from vendors that don't support open source development.
 > 
-> Which doesn't work on my setup. I posted a message on alsa-user I think, 
-> and I don't remember exactly what error message I got, but I think it 
-> had something to do with mmap. Nobody replied to my message. At one 
-> point, going through so many documents, ML posts, Q&A's, trial and error 
-> steps just to make it work isn't worth it, if no improvement comes out 
-> of it. If Takashi is indeed interested in my feedback, at least it will 
-> be productive.
+> Right. With over 90% of windows users, I think that's a tad useless for 
+> now. 
+
+With 10 percent Linux users it is not.
+
+> If you are coherent with your principle then:
 > 
+> - you don't own a single video DVD
+> - you shouldn't own a Playstation
+> - your choice among cellphones is very limited, if not inexistant
+> - you don't own a computer, because you didn't find any motherboard with 
+> an open source BIOS
+... 
+> This thread has gone a bit off topic, please fu2 poster if you want to 
+> continue this conversation.
 
-OK, I will check the archives.  The ALSA guys are very busy, you might
-have to make a little noise or even be a bit inflammatory to get your
-bug addressed.  For example, track down the general area of the bug
-using some printk's, then post a completely botched fix to the mailing
-list.  Preferably something that compiles and looks like it's working. 
-This will often get you a hint as to what the real problem is, then
-maybe someone less skilled can fix it. ;-)  I have fixed a few bugs in
-the driver for my soundcard, Jaroslav and Takashi will help you, and
-tell you if you are completely off base.  I encourage you to ask your
-favorite distro vendor to hire some ALSA developers, because all but two
-or three are working for free.
+This is really on the verge of getting off-topic, but one final
+comment: I think that closed source hardware drivers are of another
+importance than closed source "application" software, because specs
+for hardware make the whole open source thing possible in the first
+place. If hardware specs are kept secret it will be very easy to shut
+us out, once the hardware maker decides so. Nvidia practically shut
+open source out already, and ATI followed their lead in this behaviour
+which is sad.
 
-> I'm glad to read that. Let's not get into zealotry.
-> 
+That's why I'm not going to support this by buying products from
+vendors who are trying to keep open source developers out even now.
+There are enough alternatives in almost all cases. I'm sure I can play
+Doom 3 in five years with some future Intel onboard graphics card
+using open source drivers just fine. I'm a patient guy. I've probably
+waited more for ALSA 1.0.
 
-Sorry, should have left that off...
-
-Lee
-
-
+Ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
