@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: gmplayer error with ALSA output plugin
-Date: Mon, 26 Jul 2004 11:35:55 +0200 (METDST)
+From: Ferenc Wagner <wferi@afavant.elte.hu>
+Subject: Re: alsaconf checking for OSS modules
+Date: Mon, 26 Jul 2004 14:03:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0407261134000.1841-100000@studcom.urz.uni-halle.de>
-References: <1090793916.14951.107.camel@mindpipe>
+Message-ID: <3ok6wrc6ww.fsf@tba.elte.hu>
+References: <20040723165213.089db15b@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1090793916.14951.107.camel@mindpipe>
+In-Reply-To: <20040723165213.089db15b@mango.fruits.de> (Florian Schmidt's
+ message of "Fri, 23 Jul 2004 16:52:13 +0200")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> When I select the 'ALSA 0.9.x/1.0.x' option for audio output in
-> gmplayer, the sound seems to work, but I get tons of popup windows with
-> this error:
->
-> alsa-control: mixer attach /dev/mixer: no such file or directory
+Florian Schmidt <mista.tapas@gmx.net> writes:
 
-"/dev/mixer" is an OSS device.  The ALSA mixer would have a device
-name like "hw:0".
+> i think quite a bit of trouble could be saved if the
+> alsaconf script would check if any OSS modules are loaded.
+> I think it's enough to spit out an error to the user.
 
-Apparently, gmplayer doesn't change the device name when changing the
-device type.
-
-
-Regards,
-Clemens
-
-
+Yes, definitely.  The alsaconf behaviour is somewhat
+confusing as it correctly identifies the card and then fails
+to load the modules showing the error message from a couple
+of seconds only.
+-- 
+Feri.
 
 
 -------------------------------------------------------
