@@ -1,18 +1,19 @@
 From: Thomas Charbonnel <thomas@undata.org>
-Subject: Alsa handling of spdif bits (was Re: Questions to HDSP
- users)
-Date: Thu, 29 Jan 2004 14:51:34 +0100
+Subject: Rawmidi and CONFIG_DEBUG_SPINLOCK_SLEEP
+Date: Thu, 29 Jan 2004 21:27:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40190FE6.5030402@undata.org>
-References: <49f18f21d61ee5db3233ab67ef91feb5@essej.net>
+Message-ID: <40196C9B.3050901@undata.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite.undata.org (brln-d514866a.pool.mediaWays.net [213.20.134.106])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA21269
-	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 14:59:37 +0100
-In-Reply-To: <49f18f21d61ee5db3233ab67ef91feb5@essej.net>
+Received: from satellite.undata.org (brln-d5148640.pool.mediaWays.net [213.20.134.64])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA00729
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 21:43:38 +0100
+Received: from localhost ([127.0.0.1] helo=undata.org)
+	by satellite.undata.org with esmtp (Exim 4.21)
+	id 1AmJ0F-0000mh-Db
+	for alsa-devel@alsa-project.org; Thu, 29 Jan 2004 21:43:07 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,39 +22,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jesse Chappell <jesse@essej.net>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jesse Chappell wrote :
-> 
-> And while I have your attention, i've tried to get iec958 spdif
-> passthrough (non-audio AC3) working on the HDSP without success.
-> I created a HDSP.conf based on the RME9652.conf and got the device
-> properly opened using ac3dec -C , but no stream is passed (using
-> ADAT1 optical output, properly set as SPDIF in hdspconf).  Setting
-> the non-audio flag doesn't appear to have any effect.
-> It works fine as an output for regular PCM spdif operation.
-> 
-> Any ideas you or the other alsa gurus have would be most welcome.
-> 
-> jlc
-> 
-> 
+Hi,
 
-Hi Jesse,
+I noticed this problem today using midi on my setup (alsa 1.0.1, kernel 
+2.6.1 with CONFIG_DEBUG_SPINLOCK_SLEEP) :
 
-I just had a look and here again there is code in the hdsp driver 
-directly inherited form the rme9652 driver. There are two competing 
-spdif bits handling mechanisms there, one hdsp specific dealing directly 
-with the card registers, and one alsa generic. There clearly is a 
-problem in that the spdif bits on the card are cleared on playback where 
-they shouldn't. It would be easy to fix, but I guess that the alsa 
-generic spdif bits handling code is here for some reason. Jaroslav or 
-Takashi, could you explain to me how this is supposed to work with alsa 
-? I guess there is a plan for a generic spdif bits control interface, 
-but for now there seems to be nothing. Amixer doesn't even seem to 
-handle this properly, or does it ?
+Debug: sleeping function called from invalid context at 
+include/asm/uaccess.h:473
+in_atomic():1, irqs_disabled():1
+Call Trace:
+  [<c012139c>] __might_sleep+0xac/0xe0
+  [<c010b170>] handle_signal+0xd0/0x140
+  [<c03955ef>] snd_rawmidi_kernel_read1+0x10f/0x170
+  [<c03957e7>] snd_rawmidi_read+0x147/0x1b0
+  [<c01131cf>] restore_i387_fxsave+0x8f/0xa0
+  [<c015b2f3>] vfs_read+0xd3/0x140
+  [<c015b59f>] sys_read+0x3f/0x60
+  [<c010b4bb>] syscall_call+0x7/0xb
+
+I'm sorry I didn't check if this was fixed in 1.0.2, but though it was 
+worth mentioning. This caused regular (~ 1/second) dropouts in pd while 
+using midi.
 
 Thomas
 
