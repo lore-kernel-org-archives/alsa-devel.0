@@ -1,14 +1,11 @@
-From: "Olivier Kaloudoff" <kalou@jose-paredes.com>
-Subject: unable to use any output nor spdif out with cs46xx
-Date: Sun, 20 Oct 2002 15:36:21 +0200 (CEST)
+From: Marcus Pearce <M.T.Pearce@city.ac.uk>
+Subject: No sound with EWS88mt
+Date: Sun, 20 Oct 2002 15:19:22 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <51510.193.249.73.108.1035120981.squirrel@www.jose-paredes.com>
-References: <E183G6v-0007Vb-00@usw-sf-list1.sourceforge.net>
+Message-ID: <Pine.GSO.4.21.0210201518150.27730-100000@swindon>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E183G6v-0007Vb-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,74 +18,130 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
- Hi,
+Alsa driver from current cvs on Mandrake linux 7.2 (kernel 2.2.17). 
 
+root@localhost # /etc/init.d/alsasound restart
+Shutting down sound driver: done 
+Starting sound driver: snd-emu10k1 done 
+Starting sound driver: snd-ice1712 done 
 
-        I am using the following kernel, with CVS alsa from October 14,
-2002... But I am unable to get no sound at all, after unmutting,
-and putting the volumes to max with all outputs tried.
+with a click through the ews88mt card that suggests something is up. 
 
-        I bought this card to get SPDIF in/out, too, because it was
-reported to work in the Alsa Soundcard matrix ... but unfortunatelly it
-does not.
+root@localhost # aplay -vD plug:hw:1 test.wav
+Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+Plug PCM: Route conversion PCM (sformat=S32_LE)
+Transformation table:
+0 <- 0
+1 <- 1
+2 <- none
+3 <- none
+4 <- none
+5 <- none
+6 <- none
+7 <- none
+8 <- none
+9 <- none
+Its setup is:
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 6553
+period_size  : 1638
+period_time  : 37142
+tick_time    : 10000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1638
+xfer_align   : 1638
+start_threshold  : 6552
+stop_threshold   : 6553
+silence_threshold: 0
+silence_size : 0
+boundary     : 1717829632
+Slave: Hardware PCM card 1 'ICEnsemble ICE1712' device 0 subdevice -1
 
-        Any help ?
-(following is the description of my hardware and kernel)
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_INTERLEAVED
+format       : S32_LE
+subformat    : STD
+channels     : 10
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 24
+buffer_size  : 6553
+period_size  : 1638
+period_time  : 37142
+tick_time    : 10000
+tstamp_mode  : NONE
+period_step  : 1
+format       : S32_LE
+subformat    : STD
+channels     : 10
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 24
+buffer_size  : 6553
+period_size  : 1638
+period_time  : 37142
+tick_time    : 10000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 1638
+xfer_align   : 1638
+start_threshold  : 6552
+stop_threshold   : 6553
+silence_threshold: 0
+silence_size : 0
+boundary     : 1717829632
+Max peak (3276 samples): 00066 (0x0042) #                    0%
+Max peak (3276 samples): 00056 (0x0038) #                    0%
+....etc. 
 
- Best Regards,
- Olivier Kaloudoff
- Saint Raphael, France
- French Riviera
+But no sound although envy24control suggests that there is sound going out
+through pcm out 1 and 2. 
 
-cat /proc/pci
+Which brings me on to a second problem. The patchbay in envy24control only
+shows the S/PDIF outs. The following change to patchbay.c brings back the
+H/W out channels in the patchbay: 
 
-  Bus  0, device  15, function  0:
-    Multimedia audio controller: Cirrus Logic CS 4614/22/24 [CrystalClear
-SoundFusion Audio Accelerator] (rev 1).
-      IRQ 11.
-      Master Capable.  Latency=64.  Min Gnt=4.Max Lat=24.
-      Non-prefetchable 32 bit memory at 0xfebfe000 [0xfebfefff].
-      Non-prefetchable 32 bit memory at 0xfea00000 [0xfeafffff].
+void patchbay_init(void)
+{
+        int i;
+        snd_ctl_elem_value_t *val;
 
+        snd_ctl_elem_value_alloca(&val);
+        snd_ctl_elem_value_set_interface(val, SND_CTL_ELEM_IFACE_MIXER);
+        snd_ctl_elem_value_set_name(val, ANALOG_PLAYBACK_ROUTE_NAME);
+        for (i = 0; i < 8; i++) {
+                snd_ctl_elem_value_set_numid(val, 0);
+                snd_ctl_elem_value_set_index(val, i);
+-                if (snd_ctl_elem_read(ctl, val) < 0)
++                if (snd_ctl_elem_read(ctl, val) < -2)
+                        continue;
+         
+                stream_active[i] = 1;
+        }
 
- [kalou@kalou kalou]$ uname -a
- Linux kalou.kalou.net 2.4.19-7mdkcustom #1 dim sep 29 21:34:47 CEST 2002
- i686 un
- known unknown GNU/Linux
- [kalou@kalou kalou]$ /sbin/lsmod
- Module                  Size  Used by    Not tainted
- nls_iso8859-1           2844   1 (autoclean)
- isofs                  25652   1 (autoclean)
- inflate_fs             17892   0 (autoclean) [isofs]
- cs46xx                 55600   0
- soundcore               3684   0 [cs46xx]
- ac97_codec              9928   0 [cs46xx]
- ppp_deflate            41024   1 (autoclean)
- bsd_comp                4344   0 (autoclean)
- binfmt_misc             5696   1
- nfsd                   66448   0 (autoclean)
- lockd                  46480   0 (autoclean) [nfsd]
- sunrpc                 60188   0 (autoclean) [nfsd lockd]
- ppp_async               7456   1
- ppp_generic            20032   3 [ppp_deflate bsd_comp ppp_async]
- slhc                    5072   1 [ppp_generic]
- af_packet              13000   0 (autoclean)
- ip_vs                  62008   0 (autoclean)
- ipchains               39656   0 (unused)
- ide-cd                 28648   0
- ide-scsi                8084   0
- keybdev                 1888   0 (unused)
- mousedev                4116   0 (unused)
- hid                    18244   0 (unused)
- usbmouse                2004   0 (unused)
- evdev                   4480   2
- wacom                   6132   0 (unused)
- usb-uhci               21676   0 (unused)
- usbcore                57952   1 [hid usbmouse wacom usb-uhci]
- rtc                     6560   0 (autoclean)
- [kalou@kalou kalou]$
+But then we get the following messages whenever we try to change routing
+in the patchbay: 
 
+root@localhost # envy24control -D hw:1
+Unable to read Delta S/PDIF output state: No such file or directory
+Unable to write Delta S/PDIF Output Defaults: No such file or directory 
+Multi track route write error: No such file or directory 
+Multi track route write error: No such file or directory 
+Multi track route write error: No such file or directory 
+.....etc 
 
+Any ideas? 
 
 
 
