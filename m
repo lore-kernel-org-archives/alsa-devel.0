@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000913]: subwoofer not working
-Date: Wed, 16 Feb 2005 19:39:01 +0100
-Message-ID: <1dd5aaa5a4d80d6b384901af993a928e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000914]: nm256 causes kernel to hard freeze
+Date: Wed, 16 Feb 2005 20:39:29 +0100
+Message-ID: <bdcf661877e59c0d43c5eefcb4c718f1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1D8D120B
-	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2005 19:39:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 60628269
+	for <alsa-devel@alsa-project.org>; Wed, 16 Feb 2005 20:39:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,43 +23,74 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=913> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=914> 
 ======================================================================
-Reported By:                matteo
-Assigned To:                
+Reported By:                vaxen
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   913
-Category:                   PCI - intel8x0
+Issue ID:                   914
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               debian/sarge
-Kernel Version:             2.6.11-rc4
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.9 2.6.10
 ======================================================================
-Date Submitted:             02-16-2005 19:39 CET
-Last Modified:              02-16-2005 19:39 CET
+Date Submitted:             02-16-2005 20:39 CET
+Last Modified:              02-16-2005 20:39 CET
 ======================================================================
-Summary:                    subwoofer not working
+Summary:                    nm256 causes kernel to hard freeze
 Description: 
-hi, i got a ASUS W1000 laptop, sound's working now after the latest patch
-but i still can't get the subwoofer channel working, any suggestion ?
-I can hear it if i play a cd, but not from the pcm!
+Hi, here is my specs:
 
-thx in advance
+Gateway solo 3300
+http://support.gateway.com/support/manlib/Notebooks/Solo3300/8506533/06533.htm
+Audio chipset NM2200 interface to AC97 CODEC
 
-Matteo
+pegasos vaxen # lspci -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      +-07.3  Intel Corp. 82371AB/EB/MB PIIX4 ACPI
+      +-0a.0  Texas Instruments PCI1211
+      +-0d.0  3Com Corporation 3c905C-TX/TX-M [Tornado]
+      \-10.0  Agere Systems (former Lucent Microelectronics) WinModem 56k
 
+I am using a custom patched kernel at
+http://morph-sources.sourceforge.net/?q=node/27 
+
+It is using 2.6.10 with 1.08 alsa drivers wth alsa-bk-2005-01-05.patch and
+alsa-bk-2005-01-14.patch.
+
+I compiled the drivers into the kernel, the kernel hard freezes after
+displaying these message:
+nm256:found card signature in video RAM: 0x27ec00
+nm256:Mapping port 1 from 0x2709a0-0x27ec00
+I have to switch off the laptop as it does not respond to any inputs.
+
+I also tried compiling the drivers as modules, when I tried to modprobe
+snd-nm256, the kernel hard freezes without any warning message.
+
+I also tried vanilla 2.6.9 which contains alsa 1.0.6 driver. It freezes
+like 2.6.10.
+
+I have not tried alsa 1.0.7 driver.
+
+Please let me know if you need more diagnostic information to fix this
+problem.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-16-05 19:39 matteo         New Issue                                    
-02-16-05 19:39 matteo         File Added: ac97registers                    
-02-16-05 19:39 matteo         Distribution              => debian/sarge    
-02-16-05 19:39 matteo         Kernel Version            => 2.6.11-rc4      
+02-16-05 20:39 vaxen          New Issue                                    
+02-16-05 20:39 vaxen          Kernel Version            => 2.6.9 2.6.10    
 ======================================================================
 
 
