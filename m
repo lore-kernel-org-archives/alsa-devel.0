@@ -1,9 +1,9 @@
 From: "Arcady Genkin" <agenkin@thpoon.com>
-Subject: alsa-tools-0.9.7 compilation failure in hdsploader with headers
+Subject: alsa-tools-0.9.7 compilation failure in sscape_ctl with headers
  from 2.4
-Date: 2 Oct 2003 19:52:42 -0400
+Date: 2 Oct 2003 20:15:04 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <uobrszp585.fsf@bashful.cdf.toronto.edu>
+Message-ID: <uozngjnpmf.fsf@bashful.cdf.toronto.edu>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -18,37 +18,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The code for hdsploader from the 0.9.7 does not compile.  The problem
-is on line 81 in hdsploader.c:
+The code for sscape_ctl from the 0.9.7 tarball of alsa-tools does not
+compile.  The problem is on line 208 in sscape_ctl.c:
 
-    firmware.firmware_data = (unsigned long *) fw;
+    microcode.code = &_microcode;
 
 This produces the following (fatal) error message:
 
-  hdsploader.c: In function `upload_firmware':
-  hdsploader.c:81: incompatible types in assignment
-
-This line has changed from 0.9.6, where the words from "fw" were
-assigned to firmware.firmware_data iteratively.
+  source='sscape_ctl.c' object='sscape_ctl.o' libtool=no \
+  depfile='.deps/sscape_ctl.Po' tmpdepfile='.deps/sscape_ctl.TPo' \
+  depmode=gcc /bin/sh ./depcomp \
+  gcc -DPACKAGE=\"sscape_ctl\" -DVERSION=\"0.1.0\" -DSTDC_HEADERS=1
+     -DHAVE_LIBASOUND=1  -I. -I.     -g -O2  -c `test -f sscape_ctl.c ||
+     echo './'`sscape_ctl.c
+  sscape_ctl.c: In function `main':
+  sscape_ctl.c:208: incompatible types in assignment
+  make: *** [sscape_ctl.o] Error 1
 
 I have also noticed that this compiles fine with the Linux headers
-from 2.6.0-test6, but breaks with the linux headers from 24.  Having
-looked in include/sound/hdsp.h, the declaration of hdsp_firmware_t has
-changed:
+from 2.6.0-test6 (although with a warning), but breaks with the linux
+headers from 2.4.  Having looked in include/sound/sscape_ioctl.h, the
+declaration of sscape_microcode has changed:
 
 ,----[ Linux headers from 2.4.18 ]
-| typedef struct _snd_hdsp_firmware hdsp_firmware_t;
-| 
-| struct _snd_hdsp_firmware {
-|         unsigned long firmware_data[24413];
+| struct sscape_microcode
+| {
+|   unsigned char code[65536];
 | };
 `----
 
 ,----[ Linux headers from 2.6.0-test6 ]
-| typedef struct _snd_hdsp_firmware hdsp_firmware_t;
-| 
-| struct _snd_hdsp_firmware {
-|         unsigned long *firmware_data;   /* 24413 long words */
+| struct sscape_microcode
+| {
+|   unsigned char *code;  /* 65536 chars */
 | };
 `----
 
