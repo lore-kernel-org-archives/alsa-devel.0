@@ -1,13 +1,13 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: Re: TRAM on Audigy
-Date: Mon, 7 Jul 2003 12:42:13 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Other types of usb audio devices.
+Date: Mon, 7 Jul 2003 12:39:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307071042.MAA08639@www3.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.44.0307071235340.9539-100000@pnote.perex-int.cz>
+References: <3F06E046.2090609@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3F06E046.2090609@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,27 +16,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I know about this, but for me is simpler to add 20 DSP instruction=20
-than change 100 lines of driver code.
+On Sat, 5 Jul 2003, James Courtier-Dutton wrote:
 
-ALSA emu10k1 driver uses only TRAM for AC3 passthrough, other method=20
-is not implemented.
+> Jaroslav Kysela wrote:
+> > On Sat, 5 Jul 2003, James Courtier-Dutton wrote:
+> > 
+> > 
+> >>Hi,
+> >>
+> >>The current snd-usb-audio driver assumes that the audio device is 
+> >>attached to this computer, so it only talks to this endpoint.
+> >>If I have an audio usb device with USB_CLASS = 0xe0, it will be a 
+> >>wireless device. I.E. A bluetooth headset.
+> >>It uses isoc's just like the current snd-usb-audio driver but adds some 
+> >>extra requirements, in order to open a connection, one needs to also 
+> >>know the bd address of the destination device  (Like a MAC address for 
+> >>ethernet) and keep tabs of connection number.
+> >>The current bluetooth stack I am using is bluez, from the current 2.4.20 
+> >>  kernel, and it uses network sockets for the audio. I would prefer to 
+> >>use alsa for sending and receiving audio to/from the headset, with all 
+> >>other control of the device going via the bluetooth stack.
+> >>So the question is: -
+> >>How do I get the bdaddr to alsa so that an application can use 
+> >>snd_pcm_open with the bluetooth headset, just as if it was a local audio 
+> >>card.
+> > 
+> > 
+> > I think that there must be a way to determine new devices with the 
+> > bluetooth stack, so use the same mechanism as usb or pcmcia:
+> > 
+> > Register all found audio devices and create appropriate new cards in the 
+> > ALSA driver. The application does not know, if it communicates with usb, 
+> > bluetooth, PCI or ISA devices so passing some native information for the 
+> > transport layer is not our goal.
+> > 
+> > 						Jaroslav
+> 
+> Another approach would be to use some other tool outside alsa to enter 
+> the bdaddr, and just present a Playback and Capture PCM to alsa lib.
+> I was thinking that the "card" would be the bluetooth usb dongle, and 
+> the pcm's would dynamically appear and disappear as the user attaches 
+> different bluetooth devices (e.g. headset).
+> 
+> Does alsa allow for PCMs to appear and disappear?
+> E.g. Card appears but no pcms listed in /proc/asound/card0
+> User runs a tool (attach-bluetooth-pcm) what sorts out a pairing of 
+> bluetooth devices and then creates a PCM device in /proc/asound/card0
+> User changes devices, and has to re-run attach-bluetooth-pcm to remove 
+> the old PCM, and create a new one of the new device.
+> OR: -
+> Would a new "card" have to be created for each bluetooth headset?
+> Is alsa happy with dynamically adding and removing cards ?
 
-And I don't need (I don't have receiver) AC3 passthrough (this will=20
-by bonus for others), what I need is working TRAM on Audigy.
+I prefer the allocation of new card for each physical boxes, because it is
+common behaviour and the bluetooth devices might have more PCM devices and 
+/ or MIDI devices. It would be difficult to enumerate all devices which
+belongs to one physical box. It was one of the major reason, why I
+introduced the card/device model rather than device only model used in
+OSS.
 
-Peter Zubaj=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D REKLAMA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislus=
-enstva=0ASun Fire V210 server v cenach uz od 125.000,- Sk bez DPH=0ANavstiv=
-te nas na adrese http://www.somi.sk/sun/lowend_servery.php=0A=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
+And, yes, you can add/remove PCM or ALSA cards on the fly (if you handle 
+locking properly, of course).
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
