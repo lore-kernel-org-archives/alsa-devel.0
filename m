@@ -1,13 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: echoaudio.c, Revision 1.6
-Date: Sat, 19 Mar 2005 19:31:25 +0100
-Message-ID: <20050319193125.72329fad.pochini@shiny.it>
-References: <Pine.LNX.4.58.0503152151220.22860@denise.shiny.it>
-	<Pine.HPX.4.33n.0503160915080.28424-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0000276]: envy24control crash
+Date: Sat, 19 Mar 2005 19:44:00 +0100
+Message-ID: <542a85dc6df1dab0e11a93ca31bf397e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.HPX.4.33n.0503160915080.28424-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0AA311FD
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:44:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,45 +17,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: pochini@denise.shiny.it, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 16 Mar 2005 09:20:49 +0100 (MET)
-Clemens Ladisch <clemens@ladisch.de> wrote:
 
-> > Yes, but chip_t->mylock is per device, it's not the same lock even if I
-> > have 2 identical cards. And the driver calls snd_pcm_period_elapsed() and
-> > snd_rawmidi_receive() when the lock is not held. I really can't see why
-> > the irq handler requires _irqsave spinlocks.
->
-> When MIDI files are played, some timer interrupt (which can be the
-> timer of another sound card) can cause some MIDI data to be written to
-> the MIDI port.
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=276> 
+======================================================================
+Reported By:                BugBuster
+Assigned To:                
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   276
+Category:                   envy24control
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             05-14-2004 19:09 CEST
+Last Modified:              03-19-2005 19:44 CET
+======================================================================
+Summary:                    envy24control crash
+Description: 
+If you do:
+"./envy24control --help" you get a segmentation fault in getopt_long...
 
-Which causes the rawmidi (in my case) callbacks to be called from irq
-context, so they must use _irqsave locks. But in the irq handler what's the
-difference between
+======================================================================
 
-spin_lock()
-card_io
-spin_unlock()
-snd_rawmidi_receive()
-return
+----------------------------------------------------------------------
+ jdthood - 03-19-05 09:40 
+----------------------------------------------------------------------
+Submitter: Is the bug still present?
 
-and
+This should be reassigned to alsa-tools.
 
-spin_lock_irqsave()
-card_io
-spin_unlock_irqrestore()
-snd_rawmidi_receive()
-return
+----------------------------------------------------------------------
+ jdthood - 03-19-05 17:49 
+----------------------------------------------------------------------
+This was reported fixed in 1.0.7
 
-? IMHO they're the same from the viewpoint of snd_rawmidi_receive().
+* alsa-tools
+  - envy24control
+    - Fixed segfault when envy24control --help is called
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-14-04 19:09 BugBuster      New Issue                                    
+05-14-04 19:09 BugBuster      Distribution              => Gentoo          
+05-14-04 19:09 BugBuster      Kernel Version            => 2.6.5-gentoo-r1 
+03-19-05 09:40 jdthood        Note Added: 0004024                          
+03-19-05 17:49 jdthood        Note Added: 0004058                          
+03-19-05 19:43 perex          Project                  ALSA - driver => ALSA -
+tools
+03-19-05 19:44 perex          Status                   new => resolved     
+03-19-05 19:44 perex          Resolution               open => fixed       
+03-19-05 19:44 perex          Category                 OTHERS => envy24control
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
