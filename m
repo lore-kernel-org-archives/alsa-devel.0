@@ -1,12 +1,15 @@
-From: "JoDee Kathy" <aJerome_MI@ecalibration.com>
-Subject: Please get back with us thanks
-Date: Tue, 21 Dec 2004 03:12:50 -0600
-Message-ID: <V6ypL-65641B-7T@ecacertificacion.com>
-Reply-To: "JoDee Kathy" <aJerome_MI@ecalibration.com>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: obtaining timestamps from sequencer events
+Date: Tue, 21 Dec 2004 10:13:20 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0412211011120.1746@pnote.perex-int.cz>
+References: <20041221090854.16216.qmail@web51904.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="422155303"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AA03D24E
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 10:16:47 +0100 (MET)
+In-Reply-To: <20041221090854.16216.qmail@web51904.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,31 +19,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-announce-request-old@alsa-project.org, alsa-announce1@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
+To: Michael Geis <michaelgeis11@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---422155303
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+On Tue, 21 Dec 2004, Michael Geis wrote:
 
+> Hello. I wanted to add recording capability to my module to have an
+> additional way of "importing" musical scores. One of Dr. Mathias
+> Nagorni's examples shows exactly how to retrieve events from an external
+> device. I get stuck, though, when I want to retrieve timestamps from
+> those events. Following is a minimal program that sets up a connection
+> to an external keyboard (72:0 in my case) and polls events. The problem
+> lies in the fact that the time of of the incoming events is always zero.
 
+You must set what kind of timestamp you need. See:
 
-Congrats, you have been pre,apprved on Tue, 21 Dec 2004 03:12:50 -0600<br>=
+snd_seq_port_info_set_timestamping()
+snd_seq_port_info_set_timestamp_real()
+snd_seq_ev_timestamp_type()
+snd_seq_ev_is_tick()
+snd_seq_ev_is_real()
 
+						Jaroslav
 
-Your mtg process is ready for rates starting at 3.71
-
-Goto: http://www.mortzz.net/index2.php?refid=3Dph420
-
-After filling out the quick form you will recieve a l0an of up to 500,000.=
-00 from one of our lenders.
-
-JoDee Kathy
-
-
-escargatoire
-
---422155303--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
