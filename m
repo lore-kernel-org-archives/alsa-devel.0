@@ -1,14 +1,14 @@
-From: "Mirabella, Mathew J" <Mathew.Mirabella@team.telstra.com>
-Subject: RE: Audigy under Redhat8:  sound... but some issues.
-Date: Thu, 27 Mar 2003 08:39:49 +1000
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: ALSA OSS MIDI emulation: input problems
+Date: Thu, 27 Mar 2003 09:54:16 +1030 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <73388857A695D31197EF00508B08F2980A00EE9D@ntmsg0131.corpmail.telstra.com.au>
+Message-ID: <200303262324.h2QNOG601721@sprite.physics.adelaide.edu.au>
+References: <s5hvfy6nheu.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
+In-Reply-To: <s5hvfy6nheu.wl@alsa2.suse.de> from "Takashi Iwai" at Mar 26, 2003 06:53:29 PM
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,84 +17,82 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "J. Scott Amort" <jsamort@telus.net>, alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>, sound-list list <sound-list@redhat.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-ok i did all that and have some sucsess... but still probs.
-what i did is at the end of this email... but what i found is below..
+> > Now, when input occurs, Jazz++ needs to know the current time, which is very
+> > unlikely to be a multiple of 48 ticks.  Under nateive OSS it seems that
+> > before the NOTEON event (for example) OSS sends a TMR_WAIT_ABS event to
+> > update the application on the current time - the NOTEON event then follows
+> > and is assumed to have occurred at the "current time" which of course will
+> > be the time set by the TMR_WAIT_ABS event.
+> > 
+> > The problem as I see it is that the ALSA OSS emulation does not send this
+> > TMR_WAIT_ABS event - it only sends the NOTEON event.  Jazz gets this and
+> > without any TMR_WAIT_ABS to tell it otherwise, assumes that it occured at
+> > the "current" time - which is always a multiple of 48 ticks.
+> 
+> does the attached patch cure?
+> :
+> diff -u -r1.8 seq_oss_midi.c
+> --- alsa-kernel/core/seq/oss/seq_oss_midi.c	12 Mar 2003 11:26:20 -0000	1.8
+> +++ alsa-kernel/core/seq/oss/seq_oss_midi.c	26 Mar 2003 17:51:31 -0000
+> @@ -593,6 +593,7 @@
+>  		break;
+>  	}
+>  	
+> +	snd_seq_oss_readq_put_timestamp(dp->readq, ev->time.tick, dp->seq_mode);
+>  	snd_seq_oss_readq_put_event(dp->readq, &ossev);
+>  
+>  	return 0;
 
-i am using the 3rd port on the back of the audigy 2 which is meant to be =
-front left and right when you have a 2 speaker set up like i have.  but =
-no sound came from that.  i plugged the speakers into the digital out =
-port and got the sound with a lot of static etc (which is meant to =
-happen when you dont have digital speakers) so this means it is kind of =
-working.  i also found that plugging my speakers into the rear left and =
-right port or even the subwoofer port, i got clean sound.  so it kind of =
-works.
+I'll check this out tonight and report accordingly.
 
-but... the sound keeps giving little popping sounds and the bad thing is =
-it just stops after a few seconds... then you have to re start the =
-application you were using to play sounds.  this was consistent =
-behaviour... and as i said, sound out of the subwoofer or rear port =
-only.
+What I can confirm is that the mechanism I outlined is in fact the reason
+why jazz++ (and probably most other OSS sequencers) have bad timing when
+recording midi input.
 
-Are there configuration things i have to fix?  how can i fix this =
-popping and stopping issue.
-and... how can i switch cards to card 1 (yamaha) when i want to.
+A a hack to test this I did the following:
+ * in seq_oss_midi.c:send_synth_event() I inserted the following just before
+   the call to snd_seq_oss_readq_put_event():
+     { queue_t *q = queueptr(dp->queue);
+       snd_seq_oss_readq_put_timestamp(dp->readq,
+         q->timer->tick.cur_tick,dp->seq_mode);
+       queuefree(q);
+     }
+ * added include files so queueptr() prototype was available to
+   seq_oss_midi.c
+ * arranged for queueptr() to be exported from seq_queue.c
 
-Thanks for your help..=20
+When used, this revised code produced correct results inside jazz++.  At the
+time this was the only way I knew to get at a known good timer (I'd
+previously verified that the queue's timer was incrementing as expected).
+I had somehow missed that ev had a valid `time' field in this context.
 
+Takashi's patch *should* work so long as ev->time.tick is correct (ie: it's
+not derived from the oss timer).  My rudamentary knowledge of ALSA internals 
+suggests that it should be fine though.  Again, I'll confirm tonight.
 
-what i actually did....
-i got the driver, libs utils and kernel from cvs all into the same dir =
-as dirs for each.  then i did the ./compile for the drivers, then make =
-install for the drivers and then repeated for libs and then utils (don't =
-know what i was meant to do with the alsa-kernel though).
-i also made sure that /usr/src was set up with two sym links, one called =
-linux-2.4 and one just called linux, both pointing to =
-/usr/src/linux-2.4.18-14.  as you can tell, that is the kernel i am =
-using (out of the red hat cds).
-i did not set up any kernel .config file in the /lib/modules/2.4.18-14 =
-which was nesesary for installing the cvs of emu10k1 that i mentioned =
-earlier.  but i imagine this would not be nesesary for the alsa stuff =
-anyway.??
-by the way... i did all of this stuff with ./cvscompile and make install =
-as root.  hope this is ok??  it all seemed to work.  the drivers took =
-the longest to compile.
-then i changed the modules.conf with the audigy stuff for card 0 and the =
-yamaha stuff for card 1.  then unmuted.  no sound.
-then i rebooted, and tried to run stuff like alsamixer and alsacntl but =
-realised i had not done the ./snddevices step so i did that and all =
-started to work ok... the mixerat least.
-i unmuted things in the alsamixer and stored them using alsacntl.
-but still no sound.
-that is when i tried the digital and rear / subwoofer ports and got some =
-sound.
+I also suspect that seq_oss_midi.c:send_midi_event() might also need to
+reference ev->time.tick rather than the oss timer because as far as I can
+tell the oss timer time is somewhat bogus (or at least that's what it
+appears to me).  Is it correct that the oss timer doesn't actually track
+real time?  If so, what exactly is the purpose of the oss timer in the
+seq_oss_devinfo_t structure (other than to keep track time of the last
+queued echo event)?  The other possibility is that the oss timer is only
+valid for /dev/sequencer accesses - jazz++ uses /dev/sequencer2 and this is
+the only interface I can conveniently test.
 
-
-
-
------Original Message-----
-From: J. Scott Amort [mailto:jsamort@telus.net]
-Sent: Thursday, 27 March 2003 4:37 AM
-To: Mirabella, Mathew J
-Subject: RE: Audigy under Redhat8: some questions.
-
-
-On Tue, 2003-03-25 at 21:40, Mirabella, Mathew J wrote:
-> thanks for that help.
-> i will try that.
-> however, since i have already downloaded the whole cvs cvsroot dir, =
-can i do something simple with that and configure and compile the lot in =
-one go?
-> and what is the difference between the stuff in cvsroot and cvsexport?
-
-I must admit that I really don't know, I have never taken the cvs that
-way.  I think you would be better off re-downloading it as I outlined.
-
-Scott
-
-=09
+Regards
+  jonathan
+-- 
+* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
+*                    http://www.physics.adelaide.edu.au/~jwoithe            *
+***-----------------------------------------------------------------------***
+** "Time is an illusion; lunchtime doubly so"                              **
+*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
+*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
 
 
 -------------------------------------------------------
