@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio adapter
-Date: Wed, 2 Mar 2005 12:44:43 +0100
-Message-ID: <c7f0b11a89a607b0f6d127971fabab1b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Wed, 2 Mar 2005 13:22:11 +0100
+Message-ID: <575561733852765286a079a75bb38028@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 084601F1
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 12:44:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D43371D6
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 13:22:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,58 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=955> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
 ======================================================================
-Reported By:                mano1979
-Assigned To:                Clemens Ladisch
+Reported By:                sHINOBI
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   955
-Category:                   USB - usb-audio
+Issue ID:                   907
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake 10.1
-Kernel Version:             2.6.10.3
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
-Date Submitted:             03-02-2005 00:13 CET
-Last Modified:              03-02-2005 12:44 CET
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              03-02-2005 13:22 CET
 ======================================================================
-Summary:                    CN-126 - USB 5.1 Audio adapter
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
 Description: 
-I am in really need of a driver for this card. It needs to support 5.1
-surround and speaker setup....... well like the original software.
-
-Please let me know if you're able to make it.
-
-Regards, 
-
-Armand Blaaker
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
 ======================================================================
 
 ----------------------------------------------------------------------
- mano1979 - 03-02-05 12:34 
+ sHINOBI - 02-13-05 11:38 
 ----------------------------------------------------------------------
-The problem is that i want to use my 5.1 speakerset and my sound driver
-doesn't support that at this moment. I can't setup the speakers(volume per
-speaker) and i have no downmix driver for 2 channelled audio to 5.1
+Grrr. I'm sorry I forgot to supply soundcard info.
+
+cat /proc/asound/cards
+0 [CA0106         ]: CA0106 - CA0106
+                     Live! by MSI [SB0438] at 0xde00 irq 201
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 03-02-05 12:44 
+ Juha - 03-02-05 13:22 
 ----------------------------------------------------------------------
-Please show the output of "lsusb -v" for your device.
+I have the exactly same problem with my 
+
+0 [CA0106         ]: CA0106 - CA0106
+Live! 7.1 24bit [SB0410] at 0xa400 irq 10 card. The only good thing is
+that the card works ok when used through OSS emulation.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-02-05 00:13 mano1979       New Issue                                    
-03-02-05 00:13 mano1979       Distribution              => Mandrake 10.1   
-03-02-05 00:13 mano1979       Kernel Version            => 2.6.10.3        
-03-02-05 00:14 mano1979       Issue Monitored: mano1979                    
-03-02-05 09:28 Clemens LadischNote Added: 0003762                          
-03-02-05 12:34 mano1979       Note Added: 0003763                          
-03-02-05 12:44 Clemens LadischNote Added: 0003764                          
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
+02-13-05 11:38 sHINOBI        Note Added: 0003583                          
+03-02-05 13:22 Juha           Note Added: 0003770                          
 ======================================================================
 
 
