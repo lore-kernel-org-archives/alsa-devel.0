@@ -1,20 +1,13 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: CVSCOMPILE problems
-Date: Thu, 17 Oct 2002 00:17:43 +1000
+From: Joachim Blaabjerg <styx@gentoo.org>
+Subject: Fwd: [Alsa-user] VIA VT8235 (ALC201) problems
+Date: Wed, 16 Oct 2002 16:28:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021016141742.GB25933@ee.unsw.edu.au>
+Message-ID: <200210161628.19666.styx@gentoo.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from thunderbird.comms.unsw.edu.au (thunderbird.comms.unsw.EDU.AU [149.171.96.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA14690
-	for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2002 15:50:37 +0200
-Received: from maillationax ([149.171.37.251])
-	by thunderbird.comms.unsw.edu.au (8.11.2/8.11.2) with ESMTP id g9GDoIT23330
-	for <alsa-devel@alsa-project.org>; Wed, 16 Oct 2002 23:50:22 +1000 (EST)
-Received: from flatmax by maillationax with local (Exim 3.36 #1 (Debian))
-	id 181ozX-0006o5-00
-	for <alsa-devel@alsa-project.org>; Thu, 17 Oct 2002 00:17:43 +1000
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -24,31 +17,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: core sound <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there everyone,
+I'm forwarding this to -devel, just in case you guys know something that th=
+e=20
+folks on -user don't.
 
-In relation to this article/patch, I need to compile the CVS sources
-after 14'th :
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg04810.html
+I guess I should mention that I sometimes get this error message while=20
+attempting to play sound (not always, though):
 
-I have downloaded them, but am having trouble compiling them.
-There are lots of files with a ',v' extension.
-For example in the alsa-driver directory there is :
-cvscompile,v
+ALSA lib pcm_hw.c:398:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed:=
+=20
+Device or resource busy
 
-But I need to run cvscompile ?
+Some times I get that error, although the sound continues to play. FWIW, I =
+use=20
+Linux 2.4.19 with a huge patchset (sys-kernel/lolo-sources i Gentoo/Portage=
+).
 
-confused
-Matt
--- 
-http://mffm.darktech.org
+This might be very irrelevant and uninteresting, but I tried getting it to=
+=20
+work again just now, and this quote is a bit incorrect:
 
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
+> It tends to play sounds very, very slowly, and 1/10 second samples over a=
+nd=20
+> over again (perhaps 20 times).
+
+It's more like 0.5 second samples that are played five times. :P
+
+Best Regards,
+
+=2D---------  Forwarded Message  ----------
+
+Subject: [Alsa-user] VIA VT8235 (ALC201) problems
+Date: Wednesday 16 October 2002 15:49
+=46rom: Joachim Blaabjerg <styx@gentoo.org>
+To: alsa-user@lists.sourceforge.net
+
+Hi,
+
+I recently bought an EPoX 8K5A2 motherboard, with an onboard ALC201 sound
+chip. This motherboard utilizes VIA's new VT8235 south bridge (as opposed to
+VT8233 in most other recent VIA chipset boards), which I think may be the
+cause of my sound problems. I've tried various ALSA drivers with little or =
+no
+success; neither of via82cxxx_audio, snd-via686a or snd-intel8x0 will load
+(init_module: No such device).
+
+There is however one driver that does load: snd-via8233. Sadly, this driver
+fails to produce anything but noise. It tends to play sounds very, very
+slowly, and 1/10 second samples over and over again (perhaps 20 times).
+
+I've looked at the RealTek site, and they offer driver downloads. This is
+ just a repackaging of alsa-driver-0.9.0_rc3 (which I am using), and a
+ prewritten modules.conf that utilises the snd-via8233 module.
+
+Has anyone had any luck with this sound chip/motherboard?
+
+Best Regards,
+
+
+=2D------------------------------------------------------
+This sf.net email is sponsored by: viaVerio will pay you up to
+$1,000 for every account that you consolidate with us.
+http://ad.doubleclick.net/clk;4749864;7604308;v?
+http://www.viaverio.com/consolidator/osdn.cfm
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+=2D------------------------------------------------------
+
 
 
 -------------------------------------------------------
