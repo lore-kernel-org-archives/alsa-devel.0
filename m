@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000533]: Cannot restore from file it created
-Date: Tue, 9 Nov 2004 16:37:55 +0100
-Message-ID: <4d3d0ac5ad5bcb27e038c215eef957d8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000310]: Alsa freeze on shutdown in kernel 2.6.6
+Date: Tue, 9 Nov 2004 16:31:09 +0100
+Message-ID: <6e99cdd0aa6c4cc19fae445089db4a14@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9C512B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:37:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EAD392A9
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:31:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=533> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=310> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                hjheins
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   533
-Category:                   alsactl
+Project:                    ALSA - driver
+Issue ID:                   310
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
+Distribution:               Mandrake 10.0 modified
+Kernel Version:             2.6.6
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 06:39 CEST
-Last Modified:              11-09-2004 16:37 CET
+Date Submitted:             05-27-2004 14:07 CEST
+Last Modified:              11-09-2004 16:31 CET
 ======================================================================
-Summary:                    Cannot restore from file it created
+Summary:                    Alsa freeze on shutdown in kernel 2.6.6
 Description: 
-Package: alsa-utils
-Version: 1.0.3-1
-
-fishbowl:~# alsactl store
-fishbowl:~# alsactl restore
-alsactl: set_control:966: Cannot write control '2:0:0:CD Playback
-Switch:0' : Invalid argument
-
-I got nothing more to add.
+On shutdown, the alsa module does not shut down, it hangs.
+if I'm quick enough, I can break the operation with <ctrl>+<c>, and
+shutdown goes ok. If I don't break. The shutdown sequence hangs on the
+Alsa module.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-27-04 09:56 
+ hjheins - 06-08-04 17:37 
 ----------------------------------------------------------------------
-OK, thanks.  Please close this report.
+Final remark:
+
+It seems to have been related to the init script.
+Apparently before I used an older init script that wouldn't work with alsa
+1.0.4 or 1.0.5.
+Currently I use the script that comes with alsa 1.0.5 and that works fine.
 
 ----------------------------------------------------------------------
- jdthood - 09-27-04 09:57 
+ perex - 09-08-04 18:20 
 ----------------------------------------------------------------------
-OK, thanks.  Please close this report.
+New version solved problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:39 jdthood        New Issue                                    
-09-24-04 12:06 tiwai          Note Added: 0001870                          
-09-27-04 09:56 jdthood        Note Added: 0001934                          
-09-27-04 09:57 jdthood        Note Added: 0001935                          
-09-27-04 14:49 tiwai          Status                   new => resolved     
-09-27-04 14:49 tiwai          Resolution               open => fixed       
-09-27-04 14:49 tiwai          Assigned To               => tiwai           
-11-09-04 16:37 tiwai          Status                   resolved => closed  
+05-27-04 14:07 hjheins        New Issue                                    
+05-27-04 14:07 hjheins        Distribution              => Mandrake 10.0
+modified
+05-27-04 14:07 hjheins        Kernel Version            => 2.6.6           
+05-28-04 17:04 tiwai          Note Added: 0001267                          
+05-28-04 20:04 hjheins        Note Added: 0001272                          
+05-28-04 20:43 hjheins        Note Added: 0001273                          
+06-04-04 18:13 hjheins        Note Added: 0001291                          
+06-08-04 17:37 hjheins        Note Added: 0001295                          
+09-08-04 18:20 perex          Status                   new => resolved     
+09-08-04 18:20 perex          Resolution               open => fixed       
+09-08-04 18:20 perex          Assigned To               => perex           
+09-08-04 18:20 perex          Note Added: 0001738                          
+11-09-04 16:31 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
