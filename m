@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: usbaudio won't do 24-bit or 32-bit i/o...
-Date: Sat, 14 Dec 2002 19:48:25 +0900
+From: Rafal Dejewski <lardel@interia.pl>
+Subject: Ali5451 problem with mixer
+Date: Sat, 14 Dec 2002 13:04:40 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DFB0C79.7010000@boosthardware.com>
-References: <Pine.HPX.4.33n.0212051549290.19058-100000@studcom.urz.uni-halle.de>	<3DF0482E.8010109@boosthardware.com> <s5hd6o5u6hw.wl@alsa2.suse.de>
+Message-ID: <200212141304.40416.lardel@interia.pl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+  charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,48 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Hi,
+I have a problem with alsa mixer on kernel 2.5.51 and alsa-lib, alsa-utils 
+0.6rc6. Whenerver I try to run alsamixer the following message appers in 
+console and alsamixer would not start:
+$ alsamixer
+ALSA lib simple.c:944:(simple_add1) helem (MIXER,'IEC958 Playback 
+Switch',0,0,0) appears twice or more
+alsamixer: function snd_mixer_load failed: Invalid argument
 
-> 
-> could you tell me the rcs version numbers of the files on
-> alsa-kernel/usb you are using (18 Nov.) ?  i've checked the files via
-> cvs but i couldn't see any differences around the date.
-> 
+I found out that disabling this check in simple.c in alsa-lib allows alsamixer 
+to run and work (well, for me). 
+Unfortunatelly I can't test spdif connection. Oss emullation mixer works ok. 
+This happens also with ali5451.c rev.1.23 from cvs.
+This problem was also reported here: 
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg05094.html
 
-I have managed to test a more upto date version since then and it is the 
-same. I have no idea when this happened though as I wasn't actively 
-testing the 24 bit support until recently. I have a vague memory of 
-testing it much earlier in the year but I think that was only for playback.
+Help appreciated,
+Rafal
 
-I currently cannot record from input 1 and 2 either.
+----------------------------------------------------------------------
+Narysuj swoje wlasne logo na komorke! >>> http://link.interia.pl/f16a7
 
-Working are:
-
-output 1,2,3,4
-input 3,4
-
-I also have to initialise both pcms with the small utility you made.
-
-
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
 
 
 
