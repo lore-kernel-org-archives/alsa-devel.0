@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000334]: EMU10K1, capturing audio is impossible
-Date: Mon, 28 Jun 2004 09:15:52 +0200
+Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
+Date: Mon, 28 Jun 2004 09:17:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <f2810cb0430ded19934368d4bf56a515@bugtrack.alsa-project.org>
+Message-ID: <6e32f51626ccd28011d869a053ada575@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,76 +24,51 @@ The following bug has been ASSIGNED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug=
-_id=3D0000334
+_id=3D0000324
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                netslayer
+Reported By:                garden
 Assigned To:                pzad
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     334
+Bug ID:                     324
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.7rc love-sources
+Distribution:               Debian sid
+Kernel Version:             2.6.5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-13-2004 23:30 CEST
-Last Modified:              06-28-2004 09:15 CEST
+Date Submitted:             06-06-2004 13:17 CEST
+Last Modified:              06-28-2004 09:17 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    EMU10K1, capturing audio is impossible
+Summary:                    Audigy2 Platinum: very low volume (both in an=
+d out)
 Description:=20
-I have an Audigy (EMU10K2 -- on EMU10K1 drivers). It has worked perfectly
-in 0.9.8, and in 1.0.x I can playback audio fine, but capturing seems
-impossible.
-
-In 0.9.8 I was able to select a capture source in alsamixer by selecting
-it with the space bar. The source had "---" areas above it that meant it
-had the capture ability. In 1.0.x that whole functionality is gone, and I
-see no more way to capture audio.=20
-
-I have all my sources up to 100%, and when I plug in an audio to source
-into LINE IN on the Audigy, I hear nor can record anything. If I unmute
-LINE IN in alsamixer, then I hear pass through audio, which I don't want.
-I want to be able to record it, but not hear it through a pass through.=20
-
-I know several people with this problem, and I myself have a few of these
-cards dedicated to MythTV PVR boxes, and this problem makes it impossible
-to upgrade ALSA... It's been 6 months since I tried this, and since nobod=
-y
-reported it, I thought I would.=20
+Both the input and output levels of my Audigy2 Platinum seem to be very l=
+ow
+if compared to the same card with Windows (win98se). For example, I
+connected an external source (a MD player with very loud music in the
+disc) to the optical input, then to the aux input, then to the aux2 input=
+.
+With the mixer settings to 100% the input level still does not go over
+20-25% of the maximum amplitude (while with Windows I have to lower the
+input level or it will be too high). The same thing applies to the output
+level of my analog speakers. [I must be *very* careful when I reboot with
+Windows and must not forget to turn the volume knob from 10 to 2]. I had
+exactly the same problem when I used the emu10k1 drivers from sourceforge=
+.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- netslayer - 06-14-2004 01:38 CEST=20
-----------------------------------------------------------------------
-Just to clarify, I figured out that recording audio off of LINE IN does
-work. However, there is no way of recording audio with LINE muted, so as
-not to hear the pass through. I want to be able to record, just like in
-0.9.8 from the LINE IN, without having to actually listen to the pass
-through audio when it is unmuted.
-
-----------------------------------------------------------------------
- pzad - 06-14-2004 08:19 CEST=20
-----------------------------------------------------------------------
-ALSA 0.9.8 uses as ADC AC97, ALSA 1.0.x uses philips ADC (windows drivers
-uses philips ADC too and works similiar to alsa 1.0.x).
-If you want capture Line In:
--unmute and set Line In volume
--unmute and set volume for Analog Mix Capture Volume
--mute (set volume to 0) for Analog Mix Playback Volume, if don't waqnt to
-listen line in while recording.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -101,19 +76,15 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-13-04 23:30 netslayer      New Bug                                    =
+06-06-04 13:17 garden         New Bug                                    =
  =20
-06-13-04 23:30 netslayer      Distribution              =3D> Gentoo      =
+06-06-04 13:17 garden         Distribution              =3D> Debian sid  =
    =20
-06-13-04 23:30 netslayer      Kernel Version            =3D> 2.6.7rc love=
--sources
-06-14-04 01:38 netslayer      Bugnote Added: 0001305                     =
- =20
-06-14-04 08:19 pzad           Bugnote Added: 0001306                     =
- =20
-06-28-04 09:15 pzad           Status                   new =3D> assigned =
+06-06-04 13:17 garden         Kernel Version            =3D> 2.6.5       =
    =20
-06-28-04 09:15 pzad           Assigned To               =3D> pzad        =
+06-28-04 09:17 pzad           Assigned To               =3D> pzad        =
+   =20
+06-28-04 09:17 pzad           Status                   new =3D> assigned =
    =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
