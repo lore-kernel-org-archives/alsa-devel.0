@@ -1,13 +1,14 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: aplay bug?
-Date: Wed, 26 Nov 2003 19:02:48 -0800 (PST)
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: Soundcard Matrix: SEKD -> Marian
+Date: Wed, 26 Nov 2003 21:19:15 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031126190248.9916.h006.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20031127051915.2349.qmail@web21504.mail.yahoo.com>
+References: <E1AOn5n-0004Xd-00@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <E1AOn5n-0004Xd-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,40 +20,63 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-At line 200 of aplay.c (1.0.0pre3)
-		if ((err = snd_ctl_open(&handle, name, 0)) < 0) {
-			error("control open (%i): %s", card, snd_strerror(err));
-			continue;
-		}
-if this error occurs, 'card' is never updated, the while loop becomes infinite.
-because this bit from the end of the while loop is missed by the continue:
+> Hi
+> 
+> I wanted to propose a change in the alsa soundcard Matrix: The 
+> Company known as SEK'D was acquired by Magix and took down its audio 
+> hardware product line. The Interfaces are now sold by SEK'Ds former 
+> production company called 
+> MARIAN:
+> 
+> http://www.marian.de
+> 
+> this results in a name change for the SEK'D Siena, which is now 
+> called "Marc 8 Midi" to fit into the marian product line. Similarly,
+> all the other SEK'D cards, namely the ARC and Prodif Series are now 
+> sold by Marian keeping their old name.
+> 
+> Also I wanted to provide additional information about the Marc 8 Midi
 
-			if (snd_card_next(&card) < 0) {
-			    error("snd_card_next");
-			    break;
-			}
+> (SEK'D Siena): 
+> 
+> the Card uses 4 AKM AK4524 Converters, there is an PLX PCI 9050 
+> target chip on there,  3 memory chips (2 by EliteMT and one by 
+> Winbond) and a Xilinx Spartan FPGA. These are the main components I 
+> could make out. I hope that is enough information for you to replace 
+> that question mark in the Siena row, and maybe even for a skilled 
+> person to write a driver ;-).
+> 
+> Are there similar cards with existing alsa drivers?
+> 
+> Thank You
+> 
+> Andreas
 
-I see this problem because when I load alsa drivers, I don't get the correct
-permissions on files in /dev (I think).
+Nice cards these ones (Marc-8 MIDI).  While I have most of the details
+of how this card works (some info from Marion), I have yet to write the
+driver.  The driver involves a bunch of memory mapped ram that is dual
+ported (PIC & codec's).  The Xylinx part needs a download to make it
+work.  I'd like to get them working as well, as 8 full duplex channels
+for the cost is VERY attractive.  Two MIDI channels are the "bonus", as
+my application doesn't need them.  In addition, the cards support clock
+linking to eliminate skew, but that takes more work.  My friend who
+uses them in Windoze doesn't use the clock linking seems to be happy,
+maybe it makes a difference, but I don't know. He uses the cards in
+groups of 2 and 3 with no problems.
 
-Just found that the specific problem is that directory /dev/snd has permissions 
-drw-rw----, should be drwxrwx--x
+Probably after the first of the year (you know in "copious free time")
+I should start the task of the driver.  If someone wants to go faster,
+I can forward some information (I haven't signed anything!).
 
-Can anybody help me about where this is configured?
-I have options snd device_mode=0660 in my modules.conf which seems right for the
-actual device files inside /dev/snd - is this wrong...?
+=====
+-- 
+Tom Watson
+tsw@johana.com
 
-thanks
-
-
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
+__________________________________
+Do you Yahoo!?
+Free Pop-Up Blocker - Get it now
+http://companion.yahoo.com/
 
 
 -------------------------------------------------------
