@@ -1,11 +1,14 @@
-From: "Zack Borschuk" <zackqtip@hotmail.com>
-Subject: question about possible support acquisition
-Date: Mon, 31 May 2004 19:25:48 -0600
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: question about possible support acquisition
+Date: Tue, 01 Jun 2004 02:49:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <BAY19-F38WgP1A83xiD00018248@hotmail.com>
+Message-ID: <40BBE0AD.1010106@superbug.demon.co.uk>
+References: <BAY19-F38WgP1A83xiD00018248@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <BAY19-F38WgP1A83xiD00018248@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,21 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Zack Borschuk <zackqtip@hotmail.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I was wondering if a petition asking Creative Labs to release the needed 
-information to create efficient support for the Audigy LS would be plausible 
-or not.   Please let me know, so that if it is plausible, I could start 
-working on getting the petition signed by enough people.
+Zack Borschuk wrote:
+> I was wondering if a petition asking Creative Labs to release the needed 
+> information to create efficient support for the Audigy LS would be 
+> plausible or not.   Please let me know, so that if it is plausible, I 
+> could start working on getting the petition signed by enough people.
+> 
+> Thanks,
+> 
+> Zack Borschuk
+> 
 
-Thanks,
+I have already written an ALSA driver for the Audigy LS.
+Available at:
+http://www.superbug.demon.co.uk/alsa
 
-Zack Borschuk
+It handles up to 5.1 analogue output, and can record from the MIC input.
 
-_________________________________________________________________
-FREE pop-up blocking with the new MSN Toolbar – get it now! 
-http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
+Cheers
+James
 
 
 
