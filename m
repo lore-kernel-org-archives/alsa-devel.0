@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Mon, 20 Dec 2004 16:43:48 +0100
-Message-ID: <1ee9a56dd30f405cdfc869dece6fdd68@bugtrack.alsa-project.org>
+From: <direkt@postbank.de>
+Subject: =?koi8-r?B?U2VociBnZWVocnRlciBQb3N0?=
+ =?koi8-r?B?YmFua2t1bmRl?=
+Date: Mon, 20 Dec 2004 08:07:14 -0800
+Message-ID: <004401c40dce$5fa25028$88e1e3d8@nbef>
+Reply-To: <direkt@postbank.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+        boundary="----=_NextPart_000_0045_01C4E3D8.88E15028"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4AC3248
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 16:43:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,98 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_NextPart_000_0045_01C4E3D8.88E15028
+Content-Type: text/plain;
+        charset="koi8-r"
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=732> 
-======================================================================
-Reported By:                Eric Valette
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   732
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.10-rc3
-======================================================================
-Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-20-2004 16:43 CET
-======================================================================
-Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
-emit a very high frequency sound damaging ears
-Description: 
-Since 2.6.10-rc1 or rc2, I can no more use alsa on my PC or I may damage my
-ears! This is why I put a high priority as I think it may really damage
-people ears...
+Sehr geehrter Postbankkunde,
+in der letzter Zeit ist es sehr h=C4ufig zu betr=D8gerischen Vorf=C4llen be=
+i unserem Service gekommen! Verschiedenste Spion-Programme installieren sic=
+h unbemerkt auf Computern unserer Kunden und versenden pers=C3nliche Daten =
+an Betr=D8ger! Um sich dagegen zu sch=D8tzen empfehlen wir Ihnen die neuest=
+en Antivirenprogramm Programme zu nutzen und diese t=C4glich zu erneuern! A=
+ntiVir Personal Edition=20
+www.free-av.de
 
-NB : WIndows XP is working as usual, I did not change anything in my
-settings except updating the kernel from 2.6.9...
+Trotz Allem haben unsere Experten ermittelt, dass in etwa jedem zweiten Rec=
+hner ein Trojaner steckt und die Passw=C3rter der Postbank auch weitergesch=
+ickt wurden! Um dieses Problem zu l=C3sen wollten wir jeden einzelnen Kunde=
+n erneut identifizieren um so die Betr=D8ger zu stoppen! Mit diesem Verfahr=
+en versuchen wir Ihnen die h=C3chste Sicherheit zu bieten! Die Identifizier=
+ung wird durch den Nur so  k=C3nnen wir Sie in Zukunft identifizieren und n=
+ur Sie werden Zugriff auf ihr Konto haben!=20
 
-Reading the bitkeeper changelog for emuk10k1, it may well be related to
-other change in other part of the code (PCI layer...)
+Bitte rufe Sie die folgende Nummer an und best=C4tigen Ihre neuen Daten!
+017-56825864=20=20
 
-Do you have a bitkeeper tree diff so that I can test with latest kernel
-version of the code?
-======================================================================
+Vielen Dank f=D8r Ihr Verst=C4ndnis und ihre Mitarbeit
+=A9 2004 Deutsche Postbank AG
+------=_NextPart_000_0045_01C4E3D8.88E15028
+Content-Type: text/plain;
+	name="=?koi8-r?B?MS50eHQ=?="
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="=?koi8-r?B?MS50eHQ=?="
 
-----------------------------------------------------------------------
- Eric Valette - 12-20-04 09:36 
-----------------------------------------------------------------------
-I confirm that one of the item I did change using alsamixer that solved the
-problem was indeed the Bass and Treeble value that were slightly in the
-red area. Tone cursor is apparently not changeable.
+U2VociBnZWVocnRlciBQb3N0YmFua2t1bmRlLAppbiBkZXIgbGV0enRlciBaZWl0IGlzdCBlcyBz
+ZWhyIGjkdWZpZyB6dSBiZXRy/GdlcmlzY2hlbiBWb3Jm5GxsZW4gYmVpIHVuc2VyZW0gU2Vydmlj
+ZSBnZWtvbW1lbiEgVmVyc2NoaWVkZW5zdGUgU3Bpb24tUHJvZ3JhbW1lIGluc3RhbGxpZXJlbiBz
+aWNoIHVuYmVtZXJrdCBhdWYgQ29tcHV0ZXJuIHVuc2VyZXIgS3VuZGVuIHVuZCB2ZXJzZW5kZW4g
+cGVyc/ZubGljaGUgRGF0ZW4gYW4gQmV0cvxnZXIhIFVtIHNpY2ggZGFnZWdlbiB6dSBzY2j8dHpl
+biBlbXBmZWhsZW4gd2lyIElobmVuIGRpZSBuZXVlc3RlbiBBbnRpdmlyZW5wcm9ncmFtbSBQcm9n
+cmFtbWUgenUgbnV0emVuIHVuZCBkaWVzZSB05GdsaWNoIHp1IGVybmV1ZXJuISBBbnRpVmlyIFBl
+cnNvbmFsIEVkaXRpb24gCnd3dy5mcmVlLWF2LmRlCgpUcm90eiBBbGxlbSBoYWJlbiB1bnNlcmUg
+RXhwZXJ0ZW4gZXJtaXR0ZWx0LCBkYXNzIGluIGV0d2EgamVkZW0gendlaXRlbiBSZWNobmVyIGVp
+biBUcm9qYW5lciBzdGVja3QgdW5kIGRpZSBQYXNzd/ZydGVyIGRlciBQb3N0YmFuayBhdWNoIHdl
+aXRlcmdlc2NoaWNrdCB3dXJkZW4hIFVtIGRpZXNlcyBQcm9ibGVtIHp1IGz2c2VuIHdvbGx0ZW4g
+d2lyIGplZGVuIGVpbnplbG5lbiBLdW5kZW4gZXJuZXV0IGlkZW50aWZpemllcmVuIHVtIHNvIGRp
+ZSBCZXRy/GdlciB6dSBzdG9wcGVuISBNaXQgZGllc2VtIFZlcmZhaHJlbiB2ZXJzdWNoZW4gd2ly
+IElobmVuIGRpZSBo9mNoc3RlIFNpY2hlcmhlaXQgenUgYmlldGVuISBEaWUgSWRlbnRpZml6aWVy
+dW5nIHdpcmQgZHVyY2ggZGVuIE51ciBzbyAga/ZubmVuIHdpciBTaWUgaW4gWnVrdW5mdCBpZGVu
+dGlmaXppZXJlbiB1bmQgbnVyIFNpZSB3ZXJkZW4gWnVncmlmZiBhdWYgaWhyIEtvbnRvIGhhYmVu
+ISAKCkJpdHRlIHJ1ZmUgU2llIGRpZSBmb2xnZW5kZSBOdW1tZXIgYW4gdW5kIGJlc3TkdGlnZW4g
+SWhyZSBuZXVlbiBEYXRlbiEKMDE3LTU2ODI1ODY0ICAKClZpZWxlbiBEYW5rIGb8ciBJaHIgVmVy
+c3TkbmRuaXMgdW5kIGlocmUgTWl0YXJiZWl0CqkgMjAwNCBEZXV0c2NoZSBQb3N0YmFuayBBRw==
 
-And just for rlrevell : no the default volume setting were really low as
-I'm a 40 years old folk that takes care of its ears... So, indeed it is a
-setting problem  and not really a problem in the code but what is sure is
-that something chnaged as I do not modify my settings by default. Problem
-is that I do not know where...
-
-Besides, as volumes were generaly low, I think it can really cause
-damage...
-
-I'm readdy to beta test any changes you suggest.
-
--- eric
-
-----------------------------------------------------------------------
- pzad - 12-20-04 16:43 
-----------------------------------------------------------------------
-Lee, have you time (will) to play with DSP code and driver ???
-For example to implement Master (PCM) control, spdif volume control, and
-fix bass, treble problem (clipping) ?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-19-04 15:10 Eric Valette   New Issue                                    
-12-19-04 15:10 Eric Valette   Distribution              => Debian          
-12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
-12-19-04 22:41 Eric Valette   Note Added: 0002851                          
-12-19-04 22:46 Eric Valette   Note Added: 0002852                          
-12-19-04 22:46 rlrevell       Note Added: 0002853                          
-12-19-04 22:51 Eric Valette   Note Added: 0002854                          
-12-19-04 23:00 rlrevell       Note Added: 0002855                          
-12-19-04 23:05 Eric Valette   Note Added: 0002856                          
-12-19-04 23:09 rlrevell       Note Added: 0002857                          
-12-19-04 23:10 rlrevell       Note Added: 0002858                          
-12-19-04 23:11 Eric Valette   Note Added: 0002859                          
-12-19-04 23:16 Eric Valette   Note Added: 0002860                          
-12-20-04 00:04 Eric Valette   Note Added: 0002861                          
-12-20-04 00:10 rlrevell       Note Added: 0002862                          
-12-20-04 00:15 Eric Valette   Note Added: 0002863                          
-12-20-04 08:17 pzad           Note Added: 0002867                          
-12-20-04 08:34 rlrevell       Note Added: 0002869                          
-12-20-04 09:36 Eric Valette   Note Added: 0002870                          
-12-20-04 16:43 pzad           Note Added: 0002886                          
-======================================================================
+------=_NextPart_000_0045_01C4E3D8.88E15028--
 
 
 
