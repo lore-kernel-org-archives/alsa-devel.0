@@ -1,13 +1,13 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: RME Hammerfall HDSP 9652
-Date: Wed, 27 Aug 2003 13:48:22 +0200 (CEST)
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: arecord to support >2GB files?
+Date: Wed, 27 Aug 2003 15:27:02 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <34441.80.13.13.11.1061984902.squirrel@www.undata.org>
-References: <20030827160852.D21247@nautronix.com.au>
+Message-ID: <Pine.LNX.4.44.0308271523250.9988-100000@ecabase.localdomain>
+References: <Pine.OSF.4.56.0308271045210.398158@kosh.hut.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----=_20030827134822_77993"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030827160852.D21247@nautronix.com.au>
+In-Reply-To: <Pine.OSF.4.56.0308271045210.398158@kosh.hut.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,74 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: nick.arnold@nautronix.com.au
+To: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_20030827134822_77993
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+On Wed, 27 Aug 2003, Tommi Sakari Uimonen wrote:
 
-Ooops, I forgot alsa-kernel/include/hdsp.h changed too, sorry.
+> I'm planning to use arecord for serious harddisk recording, but it can't
 
-Thomas
+I strongly suggest to look for other alternatives. For serious
+harddisk recording you absolutely need an application that provides
+protection against spikes in disk i/o operation latencies.
 
+Here's a more detailed explanation of why Ecasound suits this 
+purpose:
 
+ http://eca.cx/ecasound-list/2001/06/0016.html
 
-------=_20030827134822_77993
-Content-Type: application/octet-stream; name="hdsp.h"
-Content-Disposition: attachment; filename="hdsp.h"
-Content-Transfer-Encoding: base64
+> write files bigger than 2BG. After browsing through kernel mailing lists
+> about LFS I concluded that the problem is arecord, not the underlying
+> filesystem (and since I've had >8GB files on it :).
 
-I2lmbmRlZiBfX1NPVU5EX0hEU1BfSAojZGVmaW5lIF9fU09VTkRfSERTUF9ICgovKgogKiAgIENv
-cHlyaWdodCAoQykgMjAwMyBUaG9tYXMgQ2hhcmJvbm5lbCAodGhvbWFzQHVuZGF0YS5vcmcpCiAq
-ICAgIAogKiAgIFRoaXMgcHJvZ3JhbSBpcyBmcmVlIHNvZnR3YXJlOyB5b3UgY2FuIHJlZGlzdHJp
-YnV0ZSBpdCBhbmQvb3IgbW9kaWZ5CiAqICAgaXQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBHTlUg
-R2VuZXJhbCBQdWJsaWMgTGljZW5zZSBhcyBwdWJsaXNoZWQgYnkKICogICB0aGUgRnJlZSBTb2Z0
-d2FyZSBGb3VuZGF0aW9uOyBlaXRoZXIgdmVyc2lvbiAyIG9mIHRoZSBMaWNlbnNlLCBvcgogKiAg
-IChhdCB5b3VyIG9wdGlvbikgYW55IGxhdGVyIHZlcnNpb24uCiAqCiAqICAgVGhpcyBwcm9ncmFt
-IGlzIGRpc3RyaWJ1dGVkIGluIHRoZSBob3BlIHRoYXQgaXQgd2lsbCBiZSB1c2VmdWwsCiAqICAg
-YnV0IFdJVEhPVVQgQU5ZIFdBUlJBTlRZOyB3aXRob3V0IGV2ZW4gdGhlIGltcGxpZWQgd2FycmFu
-dHkgb2YKICogICBNRVJDSEFOVEFCSUxJVFkgb3IgRklUTkVTUyBGT1IgQSBQQVJUSUNVTEFSIFBV
-UlBPU0UuICBTZWUgdGhlCiAqICAgR05VIEdlbmVyYWwgUHVibGljIExpY2Vuc2UgZm9yIG1vcmUg
-ZGV0YWlscy4KICoKICogICBZb3Ugc2hvdWxkIGhhdmUgcmVjZWl2ZWQgYSBjb3B5IG9mIHRoZSBH
-TlUgR2VuZXJhbCBQdWJsaWMgTGljZW5zZQogKiAgIGFsb25nIHdpdGggdGhpcyBwcm9ncmFtOyBp
-ZiBub3QsIHdyaXRlIHRvIHRoZSBGcmVlIFNvZnR3YXJlCiAqICAgRm91bmRhdGlvbiwgSW5jLiwg
-Njc1IE1hc3MgQXZlLCBDYW1icmlkZ2UsIE1BIDAyMTM5LCBVU0EuCiAqLwoKI2RlZmluZSBIRFNQ
-X01BVFJJWF9NSVhFUl9TSVpFIDIwNDgKCnR5cGVkZWYgZW51bSB7CglEaWdpZmFjZSwKCU11bHRp
-ZmFjZSwKCUg5NjUyLAoJVW5kZWZpbmVkLAp9IEhEU1BfSU9fVHlwZTsKCnR5cGVkZWYgc3RydWN0
-IF9zbmRfaGRzcF9wZWFrX3JtcyBoZHNwX3BlYWtfcm1zX3Q7CgpzdHJ1Y3QgX3NuZF9oZHNwX3Bl
-YWtfcm1zIHsKCXVuc2lnbmVkIGludCBpbnB1dF9wZWFrc1syNl07Cgl1bnNpZ25lZCBpbnQgcGxh
-eWJhY2tfcGVha3NbMjZdOwoJdW5zaWduZWQgaW50IG91dHB1dF9wZWFrc1syOF07Cgl1bnNpZ25l
-ZCBsb25nIGxvbmcgaW5wdXRfcm1zWzI2XTsKCXVuc2lnbmVkIGxvbmcgbG9uZyBwbGF5YmFja19y
-bXNbMjZdOwoJLyogVGhlc2UgYXJlIG9ubHkgdXNlZCBmb3IgSDk2eHggY2FyZHMgKi8KCXVuc2ln
-bmVkIGxvbmcgbG9uZyBvdXRwdXRfcm1zWzI2XTsKfTsKCiNkZWZpbmUgU05EUlZfSERTUF9JT0NU
-TF9HRVRfUEVBS19STVMgX0lPUignSCcsIDB4NDAsIGhkc3BfcGVha19ybXNfdCkKCnR5cGVkZWYg
-c3RydWN0IF9zbmRfaGRzcF9jb25maWdfaW5mbyBoZHNwX2NvbmZpZ19pbmZvX3Q7CgpzdHJ1Y3Qg
-X3NuZF9oZHNwX2NvbmZpZ19pbmZvIHsKCXVuc2lnbmVkIGNoYXIgcHJlZl9zeW5jX3JlZjsKCXVu
-c2lnbmVkIGNoYXIgd29yZGNsb2NrX3N5bmNfY2hlY2s7Cgl1bnNpZ25lZCBjaGFyIHNwZGlmX3N5
-bmNfY2hlY2s7Cgl1bnNpZ25lZCBjaGFyIGFkYXRzeW5jX3N5bmNfY2hlY2s7Cgl1bnNpZ25lZCBj
-aGFyIGFkYXRfc3luY19jaGVja1szXTsKCXVuc2lnbmVkIGNoYXIgc3BkaWZfaW47Cgl1bnNpZ25l
-ZCBjaGFyIHNwZGlmX291dDsKCXVuc2lnbmVkIGNoYXIgc3BkaWZfcHJvZmVzc2lvbmFsOwoJdW5z
-aWduZWQgY2hhciBzcGRpZl9lbXBoYXNpczsKCXVuc2lnbmVkIGNoYXIgc3BkaWZfbm9uYXVkaW87
-Cgl1bnNpZ25lZCBpbnQgc3BkaWZfc2FtcGxlX3JhdGU7Cgl1bnNpZ25lZCBpbnQgc3lzdGVtX3Nh
-bXBsZV9yYXRlOwoJdW5zaWduZWQgaW50IGF1dG9zeW5jX3NhbXBsZV9yYXRlOwoJdW5zaWduZWQg
-Y2hhciBzeXN0ZW1fY2xvY2tfbW9kZTsKCXVuc2lnbmVkIGNoYXIgY2xvY2tfc291cmNlOwoJdW5z
-aWduZWQgY2hhciBhdXRvc3luY19yZWY7Cgl1bnNpZ25lZCBjaGFyIGxpbmVfb3V0OwoJdW5zaWdu
-ZWQgY2hhciBwYXNzdGhydTsgCn07CgojZGVmaW5lIFNORFJWX0hEU1BfSU9DVExfR0VUX0NPTkZJ
-R19JTkZPIF9JT1IoJ0gnLCAweDQxLCBoZHNwX2NvbmZpZ19pbmZvX3QpCgp0eXBlZGVmIHN0cnVj
-dCBfc25kX2hkc3BfZmlybXdhcmUgaGRzcF9maXJtd2FyZV90OwoKc3RydWN0IF9zbmRfaGRzcF9m
-aXJtd2FyZSB7Cgl1bnNpZ25lZCBsb25nIGZpcm13YXJlX2RhdGFbMjQ0MTNdOwp9OwoKI2RlZmlu
-ZSBTTkRSVl9IRFNQX0lPQ1RMX1VQTE9BRF9GSVJNV0FSRSBfSU9XKCdIJywgMHg0MiwgaGRzcF9m
-aXJtd2FyZV90KQoKdHlwZWRlZiBzdHJ1Y3QgX3NuZF9oZHNwX3ZlcnNpb24gaGRzcF92ZXJzaW9u
-X3Q7CgpzdHJ1Y3QgX3NuZF9oZHNwX3ZlcnNpb24gewoJSERTUF9JT19UeXBlIGlvX3R5cGU7Cgl1
-bnNpZ25lZCBzaG9ydCBmaXJtd2FyZV9yZXY7Cn07CgojZGVmaW5lIFNORFJWX0hEU1BfSU9DVExf
-R0VUX1ZFUlNJT04gX0lPUignSCcsIDB4NDMsIGhkc3BfdmVyc2lvbl90KQoKdHlwZWRlZiBzdHJ1
-Y3QgX3NuZF9oZHNwX21peGVyIGhkc3BfbWl4ZXJfdDsKCnN0cnVjdCBfc25kX2hkc3BfbWl4ZXIg
-ewoJdW5zaWduZWQgc2hvcnQgbWF0cml4W0hEU1BfTUFUUklYX01JWEVSX1NJWkVdOwp9OwoKI2Vu
-ZGlmIC8qIF9fU09VTkRfSERTUF9IICovCg==
+Ecasound has support for LFS (compile with --with-largefile).
 
-------=_20030827134822_77993--
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
