@@ -1,15 +1,13 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: External PCM plugin SDK
-Date: Wed, 09 Feb 2005 18:48:43 +0100
-Message-ID: <1107971323.13863.90.camel@pegasus>
-References: <s5hd5vau4c3.wl@alsa2.suse.de>
-	 <1107958458.13863.43.camel@pegasus> <s5hvf91stls.wl@alsa2.suse.de>
-	 <1107959869.13863.62.camel@pegasus> <s5hoeetsqua.wl@alsa2.suse.de>
-	 <1107970036.13863.77.camel@pegasus>  <s5hfz05skp2.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000886]: alsactl store = crash
+Date: Wed, 9 Feb 2005 19:35:38 +0100
+Message-ID: <8cbd82b01ca2a1069c309286d9e192ce@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hfz05skp2.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 99EF9264
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 19:35:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,55 +17,125 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> > and I need full duplex IO and volume control inside the same plugin for
-> > the headset/handsfree support.
-> 
-> Hmm, the share of volume control stuff between PCM and control plugins
-> might be a bit tough.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
+======================================================================
+Reported By:                udasoft
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   886
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-06-2005 16:01 CET
+Last Modified:              02-09-2005 19:35 CET
+======================================================================
+Summary:                    alsactl store = crash
+Description: 
+I have a Intel D915PBL Motherboard with High Definition Audio Controller
+(ICH6 Family).
 
-the problem is that the headsets can report back volume changes. We will
-see this for the high quality headphones also some day, because the
-audio and video remote stuff for Bluetooth is already specified.
+When I save the state of mixer with alsactl, receive this error:
 
-I will start without reacting to the volume control. We will see how
-this works out.
+udasoftware root # alsactl  store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
+snd_timer snd snd_page_alloc nvidia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
+esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
+Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+              Call Trace:
+               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
+======================================================================
 
-> > > You don't have to set them if the hardware has no restriction.
-> > > Usually, the period size defines the interrupt period.  In the case of
-> > > user-space driver, it corresponds to the expected poll period, etc.
-> > 
-> > I can skip IOPLUG_HW_PERIOD_BYTES and IOPLUG_HW_PERIODS, but I must set
-> > IOPLUG_HW_BUFFER_BYTES, because otherwise it segfaults even with aplay.
-> 
-> OK, then use snd_pcm_ioplug_set_param_minmax() with some sane values.
+----------------------------------------------------------------------
+ tiwai - 02-09-05 11:54 
+----------------------------------------------------------------------
+Could you try CVS version?
 
-Leaving IOPLUG_HW_BUFFERS_BYTES out and only setting the period stuff
-makes it working with the XMMS from CVS.
+----------------------------------------------------------------------
+ udasoft - 02-09-05 19:35 
+----------------------------------------------------------------------
+I have tried with the CVS but the result is the same :(
 
-Problem now is that XMMS closes the device and re-opens it when changing
-the track and even when switching to its next track. This is problematic
-when using Bluetooth, because I need to keep the underlaying connection
-alive. Any idea?
+The only difference I have occurred is in the stack address:
 
-> > Let's take an unsigned long to handle more than 32 flags ;)
-> 
-> Well, I'd like to keep 32bit.
-> 
-> Nowadays no one knows whether the exported struct is shared between
-> 32bit and 64bit environment.  Once if we have to implement a 32bit
-> wrapper, the difference of long is simply a pain.
+udasoftware root # alsactl store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_
+seq snd_seq_device snd_azx snd_hda_codec snd_pcm snd_timer snd
+snd_page_alloc nv
+idia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: e2a19980   ebx: ebb3c800   ecx: 00000023   edx: e5ddae4c
+esi: e2a19980   edi: ffffffe7   ebp: ebb3c94c   esp: e5ddae30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 25836, threadinfo=e5dda000 task=e1553520)
+Stack: f8b2f02a e2a19980 e5ddae4c 00000110 e2a19a00 00000000 e2a19a64
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 000
+00000
+              Call Trace:
+               [<f8b2f02a>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b3001a>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
+***
+ I don't understand if  the problem is caused from my error or, otherwise,
+from the driver.
 
-Fine with me.
+ I have tried to install alsa-driver from emerge (emerge alsa-drivers) but
+alsaconf didn't found my integrated soundcard (like 1.0.8rc2 and cvs
+version).
 
-Regards
-
-Marcel
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-06-05 16:01 udasoft        New Issue                                    
+02-06-05 16:01 udasoft        Distribution              => Gentoo          
+02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
+02-09-05 11:54 tiwai          Note Added: 0003544                          
+02-09-05 19:35 udasoft        Note Added: 0003562                          
+======================================================================
 
 
 
