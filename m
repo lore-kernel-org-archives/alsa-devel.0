@@ -1,13 +1,13 @@
-From: Panagiotis Papadakos <papadako@csd.uoc.gr>
-Subject: Re: Problems with SBLive! and current CVS
-Date: Thu, 26 Sep 2002 02:22:00 +0300 (EEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: usb quattro
+Date: Thu, 26 Sep 2002 08:55:05 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.GSO.4.44.0209260203280.19823-100000@oneiro.csd.uch.gr>
-References: <Pine.LNX.4.33.0209251007560.532-100000@pnote.perex-int.cz>
+Message-ID: <3D924CD9.9010503@boosthardware.com>
+References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>	<s5hvg5jwgvk.wl@alsa2.suse.de>	<3D7912A2.1000908@boosthardware.com> <s5hy9abzefz.wl@alsa2.suse.de> <3D8C277C.2070808@boosthardware.com> <3D9090D6.6010402@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0209251007560.532-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,21 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I really don't how to describe my problem. There is some noise like in a
-not very well tuned radio station or as if my speakers are creaking. This
-is not happening continuously. I am sorry for my English and also for the
-fact that I can't describe my problem with more description.
-I really appreciate your help.
+I just updated using cvs from a couple of hours ago and I can get 
+perfect quality audio with multiple channels through jack.
 
-Regards
-	Papadakos Panagiotis
-P.S.
-I tried to lower my values at alsamixer, but still the sound is not clear.
+I need to figure out why the audio gets playback on all channels but I 
+am using some asoundrc magic to do that so it probably needs fine tuning.
+
+Thanks Takashi and Clemens.
 
 
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
