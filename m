@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Sun, 13 Feb 2005 11:38:29 +0100
-Message-ID: <23247fdd44cc8d40453dd8c51a8bd59e@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [ALSA - driver 0000901]: The onboard audigyls	chip
+ on msi k8 diamond motherboard not recognized. Path supplied.
+Date: Sun, 13 Feb 2005 11:53:18 +0000
+Message-ID: <420F3FAE.6010301@superbug.co.uk>
+References: <9d29558e3c3fabff090c6db74666f973@bugtrack.alsa-project.org> <1108255628.3273.20.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6DAE0218
-	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 11:38:29 +0100 (MET)
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC457219
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 12:53:19 +0100 (MET)
+In-Reply-To: <1108255628.3273.20.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,54 +20,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Sun, 2005-02-13 at 01:21 +0100, bugtrack@alsa-project.org wrote:
+> 
+>>*nods*, seems to be better:
+>>
+>>0 [CA0106         ]: CA0106 - CA0106
+>>                     Live! by MSI [SB0438] at 0xde00 irq 233
+> 
+> 
+> Since it's been established that the CA0106 based devices have basically
+> nothing in common with the SBLive/emu10k1, can we please, please not
+> call it "Live!"?  It's obvious from Creative's marketing that they want
+> to pass those cheap "software soundcards" off as equivalent to an
+> SBLive/Audigy.  Please, let's not help them.
+> 
+> Lee
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
-======================================================================
-Reported By:                sHINOBI
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   907
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
-======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              02-13-2005 11:38 CET
-======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
-Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
-======================================================================
+I have made the comment line as exact copy of the Creative marketing as 
+possible, so that people can provide better feedback.
+E.g. I see [SB0438] and know exactly which card the user has and the 
+"Live! by MSI" tells the user exactly what they have, and it should 
+match the box the sound card came in for easy identification.
 
-----------------------------------------------------------------------
- sHINOBI - 02-13-05 11:38 
-----------------------------------------------------------------------
-Grrr. I'm sorry I forgot to supply soundcard info.
+In this case, the CA0106 is part of the motherboard.
+I suppose I could replace "Live! by MSI" with "MSI motherboard XYZ"
 
-cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! by MSI [SB0438] at 0xde00 irq 201
+I will ask the bug reporter for that information.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-======================================================================
+James
 
 
 
