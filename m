@@ -1,20 +1,14 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: [ALSA - driver 0000540]: alsa driver will no longer function
-Date: Mon, 27 Sep 2004 10:48:08 +0200 (CEST)
+Subject: RE: Question about Echo Indigo
+Date: Mon, 27 Sep 2004 10:53:26 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040927104808.pochini@shiny.it>
-References: <20040925130336.2AE072014E@server.perex-int.cz>
+Message-ID: <XFMail.20040927105326.pochini@shiny.it>
+References: <45C2661A2DE3D411B58300062955379E0476915D@TACMAIL2>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from denise.shiny.it (denise.shiny.it [194.20.232.1])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAF7222A
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 10:48:09 +0200 (MEST)
-Received: from agnus (agnus.shiny.it [194.20.232.6])
-	by denise.shiny.it (8.11.7/8.11.6) with ESMTP id i8R8m8605622
-	for <alsa-devel@alsa-project.org>; Mon, 27 Sep 2004 10:48:08 +0200
-In-Reply-To: <20040925130336.2AE072014E@server.perex-int.cz>
+In-Reply-To: <45C2661A2DE3D411B58300062955379E0476915D@TACMAIL2>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,36 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jlawrence@tacenergy.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-On 25-Sep-2004 bugtrack@alsa-project.org wrote:
->=20
-> The following bug has been SUBMITTED.
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D0=
-000540
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [...]
-> How reproducible:
-> in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
->=20
-> Please check that the sound card is configured properly and You have th=
-e
-> correct output plugin selected and no other program is blocking the
-> soundcard.
+On 24-Sep-2004 Jlawrence@tacenergy.com wrote:
 
-The xmms plugin doesn't work well. I also am using
-version 1.2.9 with a patch that removes mixer support,
-because it is the source of the problem. 1.2.10 had
-another problem that I don't remember now, but I will
-try it again if you're interested.
+> I have spent a lot of time this week looking for information on how to make
+> my Echo Indigo work with ALSA.  I've read a few posts on this list where
+> someone was working on a driver, and that beta drivers were available (some
+> of these were in March of 2003), but then silence.  I've done a google
+> search, but to no avail;  I see the card listed in the database, but with no
+> details.  So I wanted to ask the group:  What is the status of the Echo
+> Indigo drivers, and if there is a beta driver or some kind of driver
+> available, how do I get this driver?
 
+There is no support for any card other than the ones listed with
+white background. I don't have the firmwares and other programming
+infos of the Indigo's and the latest "3G" cards.
 
 
 --
