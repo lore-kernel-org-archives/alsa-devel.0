@@ -1,14 +1,13 @@
-From: "Vrihad Shoonya" <vrihad@softhome.net>
-Subject: Re: Is there plans to support SiS7019?
-Date: Sat, 14 Aug 2004 09:00:51 +0530 (IST)
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: emu10k1.h + ctl id
+Date: Mon, 16 Aug 2004 14:10:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3524.192.168.0.30.1092454251.squirrel@dev.datamax.co.in>
-References: <1709.192.168.0.30.1092440735.squirrel@dev.datamax.co.in>
-     <Pine.HPX.4.33n.0408161131450.27899-100000@studcom.urz.uni-halle.de>
+Message-ID: <200408161210.i7GCANKT004457@www7.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0408161131450.27899-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,36 +16,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
+To: perex@suse.cz
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I will use this new header from alsa-lib in new ld10k1 release.
 
-> You can try to go into the alsa-kernel/pci/trident directory and
-> replace all occurrences of 7018 with 7019 (70 lines in three files).
-> If the driver works with your card after recompiling, it is similar.
->
->> I have specs for this particular hardware.
->
-> published anywhere?
-We obtained it from SiS. Since they have stopped development on this
-driver, they have agreed to provide the details to third parties for
-fixing the problems. Their driver is OSS based, though.
+(looks like it is missing in Makefile.am)
 
->> As I understand this chip supports six channel audio.
->
-> If it's an AC'97 controller then we should look at the intel8x0
-> instead ...
-It is an AC'97 controller. Under OSS, SiS supplied driver was stacked
-over modules soundcore and ac97_codec. Now does the scope of work
-change? Will it be easy to modify intel8x0 to work with it? Since
-I have not done this stuff before, can you please point out the
-right path?
-
--vrihad
+Peter Zubaj
 
 
-
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
