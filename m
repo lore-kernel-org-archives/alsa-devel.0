@@ -1,15 +1,16 @@
-From: =?iso-8859-1?Q?J=F6rn?= Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: FIXED: minor bug in make-install target
-Date: Tue, 12 Feb 2002 21:07:45 +0100
-Message-ID: <3C697611.A908BE03@folkwang-hochschule.de>
-References: <3C591414.4FFDF135@folkwang-hochschule.de>
-		<s5h3d0mzemh.wl@alsa1.suse.de>
-		<3C666090.52D64A93@folkwang-hochschule.de>
-		<s5hwuxkxott.wl@alsa2.suse.de>
-		<3C67D4BF.C3ECFA56@folkwang-hochschule.de> <s5hpu3cxdl7.wl@alsa2.suse.de>
+From: Taybin Rutkin <trutkin@physics.clarku.edu>
+Subject: control switch API/code change? (fwd)
+Date: Tue, 12 Feb 2002 16:05:52 -0500 (EST)
+Message-ID: <Pine.LNX.3.96.1020212160448.6916A-100000@planck.clarku.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from planck.clarku.edu (mail@planck.clarku.edu [140.232.2.12])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA31929
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2002 22:06:02 +0100
+Received: from trutkin (helo=localhost)
+	by planck.clarku.edu with local-smtp (Exim 3.12 #1 (Debian))
+	id 16ak7c-00020D-00
+	for <alsa-devel@alsa-project.org>; Tue, 12 Feb 2002 16:05:52 -0500
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,78 +19,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> 
-> > > > > At Thu, 31 Jan 2002 10:53:24 +0100,
-> > > > > Jörn Nettingsmeier wrote:
-> > > > > >
-> > > > > > hello jaroslav !
-> > > > > >
-> > > > > > i just found a minor bug in the make install target of alsa-driver:
-> > > > > >
-> > > > > > on my system, /usr/src is a link to /data1/src (which is another
-> > > > > > disk).
-> > > > > >
-> > > > > > i have alsa sources on /usr/src/alsa-cvs/alsa-driver
-> > > > > >
-> > > > > > when i "make install" the kernel modules, i end up with
-> > > > > > /lib/modules/<version>/kernel/sound/data1/src/alsa-cvs/alsa-driver/{acore,pci,synth}
+I'm sending this message on behalf of Paul Davis.
 
-> > > please check whether your MAINSRCDIR is defined in Makefile.conf
-> > > correctly, in your case, /data1/src/alsa-cvs/alsa-driver.
-> > > the latest Rules.make reduces the path name according to this
-> > > variable.  it's possbile that the path name is different due to
-> > > symlinks..
-> >
-> > i have
-> > mainsrcdir      = .
-> > MAINSRCDIR      = /usr/src/alsa-cvs/alsa-driver
-> >
-> > that's probably because i go to that directory via cd
-> > /usr/src/alsa-cvs/alsa-driver.
-> > how come the makefile ever knows we are in /data1/src ?
-> > pwd reports /usr/...
-> 
-> is /data1/src is symlinked to /usr/src? 
+---------- Forwarded message ----------
+Date: Tue, 12 Feb 2002 15:08:56 -0500
+From: Paul Davis <pbd@op.net>
+To: trutkin@physics.clarku.edu
+Subject: control switch API/code change?
 
-the other way round:
-#ls -ld /usr/src
-lrwxrwxrwx    1 root     root           13 Jan 31 10:49 /usr/src ->
-../data1/src/
+[ TAYBIN: for some reason, i can't send mail to alsa-devel right now.
+  Could you forward this for me? Thanks. ]
 
-> what says /bin/pwd instead of built-in pwd?
+the code below used to work just fine with an older version of
+0.9.X. i just upgraded to current CVS, and found that it now causes a
+segfault by overwriting h->driver->ctl_handle, apparently before we
+even get to the first snd_ctl_elem_read().
 
-ooooh shit !
+for clarity, h->driver->ctl_handle is a snd_ctl_t previously opened
+successfully and correctly initialized on entry to this code.
 
-nettings@kleineronkel:/usr/src > pwd
-/usr/src
-nettings@kleineronkel:/usr/src > /bin/pwd
-/data1/src
+does this ring any bells in anyone's head about changes in the control
+interface code?
 
-i wasn't even aware that bash has a built-in pwd. good guess, watson
-!
-
-> if this inconsistency really comes from the different pwd's, then the
-> attached patch might solve the problem...
-
-it does indeed. thanks heaps !
-
-best regards,
-
-jörn
+--p
 
 
+static void *
+hammerfall_monitor_controls (void *arg)
 
--- 
-Jörn Nettingsmeier     
-home://Kurfürstenstr.49.45138.Essen.Germany      
-phone://+49.201.491621
-http://spunk.dnsalias.org
-http://www.linuxdj.com/audio/lad/
+{
+	jack_hardware_t *hw = (jack_hardware_t *) arg;
+	hammerfall_t *h = (hammerfall_t *) hw->private;
+	snd_ctl_elem_id_t *switch_id[3];
+	snd_ctl_elem_value_t *sw[3];
+
+	pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
+	snd_ctl_elem_id_malloc (&switch_id[0]);
+	snd_ctl_elem_id_malloc (&switch_id[1]);
+	snd_ctl_elem_id_malloc (&switch_id[2]);
+
+	snd_ctl_elem_value_malloc (&sw[0]);
+	snd_ctl_elem_value_malloc (&sw[1]);
+	snd_ctl_elem_value_malloc (&sw[2]);
+
+	set_control_id (switch_id[0], "ADAT1 Sync Check");
+	set_control_id (switch_id[1], "ADAT2 Sync Check");
+	set_control_id (switch_id[2], "ADAT3 Sync Check");
+
+	snd_ctl_elem_value_set_id (sw[0], switch_id[0]);
+	snd_ctl_elem_value_set_id (sw[1], switch_id[1]);
+	snd_ctl_elem_value_set_id (sw[2], switch_id[2]);
+
+	while (1) {
+		if (snd_ctl_elem_read (h->driver->ctl_handle, sw[0])) {
+			jack_error ("cannot read control switch 0 ...");
+		}
+		hammerfall_check_sync (h, sw[0]);
+
+		if (snd_ctl_elem_read (h->driver->ctl_handle, sw[1])) {
+			jack_error ("cannot read control switch 0 ...");
+		}
+		hammerfall_check_sync (h, sw[1]);
+
+		if (snd_ctl_elem_read (h->driver->ctl_handle, sw[2])) {
+			jack_error ("cannot read control switch 0 ...");
+		}
+		hammerfall_check_sync (h, sw[2]);
+		
+		if (nanosleep (&h->monitor_interval, 0)) {
+			break;
+		}
+	}
+
+	pthread_exit (0);
+}
+
 
 _______________________________________________
 Alsa-devel mailing list
