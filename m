@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Thu, 20 Jan 2005 19:12:54 +0100
-Message-ID: <29a6140158b145390cc4cb8c6eaa5558@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000717]: MIDI input does not generate interrupts
+Date: Thu, 20 Jan 2005 19:14:24 +0100
+Message-ID: <b8e996db151b5e0f3da7ae513b02c3ac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8AA923D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:12:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A7A223D
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:14:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,112 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=717> 
 ======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
+Reported By:                pelzi
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
+Issue ID:                   717
+Category:                   PCI - es1938
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
+Status:                     closed
+Distribution:               Debian Sarge
+Kernel Version:             2.4.27
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              01-20-2005 19:12 CET
+Date Submitted:             12-09-2004 14:52 CET
+Last Modified:              01-20-2005 19:14 CET
 ======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Summary:                    MIDI input does not generate interrupts
 Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
-
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
-
-And similar ones in other alsa programs. 
-
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
-
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
+No high level midi events are generated, though raw midi events are
+received. I.e. amidi -d produces results, but the corresponding
+arecordmidi does not.
+The possible cause, as suggested on the alsa-user mailing list, is that no
+interrupts are generated on incoming midi events. In generel, the
+soundcard does generate interrupts tough, e.g. on audio channel events.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- Q3Man - 01-20-05 02:23 
+ pelzi - 12-20-04 01:58 
 ----------------------------------------------------------------------
-I've played around with various kernel options and bios irq settings. I've
-successfully reproduced the bug on IRQs 3, 4, 5, 9, 10, 12 (after
-disabeling serial ports and moving other devices around) so I don't think
-its related to it being on IRQ12.
+Ah, I see, there are news at the main page. Tried to delete the original
+patch, but I'm not authorized, tried to upload it once again, but it has
+to have a different name - so an authorized person will have to clean up
+the mess ;-) As writing my email address in a text file doesn't count as
+"signing" for me, I also added a detached GPG signature.
 
 ----------------------------------------------------------------------
- tiwai - 01-20-05 19:12 
+ tiwai - 12-20-04 14:38 
 ----------------------------------------------------------------------
-What is the error message from snd-emu10k1x with other irqs?
+Thanks, I applied your patch now to CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
+12-09-04 14:52 pelzi          New Issue                                    
+12-09-04 14:52 pelzi          Distribution              => Debian Sarge    
+12-09-04 14:52 pelzi          Kernel Version            => 2.4.27          
+12-09-04 15:27 tiwai          Note Added: 0002802                          
+12-10-04 13:22 pelzi          Note Added: 0002804                          
+12-10-04 14:38 Clemens LadischNote Added: 0002805                          
+12-10-04 15:14 pelzi          File Added: es1938_c_MIDI_Patches.diff            
+       
+12-10-04 15:16 pelzi          Note Added: 0002806                          
+12-16-04 18:40 tiwai          Note Added: 0002837                          
+12-20-04 01:48 pelzi          Note Added: 0002865                          
+12-20-04 01:56 pelzi          File Added: es1938_c_MIDI_Patches_signed_off.diff 
+                  
+12-20-04 01:56 pelzi          File Added:
+es1938_c_MIDI_Patches_signed_off.diff.asc                    
+12-20-04 01:58 pelzi          Note Added: 0002866                          
+12-20-04 14:38 tiwai          Status                   new => resolved     
+12-20-04 14:38 tiwai          Resolution               open => fixed       
+12-20-04 14:38 tiwai          Assigned To               => tiwai           
+12-20-04 14:38 tiwai          Note Added: 0002874                          
+12-20-04 14:38 tiwai          Assigned To              tiwai =>            
+01-20-05 19:14 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
