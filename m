@@ -1,12 +1,11 @@
-From: flatmax@cse.unsw.edu.au (Matthew Flax)
-Subject: Re: Most simple use of sequencer in ALSA
-Date: Sat, 16 Feb 2002 04:58:04 +1100
-Message-ID: <20020216045804.C9792@cse.unsw.edu.au>
-References: <XFMail.020204113205.guenther.sohler@newlogic.com> <XFMail.020215072124.guenther.sohler@newlogic.com> <s5hlmdud7u2.wl@alsa2.suse.de>
+From: Kevin Conder <kconder@interaccess.com>
+Subject: RE: Status of ALSA documentation?
+Date: Fri, 15 Feb 2002 12:18:54 -0600 (CST)
+Message-ID: <Pine.GSO.3.96.1020215114139.408A-100000@yin.interaccess.com>
+Reply-To: kevin@kevindumpscore.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <s5hlmdud7u2.wl@alsa2.suse.de>; from tiwai@suse.de on Fri, Feb 15, 2002 at 05:32:21PM +0100
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <NGBBLNODKDFPBFMBBFAFOENHCAAA.James@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,102 +14,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Guenther Sohler <guenther.sohler@newlogic.com>, alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: valentyn@alsa-project.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Yeah mate - I like it when you dream ....
-Do you dream in mosaics of computer screens and code ?
+On Fri, 15 Feb 2002, James Courtier-Dutton wrote:
 
-On 15 February 2002, Takashi Iwai wrote:
-> At Fri, 15 Feb 2002 07:21:24 +0100 (MET),
-> Guenther Sohler wrote:
-> > 
-> > I have simplified the seq.c in the alsa-driver-test direcory for me
-> > to also understand.
-> > 
-> > The program is now quite short and outputs a note and quits
-> > 
-> > here is it
-> > -----------
-> > 
-> > #include <stdio.h>
-> > #include "alsa/asoundlib.h"
-> > 
-> > 
-> > int main(int argc, char *argv[])
-> > {
-> >         snd_seq_t *handle;
-> >         snd_seq_event_t ev;
-> > 
-> >         snd_seq_open(&handle, "hw", SND_SEQ_OPEN_DUPLEX, 0);
-> >         snd_seq_alloc_queue(handle);
-> >         
-> >         bzero(&ev, sizeof(ev));
-> >         ev.dest.client=65;
-> >         ev.dest.port=0;
-> >         ev.type = SND_SEQ_EVENT_NOTEON;
-> >         ev.data.note.channel = 0;
-> >         ev.data.note.note = 64 ;
-> >         ev.data.note.velocity = 127;
-> >         snd_seq_event_output_direct(handle, &ev);
-> >         sleep(1);
-> >         ev.type = SND_SEQ_EVENT_NOTEOFF;
-> >         snd_seq_event_output_direct(handle, &ev);
-> >         snd_seq_drain_output(handle);
-> >         return 0;
-> > }
-> > 
-> > There are two questions ?
-> > 
-> > Why doesn't it work if I allocate no queue ? There is no need for a queue as i
-> > directly output events
-> 
-> No, you don't need to allocate a queue if you schedule by yourself.
-> your program lack the schedule of events, i.e.
-> 
-> 	snd_seq_ev_set_direct(&ev);
-> 
-> before output the event packet.  this is equivalent with
-> 
-> 	ev.queue = SND_SEQ_QUEUE_DIRECT;
-> 
-> if this is specified, the event is sent immediately to the
-> destination, so you don't need any queue.
-> as default, the event is scheduled using a specified queue, and as
-> default, the queue is #0.  that's why you had to allocate a queue.
-> 
-> one more note: you don't need to call snd_seq_drain_output() when you
-> send events via snd_seq_event_output_direct().  the drain_output() is
-> necessary for buffered outputs via normal snd_seq_event_output()
-> functions.
-> 
-> 
-> > What does "hw" mean ? what are the other possibilities ?
-> 
-> originally it means "hardware".
-> in future it can be other ones, such like "network:foo", etc.
-> (well, we can dream :)
-> 
-> 
-> ciao,
-> 
-> Takashi
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> As ALSA is now in the linux kernel, should the HOWTO be part of the linux
+> documents HOWTO pages ?
 
--- 
-Matt
+	First of all, the ALSA-sound-mini-HOWTO *is* a part of the Linux
+Documentation Project at http://www.linuxdoc.org. Is this what you were
+referring to?
 
-For electronic musicians ...
-Vector Bass          : http://mffmvectorbass.sourceforge.net/
-For developers ...
-TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-Multimedia Time Code : http://mffmtimecode.sourceforge.net/
-3D Audio Library     : http://mffm3daudiolib.sourceforge.net/
+	Next, has anyone contacted the ALSA-sound-mini-HOWTO's maintainer,
+Valentijn Sessink? His email address is valentyn@alsa-project.org. He's
+probably the best person to coordinate any changes.
+
+	Next, the standard format for the Linux Documentation project is 
+DocBook/XML. I converted the HOWTO to DocBook/XML back in August of last 
+year. I submitted it to Valentijn but I don't know what happened. I still
+have my work, if anyone's interested.
+
+<rant>
+	Finally, if you're going to turn everything over to the Wikki
+kiddies then count me out! I believe in quality over quantity.
+</rant>
+
+
+-- Kevin Conder, kevin@kevindumpscore.com
+
+
 
 _______________________________________________
 Alsa-devel mailing list
