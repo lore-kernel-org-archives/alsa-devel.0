@@ -1,16 +1,15 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: alsasound init script (Re: possible problems
-	with	rc6 aplay )
-Date: 17 Dec 2002 11:36:10 -0800
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: Alsa-devel digest, Vol 1 #896 - 15 msgs
+Date: Tue, 17 Dec 2002 22:29:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1040153770.5622.86.camel@cmn37.Stanford.EDU>
-References: <E18O7m1-0002AU-00@sc8-sf-list1.sourceforge.net>
-	<1040096816.3766.16.camel@Godzilla>  <s5hpts0sy4k.wl@alsa2.suse.de>
+Message-ID: <200212172229.36021.plcl@telefonica.net>
+References: <E18OFZy-0000Ic-00@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpts0sy4k.wl@alsa2.suse.de>
+In-Reply-To: <E18OFZy-0000Ic-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,38 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Knecht <markknecht@attbi.com>, Paul Davis <paul@linuxaudiosystems.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2002-12-17 at 03:06, Takashi Iwai wrote:
-> At 16 Dec 2002 19:46:55 -0800,
-> Mark Knecht wrote:
-> > On Mon, 2002-12-16 at 18:51, Paul Davis wrote:
-> > > i think it would something like this:
-> > > 
-> > > options snd-hdsp snd_index=0
-> > > options snd-usb-foo snd_index=1
-> > > 
-> > > i'm sure that takashi or jaroslav will correct me if i got this wrong.
-> > 
-> >    This makes perfect sense, and it isn't what I did. (!!)
-> > 
-> >    The PlanetCCRMA has a Nano-HOWTO on how to install the MidiMan 2X2 by
-> > hand. It's a little USB-based MIDI interface (not a sound card) that is
-> > not recognized by alsaconf, so we do a bit of editing by hand.
-> 
+Hi,
+
+On Tuesday 17 December 2002 12:07, Takashi Iwai wrote:
 > the behavior depends on the order of booting.
 > if the hotplug service is booted before the alsasound init script,
 > hotplug will start the snd-usbaudio module, which will be assigned as
 > the first empty device, i.e. device #0, unless you specify the index
 > option.  and afterwards, the alsasound script is started, and it
 > results in the confliction of devices.
-> 
+>
 > setting an index option is one of the solutions.
 > in this case, the first usb-audio/midi device will be forced to be
 > assigned to #1.  so, it's safe to start it beforehand.
-> 
+>
 > but, when we take a deeper look at this, we find another problem.
 > the alsasound init script checks whether the ALSA was already started
 > by checking the existence of /proc/asound directory.  and, if hotplug
@@ -58,34 +43,32 @@ On Tue, 2002-12-17 at 03:06, Takashi Iwai wrote:
 > also created because the alsa core was started without help of
 > alsasound init script, too.  this leads to the skip of loading of any
 > other soundcards, because alsasound will quit immediately.
-> 
+>
 > after all, a simple solution for this is to make sure that alsasound
 > starts before hotplug.  then, even the index option for snd-usbaudio
 > wouldn't be necessary (in theory).
 
-I think that in RedHat hotplug is not started as a service so we cannot
-make sure that alsasound starts first (at least not easily - I have to
-check again on the startup scripts to see what is done and when). 
+I'm running a Mandrake 8.something here, where usb is started before alsa, and 
+this order is good IMHO. The usb init script loads the HCD driver (uhci, 
+ohci...) and related modules, then mounts usbfs (/proc/bus/usb filesystem). 
+This enables hotplug, needed if you want to use a Midiman2x2 or any other 
+device requiring firmware loading. 
 
-It would be better to make the alsasound script more robust (and
-independent of the startup order) and able to deal with partially loaded
-modules, so instead of just checking for the /proc/asound directory it
-would actually see what modules are already loaded and only load those
-that are not. It does not look too easy, it seems that /proc/asound does
-not provide a list of loaded modules (rather a list of cards that are
-not associated with module names). 
+But, as you said, hotplug can load snd-usb-audio driver by itself, (if some 
+usb midi or audio device is plugged at boot time) and then the alsasound 
+script fails to load other drivers, as it finds /proc/asound already mounted.
 
-> in the above scenario, anyway, cards_limit must be changed.  and i
-> think it's a bit annoying.
-> 
-> the attached patch will change the handling of cards_limit option.
-> with the patch, the alsa won't restrict the number of cards per
-> cards_limit option, but only limits the auto-probing via kmod.
-> i.e. you can load more card modules even with cards_limit=1.
+My easy and ugly workaround is to add one more line to the bottom of 
+/etc/hotplug/blacklist file with a "snd-usb-audio" string. This prevents 
+hotplug from loading that module, which is done by the alsasound script some 
+time later.
 
-That sounds reasonable. 
--- Fernando
+Regards,
+Pedro
 
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
 
 
