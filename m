@@ -1,13 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: quattro multi plugin.
-Date: Sun, 21 Jul 2002 10:20:17 +0200 (CEST)
+Subject: Re: your mail
+Date: Sun, 21 Jul 2002 10:28:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0207211019300.755-100000@pnote.perex-int.cz>
-References: <3D398B26.8080106@boosthardware.com>
+Message-ID: <Pine.LNX.4.33.0207211024590.755-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0207201136590.8230-100000@cmn37.stanford.edu>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D398B26.8080106@boosthardware.com>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA25291
+	for <alsa-devel@alsa-project.org>; Sun, 21 Jul 2002 10:28:36 +0200
+In-Reply-To: <Pine.LNX.4.44.0207201136590.8230-100000@cmn37.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,68 +19,65 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Cc: Takashi Iwai <tiwai@suse.de>, Gary Scavone <gary@ccrma.Stanford.EDU>, Paul Davis <pbd@op.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 21 Jul 2002, Patrick Shirkey wrote:
+On Sat, 20 Jul 2002, Fernando Pablo Lopez-Lezcano wrote:
 
-> Nope. I have tried something very similar to this before with no luck. 
-> It is extremely annoying that I now cannot reproduce the previous 
-> message. I don't understand why it can almost work once but seemingly 
-> never again ??? It's very strange.
-> 
-> 
-> 
-> Takashi Iwai wrote:
-> > At Fri, 19 Jul 2002 22:56:15 +0900,
-> > Patrick Shirkey wrote:
+> > > > on a related note, although the above suggestion will fix this
+> > > > particular problem, it seems that it might be wise to consider adding
+> > > > a parameter order information field to the driver API, so that drivers
+> > > > can say "you have to set param P first, then param N, then param
+> > > > O". the default would obviously be "don't care", but for devices that
+> > > > lose certain capabilities when certain parameters are set, it would
+> > > > make things very much easier.
+> > > 
+> > > agreed that it's good to have such one.
+> > > but how to implement this?
+> > > from the design of hw_constraint, i don't think it's so easy...
 > > 
-> >>This is wierd. Using the exact same commands I cannot get jackd to load 
-> >>now. The card still, ahem, works, cough, with a single pcm device.
-> > 
-> > 
-> > how about the asoundrc attached below?
-> > this will map hw:2,1 and hw:2,2 as 4 channels pcm.
-> > i thought that these two devices correspond to 96kHz, so you need to
-> > specify other frequency for jackd.
-> > 
-> > 
-> > Takashi
+> > I think that this implementation will create a big mess for the 
+> > application developers. Also, I'm not sure, if it's really needed, because 
+> > our refining code should already reduce the available configurations. 
+> > Applications should use *_near() functions in order of their priority. You 
+> > can't predict, if rate or count of channels or any other parameter is more 
+> > important for a specific application.
 > 
-> ----
-> # jackd -R -v -a -d alsa -d q4
-> jackd 0.37.1
-> Copyright 2001-2002 Paul Davis and others.
-> jackd comes with ABSOLUTELY NO WARRANTY
-> This is free software, and you are welcome to redistribute it
-> under certain conditions; see the file COPYING for details
+> [not exactly an answer but more details on what is actually happening]
 > 
-> 507 waiting for signals
-> creating alsa driver ... q4|1024|2|48000|swmon
-> You appear to be using the ALSA software "plug" layer, probably
-> a result of using the "default" ALSA device. This is less
-> efficient than it could be. Consider using a ~/.asoundrc file
-> to define a hardware audio device rather than using the plug layer
+> I think this is what is happening with the current driver (Gary, please
+> correct me if I'm wrong):  The application looks at the configuration
+> space and selects from it one particular sampling rate. Then it looks at
+> the channel count and sees a range of channel counts (10:18 - or some
+> numbers like that, I don't remember). The application chooses the minimum
+> channel count and the set function fails.
 > 
-> You appear to be using the ALSA software "plug" layer, probably
-> a result of using the "default" ALSA device. This is less
-> efficient than it could be. Consider using a ~/.asoundrc file
-> to define a hardware audio device rather than using the plug layer
+> IMHO at that point the configuration space should have changed the number
+> of channels available to match the sampling rate selected so that the
+> channel count as advertised is legal (ie: if the selected sampling rate is
+> one of the "single speed" rates then the range of channels should be
+> 18:18, if the sampling rate is one of the "double speed" rates then the
+> range should be 10:10).
 > 
-> new client: alsa_pcm, id = 1 type 1 @ 0x8067490 fd = 14
-> port alsa_pcm:in_1 buf shm key 0x28441bd5 at offset 4096 bi = 0x8066860
-> registered port alsa_pcm:in_1, offset = 4096
-> port alsa_pcm:in_2 buf shm key 0x28441bd5 at offset 8192 bi = 0x8066870
-> registered port alsa_pcm:in_2, offset = 8192
-> registered port alsa_pcm:out_1, offset = 0
-> registered port alsa_pcm:out_2, offset = 0
-> -- jack_rechain_graph():
-> client alsa_pcm: inprocess client, execution_order=0.
-> jackd: pcm.c:1925: snd_pcm_area_silence: Assertion `0' failed.
+> The reverse is also true, if the application first selects number of 
+> channels the sampling rates should be constrained to the set of rates that 
+> can be supported by that number of channels. 
 
-Please, try again. I've just added missing support for 24-bit samples to
-one alsa-lib's function.
+You've described exactly the behaviour which should be implemented in your
+paragraphs. If the current implementation is broken, then we should fix
+it.
+
+> If it is not possible to do this with the current api, then the next best
+> solution I can imagine is to have a switch that changes the mode of the
+> card between single and double speed (that would make the dependency
+> between sample rate and number of channels dissapear).
+
+You may look to snd_rme9652_hw_rule_channels(), 
+snd_rme9652_hw_rule_channels_rate() and 
+snd_rme9652_hw_rule_rate_channels() functions in rme9652.c.
+
+These functions exactly describes the contraints for rate/channels.
 
 						Jaroslav
 
