@@ -1,14 +1,13 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Single process freeze when opening capture device
-Date: Thu, 29 May 2003 10:56:25 +0200
+Date: Thu, 29 May 2003 13:53:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3ED5CB39.6000502@libero.it>
-References: <Pine.LNX.4.44.0305290907470.28435-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.44.0305291344040.28435-100000@pnote.perex-int.cz>
+References: <3ED5CB39.6000502@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0305290907470.28435-100000@pnote.perex-int.cz>
+In-Reply-To: <3ED5CB39.6000502@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,54 +16,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Arthur Peters <amp@singingwizard.org>, Alsa dev List <alsa-devel@lists.sourceforge.net>
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Alsa dev List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela ha scritto:
-> On Wed, 28 May 2003, Arthur Peters wrote:
-> 
-> 
->>I have found what seems to be a bug in ALSA (CVS of this afternoon).
->>When a program opens certain PCM devices for capture the program blocks
->>forever in snd_pcm_open (both the library function and the kernel
->>function actually). The PCM device I have been testing it with is
->>surround40 on a emu10k1 (SBLive Value). I am trying to capture on this
->>device because I want to have jack use surround40 (actually a route
->>plugin device pointing to it) so that I can use all 4 outs and both ins
->>at the same time.
->>
->>Below is a minimal setup that reproduces the problem for me.
->>
->>alsa_freeze.c
->>------------------
->>#include <alsa/asoundlib.h>
->> 
->>int main( int argc, char* argv[] )
->>{
->>        snd_pcm_t *pcm;
->>        snd_pcm_open(&pcm, "surround40", SND_PCM_STREAM_CAPTURE, 0);
->>        return 0;
->>}
-> 
-> 
-> It is limit of current alsa-lib configuration. We cannot distinct playback
-> and capture. But I am not sure, if returning an error helps you
-> (surround40 configuration is NOT valid for emu10k1). I suggest to fix jack
-> to allow different names for playback and capture with different count of
-> channels.
-> 
+On Thu, 29 May 2003, Abramo Bagnara wrote:
 
-What about a "dir" field in common section of pcm configuration?
+> What about a "dir" field in common section of pcm configuration?
+> 
+>    dir STR	# PCM allowed directions "playback", "capture", "both" (default)
 
-   dir STR	# PCM allowed directions "playback", "capture", "both" (default)
+I'd like to solve the problem with same names, but different 
+configurations for streams.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+I have an idea like:
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+pcm.name {
+	... global configuration ...
+	playback {
+		... playback configuration ...
+	}
+	capture {
+		... capture configuration ...
+	}
+}
+
+Also, we have copy of configuration for each open which is used for 
+run-time evaluation. I think that we may pass from the open code some more 
+information and use some {} region as data caching:
+
+private {	# reserved for internal data only, warn and ignore if user defines it
+	direction playback
+	ctl_cache_handle 0x%p		# cache ctl handle for runtime evaluation
+	... etc, etc ...
+}
+
+We may add condition (if - else) evaluation functions to runtime parsing 
+which can test the contents of private variables. Now, we have same driver 
+with different chip revisions which add/remove some features (mainly 
+controls) and we need to test them to behave correctly.
+
+Also, the first proposal requires to change all plugins, the later will 
+rewrite the configuration at run-time, so no changes are required for 
+plugins.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
