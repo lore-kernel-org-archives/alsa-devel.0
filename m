@@ -1,13 +1,14 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: RE: Sound Card Driver
-Date: Mon, 20 Dec 2004 14:08:11 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D5C6@cm-msg-02.cmedia.com.tw>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
+Date: Mon, 20 Dec 2004 07:40:11 +0100
+Message-ID: <6fa11d742b486f2e67710dd8313143e3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0B26D2BD
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 07:40:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>, kshriyan@redhat.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-9880 is the azalia codec so snd-azx is needed here.
 
-ChenLi Tien
------Original Message-----
-From:	Lee Revell [mailto:rlrevell@joe-job.com]
-Sent:	2004/12/20 [=ACP=B4=C1=A4@] =A4W=A4=C8 12:43
-To:	kshriyan@redhat.com
-Cc:	alsa-devel@lists.sourceforge.net
-Subject:	Re: [Alsa-devel] Sound Card Driver
-On Mon, 2004-12-20 at 11:05 +0530, Kaushal Shriyan wrote:
-> Hi All !
->=20
-> I have got INTEL915GM Mother Board with onboard sound chip
-> C-Media CM9880L with RHEL 3.0 Base kernel Loaded(2.4.21-4.EL).
-> I would appreciate if you can guide me how to build driver.
->=20
-> I have downloaded alsa-driver-1.0.7,but I am getting the below error
->=20
-> 1 out of 8 hunks FAILED -- saving rejects to file pdaudiocf.c.rej
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
+======================================================================
+Reported By:                fermier
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   736
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Mandrake 10.1 Offficial
+Kernel Version:             2.3.8.1-12mdk
+======================================================================
+Date Submitted:             12-20-2004 07:40 CET
+Last Modified:              12-20-2004 07:40 CET
+======================================================================
+Summary:                    modprobe snd-azx still gives segmentation fault
+Description: 
+After having read the other errors reported for the CMI9880 sound chip and
+that the CVS version has been fixed, I downloaded the latest CVS version
+of the alsa-driver.  ./configure and make seem to complete without errors.
+ After a make install a modprobe snd-azx still gives a segmentation fault
+just like the normal tarred ball install and the previous CVS gave.  After
+a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
+becomes a zombie process the same is true for modprobe -r snd or modprobe
+-r snd-azx
+======================================================================
 
-This looks like a bug.
-
-But, you could probably work around the problem by only compiling for
-the card you use.  Assuming that chipset requires the intel8x0 driver,
-try cvscompile --with-cards=3Dintel8x0, or ./configure
---with-cards=3Dintel8x0 in the alsa-driver directory.
-
-Lee
-
-
-
--------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.=20
-http://productguide.itmanagersjournal.com/
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-04 07:40 fermier        New Issue                                    
+12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
+Offficial
+12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
+======================================================================
 
 
 
