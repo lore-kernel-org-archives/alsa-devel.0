@@ -1,15 +1,19 @@
-From: Paul Davis <pbd@op.net>
+From: Richard Bown <bownie@bownie.com>
 Subject: Re: Easy question: ppq and tempo
-Date: Fri, 24 May 2002 10:37:49 -0400
+Date: Fri, 24 May 2002 15:47:27 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205241435.QAA00530@alsa.alsa-project.org>
-References: <Pine.LNX.4.21.0205241612070.761-100000@summer.quitte>
+Message-ID: <200205241547.27623.bownie@bownie.com>
+References: <200205241400.QAA32509@alsa.alsa-project.org>
+Reply-To: bownie@bownie.com
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA00530
-	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 16:35:29 +0200
-In-Reply-To: Your message of "Fri, 24 May 2002 16:18:16 +0200."
-             <Pine.LNX.4.21.0205241612070.761-100000@summer.quitte>
+Received: from msgdirector1.onetel.net.uk (IDENT:mirapoint@msgdirector1.onetel.net.uk [212.67.96.148])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA00721
+	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 16:45:51 +0200
+In-Reply-To: <200205241400.QAA32509@alsa.alsa-project.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,28 +22,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Tim Goetze <tim@quitte.de>
-Cc: Gerald Grabner <gerry@mechanik.tu-graz.ac.at>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->>"ppq" stands for "parts per quarter". as the header file suggests
->>without much explanation, its length of a quarter note expressed in
->>clock ticks. if the meter is 4/4 and the tempo is 120bpm, then a
->>quarter note lasts 0.5 seconds. if the clock used for timing ticks 100
->>times per second, there are 50 clock ticks per quarter note, so
->>ppq=50.
->
->though usually it will be a number divisible by 3 and 4 to make
->triplets and even beats alike coincide with integer ticks. cubase
->on the atari used to set this to 192, though some do prefer 480 or
->even more to allow for minute timing ('groove') adjustments.
+Paul Davis wrote:
+> "ppq" stands for "parts per quarter".
 
-where "it" is the clock ticks per second. 
+Rather boringly I was under the impression it was "pulses per quarter note"
+and that's why you sometimes see it as PPQN as well as PPQ.
 
-thanks tim, i had always wondered why 192 or 480 etc. was used, and
-never knew until now :)
+Sorry.
 
---p
+R
+-- 
+http://www.all-day-breakfast.com/rosegarden
+http://www.bownie.com
 
 _______________________________________________________________
 
