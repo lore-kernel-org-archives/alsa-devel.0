@@ -1,15 +1,19 @@
-From: Jack Howarth <howarth@bromo.med.uc.edu>
-Subject: re: esound 0.2.26 and alsa 0.9.0-rc1
-Date: Thu, 9 May 2002 21:20:12 -0400 (EDT)
+From: Simon Blandford <home@simonb.org.uk>
+Subject: Documentation for CS4205? Ref. SPDIF.
+Date: Sun, 05 May 2002 14:54:15 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205100120.VAA33048@bromo.msbb.uc.edu>
+Message-ID: <3CD53987.9000501@simonb.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bromo.msbb.uc.edu (bromo.med.uc.edu [129.137.3.146])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id DAA05743
-	for <alsa-devel@alsa-project.org>; Fri, 10 May 2002 03:21:09 +0200
-Received: (from howarth@localhost)
-	by bromo.msbb.uc.edu (SGI-8.9.3/8.9.3) id VAA33048
-	for alsa-devel@alsa-project.org; Thu, 9 May 2002 21:20:12 -0400 (EDT)
+Received: from carbon (carbon.btinternet.com [194.73.73.92])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA08045
+	for <alsa-devel@alsa-project.org>; Sun, 5 May 2002 15:52:33 +0200
+Received: from host217-39-131-79.in-addr.btopenworld.com ([217.39.131.79] helo=simonb.org.uk)
+	by carbon with esmtp (Exim 3.22 #8)
+	id 174MRC-0006CG-00
+	for alsa-devel@alsa-project.org; Sun, 05 May 2002 14:52:30 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,41 +25,24 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-  Here is the actual output I get when I attempt to run esd with
-the alsa support instead of oss...
+Hi,
 
-Audio device open for 44.1Khz, stereo, 16bit failed
-Trying 44.1Khz, 8bit stereo.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 44.1Khz, stereo, 8bit failed
-Trying 48Khz, 16bit stereo.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 44.1Khz, stereo, 8bit failed
-Trying 22.05Khz, 8bit stereo.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 22.05Khz, stereo, 8bit failed
-Trying 44.1Khz, 16bit mono.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 44.1Khz, mono, 8bit failed
-Trying 22.05Khz, 8bit mono.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 22.05Khz, mono, 8bit failed
-Trying 11.025Khz, 8bit stereo.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 11.025Khz, stereo, 8bit failed
-Trying 11.025Khz, 8bit mono.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 11.025Khz, mono, 8bit failed
-Trying 8.192Khz, 8bit mono.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Audio device open for 8.192Khz, mono, 8bit failed
-Trying 8Khz, 8bit mono.
-ALSA lib pcm_hw.c:776:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed: Device or resource busy
-Sound device inadequate for Esound. Fatal.
+I am trying out the new 0.9.0RC1 release of ALSA to see if I can get the 
+SPDIF output to work on a Dell Inspiron 8200. I have seen talkback on 
+the dev list of a patch for this and it seems to have been included in 
+the latest ac97_codec.c file.
 
-Again is this being seen with the other sound drivers for esound 0.2.26
-or is it a snd-powermac specific issue? Thanks for any feedback.
-                  Jack
+However, the CS4205 is not listed as a supported card nor is it 
+mentioned in the INSTALL file. So what do I do to get this funky card 
+and especially the SPDIF output to work?
+
+I know Mandrake 8.2 with the old 0.5.x ALSA just treated it as an intel 
+810 sound system. That worked fine, but probably wouldn't help me use 
+SPDIF.
+
+Regards,
+Simon B.
+
 
 _______________________________________________________________
 
