@@ -1,14 +1,15 @@
-From: MNTGE <mntge@indra.es>
-Subject: Re: Hammerfall channel/device routing
-Date: Thu, 4 Apr 2002 08:41:58 +0200
+From: Michael Ashton <data@ieee.org>
+Subject: Re: Number of subdevices on midi.
+Date: Thu, 4 Apr 2002 00:17:22 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a8gt6j$mau$2@main.gmane.org>
-References: <20020403015708.92522.qmail@web11503.mail.yahoo.com>
+Message-ID: <20020404071721.NFBG29627.lakemtao01.cox.net@there>
+References: <3CAB5699.1927A89D@ufh.se>
+Reply-To: data@ieee.org
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20020403015708.92522.qmail@web11503.mail.yahoo.com>
+In-Reply-To: <3CAB5699.1927A89D@ufh.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,32 +18,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: kevine@esm.rochester.edu, Kevin Ernste <kevine88@yahoo.com>, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed 03 Apr 2002 03:57, Kevin Ernste wrote:
-> Hello -
->
-> I am running a Hammerfall 9652 in Alsa 0.9beta11 (under Madrake 8.1) and
-> I am
-> looking for information about how to route to the varous output channels
-> from
-> the command line (say, with ecasoubd or aplay).  Right now, sound goes
-> to EVERY
-> channel (8 ADAT channels, AND the coaxial/SPDIF stereo).
->
-> I would like to be able to route sounds separately, as the ADAT channels
-> go to
-> an ADAT deck (limted to 48k), while the coaxial/SPDIF line goes to
-> converters
-> which can handle 96k.  I would love to be able to do both.
+On Wednesday 03 April 2002 12:23 pm, you wrote:
+> subdevices per device. I need to see the driver for a midi interface
+> that using all the
+> 16 subdevices. Since I don't get answer from Jaroslav i guess he don't
+> have the time
+> or my question is stupid. But can someone help me out? Where should I
+> look?
 
-You are suffering from an erroneous decision of ALSA team when it was changed 
-a feature of the PCM API (0.4 to 0.5 transition): file descriptors were 
-bounded up with channels, now is bounded up with cards.
+I have done a little work on a driver I'm writing for a PCI-MIDI interface 
+system I designed (card is built and seems to work, breakout box isn't built 
+yet). I first used the MTP-AV driver as a model, but had quite a time 
+figuring out how exactly it hooked up with the sequencer, and eventually 
+decided to write a kernel sequencer client that talks to the card directly. 
+Much easier, and I can add some interesting features using user packets, and 
+also I think it will be faster. This does have the disadvantage of leaving 
+rawmidi apps in the cold, though, so I'd be interested in whatever you come 
+up with.
 
-Separate operation on multichannel card is easy at application level. 
-However, low-level operations (i.e. routing) for each channel at kernel level 
-is unnecessary complex.
-
-Regards,
+cheers -- Michael Ashton <data@ieee.org>
