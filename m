@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000497]: cdplayer and midi does'n work
-Date: Sat, 11 Sep 2004 16:46:19 +0200 (CEST)
+From: "Keila Horvath" <Autumn_Hennemann@attws.com>
+Subject: Fwd: high quality
+Date: Sat, 11 Sep 2004 21:45:11 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040911144619.E0C593C00E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040911164838.CF8E01F8@alsa.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4A1B6233
-	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2004 16:46:20 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 01F6122771
-	for <alsa-devel@alsa-project.org>; Sat, 11 Sep 2004 16:46:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,40 +19,39 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<html>
+<font size=3D"1">As long as I could deny the reality of the fact, I confin=
+ed myself to a decided negative</font>
+<br><br><br><br><br>
+Looking for not expensive high-quality software?<br>
+We might have just what you need.<br>
+<br>
+<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Windows XP Professional 2=
+002 </a>............. $50<br>
+<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Adobe Photoshop 7.0</a> .=
+.................... $60<br>
+<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Microsoft Office XP Profe=
+ssional 2002</a> .... $60<br>
+<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">Corel Draw Graphics Suite=
+ 11</a> ............. $60<br>
+<br>
+<a href=3D"http://mfadena.info/?VEXuXqqygtwOHpV">and lots more...</a><br><=
+br>
+<br><br><br>
+<br><br><br><br><br>
+<br><br><br>
+<a href=3D"http://bdedcln.info/eosine?IrKNKddl3gj5.cI">no msg</a><br>
+</html>
+It follows, then, that at 320 feet this pressure equals that of 10 atmosph=
+eres, of 100 atmospheres at 3,200 feet, and of 1,000 atmospheres at 32,000=
+ feet, that is, about 6 miles; which is equivalent to saying that if you c=
+ould attain this depth in the ocean, each square three-eighths of an inch =
+of the surface of your body would bear a pressure of 5,600 lb. The Scotia =
+had not struck, but she had been struck, and seemingly by something rather=
+ sharp and penetrating than blunt? On my arrival at New York the question =
+was at its height!!=20
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000497
-======================================================================
-Reported By:                maciekb
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     497
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             09-11-2004 16:46 CEST
-Last Modified:              09-11-2004 16:46 CEST
-======================================================================
-Summary:                    cdplayer and midi does'n work
-Description: 
-I have A7V600-X motherboard with via8237 chipset
-My cdplayer does'n play and i do not have midi. 
-======================================================================
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-11-04 16:46 maciekb        New Bug                                      
-09-11-04 16:46 maciekb        Distribution              => Debian unstable 
-09-11-04 16:46 maciekb        Kernel Version            => 2.6.7           
-======================================================================
 
 
 -------------------------------------------------------
