@@ -1,14 +1,12 @@
-From: Andreas Mohr <andim2@users.sourceforge.net>
-Subject: Re: The ALSA Situation
-Date: Thu, 11 Nov 2004 09:56:46 +0100
-Message-ID: <20041111085646.GB17034@rhlx01.fht-esslingen.de>
-References: <20041110235502.6C8211D2B2D@sc8-sf-uberspam1.sourceforge.net>
-Reply-To: andi@lisas.de
+From: Alice A.Walker <jane@accessus.net>
+Subject: =?iso-8859-1?B?TWFjcm9tZWRpYSBTdHVkaW8gTVggMjAwNCAtIHdob2xlc2FsZSBwcmljZQ==?=
+Date: Thu, 11 Nov 2004 09:25:59 +0000
+Message-ID: <858401c4c7d0$d4328602$875b2949@accessus.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/related;
+    type="multipart/alternative";
+    boundary="----=_NextPart_000_0000_63D99D3F.6D63B70B"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20041110235502.6C8211D2B2D@sc8-sf-uberspam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,46 +19,92 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is a multi-part message in MIME format.
 
-On Wed, Nov 10, 2004 at 03:54:01PM -0800, alsa-devel-request@lists.sourceforge.net wrote:
-> Message: 9
-> Subject: Re: [Alsa-devel] The ALSA Situation
-> From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-> To: Linus Torvalds <torvalds@osdl.org>
-> Cc: Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>,
->         alsa-devel@lists.sourceforge.net
-> Organization: 
-> Date: 10 Nov 2004 15:53:08 -0800
-> 
-> If the end of the sound being played has an envelope that gradually[*]
-> decreases to zero and the last sample of the last buffer is zero, the
-> soundcard should not pop when the stream is closed. Unless there are
-> hardware issues impossible to solve through software I'd call that a
-> bug. 
-> 
-> If the samples being played end abruptly (ie: the last sample of the
-> last buffer to be played is non-zero) then there will be a pop
-> independently of whether we chain apps or not. It is highly unlikely
-> that the next app will start playing a sound that happens to have the
-> same starting DC level as the previous one ended with. Jump in DC level
-> == pop. 
+------=_NextPart_000_0000_63D99D3F.6D63B70B
+Content-Type: multipart/alternative;
+    boundary="----=_NextPart_001_0001_7D24FDC5.D4EA549C"
 
-Which is why this popping would probably be best solved at ALSA internal
-level (not driver level, either; the driver should just make sure that
-its soundcard handling doesn't interfere with ALSAs intentions).
-I.e. when opening/closing a stream, make sure it fades in/out without
-strongly disturbing the currently played (or not played in case of
-silence level) state.
-And allow this "smoothing" to be turned off for high-end audio users,
-of course...
 
-In my azt3328 driver, I went through great pains to try to avoid popping
-(mostly successful), but I guess some of that work is actually not necessary
-any more once stream popping issues get handled at ALSA level.
-(BTW: does the other operating system take any measures against popping?)
+------=_NextPart_001_0001_7D24FDC5.D4EA549C
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 
-Andreas Mohr
+Get all the popular software possible for wholesale prices!
+Our software is 2-10 times cheaper than sold by our competitors.
+
+Just a few examples:
+
+$80 Windows XP Professional 
+$120 Microsoft Office 2003 Professional
+$100 Adobe Photoshop 8.0/CS
+$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)
+$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)
+$150 Adobe Acrobat 6.0 Professional
+$20 Red Hat Linux 7.3
+
+Categories: Business, Internet, Antivirus, Security, etc.<br>
+And lots more... To visit us go:
+
+Mirror 1: http://www.quadrasoft.biz
+Mirror 2: http://www.quadrasoft.org
+
+Sincerely,
+Alice A. Walker
+
+
+_____________________________________________________ 
+To change your mail details, go here: http://www.quadrasoft.org/uns.htm
+_____________________________________________________ 
+
+
+------=_NextPart_001_0001_7D24FDC5.D4EA549C
+Content-Type: text/html; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
+
+<HTML>
+<BODY>
+<CENTER>
+<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
+  <TBODY>
+  <TR>
+    <TD>
+Get access to all the software you ever imagined for bottom prices!<br>
+We sell software 2-6 times cheaper than retail price.<br><br>
+
+A few examples:<br><br>
+
+$80 Windows XP Professional<br>
+$120 Microsoft Office 2003 Professional<br>
+$100 Adobe Photoshop 8.0/CS<br>
+$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)<br>
+$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)<br>
+$150 Adobe Acrobat 6.0 Professional<br>
+$20 Red Hat Linux 7.3<br><br>
+
+Categories: Business, Internet, Antivirus, Security, etc.<br>
+And many more... Please visit us at:<br><br>
+
+Mirror 1: <A href="http://www.quadrasoft.biz">http://www.quadrasoft.biz</A><br>
+Mirror 2: <A href="http://www.quadrasoft.org">http://www.quadrasoft.org</A><br><br>
+
+Best regards,<br>
+Alice Walker<br><br><br>
+
+
+_____________________________________________________ <br>
+To change your mail details, go: <A href="http://www.quadrasoft.org/uns.htm">http://www.quadrasoft.org/uns.htm</A><br>
+_____________________________________________________ 
+
+<P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
+
+
+------=_NextPart_001_0001_7D24FDC5.D4EA549C--
+
+
+
+------=_NextPart_000_0000_63D99D3F.6D63B70B--
+
 
 
 -------------------------------------------------------
