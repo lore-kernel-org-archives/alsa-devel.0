@@ -1,15 +1,11 @@
-From: Linus Torvalds <torvalds@osdl.org>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: The ALSA Situation
-Date: Wed, 10 Nov 2004 10:15:05 -0800 (PST)
-Message-ID: <Pine.LNX.4.58.0411101008280.2301@ppc970.osdl.org>
-References: <200411100150.iAA1okCE029069@localhost.localdomain>
- <001e01c4c6ce$77672eb0$0a00000a@eugenia> <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
- <Pine.LNX.4.58.0411100821180.2301@ppc970.osdl.org>
- <Pine.LNX.4.58.0411101828320.22793@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Date: Wed, 10 Nov 2004 13:41:01 -0500
+Message-ID: <200411101841.iAAIf2Wn000911@localhost.localdomain>
+References: <Pine.LNX.4.58.0411101008280.2301@ppc970.osdl.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411101828320.22793@pnote.perex-int.cz>
+In-reply-to: Your message of "Wed, 10 Nov 2004 10:15:05 PST."
+             <Pine.LNX.4.58.0411101008280.2301@ppc970.osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,38 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>It's not "weak". It's just totally unsupported by _anything_ but the most
+>perverse possible reading of POSIX. It's not supported by how other
+>devices behave (*), and it's quite frankly not in my opinion supported by
+>the wording in the document either. And it's pretty clearly not supported
+>by how people want or expect things to act.
 
+although its hard to disagree with your reading of it, do consider
+this. with the current block-by-default behaviour, it is possible to
+do cute things like queue up N invocations of a program that does not
+use O_NONBLOCK and have them execute sequentially, each one starting
+precisely as the previous one closes the device.
 
-On Wed, 10 Nov 2004, Jaroslav Kysela wrote:
-> 
-> Of course, if our interpretation is weak
+with the ebusy-by-default behaviour, there isn't a way that i can see
+to get that behaviour, since O_BLOCK doesn't exist. the current design
+allows both behaviours; EBUSY allows only one (ignoring stupid hacks
+like looping on open+sleep).
 
-It's not "weak". It's just totally unsupported by _anything_ but the most
-perverse possible reading of POSIX. It's not supported by how other
-devices behave (*), and it's quite frankly not in my opinion supported by
-the wording in the document either. And it's pretty clearly not supported
-by how people want or expect things to act.
+of you course, you could argue that
 
-		Linus
+----------------------------------------
+#!/bin/sh
 
-(*) POSIX is not a "new standard" either - it was created very much to
-codify existing practices and avoid splintering UNIX more. So if you think
-you can read the POSIX standard two different ways, and existing practices
-imply one over the other, then that _is_ what it's about. The POSIX
-committee very much avoided introducing new behaviour (and they documented
-that too).
+prog1
+prog2
+prog3
+----------------------------------------
 
-Sometimes they had to choose one implementation over another, and
-sometimes when it was impossible to do they introduced a new interface to
-make things unambiguous, but nowhere can I see how somebody thinks that
-"ready and available" means "exclusive".
+is all you need to execute programs sequentially in this
+fashion. practically speaking, this is often true, but from a
+theoretical perspective, device closing is very different from program
+exit. 
 
-If the POSIX wording had meant "exclusive", it would _say_ "exclusive". It 
-would not say "ready and available".
+--p
 
 
 -------------------------------------------------------
