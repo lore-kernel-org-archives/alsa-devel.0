@@ -1,14 +1,12 @@
-From: <bbennetts@blueyonder.co.uk>
-Subject: Bug 000384 & debugging ALSA drivers.
-Date: Fri, 30 Jul 2004 12:04:22 +0100
+From: "Daniel Schnell" <daniel.schnell@gmx.net>
+Subject: request for postings
+Date: Fri, 30 Jul 2004 14:43:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5B596E67A1B90F48A466D8DF19E1F49703713CF2@ECOWV06M.Telewest.Internal>
+Message-ID: <1aab01c47632$d0f25000$2c0aa8c0@lumpidu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="Windows-1252"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_1AA8_01C47643.94133670"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,18 +18,36 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+This is a multi-part message in MIME format.
 
-I was considering trying to debug the above problem in the ymfpci =
-driver.  However, I have never had to work on a driver before and so was =
-wondering if anyone had any tips/suggestions on where to start (e.g. =
-easiest way to debug the kernel etc) also any known stumbling blocks to =
-look out for.  If there's a good doc on the web that'd also be a big =
-help.
+------=_NextPart_000_1AA8_01C47643.94133670
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Of course if someone has fixed the problem already... ;-)
+daniel.schnell@gmx.de,
+daniel.schnell@gmx.net
+------=_NextPart_000_1AA8_01C47643.94133670
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks in advance, Bry.
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2><A=20
+href=3D"mailto:daniel.schnell@gmx.de">daniel.schnell@gmx.de</A>,
+<DIV><FONT face=3DArial size=3D2><A=20
+href=3D"mailto:daniel.schnell@gmx.net">daniel.schnell@gmx.net</A></FONT><=
+/DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_1AA8_01C47643.94133670--
+
 
 
 -------------------------------------------------------
