@@ -1,14 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: How to lock the sample rate ?
-Date: Mon, 08 Mar 2004 10:34:37 +0100 (CET)
+From: Matt Kelly <radius@charter.net>
+Subject: ioctl(... SNDCTL_SEQ_OUTOFBAND ...)  help?
+Date: Mon, 8 Mar 2004 09:30:24 -0600 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040308103437.pochini@shiny.it>
-References: <20040306140542.GM25734@sunrise.pg.gda.pl>
+Message-ID: <200403081530.JAA04994@charter.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040306140542.GM25734@sunrise.pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,44 +15,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-On 06-Mar-2004 Adam Tla/lka wrote:
+I'm trying to locate the cause of a bug I filed:  #0000108 
+(ioctl(... SNDCTL_SEQ_OUTOFBAND ...) does not work).  I'm using SuSE 8.2 Pro
+with an off-the-shelf 2.4.25 kernel, and an SB Audigy2 card.  I'm using
+an external MIDI keyboard and some MIDI rack-mount modules.  Everything
+seems to work just fine, audio and MIDI, except for this.
 
->> > On the Echoaudio cards the sample rate is a global setting, so I need a way
->> > to prevent an app to change the rate if someone else already set it (the
->> > card han several devices/subdevices). I was thinking to put a simple
->> > "if (IsAudioOpen()) rate_min=rate_max=current_rate;" in pcm_open callback,
->> > but this solution is racy.
+I've traced this all the way down to the function mpu401_write(), located
+in alsa-kernel/pci/emu10k1/emumpu401.c.  This is where all data gets 
+written to the sound card.  (actually there is a func below it, but all it
+does is the in's and out's.)
 
-> Talking about race conditions you could use a variable which is set to 0
-> at the beginning. Now if app wants to set a rate it does atomic compare
-> and increase (cmpxchg on  x86) instruction so only one app could set
-> rate. The other could only read memorized rate settins and report an
-> error if rate is different.
+I've put in snd_printk()'s to print out the data going to the card.  The data 
+looks "almost identical" whether I use ioctl(... SNDCTL_SEQ_OUTOFBAND ...) or a
+SEQ_START_NOTE(), etc. call. 
 
-No, I wasn't clear enough.
-If I add the "if (IsAudioOpen())..." in the pcm_open() function it
-works as long as the firts applications which set the sample rate
-don't changes it again. Furthermore, noone, but the firt app, can
-change the sample rate until all substream are closed. But there is
-another case where the above method fails. Let's suppose there are
-two application, A and B. They both do pcm_open(). Since nobody
-has set the sample rate yet, the driver says that all sample rates
-in the range 8k-96k can be choosed (the driver set hw constraints
-in the open callback). Then A sets 44100. But B still believes it
-can do 8-96 and it sets 48000. Everything goes fine until B tries
-to start the substream (that is the prepare() callback is called).
-At this point there are two possibilites: 1) The call fails and the
-application can't know why. 2) The call succeeds and it changes
-the sample rate of all running substreams.
+So why would one work and not the other?  Could it be something with IRQ's
+not being enabled at the right time?  All the same code gets used for
+both types of operations past a certain point, and all the data looks very
+similar.  I don't know what the data bytes mean when at the hardware level,
+so it could be that the small differences between the two may mean something.
+
+Can anyone give me a pointer as to what else I should be looking at?  Or, a
+description of what the raw data bytes mean to the Audigy2?
+
+Thanks,
+
+Matt K.
 
 
---
-Giuliano.
+
 
 
 -------------------------------------------------------
