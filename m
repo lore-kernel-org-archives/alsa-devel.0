@@ -1,14 +1,14 @@
 From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
-Date: Wed, 5 Feb 2003 22:39:22 +0000 (GMT)
+Subject: Re: EMU10K1 - CVS: nasty "click" at end of WAV files, and spurious extra modules.
+Date: Wed, 5 Feb 2003 23:05:54 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030205223922.80686.qmail@web40607.mail.yahoo.com>
-References: <20030205205905.7800db0c.sebastian_kapfer@web.de>
+Message-ID: <20030205230554.24410.qmail@web40611.mail.yahoo.com>
+References: <s5h1y2nge9u.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030205205905.7800db0c.sebastian_kapfer@web.de>
+In-Reply-To: <s5h1y2nge9u.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +17,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sebastian Kapfer <sebastian_kapfer@web.de>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Sebastian Kapfer <sebastian_kapfer@web.de> wrote:
-> May I ask what the child process is supposed to to
-> with a raw ALSA file
-> descriptor? AFAICT, developers are supposed to use
-> the alsa-lib API, and
-> not write to FD's. So the underlying file descriptor
-> looks to me like a
-> mere implementation detail which 99% of all users
-> shouldn't need to care about.
+ --- Takashi Iwai <tiwai@suse.de> wrote:
+> could you try the latest cvs aplay.c?
 
-I consider this situation analogous to the
-relationship between file descriptors and FILE*
-pointers. By your argument, libc should probably set
-the FD_CLOEXEC flag here, too. But it doesn't.
+That's solved the clicking problem. I'll need to
+update the ALSA on my P120 to run further checks.
+That's a Friday / weekend job.
 
 Chris
 
