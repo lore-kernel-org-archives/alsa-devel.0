@@ -1,9 +1,11 @@
 From: Thierry Vignaud <tvignaud@mandrakesoft.com>
-Subject: [PATCH] update isapnp ids
-Date: Fri, 01 Mar 2002 14:09:09 +0100
-Message-ID: <m2k7swtoy2.fsf@vador.mandrakesoft.com>
+Subject: [PATCH] update isapnp ids for sound galaxy
+Date: Fri, 01 Mar 2002 14:14:46 +0100
+Message-ID: <m2bse8toop.fsf@vador.mandrakesoft.com>
+References: <m2k7swtoy2.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed; boundary="=-=-="
+In-Reply-To: <m2k7swtoy2.fsf@vador.mandrakesoft.com> (Thierry Vignaud's message of "Fri, 01 Mar 2002 14:09:09 +0100")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,25 +19,29 @@ List-Id: alsa-devel@alsa-project.org
 
 --=-=-=
 
-this patch update an unknown yamaha opl3 id that is unknown to alsa
-but known to harddrake:
+Thierry Vignaud <tvignaud@mandrakesoft.com> writes:
+
+> this patch update an unknown yamaha opl3 id that is unknown to alsa
+> but known to harddrake:
+
+another one, for sound galaxy:
 
 
 --=-=-=
 Content-Type: text/x-patch
 Content-Disposition: attachment; filename=alsa.diff
 
---- /tmp/opl3sa2.c	Fri Mar  1 14:06:21 2002
-+++ alsa-driver-0.9.0beta12/alsa-kernel/isa/opl3sa2.c	Fri Mar  1 14:06:39 2002
-@@ -177,7 +177,7 @@
- 	ISAPNP_OPL3SA2('Y','M','H',0x0020,0x0021),
- 	/* Yamaha OPL3-SA3 (integrated on Intel's Pentium II AL440LX motherboard) */
- 	ISAPNP_OPL3SA2('Y','M','H',0x0030,0x0021),
--	/* ??? */
-+	/* Yamaha OPL3-SA2 */
- 	ISAPNP_OPL3SA2('Y','M','H',0x0800,0x0021),
- 	/* NeoMagic MagicWave 3DX */
- 	ISAPNP_OPL3SA2('N','M','X',0x2200,0x2210),
+--- /home/tv/azt2320.c	Fri Mar  1 14:13:02 2002
++++ alsa-driver-0.9.0beta12/alsa-kernel/isa/azt2320.c	Fri Mar  1 14:13:31 2002
+@@ -134,7 +134,7 @@
+ static struct isapnp_card_id snd_azt2320_pnpids[] __devinitdata = {
+ 	/* PRO16V */
+ 	ISAPNP_AZT2320('A','Z','T',0x1008,0x1008,0x2001),
+-	/* --- */
++	/* Aztech Sound Galaxy 16 */
+ 	ISAPNP_AZT2320('A','Z','T',0x2320,0x0001,0x0002),
+ 	/* Packard Bell Sound III 336 AM/SP */
+ 	ISAPNP_AZT2320('A','Z','T',0x3000,0x1003,0x2001),
 
 --=-=-=--
 
