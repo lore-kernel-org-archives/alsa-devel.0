@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000983]: alsamixer and amixer can't control "Capture Volume" and "Capture Switch" on azx, whereas gamix can
-Date: Wed, 16 Mar 2005 12:59:29 +0100
-Message-ID: <1d33cc7049dbba9ab5265edb53d3cc4b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
+Date: Wed, 16 Mar 2005 13:03:10 +0100
+Message-ID: <8e7063231f65345144d508098b36ef2b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE40D186
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:59:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DA742213
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 13:03:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,46 +21,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=983> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                soulhunter
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   983
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   981
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Debian and Gentoo.
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-12-2005 12:54 CET
-Last Modified:              03-16-2005 12:59 CET
+Date Submitted:             03-12-2005 01:48 CET
+Last Modified:              03-16-2005 13:03 CET
 ======================================================================
-Summary:                    alsamixer and amixer can't control "Capture Volume"
-and "Capture Switch" on azx, whereas gamix can
+Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
 Description: 
-This bug was reported at http://bugs.debian.org/297624 and has been
-discussed there at some length.
+>From kernel version 2.6.9 and up I don't get any sound.  I currently use
+2.6.8.1 (where the sound works just fine).
+
+I even tried to compile 2.6.11 with only snd_intel8x0 as module: nothing.
+
+I have no idea what is going on, yes I looked at the volume settings, and
+unmuted the master and pcm channels.  The sound application seems to be
+"playing", but I get no sound.
+
+My motherboard is a Chaintech VNF250.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 12:59 
+ tiwai - 03-16-05 13:03 
 ----------------------------------------------------------------------
-Already fixed in the recent ersion.
+Please attach /etc/asound.state and the contents of
+/proc/asound/card0/codec97#0/* files (please use attachments).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 12:54 jdthood        New Issue                                    
-03-16-05 12:59 tiwai          Status                   new => resolved     
-03-16-05 12:59 tiwai          Resolution               open => fixed       
-03-16-05 12:59 tiwai          Assigned To               => tiwai           
-03-16-05 12:59 tiwai          Note Added: 0003951                          
+03-12-05 01:48 soulhunter     New Issue                                    
+03-12-05 01:48 soulhunter     Distribution              => Debian and Gentoo.
+03-12-05 01:48 soulhunter     Kernel Version            => 2.6.11          
+03-16-05 13:03 tiwai          Note Added: 0003953                          
 ======================================================================
 
 
