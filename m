@@ -1,14 +1,12 @@
-From: James Tappin <james@xena.uklinux.net>
-Subject: Unresolved symbols in midi/seq modules
-Date: Sun, 26 May 2002 11:44:07 +0100
+From: Paul Davis <pbd@op.net>
+Subject: Re: reading/writing raw audio from soundcard
+Date: Sun, 26 May 2002 07:56:36 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205261144.07151.james@xena.uklinux.net>
-Reply-To: james@xena.uklinux.net
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Message-ID: <E17Bwav-0003fi-00@usw-sf-list1.sourceforge.net>
+References: <HJCBLODJCGCKFAAA@mailcity.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Tue, 14 May 2002 16:42:35 +0530."
+             <HJCBLODJCGCKFAAA@mailcity.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,39 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: shyamk@lycos.com
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-With this morning's checkout (though I'm not sure when it might nave been 
-introduced I haven't done an update for a couple of weeks) I got 
-unresolved symbols:
+>I am trying to read and write raw audio from my soundcard which is an es1371.
+>the code i use is as follows :
 
-bash-2.05# depmod -ae
-depmod: *** Unresolved symbols in 
-/lib/modules/2.4.17/kernel/sound/acore/seq/snd-seq-midi.o
-depmod:         snd_midi_event_new_R03feb57b
-depmod:         snd_midi_event_free_R2e6fd181
-depmod:         snd_midi_event_reset_decode_R500a45e4
-depmod:         snd_midi_event_encode_R78630f6d
-depmod:         snd_midi_event_decode_Rdf2f2bd1
+this the ALSA development mailing list. If you have questions, please
+at least use the ALSA API, and not the outdated-but-supported OSS API.
 
-This is after a full fresh checkout, removing the old sound modules and 
-rebuilding using:
+>ya i know the code is not optimized but then i was just testing it anyway.
+>the catch is i want to know whether i can read data from the soundcard and wri
+>te back to it without doing any encoding.
 
-./cvscompile --with-cards=ice1712 --without-isapnp --with-sequencer
-su -c 'make install'
+the answer is yes, but i don't read OSS code anymore.
 
-I am running SuSE 7.2 with a kernel.org 2.4.17 kernel configured with 
-soundcore enabled and no other sound options. I am using module versions.
-
-TIA for clues/fixes etc.
-	James
-
--- 
-James Tappin,               O__      "I forget the punishment for using
-james@xena.uklinux.net     --  \/`    Microsoft --- Something lingering
-http://www.xena.uklinux.net/          with data loss in it I fancy"  
-
+--p
 
 _______________________________________________________________
 
