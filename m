@@ -1,15 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-audio hang when rmmoding after unplugging
- midisport1x1
-Date: Fri, 12 Mar 2004 13:17:28 +0100 (MET)
+From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
+Subject: Re: snd_pcm_wait strangeness when resampling
+Date: Fri, 12 Mar 2004 15:26:00 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403121305470.14417-100000@studcom.urz.uni-halle.de>
-References: <20040311204610.3766f038.geli@enseirb.fr>
+Message-ID: <yw1xekry3zwn.fsf@kth.se>
+References: <yw1xd67jnhbl.fsf@kth.se>
+	<Pine.LNX.4.58.0403121003450.2696@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20040311204610.3766f038.geli@enseirb.fr>
+In-Reply-To: <Pine.LNX.4.58.0403121003450.2696@pnote.perex-int.cz> (Jaroslav
+ Kysela's message of "Fri, 12 Mar 2004 10:04:46 +0100 (CET)")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,47 +19,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mathieu Geli <geli@enseirb.fr>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Mathieu Geli wrote:
-> ok, what I did, is first to apply your patch to my source tree
-> (1.0.3rc2), clean, compile, install, and even reboot. That doesn't
-> output anymore the two lines "urb status -104", and
-> "usb_submit_urb: -32" but still hang after printing:
-> "drivers/usb/core/usb.c: deregistering driver snd-usb-audio"
+Jaroslav Kysela <perex@suse.cz> writes:
 
-It seems to work fine on my 2.4.25 kernel.
+> On Thu, 11 Mar 2004, M?ns Rullg?rd wrote:
+>
+>> I've noticed some strange things with snd_pcm_wait.  My application
+>> opens the sound device in non-blocking mode and uses snd_pcm_wait
+>> whenever snd_pcm_writei return EAGAIN.  This works fine as long as
+>> ALSA isn't doing any resampling.  However, when resampling (e.g. from
+>> 44.1 kHz to 48 kHz) snd_pcm_wait returns immediately, insisting that
+>> there is room in the buffer, after which snd_pcm_writei obviously
+>> returns EAGAIN once more.  The same thing happens if I use OSS
+>> emulation and select() or poll().  Replacing the snd_pcm_wait call
+>> with usleep(10000) makes the CPU load look normal again, while the
+>> application still works.
+>>=20
+>> I am using Linux 2.6.4, ALSA driver 1.0.3 and library 1.0.3a with a
+>> SIS7012 chip.  It behaves the same way with kernel 2.6.3 and driver
+>> 1.0.2c.  I'm not quite sure when it started.
+>>=20
+>> This application used to work properly.  Has something changed so I
+>> need to modify my application?
+>
+> Could you give me your code to analyze the problem?
 
-Can you unload the snd-usb-audio module?  If not, please apply the
-patch below to see whether the driver or the USB core is the culprit.
+I've noticed that it works properly using alsa-lib 1.0.0rc2.  That's
+what I happened to have compiled, it might work with later versions
+too.
 
+Did you manage to build the thing yet?
 
-Regards,
-Clemens
-
--- 
---- alsa-kernel/usb/usbaudio.c	8 Mar 2004 09:29:51 -0000	1.87
-+++ alsa-kernel/usb/usbaudio.c	12 Mar 2004 12:05:22 -0000
-@@ -2928,6 +2928,7 @@
- 		return;
-
- 	chip = snd_magic_cast(snd_usb_audio_t, ptr, return);
-+	snd_printk(KERN_INFO "snd_usb_audio_disconnect called, refcount = %d\n", chip->num_interfaces);
- 	card = chip->card;
- 	down(&register_mutex);
- 	chip->shutdown = 1;
-@@ -2947,6 +2948,7 @@
- 	} else {
- 		up(&register_mutex);
- 	}
-+	snd_printk(KERN_INFO "snd_usb_audio_disconnect finished!\n");
- }
-
- /*
-
-
+--=20
+M=E5ns Rullg=E5rd
+mru@kth.se
 
 
 -------------------------------------------------------
