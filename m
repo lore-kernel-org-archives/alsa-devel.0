@@ -1,16 +1,15 @@
-From: Abramo Bagnara <abramo@alsa-project.org>
+From: Paul Davis <pbd@op.net>
 Subject: Re: how to define a 2-index control element?
-Date: Wed, 08 May 2002 00:06:20 +0200
+Date: Tue, 07 May 2002 20:00:41 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CD84FDC.1056ACA1@alsa-project.org>
-References: <200205071717.g47HH3D25608@post2.fast.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <200205080000.CAA29681@alsa.alsa-project.org>
+References: <3CD84FDC.1056ACA1@alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp2.libero.it (smtp2.libero.it [193.70.192.52])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA27036
-	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 00:06:49 +0200
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA29681
+	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 02:00:07 +0200
+In-Reply-To: Your message of "Wed, 08 May 2002 00:06:20 +0200."
+             <3CD84FDC.1056ACA1@alsa-project.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,67 +18,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
+To: Abramo Bagnara <abramo@alsa-project.org>
 Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
-> >> If someone has hardware with 1400+ controls, than memory allocation issue
-> >> is out of question. I wrote that we can optimize current code - add some
-> >> hash tables for faster lookups for example.
-> >
-> >well, about 200kB is not so big nowadays :)
-> >
-> >i thought the hardware doesn't need allocate 1400 controls - the
-> >controls are identical but have different indices.
-> >in such a case, the indexed-access would be most straightforward.
-> >no hash, no list.
-> 
-> precisely. in fact, there are:
-> 
->            1456 mixer controls
->            52   RMS meters
->            80   peak meters
-> 
-> for the mixer controls, they form a matrix that is accessed by
-> index. for the meters, they form unidimensional arrays that are also
-> accessed by index.
-> 
-> i think any talk of allocating 1 control per "semantic control" is
-> crazy. its clear that these controls should be accessed as a matrix
-> type. they were designed by the h/w people as a matrix, and its been
-> ALSA's policy to have the kernel API mirror h/w designs and
-> capabilities.
+>We have well designed control keys (id) and I don't see any reason to
+>change something that's perfectly suitable (without any compromise) for
+>the job.
 
-Sorry to say that, but I think this is a nonsense.
+the implementation is not well designed for cases of 1500
+controls. perhaps, as jaroslav says, this could be improved. but even
+if that is done, the API forces the user application to do some
+special encoding to generate the index that cannot be inferred from
+the description provided by the API. an application that wants to
+modify the gain for source S to destination D will have to know how to
+encode S and D into the index - it cannot discover this from the API.
 
-Many cards have element organized in register with an index (you might
-say an "array"), but this is definitely not a reason to implement it in
-a different way.
+thats a lot worse than just a compromise if you ask me.
 
-We have well designed control keys (id) and I don't see any reason to
-change something that's perfectly suitable (without any compromise) for
-the job.
+>We have the sane association one control / one value and just because
+>this card has many controls, you seems to wish to go toward a different
+>(IMO insane and confusing) solution.
 
-We have the sane association one control / one value and just because
-this card has many controls, you seems to wish to go toward a different
-(IMO insane and confusing) solution.
+IMHO, the 1:1 association is sane only when there are relatively small
+numbers of controls. It doesn't make any sense to me to 
 
-Consider that independently from how you represent the data this card
-will ever have many controls (i.e. many values to show/change).
+>Consider that independently from how you represent the data this card
+>will ever have many controls (i.e. many values to show/change).
 
-I definitely don't see your point, sorry.
+this isn't true. if we had a MATRIX element type, applications could
+easily say
 
--- 
-Abramo Bagnara                       mailto:abramo@alsa-project.org
+     "i don't display matrix elements"
+     "i don't display matrix elements of dimensionality > 2"
+     "i don't display matrix elements when the matrix is larger than N"
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+and so forth. the problem with the current system is that if anyone
+makes the mistake of firing up a generic control API program, they
+will see all 1500 controls. i'd like to see you explain that as "sane"
+to the user.
 
-ALSA project               http://www.alsa-project.org
-It sounds good!
+>I definitely don't see your point, sorry.
+
+are you claiming that you really designed the control API as it exists
+now to handle situations with this many controls?
+
+--p
 
 _______________________________________________________________
 
