@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
-Date: Wed, 23 Mar 2005 17:17:05 +0100
-Message-ID: <cd089eee81de3905667ebcfe157d28a2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Wed, 23 Mar 2005 12:56:34 +0100
+Message-ID: <7c944d8b2de40c37a473aa206fe2bac7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68BCE289
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:17:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8801C1E4
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 12:56:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,62 +23,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
 ======================================================================
-Reported By:                Gregoire
-Assigned To:                
+Reported By:                sHINOBI
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   668
-Category:                   PCI - via82xx
+Issue ID:                   907
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo amd64
-Kernel Version:             2.6.10-rc2
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
 ======================================================================
-Date Submitted:             11-23-2004 16:04 CET
-Last Modified:              03-23-2005 17:17 CET
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              03-23-2005 12:56 CET
 ======================================================================
-Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
-rc2
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
 Description: 
-I have checked the changelog but I don't know what exactly have changed to
-see which change breake the AC3 passtrough ?
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:23 
+ sHINOBI - 03-22-05 22:56 
 ----------------------------------------------------------------------
-Submitter: Does AC3 passthru work when you build and use the latest ALSA
-modules from the alsa-driver tarball instead of the modules that come with
-your 2.6 kernel?
+I'm already using it without success. The problem can be, that this
+soundcard is without ac97 :-(. Any other ideas how to solve this? BTW I
+think I have those problems when I'm using OSS emulation.
 
 ----------------------------------------------------------------------
- Gregoire - 03-23-05 17:17 
+ tiwai - 03-23-05 12:56 
 ----------------------------------------------------------------------
-Sorry, as it worked since post 2.6.10-rc2 kernels, I thought you fixed this
-issue.
-I use now 2.6.12-rc1 and it works perfectly, would it help if I do what
-you want with older kernels ?
+Oops, sorry I thought of emu10k1x...
+
+You're referring to ALSA native apps, not OSS apps, right?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 16:04 Gregoire       New Issue                                    
-11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
-11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
-11-23-04 16:08 tiwai          Note Added: 0002518                          
-03-23-05 15:23 jdthood        Note Added: 0004158                          
-03-23-05 17:17 Gregoire       Note Added: 0004179                          
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
+02-13-05 11:38 sHINOBI        Note Added: 0003583                          
+03-02-05 13:22 Juha           Note Added: 0003770                          
+03-19-05 18:24 jcdutton       Note Added: 0004064                          
+03-22-05 22:14 tiwai          Note Added: 0004138                          
+03-22-05 22:56 sHINOBI        Note Added: 0004144                          
+03-23-05 12:56 tiwai          Note Added: 0004155                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by Microsoft Mobile & Embedded DevCon 2005
-Attend MEDC 2005 May 9-12 in Vegas. Learn more about the latest Windows
-Embedded(r) & Windows Mobile(tm) platforms, applications & content.  Register
-by 3/29 & save $300 http://ads.osdn.com/?ad_id=6883&alloc_id=15149&op=click
+This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
+Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
+for the chance to win $25,000 and application distribution. Enter today at
+http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
