@@ -1,12 +1,11 @@
-From: <danny@mailmij.org>
-Subject: Re: period/buffer bug on pmac ?
-Date: Tue, 16 Nov 2004 19:37:39 +0100 (CET)
-Message-ID: <Pine.LNX.4.33.0411161931330.15251-100000@luna.ellen.dexterslabs.com>
-References: <Pine.HPX.4.33n.0411151745210.1491-100000@studcom.urz.uni-halle.de>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Donation of SB Audigy 2 Value. SB0400
+Date: Tue, 16 Nov 2004 20:29:29 +0000
+Message-ID: <419A6329.4070303@superbug.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0411151745210.1491-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,35 +15,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Nov 2004, Clemens Ladisch wrote:
+Hi all,
 
-> danny@mailmij.org wrote:
-> > In the process of fixing up the alsa output plugin of bmp a bit I've come
-> > upon a weird problem. The mp3s I was playing played to fast, with a
-> > audible click each few millisecond. This seemed to only happen when the
-> > period size was not a power of 2 (the output plugin used to set
-> > period_time). I've now calculated the period_size myself from the rate and
-> > set it to the nearest power of 2. Which seems to work fine,
-> 
-> There is no general power-of-2 requirement in ALSA.  The pmac driver
-> doesn't set a hardware constraint; if the hardware requires power-of-2
-> periods, it's a bug in the driver.
-> 
-Thanks for the reply!
-I've been hacking around a bit in the driver and think it needs some 
-contraints, although its not (like i first thought) limited to a power of 
-2. Constraining periods to integer and requiring at least 3 periods seem 
-to fix all issues i have. However, these requirements sometimes 
-drastically affect the period AND buffersize requested by the app. I play 
-with it a bit more and submit a patch soon. 
+I am pleased to announce that someone has donated a SB Audigy 2 Value 
+SB0400 sound card to me.
 
-d.
+I now have a CA0108-IAT chip to play with. :-)
+But, no datasheets, so it will be a reverse engineering task for me. :-(
 
+I will try to get Linux support for it as soon as possible.
 
+You will never guess who donated it:
+Creative donated it! :-)
+(Well 3D Labs to be exact, but they are both the same company.)
+
+Kind Regards
+
+James
 
 
 -------------------------------------------------------
