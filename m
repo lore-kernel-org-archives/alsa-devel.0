@@ -1,9 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: [PATCH] emu10k1: various (mostly trivial) small cleanups
-Date: Sat, 12 Mar 2005 16:04:15 -0500
-Message-ID: <1110661456.7723.13.camel@mindpipe>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000986]: snd-ice1724 outputs white noise on rear surround output of Chaintech AV-710
+Date: Sat, 12 Mar 2005 22:43:02 +0100
+Message-ID: <0383bc6fad7af76415b21826b72e247e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-+dfZVXPf7KOTEI/aQu5G"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7FEC2147
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 22:43:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -13,183 +17,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-+dfZVXPf7KOTEI/aQu5G
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=986> 
+======================================================================
+Reported By:                AdamW
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   986
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Mandrakelinux Cooker
+Kernel Version:             2.6.11
+======================================================================
+Date Submitted:             03-12-2005 22:43 CET
+Last Modified:              03-12-2005 22:43 CET
+======================================================================
+Summary:                    snd-ice1724 outputs white noise on rear surround
+output of Chaintech AV-710
+Description: 
+A little background. The Chaintech AV-710 soundcard is a 7.1 soundcard
+which uses this driver. It has two DACs. There's a standard DAC that
+drives the first six channels. The rear surround channels, however, are
+driven by a high-quality Wolfson DAC. Audio enthusiasts like to set the
+card to drive the main two channels through this DAC instead in order to
+get a very high quality stereo line-level output. The card's Windows
+driver has an option to do just this, and in the past people have been
+successful doing it on Linux. I am attaching an asound.state file which
+owners of this card used with ALSA 1.0.7 to achieve this. However, I am
+having trouble getting this to work with ALSA 1.0.8. The rear surround
+output just produces white noise all the time. This is the case both with
+this asound.state loaded and also with default levels (i.e., what I get if
+I wipe /etc/asound.state and re-run alsaconf). It'd be nice to know what
+changed between 1.0.7 and 1.0.8 that caused this to break, and how to fix
+it. Thanks!
+======================================================================
 
-These patches fix a few minor issues with the emu10k1 driver that would
-be good to get fixed before the ALSA 1.0.9 release.  All are 100% safe
-to apply, they do not change the functionality at all.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-12-05 22:43 AdamW          New Issue                                    
+03-12-05 22:43 AdamW          File Added: asound.state                     
+03-12-05 22:43 AdamW          Distribution              => Mandrakelinux Cooker
+03-12-05 22:43 AdamW          Kernel Version            => 2.6.11          
+======================================================================
 
-emu10k1-improve-device-names.patch: give the subdevices descriptive
-names, like "ADC Capture/Standard PCM Playback" instead of "EMU10K1" for
-hw:x,0 and "Multichannel Capture/PT Playback" instead of "EMU10K1 EFX"
-for hw:x,2.  Now that qjackctl enumerates the devices automatically,
-this is a significant usability improvement.
-
-remove-voice-alloc-printk.patch: silence the "BUG (or not enough
-voices)" message.  This does not in fact represent a bug; it's a normal
-ocurrence when the wavetable synth is in use.
-
-The next two patches add my copyright for adding the multichannel PCM
-support to emupcm.c and emumixer.c.
-
-The final patch adds Clemens Ladisch to the copyright on timer.c, rather
-than just saying "Copied from similar code by CL".  This has been
-bugging me for a while, since I just copied and pasted from the ymfpci
-driver & changed the registers.
-
-Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
-
---=-+dfZVXPf7KOTEI/aQu5G
-Content-Disposition: attachment; filename=emu10k1-improve-device-names.patch
-Content-Type: text/x-patch; name=emu10k1-improve-device-names.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa/alsa-kernel/pci/emu10k1/emupcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
-retrieving revision 1.42
-diff -u -r1.42 emupcm.c
---- alsa/alsa-kernel/pci/emu10k1/emupcm.c	9 Mar 2005 11:12:10 -0000	1.42
-+++ alsa/alsa-kernel/pci/emu10k1/emupcm.c	11 Mar 2005 00:13:02 -0000
-@@ -1273,7 +1273,7 @@
- 
- 	pcm->info_flags = 0;
- 	pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
--	strcpy(pcm->name, "EMU10K1");
-+	strcpy(pcm->name, "ADC Capture/Standard PCM Playback");
- 	emu->pcm = pcm;
- 
- 	for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next)
-@@ -1308,7 +1308,7 @@
- 
- 	pcm->info_flags = 0;
- 	pcm->dev_subclass = SNDRV_PCM_SUBCLASS_GENERIC_MIX;
--	strcpy(pcm->name, "EMU10K1 multichannel EFX");
-+	strcpy(pcm->name, "Multichannel Playback");
- 	emu->pcm = pcm;
- 
- 	for (substream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream; substream; substream = substream->next)
-@@ -1357,7 +1357,7 @@
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_emu10k1_capture_mic_ops);
- 
- 	pcm->info_flags = 0;
--	strcpy(pcm->name, "EMU10K1 MIC");
-+	strcpy(pcm->name, "Mic Capture");
- 	emu->pcm_mic = pcm;
- 
- 	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(emu->pci), 64*1024, 64*1024);
-@@ -1695,7 +1695,7 @@
- 	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &snd_emu10k1_capture_efx_ops);
- 
- 	pcm->info_flags = 0;
--	strcpy(pcm->name, "EMU10K1 EFX");
-+	strcpy(pcm->name, "Multichannel Capture/PT Playback");
- 	emu->pcm_efx = pcm;
- 	if (rpcm)
- 		*rpcm = pcm;
-
---=-+dfZVXPf7KOTEI/aQu5G
-Content-Disposition: attachment; filename=remove-voice-alloc-printk.patch
-Content-Type: text/x-patch; name=remove-voice-alloc-printk.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa/alsa-kernel/pci/emu10k1/voice.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/voice.c,v
-retrieving revision 1.7
-diff -u -r1.7 voice.c
---- alsa/alsa-kernel/pci/emu10k1/voice.c	18 Feb 2005 10:21:10 -0000	1.7
-+++ alsa/alsa-kernel/pci/emu10k1/voice.c	11 Mar 2005 05:20:42 -0000
-@@ -81,12 +81,8 @@
- 		}
- 	}
- 	
--	if (first_voice == last_voice) {
--		printk("BUG (or not enough voices), number %d, next free %d!\n",
--				number,
--				emu->next_free_voice);
-+	if (first_voice == last_voice)
- 		return -ENOMEM;
--	}	
- 	
- 	for (i=0; i < number; i++) {
- 		voice = &emu->voices[(first_voice + i) % NUM_G];
-
---=-+dfZVXPf7KOTEI/aQu5G
-Content-Disposition: attachment; filename=emupcm-copyright-fix.patch
-Content-Type: text/x-patch; name=emupcm-copyright-fix.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa/alsa-kernel/pci/emu10k1/emupcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
-retrieving revision 1.43
-diff -u -r1.43 emupcm.c
---- alsa/alsa-kernel/pci/emu10k1/emupcm.c	11 Mar 2005 16:32:21 -0000	1.43
-+++ alsa/alsa-kernel/pci/emu10k1/emupcm.c	12 Mar 2005 20:48:01 -0000
-@@ -2,6 +2,7 @@
-  *  Copyright (c) by Jaroslav Kysela <perex@suse.cz>
-  *                   Creative Labs, Inc.
-  *  Routines for control of EMU10K1 chips / PCM routines
-+ *  Multichannel PCM support Copyright (c) Lee Revell <rlrevell@joe-job.com>
-  *
-  *  BUGS:
-  *    --
-
---=-+dfZVXPf7KOTEI/aQu5G
-Content-Disposition: attachment; filename=emumixer-copyright-fix.patch
-Content-Type: text/x-patch; name=emumixer-copyright-fix.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa/alsa-kernel/pci/emu10k1/emumixer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
-retrieving revision 1.30
-diff -u -r1.30 emumixer.c
---- alsa/alsa-kernel/pci/emu10k1/emumixer.c	16 Feb 2005 10:25:36 -0000	1.30
-+++ alsa/alsa-kernel/pci/emu10k1/emumixer.c	12 Mar 2005 20:50:03 -0000
-@@ -3,6 +3,7 @@
-  *                   Takashi Iwai <tiwai@suse.de>
-  *                   Creative Labs, Inc.
-  *  Routines for control of EMU10K1 chips / mixer routines
-+ *  Multichannel PCM support Copyright (c) Lee Revell <rlrevell@joe-job.com>
-  *
-  *  BUGS:
-  *    --
-
---=-+dfZVXPf7KOTEI/aQu5G
-Content-Disposition: attachment; filename=timer-copyright-fix.patch
-Content-Type: text/x-patch; name=timer-copyright-fix.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
-
-Index: alsa/alsa-kernel/pci/emu10k1/timer.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/timer.c,v
-retrieving revision 1.1
-diff -u -r1.1 timer.c
---- alsa/alsa-kernel/pci/emu10k1/timer.c	10 Nov 2004 09:49:12 -0000	1.1
-+++ alsa/alsa-kernel/pci/emu10k1/timer.c	12 Mar 2005 20:48:16 -0000
-@@ -1,10 +1,8 @@
- /*
-  *  Copyright (c) by Lee Revell <rlrevell@joe-job.com>
-- *  
-+ *                   Clemens Ladisch <clemens@ladisch.de>
-  *  Routines for control of EMU10K1 chips
-  *
-- *  Copied from similar code by Clemens Ladisch in the ymfpci driver
-- * 
-  *  BUGS:
-  *    --
-  *
-
---=-+dfZVXPf7KOTEI/aQu5G--
 
 
 
