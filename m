@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 22:54:53 +0100
-Message-ID: <b0e8f2165f1eb3ca04b9ef32833d04fa@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 23:15:03 +0100
+Message-ID: <6c9ca6bc17f72f3d7c038617d44ab75a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 089EB252
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 22:54:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E67B237
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 23:15:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 22:54 CET
+Last Modified:              12-27-2004 23:15 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,32 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-27-04 22:29 
-----------------------------------------------------------------------
-Tried your last suggestion.  Didn't work.
-
-Can you PLEASE have your supervisor give me a call??  Collect is fine.
-Nothing about you.  You've tried hard.  I just need some suggestions.
-
-I always had problems before but they were all solveable.  This times the
-first that I couldn't get it solved myself and neither even you guys.
-Since I just had Mepis working, it can't ne a totally hardware issue.
-Seems to be a Fedora issue, possibly as it relates to my hardware.
-But since I had Debian working, Mepis working, and other distro's working
-
-on this hardware, seems to be an FC3 issue.
-I'd like to get some recommendations.  Over the phone would just be a lot
-easier than email, ok??
-
-248-827-3004
-
-1) Try a new install of FC3?
-2) What else try?
-
-Thanks,
-Jerry
-
-----------------------------------------------------------------------
  pzad - 12-27-04 22:54 
 ----------------------------------------------------------------------
 :-)
@@ -93,6 +67,19 @@ but I have nothing to do with suse :-))
 I do this as my hobby in my free time.
 
 You can try to fill bug report at fedora or user mailing list for fedora.
+
+----------------------------------------------------------------------
+ misnagid - 12-27-04 23:15 
+----------------------------------------------------------------------
+Dear Peter,
+
+I meant no insult to you.  I appreciate your time immemsely.  Please
+forgive me if I said anything wrong, ok?
+
+If I offered you $100, would you be able to fix problem?
+
+Thanks!
+Jerry
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -143,6 +130,7 @@ Date Modified  Username       Field                    Change
 12-27-04 22:00 pzad           Note Added: 0002979                          
 12-27-04 22:29 misnagid       Note Added: 0002980                          
 12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
 ======================================================================
 
 
