@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 21:19:03 +0100
-Message-ID: <cb5017c3af09d25817a436e123b2dcf7@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 21:22:03 +0100
+Message-ID: <64cd9edc144bf104fb8f20af37915aea@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0716D2BD
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:19:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 088D62BD
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 21:22:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 21:19 CET
+Last Modified:              12-26-2004 21:22 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,19 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-26-04 21:11 
-----------------------------------------------------------------------
-Let me ask you.  Is there a different manufacturer's board other than
-Creative, that is similar in quality but a lot easier in setting up in
-Alsa??  With every install, whether it be Fedora, Suse, Mandrake, Debian,
-I've had problems with Alsa setup.  This one has been the worst by a wide
-margin I admit but still sure no fun.  Is there an easier set up card with
-as high a quality as Creative's?
-
-Thanks!
-Jerr
-
-----------------------------------------------------------------------
  pzad - 12-26-04 21:19 
 ----------------------------------------------------------------------
 newtest.state -
@@ -81,6 +68,13 @@ Audigy is not problem to setup - only problem is when is switched to
 digital mode (Audigy analog/digital - unmuted), then card is silent, only
 center produces noise.
 But I don know about any audigy producing buzz sound and nothing else.
+
+----------------------------------------------------------------------
+ pzad - 12-26-04 21:22 
+----------------------------------------------------------------------
+One thing - remove /etc/asound.conf - or comment out two lines inside.
+
+And you don't need .asoundrc too
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +101,7 @@ Date Modified  Username       Field                    Change
 12-26-04 20:59 misnagid       Note Added: 0002950                          
 12-26-04 21:11 misnagid       Note Added: 0002951                          
 12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
 ======================================================================
 
 
