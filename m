@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000569]: Software mixing to rear channel
-Date: Tue, 12 Oct 2004 14:50:44 +0200 (CEST)
+Subject: [ALSA - driver 0000550]: terratec sound system 16/32 working with OSS driver
+Date: Tue, 12 Oct 2004 14:53:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041012125044.3D1EE18009@server.perex-int.cz>
+Message-ID: <20041012125342.E307B18008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F1B42D9
-	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:50:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C9222D9
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 14:53:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,47 +22,41 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000569
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000550
 ======================================================================
-Reported By:                pmatil
+Reported By:                Ulrich
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     569
-Category:                   PCI - cs46xx
-Reproducibility:            N/A
+Bug ID:                     550
+Category:                   ISA - ad1848
+Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian GNU/Linux
-Kernel Version:             2.4.22
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             10-06-2004 15:22 CEST
-Last Modified:              10-12-2004 14:50 CEST
+Date Submitted:             09-29-2004 22:26 CEST
+Last Modified:              10-12-2004 14:53 CEST
 ======================================================================
-Summary:                    Software mixing to rear channel
+Summary:                    terratec sound system 16/32 working with OSS driver
 Description: 
-I don't know how to explain it, but since Terratec DMX Xfire 1024 has two
-stereo outputs (front and rear), it would be nice if there was a
-slider/button/etc. from which I could set same output to front and rear
-(eg. same signal), so my 4-channel amp. gets all 4-channels in and I get
-sound from all 4 speakers instead of the amp. mixing front to rear.
-Separated volume sliders for front and rear would be nice too.
+The terratec sound system 16/32 with CS4248 chip is working in Microsoft
+Sound system mode with the OSS-driver Audio Excel DSP16 (Gallant SC-6000,
+SC-6600). So alsa may also support this soundcard.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-12-2004 14:50 CEST 
+ tiwai - 10-12-2004 14:53 CEST 
 ----------------------------------------------------------------------
-You can do this by creating a new pcm in ~/.asoundrc.
-See an example in https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000579.
+Didn't it work with ALSA?  How did you try?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-06-04 15:22 pmatil         New Bug                                      
-10-06-04 15:22 pmatil         Distribution              => Debian GNU/Linux
-10-06-04 15:22 pmatil         Kernel Version            => 2.4.22          
-10-12-04 14:50 tiwai          Bugnote Added: 0002098                       
+09-29-04 22:26 Ulrich         New Bug                                      
+10-12-04 14:53 tiwai          Bugnote Added: 0002099                       
 ======================================================================
 
 
