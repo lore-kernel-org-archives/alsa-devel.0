@@ -1,68 +1,28 @@
-From: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Subject: Re: Creamware Noah, snd-usb-audio capable?
-Date: Tue, 10 Feb 2004 19:36:02 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1076438161.2839.0.camel@chief.local>
-References: <1076094393.2688.2.camel@chief.local>
-	 <200402070220.i172KFO4020802@dhin.linuxaudiosystems.com>
-	 <20040210165602.GC9524@fliwatut.scifi>
+From: Alex Riesen <fork0@users.sourceforge.net>
+Subject: Re: 2.6.3-rc1: intel8x0 broken
+Date: Tue, 10 Feb 2004 21:31:26 +0100
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <20040210203126.GA1305@steel.home>
+References: <20040209214622.GA1944@steel.home> <s5h3c9j2tly.wl@alsa2.suse.de>
+Reply-To: Alex Riesen <fork0@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040210165602.GC9524@fliwatut.scifi>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h3c9j2tly.wl@alsa2.suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, linux-kernel <linux-kernel@vger.kernel.org>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-Frank Barknecht wrote:
-> Hallo, 
-> Paul Davis hat gesagt: // Paul Davis wrote:
-> 
-> > >    Interface Descriptor:
-> > >      bLength                 9
-> > >      bDescriptorType         4
-> > >      bInterfaceNumber        0
-> > >      bAlternateSetting       0
-> > >      bNumEndpoints           6
-> > >      bInterfaceClass       255 Vendor Specific Class
-> > 				 ^^^^^^^^^^^^^^^^^^^^^
+Takashi Iwai, Tue, Feb 10, 2004 10:04:25 +0100:
+> > I have a Gigabyte GA-I8IPE1000 Pro motherboard with a built-in 82801EB
+> > (Intel Corp. 82801EB AC'97 Audio Controller).
 > > 
-> > i don't know much about USB at, but this doesn't look good.
+> > The thing stopped produce any sound since Linus' last alsa update.
+> > Reverting to the previous state of alsa driver works, of course.
 > 
-> But it doesn't necessarily have to be that bad as well. Several of the
-> (now) supported USB devices have "Vendor Specific" classes, for
-> example most Edirol devices do. But I guess, that yes: you'll probably
-> need quirks then in usbquirks.h for the Noah, too. 
+> if your ac97 chip is ALC650 or ALC655/658, the attached patch should
+> fix.
 > 
-> ciao
 
-reading the different entries in usbquirks.h it looks like they are
-taken from the usb-infos like lsusb provides. Is it very difficult to
-take the infos from lsusb and translate it to an quirk?
-I only need some quick advice and will try it by myself. A good
-(complex) example in my opinion is the "Roland SC-D70".
-
-Thanks in advance for any help.
-
-Hartmut  
-
--- 
-
-Hartmut Geissbauer <nwgbh@swissonline.ch>
-
-
-
--------------------------------------------------------
-The SF.Net email is sponsored by EclipseCon 2004
-Premiere Conference on Open Tools Development and Integration
-See the breadth of Eclipse activity. February 3-5 in Anaheim, CA.
-http://www.eclipsecon.org/osdn
+ALC658. It did help, of course. Thank you very much.
