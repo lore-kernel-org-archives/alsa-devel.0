@@ -1,21 +1,16 @@
-From: Gerald Grabner <gerry@mechanik.tu-graz.ac.at>
-Subject: Easy question: ppq and tempo
-Date: Fri, 24 May 2002 09:57:03 +0200
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Easy question: ppq and tempo
+Date: Fri, 24 May 2002 12:48:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CEDF24F.2080503@mechanik.tu-graz.ac.at>
+Message-ID: <Pine.LNX.4.21.0205241242240.761-100000@summer.quitte>
+References: <3CEDF24F.2080503@mechanik.tu-graz.ac.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailrelay.tugraz.at (mailrelay.tu-graz.ac.at [129.27.3.7])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA27616
-	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 09:57:07 +0200
-Received: from fmechgsg01.tu-graz.ac.at (fmechgsg01.tu-graz.ac.at [129.27.94.2])
-	by mailrelay.tugraz.at (8.12.3/8.12.3) with ESMTP id g4O7v20W008242
-	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 09:57:02 +0200 (MEST)
-Received: from mechanik.tu-graz.ac.at (fmechgpc22.tu-graz.ac.at [129.27.94.162])
-	by fmechgsg01.tu-graz.ac.at (SGI-8.9.3/8.9.3) with ESMTP id JAA35600
-	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 09:57:04 +0200 (METDST)
+Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA29963
+	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 12:51:19 +0200
+In-Reply-To: <3CEDF24F.2080503@mechanik.tu-graz.ac.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,18 +19,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Gerald Grabner <gerry@mechanik.tu-graz.ac.at>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Gerald Grabner wrote:
 
-I'm just starting to write my first alsa-lib midi applications. I'm 
-wondering what the acronym ppq stands for and what it means (especially 
-in relation to tempo). Unfortunately, I didn't find any docu on the 
-topic of tempo.
+>Hi,
+>
+>I'm just starting to write my first alsa-lib midi applications. I'm 
+>wondering what the acronym ppq stands for and what it means (especially 
+>in relation to tempo). Unfortunately, I didn't find any docu on the 
+>topic of tempo.
 
-Thanks for your help,
-	Gerald
+from <sound/asequencer.h>:
+
+/* queue tempo */
+struct sndrv_seq_queue_tempo {
+  int queue;      /* sequencer queue */
+  unsigned int tempo;   /* current tempo, us/tick */
+  int ppq;      /* time resolution, ticks/quarter */
+  unsigned int skew_value;  /* queue skew */
+  unsigned int skew_base;   /* queue skew base */
+  char reserved[24];    /* for the future */
+};
+
+the value is usually synonymous to the 'division' of a standard midi
+file. 
+
+tim
 
 
 _______________________________________________________________
