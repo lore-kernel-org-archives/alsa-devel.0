@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000197]: No sound from speakers
-Date: Wed, 23 Mar 2005 16:03:25 +0100
-Message-ID: <0906e13139ed797fc6b0761188c589fb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001007]: no audio in - unable to record
+Date: Tue, 22 Mar 2005 21:44:46 +0100
+Message-ID: <1a8c16245d4165f35a00c0520fabdb71@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7923827A
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:03:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 751F828D
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 21:44:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,63 +21,37 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=197> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
 ======================================================================
-Reported By:                edhall
-Assigned To:                
+Reported By:                msillence
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   197
-Category:                   PCI - intel8x0
+Issue ID:                   1007
+Category:                   PCI - ca0106
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             04-09-2004 15:03 CEST
-Last Modified:              03-23-2005 16:03 CET
+Date Submitted:             03-22-2005 21:44 CET
+Last Modified:              03-22-2005 21:44 CET
 ======================================================================
-Summary:                    No sound from speakers
+Summary:                    no audio in - unable to record
 Description: 
-Debian distribution with KDE 3.2.1 No sound from speakers.
-
-I get this message from the control panel
-
-Sound server informational message:
-Error while initializing the sound driver:
-device: default can't be opened for playback (No such file or directory)
-The sound server will continue, using the null output device.
-
-I think I hear system sounds through the speaker on the MB.
+I can only get a weak hiss from the card even with the recording level up
+full
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 03-23-05 15:42 
-----------------------------------------------------------------------
-Submitter: Are the required sound modules loaded?
-
-----------------------------------------------------------------------
- jdthood - 03-23-05 16:03 
-----------------------------------------------------------------------
-Please send the output of
-
-   lsmod
-   uname -a
-   lspci
-   cat /proc/asound/version
-   cat /proc/asound/cards
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-09-04 15:03 edhall         New Issue                                    
-04-09-04 15:03 edhall         Distribution              => Debian          
-03-23-05 15:42 jdthood        Note Added: 0004164                          
-03-23-05 16:03 jdthood        Note Added: 0004170                          
+03-22-05 21:44 msillence      New Issue                                    
+03-22-05 21:44 msillence      Kernel Version            => 2.6.11.5        
 ======================================================================
 
 
