@@ -1,16 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000447]: Capture Switch control is read only
-Date: Tue, 17 Aug 2004 11:22:27 +0200 (CEST)
+Subject: [ALSA - driver 0000449]: unresolved symbol snd_compat_strlcpy_Rb4409a1e
+Date: Tue, 17 Aug 2004 14:15:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040817092227.B1A871102F@server.perex-int.cz>
+Message-ID: <20040817121528.999821102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0839A28A
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 11:22:28 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB34B134
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 14:15:28 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id C1ACE18A0B
-	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 11:22:27 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id A98381899E
+	for <alsa-devel@alsa-project.org>; Tue, 17 Aug 2004 14:15:28 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,34 +25,43 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000447
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000449
 ======================================================================
-Reported By:                Andrew
+Reported By:                isotrope
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     447
-Category:                   PCI - ice1724
+Bug ID:                     449
+Category:                   PCI - ens1370
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             
+Distribution:               Tao Linux (RHEL 3 clone)
+Kernel Version:             2.4.21-15.0.4.TL
 ======================================================================
-Date Submitted:             08-17-2004 11:22 CEST
-Last Modified:              08-17-2004 11:22 CEST
+Date Submitted:             08-17-2004 14:15 CEST
+Last Modified:              08-17-2004 14:15 CEST
 ======================================================================
-Summary:                    Capture Switch control is read only
+Summary:                    unresolved symbol snd_compat_strlcpy_Rb4409a1e
 Description: 
-Second value of the Capture Switch control is read only
-(always on)
+I am unable to load the kernel module for ALSA. While loading snd.o, I get
+the message:
+snd-ens1370 /lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: unresolved
+symbol snd_compat_strlcpy_Rb4409a1e
+/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: insmod
+/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o failed
+/lib/modules/2.4.21-15.0.4.TL/kernel/sound/snd.o: insmod snd-ens1370
+failed
+
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-04 11:22 Andrew         New Bug                                      
+08-17-04 14:15 isotrope       New Bug                                      
+08-17-04 14:15 isotrope       Distribution              => Tao Linux (RHEL 3 clone)
+08-17-04 14:15 isotrope       Kernel Version            => 2.4.21-15.0.4.TL
 ======================================================================
 
 
