@@ -1,16 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Full duplex questions.
-Date: Sun, 28 Mar 2004 10:13:49 +0200 (CEST)
+From: pdq808@t-online.de (Reiner Klenk)
+Subject: Delta 410 support broken in CVS ?
+Date: Sun, 28 Mar 2004 17:36:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403281007020.1828@pnote.perex-int.cz>
-References: <4065E0DB.9050003@superbug.demon.co.uk>
+Message-ID: <4066F118.10902@t-online.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA12012
-	for <alsa-devel@alsa-project.org>; Sun, 28 Mar 2004 11:13:14 +0200
-In-Reply-To: <4065E0DB.9050003@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,45 +15,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 27 Mar 2004, James Courtier-Dutton wrote:
+Greetings,
+my Midiman Delta 410 doesn't work with CVS or 1.0.3
+modprobe snd-ice1712 gives an error and the logfile says:
 
-> I want a sound card to work in full duplex.
-> I also want the in and out directions in sample sync.
-> I.E. The playback period size is 160. I have my code polling, so that it 
-> is executed once every 160 samples.
-> How do I ensure that each time my code executed, there will be at least 
-> 160 samples ready to be captured?
-> 
-> Is there some way to link the starting of playback and capture so that 
-> they start at exactly the same time. So, each time i play 160 samples, I 
-> will have 160 samples ready to capture. If there are only 159 samples 
-> ready to be captured, my application will fail.
+../alsa-kernel/i2c/cs8427.c:225: unable to find CS8427 signature 
+(expected 0x71, read 0xff), initialization is not completed
 
-1) set avail_min to 160 (sw_params)
-2) set start_threshold to boundary (sw_params) to disable automatic start
-3) link streams (snd_pcm_link)
-4) prepare playback (write some data)
-5) start manually both streams (snd_pcm_start), note when streams are 
-   linked, this command should be called only once, the second stream
-   will be started automatically
-6) wait for one period to be processed, if any stream is behind the other, 
-   correct avail_min for the "master" stream and wait again
+../../alsa-kernel/pci/ice1712/ice1712.c:396: CS8427 initialization failed
 
-The reasons for which the playback and capture pointers might differ are:
+The line numbers may be off slightly due to some additional printks 
+added by me.
 
-1) two clock sources (two different cards)
-2) bus/card FIFO issues
+I suspected that the problem has something to do with the newly 
+introduced timeout parameter for the ice1712 module but that parameter 
+doesn't seem to be used up to the point where the error is generated in 
+cs8427.c
 
-						Jaroslav
+The card seems to work OK with 1.0.2c (Fedora Core, kernel 2.4.22)
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Ideas ?
+
+Thanks,
+Reiner
+
 
 
 -------------------------------------------------------
