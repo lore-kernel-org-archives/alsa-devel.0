@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000391]: Built-in sound card not seen.
-Date: Fri, 7 Jan 2005 18:29:01 +0100
-Message-ID: <b2087e32512f4fc220ae6f027ed318a7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Fri, 7 Jan 2005 18:59:18 +0100
+Message-ID: <2ef14988398c1b0b228a7dff9600804f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7505F24F
-	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:29:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07F7A2E1
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 18:59:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,79 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=391> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
 ======================================================================
-Reported By:                PhilTR
-Assigned To:                tiwai
+Reported By:                davidsrsb
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   391
-Category:                   OTHERS
+Issue ID:                   359
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.4.20-31.9
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             07-16-2004 00:21 CEST
-Last Modified:              01-07-2005 18:29 CET
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              01-07-2005 18:59 CET
 ======================================================================
-Summary:                    Built-in sound card not seen.
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
 Description: 
-I can't say that this is really a bug although its got me bugged. I
-installed a new mother board (GA-8IPE 1000 Pro) which has a built-in
-RealTek sound card:
-02:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139
-C+ (rev 10)
-        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        I/O ports at 9000 [size=256]
-        Memory at fb004000 (32-bit, non-prefetchable)       [size=256]
-        Capabilities: [50] Power Management version 2
-
-Linux dutifully loaded w/o incident and after loggin in I received the
-following error message: 'Couldn't open mixer device /dev/sound/mixer" 
-
-I've been receiving help at <a
-href="http://www.linuxquestions.org/questions/showthread.php?s=&threadid=203196&perpage=15&pagenumber=1">LinuxQuestions.org<a/>
-but, to get to the point, I'm wondering if anyone here has a fix? I've
-downloaded "alsa-xxxx-1.0.5" (firmware is: 1.0.4) Set-up proceeded w/o
-incident. Running "alsaconf" got me: "No supported PnP or PCI card dound"
-and "No legacy drivers found." 
-
-Your kind patience is appreciated. philtr (rabne@pipeline.com)
-
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- PhilTR - 01-01-05 19:51 
+ jdthood - 01-07-05 18:28 
 ----------------------------------------------------------------------
-Problem fixed with new sound card that was not plug-n-pray.
+Please read https://bugzilla.ubuntu.com/show_bug.cgi?id=1293 .
 
 ----------------------------------------------------------------------
- tiwai - 01-07-05 18:29 
+ jdthood - 01-07-05 18:59 
 ----------------------------------------------------------------------
-OK, closing this now.
+> The problem is that the current "numbering" concept doesn't match
+> with the idea of hotplug. We need either stop using numbers, or
+> introduce the mangling of physical and logical device numbers.
+
+
+I agree that a general solution is for sound applications to select
+cards by type or id rather than by index.  However, it remains the
+fact that some existing applications open card
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0.  So GNU/Linux
+distributors would like to set things up so that modems and TV cards
+don't grab index 0.
+
+My proposed solution is to apply the following patch and then use:
+
+    options snd-bt87x index=-2
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-16-04 00:21 PhilTR         New Issue                                    
-07-16-04 00:21 PhilTR         Kernel Version            => 2.4.20-31.9     
-07-16-04 11:55 tiwai          Note Added: 0001440                          
-07-24-04 21:00 PhilTR         Note Added: 0001472                          
-07-30-04 17:09 tiwai          Note Added: 0001495                          
-01-01-05 19:51 PhilTR         Note Added: 0003034                          
-01-07-05 18:29 tiwai          Status                   new => resolved     
-01-07-05 18:29 tiwai          Resolution               open => not an issue
-01-07-05 18:29 tiwai          Assigned To               => tiwai           
-01-07-05 18:29 tiwai          Note Added: 0003113                          
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+01-07-05 18:10 tiwai          Note Added: 0003108                          
+01-07-05 18:28 jdthood        Note Added: 0003112                          
+01-07-05 18:59 jdthood        Note Added: 0003114                          
 ======================================================================
 
 
