@@ -1,15 +1,13 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: snd-usb-usx2y 0.8.7 hwdep pcm oopses!
-Date: Thu, 16 Dec 2004 00:41:09 -0000 (WET)
-Message-ID: <33037.192.168.1.5.1103157669.squirrel@192.168.1.5>
-References: <64648.195.245.190.93.1103017646.squirrel@195.245.190.93>
-    <200412151532.35006.annabellesgarden@yahoo.de>
-    <s5hr7lrr5hf.wl@alsa2.suse.de>
-    <200412152354.06616.annabellesgarden@yahoo.de>
+From: Greg KH <greg@kroah.com>
+Subject: Re: [linux-usb-devel] 2.6.10, oops in snd_usb_audio after unplugging audio device
+Date: Wed, 15 Dec 2004 17:48:55 -0800
+Message-ID: <20041216014855.GA12042@kroah.com>
+References: <20041214211116.GA21561@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;boundary="----=_20041216004109_38219"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200412152354.06616.annabellesgarden@yahoo.de>
+Content-Disposition: inline
+In-Reply-To: <20041214211116.GA21561@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,90 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>
+To: Olaf Hering <olh@suse.de>
+Cc: linux-usb-devel@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_20041216004109_38219
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+On Tue, Dec 14, 2004 at 10:11:16PM +0100, Olaf Hering wrote:
+> 
+> Oops: kernel access of bad area, sig: 11 [#1]
+> NIP: C000F748 LR: C00AB5E4 SP: C18DDD10 REGS: c18ddc60 TRAP: 0300    Not tainted
+> MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+> DAR: 00000000, DSISR: 40000000
+> TASK = e7fc14e0[3] 'events/0' THREAD: c18dc000Last syscall: 120 
+> GPR00: C00F0400 C18DDD10 E7FC14E0 00000000 FFFFFFFF DFE3D358 0000001A E6397858 
+> GPR08: 000003A8 DFE3D6D4 FFFFFFFF 00000003 357F36F0 00000000 00000000 00000000 
+> GPR16: 00000000 00000000 00000000 00000000 00230000 0012F000 C01C0000 E6AC46C0 
+> GPR24: 00000000 000003A8 E6397858 E7F2B6E4 DFE3D6CC 000000D0 00000001 E7F2B6E4 
+> NIP [c000f748] strlen+0x4/0x18
+> LR [c00ab5e4] kobject_get_path+0x28/0xc4
+> Call trace:
+>  [c00f0400] class_hotplug+0x88/0x194
 
-Karsten,
+Ick.  I thought we fixed up the reference counting issues :(
 
-I've took the dirty path, so to speak, and this attached patch/fix is what
-I just come along--it's now working with snd-usb-usx2y 0.8.7.1. It avoids
-the new usx2y backend driver argument -c as you suggested, by deriving the
-soundcard index from the given playback device name (default is 0). I
-think it works for the most usual cases.
+Anyway, can you enable kobject debugging, and driver core debugging
+(both are config options now) and duplicate this?  If so, can we see the
+log messages that lead up to the oops?  It should give us a clue as to
+what is happening here.
 
-BTW, one can be also derive the pcm_name (as "hw:%d,2"), so there will be
-no need to give it explicitly on the jackd command line, you just give
-hw:n instead of hw:n,2 (which looks too magic to my taste :)
+thanks,
 
-Now,... some notes for your thoughts: IMO, and I think we must keep that
-in clear mind, is that (y)our new experimental usx2y_driver.c will be only
-accepted, officially and made into the JACK tree, if and only if we can
-manage to merge it into the current jack/drivers/alsa/alsa_driver.c.
-
-I might start working on that tentative merge ASAP. My will is that next
-time I propose this usx2y stuff to be included on the jack cvs tree, it
-will be under the form of a alsa_driver patch, not a cloned one (as it is
-right now). I hope I(we) get it in time for the next jack release ;)
-
-Cheers.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
-diff -up jack.0/drivers/usx2y/usx2y_driver.c
-jack.1/drivers/usx2y/usx2y_driver.c
---- jack.0/drivers/usx2y/usx2y_driver.c	2004-12-13 21:34:13.000000000 +0000
-+++ jack.1/drivers/usx2y/usx2y_driver.c	2004-12-15 22:01:57.000000000 +0000
-@@ -2087,6 +2087,10 @@ usx2y_driver_new (char *name, char *play
-
- 	usx2y_driver_t *driver;
-
-+	char *hwdep_colon;
-+	int   hwdep_card;
-+	char  hwdep_name[9];
-+
- 	printf ("experimental alsa driver ... %s|%s|%" PRIu32 "|%" PRIu32
- 		"|%" PRIu32"|%" PRIu32"|%" PRIu32 "|%s|%s|%s|%s\n",
- 		playing ? playback_usx2y_device : "-",
-@@ -2155,7 +2159,11 @@ usx2y_driver_new (char *name, char *play
- 	driver->xrun_count = 0;
- 	driver->process_count = 0;
-
--	snd_hwdep_open(&driver->hwdep_handle, "hw:1,1", O_RDWR);
-+	hwdep_card = 0;
-+	if ((hwdep_colon = strrchr(playback_usx2y_device, ':')) != NULL)
-+		sscanf(hwdep_colon, ":%d", &hwdep_card);
-+	snprintf(hwdep_name, sizeof(hwdep_name) - 1, "hw:%d,1", hwdep_card);
-+	snd_hwdep_open(&driver->hwdep_handle, hwdep_name, O_RDWR);
-
- 	if (playing) {
- 		if (snd_pcm_open (&driver->playback_handle,
-
-
-------=_20041216004109_38219
-Content-Type: application/x-gzip; name="jack-0.99.35-usx2y-fix.patch.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="jack-0.99.35-usx2y-fix.patch.gz"
-
-H4sICFPMwEEAA2phY2stMC45OS4zNS11c3gyeS1maXgucGF0Y2gAlVLRbpswFH2Gr7hDSgsFU0zK
-shJ160NfJlVdFWnawzYhD5zBRhxkhybd9vG7xiRQtZoyZMHl+Pgc7rkU1XIJpGib+zsJP1j+M4zO
-C1k9cKnOW7WLH809M1iYGw79J8cmhByjZcVRdEFoTOgUYppOL1I6DaP9Bb6+277vH+M5aCUQx2lE
-02T2TOv6GkgcvZkFr8HvnjQCxMZKmeBbcPOSSTgTbMUDMHVTs0cbbLCekDdwZqo57vmWoZbbgjdZ
-vq7XYo5gJTYA0INMFvM9sce0y+fLrwijeiORvgTX4buGy2rFxYbVwGrFwBhBGIYwUX/0cuB+8b6d
-xuAMNWpYo9eXS31AHdYX4QT6mG6xEt/hHejqG2ae9c3yhyrnkIJDkNmFSJMkmGGINLkMKP2/EC1D
-Im93shWYU4sBXUE0H+00cp1zpZ5s2sRSoshMaOuGC/dkTzdYyURRo5dTblMaUCeAD9ni5tPC04kP
-+Rs5nAvG7I5mhbjaSJmX0n2x/wBO01PPg1dXcPfx9tZDCUupnInlWAXt00mB3ieDY/cBSpjZusPU
-A1DVL74eQx4QoKaFSdH18EzmmAjGHocQ9N+rm+7n7MFvPXWNaNEmX3WSMGgeYuhl7b8UgFGLLQQA
-AA==
-------=_20041216004109_38219--
-
-
+greg k-h
 
 
 -------------------------------------------------------
