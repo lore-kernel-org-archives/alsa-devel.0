@@ -1,14 +1,14 @@
 From: Russell King <rmk+alsa@arm.linux.org.uk>
-Subject: Re: [PATCH] 2/3 Implement generic device DMA mapping support
-Date: Sun, 29 Feb 2004 22:42:14 +0000
+Subject: Re: [PATCH] 3/3 Implement generic device DMA mapping support
+Date: Sun, 29 Feb 2004 22:43:21 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040229224214.D17862@flint.arm.linux.org.uk>
-References: <20040229223820.C17862@flint.arm.linux.org.uk>
+Message-ID: <20040229224321.E17862@flint.arm.linux.org.uk>
+References: <20040229223820.C17862@flint.arm.linux.org.uk> <20040229224214.D17862@flint.arm.linux.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <20040229223820.C17862@flint.arm.linux.org.uk>; from rmk+alsa@arm.linux.org.uk on Sun, Feb 29, 2004 at 10:38:20PM +0000
+In-Reply-To: <20040229224214.D17862@flint.arm.linux.org.uk>; from rmk+alsa@arm.linux.org.uk on Sun, Feb 29, 2004 at 10:42:14PM +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,199 +25,166 @@ ISA ALSA devices on a PCI machine, and driver model devices on a non-
 PCI, non-ISA machine.  However, it needs more testing.  Can people
 on alsa-devel please test these patches.
 
-Convert PCI-based memory allocators to use the new driver model-based
-allocators.
+Convert remaining PCI-using functions to use the driver model functions.
 
 diff -urpN orig/sound/core/memalloc.c linux/sound/core/memalloc.c
---- orig/sound/core/memalloc.c	Sun Feb 29 18:32:23 2004
-+++ linux/sound/core/memalloc.c	Sun Feb 29 18:32:07 2004
-@@ -78,9 +78,9 @@ struct snd_mem_list {
- #define HACK_PCI_ALLOC_CONSISTENT
+--- orig/sound/core/memalloc.c	Sun Feb 29 19:37:15 2004
++++ linux/sound/core/memalloc.c	Sun Feb 29 19:39:29 2004
+@@ -146,11 +146,6 @@ static int compare_device(const struct s
+ 	case SNDRV_DMA_TYPE_ISA:
+ #endif
+ 		return a->dev.flags == b->dev.flags;
+-#ifdef CONFIG_PCI
+-	case SNDRV_DMA_TYPE_PCI:
+-	case SNDRV_DMA_TYPE_PCI_SG:
+-		return a->dev.pci == b->dev.pci;
+-#endif
+ #ifdef CONFIG_SBUS
+ 	case SNDRV_DMA_TYPE_SBUS:
+ 		return a->dev.sbus == b->dev.sbus;
+@@ -192,14 +187,6 @@ int snd_dma_alloc_pages(const struct snd
+ 		dmab->area = snd_malloc_isa_pages(size, &dmab->addr);
+ 		break;
+ #endif
+-#ifdef CONFIG_PCI
+-	case SNDRV_DMA_TYPE_PCI:
+-		dmab->area = snd_malloc_pci_pages(dev->dev.pci, size, &dmab->addr);
+-		break;
+-	case SNDRV_DMA_TYPE_PCI_SG:
+-		snd_malloc_sgbuf_pages(&dev->dev.pci->dev, size, dmab);
+-		break;
+-#endif
+ #ifdef CONFIG_SBUS
+ 	case SNDRV_DMA_TYPE_SBUS:
+ 		dmab->area = snd_malloc_sbus_pages(dev->dev.sbus, size, &dmab->addr);
+@@ -242,14 +229,6 @@ void snd_dma_free_pages(const struct snd
+ 		snd_free_isa_pages(dmab->bytes, dmab->area, dmab->addr);
+ 		break;
+ #endif
+-#ifdef CONFIG_PCI
+-	case SNDRV_DMA_TYPE_PCI:
+-		snd_free_pci_pages(dev->dev.pci, dmab->bytes, dmab->area, dmab->addr);
+-		break;
+-	case SNDRV_DMA_TYPE_PCI_SG:
+-		snd_free_sgbuf_pages(dmab);
+-		break;
+-#endif
+ #ifdef CONFIG_SBUS
+ 	case SNDRV_DMA_TYPE_SBUS:
+ 		snd_free_sbus_pages(dev->dev.sbus, dmab->bytes, dmab->area, dmab->addr);
+@@ -946,17 +925,6 @@ static int snd_mem_proc_read(char *page,
+ 		case SNDRV_DMA_TYPE_CONTINUOUS:
+ 			len += sprintf(page + len, "CONT [%x]", mem->dev.dev.flags);
+ 			break;
+-#ifdef CONFIG_PCI
+-		case SNDRV_DMA_TYPE_PCI:
+-		case SNDRV_DMA_TYPE_PCI_SG:
+-			if (mem->dev.dev.pci) {
+-				len += sprintf(page + len, "%s [%04x:%04x]",
+-					       mem->dev.type == SNDRV_DMA_TYPE_PCI ? "PCI" : "PCI-SG",
+-					       mem->dev.dev.pci->vendor,
+-					       mem->dev.dev.pci->device);
+-			}
+-			break;
+-#endif
+ #ifdef CONFIG_ISA
+ 		case SNDRV_DMA_TYPE_ISA:
+ 			len += sprintf(page + len, "ISA [%x]", mem->dev.dev.flags);
+diff -urpN orig/sound/core/pcm_memory.c linux/sound/core/pcm_memory.c
+--- orig/sound/core/pcm_memory.c	Sun Feb 29 19:38:37 2004
++++ linux/sound/core/pcm_memory.c	Sun Feb 29 19:33:33 2004
+@@ -538,10 +538,8 @@ int snd_pcm_lib_preallocate_pci_pages(st
+ 				      snd_pcm_substream_t *substream,
+ 				      size_t size, size_t max)
+ {
+-	substream->dma_device.type = SNDRV_DMA_TYPE_PCI;
+-	substream->dma_device.dev.pci = pci;
+-	setup_pcm_id(substream);
+-	return snd_pcm_lib_preallocate_pages1(substream, size, max);
++	return snd_pcm_lib_preallocate_dev_pages(pci ? &pci->dev : NULL,
++						 substream, size, max);
+ }
  
  /*
-- * A hack to allocate large buffers via pci_alloc_consistent()
-+ * A hack to allocate large buffers via dma_alloc_coherent()
-  *
-- * since pci_alloc_consistent always tries GFP_DMA when the requested
-+ * since dma_alloc_coherent always tries GFP_DMA when the requested
-  * pci memory region is below 32bit, it happens quite often that even
-  * 2 order of pages cannot be allocated.
-  *
-@@ -88,43 +88,41 @@ struct snd_mem_list {
-  * allocation will be done without GFP_DMA.  if the area doesn't match
-  * with the requested region, then realloate with the original dma_mask
-  * again.
-+ *
-+ * Really, we want to move this type of thing into dma_alloc_coherent()
-+ * so dma_mask doesn't have to be messed with.
-  */
- 
--static void *snd_pci_hack_alloc_consistent(struct pci_dev *hwdev, size_t size,
--				    dma_addr_t *dma_handle)
-+static void *snd_dma_hack_alloc_coherent(struct device *dev, size_t size,
-+					 dma_addr_t *dma_handle)
+@@ -562,14 +560,8 @@ int snd_pcm_lib_preallocate_pci_pages_fo
+ 					      snd_pcm_t *pcm,
+ 					      size_t size, size_t max)
  {
- 	void *ret;
--	u64 dma_mask, cdma_mask;
--	unsigned long mask;
-+	u64 dma_mask;
- 
--	if (hwdev == NULL)
--		return pci_alloc_consistent(hwdev, size, dma_handle);
--	dma_mask = hwdev->dma_mask;
--	cdma_mask = hwdev->consistent_dma_mask;
--	mask = (unsigned long)dma_mask && (unsigned long)cdma_mask;
--	hwdev->dma_mask = 0xffffffff; /* do without masking */
--	hwdev->consistent_dma_mask = 0xffffffff; /* do without masking */
--	ret = pci_alloc_consistent(hwdev, size, dma_handle);
--	hwdev->dma_mask = dma_mask; /* restore */
--	hwdev->consistent_dma_mask = cdma_mask; /* restore */
-+	if (dev == NULL)
-+		return dev_alloc_coherent(dev, size, dma_handle);
-+	dma_mask = dev->dma_mask;
-+	dev->dma_mask = 0xffffffff; /* do without masking */
-+	ret = dev_alloc_coherent(dev, size, dma_handle, GFP_KERNEL);
-+	dev->dma_mask = dma_mask; /* restore */
- 	if (ret) {
- 		/* obtained address is out of range? */
--		if (((unsigned long)*dma_handle + size - 1) & ~mask) {
-+		if (((unsigned long)*dma_handle + size - 1) & ~dma_mask) {
- 			/* reallocate with the proper mask */
--			pci_free_consistent(hwdev, size, ret, *dma_handle);
--			ret = pci_alloc_consistent(hwdev, size, dma_handle);
-+			dma_free_coherent(dev, size, ret, *dma_handle);
-+			ret = dma_alloc_coherent(dev, size, dma_handle, GFP_KERNEL);
- 		}
- 	} else {
- 		/* wish to success now with the proper mask... */
--		if (mask != 0xffffffffUL)
--			ret = pci_alloc_consistent(hwdev, size, dma_handle);
-+		if (dma_mask != 0xffffffffUL)
-+			ret = dma_alloc_coherent(dev, size, dma_handle, GFP_KERNEL);
- 	}
- 	return ret;
+-	snd_pcm_substream_t *substream;
+-	int stream, err;
+-
+-	for (stream = 0; stream < 2; stream++)
+-		for (substream = pcm->streams[stream].substream; substream; substream = substream->next)
+-			if ((err = snd_pcm_lib_preallocate_pci_pages(pci, substream, size, max)) < 0)
+-				return err;
+-	return 0;
++	return snd_pcm_lib_preallocate_dev_pages_for_all(pci ? &pci->dev : NULL,
++							 pcm, size, max);
  }
  
--/* redefine pci_alloc_consistent for some architectures */
--#undef pci_alloc_consistent
--#define pci_alloc_consistent snd_pci_hack_alloc_consistent
-+/* redefine dma_alloc_coherent for some architectures */
-+#undef dma_alloc_coherent
-+#define dma_alloc_coherent snd_dma_hack_alloc_coherent
- 
- #endif /* arch */
  #endif /* CONFIG_PCI */
-@@ -667,17 +665,7 @@ void *snd_malloc_pci_pages(struct pci_de
- 			   size_t size,
- 			   dma_addr_t *dma_addr)
+@@ -644,10 +636,8 @@ int snd_pcm_lib_preallocate_sg_pages(str
+ 				     snd_pcm_substream_t *substream,
+ 				     size_t size, size_t max)
  {
--	int pg;
--	void *res;
--
--	snd_assert(size > 0, return NULL);
--	snd_assert(dma_addr != NULL, return NULL);
--	for (pg = 0; PAGE_SIZE * (1 << pg) < size; pg++);
--	res = pci_alloc_consistent(pci, PAGE_SIZE * (1 << pg), dma_addr);
--	if (res != NULL) {
--		mark_pages(res, pg);
--	}
--	return res;
-+	return snd_malloc_dev_pages(pci ? &pci->dev : NULL, size, dma_addr);
+-	substream->dma_device.type = SNDRV_DMA_TYPE_PCI_SG;
+-	substream->dma_device.dev.pci = pci;
+-	setup_pcm_id(substream);
+-	return snd_pcm_lib_preallocate_pages1(substream, size, max);
++	return snd_pcm_lib_preallocate_dev_sg_pages(pci ? &pci->dev : NULL,
++						    substream, size, max);
  }
  
- /**
-@@ -699,17 +687,8 @@ void *snd_malloc_pci_pages_fallback(stru
- 				    dma_addr_t *dma_addr,
- 				    size_t *res_size)
+ /*
+@@ -668,14 +658,8 @@ int snd_pcm_lib_preallocate_sg_pages_for
+ 					     snd_pcm_t *pcm,
+ 					     size_t size, size_t max)
  {
--	void *res;
+-	snd_pcm_substream_t *substream;
+-	int stream, err;
 -
--	snd_assert(res_size != NULL, return NULL);
--	do {
--		if ((res = snd_malloc_pci_pages(pci, size, dma_addr)) != NULL) {
--			*res_size = size;
--			return res;
--		}
--		size >>= 1;
--	} while (size >= PAGE_SIZE);
--	return NULL;
-+	return snd_malloc_dev_pages_fallback(pci ? &pci->dev : NULL, size,
-+					     dma_addr, res_size);
+-	for (stream = 0; stream < 2; stream++)
+-		for (substream = pcm->streams[stream].substream; substream; substream = substream->next)
+-			if ((err = snd_pcm_lib_preallocate_sg_pages(pci, substream, size, max)) < 0)
+-				return err;
+-	return 0;
++	return snd_pcm_lib_preallocate_dev_sg_pages_for_all(pci ? &pci->dev : NULL,
++							    pcm, size, max);
  }
  
- /**
-@@ -726,24 +705,10 @@ void snd_free_pci_pages(struct pci_dev *
- 			void *ptr,
- 			dma_addr_t dma_addr)
+ #endif /* CONFIG_PCI */
+diff -urpN orig/include/sound/memalloc.h linux/include/sound/memalloc.h
+--- orig/include/sound/memalloc.h	Sun Feb 29 19:37:12 2004
++++ linux/include/sound/memalloc.h	Sun Feb 29 19:41:01 2004
+@@ -38,7 +38,6 @@ struct snd_dma_device {
+ 	int type;			/* SNDRV_MEM_TYPE_XXX */
+ 	union {
+ 		struct device *dev;	/* generic device */
+-		struct pci_dev *pci;	/* for PCI and PCI-SG types */
+ 		unsigned int flags;	/* GFP_XXX for continous and ISA types */
+ #ifdef CONFIG_SBUS
+ 		struct sbus_dev *sbus;	/* for SBUS type */
+@@ -53,9 +52,7 @@ struct snd_dma_device {
+ #define SNDRV_DMA_TYPE_UNKNOWN		0	/* not defined */
+ #define SNDRV_DMA_TYPE_CONTINUOUS	1	/* continuous no-DMA memory */
+ #define SNDRV_DMA_TYPE_ISA		2	/* ISA continuous */
+-#define SNDRV_DMA_TYPE_PCI		3	/* PCI continuous */
+ #define SNDRV_DMA_TYPE_SBUS		4	/* SBUS continuous */
+-#define SNDRV_DMA_TYPE_PCI_SG		5	/* PCI SG-buffer */
+ #define SNDRV_DMA_TYPE_DEV		6	/* generic device continuous */
+ #define SNDRV_DMA_TYPE_DEV_SG		7	/* generic device SG-buffer */
+ 
+@@ -66,8 +63,8 @@ struct snd_dma_device {
+ static inline void snd_dma_device_pci(struct snd_dma_device *dev, struct pci_dev *pci, unsigned int id)
  {
--	int pg;
--
--	if (ptr == NULL)
--		return;
--	for (pg = 0; PAGE_SIZE * (1 << pg) < size; pg++);
--	unmark_pages(ptr, pg);
--	pci_free_consistent(pci, PAGE_SIZE * (1 << pg), ptr, dma_addr);
-+	snd_free_dev_pages(pci ? &pci->dev : NULL, size, ptr, dma_addr);
+ 	memset(dev, 0, sizeof(*dev));
+-	dev->type = SNDRV_DMA_TYPE_PCI;
+-	dev->dev.pci = pci;
++	dev->type = SNDRV_DMA_TYPE_DEV;
++	dev->dev.dev = &pci->dev;
+ 	dev->id = id;
  }
- 
- 
--#if defined(__i386__)
--/*
-- * on ix86, we allocate a page with GFP_KERNEL to assure the
-- * allocation.  the code is almost same with kernel/i386/pci-dma.c but
-- * it allocates only a single page and checks the validity of the
-- * page address with the given pci dma mask.
-- */
--
- /**
-  * snd_malloc_pci_page - allocate a page in the valid pci dma mask
-  * @pci: pci device pointer
-@@ -757,45 +722,9 @@ void snd_free_pci_pages(struct pci_dev *
-  */
- void *snd_malloc_pci_page(struct pci_dev *pci, dma_addr_t *addrp)
- {
--	void *ptr;
--	dma_addr_t addr;
--	unsigned long mask;
--
--	mask = pci ? (unsigned long)pci->consistent_dma_mask : 0x00ffffffUL;
--	ptr = (void *)__get_free_page(GFP_KERNEL);
--	if (ptr) {
--		addr = virt_to_phys(ptr);
--		if (((unsigned long)addr + PAGE_SIZE - 1) & ~mask) {
--			/* try to reallocate with the GFP_DMA */
--			free_page((unsigned long)ptr);
--			/* use GFP_ATOMIC for the DMA zone to avoid stall */
--			ptr = (void *)__get_free_page(GFP_ATOMIC | GFP_DMA);
--			if (ptr) /* ok, the address must be within lower 16MB... */
--				addr = virt_to_phys(ptr);
--			else
--				addr = 0;
--		}
--	} else
--		addr = 0;
--	if (ptr) {
--		memset(ptr, 0, PAGE_SIZE);
--		mark_pages(ptr, 0);
--	}
--	*addrp = addr;
--	return ptr;
--}
--#else
--
--/* on other architectures, call snd_malloc_pci_pages() helper function
-- * which uses pci_alloc_consistent().
-- */
--void *snd_malloc_pci_page(struct pci_dev *pci, dma_addr_t *addrp)
--{
- 	return snd_malloc_pci_pages(pci, PAGE_SIZE, addrp);
- }
- 
--#endif
--
- #if 0 /* for kernel-doc */
- /**
-  * snd_free_pci_page - release a page
+ #endif
 
 
 -- 
