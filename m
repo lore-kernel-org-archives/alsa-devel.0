@@ -1,13 +1,12 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Dma query
-Date: Wed, 25 Feb 2004 11:52:55 +0100 (CET)
+From: "Gupta, Kshitij" <kshitij@ti.com>
+Subject: RE: Dma query
+Date: Wed, 25 Feb 2004 16:32:33 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402251141090.23913@denise.shiny.it>
-References: <F509E6111989D311B63700805FA761DA09F28FEB@DBDE01>
+Message-ID: <F509E6111989D311B63700805FA761DA09F28FED@DBDE01>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F28FEB@DBDE01>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,9 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
+To: 'Giuliano Pochini' <pochini@denise.shiny.it>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+Thanx for the details....let me just figure out the full flow and then come
+with some more queries ;)...
+
+-----Original Message-----
+From: Giuliano Pochini [mailto:pochini@denise.shiny.it]
+Sent: Wednesday, February 25, 2004 4:23 PM
+To: Gupta, Kshitij
+Cc: alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] Dma query
+
 
 
 
@@ -34,7 +44,8 @@ On Wed, 25 Feb 2004, Gupta, Kshitij wrote:
 > buf1    buf2    buf3     buf4  .... bufn
 >
 > In very simple terms playing an audio stream is reading from these buffers
-> and continuously dma'ing it to the audio device (let's assume we have a read
+> and continuously dma'ing it to the audio device (let's assume we have a
+read
 > and write register with the audio device).  And in this circulary linked
 > audio buffer the user fills the data and the driver empties it to the
 > device.
@@ -53,7 +64,6 @@ snd_sgbuf_get_addr(). There are many others, look at the sources :)
 
 --
 Giuliano.
-
 
 
 -------------------------------------------------------
