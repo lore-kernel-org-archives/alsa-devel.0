@@ -1,14 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd_pcm_commit asserts
-Date: Fri, 11 Jun 2004 12:23:54 +0200 (CEST)
+Subject: Re: Re: Mixer sanity
+Date: Fri, 11 Jun 2004 09:32:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406111217580.1785@pnote.perex-int.cz>
-References: <E1BYj3t-0001eU-00@mailer.emlix.com>
+Message-ID: <Pine.LNX.4.58.0406110931590.1785@pnote.perex-int.cz>
+References: <S28713AbUFJTKP/20040610191016Z+5619@nic.funet.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1BYj3t-0001eU-00@mailer.emlix.com>
+In-Reply-To: <S28713AbUFJTKP/20040610191016Z+5619@nic.funet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,46 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
+To: Juhana Sadeharju <kouhia@nic.funet.fi>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 Jun 2004, Nicolas H=FCppelsh=E4user wrote:
+On Thu, 10 Jun 2004, Juhana Sadeharju wrote:
 
-> > > pcm.c:5945: snd_pcm_mmap_commit: Assertion `offset =3D=3D *pcm->appl.=
-ptr %
-> > > pcm->buffer_size' failed.
-> >
-> > Did you call snd_pcm_mmap_begin() after xrun recovery again?
->=20
-> No I did not.  If I need to it takes me to the following questions:
->=20
-> (1) Does this mean in case of an xrun my mmap region got "unmapped"?
+> Perhaps we could have a simple mapping language which Alsalib would
+> interpret for calculating the mapping. The mapping scripts would be
+> read from files. Users could easily write their own mappings, and
+> map files could be submitted to Alsalib. The scripts would be
+> read and "compiled" to memory as interpreted code; something like
+> Renderman shader language scripts are "compiled" prior they get used.
 
-It is not valid more.
+The integrated lisp will do this job.
 
-> (2) Why does my second snd_pcm_mmap_commit call not fail every time then
->     but only "most of the time"?
-
-It's possible. The xrun recovery calls might shift/reset the writing=20
-position (appl_ptr).
-
-> (3) The mmap region obtained via the "re-begin" - does it match the regio=
-n
->     previously obtained --- is it the same as before?
-
-It's not guaranteed.
-
-> (4) In playback case - do I have to rewrite the data?
-
-After xrun recovery, you start with an empty buffer.
-
-> (5) What happens to the application frame pointer in xrun case?
-
-snd_pcm_prepare() or snd_pcm_drop() sync the appl_ptr to hw_ptr
-(thus it can be moved).
-
-=09=09=09=09=09=09Jaroslav
+						Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
