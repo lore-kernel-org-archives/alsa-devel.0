@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000661]: starting an applicaiton trying to access sound device locks device exclusive
-Date: Mon, 27 Dec 2004 15:45:48 +0100
-Message-ID: <1d21d1ae0b8aa3a421db5cb3db383bfc@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000120]: there is no output from speakers.
+Date: Mon, 27 Dec 2004 15:46:34 +0100
+Message-ID: <969492d082baa6734045282844d3c21d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EFC322B
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:45:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BB576244
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:46:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,54 +24,55 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=661> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=120> 
 ======================================================================
-Reported By:                soloturn99
-Assigned To:                perex
+Reported By:                pranavvyas
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   661
-Category:                   0_compilation problem_!!!
+Issue ID:                   120
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               debian sid
-Kernel Version:             2.6.9
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 suspended
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-21-2004 15:41 CET
-Last Modified:              12-27-2004 15:45 CET
+Date Submitted:             03-06-2004 10:31 CET
+Last Modified:              12-27-2004 15:46 CET
 ======================================================================
-Summary:                    starting an applicaiton trying to access sound
-device locks device exclusive
+Summary:                    there is no output from speakers.
 Description: 
-an application should not be by default be allowed to take the sound device
-exlusively. if you start more than one applications, it should be possible
-to hear one of them or both, but the application must not block.
+i have intel original 845 chipset board with on board sound card.my pc
+loaded with red het linux 9.0 . i want to supported sound driver for this.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 15:01 
+ tiwai - 03-08-04 11:51 
 ----------------------------------------------------------------------
-The default behavior of OSS emulation was already changed to non-blocking
-mode on CVS.
+more detailed information please.
 
-But the ALSA native isn't not.  This behavior is explicitly written in the
-API reference.  It's not a bug at all.  Just use non-blocking mode to
-avoid it.
+----------------------------------------------------------------------
+ tiwai - 11-22-04 18:42 
+----------------------------------------------------------------------
+no response from reporter.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 15:41 soloturn99     New Issue                                    
-11-21-04 15:41 soloturn99     Distribution              => debian sid      
-11-21-04 15:41 soloturn99     Kernel Version            => 2.6.9           
-11-22-04 15:01 tiwai          Status                   assigned => resolved
-11-22-04 15:01 tiwai          Resolution               open => fixed       
-11-22-04 15:01 tiwai          Note Added: 0002506                          
-12-27-04 15:45 tiwai          Status                   resolved => closed  
+03-06-04 10:31 pranavvyas     New Issue                                    
+03-08-04 11:51 tiwai          Note Added: 0000530                          
+03-09-04 10:51 perex          Assigned To              perex =>            
+03-09-04 10:51 perex          Category                 0_compilation problem_!!!
+=> PCI - intel8x0
+11-22-04 18:42 tiwai          Status                   assigned => resolved
+11-22-04 18:42 tiwai          Resolution               open => suspended   
+11-22-04 18:42 tiwai          Assigned To               => tiwai           
+11-22-04 18:42 tiwai          Note Added: 0002509                          
+12-27-04 15:46 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
