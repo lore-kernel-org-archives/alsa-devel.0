@@ -1,13 +1,14 @@
-From: "Vrihad Shoonya" <vrihad@softhome.net>
-Subject: Re: Is there plans to support SiS7019?
-Date: Tue, 17 Aug 2004 10:34:57 +0530 (IST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: RE: Upgrade driver to 1.0.6, memory allocation?
+Date: Thu, 19 Aug 2004 09:49:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <34342.192.168.0.10.1092719097.squirrel@dev.datamax.co.in>
-References: <200408190732.i7J7WcoW020750@www3.pobox.sk>
+Message-ID: <XFMail.20040819094952.pochini@shiny.it>
+References: <505401c48598$4a891ec0$72cb010a@mail2world.com>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408190732.i7J7WcoW020750@www3.pobox.sk>
+In-Reply-To: <505401c48598$4a891ec0$72cb010a@mail2world.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,88 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de, tiwai@suse.de
+To: Eliot Blennerhassett <bigblen@icqmail.com>
+Cc: linux@blennerhassett.gen.nz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-> These errors are not related to changes you made.
->
-> unregister_sound_special
-> register_sound_special
->
-> These are definied in soundcore module.
->
-> I think you need this in modules.conf too
->
-> alias char-major-116 snd
->
-> before these lines
-> alias snd-card-0 snd-trident
-> alias sound-slot-0 snd-trident
+On 19-Aug-2004 Eliot Blennerhassett wrote:
 
-Done. Now more unresolved symbols.
+> with the upgrade to 1.0.6, my alsa driver broke. (asihpi)
+> Now I'm trying to put it together again, and could do with some tips...
+> Mostly it still contained lots of easy to fix snd_magic_cast() but
+> Can anybody confirm that the following update is the 'correct' thing to
+> do?
+> 
+> (My) old code:
+> call snd_malloc_pages_fallback in the open callback.
+> 
+> New code:
+> call snd_pcm_lib_malloc_pages() in the hw_params callback
+> 
+> and call snd_pcm_lib_preallocate_pages_for_all() in the sound card pcm
+> init function (in my case snd_card_asihpi_pcm()
+> ================================
+> By default according to pcm_memory.c, only a maximum of 4 substreams are
+> allowed.
 
-insmod: unresolved symbol snd_pcm_new
-insmod: unresolved symbol snd_card_set_pm_callback
-insmod: unresolved symbol snd_seq_device_new
-insmod: unresolved symbol snd_hidden_kcalloc
-insmod: unresolved symbol snd_ctl_notify
-insmod: unresolved symbol snd_dma_alloc_pages
-insmod: unresolved symbol snd_verbose_printk
-insmod: unresolved symbol snd_util_memhdr_new
-insmod: unresolved symbol snd_hidden_vfree
-insmod: unresolved symbol snd_pcm_format_width
-insmod: unresolved symbol snd_card_pci_resume
-insmod: unresolved symbol snd_util_mem_avail
-insmod: unresolved symbol snd_pcm_set_sync
-insmod: unresolved symbol snd_pcm_lib_free_pages
-insmod: unresolved symbol __snd_util_memblk_new
-insmod: unresolved symbol __snd_util_mem_free
-insmod: unresolved symbol snd_ctl_add
-insmod: unresolved symbol snd_device_new
-insmod: unresolved symbol snd_pcm_lib_malloc_pages
-insmod: unresolved symbol snd_pcm_period_elapsed
-insmod: unresolved symbol snd_ac97_suspend
-insmod: unresolved symbol snd_mpu401_uart_interrupt
-insmod: unresolved symbol snd_card_proc_new
-insmod: unresolved symbol snd_pcm_lib_preallocate_pages
-insmod: unresolved symbol snd_hidden_kfree
-insmod: unresolved symbol snd_pcm_hw_constraint_minmax
-insmod: unresolved symbol snd_pcm_suspend_all
-insmod: unresolved symbol __snd_util_mem_alloc
-insmod: unresolved symbol snd_iprintf
-insmod: unresolved symbol snd_device_free
-insmod: unresolved symbol snd_pcm_lib_preallocate_free_for_all
-insmod: unresolved symbol snd_pcm_set_ops
-insmod: unresolved symbol snd_hidden_vmalloc
-insmod: unresolved symbol snd_util_memhdr_free
-insmod: unresolved symbol snd_ac97_mixer
-insmod: unresolved symbol snd_pcm_lib_ioctl
-insmod: unresolved symbol snd_card_register
-insmod: unresolved symbol snd_pcm_format_signed
-insmod: unresolved symbol snd_ctl_new1
-insmod: unresolved symbol snd_ac97_resume
-insmod: unresolved symbol snd_pcm_sgbuf_ops_page
-insmod: unresolved symbol snd_ac97_bus
-insmod: unresolved symbol snd_card_free
-insmod: unresolved symbol snd_pcm_lib_preallocate_pages_for_all
-insmod: unresolved symbol snd_card_new
-insmod: unresolved symbol snd_dma_free_pages
-insmod: unresolved symbol snd_card_pci_suspend
-insmod: unresolved symbol snd_mpu401_uart_new
-modprobe: failed to load module snd-trident
+By default it preallocates memory for the first 4
+substreams only. _malloc_pages() will allocate memory on
+demand for the other substreams. You can do your own
+preallocation routine if you think this default is not good.
+If you want to "prepare" the substrem for use with
+snd_pcm_lib_malloc_pages() without actually allocating
+memory call _preallocate_pages() with size==0.
+You can change the size of preallocated memory from
+userspace via /proc interface.
 
-I know that all modules to satisfy these symbols are compiled and
-installed. I think my modules.conf file is not perfect. Can I get
-a sample moudles.conf file? Does any such sample exist at alsa
-site?
+Btw I would move the check for (substream->number < 4)
+from snd_pcm_lib_preallocate_pages1() to
+snd_pcm_lib_preallocate_pages_for_all() in order to allow
+the driver to preallocate memory for any ss it wishes.
 
-Thanks.
 
--vrihad
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
