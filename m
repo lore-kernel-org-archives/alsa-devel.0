@@ -1,16 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000507]: Soundcard cannot play more than one thing at a time (but Stereo!)
-Date: Sun, 19 Sep 2004 17:34:34 +0200 (CEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] rme32 segfault fix
+Date: Sun, 19 Sep 2004 22:10:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040919153434.CC4292500C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040919201017.GA512@tuba.home>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 372242C6
-	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 17:34:39 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id ED0B225EB8
-	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 17:34:34 +0200 (MEST)
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 472022CA
+	for <alsa-devel@alsa-project.org>; Sun, 19 Sep 2004 22:07:58 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,42 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000507
-======================================================================
-Reported By:                DashX
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     507
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
-======================================================================
-Date Submitted:             09-19-2004 17:34 CEST
-Last Modified:              09-19-2004 17:34 CEST
-======================================================================
-Summary:                    Soundcard cannot play more than one thing at a time (but Stereo!)
-Description: 
-Sound Card:   SoundMAX Integrated Digital Audio
-HWBrowser says 82801DB (ICH4) AC'97 Audio Controller
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-2x xmms with esound = works
-2x xmms with alsa = doesent work because of audio device in use.
-======================================================================
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-19-04 17:34 DashX          New Bug                                      
-09-19-04 17:34 DashX          Distribution              => Fedora Core 2   
-09-19-04 17:34 DashX          Kernel Version            => 2.6.8-1.521     
-======================================================================
+Hi,
+
+looks like rme32 in halfduplex mode is broken for playback (since v1.0.6).
+You will get a segfault without this patch :(
+
+Changes:
+- disables buffer prefill in halfduplex mode, which fixes segmentation fault
+  of rme32 for playback in halfduplex mode
+
+Signed-Off by Martin Langer <martin-langer@gmx.de>
+
+
+martin
+
+
+
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="rme32-halfduplex-fix.patch"
+
+--- alsa-kernel/pci/rme32.c.ORIGINAL	Sun Sep 19 21:39:28 2004
++++ alsa-kernel/pci/rme32.c	Sun Sep 19 21:40:04 2004
+@@ -1123,7 +1123,7 @@
+ 	}
+ 	
+ 	/* prefill playback buffer */
+-	if (cmd == SNDRV_PCM_TRIGGER_START) {
++	if ((cmd == SNDRV_PCM_TRIGGER_START) && (rme32->fullduplex_mode)) {
+ 		snd_pcm_group_for_each(pos, substream) {
+ 			s = snd_pcm_group_substream_entry(pos);
+ 			if (s == rme32->playback_substream) {
+
+--2oS5YaxWCcQjTEyO--
 
 
 -------------------------------------------------------
