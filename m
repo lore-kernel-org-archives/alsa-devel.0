@@ -1,64 +1,58 @@
-From: Rick Knight <rick@rlknight.com>
-Subject: Re: Me again
-Date: Fri, 09 Apr 2004 07:58:38 -0700
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <4076BA1E.6020202@rlknight.com>
-References: <4076A358.3050800@nc.rr.com>
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: periods,packets and driver patterns not to mention patience!!!
+Date: Fri, 9 Apr 2004 16:13:57 +0100 (BST)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040409151357.81599.qmail@web25109.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <4076A358.3050800@nc.rr.com>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: David Barron <dlbarron@nc.rr.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-David Barron wrote:
+ Hi All,
+   i'm using an open source VoIP application with the
+alsa driver. My card is the onboard intel8x0.
+   My problem is figuring out the patterns I am
+getting with the alsa driver when transmitting
+packets.
 
-> Just to see if it was me doing something wrong I've installed Mandrake 
-> 10 and Alsa, both of which use alsa and neither of which are producing 
-> any sound in my speakers.
-> Since oss works, I'd have to say there is a problem in the 
-> snd-intel8x0 that hasn't been resolved since at least 1.0.2.
-> I've also done some serious searching on google and it doesn't look 
-> like I'm the only person having a problem.  There are hundreds of hits 
-> for alsa intel8x0 from people with trouble and no resolution.
->
->
->
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IBM Linux Tutorials
-> Free Linux tutorial presented by Daniel Robbins, President and CEO of
-> GenToo technologies. Learn everything from fundamentals to system
-> administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-> _______________________________________________
-> Alsa-user mailing list
-> Alsa-user@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-user
+For instance when I use the GSM codec with a packets
+size of 80 msecs and 132 bytes, packets are
+transmitted at alternate intervals of 64/96 msecs.
 
-David,
+When I configure the codec so the packet size is 128
+bytes(power-of-two) and still 80 msecs, packets are
+still transmitted at 64/96 msecs.
 
-I too have an Intel8x0 (ICH2) on-board sound card. After trying for 
-weeks to get it working, I finally just turned it off in bios and 
-installed a SoundBlaster Live. Had it working in about 10 minutes.  I 
-bought the SoundBlaster for $6.00 plus $3.00 on eBay. If the Intel8x0 
-ALSA driver is ever fixed I can simply turn it back on, but I don't 
-think that's likely. As someone explained it to me, the Intel8x0 is kind 
-of like a winmodem style soundcard and will probably never work 
-correctly under ALSA. So, save yourself some headache and maybe some 
-gray hair and go buy a SoundBlaster.
+Now when i configure the codec so packet size is 132
+bytes and 64 msces, packets are transmitted every 64
+msces.
+Given that the alsa driv interrupts at period
+boundaries(which are defined in bytes), the tests i
+have carried out prove otherwise..i.e that the driver
+operates in millisecond power-of-two based periods.
+??
+Help appreciated,
 
-Rick Knight
-(rick@rlknight.com)
+Brian.
 
+
+	
+	
+		
+____________________________________________________________
+Yahoo! Messenger - Communicate instantly..."Ping" 
+your friends today! Download Messenger Now 
+http://uk.messenger.yahoo.com/download/index.html
 
 
 -------------------------------------------------------
