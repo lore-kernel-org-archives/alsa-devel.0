@@ -1,19 +1,18 @@
-From: Mark Knecht <markknecht@attbi.com>
+From: Roger Williams <raw@qux.com>
 Subject: Re: hdsp multiface pci.
-Date: 19 Jan 2003 12:21:32 +0000
+Date: 19 Jan 2003 17:24:53 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042978893.1341.108.camel@Godzilla>
+Message-ID: <m3ptqskcay.fsf@grouper.coelacanth.com>
 References: <3E2A952E.6060305@boosthardware.com>
 	<1042985569.1663.33.camel@satellite.undata.org>
 	<3E2AC45F.3070601@boosthardware.com>
 	<1042992464.1649.55.camel@satellite.undata.org>
 	<3E2AD34D.6070308@boosthardware.com>
 	<m3d6mt9is6.fsf@grouper.coelacanth.com>
+	<1042978893.1341.108.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m3d6mt9is6.fsf@grouper.coelacanth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,76 +21,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roger Williams <raw@qux.com>
+To: Mark Knecht <markknecht@attbi.com>
 Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2003-01-19 at 17:00, Roger Williams wrote:
-> >>>>> Patrick Shirkey <pshirkey@boosthardware.com> writes:
-> 
->   > Can we route multiple software outputs to the same hardware output?
-> 
-> Yes.  For instance, when recording 8 tracks, I'll generate a monitor
-> mix (for JACK's outputs) to outputs 1 & 2 like this:
-> 
-> amixer cset numid=5 26,26,16384
-> amixer cset numid=5 28,26,16384
-> amixer cset numid=5 30,26,16384
-> amixer cset numid=5 32,26,16384
-> amixer cset numid=5 27,27,16384
-> amixer cset numid=5 29,27,16384
-> amixer cset numid=5 31,27,16384
-> amixer cset numid=5 33,27,16384
-> 
-> -- 
+>>>>> Mark Knecht <markknecht@attbi.com> writes:
 
-Roger,
-   OK, I just don't get it yet. This is from the Alsa page on the HDSP
-cards:
+  >> amixer cset numid=5 26,26,16384
+  >> amixer cset numid=5 28,26,16384
+  >> amixer cset numid=5 30,26,16384
+  >> amixer cset numid=5 32,26,16384
+  >> amixer cset numid=5 27,27,16384
+  >> amixer cset numid=5 29,27,16384
+  >> amixer cset numid=5 31,27,16384
+  >> amixer cset numid=5 33,27,16384
 
-*************
-Since the Multiface only have 18 i/o channels, the channel mapping in
-the matrix mixer is different from the Digiface when operating at 48kHz
-or lower.
+  > ... is the use of 26 and 27 on the output part of the command
+  > telling the hardware to route whatever it is that you're mixing to
+  > the line out connectors on your box?
 
-[Ed. This is a routing table]
+Yes.  (Not outputs 1 & 2, as I erroneously stated.)
 
-input_source: 0-7 (analog), 16-23 (adat), 24-25 (spdif), 26-51
-(playback)
-output_source: 0-7 (analog), 16-23 (adat) 24-25 (spdif), 26-27 (line
-out)
-*************
+  > Second, where do the inputs numbered 26-33 come from.
 
+As far as the Multiface's analogue I/O goes, channels appear to be
+numbered like this:
 
-In your example above, is the use of 26 and 27 on the output part of the
-command telling the hardware to route whatever it is that you're mixing
-to the line out connectors on your box? 
+Multiface inputs 1-8               = amixer source channels 0-7
+Multiface outputs 1-8              = amixer destination channels 0-7
+Multiface line (headphone) outputs = amixer destination channels 26-27
+alsa_pcm:playback_1-8              = amixer source channels 26-33
 
-Second, where do the inputs numbered 26-33 come from. I can't figure
-this part out. Are they outputs from the HDSP hardware mixer? Or do they
-mean from physical inputs? (somehow renumbered) This is the part I don't
-get right now.
+So amixer cset numid=5 0,26,16384" routes the signal from input 0 to
+the left headphone channel.  And "amixer cset numid=5 0,0,16384"
+routes the signal from input 0 to output 0.  And
 
-I presume that your use of 16384 is to reduce volume so that after
-summing 4 channels you do not create output clipping if all the inputs
-hit maximum volume at the same time?
+    for i in 0 2 4 6; do amixer cset numid=5 $i,0,16384; done
+    for i in 1 3 5 7; do amixer cset numid=5 $i,1,16384; done
 
+will route inputs 1+3+5+7 to output 1, and inputs 2+4+6+8 to output 2.
 
-QUESTION - If you wanted to route input 0 directly to an output, could
-you use a command like:
+On playback "amixer cset numid=5 26,0,16384" routes the playback_1
+source to Multiface output 1, and
 
-amixer cset numid=5 0,26,16384
-amixer cset numid=5 1,27,16384
+    for i in 26 28 30 32; do amixer cset numid=5 $i,0,16384; done
+    for i in 27 29 31 33; do amixer cset numid=5 $i,1,16384; done
 
+routes playback_1+3+5+7 to output 1 and playback_2+4+6+8 to output 2.
 
+  > I presume that your use of 16384 is to reduce volume so that after
+  > summing 4 channels you do not create output clipping if all the inputs
+  > hit maximum volume at the same time?
 
-I think my HDSP 9652 will have different numbering since I have a
-different number of I/O's on the card, but I want to understand your
-example since it seems like a good one.
+Yes.  This is just a submix for headphone monitoring, so I route it to
+outputs 26 and 27.  This is a monitor submix I use when recording with
+ecasound.  If I were using Ardour, I'd set up a monitor submix in
+Ardour itself, and route outputs 1 and 2 to the headphone output with
 
-Thanks,
-Mark
+    amixer cset numid=5 26,26,65535
+    amixer cset numid=5 27,27,65535
 
+  > If you wanted to route input 0 directly to an output, could
+  > you use a command like:
+
+  > amixer cset numid=5 0,26,16384
+  > amixer cset numid=5 1,27,16384
+
+This routes hardware inputs 1 and 2 to the headphone outputs.
+
+-- 
+Roger Williams <raw@qux.com>
+Qux Tool & Die, Middleborough, Massachusetts
+// Omne tulit punctum qui misquit utile dulci //
 
 
 -------------------------------------------------------
