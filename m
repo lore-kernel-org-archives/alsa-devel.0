@@ -1,12 +1,14 @@
-From: Amaury Jacquot <sxpert@esitcom.org>
-Subject: experience with Creative MP3+ usb
-Date: Sat, 13 Dec 2003 20:12:41 +0100
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: experience with Creative MP3+ usb
+Date: Sun, 14 Dec 2003 01:38:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDB64A9.7060009@esitcom.org>
+Message-ID: <20031214003848.GB7877@fliwatut.scifi>
+References: <3FDB64A9.7060009@esitcom.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3FDB64A9.7060009@esitcom.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,26 +20,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-I am using a Creative Labs MP3+ usb sound device.
-mobo is VIA EPIA 800, USB is UHCI
-Alsa is 1.0rc2
+Hallo,
+Amaury Jacquot hat gesagt: // Amaury Jacquot wrote:
 
-The things works great, it's not even muted on startup (huh ?)
-I am running a home built music player using gstreamer 0.7.2 (source 
-available on request). Using the oss emulation layer
+> I am using a Creative Labs MP3+ usb sound device.
+> mobo is VIA EPIA 800, USB is UHCI
+> Alsa is 1.0rc2
+> 
+> The things works great, it's not even muted on startup (huh ?)
 
-now, for the issues.
-everytime I close the sound device, I get the following
+Does it have a (supported) mixer?
 
-"usb_control/bulk_msg: timeout"
-
-any has an explanation ?
-can it be avoided ?
-
-sincerely
-Amaury
-
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
