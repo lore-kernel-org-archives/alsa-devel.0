@@ -1,14 +1,16 @@
-From: Joshua N Pritikin <vishnu@pobox.com>
-Subject: Re: HDSP 96/52
-Date: Wed, 30 Apr 2003 11:21:11 +0530
+From: Nathaniel Gray <n8gray@caltech.edu>
+Subject: Re: More info on the intel8x0 vs. Dell APM problem
+Date: Wed, 30 Apr 2003 00:04:52 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030430055111.GB571@always.joy.eth.net>
-References: <20030427080603.GB641@always.joy.eth.net> <1051452034.3415.15.camel@localhost.localdomain>
+Message-ID: <200304300004.52320.n8gray@caltech.edu>
+References: <200304291630.47676.n8gray@caltech.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200304291630.47676.n8gray@caltech.edu>
 Content-Disposition: inline
-In-Reply-To: <1051452034.3415.15.camel@localhost.localdomain>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +19,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <markknecht@attbi.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Apr 27, 2003 at 07:00:34AM -0700, Mark Knecht wrote:
->    As a check, does you card identify itself this way:
-> 
-> [root@localhost root]# lspci
-> <SNIP>
-> 00:0e.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall
-> DSP (rev 68)
+On Tuesday 29 April 2003 04:30 pm, Nathaniel Gray wrote:
+>
+> I imagine that maybe the alsa intel8x0 driver keeps time differently
+> than the oss driver, which is why it gets disrupted by reads from
+> /proc/apm when the oss driver doesn't.  I've seen a report that
+> configuring the kernel to enable interrupts during APM calls
+> (CONFIG_APM_ALLOW_INTS=y) solves the problem.  Here's a link:
+> http://groups.yahoo.com/group/linux-dell-laptops/message/15701
+>
+> I'm recompiling my kernel right now and I'll report back on whether
+> or not it helps.
 
-Yah:
-
-00:0c.0 Multimedia audio controller: Xilinx, Inc.: Unknown device 3fc5 (rev 68)
-
->    I'm most interested in what revision you have? 68?
-
-Yah, hex 0x68.
-
->    Anyway, I share your frustrations, but I've pretty much given up.
-> It's been months now since I've had any Alsa working. Linux is now just
-> an email environment for me. So much for taking advice on which card to
-> buy!! ;-)
-
-Have you complained to RME recently?  Maybe they aren't giving
-the Linux people the needed support.  i'll send an email in
-that direction today.
+No luck.  :-(
 
 -- 
-Victory to the Divine Mother!!         after all,
-  http://sahajayoga.org                  http://why-compete.org
+>>>-- Nathaniel Gray -- Caltech Computer Science ------>
+>>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+
 
 
 -------------------------------------------------------
