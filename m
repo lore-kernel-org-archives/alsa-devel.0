@@ -1,11 +1,14 @@
-From: biji kodok <biji2biji@yahoo.com>
-Subject: how to unsubscribe...
-Date: Fri, 13 Aug 2004 09:18:37 -0700 (PDT)
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: CVS server down?
+Date: Fri, 13 Aug 2004 15:05:01 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040813161837.75684.qmail@web61003.mail.yahoo.com>
+Message-ID: <1092423901.3450.46.camel@mindpipe>
+References: <1092346220.11134.0.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-848452721-1092413917=:74838"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1092346220.11134.0.camel@mindpipe>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,29 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
---0-848452721-1092413917=:74838
-Content-Type: text/plain; charset=us-ascii
+On Thu, 2004-08-12 at 17:30, Lee Revell wrote:
+> rlrevell@mindpipe:~/cvs/alsa$ cvs update
+> cvs [update aborted]: unrecognized auth response from
+> cvs.alsa-project.org: M PserverBackend::PserverBackend() Connect
+> (Connection refused)
+> 
 
-do you know how-to:
-unscurscribe my email from this mailing list and then subscribe my another email...
- 
-please.. help me ..  
+I am still getting the same error.  Has anonymous CVS access been
+discontinued?  If so, can I submit my SSH key and get authenticated
+access?
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
---0-848452721-1092413917=:74838
-Content-Type: text/html; charset=us-ascii
+Lee
 
-<DIV>do you know how-to:</DIV>
-<DIV>unscurscribe my email from this mailing list and then subscribe my another email...</DIV>
-<DIV>&nbsp;</DIV>
-<DIV>please..&nbsp;help me .. &nbsp;</DIV><p>__________________________________________________<br>Do You Yahoo!?<br>Tired of spam?  Yahoo! Mail has the best spam protection around <br>http://mail.yahoo.com 
---0-848452721-1092413917=:74838--
 
 
 -------------------------------------------------------
