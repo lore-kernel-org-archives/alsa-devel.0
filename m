@@ -1,7 +1,7 @@
 From: Ian Forde <ian@duckland.org>
 Subject: Broken nforce3 support in ALSA on amd64?
-Date: Sat, 26 Feb 2005 17:45:45 -0800
-Message-ID: <1109468746.11523.20.camel@colgate3.iforde.net>
+Date: Sat, 26 Feb 2005 17:47:10 -0800
+Message-ID: <1109468831.11523.21.camel@colgate3.iforde.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
