@@ -1,16 +1,13 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Tue, 31 Aug 2004 10:52:28 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000476]: ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
+Date: Tue, 31 Aug 2004 20:16:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408310852.i7V8qSKk023731@www4.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <20040831181651.0F7DC3F019@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www4.pobox.sk (www4.pobox.sk [212.5.216.14])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 40697266
-	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 10:52:29 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96181232
+	for <alsa-devel@alsa-project.org>; Tue, 31 Aug 2004 20:16:51 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,32 +16,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: atlka@pg.gda.pl, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Why not create some kind of sound server (again sound server :-)) with
-alsa-lib API on both sides. Some combination of dmix and dsnoop.
-I don't think that most of users needs low latency provided by dmix.
-Most of users need software mixing, something to be able to do
-upmixing (down mixing) from 2 -> 5.1 and ability to record in more
-then 1 app and maybe bass/treble (equalizer). This server can use hw
-mixing too, if it is provided by sound card. This can be like virtual
-soundcard, but in userspace.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000476
+======================================================================
+Reported By:                babayaga
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     476
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-31-2004 01:01 CEST
+Last Modified:              08-31-2004 20:16 CEST
+======================================================================
+Summary:                    ALSA driver does not work with VIA VT8233 [AC97 Audio Controller]
+Description: 
+Please, see the full report at
+http://qa.mandrakesoft.com/show_bug.cgi?id=10859
+======================================================================
 
-Still, you will be able to route output from this sound server to dmix
-plugin.
+----------------------------------------------------------------------
+ tiwai - 08-31-2004 12:27 CEST 
+----------------------------------------------------------------------
+Above all, try the latest ALSA driver.
+If still not work, try dxs_support=2 module option for snd-via82xx.
+Also, ac97_quirk=1 module option might help in such a case.
 
-I think, you can do this with alsa-lib API. Actually I started look
-after this, but I don't have enought free time.
+Make sure that the volume is unmuted and adjusted.  Attach
+/etc/asound.state for debugging if the above doesn't work.
+Also, don't load via82cxx_audio module at the same time.
+You set it as sound-slot-0 in /etc/modprobe.conf, which might
+cause conflicts.
 
-Later softmidi synth can by added too. If someone need something
-better (low latency, ...), he can use hw directly.
+----------------------------------------------------------------------
+ babayaga - 08-31-2004 20:16 CEST 
+----------------------------------------------------------------------
+Tried that all - in vain. Attaching new conf-files, maybe, I am missing
+smth?
+Version of snd-via82xx is as supplied with kernel 2.6.8 (2.6.8.1-2mdk more
+exactly) I do not know how to get the version otherwise...
+What else can I do?
+Thanks!
 
-Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
- najvacsi slovensky freemail=0A=0A=0A
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-31-04 01:01 babayaga       New Bug                                      
+08-31-04 12:27 tiwai          Bugnote Added: 0001670                       
+08-31-04 20:10 babayaga       File Added: asound.state                     
+08-31-04 20:11 babayaga       File Added: modprobe.conf                    
+08-31-04 20:11 babayaga       File Added: modules.conf                     
+08-31-04 20:16 babayaga       Bugnote Added: 0001674                       
+======================================================================
 
 
 -------------------------------------------------------
