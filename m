@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
-Date: Wed, 23 Mar 2005 16:00:45 +0100
-Message-ID: <f63eb66fe7ec0d8baadc54588aeb883e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000219]: Only pcm-2 (headphone) volume control works, others muted(?)
+Date: Wed, 23 Mar 2005 16:06:12 +0100
+Message-ID: <1355c8d9daab0f287766f3f786db4a29@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F562211
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:00:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DA323289
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:06:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,59 +23,61 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=219> 
 ======================================================================
-Reported By:                soulhunter
+Reported By:                JonB
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   981
+Issue ID:                   219
 Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian and Gentoo.
-Kernel Version:             2.6.11
+Distribution:               Slackware 9.1
+Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             03-12-2005 01:48 CET
-Last Modified:              03-23-2005 16:00 CET
+Date Submitted:             04-17-2004 12:23 CEST
+Last Modified:              03-23-2005 16:06 CET
 ======================================================================
-Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
+Summary:                    Only pcm-2 (headphone) volume control works, others
+muted(?)
 Description: 
->From kernel version 2.6.9 and up I don't get any sound.  I currently use
-2.6.8.1 (where the sound works just fine).
+Tried various applications from CLI and Dropline GNOME 2.6.0 to get sound
+output. Dell Inspiron 5150 laptop with 82801DBICH4.
 
-I even tried to compile 2.6.11 with only snd_intel8x0 as module: nothing.
+Master volume control, PCM, CD, Video have no effect on sound volume - no
+sound output from external speakers. Plugin headphones and can vary sound
+through headphones using the headphone control (also known as pcm-2 in
+aumix).
 
-I have no idea what is going on, yes I looked at the volume settings, and
-unmuted the master and pcm channels.  The sound application seems to be
-"playing", but I get no sound.
+Playing any CD with the GNOME CD Player does not produce any sound through
+headphones or speakers.
 
-My motherboard is a Chaintech VNF250.
+Playing through headphones - only the headphone control has any effect.
+The master control has no effect.
+
+Have included output from various parts of the system including lspci,
+asound.state and some information in /proc/asound/card0.
+
+Sound was working in 1.0.2 (except PCM control was intermittent) -
+internal speakers worked, master volume control worked, etc.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 13:03 
+ jdthood - 03-23-05 16:06 
 ----------------------------------------------------------------------
-Please attach /etc/asound.state and the contents of
-/proc/asound/card0/codec97#0/* files (please use attachments).
-
-----------------------------------------------------------------------
- jdthood - 03-23-05 16:00 
-----------------------------------------------------------------------
-This could have something to do with the index numbers assigned to the
-drivers.  Please send the output of /proc/asound/cards.  Are you sure you
-are directing sound output to the right card?
+Try switching on 'External Amplifier'.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 01:48 soulhunter     New Issue                                    
-03-12-05 01:48 soulhunter     Distribution              => Debian and Gentoo.
-03-12-05 01:48 soulhunter     Kernel Version            => 2.6.11          
-03-16-05 13:03 tiwai          Note Added: 0003953                          
-03-23-05 16:00 jdthood        Note Added: 0004168                          
+04-17-04 12:23 JonB           New Issue                                    
+04-17-04 12:23 JonB           File Added: intel8x0                         
+04-17-04 12:23 JonB           Distribution              => Slackware 9.1   
+04-17-04 12:23 JonB           Kernel Version            => 2.4.24          
+03-23-05 16:06 jdthood        Note Added: 0004171                          
 ======================================================================
 
 
