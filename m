@@ -1,13 +1,16 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000391]: Built-in sound card not seen.
-Date: Fri, 16 Jul 2004 11:55:26 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: Re: build error in pcm_native.c
+Date: Fri, 16 Jul 2004 13:56:54 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716095526.DDE8526008@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200407161356.54551@goldspace.net>
+References: <200407152209.21287@goldspace.net> <200407161325.45484@goldspace.net> <s5hpt6w70c6.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 39A9F254
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 11:55:27 +0200 (MEST)
+In-Reply-To: <s5hpt6w70c6.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,76 +19,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I have updated all the alsa CVS tree (. CVS dir). Yesterday there was some updating
+of the file under problem.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000391
-======================================================================
-Reported By:                PhilTR
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     391
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.4.20-31.9
-======================================================================
-Date Submitted:             07-16-2004 00:21 CEST
-Last Modified:              07-16-2004 11:55 CEST
-======================================================================
-Summary:                    Built-in sound card not seen.
-Description: 
-I can't say that this is really a bug although its got me bugged. I
-installed a new mother board (GA-8IPE 1000 Pro) which has a built-in
-RealTek sound card:
-02:01.0 Ethernet controller: Realtek Semiconductor Co., Ltd.
-RTL-8139/8139C/8139
-C+ (rev 10)
-        Subsystem: Realtek Semiconductor Co., Ltd. RT8139
-        Flags: bus master, medium devsel, latency 32, IRQ 5
-        I/O ports at 9000 [size=256]
-        Memory at fb004000 (32-bit, non-prefetchable)       [size=256]
-        Capabilities: [50] Power Management version 2
+Andrew
 
-Linux dutifully loaded w/o incident and after loggin in I received the
-following error message: 'Couldn't open mixer device /dev/sound/mixer" 
+======= On Friday 16 July 2004 13:44, Takashi Iwai wrote: =======
+At Fri, 16 Jul 2004 13:25:45 +0400,
+Andrew Gaydenko wrote:
+> 
+> Takashi, yes I did. 
 
-I've been receiving help at <a
-href="http://www.linuxquestions.org/questions/showthread.php?s=&threadid=203196&perpage=15&pagenumber=1">LinuxQuestions.org<a/>
-but, to get to the point, I'm wondering if anyone here has a fix? I've
-downloaded "alsa-xxxx-1.0.5" (firmware is: 1.0.4) Set-up proceeded w/o
-incident. Running "alsaconf" got me: "No supported PnP or PCI card dound"
-and "No legacy drivers found." 
+And did you update both alsa-driver and alsa-kernel trees?
+The configure script was changed to detect the old remap_page_range().
 
-Your kind patience is appreciated. philtr (rabne@pipeline.com)
 
-======================================================================
+Takashi
 
-----------------------------------------------------------------------
- tiwai - 07-16-2004 11:55 CEST 
-----------------------------------------------------------------------
-You can't find any 'Realtek' sound card from lspci.
-It's an AC97 codec chip, and doesn't appear.
-The 'sound chip' should be an Intel ICH, if the information above
-is correct.
+> 
+> Andrew
+> ======= On Friday 16 July 2004 13:22, you wrote: =======
+> At Thu, 15 Jul 2004 22:09:21 +0400,
+> Andrew Gaydenko wrote:
+> > 
+> > Hi,
+> > 
+> > Have tried to build drivers from current CVS and have got an error shown below.
+> > Must I supply some additional info?
+> 
+> Did you run cvscompile?
+> 
+> 
+> Takashi
+> 
+> 
 
-Try alsaconf script.  If it fails, you likely disabled the sound
-support on BIOS.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-16-04 00:21 PhilTR         New Bug                                      
-07-16-04 00:21 PhilTR         Kernel Version            => 2.4.20-31.9     
-07-16-04 11:55 tiwai          Bugnote Added: 0001440                       
-======================================================================
+-------------------------------------------------------
+This SF.Net email is sponsored by BEA Weblogic Workshop
+FREE Java Enterprise J2EE developer tools!
+Get your free copy of BEA WebLogic Workshop 8.1 today.
+http://ads.osdn.com/?ad_id=4721&alloc_id=10040&op=click
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
 
 
 -------------------------------------------------------
