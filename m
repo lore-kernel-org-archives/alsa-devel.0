@@ -1,15 +1,17 @@
-From: Ryan Pavlik <rpav@mephle.com>
-Subject: Re: Simple alsa sequencer question
-Date: Tue, 28 Oct 2003 12:52:21 -0800
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: jack plugin?
+Date: Tue, 28 Oct 2003 21:06:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031028125221.38f31c82.rpav@mephle.com>
-References: <E1AEWlF-0005EN-00@sc8-sf-list2.sourceforge.net>
-	<200310282020.40649.plcl@telefonica.net>
+Message-ID: <20031028210623.36867d0d.mista.tapas@gmx.net>
+References: <20031027175032.1d0760f3.mista.tapas@gmx.net>
+	<s5h7k2p61f1.wl@alsa2.suse.de>
+	<s5hekwx44ht.wl@alsa2.suse.de>
+	<s5hbrs1443p.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200310282020.40649.plcl@telefonica.net>
+In-Reply-To: <s5hbrs1443p.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,43 +20,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 28 Oct 2003 20:20:40 +0100
-Pedro Lopez-Cabanillas <plcl@telefonica.net> wrote:
+On Tue, 28 Oct 2003 19:19:38 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-> El Martes, 28 de Octubre de 2003 17:30, Ryan Pavlik escribi=F3:
-> > Clemens Ladisch <clemens@ladisch.de> wrote:
-> > > The event timestamps are set yo the current time of the queue. Your
-> > > queue isn't running, so its current time is zero.
-> > >
-> > > Call snd_seq_start_queue(seq, queue, NULL) (and snd_seq_drain_output).
-> >
-> > Hmm, nope... I've tried this in various combinations along with
-> > tempo-setting and position-setting events sent to the queue, with no
-> > avail.  I'm still getting 0 0.
->=20
-> Try:
-> 	snd_seq_open(&seq, "default", SND_SEQ_OPEN_DUPLEX, 0);
->=20
-> Opening with SND_SEQ_OPEN_INPUT, any call to snd_seq_start_queue will ret=
-urn a=20
-> -22 error code.
+> also works for me (although bunch of debug messages appear - fixed on
+> cvs now).
+> 
+> sorry, your problem is not reproducable on my machine.
+> possibly depending on JACK version?
+> 
 
-YES!  Thank you! :-)  Now, why didn't I try that.  Both of these
-combined did the trick.
 
-Anyhow, thanks a ton, solved a very nagging problem.  My ruby-alsa
-module should soon have a useful sequencer. ;-)
+Hmm, let me ask some questions, then i can maybe give a better report
+afterwards?
 
-ttyl,
+What formats are alsa-plugins usually? [.so, .sa]
+What format is used by the jack plugin
+Which paths does libalsa look at when loading a plugin?
+How does the makefile of the jack plugin determine, where the plug goes?
 
---=20
-Ryan Pavlik <rpav@mephle.com>
-
-"Maybe it's the unfocused, blind, murderous rage." - 8BT
+Regards
+Florian Schmidt
 
 
 -------------------------------------------------------
