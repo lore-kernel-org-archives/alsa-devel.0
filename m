@@ -1,12 +1,9 @@
-From: Daniel Caujolle-Bert <segfault@club-internet.fr>
-Subject: aRe: ALSA vs OSS/free
-Date: Fri, 08 Mar 2002 02:17:13 +0100
-Message-ID: <3C881119.DF467BE6@club-internet.fr>
-References: <Pine.GSO.3.96.1020307153329.26422B-100000@yin.interaccess.com>
-Reply-To: segfault@club-internet.fr
+From: "Jan P." <jipekau@yahoo.com>
+Subject: mtpav MIDI and MOTU PocketExpress
+Date: Thu, 7 Mar 2002 20:39:33 -0800 (PST)
+Message-ID: <20020308043933.83976.qmail@web9104.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +12,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: kevin@kevindumpscore.com, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: tweakoz@pacbell.net, alsa-users@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Kevin Conder wrote:
-> 
-> Kai Vehmanen wrote on Thu, 07 Mar 2002 05:41:34 -0800:
-> 
-> > Why is ALSA the better alternative? That's a question I've been
-> > asked quite a few times recently. Below is a reply I just wrote
-> > to ecasound-list. I'd be very interested in hearing your comments
-> > on this issue. Have I missed some important points?
-> 
->         OSS has one crucial advantage over ALSA: documentation!
-> Perhaps one day ALSA will have something like the Programmer's Guide to
-> OSS. Check it out at http://www.opensound.com/pguide/
+Michael && ALSAList:
 
-	And this is a nice troll.
+I am trying to get your MTPAV drivers to work with my
+MOTU PocketExpress on the parallel port. The short of
+it is, sending works, but receiving doesn't. I am on
+IRQ5. I tried IRQ7 but this causes sporadic hangs. I
+understand the drivers were written for the TimePiece,
+but if I need to make some changes for the
+PocketExpress, no problem... 
 
-	Do you want to write this documentation, i guess developper
-team will help you.
+so I am testing with:
 
-	I'm amazed how some people are so strong with their mouth !
+utils/seq sender 72.0
+and 
+utils/seq decoder
 
-Bye.
--- 
-Daniel, F1RMB.
+When I run sender, the B Out port LED on the
+PocketExpress lights briefly (some data received!).
+/proc/asound/card1/midi0 confirms about 10 bytes
+transmitted.. But hooking a MIDI keyboard up, the
+Input LEDs light on the PocketExpress, but no bytes
+are received (in card1/midi0, or using seq decoder).
 
-              -=- Daniel Caujolle-Bert -=- segfault@club-internet.fr -=-
-                        -=- f1rmb@f1rmb.ampr.org (AMPR NET) -=-
+I am new to MIDI with ALSA, so perhaps I am doing
+something wrong.. 
+
+Interestingly, running: 
+aconnect 72.0 72.0, 
+
+causes an immediate hang. 
+
+so;
+
+I uncommented the printk("irqh... line in the IRQ
+handler for mtpav.c, and monitored the kernel message
+log... the irq handler isnt called at all, even when
+im hitting keys on the keyboard. only when i call
+aconnect 72.0 72.0, do i get a brief burst of irqs
+before the crash.
+
+anyone know what's up with this? i thought the irq
+handler is always connected to the parallel port. how
+can aconnect influence its behavior, and why am i not
+getting any receive bytes? ideas?
+
+
+thanks,
+jan p.
+
+
+__________________________________________________
+Do You Yahoo!?
+Try FREE Yahoo! Mail - the world's greatest free email!
+http://mail.yahoo.com/
 
 _______________________________________________
 Alsa-devel mailing list
