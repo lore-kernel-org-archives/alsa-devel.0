@@ -1,16 +1,14 @@
-From: Pavel Machek <pavel@suse.cz>
-Subject: Re: 2.6.10-mm1: oops during swsusp in ac97 support
-Date: Sun, 9 Jan 2005 22:58:46 +0100
-Message-ID: <20050109215846.GA1525__29091.4190155037$1105308150$gmane$org@elf.ucw.cz>
-References: <20050103182842.GA1420@elf.ucw.cz> <s5h4qhxgnl9.wl@alsa2.suse.de> <20050104212702.GA1456@elf.ucw.cz> <20050109211611.GA1325@elf.ucw.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
+Date: Mon, 10 Jan 2005 03:20:09 +0100
+Message-ID: <643c73f94fb5ae1704823c282801c41f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from amd.ucw.cz (gprs215-6.eurotel.cz [160.218.215.6])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 411CA247
-	for <alsa-devel@alsa-project.org>; Sun,  9 Jan 2005 23:00:14 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <20050109211611.GA1325@elf.ucw.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07A1C178
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 03:20:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,36 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: kernel list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-> > > > I have via82xx soundcard, and since 2.6.10-mm1, I get an oops in
-> > > > snd_ac97_resume. Does 
-> > > 
-> > > What happened exactly? :)
-> > 
-> > During suspend, at one point devices are resumed. I get NULL pointer
-> > dereference during that phase.
-> > 
-> > I'll mail you a screenshot in a private mail. I just hope you'll be
-> > able to decipher it, it is pretty hard to read. (If not let me know, I
-> > think I can read most of it but no numbers).
-> > 
-> > 2.6.10-mm1 is broken, 2.6.10-currentbk is not.
-> 
-> 2.6.10-mm2 is ok, so problem went away.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
+======================================================================
+Reported By:                abonilla
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   800
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             01-10-2005 03:20 CET
+Last Modified:              01-10-2005 03:20 CET
+======================================================================
+Summary:                    Sound is Corrupted or terribe quality.
+Description: 
+Sound goes out just like if the jack was not propperly plugged. bad Sound
+Quality.
+======================================================================
 
-Sorry, I spoke too fast and did not have sound configured
-in... (Screenshots will follow in private mail).
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-10-05 03:20 abonilla       New Issue                                    
+01-10-05 03:20 abonilla       Distribution              => Debian          
+01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
+======================================================================
 
-								Pavel
 
--- 
-People were complaining that M$ turns users into beta-testers...
-...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
 
 
 -------------------------------------------------------
