@@ -1,75 +1,45 @@
-From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: [PATCH] fget_light/fput_light for ioctls (fixed)
-Date: Thu, 6 Jan 2005 18:18:10 +0200
-Message-ID: <20050106161810.GE25955@mellanox.co.il>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106145103.GB25898@mellanox.co.il>
-Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
+From: Petr Vandrovec <vandrove@vc.cvut.cz>
+Subject: Re: [PATCH] macros to detect existance of unlocked_ioctl and ioctl_compat
+Date: Thu, 6 Jan 2005 17:35:59 +0100
+Message-ID: <20050106163559.GG5772@vana.vc.cvut.cz>
+References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106140636.GE25629@mellanox.co.il> <20050106145356.GA18725@infradead.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262891AbVAFQQf@vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262900AbVAFQgH@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20050106145103.GB25898@mellanox.co.il>
+In-Reply-To: <20050106145356.GA18725@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Andrew Morton <akpm@osdl.org>
-Cc: Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+To: Christoph Hellwig <hch@infradead.org>, "Michael S. Tsirkin" <mst@mellanox.co.il>, Andrew Morton <akpm@osdl.org>, Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
-Sorry, that patch had a typo. Here's an updated version.
+On Thu, Jan 06, 2005 at 02:53:56PM +0000, Christoph Hellwig wrote:
+> On Thu, Jan 06, 2005 at 04:06:36PM +0200, Michael S. Tsirkin wrote:
+> > > It should be, unless there's some problem.  In maybe a week or so.
+> > 
+> > To make life bearable for out-of kernel modules, the following patch
+> > adds 2 macros so that existance of unlocked_ioctl and ioctl_compat
+> > can be easily detected.
+> 
+> That's not the way we're making additions.  Get your code merged and
+> there won't be any need to detect the feature.
 
->>> Quoting r. Michael S. Tsirkin (mst@mellanox.co.il)
+When Greg made sysfs GPL only, I've asked whether it is possible to merge
+vmmon/vmnet in (and changing its license, of course).  Answer on LKML was 
+quite clear: no, you are not interested in having vmmon/vmnet in Linux 
+kernel as you do not believe that they are usable for anything else than VMware.  
 
-With new unlocked_ioctl and ioctl_compat, ioctls can now
-be as fast as read/write.  So lets use fget_light/fput_light there,
-to get some speedup in common case on SMP.
+So please tell me what I can do to satisfy you?  You do not want our modules
+in kernel tree, and you do not want to allow us to detect kernel interface
+easily.  Of course we can use autoconf-like scripts we are using for
+example to detect pml4/pgd vs. pgd/pud vs. pgd/pmd/pte vs. pmd/pte only,
+but each time you can detect feature by looking at flags and not by trying
+to build one source after another detection is simpler and more reliable.
 
-mst
+BTW, vmmon will still require register_ioctl32_conversion as we are using
+(abusing) it to be able to issue 64bit ioctls from 32bit application.  I
+assume that there is no supported way how to issue 64bit ioctls from 32bit
+aplication anymore after you disallow system-wide translations to be registered
+by modules.
 
-Signed-off-by: Michael s. Tsirkin <mst@mellanox.co.il>
-
-diff -rup linux-2.6.10/fs/compat.c linux-2.6.10-ioctls/fs/compat.c
---- linux-2.6.10/fs/compat.c	2005-01-06 17:54:13.000000000 +0200
-+++ linux-2.6.10-ioctls/fs/compat.c	2005-01-06 20:15:44.407259408 +0200
-@@ -431,8 +431,9 @@ asmlinkage long compat_sys_ioctl(unsigne
- 	struct file *filp;
- 	int error = -EBADF;
- 	struct ioctl_trans *t;
-+	int fput_needed;
- 
--	filp = fget(fd);
-+	filp = fget_light(fd, &fput_needed);
- 	if (!filp)
- 		goto out;
- 
-@@ -476,7 +479,7 @@ asmlinkage long compat_sys_ioctl(unsigne
-  do_ioctl:
- 	error = sys_ioctl(fd, cmd, arg);
-  out_fput:
--	fput(filp);
-+	fput_light(filp, fput_needed);
-  out:
- 	return error;
- }
-diff -rup linux-2.6.10/fs/ioctl.c linux-2.6.10-ioctls/fs/ioctl.c
---- linux-2.6.10/fs/ioctl.c	2005-01-06 17:54:13.000000000 +0200
-+++ linux-2.6.10-ioctls/fs/ioctl.c	2005-01-06 20:34:09.329285728 +0200
-@@ -80,8 +83,9 @@ asmlinkage long sys_ioctl(unsigned int f
- 	struct file * filp;
- 	unsigned int flag;
- 	int on, error = -EBADF;
-+	int fput_needed;
- 
--	filp = fget(fd);
-+	filp = fget_light(fd, &fput_needed);
- 	if (!filp)
- 		goto out;
- 
-@@ -154,7 +158,7 @@ asmlinkage long sys_ioctl(unsigned int f
- 			break;
- 	}
-  out_fput:
--	fput(filp);
-+	fput_light(filp, fput_needed);
-  out:
- 	return error;
- }
+						Best regards,
+							Petr Vandrovec
