@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Fri, 18 Mar 2005 02:07:05 +0100
-Message-ID: <51f5a2ecf63c32a305e93188f8f329e5@bugtrack.alsa-project.org>
+Date: Fri, 18 Mar 2005 02:43:46 +0100
+Message-ID: <86e92a71629e63b9527643717e8c6188@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CF3E233
-	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 02:07:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E088922D
+	for <alsa-devel@alsa-project.org>; Fri, 18 Mar 2005 02:43:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
 Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-18-2005 02:07 CET
+Last Modified:              03-18-2005 02:43 CET
 ======================================================================
 Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
@@ -100,37 +100,30 @@ versions.
 ======================================================================
 
 ----------------------------------------------------------------------
- Q3Man - 03-17-05 03:20 
-----------------------------------------------------------------------
-Well, I placed about a dozen lines similar to:
-snd_printk(KERN_INFO "before snd_card_new check\n");
-
-and recompiled/reinstalled/rebooted for good measure. I get absoultly _no_
-output from the printk's in dmesg. I get nothing in my kernel logs. In
-fact, nothing in any of the logs at all. I even changed the
-alsa_card_emu10k1x_init function like this:
-static int __init alsa_card_emu10k1x_init(void)
-{
-        int err;
-        snd_printk(KERN_INFO "init alsa_card\n");
-        if ((err = pci_module_init(&driver)) > 0) {
-                snd_printk(KERN_INFO "pci_module_init failed!\n");
-                return err;
-        }
-        return 0;
-}
-
-and I don't see either message at any point. I'm guessing that the error
-has to be generated before the module even gets loaded. Is there a file
-that loads before snd-emu10k1x.ko when I modprobe it? Is something else
-linked to it to load the module that I can take a look at?
-
-----------------------------------------------------------------------
  fmoraes - 03-18-05 02:07 
 ----------------------------------------------------------------------
 Can you make sure you are running the right version of the modified module?
 You may want to use insmod instead of modprobe if you still can't get it
 show the printk messages. They should appear.
+
+----------------------------------------------------------------------
+ Q3Man - 03-18-05 02:43 
+----------------------------------------------------------------------
+Eureka! 
+
+I'm still at work, but I played around with it and insmod over ssh and it
+is dying when it loads the mixer, not the midi!
+
+        if ((err = snd_emu10k1x_mixer(chip)) < 0) {
+                snd_card_free(card);
+                return err;
+        }
+
+I'll have some time to play around in that function tonight and see
+exactly what line is failing. 
+
+Thanks for pointing out insmod vs modprobe to me - I'm not too experienced
+in kernel driver debugging.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -161,6 +154,7 @@ Date Modified  Username       Field                    Change
 03-17-05 01:45 fmoraes        Note Added: 0003976                          
 03-17-05 03:20 Q3Man          Note Added: 0003977                          
 03-18-05 02:07 fmoraes        Note Added: 0003988                          
+03-18-05 02:43 Q3Man          Note Added: 0003989                          
 ======================================================================
 
 
