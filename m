@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000811]: 1.0.8-rc2 base/treble adjustment does not work with "tone" button enabled
-Date: Thu, 13 Jan 2005 12:52:13 +0100
-Message-ID: <06d06ce8c3f4303de99ee0707edc04ac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Thu, 13 Jan 2005 12:53:32 +0100
+Message-ID: <cb3e70d04e38f856094f114695f0bece@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0E0B334
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 12:52:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A61B6334
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 12:53:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=811> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
 ======================================================================
-Reported By:                vinyvat
-Assigned To:                tiwai
+Reported By:                pcmcginty
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   811
-Category:                   PCI - emu10k1
+Issue ID:                   748
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.6.8.1
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-12-2005 18:58 CET
-Last Modified:              01-13-2005 12:52 CET
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              01-13-2005 12:53 CET
 ======================================================================
-Summary:                    1.0.8-rc2 base/treble adjustment does not work with
-"tone" button enabled
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
 Description: 
-With 1.8.0-rc2, using any alsa mixer apps (alsamixer, kmix,
-gnome-alsa-mixer), the base/treble adjustment does nothing even when I
-make sure the "Tone" button is clicked.
-
-Reproduce:
-/etc/init.d/alsa start
-alsaplayer # to play some music
-alsamixer
-
-adjust base/treble - no difference in sound, even when "tone" is enabled.
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- vinyvat - 01-13-05 06:22 
+ JonathanL - 01-12-05 23:23 
 ----------------------------------------------------------------------
-Please close this bug. Cannot reproduce any more with 1.0.8-rc2 ( maybe was
-too late at night ? )
+here it is ...
+
+----------------------------------------------------------------------
+ tiwai - 01-13-05 12:53 
+----------------------------------------------------------------------
+Hmm, the hw parameters look ok, too.  So, the problem is in somewhere
+different...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 18:58 vinyvat        New Issue                                    
-01-12-05 18:58 vinyvat        Kernel Version            => 2.6.8.1         
-01-13-05 06:22 vinyvat        Note Added: 0003181                          
-01-13-05 12:52 tiwai          Status                   new => resolved     
-01-13-05 12:52 tiwai          Resolution               open => not an issue
-01-13-05 12:52 tiwai          Assigned To               => tiwai           
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.7                    
+12-27-04 19:26 pcmcginty      File Added: codec97#0_2.6.10                    
+12-27-04 19:28 pcmcginty      Note Added: 0002973                          
+01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
+01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
+01-12-05 16:01 JonathanL      File Added: kernel-2.6.7                     
+01-12-05 16:02 JonathanL      File Added: kernel-2.6.10_alsa-cvs                
+   
+01-12-05 16:13 JonathanL      Note Added: 0003174                          
+01-12-05 20:45 tiwai          Note Added: 0003178                          
+01-12-05 23:23 JonathanL      File Added: sub0                             
+01-12-05 23:23 JonathanL      Note Added: 0003180                          
+01-13-05 12:53 tiwai          Note Added: 0003184                          
 ======================================================================
 
 
