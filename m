@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000644]: CMI8738 - Line-in as bass conflicts with line-as rear.
-Date: Thu, 18 Nov 2004 19:04:20 +0100
-Message-ID: <4014050a23b5159c9972fa8f6fd8e160@bugtrack.alsa-project.org>
+From: Luuk van Dijk <lvd@mndmttr.nl>
+Subject: Re: full/half duplex support
+Date: 18 Nov 2004 19:06:45 +0100
+Message-ID: <1100801204.490.4.camel@wonder>
+References: <courier.4198D349.0001155D@outpost.mndmttr.nl>
+	 <s5hpt2bqosz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C619225
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:04:20 +0100 (MET)
+In-Reply-To: <s5hpt2bqosz.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,96 +18,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2004-11-18 at 14:17, Takashi Iwai wrote:
+> At Mon, 15 Nov 2004 17:03:21 +0100,
+> Luuk van Dijk wrote:
+> > 
+> Sorry, the situation is not clear for me.
+> Do you mean substream as the ALSA term?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=644> 
-======================================================================
-Reported By:                jborges
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   644
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Kurumin 3.2 (a Brazilian flavor of Knoppix) with kde
-3.2.3
-Kernel Version:             Kernel 2.4.25-klg
-======================================================================
-Date Submitted:             11-12-2004 00:09 CET
-Last Modified:              11-18-2004 19:04 CET
-======================================================================
-Summary:                    CMI8738 - Line-in as bass conflicts with line-as
-rear.
-Description: 
-I'm using Kurumin 3.2 (a Brazilian flavor of Knoppix) in a ASUS P4B533 with
-CMI8738 sound chip, processor is Pentium IV 3.0 GHz, 512 RAM and 120
-Maxtor Ultra Dma Hard Disk.
+yes. 
 
-Also I use Kde 3.2.3 on Kernel 2.4.25-klg.
+> So, you have two or more substreams assigned to a single PCM device,
+> and the DMAs are free-running when the substreams are unused?
 
-This Linux installation works in a dual-boot with windows xp.
+yes, one capture and one playback substream, both of 2,4,6 or 8
+channels.  when one of the two is not used the dma is free running and I
+disable its irq's.  the problem is: they have to be started and stopped
+simultaneously and cannot be paused.
 
-The sound works fine (all 6 channels respond very well)under windows xp or
-98.
+i think the problem would be solved if the mid layer would just accept
+the current pointer, and adjust its communication to userspace based on
+that instead of trying to force the dma to sync with its idea of what it
+should be.  but I could be talking out of my *ss here, since I'm
+relatively new to alsa.  (this is my first alsa driver :-)
 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Trying to configure my sound to work I noticed some problems with
-alsamixer:
-
-1 - As I can see, there is a conflict for the output. I can't see Line-In
-been used to output as bass and the same Line-In used to output as rear
-(L/R).
-
-2 - I think Line-In would be used to output as Rear (L/R) and Mic to
-output as Bass/Center.
-
-What is happening is that: when one uses a 6 channel system there is no
-sound in the conflicted Line-In as bass and Mic as center. The little
-sound that goes there is squeezed from Line-In as rear. The sound in bass
-and center is full of noise. Impossible to listen.
-
-I took some snapshots (2) to show you what I'm talking about. Please take
-a look on them in the attached files.
-
-Julio Borges
-Rio de Janeiro - Brazil
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 11-18-04 18:16 
-----------------------------------------------------------------------
-When 'Line-In as Bass' is turned off and 'Line-In As Rear' on, does 5.1
-output work fine?  Or still problems?
-
-----------------------------------------------------------------------
- jborges - 11-18-04 19:04 
-----------------------------------------------------------------------
-Please take a look at attached file. Notice that both Line-as Rear and
-Line-In as Bass are not enabled. I have no means to turn it on or off.
-Also notice in the above result of amixer that most of the controls are
-set to mono.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-04 00:09 jborges        New Issue                                    
-11-12-04 00:09 jborges        File Added: sound-cm8738-alsamixergui.png         
-          
-11-12-04 00:09 jborges        Distribution              => Kurumin 3.2 (a
-Brazilian flavor of Knoppix) with kde 3.2.3
-11-12-04 00:09 jborges        Kernel Version            => Kernel 2.4.25-klg
-11-18-04 18:16 tiwai          Note Added: 0002455                          
-11-18-04 19:04 jborges        Note Added: 0002458                          
-======================================================================
-
+thanks
+	Luuk
 
 
 
