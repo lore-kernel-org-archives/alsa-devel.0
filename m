@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
-Date: Sun, 12 Dec 2004 14:01:54 +0100
-Message-ID: <02fd9bf55504aae4376d2de5daf3b8a9@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
+Date: Sun, 12 Dec 2004 14:02:47 +0100
+Message-ID: <34321cccf021f24771ccdcd527fddf8f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5DFB22AF
-	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 14:01:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAF602AF
+	for <alsa-devel@alsa-project.org>; Sun, 12 Dec 2004 14:02:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=435> 
 ======================================================================
-Reported By:                Grazy
+Reported By:                snaketails
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   609
-Category:                   PCI - azx
+Issue ID:                   435
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.8
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             10-27-2004 00:10 CEST
-Last Modified:              12-12-2004 14:01 CET
+Date Submitted:             08-12-2004 02:50 CEST
+Last Modified:              12-12-2004 14:02 CET
 ======================================================================
-Summary:                    No Mixer control for Ouput on CMI9880
+Summary:                    No current support for the ICH6R & ALC880 devices
 Description: 
-The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
-But there is only one mixer control for "Capture" and two mute switch for
-"Line" and "Mic". But nothing to control the output volume.
+As this is a new mobo, there is no driver configuration that supports this
+newer buss interface devices, so there is no sound from the mobo.
+The inability for the mobo to run SATA under Linux is not an issue here,
+as I am using the SiS SATA driver, only issue is sound
 ======================================================================
 
 ----------------------------------------------------------------------
- cltien - 11-08-04 21:02 
+ snaketails - 08-23-04 06:33 
 ----------------------------------------------------------------------
-The Windows driver modify the DMA buffer directly, the driver also do SRC
-conversion there.
+Is there any way I could help with this driver?
 
-I once post patch like this, but it was rejected because ALSA team doen't
-accept DMA modification like this. I modify the core/pcm_lib.c and found
-that only OSS application can work well in this way, ALSA application
-still don't have mixer.
-
-I suggest that forget the mixer and tune the speaker volume.
+I will test any mods that have been done, unfortunatly I guess I don't
+know enough about doing C programming (only what I did for school in the
+late '80s)
 
 ----------------------------------------------------------------------
- jdthood - 12-12-04 14:01 
+ jdthood - 12-12-04 14:02 
 ----------------------------------------------------------------------
-Bug also reported at http://bugs.debian.org/281546
+"Crackling sound" also reported at http://bugs.debian.org/281546
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 00:10 Grazy          New Issue                                    
-10-27-04 00:10 Grazy          Distribution              => Debian          
-10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
-10-27-04 02:36 cltien         Note Added: 0002270                          
-11-08-04 09:22 madsend        Note Added: 0002310                          
-11-08-04 09:25 madsend        Issue Monitored: madsend                     
-11-08-04 21:02 cltien         Note Added: 0002313                          
-12-12-04 14:01 jdthood        Note Added: 0002814                          
+08-12-04 02:50 snaketails     New Issue                                    
+08-12-04 02:50 snaketails     Distribution              => Gentoo          
+08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
+08-12-04 07:32 pzad           Note Added: 0001551                          
+08-13-04 02:03 snaketails     Note Added: 0001560                          
+08-16-04 06:01 snaketails     Note Added: 0001569                          
+08-18-04 04:28 snaketails     Note Added: 0001575                          
+08-18-04 11:53 tiwai          Note Added: 0001576                          
+08-23-04 06:33 snaketails     Note Added: 0001610                          
+12-12-04 14:02 jdthood        Note Added: 0002815                          
 ======================================================================
 
 
