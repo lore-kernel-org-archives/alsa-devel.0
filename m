@@ -1,11 +1,8 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: Why CONFIG_USB = y is default?
-Date: Thu, 13 Mar 2003 13:41:58 +0200
+From: Immanuel Litzroth <immanuell@enfocus.be>
+Subject: make install for alsa-lib 0.9.1
+Date: 13 Mar 2003 12:55:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E706E86.EE4D2528@srr.ro>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <m2llzja3c4.fsf@enfocus.be>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,19 +15,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- 
- I was looking in the driver at Makefile.conf and I see : 
-CONFIG_USB = y. 
-I did not mention anything about USB to ./configure and I have no USB
-card. 
-I did however specify manually two drivers to be built (cs46xx and
-opti92x-ad1848), so what's USB doing here?
 
--- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
+I use stow for package management and I noticed that 
+./configure --prefix=/usr
+make 
+make install prefix=/usr/stow/alsa-lib
+still installs the libraries in /usr/lib. Previous versions worked
+installed in the correct place. Is this a bug?
+Immanuel
+
+--
+I have always been fascinated by those who want to work.
+Prunesquallor - Ghormenghast
+Immanuel Litzroth
+Software Development Engineer
+Enfocus Software
+Kleindokkaai 3-5
+B-9000 Gent
+Belgium
+Voice: +32 9 269 23 90
+Fax : +32 9 269 16 91
+Email: Immanuell@enfocus.be
+web : www.enfocus.be
+***************************************************************************
+
 
 
 -------------------------------------------------------
