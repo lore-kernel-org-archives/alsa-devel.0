@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Strange things with via82xx
-Date: Wed, 23 Jun 2004 10:26:10 +0200 (METDST)
+Subject: Re: ALSA support for firewire audio interfaces?
+Date: Wed, 23 Jun 2004 10:36:49 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406231024580.4564-100000@studcom.urz.uni-halle.de>
-References: <200406222045.55079.monge@sns.it>
+Message-ID: <Pine.HPX.4.33n.0406231035070.4564-100000@studcom.urz.uni-halle.de>
+References: <200406230243.i5N2hjv31836@turbo.physics.adelaide.edu.au>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200406222045.55079.monge@sns.it>
+In-reply-to: <200406230243.i5N2hjv31836@turbo.physics.adelaide.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Maurizio Monge <monge@sns.it>
+To: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Maurizio Monge wrote:
-> when using linux OSS or WinXP 32bits (if i remember correctly, as i deleted
-> it :-) ), to listen audio i have to connect the loudspeakers
-> to the red "Microphone jack" (!!!).
->
-> When using FreeBSD 32bits (OSS) or ALSA i have to connect the loudspeakers to
-> the light green "Out Jack".
->
-> This looks very strange!
->
-> Further, when using WinXP, linux OSS or FreeBSD i get a MUCH better quality
-> than with ALSA (cshhhhhhhhhhhhhhhhh).
-> Of course i tried dxs_support=0,1,2,3,4 but the sound quality do not changes.
+Jonathan Woithe wrote:
+> Back in April someone asked on this list about a driver for the firewire
+> Audiophile audio interface from M-Audio.  It was mentioned in that thread
+> that most new-model firewire audio devices were "class compliant" and
+> therefore a one-driver-fits-all situation should occur (like we now have for
+> usb-audio).
 
-What codec does your MB use? (see second line at the top of the
-alsamixer screen)
+Yes, but the connection management isn't mentioned in that standard.
+IIRC most (all?) devices use Yamaha's mLan, but nothing is known about
+that.  I don't know what became of this:
+http://www.music.columbia.edu/pipermail/linux-audio-user/2004-March/010915.html
+
+> My question is whether any work is actually being done on support for
+> firewire audio device support in ALSA.
+
+No.
 
 
 Regards,
