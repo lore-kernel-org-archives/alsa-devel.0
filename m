@@ -1,12 +1,19 @@
-From: Rick Wright <riwright@vt.edu>
-Subject: Re: potential emu10k1 bug/issue for Audigy2 ZS Platinum Pro
-Date: Fri, 11 Feb 2005 10:47:00 -0500
-Message-ID: <420CD374.7000801@vt.edu>
-References: <420B8B23.2090404@vt.edu> <1108067206.10310.7.camel@krustophenia.net> <420BD024.8040602@vt.edu> <1108073563.11177.1.camel@krustophenia.net> <420CCCB3.7010104@vt.edu>
+From: Nicolas Pitre <nico@cam.org>
+Subject: Re: pxa2xx ac97 driver
+Date: Fri, 11 Feb 2005 10:50:22 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0502111049190.25848@localhost.localdomain>
+References: <1108123181.3181.23.camel@icampbell-debian>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------000603090104050003010105"
-In-Reply-To: <420CCCB3.7010104@vt.edu>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
+Received: from relais.videotron.ca (relais.videotron.ca [24.201.245.36])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 254C41E2
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 16:50:25 +0100 (MET)
+Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR007.ip.videotron.ca
+ (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
+ with ESMTP id <0IBR004SA8000Z@VL-MO-MR007.ip.videotron.ca> for
+ alsa-devel@alsa-project.org; Fri, 11 Feb 2005 10:50:24 -0500 (EST)
+In-reply-to: <1108123181.3181.23.camel@icampbell-debian>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,203 +23,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Ian Campbell <icampbell@arcom.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------000603090104050003010105
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+On Fri, 11 Feb 2005, Ian Campbell wrote:
 
-Rick Wright wrote:
+> Hi Nico,
+> 
+> I've just grabbed your pxa2xx audio driver from alsa CVS and given it a
+> go on my PXA255 based board. I'm running 2.6.10 with the DMA mmap API
+> backported. I got it working pretty quick with only a couple of issues
+> -- thanks!
+> 
+> First issue was minor: I think *_EOC only exist on PXA270, or at least
+> they aren't documented on the 255 and the symbols aren't defined for
+> CONFIG_PXA25x so I wrapped them in CONFIG_PXA27x. I don't know if it
+> would hurt to write to the reserved bits on 255...
+> 
+> Second issue is a bit strange. The code in the reset function does:
+> 	GCR = GCR_COLD_RST;
+> 	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
+> 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+> which either causes a hang or causes repeated interrupts so that it is
+> impossible to see what is going on (didn't see anything from a printk in
+> the irq handler though). I changed it to 
+> 	GCR = GCR_COLD_RST;
+> 	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
+> 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+> which matches the way the old OSS driver did the reset and now the
+> driver works great.
+> 
+> I don't understand this though since the documentation would appear to
+> suggest that the PRIRDY way makes more sense. I guess it's possible that
+> it is related to 255 errata #30 ("Invalid AC'97 interrupt during cold
+> reset") but I'm not sure...
+> 
+> Anyway, here is the patch for the changes I made, what do you think?
+> 
+> Signed-off-by: Ian Campbell <icampbell@arcom.com>
 
-> Lee Revell wrote:
->
->>On Thu, 2005-02-10 at 16:20 -0500, Rick Wright wrote:
->>  
->>
->>>>>The real problem is that the PCM output volume control sliders are 
->>>>>backwards (or perhaps the remapping the channels to L/R, rather than R/L 
->>>>>will fix this).  For example: PCM Front L slider controls the volume of 
->>>>>playback_9 which is the RIGHT Front signal, PCM Front R slider controls 
->>>>>playback_10 which is the LEFT Front signal.  This is true for all of the 
->>>>>Stereo Output channel pairs.  If you think about it, the PCM sliders are 
->>>>>actually controlling the correct physical L & R outputs on the card, but 
->>>>>the alsa_pcm:playback signals being routed to those physical channels 
->>>>>are reversed, make sense?
->>>>>
->>>>>Is this a bug?  If so, what is the proper place/way to report it so that 
->>>>>I don't use any more of your time?  Has it already been fixed?  I know 
->>>>>you mentioned v008 still had problems...
->>>>>
->>>>>    
->>>>>        
->>>>>
->>>>ISTR that this is a hardware bug, and the kX driver works around it.  I
->>>>will look into it.
->>>>
->>>>Are the channels reversed if you use JACK with the default stereo PCM,
->>>>hw:0,0?
->>>>
->>>>  
->>>>      
->>>>
->>>Using hw:0,0 for BOTH the Input & Output devices in QJackCtl:
->>>(actually, input probably doesn't matter, huh?)
->>>playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
->>>the PCM LEFT slider
->>>playback_2 maps to Stereo Output #1 LEFT and volume is controlled by
->>>the PCM RIGHT slider
->>>
->>>In this case, it seems that slider is controlling the correct
->>>playback_x stream, but the stream is mapped to the wrong stereo
->>>channel of the soundcard.
->>>    
->>>
->>
->>This does look like an upstream bug.  Can you verify that the channels
->>are still reversed without my patch?
->>
->>Lee
->>
->>
->>  
->>
-> Using a stock (unpatched) alsa-driver-1.0.8 (verified that hw:0,3 is 
-> not available), here are the 2ch stereo output (using output device 
-> hw:0,0 in qjackctl) results:
->
-> playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by 
-> Front (NOT PCM Front) LEFT slider
-> playback_2 maps to Stereo Output #2 LEFT and volume is controlled by 
-> Front (NOT PCM Front) RIGHT slider
->
-> PCM Front sliders have no effect.  However, a slider named PCM (there 
-> are two of these, I'm talking about the one on the right, next to PCM 
-> Center....I believe the one on the left controls feedthrough?) behaves 
-> exactly like the Front sliders described above, but seems to supercede 
-> the Front sliders.
->
-> Again in this unpatched case, the sliders seem to control the correct 
-> playback_x channel (assuming L-comes-first), but the playback_x 
-> channels are being routed to the sound card's physical output channels 
-> incorrectly (L/R backwards).
->
-> -Rick
+Looks fine to me.
+
+Signed-off-by: Nicolas Pitre <nico@cam.org>
+
+> Index: 2.6/sound/arm/pxa2xx-ac97.c
+> ===================================================================
+> --- 2.6.orig/sound/arm/pxa2xx-ac97.c	2005-02-11 10:38:07.000000000 +0000
+> +++ 2.6/sound/arm/pxa2xx-ac97.c	2005-02-11 11:33:40.659553892 +0000
+> @@ -115,7 +117,7 @@
+>  	udelay(50);
+>  #else
+>  	GCR = GCR_COLD_RST;
+> -	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
+> +	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
+>  	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
+>  #endif
+>  
+> @@ -157,12 +159,14 @@
+>  		gsr_bits |= status;
+>  		wake_up(&gsr_wq);
+>  
+> +#ifdef CONFIG_PXA27x
+>  		/* Although we don't use those we still need to clear them
+>  		   since they tend to spuriously trigger when MMC is used
+>  		   (hardware bug? go figure)... */
+>  		MISR = MISR_EOC;
+>  		PISR = PISR_EOC;
+>  		MCSR = MCSR_EOC;
+> +#endif
+>  
+>  		return IRQ_HANDLED;
+>  	}
+> 
+> Cheers,
+> Ian.
+> -- 
+> Ian Campbell, Senior Design Engineer
+>                                         Web: http://www.arcom.com
+> Arcom, Clifton Road,                    Direct: +44 (0)1223 403 465
+> Cambridge CB1 7EA, United Kingdom       Phone:  +44 (0)1223 411 200
+> 
 
 
-Just went back and checked.  The behavior described above is exactly the 
-same when I use cvs alsa-driver from 2/10/05 patched with Lee's v009.
-
-Looks like this is an upstream bug and Lee's patch has no effect on this 
-behavior.
-
--Rick
-
---------------000603090104050003010105
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-</head>
-<body bgcolor="#ffffff" text="#000000">
-Rick Wright wrote:
-<blockquote cite="mid420CCCB3.7010104@vt.edu" type="cite">
-  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
-Lee Revell wrote:
-  <blockquote cite="mid1108073563.11177.1.camel@krustophenia.net"
- type="cite">
-    <pre wrap="">On Thu, 2005-02-10 at 16:20 -0500, Rick Wright wrote:
-  </pre>
-    <blockquote type="cite">
-      <blockquote type="cite">
-        <blockquote type="cite">
-          <pre wrap="">The real problem is that the PCM output volume control sliders are 
-backwards (or perhaps the remapping the channels to L/R, rather than R/L 
-will fix this).  For example: PCM Front L slider controls the volume of 
-playback_9 which is the RIGHT Front signal, PCM Front R slider controls 
-playback_10 which is the LEFT Front signal.  This is true for all of the 
-Stereo Output channel pairs.  If you think about it, the PCM sliders are 
-actually controlling the correct physical L &amp; R outputs on the card, but 
-the alsa_pcm:playback signals being routed to those physical channels 
-are reversed, make sense?
-
-Is this a bug?  If so, what is the proper place/way to report it so that 
-I don't use any more of your time?  Has it already been fixed?  I know 
-you mentioned v008 still had problems...
-
-    
-        </pre>
-        </blockquote>
-        <pre wrap="">ISTR that this is a hardware bug, and the kX driver works around it.  I
-will look into it.
-
-Are the channels reversed if you use JACK with the default stereo PCM,
-hw:0,0?
-
-  
-      </pre>
-      </blockquote>
-      <pre wrap="">Using hw:0,0 for BOTH the Input &amp; Output devices in QJackCtl:
-(actually, input probably doesn't matter, huh?)
-playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
-the PCM LEFT slider
-playback_2 maps to Stereo Output #1 LEFT and volume is controlled by
-the PCM RIGHT slider
-
-In this case, it seems that slider is controlling the correct
-playback_x stream, but the stream is mapped to the wrong stereo
-channel of the soundcard.
-    </pre>
-    </blockquote>
-    <pre wrap=""><!---->
-This does look like an upstream bug.  Can you verify that the channels
-are still reversed without my patch?
-
-Lee
-
-
-  </pre>
-  </blockquote>
-Using a stock (unpatched) alsa-driver-1.0.8 (verified that hw:0,3 is
-not available), here are the 2ch stereo output (using output device
-hw:0,0 in qjackctl) results:<br>
-  <br>
-playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
-Front (NOT PCM Front) LEFT slider<br>
-playback_2 maps to Stereo Output #2 LEFT and volume is controlled by
-Front (NOT PCM Front) RIGHT slider<br>
-  <br>
-PCM Front sliders have no effect.&nbsp; However, a slider named PCM (there
-are two of these, I'm talking about the one on the right, next to PCM
-Center....I believe the one on the left controls feedthrough?) behaves
-exactly like the Front sliders described above, but seems to supercede
-the Front sliders.<br>
-  <br>
-Again in this unpatched case, the sliders seem to control the correct
-playback_x channel (assuming L-comes-first), but the playback_x
-channels are being routed to the sound card's physical output channels
-incorrectly (L/R backwards).<br>
-  <br>
--Rick<br>
-</blockquote>
-<br>
-Just went back and checked.&nbsp; The behavior described above is exactly
-the same when I use cvs alsa-driver from 2/10/05 patched with Lee's
-v009.<br>
-<br>
-Looks like this is an upstream bug and Lee's patch has no effect on
-this behavior.<br>
-<br>
--Rick<br>
-</body>
-</html>
-
---------------000603090104050003010105--
+Nicolas
 
 
 -------------------------------------------------------
