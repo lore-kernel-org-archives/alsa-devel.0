@@ -1,17 +1,12 @@
-From: castet.matthieu@free.fr
-Subject: intel8x0.c : missing define for disable midi
-Date: Mon, 30 Aug 2004 09:12:16 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: [RFC] Echoaudio driver
+Date: Tue, 31 Aug 2004 11:17:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1093849936.4132d350e4835@imp5-q.free.fr>
+Message-ID: <XFMail.20040831111710.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="-MOQ10938499368442b47f4de77281cbacb2efe3f48aa9"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix3-2.free.fr (postfix3-2.free.fr [213.228.0.169])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0B1C151
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 09:12:17 +0200 (MEST)
-Received: from imp5-q.free.fr (imp5-q.free.fr [212.27.42.5])
-	by postfix3-2.free.fr (Postfix) with ESMTP id 3A5CCC641
-	for <alsa-devel@alsa-project.org>; Mon, 30 Aug 2004 11:07:45 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,45 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This message is in MIME format.
 
----MOQ10938499368442b47f4de77281cbacb2efe3f48aa9
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+I'm developing the driver for Echoaudio cards for more
+than a year and it is stable and it supports almost all
+features of eight different soundcards. I think it's
+near ready for inclusion in the official ALSA distro. Is
+there someone who has time to have a look at the code ?
 
-hi,
-this patch add a missing define if you want to remove midi support form i=
-t.
+There are some known issues, though:
 
-why removing midi and jostick support ?
-Read the PS of
-http://marc.theaimsgroup.com/?l=3Dlinux-kernel&m=3D109377408705997&w=3D2,=
- and you
-will see that midi and jostick work better with external modules.
+- Licence. Part of the driver is based on the reference
+code released by the manufacturer with a BSD-like licence:
+http://www.echoaudio.com/Downloads/license_agreement.php
+and I'm not sure if it's fully GPL-compatible. (Firmwares
+and headers are mostly unchanged. *_Dsp.c are 70% a direct
+translation from C++ and the rest is all mine)
 
-Thanks
+- Userspace firmware loading is still missing.
 
-Matthieu
----MOQ10938499368442b47f4de77281cbacb2efe3f48aa9
-Content-Type: text/x-patch; name="intel8x0.c-midi.patch"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="intel8x0.c-midi.patch"
+- Coding style: yes, I'll replace all C++ comments :)
 
-LS0tIGxpbnV4LTIuNi44L3NvdW5kL3BjaS9pbnRlbDh4MC5jb3JnCTIwMDQtMDgtMjggMTk6Mjg6
-NDEuMDAwMDAwMDAwICswMjAwCisrKyBsaW51eC0yLjYuOC9zb3VuZC9wY2kvaW50ZWw4eDAuYwky
-MDA0LTA4LTI4IDE5OjI5OjIxLjAwMDAwMDAwMCArMDIwMApAQCAtMjY3MSw2ICsyNjcxLDcgQEAK
-IAkJcmV0dXJuIGVycjsKIAl9CiAJCisjaWZkZWYgU1VQUE9SVF9NSURJCiAJaWYgKG1wdV9wb3J0
-W2Rldl0gPT0gMHgzMDAgfHwgbXB1X3BvcnRbZGV2XSA9PSAweDMzMCkgewogCQlpZiAoKGVyciA9
-IHNuZF9tcHU0MDFfdWFydF9uZXcoY2FyZCwgMCwgTVBVNDAxX0hXX0lOVEVMOFgwLAogCQkJCQkg
-ICAgICAgbXB1X3BvcnRbZGV2XSwgMCwKQEAgLTI2ODAsNiArMjY4MSw3IEBACiAJCX0KIAl9IGVs
-c2UKIAkJbXB1X3BvcnRbZGV2XSA9IDA7CisjZW5kaWYKIAogCXNwcmludGYoY2FyZC0+bG9uZ25h
-bWUsICIlcyBhdCAweCVseCwgaXJxICVpIiwKIAkJY2FyZC0+c2hvcnRuYW1lLCBjaGlwLT5hZGRy
-LCBjaGlwLT5pcnEpOwo=
 
----MOQ10938499368442b47f4de77281cbacb2efe3f48aa9--
+The code is here: http://xoomer.virgilio.it/g_pochini/ea.html
+
+Comments, suggestions, new hardware, are welcome.
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
