@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
-Date: Wed, 23 Mar 2005 03:51:39 +0100
-Message-ID: <b027669238fa57023217b1d85d0724f1@bugtrack.alsa-project.org>
+From: "D. Hugh Redelmeier" <hugh@mimosa.com>
+Subject: newbie problem with control settings
+Date: Wed, 23 Mar 2005 02:04:56 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0503230124420.5926@redshift.mimosa.com>
+Reply-To: "D. Hugh Redelmeier" <hugh@mimosa.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2BD26289
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 03:51:40 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from gw-d.mimosa.com (gw-d.mimosa.com [216.126.78.97])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B1DF0289
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 08:04:57 +0100 (MET)
+Received: from redshift.mimosa.com (redshift.mimosa.com [192.139.70.107])
+	by gw-d.mimosa.com (8.12.8/8.12.8) with ESMTP id j2N74uuS004112
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 02:04:56 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,91 +23,98 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+[I realize that with a bit of knowledge, I wouldn't have had this
+problem.  But I think that my experience suggests how to improve
+things for other newbies.  By the time I am no longer a newbie, I
+will no longer see the things that confuse newbies.]
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
-======================================================================
-Reported By:                segnini75
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   933
-Category:                   PCI - als4000
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     feedback
-Distribution:               Kanotix - Debian/sid
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-22-2005 14:08 CET
-Last Modified:              03-23-2005 03:51 CET
-======================================================================
-Summary:                    ALS4000 chipset dont sounds fine, the sound is too
-slow and dont play everything.
-Description: 
-The modconf info about snd-als4000 retuns:
+I updated my system from Fedora Core 1 to Fedora Core 3.  So I
+switched from OSS to Alsa.
 
-Jevus@box:~$ modinfo snd-als4000
-filename:      
-/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
-author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
-description:    Avance Logic ALS4000
-license:        GPL
-vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
-depends:       
-snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
-alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
-parm:           joystick_port:Joystick port address for ALS4000 soundcard.
-(0 = disabled)
-parm:           enable:Enable ALS4000 soundcard.
-parm:           id:ID string for ALS4000 soundcard.
-parm:           index:Index value for ALS4000 soundcard.
---------------------------------------------------------------------
-NOTE: This card works fine in windows
+I had great difficulty getting the sound system to pass line-in
+through.  I was trying to use gnome-volume-control to set things up.
+Once I understood what was going on, it was easy.
 
-Plase solve that problems (Note. Is not working on any version of ALSA
-drivers actually, all have same problem.
+What confused me?  It turns out that my system's sound chip (C-Media
+Electronics Inc CM8738 built into my Asus A7V333 motherboard) has a
+couple of switches to change the line-in jack into an output.  They are
+called "Line-In As Rear" and "Line-In As Bass".  The way to control
+them in gnome-volume-control is to select or deselect "mute" for each
+of these controls.  I find this not at all obvious.
 
-Thanks!- Jesus Segnini
-======================================================================
+	Line-In As Bass
+	[ ] Mute
 
-----------------------------------------------------------------------
- tiwai - 03-09-05 18:39 
-----------------------------------------------------------------------
-OK, let's close.
+	Line-In As Rear
+	[ ] Mute
 
-----------------------------------------------------------------------
- segnini75 - 03-23-05 03:51 
-----------------------------------------------------------------------
-The problem is back :S until one actualization the problem persist... what
-can i do? Thanks u!
+How would I improve it?  I would make the values of these switches be
+an enumerated type.  In UI terms: a set of radio buttons.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-22-05 14:08 segnini75      New Issue                                    
-02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
-02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
-02-22-05 17:15 segnini75      Note Added: 0003705                          
-02-22-05 17:16 segnini75      Note Edited: 0003705                         
-02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
-02-24-05 22:06 tiwai          Note Added: 0003728                          
-02-24-05 23:29 segnini75      Note Added: 0003731                          
-03-01-05 03:07 segnini75      Note Added: 0003753                          
-03-01-05 03:07 segnini75      Issue End Monitor: segnini75                    
-03-09-05 18:39 tiwai          Status                   new => resolved     
-03-09-05 18:39 tiwai          Resolution               open => fixed       
-03-09-05 18:39 tiwai          Assigned To               => tiwai           
-03-09-05 18:39 tiwai          Note Added: 0003832                          
-03-09-05 18:39 tiwai          Assigned To              tiwai =>            
-03-23-05 03:51 segnini75      Status                   resolved => feedback
-03-23-05 03:51 segnini75      Resolution               fixed => reopened   
-03-23-05 03:51 segnini75      Note Added: 0004150                          
-======================================================================
+    Line-in jack is:
 
+    [*] Line-in
+    [ ] bass output
+    [ ] rear Left and Right output
 
+(Notice that I've replaced two switches with an enumerated type that
+has three values.  What happened to the fourth state?  I have no idea
+what it would mean, so I didn't provide a choice for it.)
+
+Although I am complaining about gnome-volume-control (not a part of
+Alsa), I am guessing that gnome-volume-control is just displaying
+names and choices that it is presented by Alsa.
+
+I must say that some of the controls have odd names.  One that really
+surprised me was "IEC958 Copyright" with a choice of mute or not.  (I
+do now have an idea what this is about.)
+
+Recommendation: I think that there should be support for controls with
+enumerated type values.  Perhaps also boolean controls that could have
+a name other than "mute".
+
+PS: here are the control names that I extracted from the driver
+source.  gnome-volume-control massaged them somewhat.  Some names are
+quite obscure.
+    Master Playback Volume
+    3D Control - Switch
+    PCM Playback Volume
+    PCM Playback Switch
+    PCM Capture Switch
+    Synth Playback Volume
+    Synth Playback Switch
+    Synth Capture Route
+    CD Playback Volume
+    CD Playback Switch
+    CD Capture Route
+    Line Playback Volume
+    Line Playback Switch
+    Line Capture Route
+    Mic Playback Volume
+    Mic Playback Switch
+    Mic Capture Switch
+    PC Speaker Playback Volume
+    Aux Playback Volume
+    Aux Playback Switch
+    Aux Capture Switch
+    Mic Boost
+    Mic Capture Volume
+    Four Channel Mode
+    Line-In As Rear
+    IEC958 Output Switch
+    IEC958 In Valid
+    IEC958 Copyright
+    IEC958 5V
+    IEC958 Loop
+    IEC958 In Monitor
+    IEC958 Playback Default
+    IEC958 Playback Con Mask
+    IEC958 Playback PCM Stream
+    Line-In As Bass
+    IEC958 In Select
+    IEC958 In Phase Inverse
+    Mic As Center/LFE
+    Modem
 
 
 -------------------------------------------------------
