@@ -1,17 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] Fixes: Re: intel8x0 has stopped working.
-Date: Tue, 3 Feb 2004 17:22:07 +0100 (CET)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: I have found a reason why dmix does not work well with xine.
+Date: Wed, 04 Feb 2004 00:38:00 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402031720190.8251@pnote.perex-int.cz>
-References: <401E8BAE.6010802@superbug.demon.co.uk> <s5hn081uztv.wl@alsa2.suse.de>
- <401EA82D.3060702@superbug.demon.co.uk> <401ED94F.7080407@superbug.demon.co.uk>
+Message-ID: <40203EE8.3060107@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed;
+ boundary="------------090409030001080005010907"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA25372
-	for <alsa-devel@alsa-project.org>; Tue, 3 Feb 2004 17:21:07 +0100
-In-Reply-To: <401ED94F.7080407@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,78 +15,140 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2 Feb 2004, James Courtier-Dutton wrote:
+This is a multi-part message in MIME format.
+--------------090409030001080005010907
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> James Courtier-Dutton wrote:
-> > 
-> > Once thing I have noticed, is that with the alc650, we used to have VRA 
-> > (alsa 0.9.8), but the 1.0.2 intel8x0 driver ignores the VRA and fixes 
-> > itself at 48000.
-> > So, before I never needed the sample rate converters, but as it now 
-> > fixes the rate at 48000, I need the sample rate converters, and they 
-> > don't actually work.
-> > 
-> > 
-> 
-> I have found out what the problem is with the resamplers not working.
-> I was using: -
-> err = snd_pcm_sw_params_set_start_threshold(handle, swparams, 
-> buffer_size);  <- note buffer_size.
-> 
-> So, the state will stay in SND_PCM_STATE_PREPARED state until the buffer 
-> is full.
-> Inside snd_pcm_write_areas() [in alsa-lib] we have a snd_pcm_wait 
-> statement before we write frames into the buffer.
-> if (((snd_pcm_uframes_t)avail < pcm->avail_min && size > 
-> (snd_pcm_uframes_t)avail) || (size >= pcm->xfer_align && 
-> (snd_pcm_uframes_t)avail < pcm->xfer_align)) {
-> then it calls snd_pcm_wait()
-> 
-> So, this will call snd_pcm_wait() until avail >= pcm->avail_min.
-> This will only become true if we are in SND_PCM_STATE_RUNNING state.
-> 
-> below the snd_pcm_wait(), we do try to execute snd_pcm_start() to get us 
-> into SND_PCM_STATE_RUNNING, but this only gets executed if: -
-> if (state == SND_PCM_STATE_PREPARED && hw_avail >= (snd_pcm_sframes_t) 
-> pcm->start_threshold) {
-> 
-> So, we will only reach a running state if the buffer is FULL, but the 
-> buffer will NEVER become full, because of the previous snd_pcm_wait();
-> CATCH22!!!
-> 
-> I think a fix to this would be to limit as follows: -
-> start_threshold <= (buffer_size - avail_min)
-> 
-> I have fixed the issue for now, just by setting the "start_threshold" to 
-> something other than buffer_size. But I think some work needs to be done 
-> with alsa-lib to prevent this deadlock situation ever happening in alsa-lib.
-> 
->  From the application writers point of view, if the buffer is X bytes 
-> long, and one used snd_pcm_writei() to write X+10 bytes, the buffer 
-> should become full. Currently, that is not always the case, and alsa-lib 
-> instead locks in snd_pcm_wait().
-> 
-> I attach a patch that fixes alsa-lib.
-> All it does it call snd_pcm_start() just before snd_pcm_wait() and due 
-> to the if statement just above it, will only happen when the buffer is 
-> going to be filled, therefore ensuring that even if "start_threshold" is 
-> set too high, snd_pcm_start() will always be called if the buffer is 
-> full, or about to become full.
+See attached file.
+It contains a test program, and a readme.txt with details on how to 
+configure the dmix device in order to carry out the test.
 
-I don't think that this is a right fix. The programmer must know what is 
-doing and the manual start is still alternative. You must set 
-start_threshold to (buffer_size / period_size) * period_size in your case.
+Basically, the value of snd_pcm_delay() returned when using the dmix 
+device is wrong.
 
-						Jaroslav
+See readme.txt in delay-test-0.0.1.tar.bz2 for details.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Cheers
+James
+
+--------------090409030001080005010907
+Content-Type: application/octet-stream;
+ name="delay-test-0.0.1.tar.bz2"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="delay-test-0.0.1.tar.bz2"
+
+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
+--------------090409030001080005010907--
 
 
 -------------------------------------------------------
