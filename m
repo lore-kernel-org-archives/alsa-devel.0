@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000286]: Wrong MIDI I/O count in HDSP9632
-Date: Tue, 1 Feb 2005 21:42:22 +0100
-Message-ID: <8afcd669a732aed9a70bff9ee9775889@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
+Date: Tue, 1 Feb 2005 21:46:46 +0100
+Message-ID: <1fa438ea590ee9e460db0a5030323541@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A59831E7
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:42:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49BA81E7
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:46:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,54 +21,110 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
 ======================================================================
-Reported By:                penttiala
+Reported By:                Mark Knecht
 Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   286
+Issue ID:                   818
 Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               FC2
+Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
-Date Submitted:             05-20-2004 17:22 CEST
-Last Modified:              02-01-2005 21:42 CET
+Date Submitted:             01-14-2005 18:35 CET
+Last Modified:              02-01-2005 21:46 CET
 ======================================================================
-Summary:                    Wrong MIDI I/O count in HDSP9632
+Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
+9652 to be invalid
 Description: 
-There is only one MIDI I/O in HDSP9632 but driver tells there is two.
+In my setup I's using 3 computers:
+
+1) PanetCCRMA with HDSP 9652 as the center of an audio hub
+
+2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
+HDSP 9652 (ADAT input for clock)
+
+3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
+
+So the signal flow looks like:
+
+XP         Linux           XP
+GSt ====> HDSP 9652 ====> Pro Tools
+   <=== (ADAT Clock)
+
+The HDSP 9652 is the master clock for the network. Both XP machine sync to
+the HDSP 9652.
+
+When no specific audio apps are running on the Linux box then this
+configuration will work for hours if not days with no problems. All audio
+data from GSt flows through the HDSP 9652's hardware and the hardware
+mixer sends it on to the Pro Tools box. It works perfectly.
+
+When Mozilla is started and I switch from page to page, after a few
+minutes I will receive a message on the Pro Tools box that the clock
+supplied by the HDSP 9652 was invalid. I can browse the same web pages on
+either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 01-28-05 18:22 
+ charbonnel - 02-01-05 21:35 
 ----------------------------------------------------------------------
-I just submitted a patch on alsa-devel that should solve the problem.
-Sorry about the "soon" in my previous note :)
+Hi Mark,
+
+>From what I understand, the card is not in use from the alsa point of
+view, you just use the matrix routing. Then it may happen when mozilla
+encounters a page using flash that wants to output audio, if it's setup to
+do so through the hdsp, that it sets a different audio clock (e.g 44100
+vs. 48000). This is normal, and happens also under windows from what I
+read on the RME forums. The anwser from the support team is invariably
+'disable system sounds' or 'don't use the hdsp as the system default audio
+device'.
+
+Thomas
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 21:42 
+ Mark Knecht - 02-01-05 21:46 
 ----------------------------------------------------------------------
-Fixed in cvs, fix should appear in alsa > 1.0.8
+Hi Thomas,
+   Interesting. Best I can tell these days (since I reported this a couple
+of weeks ago) is that not all web sites cause Mozilla to do whatever it
+does. Many, even most, cause me no problems with the current revision of
+Alsa from PlanetCCRMA.
+
+   We had some conversations about this on LAU or Alsa-devel - I don't
+remember which. Seemed that folks there thought it was possible to extend
+Alsa one fo these days to be able to lock down the card's sample rate
+instead of letting any app change it. That would be fine with me. I don't
+care about OSS audio quality. I just want hdspconf to be in total control
+so that I set the card's sample rate and it doesn't change, but maybe
+that's for some future date.
+
+   Currently I do not use Mozilla when doing important audio stuff but
+that forces me to do web browsing on a Windows box instead.
+
+   Anyway, thanks for looking into this and thinking about future
+improvements.
+
+Cheers,
+Mark
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-20-04 17:22 penttiala      New Issue                                    
-05-22-04 13:42 charbonnel     Note Added: 0001170                          
-12-24-04 12:35 penttiala      Issue Monitored: penttiala                    
-01-28-05 18:22 charbonnel     Note Added: 0003433                          
-02-01-05 21:42 charbonnel     Status                   assigned => resolved
-02-01-05 21:42 charbonnel     Resolution               open => fixed       
-02-01-05 21:42 charbonnel     Note Added: 0003469                          
+01-14-05 18:35 Mark Knecht    New Issue                                    
+01-14-05 18:35 Mark Knecht    Distribution              => FC2             
+01-14-05 18:35 Mark Knecht    Kernel Version            =>
+2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+02-01-05 21:35 charbonnel     Note Added: 0003466                          
+02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
 ======================================================================
 
 
