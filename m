@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Peter Kirk <pwk.linuxfan@gmx.de>
 Subject: Re: smart and automatic use of dmix and dsnoop - feature suggestion.
-Date: Fri, 14 Nov 2003 07:21:52 -0500
+Date: Fri, 14 Nov 2003 14:01:09 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311141221.hAECLqlT003018@oud.linuxaudiosystems.com>
-References: <200311140246.14873.pwk.linuxfan@gmx.de>
+Message-ID: <200311141401.13736.pwk.linuxfan@gmx.de>
+References: <200311141221.hAECLqlT003018@oud.linuxaudiosystems.com>
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 14 Nov 2003 02:43:37 +0100."
-             <200311140246.14873.pwk.linuxfan@gmx.de>
+In-Reply-To: <200311141221.hAECLqlT003018@oud.linuxaudiosystems.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +18,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Kirk <pwk.linuxfan@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->So, these are two numbers - and basicly all is fine as long as you dont wan=
->t=20
->to excede them, but if you do, you need to use dmix or dsnoop. Why not use=
->=20
->dmix and dsnoop automaticly when necessary ? Wouldnt it be possible to have=
+WARNING: Unsanitized content follows.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-because it would be catastrophic, or, well, at least very bad, for
-applications that want to "sit close to the metal".
+Am Freitag, 14. November 2003 13:21 schrieb Paul Davis:
+> >So, these are two numbers - and basicly all is fine as long as you dont
+> > wan= t=20
+> >to excede them, but if you do, you need to use dmix or dsnoop. Why not
+> > use= =20
+> >dmix and dsnoop automaticly when necessary ? Wouldnt it be possible to
+> > have=
+>
+> because it would be catastrophic, or, well, at least very bad, for
+> applications that want to "sit close to the metal".
+>
+> this is a user-space configuration issue, not something that alsa-lib
+> should do by default. if the user (or the distributor) defines "dmix"
+> to be the default device type, then every conformant ALSA application
+> will do the right thing. apps like JACK that want to "site close to
+> the metal" will still use "hw:N" unless you tell it otherwise, but
+> consumer apps will use "default" (that's what i mean by conformant)
+> and get dmix behaviour.
+Hmm,
 
-this is a user-space configuration issue, not something that alsa-lib
-should do by default. if the user (or the distributor) defines "dmix"
-to be the default device type, then every conformant ALSA application
-will do the right thing. apps like JACK that want to "site close to
-the metal" will still use "hw:N" unless you tell it otherwise, but
-consumer apps will use "default" (that's what i mean by conformant)
-and get dmix behaviour.
+are you telling me that normal applications will already automaticly use
+dmix ? Its a pitty my soundcard (SB Live!) can play so many streams in
+hardware at once, so I dont realy know if alsa is doing dmixing *on*the*fly*.
+But I did *think* that if you had a cheepo laptop, you couldnt open 5 xmms
+and 5 xines and start playing back with all of them - I could be wrong of
+course. The thing Im quite certain of, is that there is no dmix jumping in if
+you try to run 2 playback oss apps through the oss emulation layer of alsa -
+this will give you trouble if your soundcard cant play two streams in
+hardware.
+Then there still would be the point with dsnoop - I _know_ it doesnt work on
+my soundcard to open two instances of TeamSpeak (voice communication -> full
+duplex) - and be able to talk and hear on both...this is because the capture
+device is taken.
+Is there anything being thought about of something like the automagic
+dsnooping I was talking about ? It realy would be nice to be able to use
+multiple applications of teamspeak on *normal* soundcards like mine...
 
---p
+Peter
+- --
+If at first you don't succeed, destroy all evidence that you tried.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+
+iD8DBQE/tNIVg2ieGvTmHiURAmeBAKCJvLpZaXJjzkPuseruoYAOoWQfFgCgg8PD
+RyyFJAeQdCAqv4PsPYoQ9qo=
+=i5nu
+-----END PGP SIGNATURE-----
 
 
 
