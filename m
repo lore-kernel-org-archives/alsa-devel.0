@@ -1,8 +1,8 @@
 From: Jeremy Hall <jhall@maoz.com>
 Subject: Re: I must be really dense
-Date: Fri, 11 Jul 2003 11:38:54 -0400 (EDT)
+Date: Fri, 11 Jul 2003 11:58:58 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307111538.h6BFcstH023670@sith.maoz.com>
+Message-ID: <200307111558.h6BFwwX9023787@sith.maoz.com>
 References: <Pine.HPX.4.33n.0307111712570.4950-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -22,9 +22,10 @@ To: Clemens Ladisch <clemens@ladisch.de>
 Cc: Jeremy Hall <jhall@maoz.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-there are two of them
+I reran snddevices and it seems happy, hopefully I can still go back and 
+forth between old and new setups
 
-I have to rerun snddevices? it works with older kernel.
+thanks
 
 _J
 
