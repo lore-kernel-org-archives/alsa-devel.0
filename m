@@ -1,18 +1,16 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: Alsa handling of spdif bits (was Re: Questions to
- HDSP users)
-Date: Fri, 06 Feb 2004 12:22:08 +0100
+From: Peter Kirk <pwk.linuxfan@gmx.de>
+Subject: Re: making aoss able to wrap fopen() calls
+Date: Fri, 6 Feb 2004 12:28:05 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <402378E0.2060708@undata.org>
-References: <f87b1d8ca44251034e552d245dd4da21@essej.net>
+Message-ID: <200402061228.12714.pwk.linuxfan@gmx.de>
+References: <200402051727.25712.pwk.linuxfan@gmx.de> <Pine.LNX.4.58.0402051748390.1864@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from satellite.undata.org (brln-d9b80d50.pool.mediaWays.net [217.184.13.80])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA28139
-	for <alsa-devel@alsa-project.org>; Fri, 6 Feb 2004 12:25:54 +0100
-In-Reply-To: <f87b1d8ca44251034e552d245dd4da21@essej.net>
+In-Reply-To: <Pine.LNX.4.58.0402051748390.1864@pnote.perex-int.cz>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,62 +19,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jesse Chappell <jesse@essej.net>
-Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Jesse Chappell wrote :
->  > regarding Jesse's problem:
->  > it looks like RME*.conf are broken.
->  > does the attached patch work?
-> 
-> Sorry, I had already created a new H-DSP.conf and figured out
-> it needed the 'interface PCM'.   I was able to use ac3dec -C to
-> open the device, and attempted to stream through it, but nothing
-> streamed.  
-> 
-> Standard PCM streaming and mixing works fine over the spdif. 
-> I have a feeling there is some strange interaction with the mixer's
-> normal operation and the special spdif modes.
-> 
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-So you should be able to do what you want using this iecset tool
-Takashi mentioned :
-iecset -c X audio off (where X is your card number)
-After this command, when playback will be enabled (remember that with 
-the current alsa model those bits are set on playback), the Non-Audio 
-bit will be set properly (you should see it checked in hdspconf).
-The 'alsa style' iec bits handling code in the driver
-seems to be functional.
-(BTW Takashi iecset -h says 'audio on' is non-audio and 'audio off' is 
-audio but it seems to be the other way round, unless the hdsp driver is 
-wrong here...)
-The problem I see and I dislike with this is that iec bits are 
-associated with playback. This is probably fine with most devices, but 
-not with hardware that can do hardware routing, where you may want to 
-route signal through the S/PDIF out with a certain bit combination - no 
-playback is involved here. I believe a generic iec bits handling 
-interface is a good thing, but is should not be affected by the card's 
-status. Any comment on this Takashi ?
+Am Donnerstag, 5. Februar 2004 17:49 schrieb Jaroslav Kysela:
+> > Could you point me to a good idea of implementing this ? On irc I was
+> > discussing doing a libc wrapper that replaces the fopen calls with some
+> > substitute (that aoss can handle), but I'm not sure if its the way to g=
+o.
+> >
+> > Please tell me how it can be achieved.
+>
+> The whole libaoss is based on glibc wrappers (open, close, ioctl, write,
+> read, mmap) so follow this rule ;-)
 
-> An aside: this is also complicated because to open the device, the
-> channels item in the slave.pcm section must match the iobox in
-> use (multiface or digiface) which have differing channel counts.
-> So when we do get this working, it will be a problem to handle
-> both cases in a conf file.
-> 
+Right,=20
 
-Not to mention that there is also a shift in the S/PDIF channels
-position when the card changes speed mode...
-Can the current configuration mechanism handle this properly ?
-Similarly we would need different .conf files for the different hdsp
-cards, but seeing Takashi's patch, it seems .conf files are associated
-with a card using the generic driver name (here 'H-DSP'). Is there a way
-to affect a .conf file to a specific submodel ?
+I have done some looking at source code, and have found the places I needed=
+ to=20
+find (in alsa-oss.c).=20
+Two questions:
+(1) Is my assumtion right, that I will have to write substitute functions f=
+or=20
+fopen(), fclose(), fread() and fwrite() ?
 
-Thomas
+(2) My current approach is to "translate" the f* calls into calls that can =
+be=20
+handled already. Is this a good idea ?
 
+Peter
+=2D --=20
+A critic is a bundle of biases held loosely together by a sense of taste.
+		-- Whitney Balliett
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
+iD8DBQFAI3pJg2ieGvTmHiURAhCoAKCbo0VxbUDm85MBiR9ZpqX3HhDUxgCdFya4
++2bewyW36EcCJksr9jpWsOY=3D
+=3D1X1j
+=2D----END PGP SIGNATURE-----
 
 
 
