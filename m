@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA in 2.5.x
-Date: Wed, 2 Oct 2002 17:56:59 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Re: questions for alsa-devel
+Date: Thu, 03 Oct 2002 01:12:48 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210021756350.653-100000@pnote.perex-int.cz>
-References: <200210021628.13742@advent.drealm.org.uk>
+Message-ID: <3D9B1B00.1020502@boosthardware.com>
+References: <200210021157.g92Bvvk12578@op.net>	<s5hu1k5j939.wl@alsa2.suse.de>	<m2ptutdlpl.fsf@vador.mandrakesoft.com> <s5hn0pxj7f4.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200210021628.13742@advent.drealm.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +16,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Peter L Jones <peter@drealm.org.uk>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, Paul Davis <pbd@op.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2 Oct 2002, Peter L Jones wrote:
-
-> On Wednesday 02 Oct 2002 11:44, Jaroslav Kysela wrote:
-> [snip]
-> >
-> > ALSA tree was fully synced with kernel yesterday. Not all changes are in
-> > 2.5.40. Please, wait for 2.5.41 or get the kernel sources from BitKeeper
-> > repository of 2.5.
-> >
-> > 						Jaroslav
-> >
+Takashi Iwai wrote:
+> Hi,
 > 
-> Jaroslav,
+> At Wed, 02 Oct 2002 15:17:10 +0200,
+> Thierry Vignaud wrote:
 > 
-> I've patched up to 2.5.40bk1 snapshot and I'm about to give ALSA a quick try.
+>>Takashi Iwai <tiwai@suse.de> writes:
+>>
+>>
+>>>>2) i recently compiled rc3 on a mandrake 8.2 system. everything
+>>>>went smoothly. when i went to modprobe, i got messages suggesting
+>>>>to me that there a mismatch between the kernels and the ALSA
+>>>>modules with respect to symbol versioning. (several missing
+>>>>symbols, all with versions). i've looked through the archives and
+>>>>tried google, but i can't see how to fix this or if something else
+>>>>is going on.
+>>>
+>>1) "make mrproper" should be the first step when recompiling a kernel
+>>   from the kernel-source package since it has previously be used to
+>>   compile our various kernel (up, smp, enterprise [smp+highmem],
+>>   secure, linus (no patches), BOOT [for drakx installer]).
+>>
+>>   most people don't do it and have problems.
+>>
+>>2) alter the extraversion in main Makefile so that you don't screw up
+>>   the mandrake kernel if you make something wrong (there's a rescue
+>>   on the first cd but just avoid troubles)
+>>   eg: in mdk9.0, we now alter it by default ("EXTRAVERSION = -16mdk"
+>>   became "EXTRAVERSION = -16mdkcustom")
+>>
+>>these 2 items should prevent versionning problems regarding modules
+>>
+>>3) you can then steal the mdk kernel config from /boot/config (link on
+>>   /boot/config-2.4.....)
 > 
-> RTC Timer Support is greyed out for me in xconfig -- it's not marked 
-> "EXPERIMENTAL" in the display (I've not got as far as turning experimental on 
-> yet) and the help text doesn't say it relies on any other option.  Is this a 
-> config problem?
+>  
+> it would be nice to collect such info for each distribution and put
+> them on alsa's web page.
+> 
 
-Yes, you need to select RTC timer code in other menu (CONFIG_RTC) at 
-first.
+I will write it up if people send me the info that needs to be included. 
+Like this thread.
 
-						Jaroslav
+What should the page be called though?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+> 
+> 
+>>4) note that if you boot with a kernel with alsa-0.9.0, all your alsa
+>>   apps won't work unless you use them in oss emulation mode.
+> 
+>  
+> why?  is there any incompatibility?
+> 
+> 
+> Takashi
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> 
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
