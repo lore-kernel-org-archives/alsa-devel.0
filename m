@@ -1,8 +1,8 @@
 From: p z oooo <pzad@pobox.sk>
 Subject: Re: [PATCH] - Audigy 1 and Audigy 2 mixer - again
-Date: Thu, 6 Nov 2003 08:12:39 +0100
+Date: Thu, 6 Nov 2003 08:18:43 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311060712.IAA20035@www1.pobox.sk>
+Message-ID: <200311060718.IAA20517@www1.pobox.sk>
 Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
 Content-Type: TEXT/plain; charset=iso-8859-2
@@ -20,22 +20,14 @@ To: James@superbug.demon.co.uk
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I have Audigy 1 (model SB0090)
-Audigy 1 has UDA1361TS ADC too (look at card picture - just above=20
-1328)
-
-UDA1361 is connected on AC97 line out.
-Why use UDA1361 ??? Because it is 24 bit (you get beter resolution)=20
-and it has beter S/N as AC97.=20
-If you have Audigy 2 you can use UDA1361 ADC without this patch.
-Use ALSA version 0.9.7 (in 0.9.8 is AC97 master disabled). Set AC97=20
-volume to 0, set Master (ac97 master) to 100 %, and set IEC958=20
-Coaxial volume to 100, Set unmute Line In (CD, aux, mic) volume and=20
-set it's volume to some level and listen.
+Yes, Philips ADC doesn't help playback but recording yes. But ADC is=20
+connected to emu10k2 by 24 bit, and I think that philips DAC (1328)=20
+is connected by 24 bit too, this means that card internally work in=20
+24 bit, only problem is how too get 24 bit data from to emu10k2 - one=20
+solution - using TRAM.
 
 Peter Zubaj
+
 =0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
 MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
