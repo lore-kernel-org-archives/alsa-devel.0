@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sun, 21 Nov 2004 11:50:57 +0100
-Message-ID: <68c287aece4f585f6facde587bc21c3d@bugtrack.alsa-project.org>
+Date: Sun, 21 Nov 2004 11:57:36 +0100
+Message-ID: <cab75a2157fad57225e6cb0cf533d395@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56D11269
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 11:50:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0B17120C
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 11:57:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-21-2004 11:50 CET
+Last Modified:              11-21-2004 11:57 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,31 +60,36 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 11-21-04 11:39 
-----------------------------------------------------------------------
-Ok, I uploaded alsa-driver-1.0.7.ioctl32.patch:
-
-This basically incorporates the changes in  sjoerd's patch as well... I
-return -EINVAL if indirect is used (like he does), but I show what I think
-would be an acceptable workaround if I understand what it's doing (but
-like him, I'm not entirely sure what that IOCTL is doing, so hopefully
-someone else can provide a better fix for that one).
-
-That all being said, I still can't get alsa sound output using my
-ens1371... oss emulation still works fine, and with the patch alsamixer
-works well, but the machine is still hanging on pcm playback using:
-
-aplay /usr/kde/3.3/share/sounds/pop.wav
-
-This is true using both my patch and sjored's, so I think we're still
-missing something...
-
-----------------------------------------------------------------------
  eradicator - 11-21-04 11:50 
 ----------------------------------------------------------------------
 noticed another bug... the cp++ in the xfern code needed to be moved up so
 that if the copy_from_user() fails in that loop, the last allocation needs
 to be kfree()d...
+
+----------------------------------------------------------------------
+ eradicator - 11-21-04 11:57 
+----------------------------------------------------------------------
+also of note is the following change that sjored made in the patch her
+reported to the list:
+
+@@ -456,7 +491,7 @@
+        SNDRV_PCM_IOCTL_READN_FRAMES32 = _IOR('A', 0x53, struct
+sndrv_xfern32),
+        SNDRV_PCM_IOCTL_HW_REFINE_OLD32 = _IOWR('A', 0x10, struct
+sndrv_pcm_hw_params_old32),
+        SNDRV_PCM_IOCTL_HW_PARAMS_OLD32 = _IOWR('A', 0x11, struct
+sndrv_pcm_hw_params_old32),
+-       SNDRV_PCM_IOCTL_SYNC_PTR32 = _IOWR('A', 0x23, struct
+sndrv_pcm_sync_ptr),
++       SNDRV_PCM_IOCTL_SYNC_PTR32 = _IOWR('A', 0x23, struct
+sndrv_pcm_sync_ptr32),
+ 
+ };
+
+That hunk is not in mine because that change is already in
+alsa-driver-1.0.7 but it is NOT in what is included in linux-2.6.9... so
+if you're using the kernel source rather than alsa-driver, you should make
+that change too...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -111,6 +116,7 @@ Date Modified  Username       Field                    Change
 11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
             
 11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
 ======================================================================
 
 
