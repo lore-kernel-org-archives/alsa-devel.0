@@ -1,14 +1,18 @@
-From: Stuffed Crust <pizza@shaftnet.org>
-Subject: Re: cs4205 sp/dif support
-Date: Tue, 2 Apr 2002 12:14:15 -0500
+From: David Moylan <dave@westphila.net>
+Subject: Bug in snd-powemac?
+Date: Tue, 02 Apr 2002 14:12:21 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020402121415.A2845@shaftnet.org>
-References: <20020401164457.B21453@shaftnet.org> <Pine.LNX.4.33.0204021219120.544-100000@pnote.perex-int.cz>
+Message-ID: <3CAA0295.7070802@westphila.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="FCuugMFkClbJLl1L"
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.33.0204021219120.544-100000@pnote.perex-int.cz>; from perex@suse.cz on Tue, Apr 02, 2002 at 12:21:44PM +0200
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Received: from gull.prod.itd.earthlink.net (gull.mail.pas.earthlink.net [207.217.120.84])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA10167
+	for <alsa-devel@alsa-project.org>; Tue, 2 Apr 2002 21:13:19 +0200
+Received: from nycmny1-ar3-4-43-214-161.elnk.dsl.gtei.net ([4.43.214.161] helo=westphila.net)
+	by gull.prod.itd.earthlink.net with esmtp (Exim 3.33 #1)
+	id 16sTiM-0002Ae-00
+	for alsa-devel@alsa-project.org; Tue, 02 Apr 2002 11:13:06 -0800
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,50 +21,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I've been hunting through the snd-powermac source trying to get sound to 
+work on my Powerbook G4 (3,2).  This didn't get sound working, but I 
+think I found an easily correctable bug in the code.
 
---FCuugMFkClbJLl1L
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'd like some input from anyone who might be more more familiar with 
+than code than me.  The bug is in the function snd_pmac_awacs_put_switch 
+defined in awacs.c at about line 214 (i've been adding snd_printk debug 
+messages so my line numbers may be slightly off).  The function is 
+similar to snd_pmac_awacs_put_volume which I believe is coded correctly.
 
-On Tue, Apr 02, 2002 at 12:21:44PM +0200, Jaroslav Kysela wrote:
-> It would be better to add a new flag to ac97->flags like AC97_CS_SPDIF to=
-=20
-> avoid conditions via AC97 ID numbers (more codecs from Cirrus Logic can=
-=20
-> behave in same way and having separate conditions for each codecs makes=
-=20
-> code unreadable).
+The problem is that _put_switch doesn't allow a switch to write to any 
+register but register 1.  It is hard coded.  At the very least though, 
+one could expect desired writes to registers 0 and 1.  Besides, the 
+switches themselves carry a parameter specifying which register to use. 
+  I believe the code should be changed to allow writing to the specified 
+register.  Also, to make the code more clear and I think more 
+functional, the desired register and bitmask should be stripped off from 
+kcontrol->private_value and stored in variables reg and bitmask.  Again, 
+this is similar to _put_volume.
 
-Okay, I've done this; but I have another question:
+Any thoughts?
 
-Should the ac97_codec update the spdif rate when we get a sample rate chang=
-e?
-Otherwise, we could get a little out of sync -- the spdif rate defaults to=
-=20
-48kHz, but we open the pcm device at 44.1Hz...
-
- - Pizza
---=20
-Solomon Peachy                                    pizzaATfucktheusers.org
-I ain't broke, but I'm badly bent.                           ICQ# 1318344
-Patience comes to those who wait.
-    ...It's not "Beanbag Love", it's a "Transanimate Relationship"...
-
---FCuugMFkClbJLl1L
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE8qebnysXuytMhc5ERAgNhAJ4xydso208ysnf2dM8CkWLo2q0V0wCeIhC1
-wPoZQLZ6I2j4Rw1P5DEIvF0=
-=m4Yh
------END PGP SIGNATURE-----
-
---FCuugMFkClbJLl1L--
+Dave Moylan
