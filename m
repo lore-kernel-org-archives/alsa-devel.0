@@ -1,12 +1,16 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: .asoundrc file
-Date: Fri, 16 Aug 2002 20:32:15 +0900
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: PCM ioctls
+Date: Fri, 16 Aug 2002 15:12:25 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5CE2BF.2070304@boosthardware.com>
+Message-ID: <20020816221225.10207.qmail@web11504.mail.yahoo.com>
+References: <s5hvg6x8dhi.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from web11504.mail.yahoo.com (web11504.mail.yahoo.com [216.136.172.36])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA04374
+	for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2002 00:12:31 +0200
+In-Reply-To: <s5hvg6x8dhi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,48 +19,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
->>>What is the purpose of the ctl.rme9652 declaration? My plugin devices
->>>seem to work without it.
->>>
->>
->>It is a configuration for the onboard mixer. Very little is known about 
->>why we use it. Some programs (JACK) won't work without it.
-> 
-> 
-> not really.
-> 
-> the control device for a card is the way that programs modify various,
-> suprise, "controls" on the card. for many cards, this includes the
-> mixer, though in the example above, the rme9652 has no mixer. it does
-> still have a number of controls, however, and JACK needs to be able to
-> access them. Examples include the digital i/o sync indicators, sample
-> clock source switch and so on.
-> 
+Hi,
 
-Great that's a nice simple explanation. I have added it to the asoundrc 
-page.
+There are 3 standard PCM ioctls, and a driver could potentially support others
+via its own ioctl function registered in the snd_pcm_ops_t structure. Could
+anyone give me a hint regarding how an application could then call such
+standard and other ioctls?
 
-> as for why the name itself is required: JACK was written to open both
-> the PCM and control devices using a single name. I felt this was nicer
-> and less confusing than asking the user to specify two different
-> names.
-> 
-
-Someone might want to submit this as a note too.
+Thanks,
+Guilhem.
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+__________________________________________________
+Do You Yahoo!?
+HotJobs - Search Thousands of New Jobs
+http://www.hotjobs.com
 
 
 -------------------------------------------------------
