@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
-Date: Sat, 19 Mar 2005 19:51:23 +0100
-Message-ID: <042320a921946a606e5d7052cdf6cd1f@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001002]: Software volume control should be enabled by default for CMI9761
+Date: Sat, 19 Mar 2005 20:42:21 +0100
+Message-ID: <404d0c7f5d474d1416a8c57b9ccc5390@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DA961E6
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:51:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 72CA01E9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 20:42:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,86 +21,53 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1002> 
 ======================================================================
-Reported By:                jwrdegoede
+Reported By:                e_val
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   483
-Category:                   ordinary pcm
+Issue ID:                   1002
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             09-06-2004 11:39 CEST
-Last Modified:              03-19-2005 19:51 CET
+Date Submitted:             03-19-2005 20:42 CET
+Last Modified:              03-19-2005 20:42 CET
 ======================================================================
-Summary:                    alsa-libs samplerate-conversion causes assertion
-frames <= snd_pcm_mmap_avail
+Summary:                    Software volume control should be enabled by default
+for CMI9761
 Description: 
-When running xmame (x.mame.net) with alsa selected for sound output on my
-es1688. I get the following error:
-pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
-snd_pcm_mmap_avail(pcm)' failed.
+Sinc version 1.0.8, ALSA provides softvol plugin to deal with those chips
+which does not provide hardware volume control. So, according to the
+changelog, defunct  volume bars 'PCM Playback Volume' and similiar were
+removed from /usr/share/alsa/*.conf for thos cards. In theory, they should
+not be removed but replaced with softvol, as it was done for some chips.
+(eg. Azalia).
 
-I checked the source for the alsa driver (I'm one of the xmame developers)
-and the number of frames it is passing to snd_pcm_writei is always smaller
-then or equal to the value
-returned by:
-err = snd_pcm_status(priv->pcm_handle, status);
-/* check err */
-frames = snd_pcm_status_get_avail(status);
-
-After some more testing I noticed that alsa returns 22050 as the actual
-acquired samplerate, but I know from the oss days that my card can only do
-22095 not 22050. So I thought this error might be caused by the
-alsa-lib-samplerate conversion code, which appearantly is default enabled
-(Fedora feature?)
-
-To test my hypothesis I tried creating an almost empty .asoundrc:
+The simple construct
 pcm.!default {
-type hw
-card 0
+  type softvol
+  slave.pcm "hw:0,0"
+  control {
+    name "PCM Playback Volume"
+  }
 }
+in /etc/asound.conf is sufficient for my CMI9761-based audiocard to work.
+I think it would be beter to integrate a more advenced version of the code
+into system-wide configs.
 
-ctl.!default {
-type hw
-card 0
-}
-
-And now alsa-lib returns 22095 as the acquired samplerate and everything
-works fine! So IMHO this problem is clearly somewhere in alsa-libs
-samplerate conversion.
-
-I've searched the internet for this assertion and I believe this bug has
-bitten more people and applications and needs fixing ASAP. (note I'm not
-saying this because I need it fixed, since the .asoundrc workaround works
-fine for me, but I'm saying this in the general interest)
 
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 19:26 
-----------------------------------------------------------------------
-What was in your /etc/asound.conf before you added the .asoundrc?
-
-----------------------------------------------------------------------
- jwrdegoede - 03-19-05 19:51 
-----------------------------------------------------------------------
-This was quite some time ago currently I have a different computer with a
-newer version of my distro (Fedora) but I believe that there was no
-/etc/asound.conf . Atleast the current Fedora doesn't have one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-06-04 11:39 jwrdegoede     New Issue                                    
-03-19-05 19:26 jdthood        Note Added: 0004067                          
-03-19-05 19:51 jwrdegoede     Note Added: 0004068                          
+03-19-05 20:42 e_val          New Issue                                    
 ======================================================================
 
 
