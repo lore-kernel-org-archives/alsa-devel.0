@@ -1,12 +1,13 @@
-From: Eric Benson <eric_a_benson@yahoo.com>
-Subject: Analog Devices AD1887 support
-Date: Mon, 01 Jul 2002 12:13:05 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: poll_descriptors_count
+Date: Mon, 1 Jul 2002 23:33:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D20A9C1.2080608@yahoo.com>
+Message-ID: <Pine.LNX.4.33.0207012331310.2013-100000@pnote>
+References: <20020701171541.GA13023@reverberate.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20020701171541.GA13023@reverberate.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +16,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, eric_a_benson@yahoo.com
+To: Joshua Haberman <joshua@haberman.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 1 Jul 2002, Joshua Haberman wrote:
 
+> * Paul Davis (pbd@op.net) wrote:
+> > >Also, how should programs interpret multiple poll descriptors: if the
+> > >poll succeeds on some descriptors but not others, does this mean the
+> > >stream is only "partially" ready?
+> > 
+> > yes. see the internals of JACK's jack/drivers/alsa/alsa_driver.c
+> 
+> Honestly, I'm afraid to look at that file too carefully since it is GPL
+> and PortAudio is BSD.  This puts me in kind of a weird situation.
+> 
+> > >Also, is snd_pcm_poll_descriptors_revents() understood to return the
+> > >events that have triggered on just *one* poll descriptor or on *all*?  In
+> > >other words, are you ANDing bitmasks or ORing them?  Right now the
+> > >semantics are impossible to deduce because the function just returns the
+> > >revents verbatim since there is only one poll descriptor.
+> > 
+> > The semantics are those of POSIX poll(2): it returns the status for
+> > each file descriptor. ALSA's low level and mid level drivers don't
+> > modify this in anyway. If there 3 fd's for playback and 2 for capture,
+> > then the return data would indicate status for each of the 5 fd's
+> > (assuming you asked for it for all 5).
+> 
+> The prototype for this function is:
+> 
+> int snd_pcm_poll_descriptors_revents  ( snd_pcm_t *pcm,
+>                                         struct pollfd *pfds,
+>                                         unsigned int   nfds,
+>                                         unsigned short *   revents
+>                                       )
+> 
+> Are you saying that the revents paramter is treated as an array?  I was
+> under the impression that it is treated as a pointer to a single short.
+> This code fragment from test/pcm.c seems to confirm this interpretation:
+> 
+> static int wait_for_poll(snd_pcm_t *handle, struct pollfd *ufds, unsigned
+>                          int count)
+> {
+>     unsigned short revents;
+> 
+>     while (1) {
+>         poll(ufds, count, -1);
+>         snd_pcm_poll_descriptors_revents(handle, ufds, count, &revents);
+>         if (revents & POLLERR)
+>             return -EIO;
+>         if (revents & POLLOUT)
+>             return 0;
+>     }
+> }
+> 
+> This gives me the impression that snd_pcm_poll_descriptors_revents() is a
+> function that somehow "summarizes" all of the pfds into a single revents
+> that speaks to the status of the entire PCM handle.
 
-I'm trying to get sound working on an IBM NetVista X41 model 2283, an Intel P4 all-in-one computer with limited expansion capability (no full-size PCI slots). I built Alsa from CVS on Red Hat 7.3, kernel 2.4.18-5. This unit has the Analog Devices AD1887 chip on the motherboard. I specified snd-intel8x0 in /etc/modules.conf. The module loads, I unmuted and set levels in the mixer, audio applications appear to work, but no sound comes out. I suspect this is very close to working, but I don't know where to proceed from here. The soundcard matrix mentions the AD1885 and AD1886 but not the AD1887. Has anyone got this chipset working yet?
+Yes, it translates multiple revents into one for application. Please, use
+this function for the library flexibility.
 
-If someone can guide me in the right direction I can probably get this working myself, assuming the changes are small relative to the existing AD188x chips.
+						Jaroslav
 
-This message shows up in /var/log/messages:
-Jun 22 13:52:14 xp2 kernel: PCI: Setting latency timer of device 00:1f.5 to 64
-Jun 22 13:52:16 xp2 kernel: intel8x0: clocking to 41138
-
-And this is from /proc/pci:
-Bus  0, device  31, function  5:
-    Multimedia audio controller: Intel Corp. 82801BA/BAM AC'97 Audio (rev 18).
-      IRQ 5.
-      I/O at 0x1c00 [0x1cff].
-      I/O at 0x1880 [0x18bf].
-
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
