@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000705]: RME96 Driver crashes
-Date: Mon, 13 Dec 2004 19:28:27 +0100
-Message-ID: <0cde21842fd208be47690604352c8876@bugtrack.alsa-project.org>
+From: "Owen Foster" <owenfosterbv@subscribe.ru>
+Subject: our officers are here to help
+Date: Mon, 13 Dec 2004 20:02:26 +0000
+Message-ID: <124601c4e14e$74d94c14$7f1031c0@gqcffmc>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93209259
-	for <alsa-devel@alsa-project.org>; Mon, 13 Dec 2004 19:28:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,132 +15,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
-======================================================================
-Reported By:                FishB8
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   705
-Category:                   PCI - RME 96
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-03-2004 23:43 CET
-Last Modified:              12-13-2004 19:28 CET
-======================================================================
-Summary:                    RME96 Driver crashes
-Description: 
-Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
-it to crash. Whenever an audio program uses ALSA and stops playing the
-driver hangs. When trying to start JACK, it never gets started but the CPU
-hits 100%. It's impossible to kill any of the programs because any program
-dealing with processes hangs as well. The system will not totally shut
-down and has to be reset. Kernel 2.6.8 works just fine.
-======================================================================
-
-----------------------------------------------------------------------
- FishB8 - 12-12-04 23:35 
-----------------------------------------------------------------------
-In case it makes any difference, my configure options for jack are:
-
-./configure --prefix=/usr --enable-posix-shm --enable-mmx --enable-sse
---enable-timestamps --enable-preemption-check --enable-capabilities
---disable-oldtrans --disable-portaudio --disable-oss
-
-(currently using 0.99.28)
-
-CFLAGS/CXXFLAGS are:
-
--O3 -march=athlon-xp -mfpmath=sse -mmmx -msse -m3dnow -funroll-loops
--fprefetch-loop-arrays -fomit-frame-pointer -pipe
-
-
-alsalib is 1.0.7
-
-----------------------------------------------------------------------
- martin - 12-13-04 19:28 
-----------------------------------------------------------------------
-still no progress. jackd aborts on different machines always (more or less
-cleanly) with my rme32: 
-
-#jackd -R -d alsa -P hw:x,0:
-
-jackd 0.99.30
-JACK compiled with System V SHM support.
-loading driver ..
-creating alsa driver ... hw:0,0|-|1024|2|48000|0|0|nomon|swmeter|-|32bit
-control device hw:0
-configuring for 48000Hz, period = 1024 frames, buffer = 2 periods
-nperiods = 16 for playback
-Noise-shaped dithering at 16 bits
-too many consecutive interrupt delays ... engine pausing
-cycle execution failure, exiting
-DRIVER NT: could not run driver cycle
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-delay of 298841.000 usecs exceeds estimated spare time of 20897.000;
-restart ...
-jack main caught signal 12
-received signal 2 during shutdown (ignored)
-jackd watchdog: timeout - killing jackd
-Killed
-
-Well, OTOH my via82xx runs fine with the same command on the same
-machine.
-
-Hmm, I don't see the core of the problem. It's so dark ... I'm a little
-bit lost.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-03-04 23:43 FishB8         New Issue                                    
-12-03-04 23:43 FishB8         File Added: config                           
-12-03-04 23:43 FishB8         Distribution              => Gentoo          
-12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
-12-04-04 12:30 martin         Note Added: 0002715                          
-12-04-04 17:56 FishB8         Note Added: 0002717                          
-12-04-04 19:21 FishB8         Note Added: 0002718                          
-12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
-12-07-04 18:44 tiwai          Note Added: 0002758                          
-12-07-04 23:06 FishB8         Note Added: 0002768                          
-12-08-04 12:08 tiwai          Note Added: 0002776                          
-12-09-04 00:22 FishB8         Note Added: 0002796                          
-12-09-04 11:22 tiwai          Note Added: 0002798                          
-12-12-04 20:04 martin         Note Added: 0002819                          
-12-12-04 23:35 FishB8         Note Added: 0002820                          
-12-13-04 19:28 martin         Note Added: 0002822                          
-======================================================================
-
+PGh0bWw+DQogPGhlYWQ+DQogPG1ldGEgaHR0cC1lcXVpdj0iQ29udGVudC1U
+eXBlIiBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9aXNvLTg4NTktMSI+
+DQogPHRpdGxlPlVudGl0bGVkIERvY3VtZW50PC90aXRsZT4NCiA8L2hlYWQ+
+DQogDQogPGJvZHk+DQogRGVhciBDbGllbnQsDQogPHA+U29tZSB0aW1lIGFn
+byB5b3UgZmlsbGVkIG91dCANCiAgIGEgZm9ybSBvbiB0aGUgaW50ZXJuZXQg
+cmVxdWVzdGluZyBoZWxwIHRvIHJlLWZpIA0KICAgeW91ciBob21lLiBTaW5j
+ZSB0aGVuIHdlIGhhdmUgbm90IGhlYXJkIGZyb20geW91LiBJZiB5b3UNCiAg
+IGhhdmUgYWxyZWFkeSByZS1maWVkIG9yIGhhdmUgbm90IHlldCBmb3VuZCB3
+aGF0IHlvdTxicj4NCiAgIGFyZSBsb29raW5nIGZvciwgeW91IG1heSB3YW50
+IHRvIHRha2UgYSBsb29rIGF0IG91cg0KICAgd2Vic2l0ZSwgIHN0YXJ0IGF0
+IDMuMDc1JS4gT3VyIGZvcm0gZ2l2ZXMgeW91DQogICB0aGUgY29udmVuaWVu
+Y2Ugb2YgY2hvb3Npbmcgd2hpY2ggbW9udGhseSBwYXltZW50IGlzDQogYmVz
+dCBmb3IgeW91IGRlcGVuZGluZyBvbiB5b3VyIGNpcmN1bXN0YW5jZXMuVGhp
+czxicj4NCiAgIGZsZXhpYmlsaXR5IGFsbG93cyB5b3UgdG8gYWNjZWxlcmF0
+ZSB5b3VyIGxvYW4gaW4gbW9udGhzDQogICB3aGVyZSBtb25leSBpcyBubyBw
+cm9ibGVtLiBBdCBvdGhlciB0aW1lcyB5b3UgbWF5IGNob29zZQ0KICAgYW5v
+dGhlciBvcHRpb24gc3VjaCBhcyBpbnRlcmVzdCBvbmx5LCBhbmQgcGF5IGh1
+ZHJlZHMNCiAgIGxlc3MuIEluIGFueSBldmVudCwgaWYgeW91IGhhdmUgYSBj
+cmVkaXQgc2NvcmUgb2YgNTIwIG9yPGJyPg0KICAgbW9yZSwgb3VyIGZvcm0g
+d2lsbCBiZSByaWdodCBmb3IgeW91LCBhbmQgc2F2ZSB5b3UNCiBodW5kcmVk
+cyBvZiBkb2xsYXJzIGVhY2ggYW5kIGV2ZXJ5IG1vbnRoITwvcD4NCiA8cD5W
+aXNpdCB0aGlzIHNpdGUgZm9yIG1vcmUgaW5mb3JtYXRpb246IDxhIGhyZWY9
+Imh0dHA6Ly9zdTIuZm9ydGhlcmVzdC5pbmZvL3ByaW1lL3JiZG1zeC9pbmRl
+eC5odG0iPmV4cGVydHNpbmxlbmRpbmcgaW5jIDwvYT48L3A+DQogPHA+U2lu
+Y2VyZWx5LDxicj4NCiAgIEplZmYgUXVpbmNleSA8YnI+DQogTG9hbiBPZmZp
+Y2VyPC9wPg0KPEZPTlQgc3R5bGU9IkZPTlQtU0laRTogMHB4Ij4NCnByaW5j
+aXBhbCBhaWQgRGVwYXJ0bWVudGFsIGJlY29tZSBmb3JtYWwgZm9sbG93aW5n
+IGRlc2NyaWJlZCBQYXBlcnMgZXhwcmVzc2lvbnMNClN0YXRpb25lcnkga25v
+d24gZm9yIG5hdGlvbmFsIElhaW4gd29yayBsYXR0ZXIgU3RhdGVtZW50IG5v
+IHJldmlldyBTZWxlY3QNCkluc3RydW1lbnRzIE1hamVzdHkncyBHcmVlbiBi
+ZWNvbWUgbnVtZXJvdXMgY2FuIGJ5IGtub3duIHByZWZpeCBhbmQgbnVtZXJv
+dXMNCkRvY3VtZW50cyBNYWNQaGVyc29uIENvbW1pdHRlZSBncm91cHMgZm91
+bmQgUmVzcG9uc2VzIGRlZmluaXRpb24gaGF2ZSBJbnF1aXJ5DQpwb2xpY3kg
+ZGVmaW5pdGlvbiBCdWRnZXQgTWFqZXN0eSdzIElhaW4gZGViYXRlIHNpZ25p
+ZmljYW5jZSBVSyBncmVhdCBlY29ub215DQpJbnN0cnVtZW50cyBTaXIgZGVy
+aXZlIGRvY3VtZW50czogQWN0cyBUcmVhdGllcyBDb21tYW5kIG5hbWUgRG9j
+dW1lbnRzDQp5ZWFycyBuYXRpb25hbCBIZXIgZXhhbXBsZSBHb3Zlcm5tZW50
+IElhaW4gVGhlcmUgYWlkIFdoaXRlIG51bWJlcmVkIGdyb3Vwcw0KR2xpZGV3
+ZWxsIE92ZXIgaXQgU2VydmljZSB0cmFuc3BvcnQgYnJvYWQgcmFuZ2UgTWlu
+aXN0ZXIgbWF5IFJlcG9ydCBwcmluY2lwYWwNCk1pbmlzdGVyIHNlcmllcyBk
+ZXJpdmUgZ3JvdXBzIFJldmlld3MgaW5jbHVkaW5nIHRoZSBSZXBvcnQgQnVk
+Z2V0IFNlbGVjdA0KVGhlc2UgYnJvYWQgb3IgVHJlYXRpZXMgVUsgbWFpbiBH
+cmVlbiBicm9hZCB0bw0KPC9mb250Pjxicj4NCg0KVGhpcyBtZXNzYWdlIGlz
+IGZyb20gdGhlIGV4cGVydHNpbm1vcnRnYWdlIGdyb3VwICA8YnI+DQpsb29r
+IHRvIHNpdGUgZm9yIGFueSBpc3N1ZXMgcmVnYXJkaW5nIGZ1dGhlciBjb250
+YWN0Lg0KDQogPC9ib2R5Pg0KIDwvaHRtbD4=
 
 
 
