@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000145]: Nforce2 Audio - Bacon Fry ssZzZZZZzzle
-Date: Tue, 28 Sep 2004 02:57:08 +0200 (CEST)
+Subject: [ALSA - driver 0000410]: Cannot listen to line-in and aux at the same time
+Date: Wed, 29 Sep 2004 02:14:33 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928005708.7C0BB33018@server.perex-int.cz>
+Message-ID: <20040929001433.6094446008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6BCD2EB
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 02:57:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBA5F317
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 02:14:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,168 +20,118 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been REOPENED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000145
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000410
 ======================================================================
-Reported By:                onemaN
-Assigned To:                
+Reported By:                skamp
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     145
-Category:                   PCI - intel8x0
+Bug ID:                     410
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               slackware!
-Kernel Version:             2.6.4
+Status:                     feedback
+Distribution:               LFS 5.1.1, BLFS 5.1
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             03-18-2004 09:07 CET
-Last Modified:              09-28-2004 02:57 CEST
+Date Submitted:             07-27-2004 18:48 CEST
+Last Modified:              09-29-2004 02:14 CEST
 ======================================================================
-Summary:                    Nforce2 Audio - Bacon Fry ssZzZZZZzzle
+Summary:                    Cannot listen to line-in and aux at the same time
 Description: 
-Im using 2.6.4 with an abit nf7-s 2.0. Bacon fry is apparent on both analog
-and spdif output (exactly the same effect). When playing music the pitch
-is correct (with 2.6.2 everything was speeded up 20% it seemed) 
+I cannot listen to sound coming from line-in and aux at the same time,
+since I have to switch between either one of them with the "capture"
+switch.
+I can't listen to both line-in or aux and pcm, for that matter, since I
+have to switch H/W and H/W 1 from PCM Out to H/W In 0 and vice versa.
 
-It does this every time when I play mp3 or flac files with xmms or any
-other player. 
-
-OK so when I got on this bug system I saw there was allready many bugs
-listed simaler to this. The reason im making effort here, is because Im
-willing to be contacted and work with you guys to get this one right, I
-want of course to use this linux box as a half terabyte flac jukebox, and
-I cant do that if the sound is anything less than perfect. ;P 
-
-Let me know! I will do what I can to help debug!
-
--David 
-david@wdtp.com
+I have my TV plugged to line-in, and my DXR3 MPEG2 decoder plugged to aux,
+and I found it convenient with my former sound card (Sound Blaster Live!
+with OSS drivers) to be able to listen to either source (TV, DVD or PCM)
+without unplugging my headphones or triggering any switch.
 ======================================================================
 
 ----------------------------------------------------------------------
- onemaN - 03-18-2004 09:11 CET 
+ tiwai - 07-30-2004 16:51 CEST 
 ----------------------------------------------------------------------
-also 'analog to spdif' doesnt seem to do a thing :[] ....
-
-----------------------------------------------------------------------
- perex - 03-23-2004 16:20 CET 
-----------------------------------------------------------------------
-Try to find 'IEC958 Input Monitor' control in alsamixer and turn it off (or
-use amixer).
+Isn't it a hardware limitation?
 
 ----------------------------------------------------------------------
- onemaN - 03-23-2004 18:15 CET 
+ skamp - 08-01-2004 14:29 CEST 
 ----------------------------------------------------------------------
-Its allways been off..
-
-----------------------------------------------------------------------
- perex - 03-23-2004 18:42 CET 
-----------------------------------------------------------------------
-Could you try to test latest 2.6.5-rc kernel?
+How would I know? I can't believe a €80+ sound card wouldn't provide this
+feature anyway - if that's the case, then I've been really screwed...
 
 ----------------------------------------------------------------------
- onemaN - 03-23-2004 19:16 CET 
+ skamp - 08-01-2004 18:00 CEST 
 ----------------------------------------------------------------------
-Im still on 2.6.4, when 2.6.5 comes I will be there. I installed all the
-103b componets (besides the driver witch is compiled into my kernel) 
+OK, I just installed Windows Server 2003 in order to test Terratec's
+official drivers, and I found out what I expected: the drivers and control
+panel allow me to listen to as well as record from all sources (pcm,
+line-in, aux...), either each one separately or all of them
+simultaneously. I can actually select exactly which source(s) I want to
+listen to or record from. This is the expected feature set, and it works
+right out of the box.
 
-Then I set up a .asoundrc file, and now if i use alsaplayer or aplay I can
-get distortion free output from spdif!
-
-.asoundrc file: 
-
-cm.nforce-hw {
-type hw
-card 0
-}
-
-pcm.!default {
-type plug
-slave.pcm "nforce"
-}
-
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000000,0 is analog out and 0,2 is spdif out.
-
-pcm.nforce {
-type dmix
-ipc_key 1234
-slave {
-pcm "hw:0,2"
-period_time 0
-period_size 1024
-buffer_size 4096
-rate 44100
-}
-}
-
-ctl.nforce-hw {
-type hw
-card 0
-}
-
-
-XMMS and everything else still frys etc from spdif... future looking good
-tho
+I would like to know what is needed for bringing full support of this
+sound card to linux (via alsa, I guess): documentation from the
+manufacturer? time? motivation? money? more developers? user feedback?
+testing?
 
 ----------------------------------------------------------------------
- onemaN - 03-23-2004 19:26 CET 
+ tiwai - 08-02-2004 18:21 CEST 
 ----------------------------------------------------------------------
-Still some crackling when i for example use the volume slider on
-alsaplayer, and once or twice its skipped for unknown reason..
-
-----------------------------------------------------------------------
- cosmix - 07-22-2004 05:44 CEST 
-----------------------------------------------------------------------
-This persists with kernel 2.6.7 and ALSA versions 1.0.4 (incl. in 2.6.7),
-1.0.5, 1.0.5a and current CVS (at the time of writing). It practically
-renders the onboard audio on nforce2 motherboards useless with ALSA :(
-
-Note that on a nforce2 equipped motherboard, disabling the 'Disconnect on
-STPGNT' bit on the board, the problem goes away almost completely. This
-may provide a clue as to why this happens.
-
-Hope this helps.
+AFAIK, some inputs are just a connection from AC97 codec.
+You can try to adjust Line, Aux, etc playback volumes and
+choose 'Mix' as the capture source, so that the mixed playback
+(passthru) signals on that ac97 chip is routed back to the
+capture.
 
 ----------------------------------------------------------------------
- mcbridematt - 07-31-2004 17:11 CEST 
+ ungod - 09-28-2004 22:37 CEST 
 ----------------------------------------------------------------------
-Possible hardware bug relating to the fact that most nForce MCP/MCP-T
-southbridges aren't cooled adequately?
-
-I'm getting bacon fry in both Windows and Linux occasionally. (stick in a
-C-Media 8738 and it goes away..) One of my friends had the same problem
-but it stopped when he placed a heatsink on the southbridge. I'll test it
-out next time it starts frying. I haven't had the IEC input monitor on at
-all, ever either.
+This is fixed in the latest CVS (See bugnote 0000510 for details)
 
 ----------------------------------------------------------------------
- rotech - 09-28-2004 02:57 CEST 
+ tiwai - 09-28-2004 23:15 CEST 
 ----------------------------------------------------------------------
-I have cured this problem with the following line.
+Ok, then close this bug now.
 
-Does it work for others?
-
-amixer set "Surround Down Mix" off
+----------------------------------------------------------------------
+ skamp - 09-29-2004 02:14 CEST 
+----------------------------------------------------------------------
+I just installed alsa-* from CVS: the bug is NOT fixed. I still can't
+listen to both line-in AND sound coming from applications (line-out - I'm
+not talking about optical-out). Besides, line-in is now monophonic,
+although I can hear the sound in both speakers of my headphones.
+"amixer cset numid=24 on,off" (that's the "Capture switch") returns
+"values=off,on", and so does "amixer cset numid=24 off,off".
+The mixer (or driver, I don't know) is also very buggy (as you predicted);
+it took me about 15 minutes just to figure out how to hear sound coming
+from line-in at a reasonable volume.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-18-04 09:07 onemaN         New Bug                                      
-03-18-04 09:07 onemaN         Distribution              => slackware!      
-03-18-04 09:07 onemaN         Kernel Version            => 2.6.4           
-03-18-04 09:11 onemaN         Bugnote Added: 0000640                       
-03-18-04 09:36 onemaN         Bug Monitored: onemaN                        
-03-23-04 16:20 perex          Bugnote Added: 0000666                       
-03-23-04 18:15 onemaN         Bugnote Added: 0000674                       
-03-23-04 18:42 perex          Bugnote Added: 0000686                       
-03-23-04 19:16 onemaN         Bugnote Added: 0000691                       
-03-23-04 19:26 onemaN         Bugnote Added: 0000692                       
-07-22-04 05:44 cosmix         Bugnote Added: 0001466                       
-07-31-04 17:11 mcbridematt    Bugnote Added: 0001510                       
-09-28-04 02:57 rotech         Bugnote Added: 0001944                       
+07-27-04 18:48 skamp          New Bug                                      
+07-27-04 18:48 skamp          File Added: aadebug                          
+07-27-04 18:48 skamp          Distribution              => LFS 5.1.1, BLFS 5.1
+07-27-04 18:48 skamp          Kernel Version            => 2.4.26          
+07-30-04 16:51 tiwai          Bugnote Added: 0001491                       
+08-01-04 14:29 skamp          Bugnote Added: 0001515                       
+08-01-04 18:00 skamp          Bugnote Added: 0001516                       
+08-02-04 18:21 tiwai          Bugnote Added: 0001523                       
+09-28-04 22:37 ungod          Bugnote Added: 0001958                       
+09-28-04 23:15 tiwai          Bugnote Added: 0001959                       
+09-28-04 23:15 tiwai          Assigned To               => tiwai           
+09-28-04 23:15 tiwai          Resolution               open => fixed       
+09-28-04 23:15 tiwai          Status                   new => resolved     
+09-29-04 02:14 skamp          Bugnote Added: 0001963                       
+09-29-04 02:14 skamp          Resolution               fixed => reopened   
+09-29-04 02:14 skamp          Status                   resolved => feedback
 ======================================================================
 
 
