@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: new alsa driver for ti omap chip
-Date: Thu, 12 Feb 2004 12:22:31 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] UA-3FX support
+Date: Thu, 12 Feb 2004 12:30:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402121217270.1962@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F28EC1@DBDE01>
- <s5h65eca7jw.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0402121210270.14784-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65eca7jw.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,69 +15,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Gupta, Kshitij" <kshitij@ti.com>, "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Frank Barknecht <fbar@footils.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Feb 2004, Takashi Iwai wrote:
+Frank Barknecht wrote:
+> Now I discovered a teenytiny switch on the back if the UA-3 FX that
+> switches the "Advanced Driver"  features of the device on or off.
+> Setting this to OFF, I now got ALSA to recognize the device as a
+> simple 44100 Hz device. No higher samplerates, though.
+> Probably a quirk is needed?
 
-> At Thu, 12 Feb 2004 12:56:04 +0530,
-> Gupta, Kshitij wrote:
-> > 
-> > hi,
-> > 
-> > 	I am trying to write an alsa driver for a tsc2101 codec on a arm
-> > based SOC.  The control interface between the SOC and the tsc2101 codec is
-> > via SPI. 
-> > And the data interface is a I2S interface.  Can some one suggest a good
-> > starting point to start such a driver.  
-> 
-> some ALSA drivers use their own i2c functions, although there is a
-> generic i2c layer on linux kernel.  for example, delta.c or ews.c of
-> ice1712 driver use i2c (SPI) transfer (which calls ak4xxx-adda.c).
-> but it's rather complex to refer...
-> 
-> the i2c transfer is really easy to implement.  do just like the spec
-> says.  a pseudo code is like below.
-> 
-> 	chip_select_low();
-> 	udelay(1);
-> 
-> 	for (i = 15; i >= 0; i--) {
-> 		set_bit_clock(0);
-> 		udelay(1);
-> 		if (value_to_send & (1 << i))
-> 			set_bit_data(1);
-> 		else
-> 			set_bit_data(0);
-> 		udelay(1);
-> 		set_bit_clock(0);
-> 		udelay(1);
-> 	}
-> 
-> 	chip_select_high();
+The descriptors in "advanced" mode look like this:
 
-Note that I2S is not I2C. I2S is used to connect A/D and D/A converters 
-(three wires - clock, l/r word and sample bit). We don't talk directly 
-with any device over this serial bus.
+> unknown descriptor type: 0b 24 02 01 02 03 18 01 44 ac 00
 
-I think that the driver must be written for a sound bridge between host
-and the converters. In case of ARM platform, it's usually an integrated
-serial controller which can do DMA transfers.
+which is 24 bits at 44.1 kHz.  Probably there is another switch for
+the sample rate. :-)
 
-So, this I2S question is a bit irrelevant (it's for hardware designers, 
-but not for driver developers).
+The device has another interface (3) without any descriptors.  You
+wouldn't know, just by chance, if the Windows driver offers some MIDI
+port, or some device-specific control application for the effects?
 
-Because I don't know the behaviour of the sound / serial bridge, I cannot 
-suggest a driver, but if it's similar as ARM1100 architecture, then we 
-have already a driver for it.
 
-						Jaroslav
+Regards,
+Clemens
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+
+
+add UA-3FX support
+
+
+Index: alsa-kernel/usb/usbquirks.h
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
+retrieving revision 1.27
+diff -u -r1.27 usbquirks.h
+--- alsa-kernel/usb/usbquirks.h	11 Feb 2004 12:15:55 -0000	1.27
++++ alsa-kernel/usb/usbquirks.h	12 Feb 2004 11:19:01 -0000
+@@ -502,6 +502,32 @@
+ 	}
+ },
+ {
++	/*
++	 * This quirk is for the "Advanced Driver" mode. If off, the UA-3FX
++	 * is standard compliant, but has only 16-bit PCM.
++	 */
++	USB_DEVICE(0x0582, 0x0050),
++	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
++		.vendor_name = "EDIROL",
++		.product_name = "UA-3FX",
++		.ifnum = QUIRK_ANY_INTERFACE,
++		.type = QUIRK_COMPOSITE,
++		.data = & (const snd_usb_audio_quirk_t[]) {
++			{
++				.ifnum = 1,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = 2,
++				.type = QUIRK_AUDIO_STANDARD_INTERFACE
++			},
++			{
++				.ifnum = -1
++			}
++		}
++	}
++},
++{
+ 	USB_DEVICE(0x0582, 0x0052),
+ 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
+ 		.vendor_name = "EDIROL",
+
+
 
 
 -------------------------------------------------------
