@@ -1,98 +1,83 @@
-From: "Odilia Devazier" <jaxxxxo@gmail.com>
-Subject: 100,000,000 MP3's - Free Downloads - Learn How Here.andy
-Date: Thu, 18 Nov 2004 06:01:38 -0500
-Message-ID: <20041118135928.64B2D3A11B@mail.perex.cz>
-Reply-To: "Odilia Devazier" <amF4eHh4b0BnbWFpbC5jb20=@centras.lt>
-Content-Type: text/plain;charset="iso-8859-1"
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: andy@alsa-project.org, 3a31f094.480aaafb@alsa-project.org, abramo@alsa-project.org, alsa-announce@alsa-project.org, alsa-conf@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org
+From: Olaf Christ <olaf-Cb7RZHV19h6Y/VGTjfr9Sg@public.gmane.org>
+Subject: Firewire Audio Card Support
+Date: Thu, 18 Nov 2004 15:15:52 +0100
+Message-ID: <200411181515.52218.olaf@solutionworks.de>
+References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net>
+	<419C9D47.4090606@x-i.net>
+Reply-To: "The Linux Audio Developers' Mailing List"
+	<linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+In-Reply-To: <419C9D47.4090606-l4pODZ2nMLw@public.gmane.org>
+Content-Disposition: inline
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=help>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-dev>,
+	<mailto:linux-audio-dev-request-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org?subject=subscribe>
+Sender: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Errors-To: linux-audio-dev-bounces-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+To: linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, linux-audio-dev-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org, alsa-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, alsa-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi andy@alsa-project.org
+Hi,
 
-Napster style here again
-Join up now ... and get unlimited F*R*E*E downloads for Life.
-Unlimited access to Movies, Music, Games, Software & more..
-Membership Guaranteed Legal ... don't get sued
-HTTP://JMVENSJXWALZI.REALWORKSFILECOMPANY.COM
+as the owner of a firewire audio card (Motu 828mkII) I was disappointed when 
+trying to use it under linux. Asking Motu to provide tech docs and/or linux 
+drivers is useless: "We will possibly release linux drivers in the future, 
+but we never release any kind of technical documentation."
+Is there any effort to join forces for putting pressure on the manufacturers 
+yet? I am willing to create an address list ordered by audio card 
+manufacturer/model to make the manufacturers realize there is a need for 
+linux support.
 
-Download F*R*E*E :
-unreleased songs
-greate your own cd mixes
-convert downloads to DVD
-play the hottest new games
-watch movies before they are out 
-· Unlimited Music & MP3s
-· Unlimited Movies
-· Unlimited Games
-· Unlimited Software
-· Unlimited TV Shows
-· Unlimited Song Lyrics
-· Unlimited Audio Books
-HTTP://KSZNXYJZV.REALWORKSFILECOMPANY.COM
+Any comments?
 
-More Member Bonuses F*R*E*E :
-· DVD Copying Software
-· MP3 Burning Software
-· Anti-Virus Software
-· Game Copying Software
-· Pop-Up Killer Software
-· Spyware Killer Software
-· Adware Killer Software
-HTTP://ILBVK.REALWORKSFILECOMPANY.COM
-
-Even More Benefits F*R*E*E : 
-· Latest FileSharing Software
-· In-Depth Visual Tutorials
-· Internet History Cleaner
-· Privacy Protection Software
-· Access to 90,000,000 Songs
-· Unlimited Technical Support
-· Stay Legal - Don't Get Sued
-HTTP://QQBFA.REALWORKSFILECOMPANY.COM
-
-YW5keUBhbHNhLXByb2plY3Qub3Jn
- Her daughters smart sony is angry and perhaps mine beautiful expensive beautiful mouse looks around.
- Our fancy white door stands-still.
- Any silver printer adheres.
- Our children odd shaped book is thinking.
- His green balloon falls the time that our hairy glasses is on fire.
- Her hairy boots snores and mine smart glasses calculates.
- Their smart door falls.
- Any noisy door adheres.
- Mine silver baby stands-still.
- His smart shining bottle show its value however, her daughters silver wine is angry.
- Mine round picture calms-down and perhaps her white noisy slopy stupid smart gun is on fire.
- Her daughters beautiful spoon sleeps or maybe our children golden round-shaped bottle arrives and still her soft gun stinks.
- Their bluish soft mobile phone stares.
- Her daughters purple beautiful clock smiles while a given silver green expensive car sleeps.
- Her daughters small clock adheres the time that any red kitchen smells.
- The little tall ipaq is thinking.
- Any little bluish stu
- pid small white soda makes sound or maybe his brothers small round white bicycle got an idea.
- Her soft slopy sony walks.
- Our children stupid stupid noisy forg makes sound.
- Her daughters well-crafted gun smells.
- Whose beautiful paper makes sound.
- Mine little gun smells.
- Any tall noisy binocyles is on fire while a given little small smart small paper arrives or maybe his white exam book stares and any small camera is on fire.
- His green carpet smells or mine shining kitchen stares and perhaps her stupid recycle bin looks around and still their red glove walks or whose small paper stares or maybe any given expensive binocyles adheres.
-should you wish to thanks but no thanks off
-do it here http://photo.to/outlist
+Olaf
 
 
 
--------------------------------------------------------
-This SF.Net email is sponsored by: InterSystems CACHE
-FREE OODBMS DOWNLOAD - A multidimensional database that combines
-robust object and relational technologies, making it a perfect match
-for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
+On Thursday 18 November 2004 14:01, derek holzer wrote:
+> Of course, the Firewire subsystem for Linux works fine. But AFAIK there
+> are no drivers existing for any firewire audio cards. Bug the various
+> manufacurers to release more technical info and they might eventually
+> show up.
+>
+> d.
+>
+> Victor LaLoggia wrote:
+> > Hello Frank;
+> >
+> >   Thank you for your response, and I do not mean to be contrary, but what
+> > about the work the folks at http://www.linux1394.org/ are doing?
+> >
+> >   I see that their subsystem has been included Linux kernel sources since
+> > version 2.3.40.  Does the subsystem not work?
+> >
+> >   Thanks,
+> >   vic
+> >
+> > -----Original Message-----
+> > From: Frank Barknecht <fbar-T1uUCcFPrxNAfugRpC6u6w@public.gmane.org>
+> > Sent: Nov 15, 2004 12:14 PM
+> > To: linux-audio-user-oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+> > Subject: Re: [linux-audio-user] Using Linux Laptop for Live Performance
+> >
+> > Hallo,
+> >
+> > Victor LaLoggia hat gesagt: // Victor LaLoggia wrote:
+> >>  I am just beginning my research into the available software and
+> >>  hardware, and would greatly appreciate any information. Especially
+> >>  on hardware - what would be the best usb/ firewire interface for
+> >>  live performance?
+> >
+> > No Firewire audio yet on Linux. The best in your case is PCMCIA, which
+> > has the lowest latency. VX-Pocket or RME cards are good choices. Also
+> > try, if your internal soundcard is enough.
+> >
+> > Ciao
