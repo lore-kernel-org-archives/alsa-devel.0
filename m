@@ -1,12 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Soundcard Matrix guidelines ?
-Date: Tue, 27 Jan 2004 13:13:09 +0900
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: 1.0.2 release
+Date: Tue, 27 Jan 2004 10:51:58 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4015E555.3030208@boosthardware.com>
-References: <20040126193137.353b1ae9.pochini@shiny.it>
+Message-ID: <Pine.LNX.4.58.0401271049310.3133@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,45 +14,80 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: ALSA development <alsa-devel@alsa-project.org>
+Cc: ALSA Announce <alsa-announce@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano Pochini wrote:
-> Who is the maintainer of the soundcard matrix ? What is the preferred
-> format for sending him updates ?
-> 
+Hello all,
 
-I am supposed to be that person :)
+	we released packages 1.0.2.
 
-For now you can make additions to the relevant page and send me the 
-revision.
+ChangeLog:
+**********
 
-Thanks.
+common
+  * added support for new automake
+alsa-driver
+  * general
+    - fixed typo in configure for detecting RedHat kernels
+    - added resource allocation failure messages to all drivers
+    - fixes in PCI memory allocation routines
+    - fixed the build of 2.6 kernel with modversion
+    - fixed PCI DMA allocation for most PCI cards
+    - added SNDRV_PCM_STATE_DISCONNECTED state
+    - more complete sysfs support
+    - fixed 2.2 kernel support
+    - added the support of stack dump at xrun
+    - Change -EINVAL to -EALREADY in snd_pcm_unlink()
+  * added intel8x0 modem driver
+  * sb16 - fixed PnP problems
+  * au88x0 - added pci fixup code
+  * ens1371
+    - cleanups in s/pdif controls
+    - added rear/line-in switch
+  * via82xx
+    - fixed DXS volume value
+    - more quirks
+  * intel8x0
+    - fixed the 6 channel output on nforce
+    - added more quirks
+    - added the workaround for a hardware bug in intel 440MX B-stepping
+  * cmipci - improved s/pdif status bits initialization
+  * emu10k1
+    - renamed "Surround Digital" -> "Surround" to avoid ac97 name clashing
+  * emusynth
+    - added native API (hwdep) for soundfont handling
+  * USB audio driver
+    - add support for Edirol UM-1SX
+    - added quirk for Sound Blaster MP3+
+  * MPU401
+    - fix names for MPU-401 ports
+  * HDSP
+    - set the PCI latency timer to 255 for fixing some misbehavior
+  * OSS emulation
+    - fixed the oops in OSS mixer when the control elements are dynamically changed
+    - a next attempt to fix click at the end of stream
+alsa-lib
+  * general
+    - added SNDRV_PCM_STATE_DISCONNECTED state
+    - fixed SHM memory leak fix in pcm routines
+    - fixed non-version build
+    - removed the function-in-function for qsort
+    - CMIPCI, ICE1712 - fixed the iec958 capture using asym plugin
+  * direct plugins
+    - close all file descriptors in server_job()
+    - improved compatibility with xine (fixes in poll() implemetation)
+    - added slowptr option which improves pointer accuracy
+    - dmix optimizations
+alsa-utils
+  * improved amidi
 
+						Jaroslav
 
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
-Http://www.djcj.org/gigs/ - Gigs guide Korea
-========================================
-
-
-Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
