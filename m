@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Mon, 28 Mar 2005 02:19:44 +0200
-Message-ID: <04de41fc3b9804ca1779265339987050@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000704]: low input levels
+Date: Mon, 28 Mar 2005 03:58:32 +0200
+Message-ID: <eb4faea9866585ce407e4aec28f1ce53@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5ABD225D
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 02:19:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A693C253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 03:58:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,68 +21,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1007> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
 ======================================================================
-Reported By:                msillence
-Assigned To:                jcdutton
+Reported By:                spamatica
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1007
-Category:                   PCI - ca0106
+Issue ID:                   704
+Category:                   PCI - ice1712
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               
-Kernel Version:             2.6.11.5
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-28-2005 02:19 CEST
+Date Submitted:             12-03-2004 21:46 CET
+Last Modified:              03-28-2005 03:58 CEST
 ======================================================================
-Summary:                    no audio in - unable to record
+Summary:                    low input levels
 Description: 
-I can only get a weak hiss from the card even with the recording level up
-full
+As was noted recently on Linx audio user. It seems atleast the DELTA cards
+(I've got a Delta 44) have too low input level. Others reported that it
+differs when running the same card in windows. Myself I run it exclusively
+in Linux and have found that recording external signals I have to turn the
+volume for the external (pro) equipment, to max to get a reasonably high
+signal.
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 03-28-05 02:00 
+ jdthood - 03-23-05 15:20 
 ----------------------------------------------------------------------
-Sound card matrix has been updated to note point
-(4) Capture of sound not supported.
-
-Please note that I have signed NDA agreements with Creative, and they
-still won't give me this information.
+Submitter:  Are "IPGA Analog Capture Volume" adjusted properly?
 
 ----------------------------------------------------------------------
- msillence - 03-28-05 02:19 
+ spamatica - 03-27-05 22:59 
 ----------------------------------------------------------------------
-Thanks James.
+Sorry, was meaning to follow up on this one, this seems to have been the
+problem. 
+I don't know if there's a way for me to close this bug, I'd suggest doing
+so anyway.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-22-05 21:44 msillence      New Issue                                    
-03-22-05 21:44 msillence      Kernel Version            => 2.6.11.5        
-03-23-05 00:45 jcdutton       Status                   assigned => closed  
-03-23-05 00:45 jcdutton       Note Added: 0004146                          
-03-23-05 10:09 msillence      Status                   closed => feedback  
-03-23-05 10:09 msillence      Resolution               open => reopened    
-03-23-05 10:09 msillence      Note Added: 0004153                          
-03-27-05 11:56 Alinoe         Note Added: 0004220                          
-03-27-05 13:36 msillence      Note Added: 0004221                          
-03-27-05 16:39 Alinoe         Note Added: 0004223                          
-03-27-05 17:50 Cimmo          Note Added: 0004224                          
-03-27-05 17:51 Cimmo          Note Edited: 0004224                         
-03-28-05 01:30 Alinoe         Issue Monitored: Alinoe                      
-03-28-05 01:43 msillence      Note Added: 0004226                          
-03-28-05 01:46 msillence      Note Edited: 0004226                         
-03-28-05 01:46 msillence      Note Edited: 0004226                         
-03-28-05 01:52 msillence      Note Edited: 0004226                         
-03-28-05 02:00 jcdutton       Note Added: 0004227                          
-03-28-05 02:19 msillence      Note Added: 0004228                          
+12-03-04 21:46 spamatica      New Issue                                    
+12-06-04 20:56 tiwai          Note Added: 0002734                          
+03-23-05 15:20 jdthood        Note Added: 0004157                          
+03-27-05 22:59 spamatica      Note Added: 0004225                          
+03-28-05 03:58 jdthood        Status                   new => resolved     
+03-28-05 03:58 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
