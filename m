@@ -1,14 +1,12 @@
-From: Manuel Jander <manuel.jander@usm.cl>
-Subject: Re: Re: Re: au8830 - front / rear channels swapped
-	after first play and Surround40
-Date: Thu, 17 Mar 2005 10:45:39 -0400
-Message-ID: <1111070739.3269.4.camel@localhost>
-References: <4238F81C.30405@netvigator.com>
-Reply-To: mjander@users.sourceforge.net
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: [PATCH] emu10k1: fix misc oopses
+Date: Thu, 17 Mar 2005 15:11:19 +0100
+Message-ID: <m2u0naqs54.fsf@vador.mandrakesoft.com>
+References: <1110950511.19984.9.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <4238F81C.30405@netvigator.com>
+Content-Type: multipart/mixed; boundary="=-=-="
+In-Reply-To: <1110950511.19984.9.camel@mindpipe> (Lee Revell's message of
+ "Wed, 16 Mar 2005 00:21:51 -0500")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +16,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Raymond,
+--=-=-=
 
-On Thu, 2005-03-17 at 11:23 +0800, Raymond wrote:
-> > >  No, thats not a bug. Thats normal.
-> >
-> >
-> > AFAIK the FIFO error occurs only one time, the first time data is
-> > being DMA'ed. It could be that this error is some kind of data
-> > underrun, and it does only happen once, because we never flush the
-> > FIFO's when stopping a stream. Remaining data in the FIFO's may be
-> > messing the channel deinterlacer, because the amount of data loaded in
-> > the fifo is random, generating a random offset. Since the the PCI bus
-> > is 32 bit wide, that problem would not affect stereo streams, because
-> > one 32 bit transaction maps to two 16 bit samples. Only where a frame
-> > is more that 32bits, this problem would become apparent. This is just
-> > a theory, but maybe it could be worth a try, to enforce a absolute
-> > flush of the FIFO data when stopping a DMA stream.
+Lee Revell <rlrevell@joe-job.com> writes:
+
+> The P16V patch unconditionally checks the IPR2 register in the
+> interrupt handler resulting in infinite loop and system lockup on
+> any non Audigy2 cards.  I really hate checking emu->is_audigy and
+> emu->revision in a fast path like the IRQ handler but I don't see
+> another way.
 > 
-> The "vortex: IRQ fifo error" message happen once when the first play is
-> a stereo or 4 channels sound and it do not happen when the first play is
-> a MONO sound on my au8830.
+> Also, don't bother allocating/freeing the DMA buffer for P16V unless
+> it's really present.
 > 
-> Using "vortex_adbdma_stopfifo()" instead of vortex_adbdma_pausefifo()"
-> in snd_vortex_pcm_trigger() (just like the last version of au88x0 in
-> alsa-driver before it merged into alsa-kernel) seem to fix the
-> front/rear channels swap when playing 4 channels sound in au8830.
+> This is a critical fix and should trigger an immediate rc2 release
+> IMO.  Currently any emu10k1 users other than Audigy 2 will lock up
+> hard as soon as they play any sound.
+> 
+> Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-Using "vortex_adbdma_stopfifo" sounds more reasonable to me, regarding
-of what i explained above. 
+fix more oopses:
 
-> However the message "vortex: IRQ fifo error" will appear more than once
-> in the kernel log, it is quite annoying when a lot of these message is
-> displayed on the screen (not always) during the shutdown of the linux.
+Signed-Off-By: Arnaud Patard <apatard@mandrakesoft.com>
 
-Does the IRQ fifo error appear once for every sound played or a lot more
-than that ? if it appears once for every PCM plaayback start, it may be
-that this error is just a harmless "fifo empty" error, and as such could
-be just ignored. An if it really signals a FIFO empty error, it maybe
-useful to detect xruns ?
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: attachment; filename=alsa2.diff
 
-Best Regards,
--- 
-Manuel Jander
-Electronic Engineer
+Index: emumixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
+retrieving revision 1.32
+diff -u -r1.32 emumixer.c
+--- emumixer.c	13 Mar 2005 12:17:09 -0000	1.32
++++ emumixer.c	16 Mar 2005 17:10:10 -0000
+@@ -482,9 +482,13 @@
+ 			change = 1;
+ 		}
+ 	}	
+-	if (change && mix->epcm->voices[ch])
+-		update_emu10k1_fxrt(emu, mix->epcm->voices[ch]->number,
+-				    &mix->send_routing[0][0]);
++
++	if (change && mix->epcm) {
++		if (mix->epcm->voices[ch]) {
++			update_emu10k1_fxrt(emu, mix->epcm->voices[ch]->number,
++					&mix->send_routing[0][0]);
++		}
++	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return change;
+ }
+@@ -544,9 +548,12 @@
+ 			change = 1;
+ 		}
+ 	}
+-	if (change && mix->epcm->voices[ch])
+-		update_emu10k1_send_volume(emu, mix->epcm->voices[ch]->number,
+-					   &mix->send_volume[0][0]);
++	if (change && mix->epcm) {
++		if (mix->epcm->voices[ch]) {
++			update_emu10k1_send_volume(emu, mix->epcm->voices[ch]->number,
++						   &mix->send_volume[0][0]);
++		}
++	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return change;
+ }
+@@ -600,8 +607,11 @@
+ 		mix->attn[0] = val;
+ 		change = 1;
+ 	}
+-	if (change && mix->epcm->voices[ch])
+-		snd_emu10k1_ptr_write(emu, VTFT_VOLUMETARGET, mix->epcm->voices[ch]->number, mix->attn[0]);
++	if (change && mix->epcm) {
++		if (mix->epcm->voices[ch]) {
++			snd_emu10k1_ptr_write(emu, VTFT_VOLUMETARGET, mix->epcm->voices[ch]->number, mix->attn[0]);
++		}
++	}
+ 	spin_unlock_irqrestore(&emu->reg_lock, flags);
+ 	return change;
+ }
+
+--=-=-=--
 
 
 
