@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000641]: Bug in WM8770 init on aureon
-Date: Thu, 16 Dec 2004 18:17:17 +0100
-Message-ID: <4b0651d389d2c8536cb991fcab3521bd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000622]: snd-ens1371 hisses and garbled sound
+Date: Thu, 16 Dec 2004 18:16:58 +0100
+Message-ID: <92607b5207955aa69813a7a7571e669c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 83816200
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:17:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCEE31FA
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:16:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,81 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=641> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622> 
 ======================================================================
-Reported By:                ungod
+Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   641
-Category:                   PCI - ice1724
+Issue ID:                   622
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-11-2004 00:03 CET
-Last Modified:              12-16-2004 18:17 CET
+Date Submitted:             11-01-2004 11:29 CET
+Last Modified:              12-16-2004 18:16 CET
 ======================================================================
-Summary:                    Bug in WM8770 init on aureon
+Summary:                    snd-ens1371 hisses and garbled sound
 Description: 
-On aureon cards the ADC on WM8770 is initialized to AIN6L/AIN5R, although
-the comment states AC'97.
+Please see Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=239575:
+
+    http://bugs.debian.org/239575
+
+The submitter writes in part:
+
+------------------------------------------------------
+Before installing [Debian] sarge I happily used the ALSA sound system on a
+2.4.20 [kernel] with my SB PCI 128 soundcard. With the 2.4.24 kernel [...]
+the following problems occur:
+After initilization of the snd-ens1371 module a loud hiss comes out of the
+speakers. The artsd fails and displays a message that it will use the null
+output device. All ALSA or arts enabled apps either crash, remain in a
+infinite loop  initializing or start with sound disabled.
+------------------------------------------------------
+
+Another person adds:
+
+------------------------------------------------------
+Sound system is working rather properly but I get continual hisses out of
+my soundcard, some sound is coming out as well but is completely garbled.
+------------------------------------------------------
+
+Any idea what might be wrong?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-15-04 20:09 
+ tiwai - 11-11-04 17:56 
 ----------------------------------------------------------------------
-Applied to CVS.
+Yes, it's a KDE issue which turns on the IEC958 control.
+This is off default in ALSA.
 
-Thanks.
+----------------------------------------------------------------------
+ jdthood - 11-11-04 18:03 
+----------------------------------------------------------------------
+If you don't consider this to be an ALSA bug _at all_ then please accept my
+thanks for your help and close the report.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-11-04 00:03 ungod          New Issue                                    
-11-11-04 00:03 ungod          File Added: aureon-wm-init-fix.diff               
-    
-11-15-04 20:09 tiwai          Status                   new => resolved     
-11-15-04 20:09 tiwai          Resolution               open => fixed       
-11-15-04 20:09 tiwai          Assigned To               => tiwai           
-11-15-04 20:09 tiwai          Note Added: 0002418                          
-12-16-04 18:17 tiwai          Status                   resolved => closed  
+11-01-04 11:29 jdthood        New Issue                                    
+11-02-04 21:27 jdthood        Note Added: 0002299                          
+11-09-04 18:54 tiwai          Note Added: 0002335                          
+11-09-04 18:55 tiwai          Note Added: 0002336                          
+11-11-04 13:19 jdthood        Note Added: 0002383                          
+11-11-04 17:56 tiwai          Note Added: 0002390                          
+11-11-04 18:03 jdthood        Note Added: 0002391                          
+11-11-04 18:38 tiwai          Status                   new => resolved     
+11-11-04 18:38 tiwai          Resolution               open => not an issue
+11-11-04 18:38 tiwai          Assigned To               => tiwai           
+12-16-04 18:16 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
