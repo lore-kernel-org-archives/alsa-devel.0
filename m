@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
-Date: Wed, 23 Mar 2005 15:23:50 +0100
-Message-ID: <f4e2baed77faf8df2f5b9abf7f0a3748@bugtrack.alsa-project.org>
+Date: Wed, 23 Mar 2005 17:21:42 +0100
+Message-ID: <c900f118ae84ce478bfc059540009e49@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7A99826B
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:23:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D9CB6289
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:21:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
 ======================================================================
@@ -34,12 +34,14 @@ Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               gentoo amd64
 Kernel Version:             2.6.10-rc2
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-23-2004 16:04 CET
-Last Modified:              03-23-2005 15:23 CET
+Last Modified:              03-23-2005 17:21 CET
 ======================================================================
 Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
 rc2
@@ -49,16 +51,17 @@ see which change breake the AC3 passtrough ?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 16:08 
+ Gregoire - 03-23-05 17:17 
 ----------------------------------------------------------------------
-Does AC3 passthru work when you compile ALSA 1.0.7 on 2.6.10-rc1?
+Sorry, as it worked since post 2.6.10-rc2 kernels, I thought you fixed this
+issue.
+I use now 2.6.12-rc1 and it works perfectly, would it help if I do what
+you want with older kernels ?
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:23 
+ jdthood - 03-23-05 17:21 
 ----------------------------------------------------------------------
-Submitter: Does AC3 passthru work when you build and use the latest ALSA
-modules from the alsa-driver tarball instead of the modules that come with
-your 2.6 kernel?
+Just checking to make sure that the problem is indeed fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -68,13 +71,17 @@ Date Modified  Username       Field                    Change
 11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
 11-23-04 16:08 tiwai          Note Added: 0002518                          
 03-23-05 15:23 jdthood        Note Added: 0004158                          
+03-23-05 17:17 Gregoire       Note Added: 0004179                          
+03-23-05 17:21 jdthood        Note Added: 0004180                          
+03-23-05 17:21 jdthood        Status                   new => resolved     
+03-23-05 17:21 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+This SF.net email is sponsored by Microsoft Mobile & Embedded DevCon 2005
+Attend MEDC 2005 May 9-12 in Vegas. Learn more about the latest Windows
+Embedded(r) & Windows Mobile(tm) platforms, applications & content.  Register
+by 3/29 & save $300 http://ads.osdn.com/?ad_id=6883&alloc_id=15149&op=click
