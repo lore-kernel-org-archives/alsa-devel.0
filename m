@@ -1,19 +1,21 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
 Subject: Re: alsa-lib & oss 1.0.3rc1
-Date: Thu, 26 Feb 2004 15:10:55 +0100 (CET)
+Date: Thu, 26 Feb 2004 15:30:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402261510310.13076@pnote.perex-int.cz>
+Message-ID: <1077805803.2677.67.camel@thor.asgaard.local>
 References: <Pine.LNX.4.58.0402212257000.1870@pnote.perex-int.cz>
- <1077754003.2680.26.camel@thor.asgaard.local>  <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
- <1077804788.27443.51.camel@thor.asgaard.local>
+	 <1077754003.2680.26.camel@thor.asgaard.local>
+	 <Pine.LNX.4.58.0402261129550.13076@pnote.perex-int.cz>
+	 <1077804788.27443.51.camel@thor.asgaard.local>
+	 <Pine.LNX.4.58.0402261510310.13076@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA29655
-	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 15:15:47 +0100
-In-Reply-To: <1077804788.27443.51.camel@thor.asgaard.local>
+Received: from netline-mail1.netline.ch (netline-mail1.netline.ch [195.141.226.27])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA29978
+	for <alsa-devel@alsa-project.org>; Thu, 26 Feb 2004 15:30:10 +0100
+In-Reply-To: <Pine.LNX.4.58.0402261510310.13076@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,46 +24,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
+On Thu, 2004-02-26 at 15:10, Jaroslav Kysela wrote:
+>=20
+> Can you try with the mpg123 program? It works on x86.
 
-> On Thu, 2004-02-26 at 11:30, Jaroslav Kysela wrote:
-> > On Thu, 26 Feb 2004, Michel D=E4nzer wrote:
-> >=20
-> > > > LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
-> > > zsh: segmentation fault=20
->=20
-> [...]
->=20
-> > > How can I debug this?
-> >=20
-> > Define this:
-> >=20
-> > export ALSA_OSS_DEBUG=3D1
-> >=20
-> > and run the application again.
->=20
-> No more information unfortunately:
->=20
-> > ALSA_OSS_DEBUG=3D1
-> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so bzflag
-> zsh: segmentation fault  ALSA_OSS_DEBUG=3D1
-> LD_PRELOAD=3D~/src/alsa-cvs/alsa-oss/alsa/.libs/libaoss.so
->=20
-> This is on PPC, could it be an endianness or similar portability
-> problem?
+It can successfully print the usage info, but also crashes when trying
+to actually play a file. Note that even gdb crashes on startup, so the
+problem seems completely unrelated to sound?
 
-I don't know. Can you try with the mpg123 program? It works on x86.
 
-=09=09=09=09=09=09Jaroslav
+--=20
+Earthling Michel D=C3=A4nzer      |     Debian (powerpc), X and DRI devel=
+oper
+Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=3Ddaenze=
+r
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
