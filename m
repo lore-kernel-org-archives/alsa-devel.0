@@ -1,12 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
 Subject: Re: multiple devices per card?
-Date: Sat, 05 Oct 2002 05:22:51 +0900
+Date: Fri, 4 Oct 2002 14:37:11 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D9DF89B.8090604@boosthardware.com>
-References: <20021004193614.30552.qmail@web11503.mail.yahoo.com>
+Message-ID: <20021004213711.48471.qmail@web11503.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,40 +14,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+To: Paul Davis <pbd@op.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Guilhem Tardy wrote:
-> Hi,
+This card can open / close N audio streams independently. Each audio stream can
+be matched to a different port (e.g. mike in, line in) or the same, with
+different formats if necessary.
+
+Following your earlier message, I'd guess that a) is the solution. Then, only
+one mixer is enough to handle all the devices.
+
+Any other idea?
+
+Thanks,
+Guilhem.
+
+> >I am unsure what makes the most sense for multiple pcm channels on the same
+> >card:
+> > a) N devices, 1 pcm channel each
+> > b) 1 device, N pcm channels each
+> >
+> >In the same vein, is the mixer always one per card?
 > 
-> I am unsure what makes the most sense for multiple pcm channels on the same
-> card:
->  a) N devices, 1 pcm channel each
->  b) 1 device, N pcm channels each
+> there is no way to tell without knowing more about the hardware. for
+> the hammerfall series, for example, case (a) makes very little sense,
+> since there is no way to independently start and stop the N
+> devices. but there is hardware for which it might make sense.
 > 
-> In the same vein, is the mixer always one per card?
+> some cards have no mixer. its not impossible a card that might have
+> two (e.g. a digital and an analog mixer).
 > 
-
-well if we have hw:0,0 hw:0,1 hw:0,2
-
-Then it looks like option b to me. But Jaroslav confused me recently by 
-saying something that sounded like a is the case.
+> --p
 
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-"Um...symbol_get and symbol_put... They're
-kindof like does anyone remember like get_symbol
-and put_symbol I think we used to have..."
-- Rusty Russell in his talk on the module subsystem
-
+__________________________________________________
+Do you Yahoo!?
+New DSL Internet Access from SBC & Yahoo!
+http://sbc.yahoo.com
 
 
 -------------------------------------------------------
