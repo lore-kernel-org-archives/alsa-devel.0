@@ -1,107 +1,49 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: Re: [Alsa-devel] sblive 4ch output w/ jack - asoundrc magic?
-Date: Thu, 05 Feb 2004 20:10:12 +0100
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <40229514.8000600@folkwang-hochschule.de>
-References: <40217B62.5020604@folkwang-hochschule.de> <s5had3xa7sa.wl@alsa2.suse.de>
+From: Jesse Chappell <jesse@essej.net>
+Subject: Re: Alsa handling of spdif bits (was Re: Questions to HDSP users)
+Date: Thu, 05 Feb 2004 14:08:15 -0500
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <f87b1d8ca44251034e552d245dd4da21@essej.net>
+References: <s5hd68ta93u.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5had3xa7sa.wl@alsa2.suse.de>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
+Content-Type: text/plain
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from test.essej.net (pilabs.com [4.21.76.131])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA05731
+	for <alsa-devel@alsa-project.org>; Thu, 5 Feb 2004 20:08:50 +0100
+In-Reply-To: <s5hd68ta93u.wl@alsa2.suse.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Thomas Charbonnel <thomas@undata.org>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Thu, 05 Feb 2004 00:08:18 +0100,
-> Joern Nettingsmeier wrote:
->=20
->>[crossposted to alsa-devel and jackit-devel]
->>
->>hi *!
->>
->>i'd like to use the rear outs of my sblive platinum with jack.
->>
->>the following works:
->># aplay some.wav -Dfront &
->># aplay someother.wav -Drear
->>both signals end up at my mixer as expected, so it seems the devices=20
->>are independent.
->>
->>front is hw:0,0 which is a duplex device.
->>rear is hw:0,3 and is playback only.
->=20
-> =20
-> hmm?  hw:0,3 isn't for the rear output...
->=20
-> there is already a standard definition for 4.0 output, "surround40".
-> so, something like below would be better:
->=20
-> 	ctl.jtest {
-> 		type hw
-> 		card 0
-> 	}
->=20
-> 	pcm.jtest {
-> 		type asym
-> 		playback.pcm {
-> 			# route for mmap workaround
-> 			type route
-> 			slave.pcm surround40
-> 			ttable.0.0 1
-> 			ttable.1.1 1
-> 			ttable.2.2 1
-> 			ttable.3.3 1
-> 		}
-> 		capture.pcm {
-> 			# 2 channels only
-> 			type hw
-> 			card 0
-> 		}
-> 	}
->=20
-> and run jack with -d jtest -i 2 -o 6 options.
 
-you probably meant "-o 4", right?
+ > regarding Jesse's problem:
+ > it looks like RME*.conf are broken.
+ > does the attached patch work?
 
-works like a charm so far, many thanks!
-jackd spits out a warning, though:
+Sorry, I had already created a new H-DSP.conf and figured out
+it needed the 'interface PCM'.   I was able to use ac3dec -C to
+open the device, and attempted to stream through it, but nothing
+streamed.  
 
-ALSA lib pcm.c:1168:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed:=20
-Operation already in progress
+Standard PCM streaming and mixing works fine over the spdif. 
+I have a feeling there is some strange interaction with the mixer's
+normal operation and the special spdif modes.
 
+An aside: this is also complicated because to open the device, the
+channels item in the slave.pcm section must match the iobox in
+use (multiface or digiface) which have differing channel counts.
+So when we do get this working, it will be a problem to handle
+both cases in a conf file.
 
-i'll play with it for a while, and then i'll send it to patrick for=20
-inclusion in the alsa docs...
-
-
-time to play :-D
-
-j=F6rn
-
-
---=20
-"I never use EQ, never, never, never. I previously used to use mic
-positioning but I've even given up on that too."
-	- Jezar on http://www.audiomelody.com
-
-
-J=F6rn Nettingsmeier
-Kurf=FCrstenstr 49, 45138 Essen, Germany
-http://spunk.dnsalias.org (my server)
-http://www.linuxaudiodev.org (Linux Audio Developers)
-
-
-
+jlc
 
 
 -------------------------------------------------------
