@@ -1,13 +1,16 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+From: Lorn Potter <lpotter@trolltech.com>
 Subject: Re: Moving from OSS to ALSA
-Date: Mon, 12 Jan 2004 01:11:43 +0200 (EET)
+Date: Mon, 12 Jan 2004 11:15:05 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0401120053050.22195-100000@vaino.wakkanet.fi>
-References: <200401120829.54299.lpotter@trolltech.com>
+Message-ID: <200401121115.05195.lpotter@trolltech.com>
+References: <Pine.LNX.4.44.0401120053050.22195-100000@vaino.wakkanet.fi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200401120829.54299.lpotter@trolltech.com>
+In-Reply-To: <Pine.LNX.4.44.0401120053050.22195-100000@vaino.wakkanet.fi>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,63 +19,62 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lorn Potter <lpotter@trolltech.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 12 Jan 2004, Lorn Potter wrote:
+On Monday 12 January 2004 9:11 am, Kai Vehmanen wrote:
 
->>  I am currently looking into rewriting our current OSS sound routines to
->> native ALSA, as it seems OSS will invariably be phased out now that the
->> ALSA driver is distrubuted with the Linux kernel, plus ALSA seems to have a
-> Personally, I hope OSS compat will never be phased out. Why? OSS is simple, 
-> and concise. If I am writing a simple audio recording/playing app, I can get 
-> the job done using OSS code in _much_ less lines of code.
+> Now the commercial OSS (www.opensound.com) is a different thing. It too
+> (like ALSA) provides coherent behaviour across different drivers.
 
-Excuse me!? A major problem of OSS/kernel is that it is _not_ concise.  
-Different OSS drivers implement the OSS API slightly differently
-(full-duplex, triggering, mmap support). This is a huge pain for the app
-developers as you have to verify your app against n+1 different drivers.
+I guess this is what I am talking about, really.
 
-With ALSA, when you write an application that works with one card, it is 
-very likely that it will work perfectly on all the others too. This is 
-made possible by the common alsa-kernel middle layer that is shared by all 
-drivers. With OSS, there are n+1 implementations in the kernel of this 
-middle level functionality. 
 
-Now the commercial OSS (www.opensound.com) is a different thing. It too 
-(like ALSA) provides coherent behaviour across different drivers.
+> > _Dont get me wrong_, ALSA is great and a lot more powerful than OSS, but
+> > it is lacking a simple API.
+> > Ever try to write an In/Out volume control mixer in OSS? Ever try to port
+> > that same mixer to ALSA?
+>
+> Believe me, I agree with you 100% with regards to importance of
+> simplicity. ALSA still has some complex edges, but is has come a long way.
+> More documentation, tutorials and example code are still needed, but it
+> takes time (and volunteers) to create them. I'm sure help is appreciated.
 
-> _Dont get me wrong_, ALSA is great and a lot more powerful than OSS, but it is 
-> lacking a simple API. 
-> Ever try to write an In/Out volume control mixer in OSS? Ever try to port that 
-> same mixer to ALSA? 
+The problem here is, the people writing docs/tutorials need in depth knowledge 
+of how this all works. And unfortunately, the best people to do this are the 
+developers themselves. 
 
-Believe me, I agree with you 100% with regards to importance of
-simplicity. ALSA still has some complex edges, but is has come a long way.
-More documentation, tutorials and example code are still needed, but it
-takes time (and volunteers) to create them. I'm sure help is appreciated.
 
-> From what I can gather (alsa seems to be lacking mixer 
-> docs/tutorial) , the only way to change the mic input level (alsa), I have to 
-> enumerate over every mixer gizmo and check to see if its the mic, and then 
-> change it if I think it appears to be the Mic.
-[...]
-> Using OSS, I can do that in one line.
+> But that's just one example. ALSA needs to support much more complex mixer
+> configurations than OSS, and this of course comes with a price.
+>
+> It is very difficult to try to hide all this complexity from the developer
+> without in the end limiting what the developer can do. So it's a question
+> of finding out a good balance between what can be done and how easy it is.
+> I guess currently ALSA is still too much on the complex side, but slowly
+> the correct balance will be found... So your input is very much
+> appreciated, but at the same time, please don't lose hope just yet. :)
 
-But that's just one example. ALSA needs to support much more complex mixer
-configurations than OSS, and this of course comes with a price. 
+Oh, I havent lost hope at all. I am very excited about ALSA nearing version 1.
 
-It is very difficult to try to hide all this complexity from the developer
-without in the end limiting what the developer can do. So it's a question
-of finding out a good balance between what can be done and how easy it is.
-I guess currently ALSA is still too much on the complex side, but slowly
-the correct balance will be found... So your input is very much 
-appreciated, but at the same time, please don't lose hope just yet. :)
+I don't want to limit what alsa can do, only have access to a simple-ized part 
+of the API, that's fast and easy for developers to write.  Which is what I 
+view the OSS compat. to be.
 
---
- http://www.eca.cx
- Audio software for Linux!
+I work with embedded devices, and so I am always thinking of ways to optimize 
+the code and make apps smaller, which also means writing more app with less 
+code.
+
+
+
+> --
+>  http://www.eca.cx
+>  Audio software for Linux!
+
+-- 
+Lorn 'ljp' Potter
+Qtopia Community Manager
+lpotter at trolltech.com
 
 
 
