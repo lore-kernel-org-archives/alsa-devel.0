@@ -1,17 +1,13 @@
-From: The Orqwith Vagrant <theorqwithvagrant@bredband.net>
-Subject: Re: Re: [Alsa-user] Audigy SPDIF Output Sample Rate
-Date: Tue, 01 Mar 2005 08:45:18 +0100
-Message-ID: <1109663118.24651.30.camel@cthulhu.rlyeth.net>
-References: <1108880895.6773.50.camel@radium.gaugetheory.org>
-	 <1109351825.9681.43.camel@krustophenia.net>
-	 <1109367868.6245.9.camel@cthulhu.rlyeth.net>
-	 <1109368727.13193.10.camel@krustophenia.net>
-	 <1109371150.14056.2.camel@krustophenia.net>
-	 <1109499431.1590.819.camel@radium.gaugetheory.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
+Date: Tue, 1 Mar 2005 09:25:15 +0100
+Message-ID: <0c8cd1d4022a0667680c980526740807@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1109499431.1590.819.camel@radium.gaugetheory.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B3207200
+	for <alsa-devel@alsa-project.org>; Tue,  1 Mar 2005 09:25:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,31 +17,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brian L Scipioni <brian@gaugetheory.org>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-02-27 at 05:17 -0500, Brian L Scipioni wrote:
-> Lee,
-> 
-> > Please try the attached patch (revert the last patch first).
-> 
-> I tried this patch (emu10k1-96-fix2.patch) against the Saturday, 2/26,
-> CVS and I still get 41000 alsamixer = 96000 IEC958 out.
-> 
-> I never tried the previous patch, so did not revert it.  Do I have the
-> right versions of CVS+patch?
-> 
-> thanks,
-> brian
-> 
 
-Yes, that's the cvs version i applied the patch against, and it
-definitely works right for me. Are you positive you got the old driver
-completely unloaded before you tried loading the new one? Or maybe you
-forgot to do a "make install" after the ./cvscompile? I've ended up
-scratching my head after forgotting that step a couple of times myself.
-Happens to the best of us. :)
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
+======================================================================
+Reported By:                sten69
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   941
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Project CCRMA/Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
+======================================================================
+Date Submitted:             02-24-2005 13:59 CET
+Last Modified:              03-01-2005 09:25 CET
+======================================================================
+Summary:                    Behringer BCA 2000 USB device not recognized
+Description: 
+The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
+card.  The device is recognized by Windows XP using the Behringer drivers.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000918 Behringer BCA-2000
+======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 02-28-05 21:33 
+----------------------------------------------------------------------
+I was under the impression that Behringer doesn't design anything, they
+just reverse engineer and rip off other companies' designs.  Any idea what
+this device is a copy of?
+
+----------------------------------------------------------------------
+ Clemens Ladisch - 03-01-05 09:25 
+----------------------------------------------------------------------
+The only other USB 2.0 devices I've heard of are the Edirol UA-1000 and the
+Audigy 2 NX.  Both have completely different descriptors.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-24-05 13:59 sten69         New Issue                                    
+02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
+Core 1
+02-24-05 13:59 sten69         Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma
+02-24-05 14:01 sten69         Issue Monitored: sten69                      
+02-28-05 18:15 Clemens LadischRelationship added       has duplicate 0000918
+02-28-05 18:21 Clemens LadischNote Added: 0003747                          
+02-28-05 21:33 rlrevell       Note Added: 0003748                          
+03-01-05 09:25 Clemens LadischNote Added: 0003754                          
+======================================================================
+
 
 
 
