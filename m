@@ -1,12 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Patch,
-Date: Mon, 22 Nov 2004 07:37:34 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411220737210.2177@pnote.perex-int.cz>
-References: <7979.1101081531@www9.gmx.net>
+Subject: Re: Soundcard matrix maintainer ?
+Date: Mon, 22 Nov 2004 07:42:34 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411220740420.2177@pnote.perex-int.cz>
+References: <XFMail.20041119105533.pochini@shiny.it>
+ <1101092258.41a155a2a1308@www3.webhosting.cx>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <7979.1101081531@www9.gmx.net>
+In-Reply-To: <1101092258.41a155a2a1308@www3.webhosting.cx>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,19 +17,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andreas Fenkart <afenkart@gmx.ch>
-Cc: alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 22 Nov 2004, Andreas Fenkart wrote:
+On Mon, 22 Nov 2004, Patrick Shirkey wrote:
 
-> Hi list
-> 
-> My gnomemeeting hung when accessing the microphone.
-> The problem was that the rate variable was not initialized when jumping to
-> the __partial label.
+> In fact I believe there is a better method than using xml. Standard css should
+> do the job of rendering more efficiently and be an even easier format for
+> people to add new devices.
 
-Oops. Thanks. Applied to CVS.
+I don't use XML to render something. I use this format as structured 
+static data container. The pages are generated on the fly using PHP.
+
 						Jaroslav
 
 -----
