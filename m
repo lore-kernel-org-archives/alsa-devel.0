@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000471]: (Patch) Adds field to ignore control bug with LineX device.
-Date: Tue, 9 Nov 2004 16:14:47 +0100
-Message-ID: <a617c7e0272ffefa39e684d6913cc014@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000472]: Built-in soundcard on Soltek SL-75DRV5 motherboard works only with ac97_quirk=0 option.
+Date: Tue, 9 Nov 2004 16:15:13 +0100
+Message-ID: <cdd57479f0fab68375aa4b98a6cd9d85@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24445244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:14:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 888CA244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:15:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,58 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=471> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=472> 
 ======================================================================
-Reported By:                dignome
-Assigned To:                Clemens Ladisch
+Reported By:                Dawid Gajownik
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   471
-Category:                   USB - usb-audio
+Issue ID:                   472
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8-1.521
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-29-2004 08:22 CEST
-Last Modified:              11-09-2004 16:14 CET
+Date Submitted:             08-29-2004 21:34 CEST
+Last Modified:              11-09-2004 16:15 CET
 ======================================================================
-Summary:                    (Patch) Adds field to ignore control bug with LineX
-device.
+Summary:                    Built-in soundcard on Soltek SL-75DRV5 motherboard
+works only with ac97_quirk=0 option.
 Description: 
-This patch adds PID/VID to usbmixer_maps.c so that a control bug, which
-prevents the device from being claimed for use with snd-usb-audio, will be
-ignored.
+Built-in soundcard on Soltek SL-75DRV5 motherboard works only with
+ac97_quirk=0 option. This mobo has VIA VT8233A southbridge (snd-via82xx
+ALSA kernel module).
 
-Patch goes against 1.0.6a.
+Is there any possibility, that it would be set up automatically by the
+alsa driver? (I'm not a programmer, but I've seen some ac97_quirk
+structure in via82xx.c source file).
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 09-02-04 14:41 
+ tiwai - 09-03-04 16:06 
 ----------------------------------------------------------------------
-Please provide (here or to <clemens@ladisch.de>) your name/email for the
-Signed-off-by: information.
+Try the attached patch.
 
 ----------------------------------------------------------------------
- dignome - 09-03-04 14:28 
+ Dawid Gajownik - 09-03-04 23:09 
 ----------------------------------------------------------------------
-Signed off by Lonnie Mendez (dignome@gmail.com).
+Hi!
+
+That's me again ;) I patched the source and installed the driver, which
+has overwritten old drivers. I don't know whether is that a proper
+instalation (should I recompile the kernel without ALSA drivers before
+instalation?), but it works ->
+https://bugtrack.alsa-project.org/alsa-bug/file_download.php?file_id=271&type=bug
+
+Anyway, with your patch there is sound out-of-the-box without any
+additional options in /etc/modprobe.conf :-) Big thanks for your work!!!
+
+edited on: 09-03-04 23:09
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-29-04 08:22 dignome        New Issue                                    
-08-29-04 08:22 dignome        File Added: linex-usbmixer_maps.patch             
-      
-09-02-04 14:41 Clemens LadischNote Added: 0001683                          
-09-03-04 14:28 dignome        Note Added: 0001691                          
-09-03-04 14:34 Clemens LadischStatus                   assigned => resolved
-09-03-04 14:34 Clemens LadischResolution               open => fixed       
-11-09-04 16:14 tiwai          Status                   resolved => closed  
+08-29-04 21:34 Dawid Gajownik New Issue                                    
+08-29-04 21:34 Dawid Gajownik Distribution              => Fedora Core 2   
+08-29-04 21:34 Dawid Gajownik Kernel Version            => 2.6.8-1.521     
+08-31-04 13:36 tiwai          Note Added: 0001673                          
+09-01-04 22:49 tiwai          Note Added: 0001677                          
+09-02-04 12:30 Dawid Gajownik File Added: ac97.txt                         
+09-02-04 12:45 Dawid Gajownik Note Added: 0001682                          
+09-02-04 12:46 Dawid Gajownik File Added: ac97_0a.png                      
+09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=1.png                    
+09-02-04 12:48 Dawid Gajownik File Added: ac97_quirk=2.png                    
+09-02-04 12:50 Dawid Gajownik Note Edited: 0001682                         
+09-03-04 15:56 tiwai          Note Added: 0001693                          
+09-03-04 16:06 tiwai          Note Added: 0001694                          
+09-03-04 16:06 tiwai          File Added: via-double-quirk.dif                  
+ 
+09-03-04 22:57 Dawid Gajownik File Added: alsamixer.png                    
+09-03-04 23:07 Dawid Gajownik Note Added: 0001697                          
+09-03-04 23:09 Dawid Gajownik Note Edited: 0001697                         
+09-06-04 18:37 tiwai          Status                   new => resolved     
+09-06-04 18:37 tiwai          Resolution               open => fixed       
+09-06-04 18:37 tiwai          Assigned To               => tiwai           
+11-09-04 16:15 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
