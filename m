@@ -1,12 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: oss-redir/libaoss doesn't set blocked IO correctly
- [PATCH]
-Date: Sat, 19 Mar 2005 16:11:36 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503191611240.1760@pnote.perex-int.cz>
-References: <423C3CC0.80307@mxtelecom.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
+Date: Sat, 19 Mar 2005 16:30:21 +0100
+Message-ID: <ec33c525d345ddb5c2abcfa8bffbccd8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <423C3CC0.80307@mxtelecom.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7524A1D5
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:30:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,37 +17,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matthew Hodgson <matthew@mxtelecom.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 19 Mar 2005, Matthew Hodgson wrote:
 
-> Hi,
-> 
-> I'm investigating switching videolan's OSS-style audio-capture (used to 
-> complement streaming from a v4l source) to use the alsa-oss oss-redir 
-> abstraction layer.  Whilst writing the patch, I came up against the 
-> quirk that
-> 
-> i_fd = oss_pcm_open(devname, O_RDONLY | O_NONBLOCK)
-> 
-> doesn't return a non-blocking file descriptor.  This is a bit of a 
-> showstopper, as vlc relies on the fd being nonblocking in order for the 
-> thread to yield to allow interleaved video capture to occur.
-> 
-> The problem appears to be a typo in alsa-oss/alsa/pcm.c:oss_dsp_open(), 
-> where the mode parameter rather than the oflags parameter is checked for 
-> the O_NONBLOCK flag.  I've included a trivial patch to fix it.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+======================================================================
+Reported By:                darkbrain
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   685
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               debian
+Kernel Version:             2.6.9-nitro4
+======================================================================
+Date Submitted:             11-28-2004 14:55 CET
+Last Modified:              03-19-2005 16:30 CET
+======================================================================
+Summary:                    Doom3 doesn't work with alsa backend
+Description: 
+Latest doom3 client for linux has alsa support built in but doesn't work
+with my Hercules Fortissimo II (cs4624).
 
-Applied. Thanks.
+The game show me this error:
+idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
 
-						Jaroslav
+dmesg output:
+ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
+ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
+start
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
+"SrcTask_SCB1"
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
+SrcTask_SCB1 rate to 44100
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<SrcTask_SCB1>
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
+"PCMReader_SCB2" (1)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
+<PCMReader_SCB2>
+ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
+buffer_size(32768)
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
+ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
+cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 12-02-04 19:27 
+----------------------------------------------------------------------
+Any test case program to reproduce this bug?
+Otherwise it's hard to debug.  Sorry, it's too little information.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 16:30 
+----------------------------------------------------------------------
+This can probably be closed.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-28-04 14:55 darkbrain      New Issue                                    
+11-28-04 14:55 darkbrain      Distribution              => debian          
+11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
+11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
+12-02-04 19:27 tiwai          Note Added: 0002692                          
+03-19-05 16:30 jdthood        Note Added: 0004054                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
