@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Wed, 29 Dec 2004 14:12:56 +0100
-Message-ID: <48d93067aa5b39a532d64849e4bf7c26@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000437]: Problem with the spec file
+Date: Wed, 29 Dec 2004 14:16:56 +0100
+Message-ID: <aacac6ca1852cb5c814ea67e3a3e7c88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2DFB1239
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:12:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF366239
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:16:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=437> 
 ======================================================================
-Reported By:                aquarichy
-Assigned To:                
+Reported By:                croiset
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   750
-Category:                   PCI - via82xx
+Issue ID:                   437
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             2.6.9+
+Status:                     resolved
+Distribution:               
+Kernel Version:             2.4.7-10
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              12-29-2004 14:12 CET
+Date Submitted:             08-13-2004 09:56 CEST
+Last Modified:              12-29-2004 14:16 CET
 ======================================================================
-Summary:                    no sound since 2.6.8.1
+Summary:                    Problem with the spec file
 Description: 
-Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
-compile  any newer stable kernel, there is no sound.  Compilation executes
-without complaints.  No Sound related options change.  I have even tried
-saying No to all the new options 2.6.9 and .10 provided in fear that one
-of those might be interfering, but nada.  
+There is a problem the spec file generated with the configure.
+
+you might replace this line in alsa-driver.spec.in :
+/lib/modules/*/kernel/*
+by :
+/lib/modules/*/misc/*
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- aquarichy - 12-29-04 08:23 
+ croiset - 12-29-04 12:18 
 ----------------------------------------------------------------------
-When booting into 2.6.10 after successfully running on 2.6.8.1, I get a
-warning about mixer settings mismatch.  If I run alsamixer, ensure that
-nothing is muted and that volume is up on everything, and then run
-'alsactl store' I still do not have volume.  However, if I then boot back
-into 2.6.8.1, I get the following message during boot up: 
-"Loading ALSA mixer settings: /usr/bin/alsactl restore
-/usr/sbin/alsactl: set_control:805: warning: name mismatch (Master
-Playback Switch/Headphone Playback Switch) for control
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3
-/usr/sbin/alsactl: set_control:805: warning: name mismatch (Master
-Playback Volume/Headphone Playback Volume) for control
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=4"
-and if I enter alsamixer, the Master 'item' is /now/ set to mute.  
-
-I am guessing that 2.6.9 <= kernel versions have different control values
-or something, and perhaps it believes the Master sound is muted? 
-Alsamixer in 2.6.9 <= reports itself as non-muted, though no sound comes
-out, and while in <= 2.6.8.1 after using 2.6.10, alsamixer says the master
-had been muted :|
+Ouups it was a problem due to a misconfiguration. The bug can be closed.
+Test made with 1.0.8rc1
 
 ----------------------------------------------------------------------
- tiwai - 12-29-04 14:12 
+ tiwai - 12-29-04 14:16 
 ----------------------------------------------------------------------
-Use -F option for alsactl to force to load controls in such a case.
-The init script should use this.
+Ok, resolved.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:20 aquarichy      New Issue                                    
-12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
-12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
-12-29-04 08:23 aquarichy      Note Added: 0002993                          
-12-29-04 14:12 tiwai          Note Added: 0002996                          
+08-13-04 09:56 croiset        New Issue                                    
+08-13-04 09:56 croiset        Kernel Version            => 2.4.7-10        
+08-13-04 10:52 croiset        Note Added: 0001561                          
+12-29-04 12:18 croiset        Note Added: 0002995                          
+12-29-04 14:16 tiwai          Status                   new => resolved     
+12-29-04 14:16 tiwai          Resolution               open => not an issue
+12-29-04 14:16 tiwai          Assigned To               => tiwai           
+12-29-04 14:16 tiwai          Note Added: 0002997                          
 ======================================================================
 
 
