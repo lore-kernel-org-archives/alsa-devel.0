@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000938]: AudioScience cards supported.
-Date: Thu, 24 Feb 2005 04:11:47 +0100
-Message-ID: <452f27750d85a2d1680dd415c80be70e@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000939]: Read about how the online docs work here
+Date: Thu, 24 Feb 2005 04:15:33 +0100
+Message-ID: <448851a023e05830a742c969472e61b9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F0219204
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 04:11:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50087204
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 04:15:33 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,36 +23,33 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=938> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=939> 
 ======================================================================
 Reported By:                eliot
 Assigned To:                
 ======================================================================
 Project:                    ALSA - WWW server
-Issue ID:                   938
-Category:                   soundcard matrix
+Issue ID:                   939
+Category:                   bad link
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-24-2005 04:11 CET
-Last Modified:              02-24-2005 04:11 CET
+Date Submitted:             02-24-2005 04:15 CET
+Last Modified:              02-24-2005 04:15 CET
 ======================================================================
-Summary:                    AudioScience cards supported.
+Summary:                    Read about how the online docs work here
 Description: 
-AudioScience entries in the matrix should be white (supported).
+On this page http://www.alsa-project.org/alsa-doc/
 
-Driver should be "asihpi" OR "asihpi plus HPI download from
-http://www.audioscience.com"
-
-ASI4215 mentioned twice.
+Read about how the online docs work here link broken
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-24-05 04:11 eliot          New Issue                                    
+02-24-05 04:15 eliot          New Issue                                    
 ======================================================================
 
 
