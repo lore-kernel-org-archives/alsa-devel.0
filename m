@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Sampling rate problems on a VXPocket v2
-Date: Fri, 12 Dec 2003 09:30:06 +0100 (CET)
+From: Lars Heineken <Lars.Heineken@gmx.de>
+Subject: Re: Request for change in /usr/share/alsa/cards/ICE1712.conf
+Date: Fri, 12 Dec 2003 14:36:47 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312120928370.20863@pnote.perex-int.cz>
-References: <OF68B2BE80.8E208767-ONC1256DFA.002A67D4-C1256DFA.002A6C7F@bang-olufsen.dk>
+Message-ID: <3FD9C46F.20300@gmx.de>
+References: <3FD5EDEE.3040402@gmx.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <OF68B2BE80.8E208767-ONC1256DFA.002A67D4-C1256DFA.002A6C7F@bang-olufsen.dk>
+In-Reply-To: <3FD5EDEE.3040402@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,65 +17,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Geoffrey Martin <GGM@bang-olufsen.dk>
+To: Lars Heineken <Lars.Heineken@gmx.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Dec 2003, Geoffrey Martin wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Hi,
-> 
-> I'm using the following:
->       IBM T40 laptop
->       Digigram VXPocket v2
->       RedHat 9
->       Kernel 2.4.22-ac4
->       ALSA drivers 0.9.8
->       vxloader 0.9.7-i686
-> 
-> Measurement gear
->       Audio Precision System Two Cascade
->       PrismSound DSA-1
-> 
-> 
-> Some of my other gear is having difficulties locking to the S/PDIF output
-> of the card at 44.1 kHz and I have a suspicion as to why this is
-> happening...
-> 
-> I have control over the sampling rate of the S/PDIF output of the card as I
-> would expect, however...
-> 
-> In the S/PDIF Channel Status Block information there is a portion of Byte 3
-> that is used to send the intended sampling rate (selectable between three
-> values, 32 kHz, 44.1 kHz and 48 kHz, depending on the arrangement of bits
-> 0-3 in Byte 3. For specific information on this, please see Application
-> Note AN22REV2 from www.crystal.com). It is also possible, using bit 0 of
-> Byte 0, to indicate whether the signal is Professional or Consumer format.
-> 
-> Using my present configuration, I do not appear to have control over either
-> of these two variables. For example, even when I am sending a 44.1 kHz
-> signal at a rate of 44.1 kHz (or close enough... it's actually 44.0993, -17
-> ppm) Byte 3 of the Channel Status Block is saying that the signal is a 48
-> kHz transmission.
-> 
-> Are the VXPocket drivers in ALSA capable of changing these values in the
-> card? The official drivers for Mac OSX allow me to change the Pro/Consumer
+Did someone take notice of my mail, at least :-)
 
-Yes, use 'iecset' utility from alsa-utils for example or alsactl and 
-reedit your configuration file (look for IEC958 controls).
+Lars Heineken wrote:
 
-> flag using an application, and the sampling rate indicator changes
-> automatically with the actual sampling rate of the card's output.
+| I tried some capturing through the spdif input today, and it didn't
+| worked, but after some googleing found this mail from jaroslav:
+|
+| | Known bug. The problem is that playback and capture channels are
+| | assymetric for the envy24 chip and we cannot define dual configuration
+| | separate for playback and capture.
+| |
+| | You may change the line in /usr/share/alsa/cards/ICE1712.conf from
+| |
+| | slave.channels 10
+| |
+| | to
+| |
+| | slave.channels 12
+| |
+| | and capture will work, but playback will failure.
+| |
+| | Or define new S/PDIF PCM for capture in ~/.asoundrc:
+| |
+| | pcm.spdif_cap {
+| |         ... copy contents of ICE1712.pcm.iec958.0 {} from ICE1712.conf
+| here ...
+| |         ... and replace 10 with 12 ...
+| | }
+|
+| After setting the value to "12" I could capture AND playback !
+|
+| I suggest to set the value to 12 as default, would that be OK ?
+|
+| Regards,
+|
+| Lars.
 
-We might change the behaviour later. Actually the PCM rate and S/PDIF 
-indicated rate might differ in the current vxpocket driver.
 
-						Jaroslav
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+iD8DBQE/2cRvrp9JEomxNXERAu5dAJ9n9lKU9bmM3XB2AHf6v1nwyDKEhwCffuk8
+TCCi8YfelFCgge2asS3HmZ0=
+=iF8M
+-----END PGP SIGNATURE-----
+
 
 
 -------------------------------------------------------
