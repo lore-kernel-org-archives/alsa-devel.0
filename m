@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000823]: Shutdown messages
-Date: Mon, 17 Jan 2005 15:04:29 +0100
-Message-ID: <bdbf9d3dc9501383bccd047d32edd8ed@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Mon, 17 Jan 2005 15:05:46 +0100
+Message-ID: <7c38825310247cd81fc386b1500ba16f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCF771A4
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 15:04:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 682821A4
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 15:05:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=823> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   823
-Category:                   PCI - RME HDSP
+Issue ID:                   822
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               FC2/PlanetCCRMA - up to date but not running newest
-kernel due to other Alsa problems
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-Resolution:                 fixed
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-16-2005 21:45 CET
-Last Modified:              01-17-2005 15:04 CET
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-17-2005 15:05 CET
 ======================================================================
-Summary:                    Shutdown messages
+Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
-When shutting my system down I consistently get the following message:
-
-Shutting down sound driver rme_hammerfall dsp 0:00:0f 
-device was removed without properly calling pci_disable_device()
-This may need fixing
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-17-05 15:04 
+ tiwai - 01-17-05 15:05 
 ----------------------------------------------------------------------
-Already fixed in 1.0.8.
+Use "default" PCM type so that soft plugin takes effect.
+
+Note that OSS kernel emulation can't use this feature.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-16-05 21:45 Mark Knecht    New Issue                                    
-01-16-05 21:45 Mark Knecht    Distribution              => FC2/PlanetCCRMA - up
-to date but not running newest kernel due to other Alsa problems
-01-16-05 21:45 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-01-17-05 15:04 tiwai          Status                   assigned => resolved
-01-17-05 15:04 tiwai          Resolution               open => fixed       
-01-17-05 15:04 tiwai          Note Added: 0003234                          
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
 ======================================================================
 
 
