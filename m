@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Tue, 23 Nov 2004 23:27:13 +0100
-Message-ID: <9b70869f4902691900ebbd2cfbcf1038@bugtrack.alsa-project.org>
+Date: Tue, 23 Nov 2004 23:45:15 +0100
+Message-ID: <b7b8019cf4ef3ac3f9e56b4e9e4f6c4e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF3A12AF
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 23:27:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 754A32CD
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 23:45:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-23-2004 23:27 CET
+Last Modified:              11-23-2004 23:45 CET
 ======================================================================
 Summary:                    No sound output  despite unmuting and maximizing all
 volume settings
@@ -74,36 +74,26 @@ them.  Still no sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- IceRAM - 11-23-04 23:23 
-----------------------------------------------------------------------
-I've been fighting all day with my card to make it work and I came to this
-place now. It seems somebody else encontered the same problem as I did.
-
-Distro: ArchLinux (http://www.archlinux.org)
-ALSA: 1.0.7
-(http://www.archlinux.org/packages.php?s_repo=all&s_category=all&s_keyword=alsa&s_lastupdate=&pp=50)
-Motherboard: GigaByte 8IK1100
-Chipset: ALC655 (in the docs>
-http://www.giga-byte.com/MotherBoard/Products/Products_Spec_GA-8IK1100.htm),
-detected as ALC658 rev 0 by ALSA
-
-# lspci | grep audio
-00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
-AC'97 Audio Controller (rev 02)
-
-First, I need to mention that I can play sounds (progress bars moving,
-equalizers etc), but I can't hear the sounds.
-
-I will attach some files that describe my current configuration - I hope
-it gets fixed soon.
-
-----------------------------------------------------------------------
  IceRAM - 11-23-04 23:27 
 ----------------------------------------------------------------------
 These files attached are from my system:
  asound.state [^] (6,780 bytes) 11-23-04 23:24 [Delete]
  modprobe.conf [^] (902 bytes) 11-23-04 23:25 [Delete]
  iceram_lsmod.txt [^] (1,801 bytes) 11-23-04 23:26 [Delete]
+
+----------------------------------------------------------------------
+ IceRAM - 11-23-04 23:45 
+----------------------------------------------------------------------
+Oh, I just remembered something.
+
+When I used alsa (cs64xx, AFAIK) on another computer, having the speakers
+made loud, I could hear some kind of "power on" noise (difficult to
+characterise) when the modules were loaded (the noise was similar to the
+one made when pluggin the speakers in the speakers jack in the sound
+card).
+
+I couldn't hear anything though on this configuration - I don't know if I
+should consider this a feature or a bug...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -121,6 +111,10 @@ Date Modified  Username       Field                    Change
 11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
 11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
 11-23-04 23:27 IceRAM         Note Added: 0002538                          
+11-23-04 23:28 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Note Edited: 0002537                         
+11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
+11-23-04 23:45 IceRAM         Note Added: 0002539                          
 ======================================================================
 
 
