@@ -1,15 +1,19 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How to lock the sample rate ?
-Date: Sat, 6 Mar 2004 15:17:30 +0100 (CET)
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: Re: PCM questions
+Date: Sat, 06 Mar 2004 16:45:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403061516490.3190@pnote.perex-int.cz>
-References: <20040306115426.6b48eaaf.pochini@shiny.it>
- <Pine.LNX.4.58.0403061157220.1881@pnote.perex-int.cz>
- <20040306140542.GM25734@sunrise.pg.gda.pl>
+Message-ID: <1078587904.30309.1018.camel@renegade>
+References: <1078416129.1865.868.camel@renegade>
+	 <Pine.LNX.4.58.0403041720490.2204@pnote.perex-int.cz>
+	 <1078422542.1866.899.camel@renegade>
+	 <Pine.LNX.4.58.0403041932480.2204@pnote.perex-int.cz>
+	 <1078430057.30309.921.camel@renegade>
+	 <Pine.LNX.4.58.0403050839190.1869@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040306140542.GM25734@sunrise.pg.gda.pl>
+In-Reply-To: <Pine.LNX.4.58.0403050839190.1869@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,35 +22,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 6 Mar 2004, Adam Tla/lka wrote:
+lør, 06.03.2004 kl. 11.10 skrev Jaroslav Kysela:
+> I also extended the "auto-silence" function in driver in our CVS.
+> Now, the code detects the written samples so snd_pcm_start() doesn't
+> silence the whole ring buffer in this case.
+> 
+> Here is the patch for driver:
 
-> On Sat, Mar 06, 2004 at 11:59:45AM +0100, Jaroslav Kysela wrote:
-> > On Sat, 6 Mar 2004, Giuliano Pochini wrote:
-> > 
-> > > On the Echoaudio cards the sample rate is a global setting, so I need a way
-> > > to prevent an app to change the rate if someone else already set it (the
-> > > card han several devices/subdevices). I was thinking to put a simple
-> > > "if (IsAudioOpen()) rate_min=rate_max=current_rate;" in pcm_open callback,
-> > > but this solution is racy.
-> Talking about race conditions you could use a variable which is set to 0
-> at the beginning. Now if app wants to set a rate it does atomic compare
-> and increase (cmpxchg on  x86) instruction so only one app could set
-> rate. The other could only read memorized rate settins and report an
-> error if rate is different.
+OK, thanks, may be useful for future projects.
 
-We have already a number of locking features in kernel (spinlocks, 
-mutexes, atomic integer operations, atomic bitmap operations etc).
+I have a new question. How can I handle a buffer wraparound with
+snd_pcm_mmap_begin and snd_pcm_mmap_commit? It seems that currently, if
+the app frame pos is near the end of the buffer, the returned number of
+mapped frames is apparently only up to the end of the buffer. But the
+code that fills the buffer will want to handle the wraparound itself, so
+I would like to return the requested number of frames to the code, and
+let it do its own wraparound to offset=0 when the end of buffer is
+reached. Is it safe to do something like calling snd_pcm_mmap_begin
+twice to achieve this, then snd_pcm_mmap_commit twice after the sound
+code has filled the buffer up?
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
