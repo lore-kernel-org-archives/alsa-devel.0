@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Wed, 8 Dec 2004 16:35:38 +0100
-Message-ID: <5b0d4703b3484852075a3766c96ebd74@bugtrack.alsa-project.org>
+Date: Wed, 8 Dec 2004 16:33:36 +0100
+Message-ID: <e1b401516eb36e1dca6a8fa920d01c1f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 93D2932D
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 16:35:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F28C532D
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 16:33:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              12-08-2004 16:35 CET
+Last Modified:              12-08-2004 16:33 CET
 ======================================================================
 Summary:                    ALSA sound cuts out w/ message: ALSA
 sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
@@ -63,6 +63,12 @@ HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
+ tiwai - 12-08-04 12:13 
+----------------------------------------------------------------------
+OK, try the another patch.  This won't fix the behavior but the debug
+message must be slightly different.
+
+----------------------------------------------------------------------
  brentcfisher - 12-08-04 16:33 
 ----------------------------------------------------------------------
 Takashi,
@@ -70,11 +76,6 @@ Takashi,
 Did you mean to attach another patch file?
 
 -Brent
-
-----------------------------------------------------------------------
- tiwai - 12-08-04 16:35 
-----------------------------------------------------------------------
-Oops, sorry, I forgot to attach the second patch...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,7 +96,6 @@ Date Modified  Username       Field                    Change
 12-08-04 05:03 brentcfisher   Note Added: 0002774                          
 12-08-04 12:13 tiwai          Note Added: 0002779                          
 12-08-04 16:33 brentcfisher   Note Added: 0002786                          
-12-08-04 16:35 tiwai          Note Added: 0002787                          
 ======================================================================
 
 
