@@ -1,14 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Testers needed: memio-mmap patch (rme32,rme96,nm256)
-Date: Thu, 1 Jul 2004 22:13:26 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Audigy 2  support for the P16V HQ chip.
+Date: Thu, 01 Jul 2004 21:59:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040701201326.GA567@tuba.home>
-References: <s5hllikor62.wl@alsa2.suse.de> <20040620101135.GA755@tuba.home> <s5hd63fallg.wl@alsa2.suse.de>
+Message-ID: <40E47B35.2090208@superbug.demon.co.uk>
+References: <40E1BC8E.4030702@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hd63fallg.wl@alsa2.suse.de>
+In-Reply-To: <40E1BC8E.4030702@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,42 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, pilo.c@wanadoo.fr
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 01, 2004 at 03:44:11PM +0200, Takashi Iwai wrote:
-> At Sun, 20 Jun 2004 12:11:35 +0200,
-> Martin Langer wrote:
-> > 
-> > Ok, let's try fullduplex now...
+James Courtier-Dutton wrote:
+> This is just a quick update to say that I have managed to get sound 
+> output at 96khz and 24bit from the Audigy 2 card using the P16V chip.
 > 
-> JFYI: it's now on CVS tree.
-> fullduplex module option is disabled as default, though.
+> I will post some details later.
+> 
+> Cheers
+> James
+> 
 
-For enabling fullduplex you will need the following patch, too.
+For those interested, the alsa p16v driver is at 
+http://www.superbug.demon.co.uk/alsa/p16v
 
-FYI: The situation is that I get only silence in fullduplex_mode after a
-short time. But nevertheless in the beginning it is correct.
+It currently supports playback to 5.1 channels, output at rates 44100, 
+48000, 96000, 192000. 24bit.
 
+I will be adding capture support next, so we should finally be able to 
+capture AC3 input via the spdif inputs of the Audigy2.
 
-martin
+The driver uses DMA for direct CPU to P16V chip data path, bypassing the 
+EMU10K2 entirely.
 
+I will keep the p16v driver separate from the emu10k1 driver until I 
+have found out enough about the P16V chip.
 
---- alsa-kernel/pci/rme32.c	Thu Jul  1 19:52:09 2004
-+++ ../alsa-rme32b/alsa-kernel/pci/rme32.c	Sun Jun 27 21:55:37 2004
-@@ -1990,6 +2002,11 @@
- 	rme32->card = card;
- 	rme32->pci = pci;
- 	snd_card_set_dev(card, &pci->dev);
-+
-+        if (fullduplex[dev]) {
-+                rme32->fullduplex_mode = 1;
-+        }
-+
- 	if ((err = snd_rme32_create(rme32)) < 0) {
- 		snd_card_free(card);
- 		return err;
+Cheers
+James
 
 
 -------------------------------------------------------
