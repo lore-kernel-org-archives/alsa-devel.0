@@ -1,14 +1,14 @@
 From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
 Subject: Re: sequencer: handling non-registered parameter numbers....
-Date: Mon, 16 Jun 2003 09:51:57 +0200
+Date: Mon, 16 Jun 2003 09:59:30 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EED771D.5070803@folkwang-hochschule.de>
-References: <3EEC9BC6.5090603@folkwang-hochschule.de> <200306152052.05435.david@olofson.net>
+Message-ID: <3EED78E2.1050503@folkwang-hochschule.de>
+References: <E19Rced-0005Jf-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200306152052.05435.david@olofson.net>
+In-Reply-To: <E19Rced-0005Jf-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,57 +17,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: David Olofson <david@olofson.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello david !
-
-thanks for your reply.
-
-David Olofson wrote:
-> On Sunday 15 June 2003 18.16, Joern Nettingsmeier wrote:
-> [...]
->=20
->>         /*{SND_SEQ_EVENT_NONREGPARAM, extra_decode_nrpn},*/
->>         /*{SND_SEQ_EVENT_REGPARAM, extra_decode_rpn},*/
->>};
+Paul Davis wrote:
+>>hello alsa gurus !
 >>
->>which makes me think it might not yet be implemented....
->=20
->=20
-> I'm using NRPNs to control the mixer in the current development=20
-> version of Audiality, and they appear to be working just fine, and=20
-> just like one would expect.
->=20
->=20
->=20
->>any hints or fine manuals around ?
->=20
->=20
-> Do you need one? :-)
+>>i have bought a peavey studiomix midi controller on ebay, and it sends =
 
-where did i make the impression that i have *any* clue about progamming=20
-?  yes i do :)
+>>NRPN messages (non-registered parameter numbers). when i move a slider,=
+=20
+>>it sends the slider number encoded in 98 and 99 and the value in the=20
+>>DATA ENTRY controllers 6 and 38. i would like to map these to ordinary =
 
-> What you get is plain <control, value> tuples, and that's all there is =
-
-> to it. (Well, it's all I *want* anyway, as I don't want to do stuff=20
-> that's outside the MIDI spec...)
+>>midi controllers, or better yet, get nrpn support into ardour.
+>>
+>>how do i get nrpn controller values from the alsa sequencer without=20
+>>having to parse the individual events and put them together by hand ?
 >=20
-> Here's some code, which isn't heavily tested, but does seem to do the=20
-> job:
+>=20
+> ardour doesn't use the sequencer.
 
-either i have not understood the semantics of nrpm, or nrpm  events are=20
-not detected as such. when i move a slider, i always get four separate=20
-normal controller events: two on 98/99 encoding the control number as a=20
-14bit value, and two on 6 and 38 encoding the data.
+i'm aware of that. i was planning to use a virmidi card, which ardour=20
+could grab raw, and to write a little mapper that maps nrpns to=20
+arbitrary normal controllers. this can be patched between the midi in=20
+port and the virtual device with aconnect. (if i have understood virmidi =
 
-the case SND_EVENT_NONREGPARAM is never reached.
-now one of three things must be broken (in decreasing order of=20
-likelihood): me, my wacky peavey controller, or alsa-lib.
+devices correctly.)
 
-?
+> and i don't consider the nrpn messages any different from any other
+> controller. from libmidi++'s persepective, there are 127 controller
+> ID's, each with a value. whatever standard mapping they may have to
+> gain, pan, or nrpn is completely ignored.
+
+understood. the problem is, it won't work automatically with nrpn-based=20
+controllers, since two nrpn "events" and two data entry events (yes,=20
+both 14 bit) must be grouped together and transmogrified into one=20
+[controller,value] tuple.
+
+> 14 bit value support is almost impossible to provide: the midi spec is
+> just ridiculous for that.=20
+
+i wouldn't have dared to say so for lack of experience, but i had this=20
+creeping feeling it might be the case. :)
+
+maybe i should consider dropping 14-bit resolution (the crappy faders on =
+
+the peavey hardly manage 127 distinct positions) and just use the MSB=20
+part of the 14bit controller. ardour does perform lowpass filtering of=20
+controller values, right ?
 
 --=20
 All Members shall refrain in their international relations from
