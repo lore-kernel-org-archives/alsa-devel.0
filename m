@@ -1,14 +1,12 @@
-From: "mahendra  sp" <mahendra_sp@rediffmail.com>
-Subject: problem with  MU -LAW
-Date: 1 Jul 2003 03:24:32 -0000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] fix alsa-lib documentation references
+Date: Tue, 01 Jul 2003 10:36:15 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030701032432.30106.qmail@webmail26.rediffmail.com>
-Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Message-ID: <Pine.HPX.4.33n.0307011034410.28783-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +15,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user-request@lists.sourceforge, alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-hi, alsa  people,
+fix some wrong section/file/reference names
 
-   I have wriiten the application which realises full duplex.But 
-there is playback buffer underrun proble. The buffer tries to read 
-the value but -ve value. After writink the -ve value for some 
-timesay 3 minutes, it becomes alright. again after some time 
-buffer under run occurs. whts the  problem . how to over come it. 
-is it dependednt on periodsize and buffersize?
 
-   and  also i want to implement G711. does it happen 
-automatically by using snd_pcm_format_mulaw? if not how to do 
-it?
+Index: alsa-lib/src/pcm/pcm_dmix.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dmix.c,v
+retrieving revision 1.37
+diff -u -r1.37 pcm_dmix.c
+--- alsa-lib/src/pcm/pcm_dmix.c	23 Apr 2003 12:41:58 -0000	1.37
++++ alsa-lib/src/pcm/pcm_dmix.c	1 Jul 2003 08:17:25 -0000
+@@ -1093,7 +1093,7 @@
+ }
+ \endcode
 
-thanks, regards,
-mahendra
-___________________________________________________
-Click below to experience Sooraj R Barjatya's latest offering
-'Main Prem Ki Diwani Hoon' starring Hrithik, Abhishek
-  & Kareena http://www.mpkdh.com
+-\subsection pcm_plugins_hw_funcref Function reference
++\subsection pcm_plugins_dmix_funcref Function reference
+
+ <UL>
+   <LI>snd_pcm_dmix_open()
+Index: alsa-lib/src/pcm/pcm_dshare.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dshare.c,v
+retrieving revision 1.4
+diff -u -r1.4 pcm_dshare.c
+--- alsa-lib/src/pcm/pcm_dshare.c	23 Apr 2003 12:41:58 -0000	1.4
++++ alsa-lib/src/pcm/pcm_dshare.c	1 Jul 2003 08:17:25 -0000
+@@ -885,7 +885,7 @@
+ }
+ \endcode
+
+-\subsection pcm_plugins_hw_funcref Function reference
++\subsection pcm_plugins_dshare_funcref Function reference
+
+ <UL>
+   <LI>snd_pcm_dshare_open()
+Index: alsa-lib/src/pcm/pcm_dsnoop.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_dsnoop.c,v
+retrieving revision 1.4
+diff -u -r1.4 pcm_dsnoop.c
+--- alsa-lib/src/pcm/pcm_dsnoop.c	23 Apr 2003 12:41:58 -0000	1.4
++++ alsa-lib/src/pcm/pcm_dsnoop.c	1 Jul 2003 08:17:28 -0000
+@@ -1,5 +1,5 @@
+ /**
+- * \file pcm/pcm_snoop.c
++ * \file pcm/pcm_dsnoop.c
+  * \ingroup PCM_Plugins
+  * \brief PCM Capture Stream Snooping (dsnoop) Plugin Interface
+  * \author Jaroslav Kysela <perex@suse.cz>
+@@ -837,7 +837,7 @@
+ }
+ \endcode
+
+-\subsection pcm_plugins_hw_funcref Function reference
++\subsection pcm_plugins_dsnoop_funcref Function reference
+
+ <UL>
+   <LI>snd_pcm_dsnoop_open()
+Index: alsa-lib/src/pcm/pcm_share.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_share.c,v
+retrieving revision 1.74
+diff -u -r1.74 pcm_share.c
+--- alsa-lib/src/pcm/pcm_share.c	7 Mar 2003 18:46:33 -0000	1.74
++++ alsa-lib/src/pcm/pcm_share.c	1 Jul 2003 08:17:29 -0000
+@@ -1501,7 +1501,7 @@
+ to each channel is exlusive (samples are not mixed together). It means, if
+ the channel zero is used with first client, the channel cannot be used with
+ second one. If you are looking for a mixing plugin, use the
+-\ref pcm_plugins_smix "smix plugin".
++\ref pcm_plugins_dmix "dmix plugin".
+
+ \code
+ pcm.name {
+
 
 
 
