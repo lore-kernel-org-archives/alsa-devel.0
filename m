@@ -1,8 +1,8 @@
 From: Andrei Boros <andrei@srr.ro>
 Subject: alsa-tools [CVS]
-Date: Wed, 15 Oct 2003 11:37:48 +0300
+Date: Wed, 15 Oct 2003 11:38:48 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F8D075C.1C77ADD8@srr.ro>
+Message-ID: <3F8D0798.6FA22FC4@srr.ro>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -19,17 +19,14 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
- Attempting to build the alsa-tools from the cvs tree I see that it does
-not handle properly the missing fltk library when it attempts to build
-hdspmixer.
+gate:/serve/install/alsa-cvs/alsa-tools# ./cvscompile
+configure.in:6: warning: do not use m4_patsubst: use patsubst or
+m4_bpatsubst
+configure.in:30: warning: do not use m4_regexp: use regexp or m4_bregexp
+autoheader: `config.h.in' is unchanged
+test/Makefile.am:4: `#' comment at start of rule is unportable
 
-cvscompile runs configure then attempts to run make on this tool even
-after configure gave the error that it did not find fltk and the
-attempted compilation is aborted on each target with lot's of missing
-files.
-
-I think it should skip hdspmixer if it's configure detects missing
-dependencies.
+cvscompile gives this strange portability warning. see above.
 
 -- 
 ing. Andrei Boros
