@@ -1,14 +1,14 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: [FOR] justin carmack (also mark knecht)
-Date: 27 Feb 2003 17:09:41 -0800
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Interesting problem with hotplug and Midisport 2x2
+ on Mdk 9.0
+Date: Fri, 28 Feb 2003 14:51:08 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046394582.2317.5.camel@Godzilla>
-References: <200302271148.h1RBm5O22459@linuxaudiosystems.com>
+Message-ID: <3E5EF8CC.50400@boosthardware.com>
+References: <000201c2de8a$1237dfe0$aa1f830a@ICO> <s5h65r5k2uc.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200302271148.h1RBm5O22459@linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,34 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-As always Paul, thanks for the efforts.
+Takashi Iwai wrote:
 
-On Thu, 2003-02-27 at 03:48, Paul Davis wrote:
-> justin - sorry, i lost your email address.
 > 
-> i got much clearer info on the mixer controls for the hdsp-9652 from
-> RME, and have fixed the code. i have to get one more piece of
-> information from them and then i will release a patch. the patch will
-> also contain a consolidation of other work to recognize the various
-> firmware revs and different h/w, plus a few other fixes from the last
-> month. 
+> hmm, the hot unplugging of ALSA usb devices was improved in the recent
+> version - basically i didn't see problems with the devices i have.
+> but i've not tested with midi devices, so this might be a problem.
 > 
-> --p
+> just make sure that you unload snd-usb-audio (snd-usb-midi doesn't
+> exist any longer) before unplugging the device.
 > 
 > 
-> -------------------------------------------------------
-> This SF.NET email is sponsored by:
-> SourceForge Enterprise Edition + IBM + LinuxWorld = Something 2 See!
-> http://www.vasoftware.com
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
+
+I see it too with the quattro and another user has reported it with the 
+audigy. It would be nicer if we didn't have to remember to unload the 
+usb-audio driver before hotplugging. Is it possible to make that happen.
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
