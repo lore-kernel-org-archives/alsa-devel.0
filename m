@@ -1,11 +1,16 @@
-From: Pavel Roskin <proski@gnu.org>
-Subject: Fix for mmap_test, better tests needed
-Date: Mon, 12 Aug 2002 15:53:51 -0400 (EDT)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: How to get information for a busy device?
+Date: Mon, 12 Aug 2002 21:33:03 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0208121541210.14146-100000@marabou.research.att.com>
+Message-ID: <Pine.LNX.4.33.0208122129590.1463-100000@pnote.perex-int.cz>
+References: <200208121823.g7CINs724461@d1o1116.telia.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA07672
+	for <alsa-devel@alsa-project.org>; Mon, 12 Aug 2002 21:37:13 +0200
+In-Reply-To: <200208121823.g7CINs724461@d1o1116.telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,37 +19,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Anders Torger <torger@ludd.luth.se>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+On Mon, 12 Aug 2002, Anders Torger wrote:
 
-I was looking for some tests for the sound driver, and the only thing I
-found in ALSA CVS is some stuff in alsa-driver/test.  Before I continue my
-search for real tests (any pointers will be appreciated!) let me post a
-patch that makes mmap_test.c compile and work.
+> I'd like to be able to get the minimum period size for a pcm device, so 
+> then I use snd_pcm_hw_params_get_period_size_min(), however, that (of 
+> course) needs a pcm as the first argument.
+> 
+> In my application it would be good if it was possible to get this 
+> information, even if the device in question is busy or temporarily 
+> cannot be accessed by some other reason, causing snd_pcm_open to fail.
+> 
+> Is this possible to do in some way?
 
-First of all, mmap_test.c should be converted from DOS to UNIX-style line
-ends before my patch is applied.
+Nope. This information is dynamic at runtime (might depend on the 
+state of other parts of hardware).
 
-There is no "smpl" file in the alsa-driver/test directory, but we can 
-easily generate a sample.  sin() requires libm, hence the makefile change.
+						Jaroslav
 
-The necessary includes have been added to avoid warnings.  Unused 
-variables have been removed for the same reason.  If the "smpl" file 
-cannot be loaded, a sound of variable frequency is generated.
-
-SNDCTL_DSP_SETPERIOD is undefined (google search gives 0 hits, I wonder 
-if this code ever compiled), but SNDCTL_DSP_SETFRAGMENT seems to do 
-exactly what we need.  info.periods has been replaced with info.fragsize 
-for the same reason.
-
-Now mmap_test compiles without warnings and produces funky sounds.  
-Enjoy!
-
--- 
-Regards,
-Pavel Roskin
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
