@@ -1,22 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Sun, 29 Aug 2004 11:54:31 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000422]: snd-atiixp-modem driver: No CARRIER/DIALTONE.
+Date: Sun, 29 Aug 2004 12:10:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408291135330.1778@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0408181538550.24798-100000@studcom.urz.uni-halle.de>
- <1092842830.13603.3.camel@localhost.localdomain> <20040818181350.2b38e875@mango.fruits.de>
- <Pine.LNX.4.58.0408181918160.1769@pnote.perex-int.cz>
- <20040818201535.1f49a128@mango.fruits.de> <Pine.LNX.4.58.0408191050220.1779@pnote.perex-int.cz>
- <s5h8ycbv4s9.wl@alsa2.suse.de> <Pine.LNX.4.58.0408191225170.1779@pnote.perex-int.cz>
- <4129D6A2.7020801@pg.gda.pl> <s5hoel1hny9.wl@alsa2.suse.de> <4130D8BF.8030502@pg.gda.pl>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <20040829101012.6553439006@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BC2523C
-	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2004 12:05:08 +0200 (MEST)
-In-Reply-To: <4130D8BF.8030502@pg.gda.pl>
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA1D923C
+	for <alsa-devel@alsa-project.org>; Sun, 29 Aug 2004 12:10:12 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,108 +16,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 28 Aug 2004, Adam Tla=B3ka wrote:
 
-> I imagine sound system as some layered structure:
->=20
-> program
-> |
-> v
-> dev -> redirecting, routing and up/down mixing kernel layer
->                 |                                           |
->                 v                                           v
->            kernel device driver                       net
->                 |
->                 v
->            hardware
+The following bug has been RESOLVED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+======================================================================
+Reported By:                netstar
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     422
+Category:                   PCI - atiixp-modem
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+======================================================================
+Date Submitted:             08-04-2004 01:13 CEST
+Last Modified:              08-29-2004 12:10 CEST
+======================================================================
+Summary:                    snd-atiixp-modem driver: No CARRIER/DIALTONE.
+Description: 
+I am having issues with the modem, although not the sound card. Both
+drivers load fine (CVS alsa-driver, kernel and lib), sound also works
+fine, it is normally loaded as my second device "hw:1", fine, although the
+problem is persistant with any combination of the two devices. When using
+slmodemd with the "modem" device things seem ok until I try dialing and it
+is reported to me that there is no DIALTONE. After disabling DIALTONE
+detection with ATX3, subsequent ATDT attempts return NO CARRIER.  My
+slmodemd was already fixed with a patch sasha sent me some time back.
 
-It's kernel centristic view. I don't see much reasons to have everything=20
-in kernel.
+When listening on the device with arecord for example and outputting to
+STDOUT, I get a constant hiss, however when I pick up a phone on the line
+it appears that the device does notice this as the constant hissing is
+interupted when either opening or closing the line elsewhere.
 
-> in ALSA it looks like
->=20
-> program
-> |
-> v
-> alsalib (plugins for routing, resampling and mixing) -> kernel driver ->=
-=20
-> hardware
->                                                                     ->=20
-> net (in the future)
+I do not believe the modem is broken as has been suggested to me before.
 
-What about this direct way: program -> alsa-lib -> net ?
-I proposed network driver mainly to solve OSS redirecting problems.
-We can implement this driver completely in user space.
+Attatched is an slmodem log of a dialing attempt and some system
+information including card register information whilst dialing. I hope
+this helps.
 
-> I prefer normal Unix way (device and standard functions plus ioctl) so
-> if we can do a kernel module which does routing, redirecting and
-> resampling on top of free OSS module we could obtain full functionality
-> without any change in OSS programs.  But that's OSS not ALSA.
->=20
-> In ALSA we need some kernel module which routes virtual OSS channels
-> from kernel space to user space in ALSA lib emulation. I don't know how
-> effective it will be but if we decided to mix in lib then this is the
-> only way.
->=20
-> By the way in ALSA README we read about full OSS ALSA compatibility.
-> But this is not true!!!
-> No mixer calls on dsp stream,
+slmodemd usage:
 
-Huh, that's new for me. It does not work? It's implemented.
+./slmodemd --alsa modem or modem:0 or modem:1 --country=UK  
 
-> no multichannel streams (4...7.1) are possible with OSS emulation,
+ Depending on the card configurations tested.
+======================================================================
 
-Additional information which is moved to alsa-lib is required. Anyway,
-actually almost all new applications requiring this feature support ALSA.
+----------------------------------------------------------------------
+ netstar - 08-28-2004 04:20 CEST 
+----------------------------------------------------------------------
+It appears that the latest patch added by Sasha on the 25th of August fixes
+to bug https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432 resolves the issues with some modems reporting NO DIALTONE. 
+Modem and sound card are working fine.
 
-> DMA mode broken. I just can't abandon using OSS because of that :-(.
+----------------------------------------------------------------------
+ sashak - 08-29-2004 12:10 CEST 
+----------------------------------------------------------------------
+Related fix in cvs now.
 
-Could you specify which is broken with the kernel ALSA's OSS mmap=20
-emulation?
-
-> There are many sound daemons apps. I just don't want to link an app with
-> all their libraries. It should just open and use sound device - kernel
-> module should communicate with deamon to hide its presence before an app
-> - that is the proper way IMHO. Standard Unix approach plus some message
-> passing method if we can't do all in kernel.
->=20
-> So what is the future of Linux sound??
-
-Note that the direct device access is the major problem with the OSS API.
-If a library which hide the direct syscalls exists, we never had such=20
-problems to redirect OSS calls to our code. The library can be very=20
-small. I already wrote an OSS redirector (alsa-oss/oss-redir) but it might=
-=20
-be that this project will be totaly ignored, because I am not able to
-do much advertisements for all OSS developers to use these calls rather=20
-than direct device accesses.
-
-I feel that it's mainly about fixing bugs. Unfortunately, most of users
-(including you) point me to quake binaries. I cannot run them on my
-machines. The installation always fails at some point (OpenGL, missing
-=2Ewad files for full quake version etc.). If you show me a little command
-style code which triggers different bugs in the OSS emulation layer, I
-promise, I will fix them.
-
-Anyway, this call is to all people on this list. Could you create a Wiki
-page which exact (version, source URL) OSS applications have trouble with:
-
-1) ALSA's kernel OSS emulation
-2) ALSA's aoss (libaoss)
-
-It will also help me a lot to finish the OSS emulation and stop these=20
-complains.
-
-=09=09=09=09=09=09Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-04-04 01:13 netstar        New Bug                                      
+08-04-04 01:14 netstar        File Added: systeminfo.txt                    
+08-04-04 01:16 netstar        File Added: slmodem.log.modem                    
+08-04-04 01:17 netstar        File Added: slmodem-2.9.9-fix.patch                    
+08-27-04 19:41 tiwai          Assigned To              tiwai =>            
+08-27-04 19:42 tiwai          Assigned To               => sashak          
+08-28-04 04:20 netstar        Bugnote Added: 0001659                       
+08-29-04 12:10 sashak         Bugnote Added: 0001664                       
+08-29-04 12:10 sashak         duplicate_id             0 => 432            
+08-29-04 12:10 sashak         Resolution               open => fixed       
+08-29-04 12:10 sashak         Status                   assigned => resolved
+======================================================================
 
 
 -------------------------------------------------------
