@@ -1,13 +1,14 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: RE: Azx in 1.0.8?
-Date: Fri, 7 Jan 2005 08:46:12 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B003CE11D9@hqemmail02.nvidia.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
+Date: Fri, 7 Jan 2005 17:45:59 +0100
+Message-ID: <00070ac6409673830bd984585462f82c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C2DD32A
+	for <alsa-devel@alsa-project.org>; Fri,  7 Jan 2005 17:45:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +18,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Takashi Iwai [mailto:tiwai@suse.de]=20
->=20
-> At Thu, 6 Jan 2005 08:38:47 -0800,
-> Stephen Warren wrote:
-> >=20
-> > Hi.
-> >=20
-> > What's the likelihood of the azx driver being included in the 1.0.8
-> > final release?
->=20
-> 1.0.8(rc2) surely includes azx.
 
-Yup - the tar file on alsa-project.org does. I hadn't realized the
-difference between alsa-driver and alsa-kernel, and I guess what I was
-looking at was the merge request for alsa-kernel to go into the kernel
-tree.
+The following issue has been CLOSED
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
+======================================================================
+Reported By:                flink
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   646
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     closed
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             11-12-2004 17:02 CET
+Last Modified:              01-07-2005 17:45 CET
+======================================================================
+Summary:                    emu10k1: sound chopped when passthru enabled
+Description: 
+When I play a DVD with AC3 passthru enabled, the signal is correctly send
+to my AC3 decoder but this signal is chopped. I've a little led on my
+decoder to show if dolby digital is enabled or not and this led blinks
+instead of remaining enabled. So the sound is also chopped and a DVD can't
+be 
+watched this way.
+======================================================================
 
---=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
+----------------------------------------------------------------------
+ visit0r - 11-24-04 09:24 
+----------------------------------------------------------------------
+I have managed to play couple of DVDs with AC3 without any problems, so I
+suppose the problem was somewhere else.
+
+----------------------------------------------------------------------
+ perex - 12-05-04 12:36 
+----------------------------------------------------------------------
+Fixed in 1.0.7.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-12-04 17:02 flink          New Issue                                    
+11-13-04 22:18 rlrevell       Note Added: 0002403                          
+11-13-04 22:31 rlrevell       File Added: patch                            
+11-13-04 22:33 rlrevell       Note Added: 0002404                          
+11-16-04 00:13 visit0r        Note Added: 0002421                          
+11-16-04 00:24 rlrevell       Note Added: 0002422                          
+11-16-04 21:09 visit0r        Note Added: 0002430                          
+11-17-04 04:06 duanev         Issue Monitored: duanev                      
+11-17-04 07:00 duanev         Note Added: 0002432                          
+11-17-04 08:05 visit0r        Issue Monitored: visit0r                     
+11-17-04 08:09 visit0r        Note Added: 0002434                          
+11-18-04 23:34 rlrevell       Note Added: 0002472                          
+11-19-04 07:14 visit0r        Note Added: 0002476                          
+11-24-04 09:09 duanev         Note Added: 0002542                          
+11-24-04 09:24 visit0r        Note Added: 0002543                          
+12-05-04 12:36 perex          Status                   new => resolved     
+12-05-04 12:36 perex          Resolution               open => fixed       
+12-05-04 12:36 perex          Assigned To               => perex           
+12-05-04 12:36 perex          Note Added: 0002719                          
+01-07-05 17:45 tiwai          Status                   resolved => closed  
+======================================================================
+
+
 
 
 -------------------------------------------------------
