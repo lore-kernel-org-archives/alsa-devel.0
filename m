@@ -1,11 +1,13 @@
-From: "超 李" <flyingwalter@msn.com>
-Subject: Poor Recording Volume on Via8233A and Via82C686
-Date: Thu, 16 Jan 2003 14:20:14 +0800
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: General Guidelines?  (MIDI)
+Date: Thu, 16 Jan 2003 08:39:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F15keBtof23uNYStH4R000264c3@hotmail.com>
+Message-ID: <Pine.HPX.4.33n.0301160836030.26796-100000@studcom.urz.uni-halle.de>
+References: <20030116032713.GA30510@bhv1.adelphia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030116032713.GA30510@bhv1.adelphia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,29 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Brian Victor <bhv1@psu.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-   The volume of the audio data I recorded using the arecord are always very 
-poor. I tried to adjust all the volume setting to maximum using the 
-alsamixer, the volume of voice grows little, but the noise grows much 
-faster.
-   Is this a bug? or How can I improve the quality of the recorded audio 
-data?
-   My enviroment:
-       Linux Kernel 2.4.18-3, Alsa 0.9.0rc5 on either via8233A chip or 
-via82c686 chip.
+Brian Victor wrote:
+> Monitoring /proc/asound/seq/queues shows the events being queued, but as
+> soon as the queue starts, all 400 notes leave the queue instantly; none
+> are played.
+>
+>   snd_seq_ev_schedule_tick(&ev, m_queue, 0, tick);
 
-Best Regards,
+What is the queue's tempo? 400 ticks may not be much.
 
-Walter
+>   snd_seq_ev_set_subs(&ev);
 
+This will send the note events to the subscribers of your program's port.
+Are there any?
 
 
-_________________________________________________________________
-MSN 8 helps eliminate e-mail viruses. Get 2 months FREE* 
-http://join.msn.com/?page=features/virus
+HTH
+Clemens
 
 
 
