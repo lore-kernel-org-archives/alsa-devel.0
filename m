@@ -1,11 +1,14 @@
-From: Ryan Winter <Ryan.Winter@nautronix.com.au>
-Subject: RME HDSP 9652 syncing problem
-Date: Mon, 17 May 2004 13:11:02 +0800
+From: Tom Watson <sdc695@yahoo.com>
+Subject: MPG123 and alsa
+Date: Mon, 17 May 2004 02:22:33 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1084770662.18496.10.camel@winter.nautronix>
+Message-ID: <20040517092233.60503.qmail@web60810.mail.yahoo.com>
+References: <E1BPYNw-0007Vn-Le@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="--=_NextPart_ST_13_11_03_Monday_May_17_2004_19938"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E1BPYNw-0007Vn-Le@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,157 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I just downloaded a version (most recent I assume) of MPG123.  When I
+tried to do a 'make linux-alsa' I got a wholw bunch of errors.  While I
+suspect that this is because they are using an older oversion of alsa
+(0.5.x?).  Is this the case, and has anyone else done any mods to the
+mpg123 (or its library).
 
-----=_NextPart_ST_13_11_03_Monday_May_17_2004_19938
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+At the moment it appears that mpg123 will work in oss for now.
 
-Hi,
+Thanks.
 
-I have been using the RME HDSP 9652 for several months now and have
-noticed a problem with the synchonisation.
-
-I have an external word clock which runs into 2 RME analog/digital
-interfaces, as well as the HDSP itself. 
-
-The HDSP is setup to sync to word clock input, and sample clock source
-is autosync.
-
-The problem I am seeing is that if I transmit to 24 x 48kHz channels,
-then the first 8 channels (ADAT-1) seem to continuously loose their Sync
-status and I can pops (nulls) and clicks (spikes) in the recorded data
-(by looping the transmit back into receive). Running hdspmixer also
-shows the levels of the first 8 channels jumping around as the sync is
-lost.
-
-Does anyone know what could be causing this problem? I have attached
-information about the system that I think is relevant.
-
-Thanks
-Ryan Winter
+=====
+-- 
+Tom Watson
+tsw@johana.com
 
 
---
-This email is confidential and intended solely for the use of the individual to whom it is addressed.  
-Any views or opinions presented are solely those of the author and do not necessarily represent those of NAUTRONIX LTD.
-
-If you are not the intended recipient, you have received this email in error and use, dissemination, forwarding, printing, or copying of 
-this email is strictly prohibited.  If you have received this email in error please contact the sender.   
-
-Although our computer systems use active virus protection software, and we take various measures to reduce the risk of viruses 
-being transmitted in e-mail messages and attachments sent from this company, we cannot guarantee that such e-mail messages 
-and attachments are free from viruses on receipt.  It is a condition of our using e-mail to correspond with you, that any and all liability 
-on our part arising directly or indirectly out of any virus is excluded.  Please ensure that you run virus checking software on all e-mail 
-messages and attachments before reading them.
-
-----=_NextPart_ST_13_11_03_Monday_May_17_2004_19938
-Content-Type: text/plain; name=proc.hdsp; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=proc.hdsp
-
-Uk1FIEhhbW1lcmZhbGwgSERTUCA5NjUyIChDYXJkICMxKQ0KQnVmZmVyczogY2FwdHVyZSBmNzIw
-MDAwMCBwbGF5YmFjayBmNzAwMDAwMA0KSVJROiA5IFJlZ2lzdGVycyBidXM6IDB4ZTEwMDAwMDAg
-Vk06IDB4ZjhhMDUwMDANCkNvbnRyb2wgcmVnaXN0ZXI6IDB4MTAwYTBlZg0KQ29udHJvbDIgcmVn
-aXN0ZXI6IDB4ODAwDQpTdGF0dXMgcmVnaXN0ZXI6IDB4NjA3ZGNjZQ0KU3RhdHVzMiByZWdpc3Rl
-cjogMHhmZmZmODQ3OQ0KRklGTyBzdGF0dXM6IDANCk1JREkxIE91dHB1dCBzdGF0dXM6IDB4ZmZm
-ZmZmMDANCk1JREkxIElucHV0IHN0YXR1czogMHhmZmZmZmYwMA0KTUlESTIgT3V0cHV0IHN0YXR1
-czogMHhmZmZmZmYwMA0KTUlESTIgSW5wdXQgc3RhdHVzOiAweGZmZmZmZjAwDQoNCkJ1ZmZlciBT
-aXplIChMYXRlbmN5KTogODE5MiBzYW1wbGVzICgyIHBlcmlvZHMgb2YgMzI3NjggYnl0ZXMpDQpI
-YXJkd2FyZSBwb2ludGVyIChmcmFtZXMpOiA4MTkyDQpQYXNzdGhydTogbm8NCkxpbmUgb3V0OiBv
-bg0KRmlybXdhcmUgdmVyc2lvbjogMQ0KDQpTYW1wbGUgQ2xvY2sgU291cmNlOiBBdXRvU3luYw0K
-UHJlZmVycmVkIFN5bmMgUmVmZXJlbmNlOiBXb3JkIENsb2NrDQpBdXRvU3luYyBSZWZlcmVuY2U6
-IFdvcmQgQ2xvY2sNCkF1dG9TeW5jIEZyZXF1ZW5jeTogNDgwMDANClN5c3RlbSBDbG9jayBNb2Rl
-OiBTbGF2ZQ0KU3lzdGVtIENsb2NrIEZyZXF1ZW5jeTogNDgwMDANCg0KSUVDOTU4IGlucHV0OiBJ
-bnRlcm5hbA0KSUVDOTU4IG91dHB1dDogQ29heGlhbCBvbmx5DQpJRUM5NTggcXVhbGl0eTogQ29u
-c3VtZXINCklFQzk1OCBlbXBoYXNpczogb2ZmDQpJRUM5NTggTm9uQXVkaW86IG9mZg0KSUVDOTU4
-IHNhbXBsZSByYXRlOiBFcnJvciBmbGFnIHNldA0KDQpBREFUMTogU3luYw0KQURBVDI6IFN5bmMN
-CkFEQVQzOiBTeW5jDQpTUERJRjogTm8gTG9jaw0KV29yZCBDbG9jazogU3luYw0KQURBVCBTeW5j
-OiBObyBMb2NrDQoNCg==
-
-----=_NextPart_ST_13_11_03_Monday_May_17_2004_19938
-Content-Type: text/plain; name=amixer.contents; charset=UTF-8
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=amixer.contents
-
-bnVtaWQ9MjMsaWZhY2U9SFdERVAsbmFtZT0nQURBVCBMb2NrIFN0YXR1cycsaW5kZXg9MQ0KICA7
-IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9ci0tLS0sdmFsdWVzPTEsaXRlbXM9Mw0KICA7IEl0ZW0g
-IzAgJ05vIExvY2snDQogIDsgSXRlbSAjMSAnTG9jaycNCiAgOyBJdGVtICMyICdTeW5jJw0KICA6
-IHZhbHVlcz0yDQpudW1pZD0yNCxpZmFjZT1IV0RFUCxuYW1lPSdBREFUIExvY2sgU3RhdHVzJyxp
-bmRleD0yDQogIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1yLS0tLSx2YWx1ZXM9MSxpdGVtcz0z
-DQogIDsgSXRlbSAjMCAnTm8gTG9jaycNCiAgOyBJdGVtICMxICdMb2NrJw0KICA7IEl0ZW0gIzIg
-J1N5bmMnDQogIDogdmFsdWVzPTINCm51bWlkPTI1LGlmYWNlPUhXREVQLG5hbWU9J0FEQVQgTG9j
-ayBTdGF0dXMnLGluZGV4PTMNCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXItLS0tLHZhbHVl
-cz0xLGl0ZW1zPTMNCiAgOyBJdGVtICMwICdObyBMb2NrJw0KICA7IEl0ZW0gIzEgJ0xvY2snDQog
-IDsgSXRlbSAjMiAnU3luYycNCiAgOiB2YWx1ZXM9Mg0KbnVtaWQ9MjAsaWZhY2U9SFdERVAsbmFt
-ZT0nQURBVCBTeW5jIExvY2sgU3RhdHVzJw0KICA7IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9ci0t
-LS0sdmFsdWVzPTEsaXRlbXM9Mw0KICA7IEl0ZW0gIzAgJ05vIExvY2snDQogIDsgSXRlbSAjMSAn
-TG9jaycNCiAgOyBJdGVtICMyICdTeW5jJw0KICA6IHZhbHVlcz0wDQpudW1pZD0yNixpZmFjZT1I
-V0RFUCxuYW1lPSdBbmFsb2cgRXh0ZW5zaW9uIEJvYXJkJw0KICA7IHR5cGU9Qk9PTEVBTixhY2Nl
-c3M9cnctLS0sdmFsdWVzPTENCiAgOiB2YWx1ZXM9b2ZmDQpudW1pZD0xNCxpZmFjZT1IV0RFUCxu
-YW1lPSdBdXRvU3luYyBSZWZlcmVuY2UnDQogIDsgdHlwZT1FTlVNRVJBVEVELGFjY2Vzcz1yLS0t
-LSx2YWx1ZXM9MSxpdGVtcz03DQogIDsgSXRlbSAjMCAnV29yZCcNCiAgOyBJdGVtICMxICdBREFU
-IFN5bmMnDQogIDsgSXRlbSAjMiAnSUVDOTU4Jw0KICA7IEl0ZW0gIzMgJ05vbmUnDQogIDsgSXRl
-bSAjNCAnQURBVDEnDQogIDsgSXRlbSAjNSAnQURBVDInDQogIDsgSXRlbSAjNiAnQURBVDMnDQog
-IDogdmFsdWVzPTANCm51bWlkPTksaWZhY2U9SFdERVAsbmFtZT0nSUVDOTU4IEVtcGhhc2lzIEJp
-dCcNCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZhbHVlcz0xDQogIDogdmFsdWVzPW9m
-Zg0KbnVtaWQ9MTAsaWZhY2U9SFdERVAsbmFtZT0nSUVDOTU4IE5vbi1hdWRpbyBCaXQnDQogIDsg
-dHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQ0KICA6IHZhbHVlcz1vZmYNCm51bWlk
-PTcsaWZhY2U9SFdERVAsbmFtZT0nSUVDOTU4IE91dHB1dCBhbHNvIG9uIEFEQVQxJw0KICA7IHR5
-cGU9Qk9PTEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTENCiAgOiB2YWx1ZXM9b2ZmDQpudW1pZD04
-LGlmYWNlPUhXREVQLG5hbWU9J0lFQzk1OCBQcm9mZXNzaW9uYWwgQml0Jw0KICA7IHR5cGU9Qk9P
-TEVBTixhY2Nlc3M9cnctLS0sdmFsdWVzPTENCiAgOiB2YWx1ZXM9b2ZmDQpudW1pZD0yMixpZmFj
-ZT1IV0RFUCxuYW1lPSdMaW5lIE91dCcNCiAgOyB0eXBlPUJPT0xFQU4sYWNjZXNzPXJ3LS0tLHZh
-bHVlcz0xDQogIDogdmFsdWVzPW9uDQpudW1pZD01LGlmYWNlPUhXREVQLG5hbWU9J01peGVyJw0K
-ICA7IHR5cGU9SU5URUdFUixhY2Nlc3M9cnctLS0sdmFsdWVzPTMsbWluPTAsbWF4PTY1NTM2LHN0
-ZXA9MQ0KICA6IHZhbHVlcz0wLDAsMA0KbnVtaWQ9MjEsaWZhY2U9SFdERVAsbmFtZT0nUGFzc3Ro
-cnUnDQogIDsgdHlwZT1CT09MRUFOLGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQ0KICA6IHZhbHVlcz1v
-ZmYNCm51bWlkPTEzLGlmYWNlPUhXREVQLG5hbWU9J1ByZWZlcnJlZCBTeW5jIFJlZmVyZW5jZScN
-CiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLGl0ZW1zPTYNCiAgOyBJ
-dGVtICMwICdXb3JkJw0KICA7IEl0ZW0gIzEgJ0lFQzk1OCcNCiAgOyBJdGVtICMyICdBREFUMScN
-CiAgOyBJdGVtICMzICdBREFUIFN5bmMnDQogIDsgSXRlbSAjNCAnQURBVDInDQogIDsgSXRlbSAj
-NSAnQURBVDMnDQogIDogdmFsdWVzPTANCm51bWlkPTE5LGlmYWNlPUhXREVQLG5hbWU9J1NQRElG
-IExvY2sgU3RhdHVzJw0KICA7IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9ci0tLS0sdmFsdWVzPTEs
-aXRlbXM9Mw0KICA7IEl0ZW0gIzAgJ05vIExvY2snDQogIDsgSXRlbSAjMSAnTG9jaycNCiAgOyBJ
-dGVtICMyICdTeW5jJw0KICA6IHZhbHVlcz0wDQpudW1pZD0xNSxpZmFjZT1IV0RFUCxuYW1lPSdT
-UERJRiBTYW1wbGUgUmF0ZScNCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXItLS0tLHZhbHVl
-cz0xLGl0ZW1zPTcNCiAgOyBJdGVtICMwICczMjAwMCcNCiAgOyBJdGVtICMxICc0NDEwMCcNCiAg
-OyBJdGVtICMyICc0ODAwMCcNCiAgOyBJdGVtICMzICc2NDAwMCcNCiAgOyBJdGVtICM0ICc4ODIw
-MCcNCiAgOyBJdGVtICM1ICc5NjAwMCcNCiAgOyBJdGVtICM2ICdOb25lJw0KICA6IHZhbHVlcz02
-DQpudW1pZD0xMixpZmFjZT1IV0RFUCxuYW1lPSdTeXN0ZW0gQ2xvY2sgTW9kZScNCiAgOyB0eXBl
-PUVOVU1FUkFURUQsYWNjZXNzPXItLS0tLHZhbHVlcz0xLGl0ZW1zPTINCiAgOyBJdGVtICMwICdN
-YXN0ZXInDQogIDsgSXRlbSAjMSAnU2xhdmUnDQogIDogdmFsdWVzPTENCm51bWlkPTE2LGlmYWNl
-PUhXREVQLG5hbWU9J1N5c3RlbSBTYW1wbGUgUmF0ZScNCiAgOyB0eXBlPUlOVEVHRVIsYWNjZXNz
-PXItLS0tLHZhbHVlcz0xLG1pbj0wLG1heD0wLHN0ZXA9MA0KICA6IHZhbHVlcz00ODAwMA0KbnVt
-aWQ9MTgsaWZhY2U9SFdERVAsbmFtZT0nV29yZCBDbG9jayBMb2NrIFN0YXR1cycNCiAgOyB0eXBl
-PUVOVU1FUkFURUQsYWNjZXNzPXItLS0tLHZhbHVlcz0xLGl0ZW1zPTMNCiAgOyBJdGVtICMwICdO
-byBMb2NrJw0KICA7IEl0ZW0gIzEgJ0xvY2snDQogIDsgSXRlbSAjMiAnU3luYycNCiAgOiB2YWx1
-ZXM9Mg0KbnVtaWQ9MyxpZmFjZT1NSVhFUixuYW1lPSdJRUM5NTggUGxheWJhY2sgQ29uIE1hc2sn
-DQogIDsgdHlwZT1JRUM5NTgsYWNjZXNzPXItLS0tLHZhbHVlcz0xDQogIDogdmFsdWVzPT8NCm51
-bWlkPTQsaWZhY2U9TUlYRVIsbmFtZT0nSUVDOTU4IFBsYXliYWNrIFBybyBNYXNrJw0KICA7IHR5
-cGU9SUVDOTU4LGFjY2Vzcz1yLS0tLSx2YWx1ZXM9MQ0KICA6IHZhbHVlcz0/DQpudW1pZD0xNyxp
-ZmFjZT1QQ00sbmFtZT0nRXh0ZXJuYWwgUmF0ZScNCiAgOyB0eXBlPUVOVU1FUkFURUQsYWNjZXNz
-PXItLS0tLHZhbHVlcz0xLGl0ZW1zPTcNCiAgOyBJdGVtICMwICczMjAwMCcNCiAgOyBJdGVtICMx
-ICc0NDEwMCcNCiAgOyBJdGVtICMyICc0ODAwMCcNCiAgOyBJdGVtICMzICc2NDAwMCcNCiAgOyBJ
-dGVtICM0ICc4ODIwMCcNCiAgOyBJdGVtICM1ICc5NjAwMCcNCiAgOyBJdGVtICM2ICdOb25lJw0K
-ICA6IHZhbHVlcz0yDQpudW1pZD02LGlmYWNlPVBDTSxuYW1lPSdJRUM5NTggSW5wdXQgQ29ubmVj
-dG9yJw0KICA7IHR5cGU9RU5VTUVSQVRFRCxhY2Nlc3M9cnctLS0sdmFsdWVzPTEsaXRlbXM9Mw0K
-ICA7IEl0ZW0gIzAgJ09wdGljYWwnDQogIDsgSXRlbSAjMSAnQ29heGlhbCcNCiAgOyBJdGVtICMy
-ICdJbnRlcm5hbCcNCiAgOiB2YWx1ZXM9Mg0KbnVtaWQ9MSxpZmFjZT1QQ00sbmFtZT0nSUVDOTU4
-IFBsYXliYWNrIERlZmF1bHQnDQogIDsgdHlwZT1JRUM5NTgsYWNjZXNzPXJ3LS0tLHZhbHVlcz0x
-DQogIDogdmFsdWVzPT8NCm51bWlkPTIsaWZhY2U9UENNLG5hbWU9J0lFQzk1OCBQbGF5YmFjayBQ
-Q00gU3RyZWFtJw0KICA7IHR5cGU9SUVDOTU4LGFjY2Vzcz1ydy0tLSx2YWx1ZXM9MQ0KICA6IHZh
-bHVlcz0/DQpudW1pZD0xMSxpZmFjZT1QQ00sbmFtZT0nU2FtcGxlIENsb2NrIFNvdXJjZScNCiAg
-OyB0eXBlPUVOVU1FUkFURUQsYWNjZXNzPXJ3LS0tLHZhbHVlcz0xLGl0ZW1zPTcNCiAgOyBJdGVt
-ICMwICdBdXRvU3luYycNCiAgOyBJdGVtICMxICdJbnRlcm5hbCAzMi4wIGtIeicNCiAgOyBJdGVt
-ICMyICdJbnRlcm5hbCA0NC4xIGtIeicNCiAgOyBJdGVtICMzICdJbnRlcm5hbCA0OC4wIGtIeicN
-CiAgOyBJdGVtICM0ICdJbnRlcm5hbCA2NC4wIGtIeicNCiAgOyBJdGVtICM1ICdJbnRlcm5hbCA4
-OC4yIGtIeicNCiAgOyBJdGVtICM2ICdJbnRlcm5hbCA5Ni4wIGtIeicNCiAgOiB2YWx1ZXM9MA0K
-
-
-----=_NextPart_ST_13_11_03_Monday_May_17_2004_19938--
+	
+		
+__________________________________
+Do you Yahoo!?
+SBC Yahoo! - Internet access at a great low price.
+http://promo.yahoo.com/sbc/
 
 
 -------------------------------------------------------
