@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
-Date: Wed, 29 Dec 2004 17:39:23 +0100
-Message-ID: <d305d4fcb399864d9136d699fb667a04@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 17:56:25 +0100
+Message-ID: <b50dc3d0cd93956c5efd07b4edc66497@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE1B72DD
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:39:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A49972DD
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:56:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Redhat 7.2
 Kernel Version:             2.4.7
 ======================================================================
 Date Submitted:             12-29-2004 10:15 CET
-Last Modified:              12-29-2004 17:39 CET
+Last Modified:              12-29-2004 17:56 CET
 ======================================================================
 Summary:                    Full duplex is not working in OSS emulation.
 Description: 
@@ -48,20 +48,6 @@ If I play something with one player, I am unable to record something on the
 same device.
 The same thing ispossible with the other cards I have.
 ======================================================================
-
-----------------------------------------------------------------------
- croiset - 12-29-04 14:54 
-----------------------------------------------------------------------
-I use nas for playing. This application open the device in write mode
-only.
-
-cf nas.conf option : readwrite "no"  # for open(device, O_WRONLY|O_SYNC,
-0666);
-This exact configuration is working with all cards I have except the RME
-96/8.
-
-The recorder open the device like that : open(_opt->device,
-O_RDONLY|O_NONBLOCK )
 
 ----------------------------------------------------------------------
  tiwai - 12-29-04 17:39 
@@ -72,6 +58,72 @@ O_RDONLY?  Maybe strace can show better.
 Also, you can check /proc/asound/card0/pcm*/sub0/* files as the current
 state, too.
 
+----------------------------------------------------------------------
+ croiset - 12-29-04 17:56 
+----------------------------------------------------------------------
+For the RO and WO only I am sure because I play and record via a symlink,
+so I change the symlink to a new card and restart the two processes and it
+works ! For the recorder and nas I am sure, I verify in my logs in the
+debug mode.
+
+I have this kind of information (if you need some more information do not
+hesitate :
+
+# cat /proc/asound/card0/pcm0p/sub0/hw_params
+access: RW_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 2
+rate: 44100 (44100/1)
+period_size: 512
+buffer_size: 16384
+tick_time: 10000
+OSS format: S16_LE
+OSS channels: 2
+OSS rate: 44100
+OSS period bytes: 2048
+OSS periods: 32
+OSS period frames: 512
+
+------------
+# cat /proc/asound/card0/pcm0p/sub0/sw_params
+tstamp_mode: NONE
+period_step: 1
+sleep_min: 0
+avail_min: 1
+xfer_align: 1
+start_threshold: 1
+stop_threshold: 16384
+silence_threshold: 528
+silence_size: 528
+boundary: 1073741824
+
+--------------
+# cat /proc/asound/card0/pcm0c/sub0/hw_params
+closed
+
+--------------
+# cat /proc/asound/card0/pcm0c/sub0/info
+card: 0
+device: 0
+subdevice: 0
+stream: CAPTURE
+id: Digi96 IEC958
+name: Digi96 IEC958
+subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+class: 0
+subclass: 0
+subdevices_count: 1
+subdevices_avail: 1
+
+------------------------
+# cat /proc/asound/card0/pcm0c/sub0/sw_params
+closed
+
+------------------------
+# cat /proc/asound/card0/pcm0c/sub0/status
+closed
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -81,6 +133,7 @@ Date Modified  Username       Field                    Change
 12-29-04 14:17 tiwai          Note Added: 0002998                          
 12-29-04 14:54 croiset        Note Added: 0003000                          
 12-29-04 17:39 tiwai          Note Added: 0003004                          
+12-29-04 17:56 croiset        Note Added: 0003005                          
 ======================================================================
 
 
