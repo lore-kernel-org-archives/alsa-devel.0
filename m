@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000315]: No option to enable SP/DIF in Fedora Core 2
-Date: Wed, 30 Jun 2004 15:47:26 +0200
+Subject: [ALSA - driver 0000336]: No sound playing
+Date: Wed, 30 Jun 2004 15:51:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5dd01889aff6ccb90a4b4e88a5a10bb2@bugtrack.alsa-project.org>
+Message-ID: <df8c24b97e4860a6a9f5d7fa61ca8d8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,52 +19,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0315
+0336
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                sehh
-Assigned To:                tiwai
+Reported By:                davidgvh
+Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     315
-Category:                   PCI - via82xx
+Bug ID:                     336
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     new
 Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
-Resolution:                 not a bug
+Kernel Version:             2.4.27-pre5
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             05-30-2004 17:10 CEST
-Last Modified:              06-30-2004 15:47 CEST
+Date Submitted:             06-16-2004 14:03 CEST
+Last Modified:              06-30-2004 15:51 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    No option to enable SP/DIF in Fedora Core 2
+Summary:                    No sound playing
 Description:=20
-We can't find any way to enable SP/DIF in Fedora Core 2.
-
-We are using the Asus A7V600 with the AD1980 chipset.
+I cannot get sound to work. After probing snd-card-0, I cannot change the
+volume for the PCM channel in alsamixer.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 15:47 CEST=20
+ davidgvh - 06-22-2004 02:38 CEST=20
 ----------------------------------------------------------------------
-There is no module option for spdif.
-You just need to specify the correct PCM name "iec958" or "spdif".
+Asus P4S8X has a SiS648 northbridge and a SiS963 southbridge.
+Sound card is an SiS7012 (CMI9739A).
+
+edited on: 06-22-04 02:38
+
+----------------------------------------------------------------------
+ davidgvh - 06-17-2004 00:28 CEST=20
+----------------------------------------------------------------------
+Using all of the new ALSA packages.
+Driver - 1.0.5a
+Lib - 1.0.5
+Util - 1.0.5
+
+----------------------------------------------------------------------
+ davidgvh - 06-22-2004 02:40 CEST=20
+----------------------------------------------------------------------
+Sound plays under 2.4.27-rc1. Did not play before. Thinking the problem i=
+s
+a kernel issue. However, the kernel has timing issues. Everything is 2-3
+times faster. Sound plays at correct rate though. Still cannot change PCM
+volume in alsamixer though.
+
+edited on: 06-22-04 02:40
+
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 15:51 CEST=20
+----------------------------------------------------------------------
+The codec doesn't support PCM volume indeed.  It's not a bug.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -72,20 +96,30 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-05-30-04 17:10 sehh           New Bug                                    =
+06-16-04 14:03 davidgvh       New Bug                                    =
  =20
-05-30-04 17:10 sehh           Distribution              =3D> Fedora Core =
+06-16-04 14:03 davidgvh       File Added: ac97#0-0+regs                  =
+ =20
+06-16-04 14:03 davidgvh       Distribution              =3D> Fedora Core =
 2  =20
-05-30-04 17:10 sehh           Kernel Version            =3D> 2.6.5-1.358 =
+06-16-04 14:03 davidgvh       Kernel Version            =3D> 2.4.27-pre5 =
    =20
-06-30-04 15:47 tiwai          Bugnote Added: 0001352                     =
+06-16-04 14:04 davidgvh       File Added: ac97#0-0                       =
  =20
-06-30-04 15:47 tiwai          Assigned To               =3D> tiwai       =
-   =20
-06-30-04 15:47 tiwai          Resolution               open =3D> not a bu=
-g  =20
-06-30-04 15:47 tiwai          Status                   new =3D> resolved =
-   =20
+06-16-04 14:06 davidgvh       Bugnote Added: 0001312                     =
+ =20
+06-17-04 00:28 davidgvh       Bugnote Added: 0001313                     =
+ =20
+06-22-04 02:37 davidgvh       Bugnote Edited: 0001312                    =
+ =20
+06-22-04 02:38 davidgvh       Bugnote Edited: 0001312                    =
+ =20
+06-22-04 02:39 davidgvh       Bugnote Added: 0001327                     =
+ =20
+06-22-04 02:40 davidgvh       Bugnote Edited: 0001327                    =
+ =20
+06-30-04 15:51 tiwai          Bugnote Added: 0001353                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
