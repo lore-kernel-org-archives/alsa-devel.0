@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Arve Knudsen <aknuds-1@broadpark.no>
 Subject: Re: Can't set 88.2/96kHz samplerate with Hammerfall
-Date: Fri, 05 Dec 2003 07:46:23 -0500
+Date: Fri, 05 Dec 2003 13:54:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312051246.hB5CkN3x020895@oud.linuxaudiosystems.com>
-References: <oprzphu41uq1sf88@mail.broadpark.no>
+Message-ID: <oprzpksgt0q1sf88@mail.broadpark.no>
+References: <200312042225.hB4MPs6F002813@oud.linuxaudiosystems.com>
+Mime-Version: 1.0
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 05 Dec 2003 12:50:54 +0100."
-             <oprzphu41uq1sf88@mail.broadpark.no>
+In-Reply-To: <200312042225.hB4MPs6F002813@oud.linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,23 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <aknuds-1@broadpark.no>
-Cc: Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> be overjoyed that was if and when it finally does. Don't expect anythin=
->g
->> soon, unless you're willing to be that developer.
->Actually, I'm not completely opposed to the idea. But I am totally=20
->clueless when it comes to writing device drivers, and would have no idea=20
->where to start. Do you know if RME were forthcoming with specs?
+On Thu, 04 Dec 2003 17:25:53 -0500, Paul Davis=20
+<paul@linuxaudiosystems.com> wrote:
 
-they were. but you can also offer to pay someone to fix the
-driver. the correct model already exists in the RME HDSP driver, and
-it wouldn't be that hard to implement for the digi9652. perhaps 1-3
-hours work overall.
+>> On Thu, 4 Dec 2003 06:41:56 -0800, Mark Knecht=20
+>> <mknecht@controlnet.com>=3D20
+>> wrote:
+>>
+>>>>
+>>>> Whenever I try to activate double speed (88.2/96kHz) mode with my RM=
+E
+>>>> Hammerfall Lite (DIGI 9636), snd_pcm_hw_params fails with a 'Device =
+or
+>>>> resource busy' message. This is with the number of channels set to 1=
+0,
+>>>> since the number of ADAT channels is halved. Is this a known
+>>>> defect of the
+>>>> Hammerfall driver?
+>>>>
+>>>> Thanks
+>>>>
+>>>> Arve Knudsen
+>>>
+>>> From the Hammerfall Light Alsa sound card page:
+>>>
+>>> Known bugs
+>>>
+>>> - 96kHz and 88.2kHz not accessible via PCM interface
+>> Ok, thanks. I suppose I should've investigated a little better. Too=20
+>> bad, =3D
+>> I=3D20
+>> would like to see this card working as well as under Windows.
+>
+> to be clear: you can't get DS mode using the PCM interface but you CAN
+> (and several people have) do this, you just have to use the control
+> interface in addition.
+Ah, didn't see your mail untill now. For some reason, you wind up under=20
+spam (Opera mail client filter) :\ I suppose I should investigate this=20
+possibility.
 
---p
+Thanks
+
+Arve Knudsen
 
 
 -------------------------------------------------------
