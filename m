@@ -1,14 +1,15 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: Re: cs4248 / thinkpad 755 / 755c , patch suggestions [PATCH]]
-Date: Tue, 8 Jul 2003 14:54:37 -0500
+From: Garrett Kajmowicz <gkajmowi@tbaytel.net>
+Subject: [App development] - Need list of hardware devices
+Date: Tue, 8 Jul 2003 20:29:21 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030708195437.GL1030@dbz.icequake.net>
-References: <20030708173229.GG1030@dbz.icequake.net> <s5hd6gkdimp.wl@alsa2.suse.de>
+Message-ID: <200307082029.21801.gkajmowi@tbaytel.net>
+Reply-To: gkajmowi@tbaytel.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hd6gkdimp.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,35 +21,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I'm just begining my first ALSA application.  As a part of the GUI I need to 
+prompt the user to select from a list the soundcard and input device for both 
+recording and playback.  How would you suggest doing this?  Examples welcome.
 
-Hi Takashi,
 
-On Tue, Jul 08, 2003 at 07:37:50PM +0200, Takashi Iwai wrote:
-> > On Tue, Jul 08, 2003 at 07:27:06PM +0200, Takashi Iwai wrote:
-> > > > The results are pasted below -- what is strange is that aplay identifies
-> > > > the file as 11025Hz but apparently the OSS driver thinks it is 8000Hz
-> > > > data.
-> > >  
-> > > ah, i understand.  you cannot cat to /dev/dsp in general.
-> > > if you do this, it's supposed to be 8kHz mono samples.
-> > 
-> > Hmm, limitation of the ad1848 driver, of ALSA OSS emulation, or OSS API?
-> 
-> IIRC, it's the definition of this OSS device.
-> well, i'm not sure this is officially so.
-> but at least, /dev/audio is supposed to be in these formats, and we
-> initialize /dev/dsp as well.
-> 
-> btw, for testing the OSS emulation, you can try play command included
-> in sox package.
+Thanks for your time,
 
-You are correct, play works correctly but catting does not.  It seems,
-however, that many OSS drivers support cat a wav file directly to /dev/dsp,
-and do the detection of the format parameters internally.  I guess this is not
-required by the OSS specification?
+Garrett Kajmowicz
 
--- 
-Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
