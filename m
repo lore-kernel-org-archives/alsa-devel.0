@@ -1,21 +1,14 @@
-From: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
-Subject: Float sample format
-Date: Thu, 4 Nov 2004 12:31:41 +0100
-Message-ID: <E1CPfq9-0006EQ-UC@mailer.emlix.com>
-Reply-To: nh@emlix.com
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000624]: crash with alc850 when driver alsa intel8x0 is use
+Date: Thu, 4 Nov 2004 13:36:40 +0100
+Message-ID: <8bf01ac7a6135fd40a756899858c55ba@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.emlix.com (mail.emlix.com [193.159.217.188])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B25C9209
-	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2004 12:31:42 +0100 (MET)
-Received: from emlix ([172.17.111.84] helo=mailer.emlix.com)
-	by mail.emlix.com with esmtp (Exim 4.42)
-	id 1CPfqA-0001GM-1H
-	for alsa-devel@alsa-project.org; Thu, 04 Nov 2004 12:31:42 +0100
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43B6D1FC
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2004 13:36:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,30 +19,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
-Cc: nh@emlix.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi all!
 
-What are the sample value ranges used when having sample format float(le) o=
-r=20
-double(le)?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=624> 
+======================================================================
+Reported By:                xmoucheron
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   624
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1 mdk
+======================================================================
+Date Submitted:             11-02-2004 20:24 CET
+Last Modified:              11-04-2004 13:36 CET
+======================================================================
+Summary:                    crash with alc850 when driver alsa intel8x0 is use
+Description: 
+When mandrakelinux boot and when a song is played then the song is stopped
+and the acess to internet is stopped too.
 
-When playing, the sound is loudest when using the whole range the type offe=
-rs.
-When recording it seems the values are in range [-1,1].  Is that correct?
+This problem isreproducibility every days and allways.
+======================================================================
 
-thanks in advance!
+----------------------------------------------------------------------
+ xmoucheron - 11-04-04 13:36 
+----------------------------------------------------------------------
+I would like say, with all sound, this problem arrived.
 
-Viele Gruesse / best regards
-        Nicolas Hueppelshaeuser
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-02-04 20:24 xmoucheron     New Issue                                    
+11-02-04 20:24 xmoucheron     Kernel Version            => 2.6.8.1 mdk     
+11-04-04 13:36 xmoucheron     Note Added: 0002304                          
+======================================================================
 
-=2D-
-nicolas hueppelshaeuser, emlix gmbh, http://www.emlix.com,
-mailto:nh@emlix.com
-fon +49 551 30664 -0, fax -11, bahnhofsallee 1b, 37081 g=F6ttingen, germany
 
-emlix - your embedded linux partner
 
 
 -------------------------------------------------------
