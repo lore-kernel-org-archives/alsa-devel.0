@@ -1,54 +1,61 @@
-From: Samuel S Chessman <chessman@tux.org>
-Subject: Re: Re: [Alsa-devel] Re: [PATCH] snd_pcm_hw_params_set_rate_near
- val pointer
-Date: Wed, 3 Mar 2004 11:31:41 -0500 (EST)
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.30.0403031130210.15804-100000@gwyn.tux.org>
-References: <Pine.HPX.4.33n.0403031324170.12080-100000@studcom.urz.uni-halle.de>
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: ALC650 GPIO bits
+Date: Wed, 3 Mar 2004 18:13:17 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200403031713.i23HDHbe010376@www7.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0403031324170.12080-100000@studcom.urz.uni-halle.de>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Jack O'Quin <joq@io.com>, "[jackit-devel]" <jackit-devel@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net
+Cc: James@superbug.demon.co.uk, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 3 Mar 2004, Clemens Ladisch wrote:
+Hi,
 
-> To elaborate on this:  both ALSA 0.9 and 1.0 support both versions of
-> these functions, and allow selecting between them by defining
-> ALSA_PCM_OLD_HW_PARAMS_API or ALSA_PCM_NEW_HW_PARAMS_API.  Without one
-> of these symbols defined, the default would be the old API when
-> compiling with 0.9 headers and the new one with 1.0 headers.  All
-> versions of the library are binary compatible with both old and new
-> applications.
->
-> > So, maybe this is an ALSA bug in emulating the older interface?
->
-> In theory, this should not happen.
->
-> Sam, which version of ALSA are your ALSA headers/libraries from?
->
+My fault.
 
-> > > This occurs against current CVS of alsa. (2004-03-02)
+This is what is in datasheets:
 
-I will investigate if an old ALSA header is on the machine.
+>There are two option circuits for MIC to disable bias voltage. For=20
+>ALC650 ver.E or later, there is Vrefout-disabled function, so
+>bias voltage from Vrefout(pin28) is recommended as option2 circuit.=20
+>When MIC is shared with Center/LFE, software should
+>disable Vrefout. For ALC650 ver.C/ver.D, Vrefout-disabled function=20
+>is not implemented yet, so GPIO is used to switch bias
+>voltage as option1/option3 circuit.
 
-Sam
+ALC650 ver. C, D and uses GPIO
+ALC650 ver. E and later can use GPIO or Vrefout (register MX74=20
+MISCELLANEOUS CONTROL bit 12 - it is used similiar as GPIO), maybe=20
+all motherboards uses GPIO (but vrefout needs less components)
 
+and there is this too:
 
--- 
-   Sam Chessman                                         chessman (a) tux.org
-    First do what's necessary, then what's possible, finally the impossible.
+>Vrefout Disable (Supported by the ALC650 Rev. E and Rev.F)
+>0: Vrefout is driven by the internal reference (Default)
+>1: Vrefout is in high-Z mode.
+>Software must set this bit to disable Vrefout output before MX6A.10=20
+>is set (MIC1 and MIC2 are shared as Center and LFE output).
 
+Peter Zubaj
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0AJava Desktop System predstavuje prvu pouzitelnu alternativu voci Windows=
+ za=0Aposlednych 15 rokov, pretoze prinasa z=E1kaznikom bezpecne a doveryho=
+dne=0Adesktopove riesenie za zlomok ceny Windows.=0AViac informacii najdete=
+ na : http://www.somi.sk/sun/java_desktop.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
