@@ -1,12 +1,10 @@
-From: Fruhwirth Clemens <clemens@endorphin.org>
-Subject: Re: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio
-	adapter
-Date: Thu, 03 Mar 2005 16:24:26 +0100
-Message-ID: <1109863466.13335.6.camel@ghanima>
-References: <Pine.HPX.4.33n.0503031232110.20007-100000@studcom.urz.uni-halle.de>
+From: Roman I Khimov <khimov@3os.ru>
+Subject: [PATCH] VIA DXS whitelist for MiTAC notebook (ALSA)
+Date: Fri, 04 Mar 2005 01:24:14 +0300
+Message-ID: <1109888653.13458.102.camel@rik-note.loc>
+Reply-To: khimov@3os.ru
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-YPQEt6un+rmyOcwtDMzD"
-In-Reply-To: <Pine.HPX.4.33n.0503031232110.20007-100000@studcom.urz.uni-halle.de>
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-/mPoImh6UyUiKqJHSqZW"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,86 +14,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-YPQEt6un+rmyOcwtDMzD
+--=-/mPoImh6UyUiKqJHSqZW
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, 2005-03-03 at 12:35 +0100, Clemens Ladisch wrote:
-> Fruhwirth Clemens wrote:
-> > My USB audio class device doesn't show all mixer controls in ALSA.
-> > For reference, for other users searching this archive, it's a "Creative
-> > USB Sound Blaster Live! 24-bit External".
-> > ...
-> > I wonder why the snd_usb_create_mixer code does only loop over the
-> > OUTPUT_TERMINAL class,
->=20
-> Because all other units are (indirectly) connected to an output
-> terminal.  We get them when we recursively inspect the respective
-> source units.
->=20
-> > My aim is to have controls available for the Line-in mixer, both for
-> > recording and for direct re-mixing into the Main Out Plug.
->=20
-> Your device probably doesn't have such controls.  What is the output
-> of "lsusb -v" for it?
+Adds MiTAC S2054S DXS whitelist entry in VIA sound driver (ALSA).
 
-lsusb fails :/
+Signed-off-by: Roman I Khimov <khimov@3os.ru>
 
-Bus 003 Device 002: ID 041e:3040 Creative Technology, Ltd
-Device Descriptor:
-  bLength                18
-  bDescriptorType         1
-  bcdUSB               1.10
-  bDeviceClass            0 (Defined at Interface level)
-  bDeviceSubClass         0
-  bDeviceProtocol         0
-  bMaxPacketSize0         8
-  idVendor           0x041e Creative Technology, Ltd
-  idProduct          0x3040
-  bcdDevice            1.00
-  iManufacturer           1 Creative Technology
-  iProduct                2 SB Live! 24-bit External
-  iSerial                 0
-  bNumConfigurations      1
-cannot get config descriptor 0, Connection timed out (110)
-  Language IDs: (length=3D4)
-     0409 English(US)
-
-I wonder what's the cause. Has Creative delivered a non-standard
-compliant device one more time? The original EMU10K1 was also FUBAR wrt
-to the PCI standard.
-
-The kernel log is full of
-
-Mar  3 16:17:01 ghanima kernel: usb 3-1: usbfs: USBDEVFS_CONTROL failed cmd=
- lsusb rqt 128 rq 6 len 979 ret -110
-Mar  3 16:17:01 ghanima kernel: usb 3-1: lsusb timed out on ep0in
-
-The device is connected to an UHCI hosted bus.. Linus' bitkeeper doesn't
-show any relevant bug fixes in this area in the last few month.. Hmm any
-ideas?
+--- linux-2.6.11/sound/pci/via82xx.c.old	2005-03-04 01:14:27.774913928 +030=
+0
++++ linux-2.6.11/sound/pci/via82xx.c	2005-03-04 01:16:00.290849368 +0300
+@@ -2106,6 +2106,7 @@ static int __devinit check_dxs_list(stru
+ 		{ .vendor =3D 0x1043, .device =3D 0x80b0, .action =3D VIA_DXS_NO_VRA }, =
+/* ASUS A7V600 & K8V*/=20
+ 		{ .vendor =3D 0x1071, .device =3D 0x8375, .action =3D VIA_DXS_NO_VRA }, =
+/* Vobis/Yakumo/Mitac notebook */
+ 		{ .vendor =3D 0x10cf, .device =3D 0x118e, .action =3D VIA_DXS_ENABLE }, =
+/* FSC laptop */
++		{ .vendor =3D 0x1106, .device =3D 0x3059, .action =3D VIA_DXS_NO_VRA }, =
+/* MiTAC S2054S notebook */
+ 		{ .vendor =3D 0x1106, .device =3D 0x4161, .action =3D VIA_DXS_NO_VRA }, =
+/* ASRock K7VT2 */
+ 		{ .vendor =3D 0x1106, .device =3D 0x4552, .action =3D VIA_DXS_NO_VRA }, =
+/* QDI Kudoz 7X/600-6AL */
+ 		{ .vendor =3D 0x1106, .device =3D 0xaa01, .action =3D VIA_DXS_NO_VRA }, =
+/* EPIA MII */
 
 --=20
-http://clemens.endorphin.org, for robots sp4mtrap@endorphin.org
+  Roman.
+http://www.3os.ru/   http://www.osrc.info/
+gpg --recv-keys 0xE5E055C3
 
---=-YPQEt6un+rmyOcwtDMzD
+--=-/mPoImh6UyUiKqJHSqZW
 Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
+Content-Description: =?koi8-r?Q?=FC=D4=C1?= =?koi8-r?Q?_=DE=C1=D3=D4=D8?=
+	=?koi8-r?Q?_=D3=CF=CF=C2=DD=C5=CE=C9=D1?=
+	=?koi8-r?Q?_=D0=CF=C4=D0=C9=D3=C1=CE=C1?=
+	=?koi8-r?Q?_=C3=C9=C6=D2=CF=D7=CF=CA?=
+	=?koi8-r?Q?_=D0=CF=C4=D0=C9=D3=D8=C0?=
 
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.6 (GNU/Linux)
+Version: GnuPG v1.2.4 (GNU/Linux)
 
-iD8DBQBCJywqbjN8iSMYtrsRAo6hAJ98wKbwDe6B8i5HnkupqrhgBXsyIQCffZVL
-Tn6k5MFVvx2DyrzRFQeRwiY=
-=45aP
+iD8DBQBCJ46NXJ70z+XgVcMRAkuZAJ9Y3K5huHgcq4qVjJQKTwnajG5fLQCcCQhF
+ExoZzFNX716lCnZSXJEfZrY=
+=1DkZ
 -----END PGP SIGNATURE-----
 
---=-YPQEt6un+rmyOcwtDMzD--
+--=-/mPoImh6UyUiKqJHSqZW--
+
 
 
 -------------------------------------------------------
