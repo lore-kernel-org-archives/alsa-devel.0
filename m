@@ -1,20 +1,13 @@
-From: "Elsa Raymond" <bendfiwir@autonr.net>
-Subject: st0ck Market Opportunities
-Date: Tue, 21 Dec 2004 11:21:56 +0300
-Message-ID: <537989526227.KMO98102@croatia.attorney.com>
+From: Michael Geis <michaelgeis11@yahoo.com>
+Subject: obtaining timestamps from sequencer events
+Date: Tue, 21 Dec 2004 01:08:54 -0800 (PST)
+Message-ID: <20041221090854.16216.qmail@web51904.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: multipart/alternative; boundary="0-1922052644-1103620134=:13429"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from clothesbrush.worldmailer.com ([77.192.48.159])
-          by diet.attorney.com
-          (InterMail vK.4.04.00.03 037-204-636-20035263 license 3vo093ml6280m4cm4r4mhw5102v1pzj5)
-          with SMTP
-          id <20041308146384.CERU3455.diet@clothesbrush.worldmailer.com>
-          for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 04:22:56 -0400
-Received: from www.worldmailer.com (174.130.105.158)
-	by clothesbrush.worldmailer.com (RS ver 1.0.92vs) with SMTP id 3-26c597453790
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 05:30:56 -0300 (EDT)
+Received: from web51904.mail.yahoo.com (web51904.mail.yahoo.com [206.190.39.47])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 30CBA275
+	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 10:09:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,55 +20,140 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Gay,
+--0-1922052644-1103620134=:13429
+Content-Type: text/plain; charset=us-ascii
 
-Emerson Oil and Gas, Inc. (OTC-EOGI)
-Domestic Oil and Gas Stock Under Accumulation?
-Volume This Month: Over 3 million shares traded
-Current Price: $.21
-Watch This Stock Tuesday! Some of These Little Oil and Gas Stocks Have Been Really Moving Lately.
+Hello.
+I wanted to add recording capability to my module to have an additional way of "importing"
+musical scores. One of Dr. Mathias Nagorni's examples shows exactly how to retrieve events from an external device. I get stuck, though, when I want to retrieve timestamps from those events. Following is a minimal program that sets up a connection to an external keyboard 
+(72:0 in my case) and polls events. The problem lies in the fact that the time of of the incoming events is always zero. 
+ 
+ 
+#include <alsa/asoundlib.h>
+#include <iostream>
+using namespace std;
+ int  main() {
+    snd_seq_t* seq; 
+    unsigned int client_type=SND_SEQ_OPEN_INPUT;  
+    snd_seq_open(&seq,"default", client_type, 0);
+unsigned int capability=SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;
+    unsigned int port_type=SND_SEQ_PORT_TYPE_APPLICATION;
+    int port_id=snd_seq_create_simple_port(seq,"writable port",capability,port_type);
+    //get a queue
+    //are those necessary/required with us being on the receiving end? 
+    int queue = snd_seq_alloc_queue(seq);       
+    snd_seq_start_queue(seq,queue,NULL);
+    //fill in source and destination
+    snd_seq_addr_t sender, dest;
+    sender.client = 72;
+    sender.port =  0;
+    dest.client = snd_seq_client_id(seq); 
+    dest.port = port_id;
+    //add them to the subscription
+    snd_seq_port_subscribe_t *subs;
+    snd_seq_port_subscribe_alloca(&subs);
+    snd_seq_port_subscribe_set_sender(subs, &sender);
+    snd_seq_port_subscribe_set_dest(subs, &dest);
+    //add the queue to the subscription
+    snd_seq_port_subscribe_set_queue(subs, 1);
+    snd_seq_port_subscribe_set_time_update(subs, 1);
+    snd_seq_port_subscribe_set_time_real(subs, 0);
+    
+    //make the subscription
+    snd_seq_subscribe_port(seq, subs);
 
-And When Some of them Move, They Really Go...Gains of 100%, 200% or More Are Not Unheard Of.
+    //open poll descriptor
+    struct pollfd* pfd = (struct pollfd *)alloca(sizeof(struct pollfd));
+    snd_seq_poll_descriptors(seq, pfd, 1, POLLIN);
+ 
+    while (1) {
+      int success=poll(pfd, 1, 100000);
+      if (success > 0) {
+        snd_seq_event_t *ev;
+        do {          
+   snd_seq_event_input(seq, &ev);    
+   if(snd_seq_ev_is_real(ev)) cout<<"event at tick time "<<ev->time.tick<<endl;
+   if(snd_seq_ev_is_tick(ev)) cout<<"event at real time"<<ev>time.time.tv_sec<<endl;   
+   snd_seq_free_event(ev);
+          //input pending with fetch sequencer =0;
+        } while (snd_seq_event_input_pending(seq, 0) > 0);
+      }  
+    }
+     free(&pfd);
+     return 0;
+  }
 
-Imagine If You had the Scoop on Either of These Oil and Gas Stocks Recently:
+What am I missing? Does the queue setup work differently?
+A second problem, which is related to playing MIDI is the following: I would like to empty
+the client pool after with snd_seq_drain_output after I have filled it to a certain fraction.
+What fraction is not really important, I just dont want to hardcode any number that might actually lie below the pool capacity an a bad day. 
+So I gathered the ALSA function macros for obtaining pools info. When I call the function, I get 0 for all both size and space remaining of both the input and output pool. Can someone advise 
+me on what needs to be done differently?
+ 
+ int GetClientPoolSize(snd_seq_t* seq) {
+    snd_seq_client_pool_t * pool;
+    int success=snd_seq_client_pool_malloc(&pool);
+    cout<<"did we allocate a pool.\n"<<success<<endl;
+    success=snd_seq_get_client_pool(seq,pool);
+    cout<<"did we find a pool.\n"<<success<<endl;
+    size_t size=snd_seq_client_pool_get_output_room(pool);
+    size_t in=snd_seq_client_pool_get_input_pool(pool);
+    cout<<"input pool size:"<<in<<endl;
+    size_t in_free=snd_seq_client_pool_get_input_free(pool);
+    cout<<"input pool free:"<<in_free<<endl;
+    size_t out_free=snd_seq_client_pool_get_output_free(pool);
+    cout<<"output pool free:"<<out_free<<endl;
+    snd_seq_client_pool_free(pool);
+    return size;
+} 
 
-OTC: UCPI. Went From $1.05 November 1st to $2.60 on December 10th
+ 
+Merci beaucoup in advance.
+Regards,
+Michael
 
-OTC: XCHC. This Bad Boy went from $.47 November 1st to $1.80 on December 10th.
+		
+---------------------------------
+Do you Yahoo!?
+ Dress up your holiday email, Hollywood style. Learn more.
+--0-1922052644-1103620134=:13429
+Content-Type: text/html; charset=us-ascii
 
-Think GE is Going to Move Like that Anytime Soon?
-
-Reasons To Consider EOGI:
-
-*Emerson Oil & Gas holds a 50% working interest in the W.T. Davis well and lands within Township 23 North and Range 13 West of Bossier Parish, Louisiana. The net revenue interest of the lease is 75%. The W.T. Davis Well is located in the Arkana Field and initially produced from the Haynesville Formation of the Cotton Valley Series. With the worldwide focus on energy needs being front and center in the public eye, Emerson feels that with its first class management and discretionary project choices, the company will continue to serve its shareholders well.
-
-*Emerson is Identifying additional step out opportunities on its Louisiana property.
-
-*Emerson has signed a letter of intent to earn 50% working interest in the Rinsland well and Lease in Bossier Parish Louisiana.
-
-*Emerson's North-West Louisiana drilling efforts follow closely to its philosophy of high-potential low risk re-entry projects in developed fields. By maintaining this conservative, but revenue driven philosophy and mission statement, Emerson enables itself to build a strong revenue base for the company and its shareholders, while taking the lowest possible risk in achieving this goal.
-
-(Source: Recent Press Releases)
-
-Conclusion
-
-The Examples Above Show The Awesome, M0ney M@king Potential of Little Known Companies That Explode Onto Investor's Radar Screens.. Many of You Are Already Familiar It. Is EOGI Poised and Positioned to Do that For You? Then You May Feel the Time Has Come to Act...
-
-And Please Watch this One Trade Tuesday! Go EOGI!
-
-Information within this email contains "forward looking statements" within the meaning of Section 27A of the Securities Act of 1933 and Section 21B of the Securities Exchange Act of 1934. Any statements that express or involve discussions with respect to predictions, expectations, beliefs, plans, projections, objectives, goals, assumptions or future events or performance are not statements of historical fact and may be "forward looking statements."Forward looking statements are based on expectations, estimates and projections at the time the statements are made that involve a number of risks and uncertainties which could cause actual results or events to differ materially from those presently anticipated. Forward looking statements in this action may be identified through the use of words such as "projects", "foresee", "expects", "will," "anticipates," "estimates," "believes," "understan
- ds" or that by statements indicating certain actions "may," "could," or "might" occur. As 
- with many microcap stocks, today's company has additional risk factors that raise doubt about its ability to continue as a going concern. SKRCO, Inc is not a reporting company registered under the Securities Act of 1934 and hence there is limited information available about the company. Other factors include: a limited operating history,an accumulated deficit since its inception and a reliance on loans from officers and directors to pay expenses, changes in the regulatory and general economic environment; conditions in the capital markets, including the interest rate environment and the availability of capital; changes in the competitive marketplace that could affect the Company's revenue and/or cost and expenses, such as increased competition, lack of qualified marketing, management or other personnel, and increased labor and inventory costs; changes in technology or customer requireme
- nts, which could render the Company's technologies noncompetitive or obsolete; trends affe
- cting the Company's financial condition or results of operations; the Company's ability to continue to control costs and to meet its liquidity and other financing needs; new product introductions, product sales mix and the geographic mix of sales. The company is going to need financing. If that financing does not occur, the company may not be able to continue as a going concern in which case you could lose your entire investment. The publisher of this newsletter does not represent that the information contained in this message states all material facts or does not omit a material fact necessary to make the statements therein not misleading.All information provided within this email pertaining to investing, stocks, securities must be understood as information provided and not investment advice. The publisher of this newsletter advises all readers and subscribers to seek advice from a reg
- istered professional securities representative before deciding to trade in stocks featured
-  within this email. None of the material within this report shall be construed as any kind of investment advice or solicitation.Many of these companies are on the verge of bankruptcy. You can lose all your money by investing in this stock. The publisher of this newsletter is n0t a re gis ter ed in vest ment advis0r. Subscribers should not view information herein as legal, tax, accounting or investment advice. Any reference to past performance(s) of companies are specially selected to be referenced based on the favorable performance of these companies. You would need perfect timing to acheive the results in the examples given. There can be no assurance of that happening. Remember, as always, past performance is ne ver indicative of future results and a thorough due diligence effort, including a review of a company's filings when available, should be completed prior to investing. In compl
- iance with the Securities Act of nineteen hundred thirty three, Section17(b),The publisher
-  of this newsletter discloses the receipt of thirty thousand dollars from a third party, not an officer, director or affiliate shareholder for the circulation of this report. Be aware of an inherent conflict of interest resulting from such compensation due to the fact that this is a paid advertisement and is not without bias.The party that paid us has a position in the stock they will sell at anytime without notice. This could have a negative impact on the price of the stock. All factual information in this report was gathered from public sources, including but not limited to Company Websites and Company Press Releases. The publisher of this newsletter believes this information to be reliable but can make no guaranteee as to its accuracy or completeness. Use of the material within this email constitutes your acceptance of these terms.
-
-
-
-
+<DIV>Hello.</DIV>
+<DIV>I wanted to add recording capability to my module to have an additional way of "importing"</DIV>
+<DIV>musical scores. One of Dr. Mathias Nagorni's examples shows exactly how to retrieve events from an external device. I get stuck, though, when I want to retrieve timestamps from those events. Following is&nbsp;a minimal program that sets up a connection to an external keyboard </DIV>
+<DIV>(72:0 in my case) and polls events. The problem lies in the fact&nbsp;that the time of of the incoming events is always zero. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>#include &lt;alsa/asoundlib.h&gt;<BR>#include &lt;iostream&gt;<BR>using namespace std;</DIV>
+<DIV>&nbsp;int&nbsp; main() {<BR>&nbsp;&nbsp;&nbsp; snd_seq_t* seq; <BR>&nbsp;&nbsp;&nbsp; unsigned int client_type=SND_SEQ_OPEN_INPUT;&nbsp; <BR>&nbsp;&nbsp;&nbsp; snd_seq_open(&amp;seq,"default", client_type, 0);</DIV>
+<DIV>unsigned int capability=SND_SEQ_PORT_CAP_WRITE | SND_SEQ_PORT_CAP_SUBS_WRITE;<BR>&nbsp;&nbsp;&nbsp; unsigned int port_type=SND_SEQ_PORT_TYPE_APPLICATION;<BR>&nbsp;&nbsp;&nbsp; int port_id=snd_seq_create_simple_port(seq,"writable port",capability,port_type);</DIV>
+<DIV>&nbsp;&nbsp;&nbsp; //get a queue<BR>&nbsp;&nbsp;&nbsp; //are those necessary/required with us being on the receiving end? <BR>&nbsp;&nbsp;&nbsp; int queue = snd_seq_alloc_queue(seq);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp; snd_seq_start_queue(seq,queue,NULL);</DIV>
+<DIV>&nbsp;&nbsp;&nbsp; //fill in source and destination<BR>&nbsp;&nbsp;&nbsp; snd_seq_addr_t sender, dest;<BR>&nbsp;&nbsp;&nbsp; sender.client = 72;<BR>&nbsp;&nbsp;&nbsp; sender.port =&nbsp; 0;<BR>&nbsp;&nbsp;&nbsp; dest.client = snd_seq_client_id(seq); <BR>&nbsp;&nbsp;&nbsp; dest.port = port_id;<BR>&nbsp;&nbsp;&nbsp; //add them to the subscription<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_t *subs;<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_alloca(&amp;subs);<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_set_sender(subs, &amp;sender);<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_set_dest(subs, &amp;dest);<BR>&nbsp;&nbsp;&nbsp; //add the queue to the subscription<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_set_queue(subs, 1);<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_set_time_update(subs, 1);<BR>&nbsp;&nbsp;&nbsp; snd_seq_port_subscribe_set_time_real(subs, 0);<BR>&nbsp;&nbsp;&nbs
+ p; <BR>&nbsp;&nbsp;&nbsp; //make the subscription<BR>&nbsp;&nbsp;&nbsp;
+ snd_seq_subscribe_port(seq, subs);</DIV>
+<DIV><BR>&nbsp;&nbsp;&nbsp; //open poll descriptor<BR>&nbsp;&nbsp;&nbsp; struct pollfd* pfd = (struct pollfd *)alloca(sizeof(struct pollfd));<BR>&nbsp;&nbsp;&nbsp; snd_seq_poll_descriptors(seq, pfd, 1, POLLIN);<BR>&nbsp;<BR>&nbsp;&nbsp;&nbsp; while (1) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int success=poll(pfd, 1, 100000);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (success &gt; 0) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; snd_seq_event_t *ev;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp; snd_seq_event_input(seq, &amp;ev);&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp; if(snd_seq_ev_is_real(ev)) cout&lt;&lt;"event at tick time "&lt;&lt;ev-&gt;time.tick&lt;&lt;endl;<BR>&nbsp;&nbsp; if(snd_seq_ev_is_tick(ev)) cout&lt;&lt;"event at real time"&lt;&lt;ev&gt;time.time.tv_sec&lt;&lt;endl;&nbsp;&nbsp; <BR>&nbsp;&nbsp; snd_seq_free_eve
+ nt(ev);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //input pending with fet
+ ch
+ sequencer =0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } while (snd_seq_event_input_pending(seq, 0) &gt; 0);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; <BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp; free(&amp;pfd);<BR>&nbsp;&nbsp;&nbsp;&nbsp; return 0;<BR>&nbsp; }<BR></DIV>
+<DIV>What am I missing? Does the queue setup work differently?</DIV>
+<DIV>A second problem, which is related to playing MIDI is the following: I would like to empty</DIV>
+<DIV>the client pool after with snd_seq_drain_output after I have filled it to a certain fraction.</DIV>
+<DIV>What fraction is not really important, I just dont want to hardcode any number that might actually lie below the pool capacity an a bad day. </DIV>
+<DIV>So I gathered the ALSA function macros for obtaining pools info. When I call the function, I get 0 for all both size and space remaining of both the input and output pool. Can someone advise </DIV>
+<DIV>me on what needs to be done differently?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;int GetClientPoolSize(snd_seq_t* seq) {<BR>&nbsp;&nbsp;&nbsp; snd_seq_client_pool_t * pool;<BR>&nbsp;&nbsp;&nbsp; int success=snd_seq_client_pool_malloc(&amp;pool);<BR>&nbsp;&nbsp;&nbsp; cout&lt;&lt;"did we allocate a pool.\n"&lt;&lt;success&lt;&lt;endl;<BR>&nbsp;&nbsp;&nbsp; success=snd_seq_get_client_pool(seq,pool);<BR>&nbsp;&nbsp;&nbsp; cout&lt;&lt;"did we find a pool.\n"&lt;&lt;success&lt;&lt;endl;<BR>&nbsp;&nbsp;&nbsp; size_t size=snd_seq_client_pool_get_output_room(pool);<BR>&nbsp;&nbsp;&nbsp; size_t in=snd_seq_client_pool_get_input_pool(pool);<BR>&nbsp;&nbsp;&nbsp; cout&lt;&lt;"input pool size:"&lt;&lt;in&lt;&lt;endl;<BR>&nbsp;&nbsp;&nbsp; size_t in_free=snd_seq_client_pool_get_input_free(pool);<BR>&nbsp;&nbsp;&nbsp; cout&lt;&lt;"input pool free:"&lt;&lt;in_free&lt;&lt;endl;<BR>&nbsp;&nbsp;&nbsp; size_t out_free=snd_seq_client_pool_get_output_free(pool);<BR>&nbsp;&nbsp;
+ &nbsp; cout&lt;&lt;"output pool free:"&lt;&lt;out_free&lt;&lt;endl;<BR>&nbsp;&nbsp;&nbsp;
+ snd_seq_client_pool_free(pool);<BR>&nbsp;&nbsp;&nbsp; return size;<BR>}
+<DIV>&nbsp;</DIV></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Merci beaucoup in advance.</DIV>
+<DIV>Regards,</DIV>
+<DIV>Michael</DIV><p>
+		<hr size=1>Do you Yahoo!?<br> 
+Dress up your holiday email, Hollywood style. <a href="http://us.rd.yahoo.com/evt=29909/*http://celebrity.mail.yahoo.com">Learn more.</a>
+--0-1922052644-1103620134=:13429--
 
 
 -------------------------------------------------------
