@@ -1,13 +1,17 @@
-From: "Caroline Temple" <templetc@car.co.id>
-Subject: No more doctors visits.
-Date: Mon, 25 Oct 2004 10:55:32 +0000
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: snd-usb-usx2y 0.8.5 against alsa-kernel cvshead:
+ OHCI doesn't crash anymore
+Date: Tue, 26 Oct 2004 10:15:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3d3a01c4ba81$0f0eed2d$b80d82e4@thomas-stremski.de>
+Message-ID: <Pine.LNX.4.58.0410261015120.9322@pnote.perex-int.cz>
+References: <200409302046.29798.annabellesgarden@yahoo.de>   
+ <200410200228.16228.annabellesgarden@yahoo.de>    <s5hacuhivfb.wl@alsa2.suse.de>
+    <200410212021.22349.annabellesgarden@yahoo.de>
+ <32787.192.168.1.5.1098742225.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <32787.192.168.1.5.1098742225.squirrel@192.168.1.5>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,16 +20,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: alsa-devel@lists.sourceforge.net, Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>
 List-Id: alsa-devel@alsa-project.org
 
-Get Prescription medications delivered to your doorstep overnight.
-No more doctor visits no more doctor fee's.
-Stop paying expensive medical bills. Buy online and save.
+On Mon, 25 Oct 2004, Rui Nuno Capela wrote:
 
-Visit us here: http://demerc.com/?refid=3D12
+> May I ask what's the status of this, wrt.including snd-usb-usx2y version
+> 0.8.5 on the official alsa-kernel tree?
 
+Could you resend this patch?
 
+					Jaroslav
+
+-----
+Jaroslav Kysela <perex@perex.cz>
 
 
 -------------------------------------------------------
