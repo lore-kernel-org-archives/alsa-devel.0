@@ -1,14 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: pcm buffer size
-Date: Tue, 25 May 2004 11:49:30 +0100
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: PCM Params
+Date: Tue, 25 May 2004 11:50:28 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40B324BA.5060802@superbug.demon.co.uk>
-References: <E1BSYzY-0004YC-00@mailer.emlix.com>
+Message-ID: <20040525105028.39912.qmail@web25102.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1BSYzY-0004YC-00@mailer.emlix.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,31 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-1?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Nicolas Hüppelshäuser wrote:
-> Hi!
-> 
-> I'm using alsa 1.0.4.  How can I get a larger alsa buffer size?  The
-> maximum size returned by snd_pcm_hw_params_get_buffer_size_max is too
-> small.  I found no module option and nothing apropriate within the driver
-> code.  Mainly I'm using the snd-usb-audio module but others are also of
-> interest.
-> 
-> best regards
-> 	Nicolas Hueppelshaeuser
-> --
+Hi ,
+i'm trying to change the fragment size that the alsa
+driver is capturing/playing out. It's currently set at
+32 msecs(256 bytes).
+They are set in the runtime structure...
+   runtime->period_max ...etc
+Could anybody tell me which file these parameters are
+set in the alsa-driver directory?
+Thanks,
+Brian.
 
-You cannot. the value returned by 
-snd_pcm_hw_params_get_buffer_size_max() is based on the hardware 
-limitations. If you need more buffer space, buffer up the data in your 
-application.
 
-Cheers
-James
-
+	
+	
+		
+____________________________________________________________
+Yahoo! Messenger - Communicate instantly..."Ping" 
+your friends today! Download Messenger Now 
+http://uk.messenger.yahoo.com/download/index.html
 
 
 -------------------------------------------------------
