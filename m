@@ -1,9 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: alsa-conf cvscompile fails with 'friend declaration requires
- class-key'
-Date: Sun, 25 Jul 2004 14:57:26 -0400
+Subject: gmplayer error with ALSA output plugin
+Date: Sun, 25 Jul 2004 18:18:37 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090781846.14951.42.camel@mindpipe>
+Message-ID: <1090793916.14951.107.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -19,36 +18,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Here is what happens when cvscompile runs make in alsa-conf:
+When I select the 'ALSA 0.9.x/1.0.x' option for audio output in
+gmplayer, the sound seems to work, but I get tons of popup windows with
+this error:
 
-make  all-recursive
-make[1]: Entering directory `/home/rlrevell/cvs/alsa/alsa-conf'
-Making all in newt
-make[2]: Entering directory `/home/rlrevell/cvs/alsa/alsa-conf/newt'
-make[2]: Nothing to be done for `all'.
-make[2]: Leaving directory `/home/rlrevell/cvs/alsa/alsa-conf/newt'
-make[2]: Entering directory `/home/rlrevell/cvs/alsa/alsa-conf'
-if g++ -DHAVE_CONFIG_H -I. -I. -I. -I./newt    -g -Wall -ftemplate-depth-20 -MT Def.o -MD -MP -MF ".deps/Def.Tpo" \
-  -c -o Def.o `test -f 'Def.cc' || echo './'`Def.cc; \
-then mv -f ".deps/Def.Tpo" ".deps/Def.Po"; \
-else rm -f ".deps/Def.Tpo"; exit 1; \
-fi
-In file included from Value.hh:26,
-                 from Def.hh:27,
-                 from Def.cc:22:
-Ptr.hh:181: error: friend declaration requires class-key, i.e. `friend class 
-   CPtr<T>'
-In file included from Def.hh:27,
-                 from Def.cc:22:
-Value.hh:67: error: parse error before `<' token
-Value.hh:70: error: parse error before `&' token
-etc.
+alsa-control: mixer attach /dev/mixer: no such file or directory
 
-This is on Debian unstable.
+As a result I am forced to use OSS emulation mode, which causes latency
+problems due to its use of ioctl().  /dev/mixer exists and is writable
+by the user.  In fact when using OSS emulation mode this is the mixer
+device used.  Is this just a bug in gmplayer?
+
+I am using debian unstable, here is where I got the gmplayer packages:
+
+deb ftp://ftp.nerim.net/debian-marillat unstable main
+
+deb http://dept-info.labri.fr/~danjean/debian unstable main
+deb-src http://dept-info.labri.fr/~danjean/debian unstable main
 
 Lee
-
-
 
 
 
