@@ -1,14 +1,13 @@
-From: Martin Soto <soto@informatik.uni-kl.de>
-Subject: Re: EMU10K1 DSP programs
-Date: 17 Sep 2002 18:38:47 +0200
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Re: alsalib symbol problem
+Date: Tue, 17 Sep 2002 20:14:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1032280728.408.23.camel@diesel>
-References: <Pine.LNX.4.33.0209171357540.537-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.21.0209172012260.612-100000@summer.quitte>
+References: <3D874CAE.DDA03E51@sun.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0209171357540.537-100000@pnote.perex-int.cz>
+In-Reply-To: <3D874CAE.DDA03E51@sun.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,47 +16,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Florian Bomers <Florian.Bomers@sun.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2002-09-17 at 16:38, Jaroslav Kysela wrote:
-> On 17 Sep 2002, Martin Soto wrote:
-> > And, by the way, I have a question regarding it.  In the hardware
-> > dependant ioctl interface to the EMU10K1 there are two ioctls,
-> > SNDRV_EMU10K1_IOCTL_CODE_PEEK and SNDRV_EMU10K1_IOCTL_CODE_POKE, that
-> > allow you to read the DSP code and to actually upload new code.  Part of
-> > what SNDRV_EMU10K1_IOCTL_CODE_POKE does is defining new (mixer) controls
-> > and eventually deleting those that are not needed any more.
-> > 
-> > However, I didn't find a way to know which current mixer controls are
-> > *actually* associated to general purpose registers in the FX8010.  Of
-> > course, I could read the code in emufx.c and determine it from there,
-> > but that would make my code very sensible to changes in the driver.  I
-> > just though of using the mixer/control interface in alsalib to find all
-> > controls, and try to delete them with CODE_POKE, hoping that the driver
-> > will only delete those that are connected to GPRs, but that looks too
-> > much like a hack.  Is there a more elegant way to handle that?
-> 
-> I've added gpr_list_control* variables to emu10k1_fx8010_code_t.
-> The SNDRV_EMU10K1_IOCTL_CODE_PEEK will fill these variables for you. Note 
-> that all this code in emufx.c is mostly untested, so give me feedback, 
-> what features/functions need to be corrected.
+Florian Bomers wrote:
 
-That was exactly what I was looking for, thanks!  I'll try to write at
-least a simple loader in the following days to see if everything works
-properly.
+>On the practical side - how can I solve the problem ? I can't change the way my
+>plugin is linked to the main app, so do I need to manually dlopen() libasound
+>myself with the RTLD_GLOBAL flag (and not use -lasound ??)
 
-Cheers,
+until your copy of alsa has jaroslav's recent addition, both. after,
+-lasound should do.
 
-M. S.
------------------------------------------------------------------
-Martin Soto
-
-AG Software Engineering
-Universitaet Kaiserslautern              Tel:  +49 (631) 205-3449
-Kaiserslautern, Germany         E-mail: soto@informatik.uni-kl.de
------------------------------------------------------------------
+tim
 
 
 
