@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000437]: Problem with the spec file
-Date: Mon, 31 Jan 2005 19:05:29 +0100
-Message-ID: <158d09629bc9146a1a6dd7aca04d011f@bugtrack.alsa-project.org>
+From: Andy Robinson <andy@seventhstring.com>
+Subject: Re: OSS emulation buffer size
+Date: Mon, 31 Jan 2005 18:05:50 +0000
+Message-ID: <1107194750.6850.13.camel@andys_dellm60.ss82amr.net>
+References: <20050131180005.637F588D21@sc8-sf-spam1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C7D9235
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 19:05:29 +0100 (MET)
+In-Reply-To: <20050131180005.637F588D21@sc8-sf-spam1.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,70 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> From: Clemens Ladisch <clemens@ladisch.de>
+> Subject: Re: [Alsa-devel] OSS emulation buffer size
+> What sound card do you have?
+> What are the contents of /proc/asound/card0/pcm0p/sub0/prealloc?  Try
+> changing it.
 
-The following issue has been CLOSED
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=437> 
-======================================================================
-Reported By:                croiset
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   437
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   block
-Priority:                   normal
-Status:                     closed
-Distribution:               
-Kernel Version:             2.4.7-10
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             08-13-2004 09:56 CEST
-Last Modified:              01-31-2005 19:05 CET
-======================================================================
-Summary:                    Problem with the spec file
-Description: 
-There is a problem the spec file generated with the configure.
+This is definitely a step in the right direction. Currently this says
+"64" (though I only get 16k in the OSS emulation).
 
-you might replace this line in alsa-driver.spec.in :
-/lib/modules/*/kernel/*
-by :
-/lib/modules/*/misc/*
+I can change it up to 128 (if I ask for more than 128, it is ignored and
+the file contents don't change). But when I set it to 128 I get OSS
+buffer of 32k !!! I've tried many things but this is the first time I've
+ever seen the ALSA-OSS buffer increase.
 
+It seems that only a quarter of the "prealloc" buffer is being allocated
+to the OSS emulation. I would be even more grateful if you could suggest
+how to either get more than 128k total, or else to allocate a larger
+proportion of that 128k to the OSS buffer. Ideally I'd like to see 64k,
+same as native OSS itself provides.
 
-======================================================================
+My soundcard is Intel 82801DB-ICH4 (DELL Precision M60) but this issue
+affects not just me, also other users of my software.
 
-----------------------------------------------------------------------
- croiset - 12-29-04 12:18 
-----------------------------------------------------------------------
-Ouups it was a problem due to a misconfiguration. The bug can be closed.
-Test made with 1.0.8rc1
-
-----------------------------------------------------------------------
- tiwai - 12-29-04 14:16 
-----------------------------------------------------------------------
-Ok, resolved.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-13-04 09:56 croiset        New Issue                                    
-08-13-04 09:56 croiset        Kernel Version            => 2.4.7-10        
-08-13-04 10:52 croiset        Note Added: 0001561                          
-12-29-04 12:18 croiset        Note Added: 0002995                          
-12-29-04 14:16 tiwai          Status                   new => resolved     
-12-29-04 14:16 tiwai          Resolution               open => not an issue
-12-29-04 14:16 tiwai          Assigned To               => tiwai           
-12-29-04 14:16 tiwai          Note Added: 0002997                          
-12-29-04 14:16 tiwai          Assigned To              tiwai =>            
-01-31-05 19:05 tiwai          Status                   resolved => closed  
-======================================================================
-
+Thanks,
+Andy Robinson, Seventh String Software, www.seventhstring.com
 
 
 
