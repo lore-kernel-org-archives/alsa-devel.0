@@ -1,11 +1,12 @@
-From: "Pete Barnard" <petebarnard@tiscali.co.uk>
-Subject: SoundCard compatibility question
-Date: Thu, 20 Mar 2003 20:48:26 -0000
+From: Florian Bomers <Florian.Bomers@sun.com>
+Subject: Re: dsnoop, dshare and dmix plugins
+Date: Thu, 20 Mar 2003 14:13:18 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <002101c2ef22$0f249f20$0100a8c0@Pblaptop>
+Message-ID: <3E7A3CFE.4A6293A5@sun.com>
+References: <E18vjIM-0006pL-00@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_001E_01C2EF22.0E6EE3B0"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,73 +19,38 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+just to clarify: all 3 plugins will not enable several processes to use the same
+soundcard's channels, i.e. software mixing?
 
-------=_NextPart_000_001E_01C2EF22.0E6EE3B0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Thanks,
+Florian
 
-I have just installed Red Hat Linux 7.3 on my pc at work and will be =
-installing the ALSA drivers.  However, the sound card is described as a =
-"SoundMax integrated Audio" (I don't really know much about this card =
-and cannot find it on the ALSA soundcard matrix).   I have read that it =
-is a SoundBlaster compatible card but I haven't had this confirmed.  =
-Does anybody have any suggestions as to how I would get ALSA to work =
-with this card? for example, what lines do I need to put in the =
-/etc/modules.conf file? and what options do I need to type when I do a =
-./configure for the drivers? Are there any external drivers that I need =
-to download etc?
 
-Failing all this - will I have to replace it with another card that is =
-listed on the ALSA soundcard matrix ??
+> Hi all,
+> 
+>         the dmix plugin was extended to support channel bindings and
+> mixing code for 32-bit samples (24-bit resolution).
+>         I'd like to introduce new two plugins (seems also "most wanted" by
+> ALSA users): dsnoop and dshare. The dsnoop plugin allows spliting of one
+> stream to more applications. And finally the dshare plugin does sharing of
+> channels (thus you may use your multi-channel device for separated
+> independent tasks). The ALSA configuration syntax for both of new plugins
+> is same as for the dmix plugin. Please note that dshare plugin must have
+> the bindings section with unique destination channels otherwise it won't
+> work.
+> 
+>                                                 Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SuSE Labs
 
-Regards,
-
-Pete
-
-------=_NextPart_000_001E_01C2EF22.0E6EE3B0
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2>
-<DIV><FONT face=3DArial size=3D2>I have just installed Red Hat Linux 7.3 =
-on my pc at=20
-work and will be installing the ALSA drivers.&nbsp; However, the sound =
-card is=20
-described as a "SoundMax integrated Audio" (I don't really know much =
-about this=20
-card and cannot find it on the ALSA soundcard matrix).&nbsp;&nbsp; I =
-have read=20
-that it is a SoundBlaster compatible card but I haven't had this=20
-confirmed.&nbsp; Does anybody have any suggestions as to how I would get =
-ALSA to=20
-work with this card? for example, what lines do I need to put in the=20
-/etc/modules.conf file? and what options do I need to type when I do a=20
-./configure for the drivers? Are there any external drivers that I need =
-to=20
-download etc?</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Failing all this - will I have to =
-replace it with=20
-another card that is listed on the ALSA soundcard matrix ??</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial =
-size=3D2>Pete</FONT></DIV></FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_001E_01C2EF22.0E6EE3B0--
-
+-- 
+Florian Bomers
+Java Sound
+Java Software/Sun Microsystems, Inc.
+http://java.sun.com/products/java-media/sound/
 
 
 -------------------------------------------------------
