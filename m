@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: moving driver into alsa-kernel/
-Date: Wed, 20 Aug 2003 11:05:02 +0200 (CEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: usbus428 0.0.7 patch against release alsa-driver 0.9.6 (was Re: tascam gives a go for us428 @ alsa ...)
+Date: Wed, 20 Aug 2003 19:58:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0308201103380.3450-100000@pnote.perex-int.cz>
-References: <1061321274.1929.13.camel@localhost>
+Message-ID: <20030820175811.GA876@tuba.home>
+References: <200304301356.34023.annabellesgarden@yahoo.de> <s5hfzntcz7q.wl@alsa2.suse.de> <200307302133.37883.annabellesgarden@yahoo.de> <s5h3cgdle87.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1061321274.1929.13.camel@localhost>
+Content-Disposition: inline
+In-Reply-To: <s5h3cgdle87.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "mjander@mat.utfsm.cl" <mjander@mat.utfsm.cl>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, alsa-devel@lists.sourceforge.net, us428@drehmoment.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Aug 2003, Manuel Jander wrote:
-
-> Hello,
+On Thu, Aug 07, 2003 at 04:44:08PM +0200, Takashi Iwai wrote:
+> At Wed, 30 Jul 2003 21:33:37 +0200,
+> Karsten Wiese wrote:
+> > 
+> > i agree that its a reasonable goal to integrate the us428 audio part into ALSA 
+> > usb-audio. is there such a mechanism to syncronize the playback-pipe by the 
+> > capture-pipe allrteady in usb-audio.c? the us428 definitly needs such a 
+> > beast.
 > 
-> Who decides when a driver can be moved into alsa-kernel/ ? Is there any
-> formal process envolved or is it just a matter of "... yeah, this driver
-> doesnt crash, let it in..." ? Who is the 'boss' about this matter ?
+> i'm not sure what you mean here, but i guess it's not implemented.
+> (is it a standard USB audio feature? if not, we don't have it :)
 
-I and Takashi. Our policy is to keep a new driver in the alsa-driver tree 
-for several months and then move it to alsa-kernel (thus to 2.6 kernel 
-tree).
+Stupid question: Why do we need synchronisation??
 
-						Jaroslav
+Isn't it the job of the FPGA? We know that each signal is routed across the
+FPGA and that's why the config data should be loaded into for standalone
+usage or nothing will work on our USxxx. Without an internal
+synchronisation there would be no standalone usage possible or do I make a
+mistake here.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+What about removing synchronisation stuff and replacing it with some 
+talking to the FPGA buffer??? I guess that will not fit into USB AUDIO
+class, but anyhow my USxxx is vendor specififc.
 
+
+martin
 
 
 -------------------------------------------------------
