@@ -1,11 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Mon, 3 Jan 2005 22:48:06 +0100
-Message-ID: <20050103214806.6BC57260@alsa.alsa-project.org>
+Subject: [ALSA - driver 0000763]: I can't make the emulation of /dev/dsp work;  the driver "executes" but reports errors;  there is no sound output.
+Date: Mon, 3 Jan 2005 23:35:08 +0100
+Message-ID: <e14e9bb2a7d587cf85b199d444fb888d@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6BC57260
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 22:48:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42BF31C7
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 23:35:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,84 +21,70 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <28ce17a83dd90bf72dbcb396f41e25a0@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
-
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=763> 
 ======================================================================
-Reported By:                hodgesw
+Reported By:                lovett
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   773
-Category:                   PCI - emu10k1
+Issue ID:                   763
+Category:                   CORE OSS - pcm
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               1.08rc1
-Kernel Version:             2.6.10
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-03-2005 22:48 CET
+Date Submitted:             12-30-2004 22:48 CET
+Last Modified:              01-03-2005 23:35 CET
 ======================================================================
-Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
-(12/30/2004)
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
+Summary:                    I can't make the emulation of /dev/dsp work;  the
+driver "executes" but reports errors;  there is no sound output.
 Description: 
-Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Audigy2 Value - SB0400 card
-After trying many modprobe.preload/modprobe.conf alternatives I
-manually loaded driver  using  "modprobe -v snd-emu10k1"
-with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
-After setting alsamixer volumes
-"speakertest" works; "aplay" produces good sound; mic produces good
-sound;
-"line in" does not work; "auxin" does nor work.
-kde configure plays sound.
-xmms cannot find sound card.
-
+I have a "Sound Blaster" card.  /proc/asound/cards says:
+0 [Live           ]: EMU10K1 - Sound Blaster Live!
+                     Sound Blaster Live! (rev.8, serial:0x80641102) at
+0x8c00, irq 23
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-02-05 09:20 
+ tiwai - 01-03-05 12:05 
 ----------------------------------------------------------------------
-Could you attach test.state file.
-Use "Upload File" section on this page (it is just above "add not box").
+Does ALSA native app work?  What is exactly a problem?
+
+If you mean "no sound output" as the silence, check the mixer
+configuration at first.
 
 ----------------------------------------------------------------------
- hodgesw - 01-03-05 22:48 
+ lovett - 01-03-05 23:35 
 ----------------------------------------------------------------------
-I uploaded it. But, I do not see any indication that I did.
+I think most of the original description of my report was truncated by the
+boxes I was given.
+
+I have attached a file "dspFailure" that describes the configuration of my
+machine
+and the experiences with TiMidity, alsamidi, etc. + the syslog entries
+that
+complain about "errors".
+
+That file ends with a listing of output from "amixer content" that I
+included to
+indicate that I thought the mixer levels were non-zero.  The listing
+contains
+an error that I just rechecked:  PCM output voluem = 20,20, not the 0,0 I
+originally mistyped.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-01-05 01:21 hodgesw        New Issue                                    
-01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
-01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
-01-01-05 02:27 rlrevell       Note Added: 0003029                          
-01-01-05 16:13 hodgesw        Note Added: 0003032                          
-01-01-05 18:44 rlrevell       Note Added: 0003033                          
-01-01-05 20:35 pzad           Note Added: 0003035                          
-01-01-05 21:51 hodgesw        Note Added: 0003036                          
-01-01-05 22:01 rlrevell       Note Added: 0003037                          
-01-01-05 23:02 pzad           Note Added: 0003040                          
-01-02-05 00:30 hodgesw        Note Added: 0003042                          
-01-02-05 04:00 hodgesw        Note Added: 0003043                          
-01-02-05 09:20 pzad           Note Added: 0003044                          
-01-02-05 23:21 hodgesw        File Added: test.state                       
-01-03-05 22:48 hodgesw        Note Added: 0003075                          
+12-30-04 22:48 lovett         New Issue                                    
+01-03-05 12:05 tiwai          Note Added: 0003052                          
+01-03-05 18:12 lovett         File Added: dspFailure                       
+01-03-05 23:35 lovett         Note Added: 0003076                          
 ======================================================================
 
 
