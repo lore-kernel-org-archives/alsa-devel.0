@@ -1,17 +1,18 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: alsa cvs not building on top of
 	2.6.10-rc2-mm3-V0.7.32_14
-Date: Fri, 10 Dec 2004 01:26:19 -0500
-Message-ID: <1102659979.24675.6.camel@krustophenia.net>
+Date: Fri, 10 Dec 2004 01:39:35 -0500
+Message-ID: <1102660775.29000.4.camel@krustophenia.net>
 References: <1102657139.4096.5.camel@cmn37.stanford.edu>
+	 <1102659979.24675.6.camel@krustophenia.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 6D38D171
-	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 07:26:21 +0100 (MET)
-In-Reply-To: <1102657139.4096.5.camel@cmn37.stanford.edu>
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id CCC4532F
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 07:39:36 +0100 (MET)
+In-Reply-To: <1102659979.24675.6.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,12 +26,24 @@ To: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-12-09 at 21:38 -0800, Fernando Lopez-Lezcano wrote:
-> I can't seem to build current alsa cvs on top of
-> 2.6.10-rc2-mm3-V0.7.32-14...
+On Fri, 2004-12-10 at 01:26 -0500, Lee Revell wrote:
+> On Thu, 2004-12-09 at 21:38 -0800, Fernando Lopez-Lezcano wrote:
+> > I can't seem to build current alsa cvs on top of
+> > 2.6.10-rc2-mm3-V0.7.32-14...
+> 
+> I think I had this problem, and it went away mysteriously.  I can't
+> reproduce it now.  Try a clean cvs checkout.
 
-I think I had this problem, and it went away mysteriously.  I can't
-reproduce it now.  Try a clean cvs checkout.
+This was bug 605.
+
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=605
+
+But the bug was closed.
+
+I had a problem recently where "cvs update" did not seem to update my
+tree to the latest version, I had to delete it and checkout again.  I
+chalked this up to user error but maybe there's something weird going
+on.
 
 Lee
 
