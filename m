@@ -1,14 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: matrix mixer control (Re: Complex mixer questio
-Date: Tue, 01 Apr 2003 08:52:03 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: opl kernel panic
+Date: Tue, 01 Apr 2003 11:35:23 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E893713.20806@libero.it>
-References: <Pine.LNX.4.44.0303312133440.1283-100000@pnote.perex-int.cz>
+Message-ID: <Pine.HPX.4.33n.0304011126480.7279-100000@studcom.urz.uni-halle.de>
+References: <20030330000156.GA16202@spacedout.fries.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0303312133440.1283-100000@pnote.perex-int.cz>
+In-reply-to: <20030330000156.GA16202@spacedout.fries.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+To: David Fries <dfries@mail.win.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+David Fries wrote:
+> ...
+> ALSA ../alsa-kernel/isa/opl3sa2.c:733: specify port
+> Yamaha OPL3-SA soundcard not found or device busy
+> Unable to handle kernel NULL pointer dereference at virtual address 00000000
+> ...
 
-I agree with Jaroslav fully:
-- have one ALSA control for each primitive hw control (1536 different 
-controls)
-- add a field to struct sndrv_ctl_elem_info explaining how index field 
-of sndvr_ctl_elem_id should be interpreted (32,16+16,10+11+11, ecc.)
+There seems to be a bug in opl3sa2.c.
 
-This permit to have native support for N dimensional control.
+Anyway, you have to specify the module options in /etc/modules.conf, e.g.
+	options snd-opl3sa2 port=0x123 .....
 
-About kernel memory issues, this concerns easily solvable implementation 
-detail to not worry about when designing sane API.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+HTH
+Clemens
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 
