@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:34:50 +0100
-Message-ID: <47b3da6e4eaf74b21321d5b769c0b7ce@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:36:23 +0100
+Message-ID: <a731fbf596ec760fddd8a399a70bb186@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 167C6225
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:34:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BE18F225
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:36:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:34 CET
+Last Modified:              01-21-2005 21:36 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -49,18 +49,6 @@ I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
 I cant raise the trigger.
 No SPDIF out.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-21-05 21:30 
-----------------------------------------------------------------------
-Make sure that your aplay is linked correctly.
-
-Check 'which aplay' whether aplay is found in /usr/bin.
-Check ldd /usr/bin/aplay whether it's linked to the correct library,
-/usr/lib/libasound.so.2.
-
-If still doesn't work (and surely you have no ~/.asoundrc), run "strace
-aplay foo.wav" and attach its log.
 
 ----------------------------------------------------------------------
  1g0R - 01-21-05 21:34 
@@ -73,6 +61,18 @@ aplay foo.wav" and attach its log.
         libpthread.so.0 => /lib/tls/libpthread.so.0 (0x41cce000)
         libc.so.6 => /lib/tls/libc.so.6 (0x41a9c000)
         /lib/ld-linux.so.2 (0x41a7f000)
+[root@skynet lib]#
+
+----------------------------------------------------------------------
+ 1g0R - 01-21-05 21:36 
+----------------------------------------------------------------------
+aha,
+i think the problem is /usr/lib/libasound and the /lib/libasound
+
+[root@skynet lib]# ls -l /lib/libasound*
+lrwxrwxrwx  1 root root     18 jan 13 20:26 /lib/libasound.so.2 ->
+libasound.so.2.0.0
+-rwxr-xr-x  1 root root 686604 dec  1 02:15 /lib/libasound.so.2.0.0
 [root@skynet lib]#
 
 Issue History
@@ -122,6 +122,7 @@ Date Modified  Username       Field                    Change
 01-21-05 21:28 rlrevell       Note Added: 0003362                          
 01-21-05 21:30 tiwai          Note Added: 0003363                          
 01-21-05 21:34 1g0R           Note Added: 0003364                          
+01-21-05 21:36 1g0R           Note Added: 0003365                          
 ======================================================================
 
 
