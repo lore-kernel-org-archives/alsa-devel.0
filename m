@@ -1,8 +1,10 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] usb audio device selection
-Date: Mon, 02 Sep 2002 18:11:04 +0200
+Subject: Re: M-Audio Sonica support
+Date: Mon, 02 Sep 2002 19:24:14 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D738D98.F613EA20@ladisch.de>
+Message-ID: <3D739EBE.91D0D608@ladisch.de>
+References: <s5hvg5ollt7.wl@alsa2.suse.de>
+ <000601c25299$6e8ec740$0500a8c0@shwxp> <s5hd6rwe5ua.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7BIT
@@ -15,90 +17,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Stephen Hassard <steve@hassard.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-If there are two or more USB audio devices connected to a computer, it is
-impossible to specify module parameters (snd_id/index/enable) for a specific
-device because the device order depends on the order they are plugged in or
-switched on.
+Takashi Iwai wrote:
+> Stephen Hassard wrote:
+> >      Interface Descriptor:
+> >        bLength                 9
+> >        bDescriptorType         4
+> >        bInterfaceNumber        0
+> >        bAlternateSetting       0
+> >        bNumEndpoints           0
+> >        bInterfaceClass       254
+> >        bInterfaceSubClass      1
+> >        bInterfaceProtocol      0
+> >        iInterface              3 RAM
+> >    unknown descriptor type: 07 21 05 00 01 40 00
+> 
+> hmm, the descriptor is apprently broken.
+> usually you'll see the list of interfaces, terminals, formats,
+> etc. there.
+> the device might be non-standard one.  if so, the current driver
+> doesn't support it, unfortuantely.
 
-This patch adds parameters snd_vid/snd_pid to reserve a device index for a
-specific device.
+bInterfaceClass 254 = "Application-Specific"
+bInterfaceSubClass 1 = "Device Firmware Update"
+
+And they bothered to give the interface a name ("RAM").  :-)
+
+If it were a broken descriptor, it would be easy to make the correct
+information available with a quirk. In this case, however, we need the
+firmware and a loader.
+
+The download protocol is described in the "USB Device Firmware
+Upgrade Specification". A loader might already exist, or is (relatively)
+easy to write.
+
+For the firmware, we could _try_ to ask Midiman. But I think a
+USB snoop log from the Windows driver would have a higher
+probability of success. (Unfortunately, the bmAttributes field in the
+DFU functional descriptor indicates that the device is only capable
+of downloading, not uploading.)
+If we have luck, the firmware is stored in a DFU file (not necessarily
+with that name).
 
 
--- 
+HTH
 Clemens
-
-
-Index: alsa-kernel/usb/usbaudio.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbaudio.c,v
-retrieving revision 1.3
-diff -u -r1.3 usbaudio.c
---- alsa-kernel/usb/usbaudio.c	26 Aug 2002 16:05:43 -0000	1.3
-+++ alsa-kernel/usb/usbaudio.c	2 Sep 2002 16:07:48 -0000
-@@ -53,6 +53,8 @@
- static int snd_index[SNDRV_CARDS] = SNDRV_DEFAULT_IDX;	/* Index 0-MAX */
- static char *snd_id[SNDRV_CARDS] = SNDRV_DEFAULT_STR;	/* ID for this card */
- static int snd_enable[SNDRV_CARDS] = SNDRV_DEFAULT_ENABLE_PNP;	/* Enable this card */
-+static int snd_vid[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = -1 }; /* Vendor ID for this card */
-+static int snd_pid[SNDRV_CARDS] = { [0 ... (SNDRV_CARDS-1)] = -1 }; /* Product ID for this card */
- 
- MODULE_PARM(snd_index, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
- MODULE_PARM_DESC(snd_index, "Index value for the USB audio adapter.");
-@@ -63,6 +65,12 @@
- MODULE_PARM(snd_enable, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
- MODULE_PARM_DESC(snd_enable, "Enable USB audio adapter.");
- MODULE_PARM_SYNTAX(snd_enable, SNDRV_ENABLE_DESC);
-+MODULE_PARM(snd_vid, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
-+MODULE_PARM_DESC(snd_vid, "Vendor ID for the USB audio device.");
-+MODULE_PARM_SYNTAX(snd_vid, SNDRV_ENABLED ",allows:{{-1,0xffff}},base:16");
-+MODULE_PARM(snd_pid, "1-" __MODULE_STRING(SNDRV_CARDS) "i");
-+MODULE_PARM_DESC(snd_pid, "Product ID for the USB audio device.");
-+MODULE_PARM_SYNTAX(snd_pid, SNDRV_ENABLED ",allows:{{-1,0xffff}},base:16");
- 
- 
- /*
-@@ -2043,7 +2051,9 @@
- 		 * now look for an empty slot and create a new card instance
- 		 */
- 		for (i = 0; i < SNDRV_CARDS; i++)
--			if (snd_enable[i] && ! usb_chip[i]) {
-+			if (snd_enable[i] && ! usb_chip[i] &&
-+			    (snd_vid[i] == -1 || snd_vid[i] == dev->descriptor.idVendor) &&
-+			    (snd_pid[i] == -1 || snd_pid[i] == dev->descriptor.idProduct)) {
- 				card = snd_card_new(snd_index[i], snd_id[i], THIS_MODULE, 0);
- 				if (card == NULL) {
- 					snd_printk(KERN_ERR "cannot create a card instance %d\n", i);
-Index: alsa-driver/INSTALL
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/INSTALL,v
-retrieving revision 1.132
-diff -u -r1.132 INSTALL
---- alsa-driver/INSTALL	3 Jul 2002 13:44:32 -0000	1.132
-+++ alsa-driver/INSTALL	2 Sep 2002 16:07:58 -0000
-@@ -812,18 +812,10 @@
-   Module snd-usb-audio.o
-   ----------------------
- 
--    Module for USB audio devices.
-+    Module for USB audio and USB MIDI devices.
- 
--    This module supports up to 8 cards, autoprobe and hotplugging.
--
--  Module snd-usb-midi.o
--  ---------------------
--
--    Module for MIDI devices connected to a USB port.
--
--    snd_int_transfer    - transfer type for MIDI input
--                          0 = bulk transfers (default)
--                          1 = interrupt transfers, if supported by the device
-+    snd_vid             - Vendor ID for the device (optional)
-+    snd_pid             - Product ID for the device (optional)
- 
-     This module supports up to 8 cards, autoprobe and hotplugging.
 
 
 -------------------------------------------------------
