@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000866]: Can not install snd-intel8x0
-Date: Mon, 31 Jan 2005 18:54:04 +0100
-Message-ID: <1e39b5f6d8af68c054b0a9b169de6f6b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000779]: SPDIF audio is broken up... stutters
+Date: Mon, 31 Jan 2005 18:57:31 +0100
+Message-ID: <81d071c497f96f862c66de5f03067217@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41260231
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:54:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9A55A231
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 18:57:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,84 +22,67 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=866> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=779> 
 ======================================================================
-Reported By:                ghostdaemon
-Assigned To:                
+Reported By:                jeffgus
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   866
-Category:                   PCI - intel8x0
+Issue ID:                   779
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.9-ac16
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-31-2005 05:30 CET
-Last Modified:              01-31-2005 18:54 CET
+Date Submitted:             01-03-2005 05:50 CET
+Last Modified:              01-31-2005 18:57 CET
 ======================================================================
-Summary:                    Can not install snd-intel8x0
+Summary:                    SPDIF audio is broken up... stutters
 Description: 
-I have to use Redhat Linux 7.3.I have  tried ALSA 1.0.8 and 0.9.6,but they
-all failed .when i extact driver package to ./config;make;make install
-,some errors infomation displayed.such as:
- unresolved symbol fasync_helper_Rsmp_0f820065
- unresolved symbol proc_symlink_Rsmp_515b8074
- ...........
- ...........
+I was previously able to send ac3 audio via the coaxial output to an
+external amp (a Creative 5.1 amp).  At some point after upgrading to FC2
+(not sure when) I noticed that when I played DVDs the AC3 wouldn't come
+out right.  It's all broken up.  The light on the amp blinks.  The light
+comes on when it decodes a segment of audio then goes out with silence.
 
-when i use modpobe command:
-[root@localhost root]# modprobe snd-intel8x0
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-fasync_helper_Rsmp_0f820065
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-proc_symlink_Rsmp_515b8074
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-remove_proc_entry_Rsmp_18199406
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-kill_fasync_Rsmp_f866c12a
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-proc_root_Rsmp_c79b35f0
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-register_chrdev_Rsmp_10735b95
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-create_proc_entry_Rsmp_9cfe096c
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-register_sound_special_Rsmp_3a650025
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-remove_wait_queue_Rsmp_ca8842ea
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-add_wait_queue_Rsmp_2fd0ca84
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: unresolved symbol
-__pollwait_Rsmp_4c541ea9
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o failed
-/lib/modules/2.4.18-3smp/kernel/sound/acore/snd.o: insmod snd-intel8x0
-failed
-[root@localhost root]#
-
-My Motherboard is ASUS P4P800, AD1985 integrated on it.
-
-Many thanks !
-
+The AC3 used to work perfectly with 2.4 kernel.  I'm not sure chance
+caused the problem (upgrade to 2.6?).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 18:54 
+ jeffgus - 01-30-05 06:53 
 ----------------------------------------------------------------------
-Possibly the linux kernel source tree (or its kernel config file) doesn't
-match with your running kernel.  Please check it.
+This issue can now be closed.  The problem seemed to go away after I
+finally got around to installing alsa 1.0.8 this evening.
+
+----------------------------------------------------------------------
+ tiwai - 01-31-05 18:57 
+----------------------------------------------------------------------
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-31-05 05:30 ghostdaemon    New Issue                                    
-01-31-05 18:54 tiwai          Note Added: 0003452                          
+01-03-05 05:50 jeffgus        New Issue                                    
+01-03-05 05:50 jeffgus        Distribution              => Fedora Core 2   
+01-03-05 05:50 jeffgus        Kernel Version            => 2.6.9-ac16      
+01-07-05 02:22 chutzimir      Note Added: 0003100                          
+01-07-05 02:32 chutzimir      Issue Monitored: chutzimir                    
+01-07-05 11:10 jeffgus        Note Added: 0003101                          
+01-07-05 11:15 jeffgus        Note Edited: 0003101                         
+01-30-05 06:53 jeffgus        Note Added: 0003440                          
+01-31-05 18:57 tiwai          Status                   new => resolved     
+01-31-05 18:57 tiwai          Resolution               open => fixed       
+01-31-05 18:57 tiwai          Assigned To               => tiwai           
+01-31-05 18:57 tiwai          Note Added: 0003454                          
 ======================================================================
 
 
