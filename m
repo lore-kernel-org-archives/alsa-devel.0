@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000597]: Audigy 2 Value detected
-Date: Wed, 24 Nov 2004 12:57:20 +0100
-Message-ID: <919096cf6d6715f135d921181163d530@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
+Date: Wed, 24 Nov 2004 13:00:17 +0100
+Message-ID: <9cf298fb8a83a9625905327af57e7578@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AEB292AD
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 12:57:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43F502AD
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 13:00:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,91 +22,90 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=597> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
 ======================================================================
-Reported By:                mohammed_imran
-Assigned To:                pzad
+Reported By:                linus
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   597
-Category:                   PCI - emu10k1
+Issue ID:                   667
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             2.4.20-8
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             10-23-2004 08:59 CEST
-Last Modified:              11-24-2004 12:57 CET
+Date Submitted:             11-23-2004 15:27 CET
+Last Modified:              11-24-2004 13:00 CET
 ======================================================================
-Summary:                    Audigy 2 Value detected
+Summary:                    How to integrate turning on and off LED:s on laptops
 Description: 
-I have tried pzad's suggestion and added the PCI ID to the table along with
-some modifications (support to detect rev 8 and 0 as audigy 2)
-(emu->rev==0)..
+This machine, an HP Compaq NC6000 (also on other models
+such as NC8000) has a mute LED that
+turns on and off when mute is activated/deactivated.
+It is accomplished by way of the "External Amplifier"
+setting - this has been wired to a LED instead of an
+amplifier, so the "mute" function should (theoretically)
+activate/deactivate the "External Amplifier" when muting
+is selected for the device. The chip used is AD1981B.
 
-RedHat Linux 9 reports the card having rev 0 do i added rev 0 support. Now
-it detects the card as an audigy 2, alsa mixer runs but no sound out put
-is given when i play sound using xmms/aplay/realplayer...perhaps some more
-modifications needed? or a new driver needed?
+This script shows how it is done:
 
-Also: PCI ID for Audigy 2 card is not 1102:1008 as i saw in the forum
-reports but it is: 1102:0008 as listed by cat /proc/pci:
+if ( amixer sget "External Amplifier"|grep off > /dev/null )
+then
+           # Toggles the LED, no actual volume change
+           amixer set "External Amplifier" unmute > /dev/null
+           # Toggles the audio level
+           amixer set "Master" unmute > /dev/null
+else
+           amixer set "External Amplifier" mute > /dev/null
+           amixer set "Master" mute > /dev/null
+fi
 
- Bus  3, device   2, function  0:
-    Multimedia audio controller: PCI device 1102:0008 (Creative Labs) (rev
-0).
-      IRQ 12.
-      Master Capable.  Latency=32.  Min Gnt=2.Max Lat=20.
-      I/O at 0xc800 [0xc83f].
+The question of how this is to be implemented remains. Is
+this an issue for ALSA or shall it be handled on a higher,
+user-space level? I also have a bug open in GNOME for the
+same thing, I need to decide how to finally resolve this
+and need input from the ALSA team on the best solution.
 
-please correct me if i am wrong.
-
-Tested on RedHat Linux 9
+(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000596 Audigy 2 Value detected
-has duplicate       0000598 Audigy 2 Value detected
-has duplicate       0000599 Audigy 2 Value detected
-has duplicate       0000595 No support for Audigy 2 rev 8 (Audigy 2...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-10-04 12:50 
+ tiwai - 11-24-04 12:22 
 ----------------------------------------------------------------------
-Yes the file seems broken.  Tar stops in the middle of extraction.
+I guess checking the PCI subsystem IDs would suffice.
+Brand-laptops should have unique pci sub IDs.
 
-Please upload the patch instead of the whole driver tree codes...
+The only question is: is the LED designed _only_ for mute?  Or is it
+supposed to be generic?  In the latter case, we shouldn't restrict its use
+in the driver.
 
 ----------------------------------------------------------------------
- pzad - 11-24-04 12:57 
+ IceRAM - 11-24-04 13:00 
 ----------------------------------------------------------------------
-Support was added to CVS. Thanks to James Courtier-Dutton.
+Wouldn't it be reasonable to add a module option to do the sync-ing between
+"Master mute" and "External Amplifier mute" - only some users would want
+to enable it, others might code by themselves in userspace the "handling"
+of the Mute LED.
+
+It is true that the action on pressing the button should be handled
+somewhere at the ACPI level...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-23-04 08:59 mohammed_imran New Issue                                    
-10-23-04 08:59 mohammed_imran File Added: alsa-driver-1.0.6-mod.tar.bz2         
-          
-10-23-04 08:59 mohammed_imran Kernel Version            => 2.4.20-8        
-10-23-04 12:30 jcdutton       Note Added: 0002254                          
-11-10-04 12:50 tiwai          Note Added: 0002370                          
-11-10-04 12:52 tiwai          Relationship added       has duplicate 0000596
-11-10-04 12:53 tiwai          Relationship added       has duplicate 0000598
-11-10-04 12:53 tiwai          Relationship added       has duplicate 0000599
-11-24-04 12:40 pzad           Relationship added       has duplicate 0000595
-11-24-04 12:41 pzad           Relationship deleted     has duplicate 0000595
-11-24-04 12:42 pzad           Relationship added       has duplicate 0000595
-11-24-04 12:57 pzad           Status                   assigned => resolved
-11-24-04 12:57 pzad           Resolution               open => fixed       
-11-24-04 12:57 pzad           Note Added: 0002554                          
+11-23-04 15:27 linus          New Issue                                    
+11-23-04 15:27 linus          Distribution              => Fedora Core 3   
+11-23-04 15:27 linus          Kernel Version            => 2.6.9           
+11-23-04 15:41 tiwai          Note Added: 0002516                          
+11-23-04 21:28 linus          Note Added: 0002528                          
+11-24-04 12:22 tiwai          Note Added: 0002549                          
+11-24-04 13:00 IceRAM         Note Added: 0002555                          
 ======================================================================
 
 
