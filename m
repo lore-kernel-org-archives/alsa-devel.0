@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000949]: Randomly, left and right tracks are swaped
-Date: Mon, 28 Feb 2005 00:08:44 +0100
-Message-ID: <00a9c1947b7b34aef505921975c4ea57@bugtrack.alsa-project.org>
+From: Marc =?iso-8859-1?q?Lavall=E9e?= <marc@hacklava.net>
+Subject: Fwd: Chaintech AV-710: only 6 outputs
+Date: Sun, 27 Feb 2005 21:00:55 -0500
+Message-ID: <200502272100.55214.marc@hacklava.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B151C1F4
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 00:08:44 +0100 (MET)
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,46 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I sent the following message to the alsa-users list, but nobody replied (ye=
+t).=20
+I suppose there's not much to fix in the ice1724 driver to fully support th=
+e=20
+Chaintech AV-710. Since I don't know the ALSA API, where should I start?=20
+(appart from RTFM?) Thanks for your help!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=949> 
-======================================================================
-Reported By:                NorbertB
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   949
-Category:                   PCI - intel8x0
-Reproducibility:            random
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             &nbsp;2.4.21-20.ELsmp
-======================================================================
-Date Submitted:             02-28-2005 00:08 CET
-Last Modified:              02-28-2005 00:08 CET
-======================================================================
-Summary:                    Randomly, left and right tracks are swaped
-Description: 
-I'm running ALSA 1.0.8 on an APro 6224 (AMD8111, ac97' chipset Realtek
-ALC655).
-alsamixer is on, I can hear my audio OK but sometimes, randomly, left and
-right channels are swapped.
-======================================================================
+=2D---------  Message transmis  ----------
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-28-05 00:08 NorbertB       New Issue                                    
-02-28-05 00:08 NorbertB       Kernel Version            =>  2.4.21-20.ELsmp
-======================================================================
+Subject: Chaintech AV-710: only 6 outputs
+Date: 26 F=E9vrier 2005 00:00
+=46rom: Marc Lavall=E9e <marc@hacklava.net>
+To: alsa-user@lists.sourceforge.net
 
+I have a Chaintech AV-710. I'd like to use all its 8 outputs, but only 6 are
+working. There's nothing in alsamixer for the last 2 outputs, and
+"speaker-test -c 8" segfault on speaker 7... In qjackctl, output 7 and 8 are
+showing, but nothing comes out if I connect alsaplayer to those outputs. Wh=
+at
+could be wrong? I use kernel 2.6.10 with ALSA 1.0.8. I don't understand very
+well the  architecture of ALSA, so any useful information would be
+appreciated.
+=2D-
+Marc
 
+=2D------------------------------------------------------
 
 
 -------------------------------------------------------
