@@ -1,14 +1,14 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Opening dev/dsp takes very long
-Date: Fri, 19 Mar 2004 23:56:33 +0000
+Subject: Re: Fw: [Bug 76413] arts does not follow ALSA API
+Date: Sat, 20 Mar 2004 00:00:55 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <405B88B1.3070204@superbug.demon.co.uk>
-References: <Pine.HPX.4.33n.0403160917290.14608-100000@studcom.urz.uni-halle.de> <4056BF90.2060005@gmx.de> <405AE7B8.6080603@gmx.de> <405B6CFD.9070303@gmx.de>
+Message-ID: <405B89B7.5070207@superbug.demon.co.uk>
+References: <20040319162344.2cd6363f.mista.tapas@gmx.net> <405B27B5.8070509@superbug.demon.co.uk> <Pine.LNX.4.58.0403192003010.2006@pnote.perex-int.cz> <405B5855.3020604@superbug.demon.co.uk> <20040319230152.GA17001@thot.informatik.uni-kl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <405B6CFD.9070303@gmx.de>
+In-Reply-To: <20040319230152.GA17001@thot.informatik.uni-kl.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +17,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lars Heineken <Lars.Heineken@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Joerg Mayer <jmayer@loplof.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, Florian Schmidt <mista.tapas@gmx.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lars Heineken wrote:
-> I used the latest alsa-tarballs to upgrade alsa-lib, alsa-driver and 
-> alsa-oss.
-> To make it short: The problem is even worse now !
+Joerg Mayer wrote:
+> On Fri, Mar 19, 2004 at 08:30:13PM +0000, James Courtier-Dutton wrote:
 > 
-> This is the output from strace (relevant part):
-> 
->      .
->      .
->      0.000531 ioctl(4, SNDCTL_DSP_RESET, 0) = 0
->      0.000232 ioctl(4, SNDCTL_DSP_GETFMTS, 0xbffff668) = 0
->      0.510506 ioctl(4, SNDCTL_DSP_SETFMT, 0xbffff668) = 0
->      0.506515 ioctl(4, SNDCTL_DSP_STEREO, 0xbffff668) = 0
->      0.504940 ioctl(4, SOUND_PCM_READ_RATE, 0xbffff668) = 0
->      0.065604 ioctl(4, SNDCTL_DSP_GETBLKSIZE, 0x80a5824) = 0
->      0.000302 ioctl(4, SNDCTL_DSP_SYNC, 0) = 0
->      0.000250 munmap(0x40016000, 4096)  = 0
->      .
->      .
+>>The guys there just don't understand what you told them. If they took 
+>>the time to actually read what you said, they could easily fix their 
+>>problem.
+>>
+>>Summary: -
+>>No bug in alsa.
 > 
 > 
-> ..now it's not just a single call that takes too long, but _three_ of them.
-> 
-> There has to be someone who nows about the changes made from the alsa 
-> used in 2.6.4 and the current release, this way we could probably locate 
-> the source for the _additional_ delay introduced, maybe that'll lead us 
-> to a solution for the whole issue ?
-> 
-> 
-Can you create a small program, which makes these calls, and reproduces 
-the problem. Then email the program as an attachment to the list.
+> Summary 2:
+> There seem to be quite a lot of projects that have problems to get native
+> alsa support right: wine, winex, arts, xmms...
+wine is only just starting to support alsa properly, due mainly to lack 
+of real need to alsa support for a long time. They are starting to 
+support it well now.
+xmms don't support it well for obvious reasons. They charge people for 
+OSS drivers, so the xmms alsa driver has to look worse!
 
-James
+
+> 
+> How about a "alsa application developers meeting" once per month on IRC?
+> If that meeting would be announced on the developer mailing list of
+> projects that are known to use alsa, this might actually help.
+
+Just reading the docs correctly should help.
+I hang out on #alsa on freenode quite a lot, and will help if I have the 
+time.
+
+> 
+> The invitation should contain something along the line:
+> "If you have written code to use alsa, you should participate. Either because
+> you did it right and can help others to do so too or because you didn't and
+> in that case you should want to improve."
+> 
+>  Ciao
+>        Jörg
 
 
 
