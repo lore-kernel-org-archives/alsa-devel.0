@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [ANN] hdspmixer-1.1
-Date: Wed, 30 Jul 2003 07:43:42 -0400
+From: Jos van den Oever <jos@vandenoever.info>
+Subject: midi on ESS Solo with 2.6.0-test2
+Date: Wed, 30 Jul 2003 15:03:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307301143.h6UBhgCq019918@localhost.localdomain>
-References: <32966.10.0.0.1.1059563304.squirrel@www.undata.org>
+Message-ID: <200307301503.07706.jos@vandenoever.info>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 30 Jul 2003 13:08:24 +0200."
-             <32966.10.0.0.1.1059563304.squirrel@www.undata.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>
-Cc: frankgaetano@collegeclub.com, jesse@essej.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->It depends on what you call newest :)
->If, as your mail seems to imply, you bought your card before May,  I guess
->you have 0xb (rev 11) and everything is working fine now if you use the
->latest alsa-driver and alsa-tools packages.
->If you bought your card this month, then you may have 0x32 (rev 50). I
->posted a small patch a few days ago to support these new cards, it should
->work fine, but you'll have build the driver from cvs.
+Hello,
 
-although thomas and i both agree that there are still some issues
-following cold boots for any h/w supported by the hdsp driver. the
-solution in most cases is to reboot, but wait to either load the
-driver (for pcmcia interfaces) or wait to run hdsploader (for pci
-interfaces) till after the system is up. we have no idea what causes
-this at this point in time.
+With 2.6.0-test1 I got linux to play midi files (without software sythesiser) 
+for the first time on my laptop with ESS Technology ES1969 Solo-1 Audiodrive. 
+However, it only works when I use playmidi and the OSS interface is enabled. 
+The program 'pmidi -l' lists two midi devices:
+ Port     Client name                       Port name
+ 64:0     Rawmidi 0 - MPU-401 (UART) 0-0    MPU-401 (UART) 0-0
+ 65:0     OPL3 FM synth                     OPL3 FM Port
+I can use both of them for midi output without error message: the program 
+seems to be playing something, but no sound is heard. I've checked the midi 
+volume which should be correct, since I can hear midi with 'playmidi'.
 
-warm boots seem to work 100%.
+Is there some setting I've forgotten or is there a problem with the sequencing 
+support? I'd like to use rosegarden and this program insists on using the 
+mute ALSA devices.
 
---p
+Best regards, Jos van den Oever
 
 
 
