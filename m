@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000370]: CMedia 8768 Support
-Date: Fri,  8 Oct 2004 15:26:49 +0200 (CEST)
+Date: Fri,  8 Oct 2004 15:36:09 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008132649.41DB42D0C1@server.perex-int.cz>
+Message-ID: <20041008133609.CB68E2D0C1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 65FF6259
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 15:26:50 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25BF326F
+	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 15:36:10 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-07-2004 04:59 CEST
-Last Modified:              10-08-2004 15:26 CEST
+Last Modified:              10-08-2004 15:36 CEST
 ======================================================================
 Summary:                    CMedia 8768 Support
 Description: 
@@ -192,6 +192,12 @@ change will take effect"?  Isn't the mixer value changed at all, or
 you get only the silent output, although the playback looks as if
 working?
 
+----------------------------------------------------------------------
+ tiwai - 10-08-2004 15:36 CEST 
+----------------------------------------------------------------------
+Also, attach /etc/asound.state and /proc/asound/card0/cmipci for
+debugging.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -211,6 +217,7 @@ Date Modified  Username       Field                    Change
 10-08-04 05:19 robg           File Added: Programming Guide to CMI8738 PCI Audio Chip_v16_0311.pdf                    
 10-08-04 12:49 tiwai          Bugnote Added: 0002050                       
 10-08-04 15:26 tiwai          Bugnote Added: 0002053                       
+10-08-04 15:36 tiwai          Bugnote Added: 0002054                       
 ======================================================================
 
 
