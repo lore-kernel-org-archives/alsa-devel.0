@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
-Date: Thu, 2 Dec 2004 19:27:38 +0100
-Message-ID: <4bbb3b3639d02903b74ad35b6cfa3bac@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000683]: sound works through speakers only not through headphones
+Date: Thu, 2 Dec 2004 19:29:38 +0100
+Message-ID: <efcb4965f071a0cbfe7daa6c57d65d33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1A13245
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:27:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 019FB17E
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 19:29:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,70 +24,50 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=683> 
 ======================================================================
-Reported By:                darkbrain
-Assigned To:                
+Reported By:                michaelhoy2
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   685
-Category:                   PCI - cs46xx
+Issue ID:                   683
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9-nitro4
+Status:                     assigned
+Distribution:               fedora core 3
+Kernel Version:             2.6.9-1.667
 ======================================================================
-Date Submitted:             11-28-2004 14:55 CET
-Last Modified:              12-02-2004 19:27 CET
+Date Submitted:             11-28-2004 05:05 CET
+Last Modified:              12-02-2004 19:29 CET
 ======================================================================
-Summary:                    Doom3 doesn't work with alsa backend
+Summary:                    sound works through speakers only not through
+headphones
 Description: 
-Latest doom3 client for linux has alsa support built in but doesn't work
-with my Hercules Fortissimo II (cs4624).
-
-The game show me this error:
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-
-dmesg output:
-ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
-ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
-start
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
-"SrcTask_SCB1"
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
-SrcTask_SCB1 rate to 44100
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<SrcTask_SCB1>
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
-"PCMReader_SCB2" (1)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<PCMReader_SCB2>
-ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
-buffer_size(32768)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
-
-
+the sound works in fedora core 3, so far the only distro to properly handle
+your driver, but one small problem, it's a laptop and i HAVE to HAVE
+headphones because otherwise I'll be bothering people at work. Can I get
+some support to make the headphones work. BTW the volume mute and vol up
+and vol down on the side of the laptop don't work either, it's a compaq
+r3000 p4 2.8ghz laptop
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:27 
+ tiwai - 12-02-04 19:29 
 ----------------------------------------------------------------------
-Any test case program to reproduce this bug?
-Otherwise it's hard to debug.  Sorry, it's too little information.
+Please show the contents of /proc/asound/card0/codec97#0/* files and
+/etc/asound.state.
+On some codecs, 'External Amplifier' control tunrs on/off the speaker.
+On some, you can turn on/off via 'Mono Playback Switch'.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 14:55 darkbrain      New Issue                                    
-11-28-04 14:55 darkbrain      Distribution              => debian          
-11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
-11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
-12-02-04 19:27 tiwai          Note Added: 0002692                          
+11-28-04 05:05 michaelhoy2    New Issue                                    
+11-28-04 05:05 michaelhoy2    Distribution              => fedora core 3   
+11-28-04 05:05 michaelhoy2    Kernel Version            => 2.6.9-1.667     
+12-02-04 19:29 tiwai          Note Added: 0002693                          
 ======================================================================
 
 
