@@ -1,15 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] Use rawmidi device name for sequencer client
- name
-Date: Thu, 28 Nov 2002 17:00:35 +0100 (MET)
+From: Justin Cormack <justin@street-vision.com>
+Subject: Re: RME HDSP9652
+Date: 28 Nov 2002 16:22:44 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0211281650360.20371-100000@studcom.urz.uni-halle.de>
-References: <s5h1y5522zq.wl@alsa2.suse.de>
+Message-ID: <1038500569.1476.5.camel@lotte>
+References: <200211281337.gASDbvf00556@tench.street-vision.com>
+	<1038494386.20379.31.camel@lotte>  <s5hwumxzoqd.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5h1y5522zq.wl@alsa2.suse.de>
+In-Reply-To: <s5hwumxzoqd.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,27 +19,32 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > The snd_seq_midisynth_register_port() function already knows the name of
-> > the rawmidi device, so there is no reason to invent another name for the
-> > sequencer client.
->
-> the reason was that many rawmidi devices give the same name even if
-> there are many.  for example, mpu401 sets only "MPU-401 (UART)" as its
-> name.
-> although the card can be distinguished by the client number, it would
-> be better to be able to know only from its name string.
+On Thu, 2002-11-28 at 15:40, Takashi Iwai wrote:
 
-The maybe we could add the card number or id to the string.
-"MPU-401 (card42)" would be better than "External MIDI 42-0".
+> > > all i need is the PCI ID from you. i've already spoken to RME about
+> > > the card, and the claim is that it will with the existing h-dsp
+> > > driver. the only thing that won't work are the RMS meters. the
+> > > existing driver, however, doesn't recognize the PCI ID and so it
+> > > doesn't work.
+> > > 
+> > 
+> > Its the same PCI ID, but insmod segfaults...
+> 
+> does the attched patch cure the segfault?
+> but it doesn't mean that your card will be supported by it :)
 
+Thanks, this fixes the segfault, and adding the rev 0x64 in
+snd_hdsp_create makes it work... It recognises the IO box as a digiface
+which I think is ok (3x adat + midi + 2 * spdif). Playback works, and
+the mixer is recognised - will test it further.
 
-Regards,
-Clemens
+thanks for everyones help.
+
+Justin
+
 
 
 
