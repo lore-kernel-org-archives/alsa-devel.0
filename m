@@ -1,12 +1,12 @@
-From: Alice A.Walker <filmore@411global.com>
-Subject: =?iso-8859-1?B?UG9wdWxhciBzb2Z0IC0gdmVyeSBsb3cgcHJpY2U=?=
-Date: Tue, 26 Oct 2004 12:18:41 +0000
+From: =?Windows-1251?B?3ev84ujw4CDI8eDq7uLt4A==?= <graeme@skynet.be>
+Subject: =?Windows-1251?B?yuDqIPPv8ODi6//y/PH/IPEg4fP14+Dr8uXw6OXp?=
+Date: Tue, 26 Oct 2004 13:10:19 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b30d01c4bb55$810646ce$163c5065@411global.com>
+Message-ID: <36aa01c4bb5d$f1499390$0778e399@skynet.be>
 Mime-Version: 1.0
 Content-Type: multipart/related;
     type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_93460460.D46376CB"
+    boundary="----=_NextPart_000_0000_FB768105.33C3DD07"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,89 +21,60 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_0000_93460460.D46376CB
+------=_NextPart_000_0000_FB768105.33C3DD07
 Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_C9312716.EF864916"
+    boundary="----=_NextPart_001_0001_96C3E0E9.46557E6C"
 
 
-------=_NextPart_001_0001_C9312716.EF864916
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+------=_NextPart_001_0001_96C3E0E9.46557E6C
+Content-Type: text/plain; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 
-Get access to all the popular software imaginable for prices substantially lower than in stores!
-Our software is 2-10 times cheaper than sold by our competitors.
-
-Examples:
-
-$80 Windows XP Professional 
-$120 Microsoft Office 2003 Professional
-$100 Adobe Photoshop 8.0/CS
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)
-$150 Adobe Acrobat 6.0 Professional
-$20 Red Hat Linux 7.3
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And lots more... Visit us at:
-
-Mirror 1: http://www.hemisoft.biz
-Mirror 2: http://www.decasoft.biz
-
-Regards,
-Alice A. Walker
+Как должна быть построена Бухгалтерия, чтобы был доволен Генеральный? 
+На каком языке ему говорить об успехах Бухгалтерии? 
+Как самому понять, насколько эффективна бухгалтерия и где "дыры" - они же резервы для сокращения или добавления новых задач, например Управленческого Учета? 
+Бухгалтерия, Которая Работает
+Как оценивать работу бухгалтерии в целом? 
+Как оценивать работу отдельных сотрудников, в чем ее измерять и как? 
+Как писать инструкции - что не объяснять по десять раз, и в формализм не перекинуться? 
+Что должна делать бухгалтерия, а что нет? Кто должен выставлять счета, истребовать документы и т.д.? 
+Как построить бухгалтерию, которая будет эффективно работать?. 
+Вся подробная информация по тел.: (095) 5lЧ-5О47
 
 
-_____________________________________________________ 
-To change your mail preferences, go here: http://www.hemisoft.biz/uns.htm
-_____________________________________________________ 
-
-
-------=_NextPart_001_0001_C9312716.EF864916
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+------=_NextPart_001_0001_96C3E0E9.46557E6C
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: 8bit
 
 <HTML>
 <BODY>
-<CENTER>
-<TABLE cellSpacing=0 cellPadding=0 width=800 align=center border=0>
-  <TBODY>
-  <TR>
-    <TD>
-Get access to all the software imaginable for bottom prices!<br>
-Our software is 2-10 times cheaper than sold by our competitors.<br><br>
-
-A few examples:<br><br>
-
-$80 Windows XP Professional<br>
-$120 Microsoft Office 2003 Professional<br>
-$100 Adobe Photoshop 8.0/CS<br>
-$50 Norton Internet Security Pro 2004 Professional (Including: AntiVirus + AntiSpam + Firewall)<br>
-$180 Macromedia Studio MX 2004 (Including: Dreamweaver MX + Flash MX + Fireworks MX)<br>
-$150 Adobe Acrobat 6.0 Professional<br>
-$20 Red Hat Linux 7.3<br><br>
-
-Categories: Business, Internet, Antivirus, Security, etc.<br>
-And many more... Visit us at:<br><br>
-
-Mirror 1: <A href="http://www.hemisoft.biz">http://www.hemisoft.biz</A><br>
-Mirror 2: <A href="http://www.decasoft.biz">http://www.decasoft.biz</A><br><br>
-
-Sincerely,<br>
-Alice Walker<br><br><br>
+<UL>
+  <LI>Как должна быть построена Бухгалтерия, чтобы был доволен Генеральный?
+  <LI>На каком языке ему говорить об успехах Бу<adhesion>хгалтерии?
+  <LI>Как самому понять, насколько эффективна бухгалтерия и где &quot;дыры&quot;
+  - они же резервы для сокращения или добавления новых задач, например Управленческого
+  Учета?
+</UL>
+<H1 align="center"><FONT color="#ff8000"><B>Бух<alluvial>галтерия, Которая Работает</B></FONT></H1>
+<OL>
+  <LI>Как оценивать работу бухгалтерии в целом?
+  <LI>Как оценивать работу отдельных сотрудников, в чем ее измерять и как?
+  <LI>Как писать инст<amass>рукции - что не объяснять по десять раз, и в формализм не
+  перекинуться?
+  <LI>Что должна делать бухгалтерия, а что нет? Кто должен выставлять счета,
+  истребовать документы и т.д.?
+  <LI>Как построи<apices>ть бухгалтерию, которая будет эффективно работать?. 
+</OL>
+<P align="center"><FONT color="#990000"><B>Вся подробная информация по тел.: (095) 5<appleton>lЧ-5О<although>4<airy>7</B></FONT></P>
+</BODY>
+</HTML>
 
 
-_____________________________________________________ <br>
-To be taken out, go here: <A href="http://www.hemisoft.biz/uns.htm">http://www.hemisoft.biz/uns.htm</A><br>
-_____________________________________________________ 
-
-<P></P></TD></TR></TBODY></TABLE></CENTER></BODY></HTML>
-
-
-------=_NextPart_001_0001_C9312716.EF864916--
+------=_NextPart_001_0001_96C3E0E9.46557E6C--
 
 
 
-------=_NextPart_000_0000_93460460.D46376CB--
+------=_NextPart_000_0000_FB768105.33C3DD07--
 
 
 
