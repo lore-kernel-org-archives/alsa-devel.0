@@ -1,13 +1,12 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: pcm_native.c problem at compil time
-Date: Sat, 26 Apr 2003 15:39:59 +0200
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: snd-pcm-oss.o needs snd_pcm_link_lock symbol
+Date: Sat, 26 Apr 2003 15:39:20 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030426133959.GA28411@ulima.unil.ch>
+Message-ID: <20030426143920.4910.qmail@web40613.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,23 +18,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-just tried to compil the driver, and I got:
+I have just installed the latest CVS and have
+discovered that the snd-pcm-oss module needs the
+snd_pcm_link_lock symbol. This is presumably because
+the pcm_oss.c file includes pcm.h and uses its
+snd_pcm_stream_*() functions.
 
-In file included from pcm_native.c:2:
-../alsa-kernel/core/pcm_native.c: In function `snd_pcm_suspend_all':
-../alsa-kernel/core/pcm_native.c:811: `runtime' undeclared (first use in
-this function)
-../alsa-kernel/core/pcm_native.c:811: (Each undeclared identifier is
-reported only once
-../alsa-kernel/core/pcm_native.c:811: for each function it appears in.)
-make[1]: *** [pcm_native.o] Error 1
+Chris
 
 
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
+__________________________________________________
+Yahoo! Plus
+For a better Internet experience
+http://www.yahoo.co.uk/btoffer
 
 
 -------------------------------------------------------
