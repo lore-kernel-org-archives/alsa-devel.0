@@ -1,14 +1,14 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: Creamware Noah, snd-usb-audio capable?
-Date: Wed, 11 Feb 2004 19:00:13 +0100
+From: "Mathieu Rondonneau" <mathieu.rondonneau@polymtl.ca>
+Subject: Re: Using preallocate pci, isa or nothing?
+Date: Wed, 11 Feb 2004 14:39:47 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040211180013.GF6493@fliwatut.scifi>
-References: <20040210213617.GH10941@fliwatut.scifi> <Pine.HPX.4.33n.0402111036160.24733-100000@studcom.urz.uni-halle.de>
+Message-ID: <007101c3f0df$30d2f210$c4f9cb18@win2K>
+References: <009601c3eea3$bca696e0$c4f9cb18@win2K> <s5hn07pby6h.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <Pine.HPX.4.33n.0402111036160.24733-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,42 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Clemens Ladisch hat gesagt: // Clemens Ladisch wrote:
 
-> Frank Barknecht wrote:
-> > The main reason for my assumption is the value for bInterfaceNumber
-> > which is "3" or 0x03 as it should be according to the USB spec which
-> > requires for a "MIDI Adapter Standard MIDIStreaming Interface
-> > Descriptor" to have this field set as follows:
+
+> At Sun, 8 Feb 2004 18:29:10 -0600,
+> Mathieu Rondonneau wrote:
 > >
-> > Offset Field                Size  Value   Description
-> > ...
-> > 6      bInterfaceSubclass   1     0x03   MIDISTREAMING.
-> > ...
-> 
-> The bInterfaceNumber field simply specifies the number (i.e., the
-> index) of the interface.  Interfaces must be numbered 0, 1, 2, etc.
+> > Hi,
+> > I'm sorry for the html format, these are some questions according to my
+> > problems.
+> >
+> > I'm writing an ALSA driver for a CSB337 board (AT91RM9200). There is no
+PCI
+> > or ISA on this board. Should I preallocate memory with:
+> > snd_pcm_lib_preallocate_pages_for_all,
+> > snd_pcm_lib_preallocate_isa_pages_for_all() or
+> > snd_pcm_lib_preallocate_pci_pages_for_all()?
+> >
+> > There is a specific DMA (PDC) on the AT91RM9200, so i'm trying to use
+> > snd_pcm_lib_preallocate_pages_for_all() but seems complicated to
+understand
+> > what is needed by the ALSA pcm and what i have to write.
+> > What does the function snd_..._pointer() mean? should i need it if i
+don't
+> > use ISA or PCI mecanism?
+> > What does the function snd_pcm_period_elapsed() mean? Should i need it
+if i
+> > don't use ISA or PCI mecanism?
+>
+> did you take a look at my document?
+>
+> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/
+>
+>
+> Takashi
+>
 
-Ah, my fault: I intended to write "bInterfaceSubclass" as in the
-spec quote... 
+Yes I did, and i thank you for your work, your document is very helpfull.
+But, i'm not familiar with ALSA driver development.
+Could I use PCI or ISA mecanism (memory allocation and dma) even if there
+are no PCI or ISA bus in my board?
+If i don't use it, it's more work to do.
+I 'm just wondering if i could use more ALSA function in order to simplify
+my development.
 
-> The problem is that bInterfaceClass isn't set to 1 (Audio).
-> 
-> The class-specific descriptors are there (lsusb shows them as
-> "unknown" because it doesn't try to parse vendor-specific things), so
-> it should be possible to use the MIDI_STANDARD_INTERFACE quirk (see
-> below).
+I'm sorry for my english (i'm french)
+Thank you very much for your help.
 
-I'd love to test it, but I had to send back the device already. :(
-Could you test it? 
-
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
