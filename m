@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
-Date: Sun, 5 Dec 2004 12:36:48 +0100
-Message-ID: <431a1d52ced54c74f45524e31febc65f@bugtrack.alsa-project.org>
+Subject: [ALSA - tools 0000206]: Segmentation fault when trying to start envy24control
+Date: Sun, 5 Dec 2004 12:44:11 +0100
+Message-ID: <893579eea828a11dd51e749d1a341f98@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C723A353
-	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 12:36:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A5EA353
+	for <alsa-devel@alsa-project.org>; Sun,  5 Dec 2004 12:44:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,69 +22,58 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=206> 
 ======================================================================
-Reported By:                flink
-Assigned To:                perex
+Reported By:                vulture99
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   646
-Category:                   pcm - digital audio
+Project:                    ALSA - tools
+Issue ID:                   206
+Category:                   envy24control
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             11-12-2004 17:02 CET
-Last Modified:              12-05-2004 12:36 CET
+Date Submitted:             04-13-2004 04:56 CEST
+Last Modified:              12-05-2004 12:44 CET
 ======================================================================
-Summary:                    emu10k1: sound chopped when passthru enabled
+Summary:                    Segmentation fault when trying to start
+envy24control
 Description: 
-When I play a DVD with AC3 passthru enabled, the signal is correctly send
-to my AC3 decoder but this signal is chopped. I've a little led on my
-decoder to show if dolby digital is enabled or not and this led blinks
-instead of remaining enabled. So the sound is also chopped and a DVD can't
-be 
-watched this way.
+envy24control was working fine for me yesterday (not sure which version of
+alsa I was using - probably 1.0.3 or 1.0.2).  Today I updated to 1.0.4 via
+apt-get using the standard Fedora packages from the kernel.org mirror, and
+when I try to run envy24control, I get a segmentation fault.  I am using
+an M-Audio Audiophile 2496 sound card.
 ======================================================================
 
 ----------------------------------------------------------------------
- visit0r - 11-24-04 09:24 
+ tiwai - 04-16-04 12:03 
 ----------------------------------------------------------------------
-I have managed to play couple of DVDs with AC3 without any problems, so I
-suppose the problem was somewhere else.
+could you build envy24control with gcc debug option and
+trace the segfault via gdb?
 
 ----------------------------------------------------------------------
- perex - 12-05-04 12:36 
+ shadow - 12-05-04 12:44 
 ----------------------------------------------------------------------
-Fixed in 1.0.7.
+i experienced this sporadically with envy24control from cvs today
+(20041205).  i  don't know what the cause is, but when i ran in gdb it
+would crash with an assertion failure somewhere in the driver.  when i ran
+with argument '-m3' it began to work again.  it looks like this issue for
+me was different except i share a similar sound device.  i have the 
+1010lt delta by m-audio.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-04 17:02 flink          New Issue                                    
-11-13-04 22:18 rlrevell       Note Added: 0002403                          
-11-13-04 22:31 rlrevell       File Added: patch                            
-11-13-04 22:33 rlrevell       Note Added: 0002404                          
-11-16-04 00:13 visit0r        Note Added: 0002421                          
-11-16-04 00:24 rlrevell       Note Added: 0002422                          
-11-16-04 21:09 visit0r        Note Added: 0002430                          
-11-17-04 04:06 duanev         Issue Monitored: duanev                      
-11-17-04 07:00 duanev         Note Added: 0002432                          
-11-17-04 08:05 visit0r        Issue Monitored: visit0r                     
-11-17-04 08:09 visit0r        Note Added: 0002434                          
-11-18-04 23:34 rlrevell       Note Added: 0002472                          
-11-19-04 07:14 visit0r        Note Added: 0002476                          
-11-24-04 09:09 duanev         Note Added: 0002542                          
-11-24-04 09:24 visit0r        Note Added: 0002543                          
-12-05-04 12:36 perex          Status                   new => resolved     
-12-05-04 12:36 perex          Resolution               open => fixed       
-12-05-04 12:36 perex          Assigned To               => perex           
-12-05-04 12:36 perex          Note Added: 0002719                          
+04-13-04 04:56 vulture99      New Issue                                    
+04-13-04 04:58 vulture99      Note Added: 0000786                          
+04-13-04 22:37 vulture99      Note Added: 0000799                          
+04-16-04 12:03 tiwai          Note Added: 0000835                          
+12-05-04 12:44 shadow         Note Added: 0002720                          
 ======================================================================
 
 
