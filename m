@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: USB audio devices
-Date: Tue, 9 Mar 2004 18:31:21 +0100 (CET)
+From: Willie Sippel <willie@froq.net>
+Subject: Full support for Creamware Noah and SFP
+Date: Tue, 09 Mar 2004 19:03:46 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403091823130.3966@pnote.perex-int.cz>
-References: <1078781348.18057.85.camel@renegade>
- <200403091426.i29EQv9o016723@dhin.linuxaudiosystems.com> <s5hn06qukve.wl@alsa2.suse.de>
+Message-ID: <1078855426.11076.36.camel@zauberwald.zeitgeist>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hn06qukve.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +15,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 9 Mar 2004, Takashi Iwai wrote:
+Hi.
 
-> BTW, the USB audio is another headache. the current ALSA PCM model isn't
-> perfectly suitable for the devices like USB audio.
+As some of you may know, Creamware (http://www.creamware.de) is under
+new management since 2004 - and they have changed their mind regarding
+Linux support.
+Porting the SFP (Noah is part of SFP) to Linux is more than writing a
+mere driver, 'cause of the DSP based approach... 
+It may be difficult to port the whole platform, but as an additional
+benefit (a huge one), all plugins and softsynths are already platform
+independent - porting the platform would give instant access to lots of
+high-quality plugins - they could be used on Linux as soon as the
+platform is ported (the plugins are encrypted archives containing the
+DSP code and the interface description, everything from the uplading to
+the interface drawing is handled by the SFP software). And the next
+version of the plugin IDE will be released for free anytime soon...
 
-Unfortunately I don't see a better model. We have already clear handshake,
-but USB 1.1 devices, and maybe the Linux core USB code, are failing to
-satisfy highly realtime needs, thus we need to manage the extra buffering
-to avoid underflows for the DMA operations. I don't know much about USB
-2.0, but I guess that 1.x compatibility issues brings another overhead to
-this extension which makes it also unuseable when 1.x devices are
-connected to same USB port.
+But there is one problem: Creamware would open-source as much as
+possible and necessary to make SFP work, but not everything. I talked to
+Frank Hund of CW today, and he suggested a solution:
+They would give the specs and all sources to Linux developers under an
+NDA, to check what parts of the system would be needed to make the card
+work with ALSA (the basic soundcard features, and the bridge to use the
+SFP software). Those parts would be released under the GPL, and could
+become part of ALSA. The remaining parts of the platform (those needed
+to upload plugins to the DSP's) could be ported and provided binary only
+by Linux developers that signed the NDA, and may be provided for several
+architectures (x86, AMD64, PPC). 
+Anyone interested in helping out (I'm not a coder, just a mere
+musician)? If there is interest, I will forward it to Frank.
 
-I think that it's hardware design issue when the "extra delay" is counted, 
-so we can hardly improve things.
+Ciao,
+-- 
+Willie Sippel <willie@froq.net>
+[ z ] !
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
