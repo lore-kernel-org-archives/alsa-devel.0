@@ -1,13 +1,9 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: also does not compile if only using module drivers
-Date: Fri, 8 Mar 2002 12:49:29 +0100 (CET)
-Message-ID: <Pine.LNX.4.33.0203081247400.541-100000@pnote.perex-int.cz>
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: Mixer chanel naming
+Date: Fri, 8 Mar 2002 14:01:30 +0100 (CET)
+Message-ID: <Pine.BSF.4.44.0203081354580.28275-100000@fest.stud.fee.vutbr.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA23936
-	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 12:50:42 +0100
-In-Reply-To: <20020308123943.A29300@outpost.ds9a.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,55 +12,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: bert hubert <ahu@ds9a.nl>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 8 Mar 2002, bert hubert wrote:
+Hi,
 
-> On Fri, Mar 08, 2002 at 12:26:13PM +0100, Jaroslav Kysela wrote:
-> > On Fri, 8 Mar 2002, bert hubert wrote:
-> > 
-> > > With ALSA in kernel 2.5.6 and all sound cards compiled as modules,
-> > > sound/core/pcm.c & friends are not built into snd-pcm.o and linked into the
-> > > main kernel, leading to a lot of unresolved symbols.
-> > 
-> > Could you explain your more problem more? I don't see it clearly. You may 
-> > send me your linux/.config (ALSA section) as well. Thanks.
-> 
-> Of course! Please find attached the errors & my complete .config.
-> 
-> I just tested after running mrproper and the problem is still there.
-> 
-> Once you include a single driver in the kernel, everything works
-> wonderfully! My laptop no longer crashes using the trident driver.
+I've just started writing driver for Compaq iPAQ and I'm feel realy dizzy
+from setting the mixer. Here is part of code:
 
-Thank you. This patch solves the problem:
+...
+static snd_kcontrol_new_t snd_h3600_controls[] = {
+H3600_SINGLE("Master Playback Switch", H3600_MASTER, 15, 1, 1),
+H3600_DOUBLE("Master Playback Volume", H3600_MASTER, 8, 0, 31, 1),
+...
 
-Index: Makefile
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/Makefile,v
-retrieving revision 1.12
-diff -u -r1.12 Makefile
---- Makefile    5 Mar 2002 20:47:26 -0000       1.12
-+++ Makefile    8 Mar 2002 11:48:48 -0000
-@@ -37,6 +37,8 @@
-   obj-y += oss/oss.o
- endif
+First argument is used for "name" item of snd_kcontrol_new_t structure.
+It look like the name is significant when configuring this new control.
 
-+obj-$(CONFIG_SND_PCM_OSS) += snd-pcm.o
-+
- subdir-$(CONFIG_SND_SEQUENCER) += seq
- ifeq ($(CONFIG_SND_SEQUENCER),y)
-   subdir-m += seq
+(e.g. without "playback", alsamixer shows two devices for one entry)
 
-						Jaroslav
+Where should I find information of possible names and mainly their
+meaning? How functionality of such defined control depends on this name?
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Thanks
+
+--
+
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 Tomas.Kasparek@[seznam.cz,volny.cz]
+	 Linux@dcse.fee.vutbr.cz
+	student UIVT FEI VUT Brno
 
 
 _______________________________________________
