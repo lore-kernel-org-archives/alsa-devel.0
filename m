@@ -1,15 +1,17 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: SPDIF output finally working properly with CS4630
-Date: Wed, 24 Jul 2002 11:19:19 -0700
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: alsa error /dev/snd/pcmC1D1c failed: No such
+ file or directory
+Date: Wed, 24 Jul 2002 20:48:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020724181919.GC1681@porky>
-References: <3D3DBDA2.10602@cucumelo.org> <20020724013400.GA5214@porky> <3D3E2D08.3070800@cucumelo.org>
+Message-ID: <Pine.LNX.4.33.0207242047110.578-100000@pnote.perex-int.cz>
+References: <Pine.LNX.4.44.0207231541230.6752-100000@cmn24.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3D3E2D08.3070800@cucumelo.org>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA25642
+	for <alsa-devel@alsa-project.org>; Wed, 24 Jul 2002 20:48:39 +0200
+In-Reply-To: <Pine.LNX.4.44.0207231541230.6752-100000@cmn24.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,28 +20,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Gary Scavone <gary@ccrma.Stanford.EDU>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.07.23 21:28 Benny Sjostrand wrote:
->> [peter@porky als]$ aplay footsteps.wav Playing WAVE 'footsteps.wav' :
->> Signed 16 bit Little Endian, Rate 44100 Hz, Mono
->> aplay: interval_inline.h:65: snd_interval_min: Assertion 
->> `!snd_interval_empty(i)' failed.
->> Aborted...
+On Tue, 23 Jul 2002, Gary Scavone wrote:
 
-    This is odd. I was going to play with the driver some more this
-morning, and when I tried to play a sound... it played! I didn't change
-anything since I last tried it, except that I had my computer turned off
-overnight. Perhaps it was the cold boot that effected it. Anyway, now it
-plays, but I don't get IEC958 output, and the analog out was very
-"tinny". I reloaded the module, and now the sound from analog out is
-fine.
-    I'll keep playing with it.
+> 
+> OK, I changed my code to do as you suggested (using the ctl interface)  
+> and that works.  Thanks for the info.
+> 
+> However, I still feel that my original gripe (the error message
+> output) is valid.  In all other cases that I'm aware of, you never
+> automatically spit out an error message to stderr or stdout.  Why 
+> should it be different in this case?  There is an error retrieval 
+> mechanism in place, namely snd_strerror().
+> 
+> So, what is the validation for automatically printing an error for the 
+> function snd_pcm_open() and not, for example, for 
+> snd_pcm_hw_params_any()?  Why can I not determine whether a device can 
+> handle input by attempting to open it with the appropriate stream 
+> without incurring this error message?
 
--- Peter Heatwole
-"Murphy was just a well known pessimist."
+Have you realized, that we have snd_lib_error_set_handler() function? If 
+you create an empty callback, you'll get no error messages. I think that 
+the default behaviour is good for command-line tools.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
