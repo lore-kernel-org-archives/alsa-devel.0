@@ -1,15 +1,12 @@
-From: Gregoire Favre <greg@ulima.unil.ch>
-Subject: Re: How to put 16bit none audio PCM data stream into a 32bit none audio S/P-DIF transport stream?
-Date: Tue, 15 Apr 2003 00:14:24 +0200
+From: Knut J Bjuland <knutjbj@online.no>
+Subject: Re: Re: [Alsa-user] alsa cvs, redhat9, kernel 2-4-20-9
+Date: Tue, 15 Apr 2003 08:47:15 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030414221424.GC22184@ulima.unil.ch>
-References: <20030410112657.GA2332@ulima.unil.ch> <3E994CCE.6020105@cucumelo.org> <20030413170501.GA2323@ulima.unil.ch> <3E99AAAB.1070101@cucumelo.org> <20030413183035.GC2323@ulima.unil.ch> <3E99F176.6080503@cucumelo.org> <20030414190615.GA22184@ulima.unil.ch> <3E9B341E.4040200@cucumelo.org> <20030414212708.GB22184@ulima.unil.ch> <3E9B3D9B.2060901@cucumelo.org>
+Message-ID: <3E9BAAF2.177D8685@online.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <3E9B3D9B.2060901@cucumelo.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,42 +15,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: alsa-devel@lists.sourceforge.net, James@superbug.demon.co.uk, werner@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 15, 2003 at 01:00:43AM +0200, Benny Sjostrand wrote:
+There is still unresolved symbols in alsa cvs aginst kernel 2.4.20-9.
 
-> Let me guess, I did not work ? Well, guess what, I got new "this time=20
-> hopefully working" patch,
-> so if you like to apply it to CVS and test again -;)
 
-Yes, for sure!!!
+Starting sound driver: snd-emu10k1
+/lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o:
+unresolved symbol schedule_work
+/lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o:
+insmod /lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o
+failed
+/lib/modules/2.4.20-9SGI_XFS_1.2.0custom/kernel/sound/acore/snd.o:
+insmod snd-emu10k1 failed
 
-> Could you also test with:
-> AES0=3D0x40,AES1=3D0x0,AES2=3D0x41,AES3=3D0x40 (all bits wrapped)
 
-Unfortunately, it's still not working...
-If needed I could still send you all the logs :-)
 
-> Then I got a question about the IEC958 protocoll that hopefulle someone=
-=20
-> on this list
-> knows something about. The Left and Right validity bits, and Left, Righ=
-t=20
-> user
-> bits, what are suposed to do ?? are they suposed to be 1 or 0 when outp=
-uting
-> AC3/DTS ???
->=20
-> That could be a posible source of the problem, in this patch they are
-> all turned off.
 
-I am sure Dr. Werner Fink know the answer of this question ;-)
 
-	Gr=E9goire
-________________________________________________________________
-http://ulima.unil.ch/greg ICQ:16624071 mailto:greg@ulima.unil.ch
+
+
+
+Re: [Alsa-devel] Re: [Alsa-user] alsa cvs, redhat9, kernel 2-4-20-8
+
+    * From: Takashi Iwai
+    * Subject: Re: [Alsa-devel] Re: [Alsa-user] alsa cvs, redhat9,
+kernel 2-4-20-8
+    * Date: Mon, 07 Apr 2003 08:45:07 -0700
+
+At Mon, 7 Apr 2003 12:27:53 +0200,
+Matthias Saou wrote:
+>
+> Takashi Iwai <[EMAIL PROTECTED]> wrote :
+>
+> > the current alsa code checks the existence of __WORK_INITIALIZER
+> > macro.  if it's defined, no wrapper function is used.
+> > in rh's include/linux/workqueue.h, is this macro defined?
+>
+> Yes, it is... from /usr/src/linux-2.4.20-x/include/linux/workqueue.h:
+>
+> #define __WORK_INITIALIZER(n, f, d) {                           \
+>         .entry  = { &(n).entry, &(n).entry },                   \
+>         .func = (f),                                            \
+>         .data = (d) }
+
+hmm, then it should be ok.  the configure and make should work without
+any patches.
+
+did anyone build successfully with RH9 and RH's kernel?
+
+
+Takashi
+
+
+-------------------------------------------------------
+This SF.net email is sponsored by: ValueWeb:
+Dedicated Hosting for just $79/mo with 500 GB of bandwidth!
+No other company gives more support or power for your dedicated server
+http://click.atdmt.com/AFF/go/sdnxxaff00300020aff/direct/01/
+_______________________________________________
+Alsa-devel mailing list
+[EMAIL PROTECTED]
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
 
 
 -------------------------------------------------------
