@@ -1,19 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Possible solution for the alsa-oss fopen problem.
-Date: Wed, 09 Jun 2004 12:10:45 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Possible solution for the alsa-oss fopen problem.
+Date: Wed, 9 Jun 2004 13:33:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40C6F035.4000406@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.58.0406091332500.1767@pnote.perex-int.cz>
+References: <40C6F035.4000406@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69AC21C6
-	for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2004 13:10:37 +0200 (MEST)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-37.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BY0ya-0006Eg-0b
-	for alsa-devel@alsa-project.org; Wed, 09 Jun 2004 12:10:36 +0100
+Received: from outgoing.perex-int.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 747D01C4
+	for <alsa-devel@alsa-project.org>; Wed,  9 Jun 2004 13:31:48 +0200 (MEST)
+In-Reply-To: <40C6F035.4000406@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,52 +19,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-I have found out that the artsdsp /dev/oss redirector supports fopen and 
-friends.
-I looked at the artsdsp, (find it inside arts-1.2.2.tar.bz2)
-It uses a function called fopencookie()
+On Wed, 9 Jun 2004, James Courtier-Dutton wrote:
 
-Extract from /arts-1.2.2/artsc/stdioemu.c below.
+> I have found out that the artsdsp /dev/oss redirector supports fopen and
+> friends. I looked at the artsdsp, (find it inside arts-1.2.2.tar.bz2) It
+> uses a function called fopencookie()
 
-Would this be useable in the alsa-oss redirector?
+Does it work for sox and teamspeak?
 
-Cheers
-James
+						Jaroslav
 
-
-
-static FILE *fake_fopen(const char *path, const char *mode)
-{
-         cookie_io_functions_t fns = { fdc_read, fdc_write, fdc_seek, 
-fdc_clean };
-         struct fd_cookie *fdc =
-                 (struct fd_cookie *)malloc(sizeof(struct fd_cookie));
-         const char *mptr;
-         int open_mode = 0;
-         FILE *result = 0;
-
-         for(mptr = mode; *mptr; mptr++)
-         {
-                 if(*mptr == 'r') open_mode |= 1; /* 1 = read */
-                 if(*mptr == 'w') open_mode |= 2; /* 2 = write */
-                 if(*mptr == '+') open_mode |= 3; /* 3 = readwrite */
-                 if(*mptr == 'a') open_mode |= 2; /* append -> write */
-         }
-         if(open_mode == 1) fdc->fd = open(path,O_RDONLY,0666);
-         if(open_mode == 2) fdc->fd = open(path,O_WRONLY,0666);
-         if(open_mode == 3) fdc->fd = open(path,O_RDWR,0666);
-
-         if(open_mode && fdc->fd > 0)
-         {
-                 result = fopencookie (fdc,"w", fns);
-                 result->_fileno = fdc->fd;              /* ugly patchy 
-slimy kludgy hack */
-         }
-         return result;
-}
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
