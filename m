@@ -1,10 +1,12 @@
-From: Itay Ben-Yaacov <nib_maps@yahoo.com>
-Subject: apm corrupts intel8x0 on a dell inspiron 8200
-Date: Sun, 6 Apr 2003 16:28:07 -0700 (PDT)
+From: Andrei Boros <andrei@srr.ro>
+Subject: alsa-cvs linking error
+Date: Mon, 07 Apr 2003 10:03:51 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030406232807.57160.qmail@web21004.mail.yahoo.com>
+Message-ID: <3E9122D7.90B71AF7@srr.ro>
+References: <3E876E9C.1070905@cucumelo.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,45 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I wanted to see if latest updates to alsa-cvs tree will make my opti924
+work, so I updated.
 
-Hi,
+This is the configuration requested:
+./configure --with-cards=dummy,cs46xx,opti92x-ad1848 --with-oss=yes
+--with-sequencer=yes --with-isapnp=yes --with-debug=detect
+--enable-verbose-printk
 
-This is again concerning sound corruption after apm calls on a dell inspiron 8200 with an
-intel8x0.
-I thought at first that upgrading to bios A09 solved the problem, but it didn't, it just made it
-less frequent (instead of getting sound corrpution after every apm call, you get it after a
-few...)
-Still, playing long samples is impossible.
-When this happens, the corruption is not total: one can still identify what is being played, but
-it is distorted till the end of the sample.  I read somewhere a suggestion that this may be due to
-lost interrupts.
+This is the error I got during make
 
-On the other hand, some software plays music without getting it corrupted: maybe this depends on
-the precise encoding/rate/whatever of the sample in question, and the internal components involved
-in its processing?
-
-Unfortunately, I do not have much experience in debugging kernel (or modules), and don't know the
-first thing about sound drivers or alsa.  I got the sources, though, and would be glad to start
-playing with them if I knew where to start.
-For example, how can I find out the characteristics of the sample being played when a corruption
-occurs, how it is processed by the driver or the sound card, etc?  And what is this ac97 thing???
-(Yes, I know I must be sounding like a complete ignorant).
-Please, a few leads?
-
-Thanks,
-Itay.
-
-Just for the record, I am currently using linux 2.4.20 with alsa 0.9.2, but this happens with
-other kernel/alsa versions.  This does not happen though with the OSS driver.
+ld  -r -o snd-opl4-lib.o opl4_lib.o opl4_mixer.o opl4_proc.o
+opl4_mixer.o(.modinfo+0x0): multiple definition of
+`__module_kernel_version'
+opl4_lib.o(.modinfo+0x0): first defined here
+opl4_mixer.o(.modinfo+0x16): multiple definition of
+`__module_using_checksums'
+opl4_lib.o(.modinfo+0x16): first defined here
+opl4_proc.o(.modinfo+0x0): multiple definition of
+`__module_kernel_version'
+opl4_lib.o(.modinfo+0x0): first defined here
+opl4_proc.o(.modinfo+0x16): multiple definition of
+`__module_using_checksums'
+opl4_lib.o(.modinfo+0x16): first defined here
+make[2]: *** [snd-opl4-lib.o] Error 1
+make[2]: Leaving directory
+`/serve/install/alsa-cvs/alsa-driver/drivers/opl4'
+make[1]: *** [_modsubdir_opl4] Error 2
+make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-driver/drivers'
+make: *** [compile] Error 1
 
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Tax Center - File online, calculators, forms, and more
-http://tax.yahoo.com
+
+
+
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
