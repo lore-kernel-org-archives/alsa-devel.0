@@ -1,13 +1,13 @@
-From: thomas schorpp <t.schorpp@gmx.de>
-Subject: Re: CMI8768 patch, softvol mixer slider
-Date: Sat, 19 Feb 2005 19:40:40 +0100
-Message-ID: <42178828.2020002@gmx.de>
-References: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>	 <4216EE28.6040702@gmx.de> <1108799809.9005.3.camel@krustophenia.net>
-Reply-To: t.schorpp@gmx.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Sat, 19 Feb 2005 19:51:57 +0100
+Message-ID: <a32cdf662e014a79e8de1e9f85e2fa0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108799809.9005.3.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 303BB21F
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 19:51:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,55 +17,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Sat, 2005-02-19 at 08:43 +0100, thomas schorpp wrote:
-> 
->>hmm, if read the docs right its userspace.
->>
->>how about getting it in the kernel and calling it snd_x_csoftmix ?
-> 
-> 
-> Why?  It works fine in userspace.
 
-surely.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   848
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
+======================================================================
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              02-19-2005 19:51 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Description: 
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
->  The whole point of alsa-lib is to get
-> things like software volume control and mixing and sample rate
-> conversion that don't need to be in the kernel out of the kernel.
+======================================================================
 
-who decides on "need"?
+----------------------------------------------------------------------
+ tiwai - 02-18-05 18:55 
+----------------------------------------------------------------------
+I fixed the SPDIF output on CVS now.  Please try CVS version later.
 
-1. sw engineering reuseability:
+The default PCM output is also routed to SPDIF.  You don't have to specify
+hw:0,1 for normal PCM output.  Simply use "default" PCM like normal analog
+output, but turn on "IEC958 Playback Switch".
 
-would you provide a base class without a generalizable feature requiring 
-every subclass implementing it? wheres the need for specialization here?
+AC3 passthru seems still not working correctly on my test environment.
+(For AC3, you have to use hw:0,1 to access exclusively.)
+Will debug later.
 
-2. the linux audio developers:
+----------------------------------------------------------------------
+ 1g0R - 02-19-05 19:51 
+----------------------------------------------------------------------
+Thanks tiwai, i will try it.
 
-"guys, theres no pcm master to access with the alsa driver on some cards 
-on the mixers. everone of us must implement it now in our apps, what a 
-hell work."
+Have a nice day.
+Best regards:
+1g0R
 
-3. audio professionals and simple end user
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+======================================================================
 
-"guys, i heard therere some great apps like ardour and multi-channel 
-realtime audio available on linux at low cost. lets go and save much 
-costs, buy this great suse and have fun. ... eh? wheres the pcm slider i 
-have with windows gone? they cant even provide that? ... so the other 
-apps cant be much. lets boot windows again and forget this suse..."
 
-4. the linux kernel developers?
-
-> 
-> Lee
-> 
-> 
-
-tom
 
 
 -------------------------------------------------------
