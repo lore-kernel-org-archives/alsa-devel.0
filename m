@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: The ALSA Situation
-Date: Wed, 10 Nov 2004 11:57:12 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
-References: <200411100150.iAA1okCE029069@localhost.localdomain>
- <001e01c4c6ce$77672eb0$0a00000a@eugenia>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000392]: feature requests
+Date: Wed, 10 Nov 2004 12:07:03 +0100
+Message-ID: <41fe28feb29c1e43d93f7ff6147b91cc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <001e01c4c6ce$77672eb0$0a00000a@eugenia>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA4A4241
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 12:07:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +18,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eugenia Loli-Queru <eloli@eugenia.co.uk>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net, torvalds@osdl.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 9 Nov 2004, Eugenia Loli-Queru wrote:
 
-> 1. again with the mixing thing, browsers will stall and not load a flash 
-> webpage if another app uses the sound device. It's tragic to see firefox not 
-> loading www.macromedia.com for example, just because xmms is playing a 
-> song...
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=392> 
+======================================================================
+Reported By:                gblack
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   392
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.4.25
+======================================================================
+Date Submitted:             07-16-2004 09:07 CEST
+Last Modified:              11-10-2004 12:07 CET
+======================================================================
+Summary:                    feature requests
+Description: 
+I'm not sure if this is the right place to post this, but there are several
+features that my integrated audio has that don't seem to be supported by
+the alsa driver. My sound chip is the Sigmatel STAC9758 running under an
+intel chipset.
 
-You can disable this feature - look for nonblock_open in
-Documentation/sound/alsa/OSS-Emulation.txt . We follow posix by default,
-the original OSS API does not.
+1. When headphones are plugged into the headphone jack, the built in
+speakers don't turn off, which they do under that other OS.
 
-> 2. This: http://www.osnews.com/img/6443/audio.png Check the clean and 
-> logical OSS options and then check the endless alsa ones (my monitor was not 
-> wide enough to fit them all). Why things like that are not cleaned up? (it's 
-> not gnome's volume control fault btw, I asked the developer, he said it's 
-> Alsa's)
+2. I've done some research into being able to play several sounds
+simultaneously, and found that this can either be done in hardware on the
+soundcard, or in software. On my desktop (also gentoo), which has a
+soundblaster, I didn't need to configure anything special to get mixing,
+and on my laptop I did. From that, I think that there isn't support for
+hardware mixing in the intel8x0 driver, and I would like to request that
+it be added, please.
 
-We have API which won't be changed. It's only an abstraction level which
-is missing in alsa-lib. Actually, all mixer controls are automatically
-mapped from the driver to application which is not ideal for complex
-hardware. I'm working on layer which will solve this issue.
+3. I don't know if this should be done through alsa or not, but the output
+jacks on my laptop are supposed to be configurable to provide different
+functions, ie 5 channel surround, or stereo, mic, and headphones, etc. If
+this can be done through alsa or another program, please let me know.
 
-Things are not tragic as you've described.
+I'd like to try to help fix these problems, but I don't know much about
+sound cards, and even less about kernel drivers. If you could suggest a
+good starting point, that would also be appreciated.
 
-						Jaroslav
+A discussion about getting the sound to work, as well as other issues with
+this laptop, can be found at:
+http://www.linuxquestions.org/questions/history/145832
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Thanks!
+======================================================================
+
+----------------------------------------------------------------------
+ gnif - 11-10-04 05:08 
+----------------------------------------------------------------------
+ummmm, duh, you cant add mixing support to a chip in your pc, research your
+problem before posting that kind of crap. The soundblaster does hardware
+mixing, software mixing has to be configured by you, it is not for the
+driver to handle. Alsa has plenty of support for software mixing, you need
+to go and read the documentation.
+
+----------------------------------------------------------------------
+ tiwai - 11-10-04 12:07 
+----------------------------------------------------------------------
+1 is not implemented yet.  This is likely a hardware dependent (i.e. laptop
+model specific), but it should be doable.
+
+3 is already implemented.  You can change via the mixer interface.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-04 09:07 gblack         New Issue                                    
+07-16-04 09:07 gblack         Distribution              => Gentoo          
+07-16-04 09:07 gblack         Kernel Version            => 2.4.25          
+11-10-04 05:08 gnif           Note Added: 0002357                          
+11-10-04 12:07 tiwai          Note Added: 0002362                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
