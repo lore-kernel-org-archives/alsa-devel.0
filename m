@@ -1,11 +1,9 @@
-From: =?big5?B?IlRpZW4sICBDLkwuIC0gpdCp08KnIg==?= <cltien@cmedia.com.tw>
-Subject: CMI8768 patch
-Date: Fri, 18 Feb 2005 06:11:03 +0800
-Message-ID: <92C0412E07F63549B2A2F2345D3DB515F7D63F@cm-msg-02.cmedia.com.tw>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] emu10k1: remove an unnecessary printk
+Date: Thu, 17 Feb 2005 18:14:43 -0500
+Message-ID: <1108682083.15018.2.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----_=_NextPart_001_01C5153D.91F592F8"
-content-class: urn:content-classes:message
+Content-Type: multipart/mixed; boundary="=-WmTRJnnf2LBk+1qP6Gmp"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,135 +13,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------_=_NextPart_001_01C5153D.91F592F8
-Content-Type: text/plain;
-	charset="big5"
-Content-Transfer-Encoding: quoted-printable
+--=-WmTRJnnf2LBk+1qP6Gmp
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Hi,
+This patch removes an unnecessary printk accidentally left in the
+multichannel patch.
 
-I made a patch for CM8768, which has the same PCI ID but there are
-several HW diffecece, aas listed:
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-1. 8768 has no PCM volume control.
-2. The ADC of 8768 can only record in 44.1kHz or 48kHz.
-3. 8768 can support up to 8 channels.
+--=-WmTRJnnf2LBk+1qP6Gmp
+Content-Disposition: attachment; filename=voice.fix
+Content-Type: text/x-patch; name=voice.fix; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
 
-I made change for item 2 and 3, I want to use the softvol plugin but
-don't know how to. The driver just don't generate the PCM volume slider
- for now.
+Index: alsa-postv12/alsa-kernel/pci/emu10k1/voice.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/voice.c,v
+retrieving revision 1.6
+diff -u -r1.6 voice.c
+--- alsa-postv12/alsa-kernel/pci/emu10k1/voice.c	16 Feb 2005 10:25:36 -0000	1.6
++++ alsa-postv12/alsa-kernel/pci/emu10k1/voice.c	17 Feb 2005 22:55:23 -0000
+@@ -69,10 +69,8 @@
+ 		skip = 0;
+ 		for (k = 0; k < number; k++) {
+ 			voice = &emu->voices[(i+k) % NUM_G];
+-			if (voice->use) {
+-				printk("voice %d: use=1!\n", i+k);
++			if (voice->use)
+ 				skip = 1;
+-			}
+ 		}
+ 		if (!skip) {
+ 			// printk("allocated voice %d\n", i);
 
-The patch file is attached.
+--=-WmTRJnnf2LBk+1qP6Gmp--
 
-Sincerely,
-ChenLi Tien
-
-
-
-------_=_NextPart_001_01C5153D.91F592F8
-Content-Type: application/octet-stream;
-	name="cmipci.c.patch"
-Content-Transfer-Encoding: base64
-Content-Description: cmipci.c.patch
-Content-Disposition: attachment;
-	filename="cmipci.c.patch"
-
-LS0tIGFsc2EtZHJpdmVyLTEuMC44L2Fsc2Eta2VybmVsL3BjaS9jbWlwY2kuYwlNb24gSmFuICAz
-IDA2OjQ1OjMxIDIwMDUKKysrIGFsc2EtZHJpdmVyLTEuMC44LXVwZGF0ZS9hbHNhLWtlcm5lbC9w
-Y2kvY21pcGNpLmMJVGh1IEZlYiAxNyAxMjo0ODo1MyAyMDA1CkBAIC0xNTYsNiArMTU2LDggQEAK
-ICNkZWZpbmUgQ01fQ0hJUF9NQVNLMgkJMHhmZjAwMDAwMAogI2RlZmluZSBDTV9DSElQXzAzOQkJ
-MHgwNDAwMDAwMAogI2RlZmluZSBDTV9DSElQXzAzOV82Q0gJCTB4MDEwMDAwMDAKKyNkZWZpbmUg
-Q01fQ0hJUF8wNTUJCTB4MDgwMDAwMDAKKyNkZWZpbmUgQ01fQ0hJUF84NzY4CQkweDIwMDAwMDAw
-CiAjZGVmaW5lIENNX1RETUFfSU5UX0VOCQkweDAwMDQwMDAwCiAjZGVmaW5lIENNX0NIMV9JTlRf
-RU4JCTB4MDAwMjAwMDAKICNkZWZpbmUgQ01fQ0gwX0lOVF9FTgkJMHgwMDAxMDAwMApAQCAtMzI4
-LDYgKzMzMCwxMyBAQAogI2RlZmluZSBDTV9SRUdfQ0gwX0ZSQU1FMgkweDg0CiAjZGVmaW5lIENN
-X1JFR19DSDFfRlJBTUUxCTB4ODgJLyogMC0xNTogY291bnQgb2Ygc2FtcGxlcyBhdCBidXMgbWFz
-dGVyOyBidWZmZXIgc2l6ZSAqLwogI2RlZmluZSBDTV9SRUdfQ0gxX0ZSQU1FMgkweDhDCS8qIDE2
-LTMxOiBjb3VudCBvZiBzYW1wbGVzIGF0IGNvZGVjOyBmcmFnbWVudCBzaXplICovCisjZGVmaW5l
-IENNX1JFR19NSVNDX0NUUkxfODc2OAkweDkyCS8qIHJlZy4gbmFtZSB0aGUgc2FtZSBhcyAweDE4
-ICovCisjZGVmaW5lIENNX0NIQjNEOEMJCTB4MjAJLyogNy4xIGNoYW5uZWxzIHN1cHBvcnQgKi8K
-KyNkZWZpbmUgQ01fU1BEMzJGTVQJCTB4MTAJLyogU1BESUYvSU4gMzJrICovCisjZGVmaW5lIENN
-X0FEQzJTUERJRgkJMHgwOAkvKiBBREMgb3V0cHV0IHRvIFNQRElGL09VVCAqLworI2RlZmluZSBD
-TV9TSEFSRUFEQwkJMHgwNAkvKiBEQUMgaW4gQURDIGFzIENlbnRlci9MRkUgKi8KKyNkZWZpbmUg
-Q01fUkVBTFRDTVAJCTB4MDIJLyogbW9uaXRvciB0aGUgQ01QTC9DTVBSIG9mIEFEQyAqLworI2Rl
-ZmluZSBDTV9JTlZMUkNLCQkweDAxCS8qIGludmVydCBaVlBPUlQncyBMUkNLICovCiAKIC8qCiAg
-KiBzaXplIG9mIGkvbyByZWdpb24KQEAgLTY3NCw3ICs2ODMsNyBAQAogLyoKICAqLwogCi1zdGF0
-aWMgdW5zaWduZWQgaW50IGh3X2NoYW5uZWxzW10gPSB7MSwgMiwgNCwgNSwgNn07CitzdGF0aWMg
-dW5zaWduZWQgaW50IGh3X2NoYW5uZWxzW10gPSB7MSwgMiwgNCwgNSwgNiwgOH07CiBzdGF0aWMg
-c25kX3BjbV9od19jb25zdHJhaW50X2xpc3RfdCBod19jb25zdHJhaW50c19jaGFubmVsc180ID0g
-ewogCS5jb3VudCA9IDMsCiAJLmxpc3QgPSBod19jaGFubmVscywKQEAgLTY4NSw2ICs2OTQsMTEg
-QEAKIAkubGlzdCA9IGh3X2NoYW5uZWxzLAogCS5tYXNrID0gMCwKIH07CitzdGF0aWMgc25kX3Bj
-bV9od19jb25zdHJhaW50X2xpc3RfdCBod19jb25zdHJhaW50c19jaGFubmVsc184ID0geworCS5j
-b3VudCA9IDYsCisJLmxpc3QgPSBod19jaGFubmVscywKKwkubWFzayA9IDAsCit9OwogCiBzdGF0
-aWMgaW50IHNldF9kYWNfY2hhbm5lbHMoY21pcGNpX3QgKmNtLCBjbWlwY2lfcGNtX3QgKnJlYywg
-aW50IGNoYW5uZWxzKQogewpAQCAtNzA0LDEzICs3MTgsMjAgQEAKIAkJCXNuZF9jbWlwY2lfY2xl
-YXJfYml0KGNtLCBDTV9SRUdfQ0hGT1JNQVQsIENNX0NIQjNENUMpOwogCQkJc25kX2NtaXBjaV9z
-ZXRfYml0KGNtLCBDTV9SRUdfQ0hGT1JNQVQsIENNX0NIQjNEKTsKIAkJfQotCQlpZiAoY2hhbm5l
-bHMgPT0gNikgeworCQlpZiAoY2hhbm5lbHMgPj0gNikgewogCQkJc25kX2NtaXBjaV9zZXRfYml0
-KGNtLCBDTV9SRUdfTEVHQUNZX0NUUkwsIENNX0NIQjNENkMpOwogCQkJc25kX2NtaXBjaV9zZXRf
-Yml0KGNtLCBDTV9SRUdfTUlTQ19DVFJMLCBDTV9FTkNFTlRFUik7CiAJCX0gZWxzZSB7CiAJCQlz
-bmRfY21pcGNpX2NsZWFyX2JpdChjbSwgQ01fUkVHX0xFR0FDWV9DVFJMLCBDTV9DSEIzRDZDKTsK
-IAkJCXNuZF9jbWlwY2lfY2xlYXJfYml0KGNtLCBDTV9SRUdfTUlTQ19DVFJMLCBDTV9FTkNFTlRF
-Uik7CiAJCX0KKwkJaWYgKGNtLT5jaGlwX3ZlcnNpb24gPT0gNjgpIHsKKwkJCWlmIChjaGFubmVs
-cyA9PSA4KSB7CisJCQkJc25kX2NtaXBjaV9zZXRfYml0KGNtLCBDTV9SRUdfTUlTQ19DVFJMXzg3
-NjgsIENNX0NIQjNEOEMpOworCQkJfSBlbHNlIHsKKwkJCQlzbmRfY21pcGNpX2NsZWFyX2JpdChj
-bSwgQ01fUkVHX01JU0NfQ1RSTF84NzY4LCBDTV9DSEIzRDhDKTsKKwkJCX0KKwkJfQogCQlzcGlu
-X3VubG9ja19pcnEoJmNtLT5yZWdfbG9jayk7CiAKIAl9IGVsc2UgewpAQCAtMTUwNCw2ICsxNTI1
-LDcgQEAKIAlpZiAoKGVyciA9IG9wZW5fZGV2aWNlX2NoZWNrKGNtLCBDTV9PUEVOX1BMQVlCQUNL
-LCBzdWJzdHJlYW0pKSA8IDApCiAJCXJldHVybiBlcnI7CiAJcnVudGltZS0+aHcgPSBzbmRfY21p
-cGNpX3BsYXliYWNrOworCXJ1bnRpbWUtPmh3LmNoYW5uZWxzX21heCA9IGNtLT5tYXhfY2hhbm5l
-bHM7CiAJc25kX3BjbV9od19jb25zdHJhaW50X21pbm1heChydW50aW1lLCBTTkRSVl9QQ01fSFdf
-UEFSQU1fQlVGRkVSX1NJWkUsIDAsIDB4MTAwMDApOwogCWNtLT5kaWdfcGNtX3N0YXR1cyA9IGNt
-LT5kaWdfc3RhdHVzOwogCXJldHVybiAwOwpAQCAtMTUxOCw2ICsxNTQwLDEwIEBACiAJaWYgKChl
-cnIgPSBvcGVuX2RldmljZV9jaGVjayhjbSwgQ01fT1BFTl9DQVBUVVJFLCBzdWJzdHJlYW0pKSA8
-IDApCiAJCXJldHVybiBlcnI7CiAJcnVudGltZS0+aHcgPSBzbmRfY21pcGNpX2NhcHR1cmU7CisJ
-aWYgKGNtLT5jaGlwX3ZlcnNpb24gPT0gNjgpIHsJLy8gODc2OCBvbmx5IHN1cHBvcnRzIDQ0ay80
-OGsgcmVjb3JkaW5nCisJCXJ1bnRpbWUtPmh3LnJhdGVfbWluID0gNDEwMDA7CisJCXJ1bnRpbWUt
-Pmh3LnJhdGVzID0gU05EUlZfUENNX1JBVEVfNDQxMDAgfCBTTkRSVl9QQ01fUkFURV80ODAwMDsK
-Kwl9CiAJc25kX3BjbV9od19jb25zdHJhaW50X21pbm1heChydW50aW1lLCBTTkRSVl9QQ01fSFdf
-UEFSQU1fQlVGRkVSX1NJWkUsIDAsIDB4MTAwMDApOwogCXJldHVybiAwOwogfQpAQCAtMTUzNyw4
-ICsxNTYzLDEwIEBACiAJCQlydW50aW1lLT5ody5jaGFubmVsc19tYXggPSBjbS0+bWF4X2NoYW5u
-ZWxzOwogCQkJaWYgKGNtLT5tYXhfY2hhbm5lbHMgPT0gNCkKIAkJCQlzbmRfcGNtX2h3X2NvbnN0
-cmFpbnRfbGlzdChydW50aW1lLCAwLCBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsICZod19j
-b25zdHJhaW50c19jaGFubmVsc180KTsKLQkJCWVsc2UKKwkJCWVsc2UgaWYgKGNtLT5tYXhfY2hh
-bm5lbHMgPT0gNikKIAkJCQlzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbGlzdChydW50aW1lLCAwLCBT
-TkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsICZod19jb25zdHJhaW50c19jaGFubmVsc182KTsK
-KwkJCWVsc2UgaWYgKGNtLT5tYXhfY2hhbm5lbHMgPT0gOCkKKwkJCQlzbmRfcGNtX2h3X2NvbnN0
-cmFpbnRfbGlzdChydW50aW1lLCAwLCBTTkRSVl9QQ01fSFdfUEFSQU1fQ0hBTk5FTFMsICZod19j
-b25zdHJhaW50c19jaGFubmVsc184KTsKIAkJfQogCQlzbmRfcGNtX2h3X2NvbnN0cmFpbnRfbWlu
-bWF4KHJ1bnRpbWUsIFNORFJWX1BDTV9IV19QQVJBTV9CVUZGRVJfU0laRSwgMCwgMHgxMDAwMCk7
-CiAJfQpAQCAtMjM0Niw2ICsyMzc0LDExIEBACiAJc3Bpbl91bmxvY2tfaXJxKCZjbS0+cmVnX2xv
-Y2spOwogCiAJZm9yIChpZHggPSAwOyBpZHggPCBBUlJBWV9TSVpFKHNuZF9jbWlwY2lfbWl4ZXJz
-KTsgaWR4KyspIHsKKwkJaWYgKGNtLT5jaGlwX3ZlcnNpb24gPT0gNjgpIHsJLy8gODc2OCBoYXMg
-bm8gUENNIHZvbHVtZQorCQkJaWYgKCFzdHJjbXAoc25kX2NtaXBjaV9taXhlcnNbaWR4XS5uYW1l
-LAorCQkJCSJQQ00gUGxheWJhY2sgVm9sdW1lIikpCisJCQkJY29udGludWU7CisJCX0KIAkJaWYg
-KChlcnIgPSBzbmRfY3RsX2FkZChjYXJkLCBzbmRfY3RsX25ldzEoJnNuZF9jbWlwY2lfbWl4ZXJz
-W2lkeF0sIGNtKSkpIDwgMCkKIAkJCXJldHVybiBlcnI7CiAJfQpAQCAtMjQ5NiwyMSArMjUyOSwy
-OSBAQAogCQl9CiAJfSBlbHNlIHsKIAkJLyogY2hlY2sgcmVnIDBDaCwgYml0IDI2ICovCi0JCWlm
-IChkZXRlY3QgJiBDTV9DSElQXzAzOSkgeworCQlpZiAoZGV0ZWN0ICYgQ01fQ0hJUF84NzY4KSB7
-CisJCQljbS0+Y2hpcF92ZXJzaW9uID0gNjg7CisJCQljbS0+bWF4X2NoYW5uZWxzID0gODsKKwkJ
-CWNtLT5jYW5fYWMzX2h3ID0gMTsKKwkJCWNtLT5oYXNfZHVhbF9kYWMgPSAxOworCQkJY20tPmNh
-bl9tdWx0aV9jaCA9IDE7CisJCX0gZWxzZSBpZiAoZGV0ZWN0ICYgQ01fQ0hJUF8wNTUpIHsKKwkJ
-CWNtLT5jaGlwX3ZlcnNpb24gPSA1NTsKKwkJCWNtLT5tYXhfY2hhbm5lbHMgPSA2OworCQkJY20t
-PmNhbl9hYzNfaHcgPSAxOworCQkJY20tPmhhc19kdWFsX2RhYyA9IDE7CisJCQljbS0+Y2FuX211
-bHRpX2NoID0gMTsKKwkJfSBlbHNlIGlmIChkZXRlY3QgJiBDTV9DSElQXzAzOSkgewogCQkJY20t
-PmNoaXBfdmVyc2lvbiA9IDM5OwotCQkJaWYgKGRldGVjdCAmIENNX0NISVBfMDM5XzZDSCkKLQkJ
-CQljbS0+bWF4X2NoYW5uZWxzICA9IDY7CisJCQlpZiAoZGV0ZWN0ICYgQ01fQ0hJUF8wMzlfNkNI
-KSAvKiA0IG9yIDYgY2hhbm5lbHMgKi8KKwkJCQljbS0+bWF4X2NoYW5uZWxzID0gNjsKIAkJCWVs
-c2UKIAkJCQljbS0+bWF4X2NoYW5uZWxzID0gNDsKIAkJCWNtLT5jYW5fYWMzX2h3ID0gMTsKIAkJ
-CWNtLT5oYXNfZHVhbF9kYWMgPSAxOwogCQkJY20tPmNhbl9tdWx0aV9jaCA9IDE7CiAJCX0gZWxz
-ZSB7Ci0JCQljbS0+Y2hpcF92ZXJzaW9uID0gNTU7IC8qIDQgb3IgNiBjaGFubmVscyAqLwotCQkJ
-Y20tPm1heF9jaGFubmVscyAgPSA2OwotCQkJY20tPmNhbl9hYzNfaHcgPSAxOwotCQkJY20tPmhh
-c19kdWFsX2RhYyA9IDE7Ci0JCQljbS0+Y2FuX211bHRpX2NoID0gMTsKKwkJCXByaW50ayhLRVJO
-X0VSUiAiY2hpcCAleCB2ZXJzaW9uIG5vdCBzdXBwb3J0ZWRcbiIsIGRldGVjdCk7CiAJCX0KIAl9
-CiAK
-
-------_=_NextPart_001_01C5153D.91F592F8--
 
 
 -------------------------------------------------------
