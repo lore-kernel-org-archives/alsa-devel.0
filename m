@@ -1,12 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Fw: [Bug 76413] arts does not follow ALSA API
-Date: Tue, 9 Mar 2004 23:03:02 +0100
+From: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Subject: Re: Full support for Creamware Noah and SFP
+Date: Tue, 09 Mar 2004 22:58:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040309230302.2b40864a.mista.tapas@gmx.net>
+Message-ID: <1078869513.2430.28.camel@chief.local>
+References: <1078855426.11076.36.camel@zauberwald.zeitgeist>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1078855426.11076.36.camel@zauberwald.zeitgeist>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,51 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Willie Sippel <willie@froq.net>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Willie,
 
-Might be of interest..
+Willie Sippel wrote:
+> Hi.
+> 
+> As some of you may know, Creamware (http://www.creamware.de) is under
+> new management since 2004 - and they have changed their mind regarding
+> Linux support.
 
-Begin forwarded message:
+Fine.
 
-Date: 3 Mar 2004 12:13:15 -0000
-From: Allan Sandfeld <kde@carewolf.com>
-To: mista.tapas@gmx.net
-Subject: [Bug 76413] arts does not follow ALSA API 
+[snipped interesting information about the SFP]
 
+I'm a user of the Creamware Noah (Ex). With extensive help from Clemens
+Ladisch we've got the audio and the midi interface working with the
+current alsa-cvs. (driver snd-usb-audio)
 
-------- You are receiving this mail because: -------
-You are a voter for the bug, or are watching someone who is.
-      
-http://bugs.kde.org/show_bug.cgi?id=76413      
+I would really be amazed to have full Linux support for that device and
+I've some programming capabilities as well.
 
+But I'm not sure about, wether the NDA agrees in the basic alsa
+principles. What are the developers of alsa are thinking about that
+agreement?
 
+I'm working (for now only for my own requirements) on a midi based gui
+to control the different plugins. Without the possibilty to upload
+plugins so far. That's done by my one Windows machine. Ok, that doesn't
+happen that much. But it would be fine, to manage the CF-Card and other
+settings via the attached computer. 
 
+The architecture that I'm able to provide is x86.
 
-------- Additional Comments From kde carewolf com  2004-03-03 13:13
--------
-We would be happy to accept your patches. I've started to work on this
-bug, but I know neither ALSA nor much of aRts.
-
-Currently the ALSA-plugin in aRts only calls snd_pcm_poll_descriptors,
-and uses the first returned fd there for later use in select. If I
-understand you correctly we need to be able to handle multiple
-file-descriptors, and can't be garantied that they have the right
-direction?
-
-Now how do we tell which of the returned descriptors are writefds and
-which are readfds? The only solution I can think of right now is to
-checks the revents and hope all the writable ones are already in a
-POLLOUT state.
-
-I am also worried about the ALSA-documentation which states the fds
-returned by snd_pcm_poll_descriotors might be bogus.
-
-
-
+Regards, Hartmut
 -- 
-to sign or not to sign, that is the question
+Hartmut Geissbauer <nwgbh@swissonline.ch>
 
 
 
