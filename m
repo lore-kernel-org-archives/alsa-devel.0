@@ -1,13 +1,13 @@
-From: pdq808@t-online.de (Reiner Klenk)
-Subject: Re: Delta 410 status
-Date: Sun, 1 Dec 2002 22:34:02 +0100 (CET)
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: Re: Re: alsa-devel@lists.sourceforge.net
+Date: Mon, 2 Dec 2002 01:14:54 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0212012216320.1488-100000@gin.nowhere.de>
-References: <Pine.LNX.4.44.0212011741360.1314-100000@gin.nowhere.de>
+Message-ID: <Pine.LNX.4.44.0212020109070.1113-100000@ecabase.localdomain>
+References: <200211212056.33194.info.mz@gmx.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0212011741360.1314-100000@gin.nowhere.de>
+In-Reply-To: <200211212056.33194.info.mz@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +16,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: Mark Ziegler <info.mz@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 1 Dec 2002, Reiner Klenk wrote:
+Sorry for the late response..
 
-> Greetings,
-> 
-> I have been fiddling around with a Midiman Delta 410 over the weekend. I
-> get some sort of playback but is is severly clipped. I believe there is a
-> typo in ak4524.c in inits_ak4529[]. Register 0x00 should be initialized to
-> 0x0c for i2s mode according to the data sheet (need to set DIF1 as well as
-> DIF0). I corrected this but that didn't help. My suspicion is that the
-> envy24 chip is not talking to the ak4529 at all (i.e. the control path via
-> the envy24 gpio is not working) since I also can't set or read the Volume
-> Controls with envy24control or amixer, however, the mixer elements that 
-> control the envy24 chip directly (routing, digital mix, meter readout) are 
-> all OK.
-> 
+On Thu, 21 Nov 2002, Mark Ziegler wrote:
 
-It's working now :-) . I kept the init for register 0 as stated above.  
-However, the chip adress of the 4529 is 0 (CAD1=0, CAD0=0, both pins are
-pulled down to ground with a 10k resistor) unlike the hardwired adress of
-the previous chips (0x02). Also, since the 4529 has 12 registers we cannot
-addr &= 0x07; in snd_ice1712_ak4524_write .
+> thank you. You are right: my ide-dma is turned off. I only activated it in the 
+> SUSE setup, but I've never check if it is really switched on.
+> Unfortunately I can not turn on the dma:
+[...] 
+> linux:/home/woody # hdparm -m 8 -d 1 -u 1 -c 1 /dev/hda
+> /dev/hda:
+>  setting 32-bit IO_support flag to 1
+>  setting multcount to 8
+>  setting unmaskirq to 1 (on)
+>  setting using_dma to 1 (on)
+>  HDIO_SET_DMA failed: Operation not permitted
+>  multcount    =  8 (on)
+>  IO_support   =  1 (32-bit)
+>  unmaskirq    =  1 (on)
+>  using_dma    =  0 (off)
 
-The faders in envy24control are still stuck at 000, but it is
-nevertheless possible to unmute the channels by clicking somewhere close 
-to the bottom of the faders. 
+This is bad. You should check the linux-kernel archives and other 
+relevant mailing lists... hopefully some newer kernel provides dma-support 
+for your ide-chipset. This is critical for low-latency audio.
 
-Regards,
-Reiner
+> Anyway, I tried again ecasound:
+> woody@linux:~> ecasound  -z:db -z:intbuf -i alsa,ice_spdif -o test.wav
 
-PS: I need a new pair of glasses. Very difficult to contact the envy24 
-pins with my multimeter to verify the envy24 <=> 4529 wiring, hehe.
+Ok, this will give us quite a lot of info:
 
+> (audioio-alsa3) warning! capture overrun - samples lost!  Break was at least 
+> 7.60 ms long.
+> (audioio-alsa3) warning! capture overrun - samples lost!  Break was at least 
+> 215.45 ms long.
+> (audioio-alsa3) warning! capture overrun - samples lost!  Break was at least 
+> 0.03 ms long.
+
+This means that the xruns are caused by process scheduling latencies, not
+by disk i/o scheduling. The longs xruns are probably caused by disk i/o
+events that reserve the cpu for a long period of time (dma not used -> all
+transfers go through the cpu -> trouble). I'd suggest trying low-latency /
+pre-emption kernel patches, and/or finding a kernel with dma support for 
+your ide chipset.
+
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
