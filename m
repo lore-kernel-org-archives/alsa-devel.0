@@ -1,11 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: USB Audio problems
-Date: Sat, 22 Nov 2003 01:50:48 +0900
+From: Stefan Kristiansson <stefan@langante.mine.nu>
+Subject: 5.1 sound with cmi8738
+Date: Fri, 21 Nov 2003 23:29:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FBE4268.1090608@boosthardware.com>
-References: <3FBBC461.1020006@opersys.com>	<3FBC560B.7040104@opersys.com>	<s5hoev7ywfw.wl@alsa2.suse.de>	<3FBCD0D0.3020404@boosthardware.com> <s5hoev54uie.wl@alsa2.suse.de>
+Message-ID: <3FBE91AD.7010806@langante.mine.nu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,35 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: karim@opersys.com, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> 
-> 
-> no, it has nothing to do with the latency but oopsen / lock-up.
-> the problem exists only at stopping the streams.  if the everything is
-> ok, it's not a big issue.  but, when the device runs with small
-> latency, which may result in xrun often, has the higher probability to
-> hit this bug, because ALSA tries to stop the stream if xrun happens.
-> 
+I had some troubles getting 5.1 sound to work with my cmi8738 based card 
+and noticed that
+CMI8738-MC6.conf says:
 
-Thanks. There should be a disclaimer somewhere for this problem.
+CMI8738-MC6.pcm.surround51.0 "cards.CMI8738-MC6.pcm.front.0"
 
+this doesn't work (at least not with my card)
+and it makes sense, since it's the second dac that is handling the 4/6 
+channel  stuff.
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+this works:
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
+CMI8738-MC6.pcm.surround51.0 "cards.CMI8738-MC6.pcm.surround40.0"
 
-Goldie, 8 Nov, 2002
-The Scotsman
+/Stefan Kristiansson
 
 
 
