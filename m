@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000436]: How to have sound to Digital and Analog at the same time ?
-Date: Tue,  7 Sep 2004 16:38:00 +0200 (CEST)
+Subject: [ALSA - driver 0000368]: vxpocket.c missing from 1.0.5 releases
+Date: Tue,  7 Sep 2004 16:40:50 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907143800.C1526E01F@server.perex-int.cz>
+Message-ID: <20040907144050.68CEEE01F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C66828E
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:38:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D188128E
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 16:40:50 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,53 +22,40 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000436
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000368
 ======================================================================
-Reported By:                tho_x_tran
+Reported By:                benjif
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - tools
-Bug ID:                     436
-Category:                   ac3dec
+Project:                    ALSA - driver
+Bug ID:                     368
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Resolution:                 fixed
+Distribution:               
+Kernel Version:             
+Resolution:                 duplicate
+Duplicate:                  379
 ======================================================================
-Date Submitted:             08-12-2004 20:36 CEST
-Last Modified:              09-07-2004 16:38 CEST
+Date Submitted:             07-06-2004 18:40 CEST
+Last Modified:              09-07-2004 16:40 CEST
 ======================================================================
-Summary:                    How to have sound to Digital and Analog at the same time ?
+Summary:                    vxpocket.c missing from 1.0.5 releases
 Description: 
-I play Xine and Watch TV at the same time, and Xine audio can only go to
-Digital Opt out while TV sound goes to Analog front speakers only.  How
-can I make it go to both devices AT THE SAME TIME for all applications.
+The file pcmcia/vx/vxpocket.c is missing from 1.0.5rc1, 1.0.5, and 1.0.5a. 
+This causes make to fail when attempting to build the vxp440 driver. 
+1.0.4 builds just fine with the same ./configure line.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-01-2004 22:53 CEST 
-----------------------------------------------------------------------
-Basically it's a job of application.
-ALSA doesn't decode AC3 by itself.
-So, apps should send both AC3-analog and AC3-passthru signals to
-different PCM (if possible).  And, this is not always possible
-on many motherboards...
-
-----------------------------------------------------------------------
- perex - 09-07-2004 16:38 CEST 
-----------------------------------------------------------------------
-Application problem.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-12-04 20:36 tho_x_tran     New Bug                                      
-08-12-04 20:36 tho_x_tran     File Added: asound.conf                      
-09-01-04 22:53 tiwai          Bugnote Added: 0001678                       
-09-07-04 16:38 perex          Bugnote Added: 0001712                       
-09-07-04 16:38 perex          Resolution               open => fixed       
-09-07-04 16:38 perex          Status                   assigned => resolved
+07-06-04 18:40 benjif         New Bug                                      
+09-07-04 16:40 perex          duplicate_id             0 => 379            
+09-07-04 16:40 perex          Resolution               open => duplicate   
+09-07-04 16:40 perex          Status                   assigned => resolved
 ======================================================================
 
 
