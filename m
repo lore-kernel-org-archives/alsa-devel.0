@@ -1,14 +1,16 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: buffer/period constraint
-Date: Wed, 21 Jul 2004 03:52:38 -0400
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: Re: Tascam US-224/428 MMC?
+Date: Wed, 21 Jul 2004 10:37:41 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090396358.901.52.camel@mindpipe>
-References: <Pine.HPX.4.33n.0407210857590.27864-100000@studcom.urz.uni-halle.de>
+Message-ID: <1861.195.245.190.93.1090402661.squirrel@195.245.190.93>
+References: <33466.195.245.190.93.1089901175.squirrel@195.245.190.93>
+    <7444.195.245.190.93.1090312112.squirrel@195.245.190.93>
+    <20040720180512.GA527@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0407210857590.27864-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <20040720180512.GA527@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,47 +19,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: fmoraes@nc.rr.com, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net, annabellesgarden@yahoo.de, ws@seh.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-07-21 at 03:05, Clemens Ladisch wrote:
-> fmoraes@nc.rr.com wrote:
-> > [...]
-> > I've seen some cases where the buffer size is 1 or 2 frames bigger
-> > than n*period_size,
-> 
-> The hardware must generate interrupts at period boundaries.  In these
-> cases, the interrupts would happen at different positions in the
-> buffer, over time.
-> 
-> > so I am not sure how the driver is supposed to handle that.
-> 
-> The driver mustn't allow this unless the hardware can manage it.
-> 
-> > Second, is there an easy way to find the current position of the
-> > DMA being used?
-> 
-> In the good ol' times of the ISA bus, the DMA controller knew the
-> current position.  On the PCI bus, the DMA is controlled by the card
-> itself, so the card should have a register for the current position.
-> If there isn't such a register, you have to count interrupts (and hope
-> that none are lost).
-> 
+Martin, everybody,
 
-Look at snd_pcm_update_hw_ptr_interrupt() in
-alsa-kernel/core/pcm_lib.c.  This gets called by
-snd_pcm_period_elapsed(), which gets called by your interrupt handler. 
-If you are trying to reverse engineer the allowed period sizes, this is
-a good place to start - do something that you think should set the
-period to N and then check the hw_ptr value in that function against
-what you think it should be.
+>> I remember some time ago, while fighting to get some LEDs lighten up
+>> on my us224 from linux, it was then referred that us428control would
+>> possibly act as a MMC proxy or something like to it.
+>>
+>> Then I was wondering if I could get my us224 to act like a "real"
+>> control surface with some linux DAW (i.e. ardour :), being able to
+>> effectively use the transport buttons, the jog wheeel, etc.
+>>
+>> Are you guys having any luck with this issue? I'm assuming that us224
+>> is the lil'sister of us428, and I'm guessing that the command control
+>> protocol is quite the same. Am I right?
+>
+> comparing some log-files of usbsnoopy (or any similar program) should
+> solveit. But I, too, believe that 224/428 are nearly the same on a high
+> level.
+>
 
-If you have to count interrupts, it is pretty easy to figure out whether
-you are missing some.  It does happen, a lot.  I hacked the emu10k1
-driver to do this, the code is pretty ugly but it does the trick.
+My idea is all about having a modified us428control that would filter and
+translate the us224 control protocol into and from standard MMC. My doubts
+goes if this protocol is identical or at least compatible on the us428.
 
-Lee
+You may check it from the official manual:
+http://www.tascam.com/products/US-224/pdf/us224_manual.pdf, Appendix B.
+
+I've already confirmed that it's actually understood on current
+us428control from alsa-tools. My proposal goes to extending it to:
+
+- listen on alsa_seq input port, for MMC messages:
+all incoming MMC messages are filtered and translated to equivalent
+us224/us428 control protocol messages, which are handled internally as
+usual.
+
+- tap on alsa_seq output port, for us224/us428 control protocol messages:
+outgoing us224/us428 control protocol messages are mapped to equivalent
+MMC messages, whenever applicable, which are queued out as appropriate.
+
+>> So, all I want is about having my us224 to respond and react to MMC, and
+>> see some transport control LEDs blinking all the way up :)
+>>
+>> Are there any efforts already being thought in this direction? If it's
+>> only a question of man-power I wouldn't mind to step in and go for it.
+>> I'd rather love to hear from you in the first place, nevertheless.
+>
+> Well, my us122 has no controller stuff. I guess it's even impossible to
+> fix this with a more advanced firmware;-) But, go ahead and improve
+> things. Your code is always welcome, except Karsten has already solved
+> it;-)
+>
+
+That's the purpose of my postings, to ask if someone has already
+implemented something like this, willing to help or even step in and
+advance some ideas.
+
+I guess everybody's busy on holidays, I'll be too, in a few weeks :)
+
+Cheers,
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 
