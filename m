@@ -1,11 +1,17 @@
-From: Markus Gaugusch <markus@gaugusch.at>
-Subject: Compile ALSA into the kernel
-Date: Tue, 6 Jan 2004 20:48:51 +0100 (CET)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: DMIX and capture stream
+Date: Tue, 6 Jan 2004 22:38:28 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401062042310.1739@phoenix.kerstin.at>
+Message-ID: <20040106223828.39d2c233.mista.tapas@gmx.net>
+References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>
+	<200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com>
+	<s5h1xqe2rjp.wl@alsa2.suse.de>
+	<Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +23,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm using software suspend (swsusp.sf.net) and unfortunately the via82xx 
-has no power management hooks (I posted some days ago). After resume the 
-hardware is not-reinitialized and I can hear no sound. Therefore I thought 
-that I could compile the driver into the kernel, so it gets re-initialized 
-on resume.
+On Tue, 6 Jan 2004 11:05:52 -0600 (CST)
+David Lloyd <dmlloyd@tds.net> wrote:
 
-Unfortunately I couldn't find any info on how to add the alsa modules to
-the kernel. I tried with SuSE kernel sources, but ALSA is rather old there
-(0.9.0cvs) and the kernel is also old (2.4.21, but alsa patches are 
-against 2.4.18!). I'd like to patch against 2.4.23/24.
-If I can't patch the kernel easily, it would probably sufficient to link 
-the compiled object files with my kernel? But where shall I specify this 
-and will it work?
+> This patch works great - I'm now able to use TeamSpeak (which opens 
+> capture and playback through oss) at the same time as xmms.
+> 
 
-thanks!
-Markus
+Cool.. this sounds good. Great news! Thanks, Takashi.. Is there a chance
+of this getting into cvs? Is this actually a replacement for the
+pcm.dspX definition? or is it still possible to define it the old way?
+
+Flo
+
+P.S.: I myself didn't try it, cause my SC does hw mixing anyway..
 
 -- 
-__________________    /"\ 
-Markus Gaugusch       \ /    ASCII Ribbon Campaign
-markus(at)gaugusch.at  X     Against HTML Mail
-                      / \
+hrrrm! 
+
 
 
 -------------------------------------------------------
