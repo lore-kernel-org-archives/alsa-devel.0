@@ -1,16 +1,12 @@
-From: Mathieu Geli <geli@enseirb.fr>
-Subject: Re: snd-usb-audio and midisport1x1 little hack fixes
- hotplug pb
-Date: Sat, 13 Mar 2004 04:32:34 +0100
+From: Ove Kaaven <ovek@transgaming.com>
+Subject: the emu10k1 midi bug
+Date: Sat, 13 Mar 2004 18:09:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040313043234.49d783bb.geli@enseirb.fr>
-References: <20040311204610.3766f038.geli@enseirb.fr>
-	<Pine.HPX.4.33n.0403121305470.14417-100000@studcom.urz.uni-halle.de>
+Message-ID: <1079197776.962.683.camel@renegade>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0403121305470.14417-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,70 +15,42 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: clemens@ladisch.de, nwgbh@swissonline.ch
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I applied your second patch, and get this dmesg output:
+Now for something completely different. I've seen in your sound card
+info page for emu10k1 that there's a known bug:
 
-drivers/usb/core/usb.c: deregistering driver snd-usb-audio
-ALSA /home/mathieu/alsa-driver/usb/usbaudio.c:2944: snd_usb_audio_disconnect called, refcount = 1
-ALSA /home/mathieu/alsa-driver/usb/usbaudio.c:2944: snd_usb_audio_disconnect called, refcount = 0
-ALSA /home/mathieu/alsa-driver/alsa-kernel/usb/usbmidi.c:148: urb status -104
-ALSA /home/mathieu/alsa-driver/alsa-kernel/usb/usbmidi.c:134: usb_submit_urb: -32
+- wavetable drops notes sometimes. (a good test example wanted.)
 
-At this point the usb was down not responding anymore, like in the past.
+I've encountered this randomly sometimes, but I think I also have an
+example of the opposite - a note that is never turned off - that
+manifests every single time for me. So I'm wondering if anyone else can
+reproduce.
 
-what I did next, is put double each interesting lines printk, what I get is, that the rmmod of the driver was hanging on the midi ressources cleaning stuff.
-Hum, first reflex: I just comment out those 3 lines =) and guess what.. that works fine now. I tried to plug/unplug several times my mouse, the midisport, and everything
-works fine, so... I don't really know what was the bug's reason, but as long as that works I'm happy ;-)
-Probably Takashi Iwai who seems to has coded it should once have a look to understand the 'why' question.
+1. Install MusE 0.6.3. (pmidi or aplaymidi does not exhibit the problem,
+but MusE does; other sequencers are untested, though, as they all seem
+to be for KDE, which I won't use)
+2. Get the MIDI file at http://www.ping.uio.no/~ovehk/ABKEY_17.MID
+3. Start MusE as an ordinary user. Do not start as root. The problem is
+much more rarely seen if you let it have real-time privileges. For me it
+doesn't even get at /dev/rtc when I run as ordinary user.
+4. Load up the MIDI file. Hit the "Play" button.
+5. After playback completes, you should still hear a faint sound of an
+instrument which did not have note-off processed properly.
+6. Hit the "Panic" button (crossed-out speaker on the right of the
+toolbar) when you get tired of hearing it.
 
-Cheers,
+If it helps, I narrowed the note-on down to Track 6 (channel 10),
+apparently start of beat 4, but did not see anything out of the ordinary
+in the event list.
 
-Mathieu 
---
-
-
-Here is finally the modifications I applied:
-
---- alsa-kernel/usb/usbmidi.c	3 Mar 2004 11:35:15 -0000	1.24
-+++ alsa-kernel/usb/usbmidi.c	8 Mar 2004 09:34:05 -0000	1.25
-@@ -453,8 +453,16 @@
- 	usbmidi_out_port_t* port = (usbmidi_out_port_t*)substream->runtime->private_data;
-
- 	port->active = up;
--	if (up)
-+	if (up) {
-+		if (port->ep->umidi->chip->shutdown) {
-+			/* gobble up remaining bytes to prevent wait in
-+			 * snd_rawmidi_drain_output */
-+			while (!snd_rawmidi_transmit_empty(substream))
-+				snd_rawmidi_transmit_ack(substream, 1);
-+			return;
-+		}
- 		tasklet_hi_schedule(&port->ep->tasklet);
-+	}
- }
-
- static int snd_usbmidi_input_open(snd_rawmidi_substream_t* substream)
+I haven't seen such issues in other MIDI files when I run as an ordinary
+user, so it doesn't look much like a MusE bug to me, though I could be
+wrong. If it's ALSA's bug, then I hope this recipe helps efforts in
+debugging it.
 
 
---- alsa-kernel/usb/usbaudio.c	2004-03-11 21:00:25.000000000 +0100
-+++ alsa-kernel/usb/usbaudio.c	2004-03-13 04:01:06.000000000 +0100
-@@ -2939,9 +2939,9 @@
-                        snd_usb_stream_disconnect(p, &usb_audio_driver);
-                }
-                /* release the midi resources */
--               list_for_each(p, &chip->midi_list) {
--                       snd_usbmidi_disconnect(p, &usb_audio_driver);
--               }
-+               /* list_for_each(p, &chip->midi_list) { */
-+               /* snd_usbmidi_disconnect(p, &usb_audio_driver); */
-+               /* } */
-                up(&register_mutex);
-                snd_card_free_in_thread(card);
-        } else {
 
 
 -------------------------------------------------------
