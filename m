@@ -1,37 +1,46 @@
-From: Pekka Enberg <penberg@gmail.com>
-Subject: Re: Oops in 2.6.10-rc1
-Date: Mon, 8 Nov 2004 21:30:43 +0200
-Message-ID: <84144f0204110811307ef1be50@mail.gmail.com>
-References: <418D7959.4020206@g-house.de> <418E4705.5020001@g-house.de>
-	 <Pine.LNX.4.58.0411070831200.2223@ppc970.osdl.org>
-	 <20041107182155.M43317@g-house.de> <418EB3AA.8050203@g-house.de>
-	 <Pine.LNX.4.58.0411071653480.24286@ppc970.osdl.org>
-	 <418F6E33.8080808@g-house.de>
-	 <84144f0204110810444400761f@mail.gmail.com>
-	 <20041108190040.GC27386@kroah.com>
-	 <84144f02041108111816dc0b3a@mail.gmail.com>
-Reply-To: Pekka Enberg <penberg@gmail.com>
+From: David =?iso-8859-15?Q?G=F3mez?= <david@pleyades.net>
+Subject: Re: Error with snd_pc_sw_params in pcm.c
+Date: Mon, 8 Nov 2004 21:25:08 +0100
+Message-ID: <20041108202508.GA3365@fargo>
+References: <20041105215534.GA28584@fargo> <Pine.HPX.4.33n.0411081841120.16893-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <84144f02041108111816dc0b3a@mail.gmail.com>
-Sender: linux-sound-owner@vger.kernel.org
-To: Greg KH <greg@kroah.com>
-Cc: Christian Kujau <evil@g-house.de>, Kernel Mailing List <linux-kernel@vger.kernel.org>, Linus Torvalds <torvalds@osdl.org>, alsa-devel@lists.sourceforge.net, linux-sound@vger.kernel.org, penberg@cs.helsinki.fi
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0411081841120.16893-100000@studcom.urz.uni-halle.de>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 8 Nov 2004 11:00:40 -0800, Greg KH <greg@kroah.com> wrote:
-> > But 2.6.10-rc1-bk15 does have the problem?
+Hi Clemens ;),
+
+On Nov 08 at 06:44:39, Clemens Ladisch wrote:
+> David Gómez wrote:
+> > madplay-0.15.2b
 > >
-> > Trying to figure out where the issue is...
+> > ALSA lib pcm.c:826:(snd_pcm_sw_params) snd_pcm_sw_params:
+> > params->avail_min problem for start_threshold
+> 
+> This is a bug in madplay, it has tried to set inconsistent parameters.
 
-On Mon, 8 Nov 2004 21:18:09 +0200, Pekka Enberg <penberg@gmail.com> wrote: 
-> No, -bk14 is just the kernel I am running right now (I haven't tried
-> -bk15) and I haven't had the problem.
+I'll report it then to madplay authors, thanks for your help ;)
 
-Sorry for not being clear, any kernel after 2.6.10-rc1 oopses
-according to Christian which is why I haven't bothered to test
-anything else except -bk14.
+-- 
+David Gómez                                      Jabber ID: davidge@jabber.org
 
-                           Pekka
+
+-------------------------------------------------------
+This SF.Net email is sponsored by:
+Sybase ASE Linux Express Edition - download now for FREE
+LinuxWorld Reader's Choice Award Winner for best database on Linux.
+http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
