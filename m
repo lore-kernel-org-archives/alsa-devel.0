@@ -1,14 +1,15 @@
-From: Mark Knecht <markknecht@comcast.net>
+From: Sergey Vlasov <vsu@altlinux.ru>
 Subject: Re: VT8233/A/8235 Clock Problem
-Date: Mon, 08 Dec 2003 12:16:55 -0800
+Date: Tue, 9 Dec 2003 00:04:55 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1070914615.1921.24.camel@Wizard.knechthome.com>
-References: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de>
+Message-ID: <20031208210455.GF1802@sirius.home>
+References: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de> <1070914615.1921.24.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="KJY2Ze80yH5MUxol"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
+In-Reply-To: <1070914615.1921.24.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,71 +18,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: drclaw@dogsolitude.org, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2003-12-08 at 01:05, Clemens Ladisch wrote:
-> This is a module option; instead of changing this line, you are
-> supposed to put the following line into modules.conf:
+
+--KJY2Ze80yH5MUxol
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Dec 08, 2003 at 12:16:55PM -0800, Mark Knecht wrote:
+> On Mon, 2003-12-08 at 01:05, Clemens Ladisch wrote:
+> > This is a module option; instead of changing this line, you are
+> > supposed to put the following line into modules.conf:
+> > 
+> >   options snd-via82xx ac97_clock=44100
+> > 
+> > (or, if an options line for this module already exists, add it there)
+> > 
+> > 
+> > HTH
+> > Clemens
 > 
->   options snd-via82xx ac97_clock=44100
+> Clemens,
+>    Hi. This option did not fix my sound problems with the Via 8235. It
+> still sounds like it's resampling the sound. I hear artifacts all over
+> the place. 
 > 
-> (or, if an options line for this module already exists, add it there)
+>    I do think the option worked since the PCM stuff now says it's
+> running at 44100, but I wonder if there is another option for the spdif
+> side, or is there a bug in that the driver should be setting this at the
+> same time? I'm not using spdif on this motherboard, but possibly when it
+> runs at 48K that makes the hardware do something to the PCM data?
 > 
-> 
-> HTH
-> Clemens
+>    alsaplayer and xmms both sound equally bad though OSS. alsaplayer
+> says it's playing at 44100. alsaplayer through Jack and my HDSP 9652
+> sounds good.
 
-Clemens,
-   Hi. This option did not fix my sound problems with the Via 8235. It
-still sounds like it's resampling the sound. I hear artifacts all over
-the place. 
+Most likely you need the dxs_support option instead of ac97_clock.
 
-   I do think the option worked since the PCM stuff now says it's
-running at 44100, but I wonder if there is another option for the spdif
-side, or is there a bug in that the driver should be setting this at the
-same time? I'm not using spdif on this motherboard, but possibly when it
-runs at 48K that makes the hardware do something to the PCM data?
+With dxs_support=2 the sound should work fine, but the hardware mixing
+capability will be disabled.  Then you can try dxs_support=1 or
+dxs_support=4.
 
-   alsaplayer and xmms both sound equally bad though OSS. alsaplayer
-says it's playing at 44100. alsaplayer through Jack and my HDSP 9652
-sounds good.
+By default snd-via82xx uses dxs_support=3 (except for certain known
+motherboards), this makes only 48000 sampling rate available.  The
+ALSA library can perform resampling for ALSA apps, and the kernel OSS
+emulation layer can do resampling for OSS apps, but the quality is
+often not good.
 
-   Any other ideas about what to try?
+--KJY2Ze80yH5MUxol
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-- Mark
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
+iD8DBQE/1Od3W82GfkQfsqIRAiUTAJ9P1UGjrZtolQ6PV6y5Lw6r8N1k4wCfZI8h
+Y5gVgcs0B8/Y/ShmET3uQE8=
+=4LrY
+-----END PGP SIGNATURE-----
 
-Wizard root # !cat
-cat /proc/asound/card0/codec97#0/ac97#0-0
-0-0/0: Realtek ALC650 rev 2
-
-Capabilities     :
-DAC resolution   : 20-bit
-ADC resolution   : 18-bit
-3D enhancement   : Realtek 3D Stereo Enhancement
-
-Current setup
-Mic gain         : +0dB [+0dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : off
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
-Extended status  : SPCV LDAC SDAC CDAC SPDIF=res SPDIF VRA
-PCM front DAC    : 44100Hz
-PCM Surr DAC     : 44100Hz
-PCM LFE DAC      : 44100Hz
-PCM ADC          : 44100Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
-SPDIF In Status  : Not Locked
-Wizard root # 
-
-
+--KJY2Ze80yH5MUxol--
 
 
 -------------------------------------------------------
