@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000352]: cracks and blibs when playing Quake 1
-Date: Fri, 16 Jul 2004 12:50:57 +0200 (CEST)
+Subject: [ALSA - driver 0000208]: 1.0.4 snd-mpu401 fails
+Date: Fri, 16 Jul 2004 12:51:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105057.284C926005@server.perex-int.cz>
+Message-ID: <20040716105159.3488426008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6AE72255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:50:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68182255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:51:59 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,59 +22,88 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000352
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000208
 ======================================================================
-Reported By:                maps4711
-Assigned To:                perex
+Reported By:                hawklord
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     352
-Category:                   PCI - es1938
+Bug ID:                     208
+Category:                   GENERIC - mpu401
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.7
+Distribution:               
+Kernel Version:             2.4.20
 ======================================================================
-Date Submitted:             06-30-2004 13:34 CEST
-Last Modified:              07-16-2004 12:50 CEST
+Date Submitted:             04-14-2004 02:57 CEST
+Last Modified:              07-16-2004 12:51 CEST
 ======================================================================
-Summary:                    cracks and blibs when playing Quake 1
+Summary:                    1.0.4 snd-mpu401 fails
 Description: 
-Playing Quake1 (quakeforge-flavor with ALSA-driver) I hear cracks and
-blibs. Other apps (xine, mpg321) are fine. The OSS driver in 2.6.7
-produces no cracks (but reverses stereo BTW).
+Hi,
+I use snd-mpu401 with snd-via82xx
+in 1.0.4 snd-mpu401 fails to load - irq error
+in 1.0.3 snd-mpu401 loads fine
+builds / configuration identical
 ======================================================================
 
 ----------------------------------------------------------------------
- maps4711 - 07-03-2004 15:32 CEST 
+ tiwai - 04-16-2004 11:57 CEST 
 ----------------------------------------------------------------------
-I fixed it, i.e. it works for me.
-
-*No swapping of stereo channels
-*no cracks
-
-See the patch for details.
+snd-mpu401 on 1.0.4 includes the ACPI support.
+try to remove module parameters of snd-mpu401 (except for index).
 
 ----------------------------------------------------------------------
- perex - 07-04-2004 13:07 CEST 
+ hawklord - 04-16-2004 20:16 CEST 
 ----------------------------------------------------------------------
-Applied to CVS. Thanks.
+Makes no difference if I try to load without giving options.
+Not being certain if I need snd-pnp or not I tried with snd-pnp loaded and
+that also don't work.
+
+----------------------------------------------------------------------
+ perex - 04-19-2004 16:49 CEST 
+----------------------------------------------------------------------
+Could you try to add 'acpipnp=0' module option to snd-mpu401 module?
+
+Also send us the full error message including contents of /proc/interrupts
+file.
+Thanks.
+
+----------------------------------------------------------------------
+ hawklord - 04-19-2004 21:48 CEST 
+----------------------------------------------------------------------
+Many thanx everything is now working and all at the same time:-)
+
+insmod snd-mpu401 acpipnp=0 port=0x330 irq=7
+
+worked.  I tried just acpipnp=0 but that also failed.
+I guess you don't need the files but if you do tell me.
+
+Thanx much.  
+
+Chris
+
+----------------------------------------------------------------------
+ tiwai - 04-20-2004 12:29 CEST 
+----------------------------------------------------------------------
+ok closing now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-30-04 13:34 maps4711       New Bug                                      
-06-30-04 13:34 maps4711       Distribution              => Debian          
-06-30-04 13:34 maps4711       Kernel Version            => 2.6.7           
-07-03-04 15:32 maps4711       File Added: alsa-driver-2.6.7-es1938.diff                    
-07-03-04 15:32 maps4711       Bugnote Added: 0001378                       
-07-04-04 13:07 perex          Bugnote Added: 0001379                       
-07-04-04 13:07 perex          Assigned To               => perex           
-07-04-04 13:07 perex          Resolution               open => fixed       
-07-04-04 13:07 perex          Status                   new => resolved     
-07-16-04 12:50 tiwai          Status                   resolved => closed  
+04-14-04 02:57 hawklord       New Bug                                      
+04-14-04 02:57 hawklord       Kernel Version            => 2.4.20          
+04-16-04 11:57 tiwai          Bugnote Added: 0000833                       
+04-16-04 20:16 hawklord       Bugnote Added: 0000842                       
+04-19-04 16:49 perex          Bugnote Added: 0000860                       
+04-19-04 21:48 hawklord       Bugnote Added: 0000865                       
+04-20-04 12:29 tiwai          Bugnote Added: 0000872                       
+04-20-04 12:29 tiwai          Assigned To               => tiwai           
+04-20-04 12:29 tiwai          Resolution               open => fixed       
+04-20-04 12:29 tiwai          Status                   new => resolved     
+07-16-04 12:51 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
