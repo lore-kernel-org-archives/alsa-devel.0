@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000507]: Soundcard cannot play more than one thing at a time (but Stereo!)
-Date: Tue, 9 Nov 2004 16:33:45 +0100
-Message-ID: <91dcbdfc9bde75b4fe78a91e9126bc1c@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000515]: [PATCH] 15_arecord_doc_duration
+Date: Tue, 9 Nov 2004 16:36:16 +0100
+Message-ID: <d1e65fff7f6836a59a7319f2dc8ccf37@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5D64F2B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:33:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AC382B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:36:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=507> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=515> 
 ======================================================================
-Reported By:                DashX
-Assigned To:                perex
+Reported By:                jdthood
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   507
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - utils
+Issue ID:                   515
+Category:                   aplay/arecord
 Reproducibility:            always
-Severity:                   major
+Severity:                   text
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8-1.521
-Resolution:                 not an issue
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-19-2004 17:34 CEST
-Last Modified:              11-09-2004 16:33 CET
+Date Submitted:             09-21-2004 19:49 CEST
+Last Modified:              11-09-2004 16:36 CET
 ======================================================================
-Summary:                    Soundcard cannot play more than one thing at a time
-(but Stereo!)
+Summary:                    [PATCH] 15_arecord_doc_duration
 Description: 
-Sound Card:   SoundMAX Integrated Digital Audio
-HWBrowser says 82801DB (ICH4) AC'97 Audio Controller
-
-2x xmms with esound = works
-2x xmms with alsa = doesent work because of audio device in use.
+Patch for aplay.1 to make it describe what happens if the
+duration is set to zero
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-20-04 17:38 
+ jdthood - 09-23-04 19:51 
 ----------------------------------------------------------------------
-This hardware doesn't support multiple PCM streams (h/w mixing).
+Summary: Describe what happens if aplay's --duration is zero
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
+----------------------------------------------------------------------
+ tiwai - 09-24-04 11:52 
+----------------------------------------------------------------------
+Applied.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-19-04 17:34 DashX          New Issue                                    
-09-19-04 17:34 DashX          Distribution              => Fedora Core 2   
-09-19-04 17:34 DashX          Kernel Version            => 2.6.8-1.521     
-09-19-04 17:36 DashX          Issue Monitored: DashX                       
-09-20-04 17:38 tiwai          Status                   assigned => resolved
-09-20-04 17:38 tiwai          Resolution               open => not an issue
-09-20-04 17:38 tiwai          Note Added: 0001788                          
-11-09-04 16:33 tiwai          Status                   resolved => closed  
+09-21-04 19:49 jdthood        New Issue                                    
+09-21-04 19:49 jdthood        File Added: 15_arecord_doc_duration.dpatch        
+           
+09-23-04 19:51 jdthood        Note Added: 0001841                          
+09-24-04 11:52 tiwai          Status                   new => resolved     
+09-24-04 11:52 tiwai          Resolution               open => fixed       
+09-24-04 11:52 tiwai          Assigned To               => tiwai           
+09-24-04 11:52 tiwai          Note Added: 0001865                          
+11-09-04 16:36 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
