@@ -1,13 +1,13 @@
-From: "Erland Burt" <Mainchi@gabbertcompany.com>
-Subject: Re: Meddications 46:89
-Date: Sat, 26 Mar 2005 18:35:30 -0500
-Message-ID: <20050326233556.7989221A@alsa.alsa-project.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Sun, 27 Mar 2005 01:13:32 +0100
+Message-ID: <a745d5e362d2b0b024b66aec27f6a426@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_004A_01C5313B.4245AB68"
-Received: from gabbertcompany.com (wbar23.lax1-4.29.218.140.lax1.dsl-verizon.net [4.29.218.140])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7989221A
-	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 00:35:56 +0100 (MET)
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E355A21A
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 01:13:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,81 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Linnie Rea <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_004A_01C5313B.4245AB68
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+======================================================================
+Reported By:                sHINOBI
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   907
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
+======================================================================
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              03-27-2005 01:13 CET
+======================================================================
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
+Description: 
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+======================================================================
 
-Hello, 
+----------------------------------------------------------------------
+ sHINOBI - 03-23-05 19:40 
+----------------------------------------------------------------------
+Ah my mistake. ALSA-native apps seems to be OK. I've noticed these problems
+mainly in games (KIS, Majesty Nwn) and in Xine (when I choose OSS audio
+driver). XMMS seems to be working both in ALSA and OSS output plugin.
+Without the above mentioned asound.conf these problems are also in
+ALSA-native apps (in Xine it should be corrected by setting resampling to
+48 kHz).
+I hope I wrote it a little bit cleaner now :-).
 
-three hundred men, of whom two hundred were negroes - the whole o
-where it reached a climax of fury.  The French resisted stubbornl
-silence they stared with him across the water at that other ship.
-There came a chuckle from Governor Steed.  You hear, Colonel.
+----------------------------------------------------------------------
+ sHINOBI - 03-27-05 01:13 
+----------------------------------------------------------------------
+I'd like to update issue, with version 1.0.9rc2 the sound problems in games
+are  gone in tested games (KIS, NwN and Majesty seems to be OK), I'm
+observing sound problems only in plaympeg program for now. I'll try to
+test more applications.
+Thanks for your great work guys.
 
-D'ye hear that now?  And did ye ever hear the like?  But what di
-that human flotsam and jetsam of the battle, and riding through
-He amazes me, this man, said he, in his slow, languid voice tha
-Carlisle Bay under her false colours was a Spanish privateer, com
-gold-laced coat of dark-blue satin with a crimson sash, a foot wi
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
+02-13-05 11:38 sHINOBI        Note Added: 0003583                          
+03-02-05 13:22 Juha           Note Added: 0003770                          
+03-19-05 18:24 jcdutton       Note Added: 0004064                          
+03-22-05 22:14 tiwai          Note Added: 0004138                          
+03-22-05 22:56 sHINOBI        Note Added: 0004144                          
+03-23-05 12:56 tiwai          Note Added: 0004155                          
+03-23-05 19:40 sHINOBI        Note Added: 0004185                          
+03-27-05 01:13 sHINOBI        Note Added: 0004219                          
+======================================================================
 
-
-Have a nice day.
-------=_NextPart_000_004A_01C5313B.4245AB68
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dus-ascii">
-<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial>Hello,&nbsp;</FONT><A=20
-href=3D"http://www.jakp.osxx.com.drutheme.com/"><FONT =
-face=3DArial>MedicaationsByMail=20
-SHOP</FONT></A><FONT face=3DArial>&nbsp;Welcomes You.</FONT></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Do you need to spend less onn your meddications?=
-</FONT></DIV>
-<DIV><FONT face=3DArial size=3D4>You could savee up to 80% with us!=
-</FONT></DIV>
-<DIV>
-<TABLE cellSpacing=3D0 cellPadding=3D0 border=3D0>
-  <TBODY>
-  <TR vAlign=3Dbottom>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>VI</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>IN&nbsp;Vl</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>RA&nbsp;VA</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>UM</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-    <TD rowSpan=3D2><FONT face=3DArial size=3D4>AL</FONT></TD>
-    <TD><FONT face=3DArial size=3D4></FONT></TD>
-  <TR>
-    <TD><FONT face=3DArial size=3D4>COD</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>AG</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>Ll</FONT></TD>
-    <TD><FONT face=3DArial size=3D4>&nbsp;CI</FONT></TD>
-    <TD><FONT face=3DArial=20
-      =
-size=3D4>IS&nbsp;and&nbsp;many&nbsp;other&nbsp;in&nbsp;our&nbsp;ST0RE.</F=
-ONT></TD></TR></TBODY></TABLE></DIV>
-<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
-<DIV><FONT face=3DArial>Have a nice day.</FONT></DIV>
-<DIV><FONT face=3DArial>Try uss and you will not be disappointed.=
-</FONT></DIV></BODY></HTML>
-
-------=_NextPart_000_004A_01C5313B.4245AB68--
 
 
 
