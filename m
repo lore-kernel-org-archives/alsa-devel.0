@@ -1,15 +1,12 @@
-From: "Margo T. Dickey" <margodickey_st@ipacsbj.com.cn>
-Subject: =?ISO-8859-1?B?QWxsIHRoYXQgbWF0dGVycyBpcyByZXN1bHRz?=
-Date: Mon, 20 Sep 2004 02:17:44 +0000
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: All Capture devices missing from CVS alsamixer?
+Date: Mon, 20 Sep 2004 09:03:36 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <c2f801c49eb8$eeae98b7$3da0ef07@arruydct>
+Message-ID: <20040920080336.42863.qmail@web52905.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/html
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from city-adm.lviv.ua (S0106000ae6c600d1.no.shawcable.net [70.66.25.231])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2E6E1236
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 04:26:50 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,24 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<body>
-<center><a href=3D"http://QDYOP.CKJBVMCB.clever45.biz/?wid=3D300006"><img=
- src=3D"http://BQNNQ.EQV.clever45.biz/ads/6.jpg" border=3D0></a></center>
-<br>
-<br><br><br><br><br><br><br><br><br>
-VBJSH. FBADRLDTWCA. KOXXH.. 9pGdsc22C7 MPQEQVCXJFAJO. z3wjw2losr. vkk0m81=
-7xz. rp8j7cwz7n. i1i0b81emf.4htzzn1rzq. iijoqmlwff.51nvdq39bl. kohier1jln=
-. 0auzlz39sc. yav87a3g2m. fdil2oruxf. m987h21bs3. w12n2k23ny. gxczke16rh.=
- gyjq893d8g. 1ktz843ka0.
-<a href=3D"http://CTHSSDCNOG.clever45.biz/nomycar/">TDEOTMHPSBHWBJXIR out=
-.</a>
-</body>
-</html>
+Hi,
 
+As the subject line says, I have noticed that all the
+"PCM Capture", "MIC Capture", "AC97 Capture" etc
+devices have vanished from my alsamixer application. I
+am using the current CVS alsa-driver, alsa-lib and
+alsa-utils, and have checked on both a SB-Live! and a
+SB-Audigy2 card.
+
+The biggest problem this caused me was that it became
+extremely difficult to resolve a microphone feedback
+problem that I was having in GnomeMeeting, especially
+since it was being caused by the "PCM Capture"
+setting.
+
+Is this anything to do with the alsa-lib being
+1.0.7-rc1 but the alsa-utils still being 1.0.6?
+
+Thanks for any insights here,
+Cheers,
+Chris
+
+
+
+	
+	
+		
+___________________________________________________________ALL-NEW Yahoo! Messenger - all new features - even more fun!  http://uk.messenger.yahoo.com
 
 
 -------------------------------------------------------
