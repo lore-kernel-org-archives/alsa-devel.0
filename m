@@ -1,15 +1,12 @@
-From: Uhn-Soon Washington <fletcher@avenew.com>
-Subject: You've heard about these pills on TV
-Date: Sun, 14 Nov 2004 18:20:14 +0000
-Message-ID: <f65301c4ca76$ad70e9e8$2fd85c62@avenew.com>
+From: Pete Zaitcev <zaitcev@yahoo.com>
+Subject: Re: snd_pcm_writei is stuck with EPIPE
+Date: Sun, 14 Nov 2004 11:06:18 -0800 (PST)
+Message-ID: <20041114190618.86791.qmail@web60401.mail.yahoo.com>
+References: <419641AA.5010209@cubic.org>
 Mime-Version: 1.0
-Content-Type: multipart/related;
-    type="multipart/alternative";
-    boundary="----=_NextPart_000_0000_5C1FB76E.381FA9D5"
+Content-Type: multipart/mixed; boundary="0-1819361140-1100459178=:84928"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 82-169-204-133-mx.xdsl.tiscali.nl (82-169-204-133-mx.xdsl.tiscali.nl [82.169.204.133])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B3B861F3
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2004 19:29:08 +0100 (MET)
+In-Reply-To: <419641AA.5010209@cubic.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,344 +16,471 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dirk Jagdmann <doj@cubic.org>
+Cc: alsa-devel@lists.sourceforge.net, mh@mpg123.de, perex@suse.cz, zaitcev@yahoo.com
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+--0-1819361140-1100459178=:84928
+Content-Type: text/plain; charset=us-ascii
+Content-Id: 
+Content-Disposition: inline
 
-------=_NextPart_000_0000_5C1FB76E.381FA9D5
-Content-Type: multipart/alternative;
-    boundary="----=_NextPart_001_0001_F0CD592A.652896E8"
+It looks I found it. The trick is to call snd_pcm_prepare when an underflow
+is reported. Working patch is attached in case Michael is interested.
+Also, there's an old patch at alsa-project.org which supports ALSA 0.5 API
+and is integrated into mpg123-0.59r. Maybe Jaroslav would add this there.
 
+The error code is documented in the Doxygen docs, but nothing was said
+that the error is persistent and has to be reset, and how to reset it.
+Probably worth fixing as well.
 
-------=_NextPart_001_0001_F0CD592A.652896E8
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
-
-http://abcdfjklmei.bestforyou.biz/?ghxstuyabcdfjklmzctei
-http://adgcimbfjl.bestforher.biz/?ehkbfjlxstuyadgzctcim
-http://hlcefadgijkm.bestforhim.info/?badgijkmxstuyhlzctcef
-http://abcdegfhi.waytobehealthy.info/?jklmfhixstuyabcdzcteg
-http://afdghlcem.behealthynow.info/?bijkcemxstuyafzctdghl
-http://abefhjldc.prettylook.info/?gikmcxstuyabefhjlzctd
-http://hlcgiabdj.greatboy.info/?efkmabdjxstuyhlzctcgi
+-- Pete
 
 
-------=_NextPart_001_0001_F0CD592A.652896E8
-Content-Type: text/html; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+		
+__________________________________ 
+Do you Yahoo!? 
+Check out the new Yahoo! Front Page. 
+www.yahoo.com 
+ 
 
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-<body>
-Nice day Asad,
-<br><br>
-<a href="http://bhijmcdlaf.magic-stuff.info/?egkafxstuybhijmzctcdl">
-<img src="cid:djvxfsgu_sidltaya_jfovoofs" border="0"></a>
-<br><br>
-salut,<br>
-Octavius Frazier
-<br><br>
-<a href="http://aclmbdfhijke.any.of.listed.domains/?gexyaclmzbdfhijk">not interested</a>
-</body>
-</html>
+--0-1819361140-1100459178=:84928
+Content-Type: text/x-patch; name="mpg123-0.59r-p3.diff"
+Content-Description: mpg123-0.59r-p3.diff
+Content-Disposition: inline; filename="mpg123-0.59r-p3.diff"
 
+Support of ALSA 0.9 API shipping in Fedora Core 3.
 
-------=_NextPart_001_0001_F0CD592A.652896E8--
+diff -upr mpg123-0.59r/audio_alsa.c mpg123-0.59r-p3/audio_alsa.c
+--- mpg123-0.59r/audio_alsa.c	1999-05-28 03:25:50.000000000 -0700
++++ mpg123-0.59r-p3/audio_alsa.c	2004-11-14 10:56:10.135657333 -0800
+@@ -4,9 +4,10 @@
+  *  Code by Anders Semb Hermansen <ahermans@vf.telia.no>
+  *  Cleanups by Jaroslav Kysela <perex@jcu.cz>
+  *              Ville Syrjala <syrjala@sci.fi>
++ *  ALSA 0.9.0 API by Pete Zaitcev <zaitcev@yahoo.com>
+  *
+- *  You can use -a <soundcard #>:<device #>...
+- *  For example: mpg123 -a 1:0 aaa.mpg
++ *  You can use -a <soundcard name>:<device #>[,<subdevice #>]...
++ *  For example: mpg123 -a hw:0,0 aaa.mpg
+  *               mpg123 -a guspnp:1 aaa.mpg
+  *
+  * This file comes under GPL license. 
+@@ -16,97 +17,157 @@
+ 
+ #include <stdlib.h>
+ #include <ctype.h>
+-#include <sys/asoundlib.h>
++#include <alsa/asoundlib.h>
+ 
+-#ifdef SND_LITTLE_ENDIAN
+-#define SND_PCM_SFMT_S16_NE SND_PCM_SFMT_S16_LE
+-#define SND_PCM_SFMT_U16_NE SND_PCM_SFMT_U16_LE
+-#define SND_PCM_FMT_S16_NE SND_PCM_FMT_S16_LE
+-#define SND_PCM_FMT_U16_NE SND_PCM_FMT_U16_LE
+-#else
+-#define SND_PCM_SFMT_S16_NE SND_PCM_SFMT_S16_BE
+-#define SND_PCM_SFMT_U16_NE SND_PCM_SFMT_U16_BE
+-#define SND_PCM_FMT_S16_NE SND_PCM_FMT_S16_BE
+-#define SND_PCM_FMT_U16_NE SND_PCM_FMT_U16_BE
+-#endif
++static int audio_set_playback_params(struct audio_info_struct *ai);
+ 
+ int audio_open(struct audio_info_struct *ai)
+ {
+ 	int err;
+-	int card=0,device=0;
+-	char scard[128], sdevice[128];
++	char *device;
+ 
+ 	if(!ai)
+ 		return -1;
+ 	if(ai->device) {	/* parse ALSA device name */
+-		if(strchr(ai->device,':')) {	/* card with device */
+-			strncpy(scard, ai->device, sizeof(scard)-1);
+-			scard[sizeof(scard)-1] = '\0';
+-			if (strchr(scard,':')) *strchr(scard,':') = '\0';
+-			card = snd_card_name(scard);
+-			if (card < 0) {
+-				fprintf(stderr, "wrong soundcard number: %s\n", scard);
+-				exit(1);
+-			}
+-			strncpy(sdevice, strchr(ai->device, ':') + 1, sizeof(sdevice)-1);
+-		} else {
+-			strncpy(sdevice, ai->device, sizeof(sdevice)-1);
+-		}
+-		sdevice[sizeof(sdevice)-1] = '\0';
+-		device = atoi(sdevice);
+-		if (!isdigit(sdevice[0]) || device < 0 || device > 31) {
+-			fprintf(stderr, "wrong device number: %s\n", sdevice);
+-			exit(1);
+-		}
++		device = ai->device;
++	} else {
++		device = "hw:0,0";
+ 	}
+ 
+-	if((err=snd_pcm_open(&ai->handle, card, device, SND_PCM_OPEN_PLAYBACK)) < 0 )
++	if ((err = snd_pcm_open(&ai->handle, device, SND_PCM_STREAM_PLAYBACK, 0)) < 0)
+ 	{
+-		fprintf(stderr, "open failed: %s\n", snd_strerror(err));
++		fprintf(stderr, "open failed for %s: %s\n", device, snd_strerror(err));
++		/*
++		 * An exit is pretty disgusting, for a library.
++		 * We are trying to prevent perror() in mpg123 from
++		 * using a bogus errno.
++		 */
+ 		exit(1);
+ 	}
+ 
+-	if(audio_reset_parameters(ai) < 0)
+-	{
+-		audio_close(ai);
++	if ((err = snd_pcm_hw_params_malloc(&ai->params)) < 0) {
++		fprintf(stderr, "params malloc failed: %s\n", snd_strerror(err));
++		snd_pcm_close(ai->handle);
+ 		return -1;
+ 	}
+ 
++	audio_set_playback_params(ai);	/* Probably not really needed. */
+ 	return 0;
+ }
+ 
+-static void audio_set_playback_params(struct audio_info_struct *ai)
++/*
++ * ALSA's setting model is a phantasmagoric nightmare. It has no notion of a
++ * current setting, but only a notion of a current set of settings. The only way
++ * to set rate and format is to start with a set which includes all settings,
++ * then narrow it down to the settings you need.
++ */
++static int audio_set_playback_params(struct audio_info_struct *ai)
+ {
++	snd_pcm_hw_params_t *pp = ai->params;
+ 	int err;
+-	snd_pcm_playback_info_t pi;
+-	snd_pcm_playback_params_t pp;
++	snd_pcm_format_t format;
++	unsigned int buffer_time;
++
++	/*
++	 * First, obtain the complete set.
++	 */
++	if ((err = snd_pcm_hw_params_any(ai->handle, pp)) < 0) {
++		fprintf(stderr, "snd_pcm_hw_params_any failed: %s\n",
++		    snd_strerror(err));
++		return -1;
++	}
+ 
+-	if((err=snd_pcm_playback_info(ai->handle, &pi)) < 0 )
++	/*
++	 * Narrorow access (not settable)
++	 */
++	err = snd_pcm_hw_params_set_access(ai->handle, pp, SND_PCM_ACCESS_RW_INTERLEAVED);
++	if (err < 0) {
++		fprintf(stderr, "snd_pcm_hw_params_set_access failed: %s\n",
++		    snd_strerror(err));
++		return -1;
++	}
++
++	/*
++	 * Narrow the set with mpg123 settables: channels, format, rate.
++	 */
++	if (ai->channels >= 1) {
++		err = snd_pcm_hw_params_set_channels(ai->handle, pp, ai->channels);
++		if (err < 0) {
++			fprintf(stderr,
++			    "snd_pcm_hw_params_set_channels failed: %s\n",
++			    snd_strerror(err));
++			return -1;
++		}
++	}
++
++	switch(ai->format)
+ 	{
+-		fprintf(stderr, "playback info failed: %s\n", snd_strerror(err));
+-		return;	/* not fatal error */
++	case AUDIO_FORMAT_SIGNED_16:
++	default:
++		format = SND_PCM_FORMAT_S16;
++		break;
++	case AUDIO_FORMAT_UNSIGNED_8:
++		format = SND_PCM_FORMAT_U8;
++		break;
++	case AUDIO_FORMAT_SIGNED_8:
++		format = SND_PCM_FORMAT_S8;
++		break;
++	case AUDIO_FORMAT_ULAW_8:
++		format = SND_PCM_FORMAT_MU_LAW;
++		break;
++	case AUDIO_FORMAT_ALAW_8:
++		format = SND_PCM_FORMAT_A_LAW;
++		break;
++	case AUDIO_FORMAT_UNSIGNED_16:
++		format = SND_PCM_FORMAT_U16;
++		break;
++	}
++	err = snd_pcm_hw_params_set_format(ai->handle, pp, format);
++	if (err < 0) {
++		fprintf(stderr,
++		    "snd_pcm_hw_params_set_format failed: %s\n",
++		    snd_strerror(err));
++		return -1;
+ 	}
+ 
+-	bzero(&pp, sizeof(pp));
+-	pp.fragment_size = pi.buffer_size/4;
+-	if (pp.fragment_size > pi.max_fragment_size) pp.fragment_size = pi.max_fragment_size;
+-	if (pp.fragment_size < pi.min_fragment_size) pp.fragment_size = pi.min_fragment_size;
+-	pp.fragments_max = -1;
+-	pp.fragments_room = 1;
++	if (ai->rate >= 0) {
++		err = snd_pcm_hw_params_set_rate(ai->handle, pp, ai->rate, 0);
++		if (err < 0) {
++			fprintf(stderr,
++			    "snd_pcm_hw_params_set_rate failed: %s\n",
++			    snd_strerror(err));
++			return -1;
++		}
++	}
+ 
+-	if((err=snd_pcm_playback_params(ai->handle, &pp)) < 0 )
++	/*
++	 * Default in ALSA is way too interactive, skips like crazy.
++	 */
++	buffer_time = 500000;	/* Half second */
++	if ((err = snd_pcm_hw_params_set_buffer_time_near(ai->handle, pp,
++	    &buffer_time, 0)) < 0)
+ 	{
+-		fprintf(stderr, "playback params failed: %s\n", snd_strerror(err));
+-		return; /* not fatal error */
++		fprintf(stderr,
++		    "snd_pcm_hw_params_set_buffer_time_near failed: %s\n",
++		    snd_strerror(err));
+ 	}
++
++	/*
++	 * Finally, commit settings to the hardware.
++	 */
++	if ((err = snd_pcm_hw_params(ai->handle, pp)) < 0) {
++		fprintf(stderr, "snd_pcm_hw_params failed: %s\n", snd_strerror(err));
++		/* Not fatal for partial settings at initialization */
++		return 0;
++	}
++
++	return 0;
+ }
+ 
+ int audio_reset_parameters(struct audio_info_struct *ai)
+ {
+-	audio_set_format(ai);
+-	audio_set_channels(ai);
+-	audio_set_rate(ai);
+ 
++	audio_set_playback_params(ai);
+ 	return 0;
+ }
+ 
+@@ -117,81 +178,33 @@ int audio_rate_best_match(struct audio_i
+ 
+ int audio_set_rate(struct audio_info_struct *ai)
+ {
+-	int ret;
+ 
+ 	if(!ai || ai->rate < 0)
+ 		return -1;
+-
+-	ai->alsa_format.rate=ai->rate;
+-
+-	if((ret=snd_pcm_playback_format(ai->handle, &ai->alsa_format)) < 0 )
+-		return -1;
+-
+-	audio_set_playback_params(ai);
+-
+-	return 0;
++	return audio_set_playback_params(ai);
+ }
+ 
+ int audio_set_channels(struct audio_info_struct *ai)
+ {
+-	int ret;
+ 
+-	if(ai->alsa_format.channels < 0)
++	if(ai->channels < 0)
+ 		return 0;
+-
+-	ai->alsa_format.channels = ai->channels;
+-
+-	if((ret=snd_pcm_playback_format(ai->handle, &ai->alsa_format)) < 0 )
+-		return -1;
+-
+-	audio_set_playback_params(ai);
+-
+-	return 0;
++	return audio_set_playback_params(ai);
+ }
+ 
+ int audio_set_format(struct audio_info_struct *ai)
+ {
+-	int ret;
+ 
+ 	if(ai->format == -1)
+ 		return 0;
+-
+-	switch(ai->format)
+-	{
+-		case AUDIO_FORMAT_SIGNED_16:
+-		default:
+-			ai->alsa_format.format=SND_PCM_SFMT_S16_NE;
+-			break;
+-		case AUDIO_FORMAT_UNSIGNED_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_U8;
+-			break;
+-		case AUDIO_FORMAT_SIGNED_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_S8;
+-			break;
+-		case AUDIO_FORMAT_ULAW_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_MU_LAW;
+-			break;
+-		case AUDIO_FORMAT_ALAW_8:
+-			ai->alsa_format.format=SND_PCM_SFMT_A_LAW;
+-			break;
+-		case AUDIO_FORMAT_UNSIGNED_16:
+-			ai->alsa_format.format=SND_PCM_SFMT_U16_NE;
+-			break;
+-	}
+-
+-	if((ret=snd_pcm_playback_format(ai->handle, &ai->alsa_format)) < 0 )
+-		return -1;
+-
+-	audio_set_playback_params(ai);
+-
+-	return 0;
++	return audio_set_playback_params(ai);
+ }
+ 
+ int audio_get_formats(struct audio_info_struct *ai)
+ {
+-	int i, err;
++	snd_pcm_format_mask_t *mask;
++	int i;
+ 	int fmt = -1;
+-	snd_pcm_playback_info_t pi;
+ 
+ 	static int fmts[] = {
+ 		AUDIO_FORMAT_SIGNED_16, AUDIO_FORMAT_UNSIGNED_16,
+@@ -199,19 +212,17 @@ int audio_get_formats(struct audio_info_
+ 		AUDIO_FORMAT_ULAW_8, AUDIO_FORMAT_ALAW_8
+ 	};
+ 	static int afmts[] = {
+-		SND_PCM_FMT_S16_NE, SND_PCM_FMT_U16_NE,
+-		SND_PCM_FMT_U8, SND_PCM_FMT_S8,
+-		SND_PCM_FMT_MU_LAW, SND_PCM_FMT_A_LAW
++		SND_PCM_FORMAT_S16, SND_PCM_FORMAT_U16,
++		SND_PCM_FORMAT_U8, SND_PCM_FORMAT_S8,
++		SND_PCM_FORMAT_MU_LAW, SND_PCM_FORMAT_A_LAW
+ 	};
+ 
+-	if((err=snd_pcm_playback_info(ai->handle, &pi)) < 0 )
+-	{
+-		fprintf(stderr, "playback info failed: %s\n", snd_strerror(err));
+-		return -1;
+-	}
++	snd_pcm_format_mask_alloca(&mask);
+ 
++	snd_pcm_hw_params_any(ai->handle, ai->params);
++	snd_pcm_hw_params_get_format_mask(ai->params, mask);
+ 	for (i = 0; i < 6; i++) {
+-		if (pi.formats & afmts[i]) {
++		if (snd_pcm_format_mask_test(mask, afmts[i])) {
+ 			if (fmt == -1)
+ 				fmt = 0;
+ 			fmt |= fmts[i];
+@@ -223,9 +234,32 @@ int audio_get_formats(struct audio_info_
+ 
+ int audio_play_samples(struct audio_info_struct *ai,unsigned char *buf,int len)
+ {
+-	ssize_t ret;
++	int ret, err;
++	unsigned int factor;
+ 
+-	ret=snd_pcm_write(ai->handle, buf, len);
++	factor = 0;
++	if (ai->channels != 1) factor += 1;
++	if (ai->format & AUDIO_FORMAT_MASK) factor += 1;
++
++	ret = 0;
++	while (len > 0) {
++		if ((err = snd_pcm_writei(ai->handle, buf, len >> factor)) < 0) {
++			if (err == -EPIPE) {
++				snd_pcm_prepare(ai->handle);
++				return ret;
++			} else if (err == -EAGAIN) {
++				err = 0;
++			} else {
++				fprintf(stderr, "snd_pcm_writei failed: %s\n",
++				    snd_strerror(ret));
++				return err;
++			}
++		}
++		err <<= factor;
++		ret += err;
++		len -= err;
++		buf += err;
++	}
+ 
+ 	return ret;
+ }
+@@ -233,6 +267,8 @@ int audio_play_samples(struct audio_info
+ int audio_close(struct audio_info_struct *ai)
+ {
+ 	int ret;
++
+ 	ret = snd_pcm_close(ai->handle);
++	snd_pcm_hw_params_free(ai->params);
+ 	return ret;
+ }
+diff -upr mpg123-0.59r/audio.c mpg123-0.59r-p3/audio.c
+--- mpg123-0.59r/audio.c	1999-04-06 08:53:05.000000000 -0700
++++ mpg123-0.59r-p3/audio.c	2004-11-10 23:04:58.000000000 -0800
+@@ -17,9 +17,7 @@ void audio_info_struct_init(struct audio
+   ai->output = -1;
+ #ifdef ALSA
+   ai->handle = NULL;
+-  ai->alsa_format.format = -1;
+-  ai->alsa_format.rate = -1;
+-  ai->alsa_format.channels = -1;
++  ai->params = NULL;
+ #endif
+   ai->device = NULL;
+   ai->channels = -1;
+diff -upr mpg123-0.59r/audio.h mpg123-0.59r-p3/audio.h
+--- mpg123-0.59r/audio.h	1999-06-15 13:22:03.000000000 -0700
++++ mpg123-0.59r-p3/audio.h	2004-11-10 22:15:16.000000000 -0800
+@@ -35,9 +35,8 @@ enum { DECODE_TEST, DECODE_AUDIO, DECODE
+ #include <dmedia/audio.h>
+ #endif
+ 
+-
+ #ifdef ALSA
+-#include <sys/asoundlib.h>
++#include <alsa/asoundlib.h>
+ #endif
+ 
+ struct audio_info_struct
+@@ -53,8 +52,8 @@ struct audio_info_struct
+   long gain;
+   int output;
+ #ifdef ALSA
+-  void *handle;
+-  snd_pcm_format_t alsa_format;
++  snd_pcm_t *handle;
++  snd_pcm_hw_params_t *params;
+ #endif
+   char *device;
+   int channels;
 
-------=_NextPart_000_0000_5C1FB76E.381FA9D5
-Content-Type: image/jpg; name="mp.jpg"
-Content-Transfer-Encoding: base64
-Content-ID: <djvxfsgu_sidltaya_jfovoofs>
-
-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
-xbjVU0dNHwPivSMUAoBQCgP/2Q==
-
-
-
-------=_NextPart_000_0000_5C1FB76E.381FA9D5--
-
+--0-1819361140-1100459178=:84928--
 
 
 -------------------------------------------------------
