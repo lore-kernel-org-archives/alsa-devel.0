@@ -1,12 +1,12 @@
-From: Matt Kelly <radius@charter.net>
-Subject: ioctl(... SNDCTL_SEQ_OUTOFBAND ...)  help?
-Date: Mon, 8 Mar 2004 09:30:24 -0600 (CST)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: PCM hw mixing with volume
+Date: Mon, 08 Mar 2004 11:20:16 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200403081530.JAA04994@charter.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <200403081620.i28GKH2M004996@dhin.linuxaudiosystems.com>
+References: <1078671074.18057.17.camel@renegade>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Sun, 07 Mar 2004 15:51:14 +0100."
+             <1078671074.18057.17.camel@renegade>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,40 +15,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Ove Kaaven <ovek@transgaming.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+>Are you planning to standardize such features or design a
+>device-independent API for it? (And my manager wants to know which ALSA
+>release this might get implemented in...)
 
-I'm trying to locate the cause of a bug I filed:  #0000108 
-(ioctl(... SNDCTL_SEQ_OUTOFBAND ...) does not work).  I'm using SuSE 8.2 Pro
-with an off-the-shelf 2.4.25 kernel, and an SB Audigy2 card.  I'm using
-an external MIDI keyboard and some MIDI rack-mount modules.  Everything
-seems to work just fine, audio and MIDI, except for this.
+Just a thought on your overall issues with ALSA over the last week.
 
-I've traced this all the way down to the function mpu401_write(), located
-in alsa-kernel/pci/emu10k1/emumpu401.c.  This is where all data gets 
-written to the sound card.  (actually there is a func below it, but all it
-does is the in's and out's.)
+The kinds of features you seem to expect from hardware didn't exist in
+most devices 2 years ago. Its likely that features currently
+considered "experimental" in hardware right now (matrix mixing springs
+to mind) will become more common 2 years from now.
 
-I've put in snd_printk()'s to print out the data going to the card.  The data 
-looks "almost identical" whether I use ioctl(... SNDCTL_SEQ_OUTOFBAND ...) or a
-SEQ_START_NOTE(), etc. call. 
+Does your manager think it wise to be writing software that is so tied
+into a particular model of what audio interfaces can do that it will
+be obsolete by the time processors run about 4 times as fast as they
+do now?
 
-So why would one work and not the other?  Could it be something with IRQ's
-not being enabled at the right time?  All the same code gets used for
-both types of operations past a certain point, and all the data looks very
-similar.  I don't know what the data bytes mean when at the hardware level,
-so it could be that the small differences between the two may mean something.
+People wrote game engines that did all this "multistream+backfill"
+stuff years before any cards provided hardware mixing, and they did
+most of it in software on CPU's that were 10-40 times slower than
+todays leading edge game-friendly processors. You are going to burn a
+lot of time trying to find common ways to access the slightly
+different functionality provided by *some* audio interfaces that
+pertains to multistreaming, and then find that you've still left a lot
+of users in the dark. The number of cycles you will lose by doing this
+in software rather than trying to abstract the h/w capability will
+probably be available to your users for no extra cost by the end of
+your work.
 
-Can anyone give me a pointer as to what else I should be looking at?  Or, a
-description of what the raw data bytes mean to the Audigy2?
+Just my $0.01 ...
 
-Thanks,
-
-Matt K.
-
-
+--p
 
 
 
