@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000459]: PC Speaker doesn't produce any sound
-Date: Sat, 21 Aug 2004 18:32:50 +0200 (CEST)
+Subject: [ALSA - driver 0000433]: Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
+Date: Sun, 22 Aug 2004 10:04:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040821163250.AD5751102F@server.perex-int.cz>
+Message-ID: <20040822080408.1C2DF1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 353C823E
-	for <alsa-devel@alsa-project.org>; Sat, 21 Aug 2004 18:32:51 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7036D2CD
+	for <alsa-devel@alsa-project.org>; Sun, 22 Aug 2004 10:04:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,38 +20,66 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000459
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000433
 ======================================================================
-Reported By:                ncrfgs
-Assigned To:                tiwai
+Reported By:                cabbagerat
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     459
-Category:                   PPC - powermac
+Bug ID:                     433
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               CruxPPC http://cruxppc.sunsite.dk/
-Kernel Version:             2.6.8.1
+Status:                     new
+Distribution:               Debian Unstable
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-21-2004 18:32 CEST
-Last Modified:              08-21-2004 18:32 CEST
+Date Submitted:             08-09-2004 11:36 CEST
+Last Modified:              08-22-2004 10:04 CEST
 ======================================================================
-Summary:                    PC Speaker doesn't produce any sound
+Summary:                    Clicking noise on some sample rates with Chaintech AV-710 (ICE1724)
 Description: 
-PC Speaker doesn't produce any sound.
-System beep doesn't work.
+Playing sound at any sample rate other than 48000Hz produces a loud
+clicking sound along with the expected sound. This started with the ALSA
+included with kernel 2.6.7 (worked perfectly in 2.6.6).
+Clicking sound is loudest at 44.1kHz, not present at 48Khz and soft but
+noticeable at 96kHz.
+I have tried playing with alsaplayer, aplay, mpg123 and a variety of
+gstreamer based apps - all display this behavior. Both native alsa and OSS
+emulation display the same problem.
 ======================================================================
+
+----------------------------------------------------------------------
+ av710user - 08-21-2004 02:40 CEST 
+----------------------------------------------------------------------
+I hear clicking noises with my AV710 at every sample rate I've tried. 
+dmesg says "invalid EEPROM version 1" after loading the drivers.  If it's
+any help, the VIA ICEnsemble chip on the AV710 isn't a 1724 but a 1721.  A
+site I found using Google speculates that the Envy24HT-S (VT1721) is
+similar to the Envy24PT (VT1720).  I'm using the ALSA 1.0.6a drivers, GCC
+3.3.3 and Linux 2.4.26.
+
+----------------------------------------------------------------------
+ cabbagerat - 08-22-2004 10:04 CEST 
+----------------------------------------------------------------------
+Upgrading to kernel version 2.6.8.1-mm3 (CONFIG_PREEMPT disabled) stopped
+the clicking noises in all sample rates. Brief testing of 2.6.8.1 without
+preempt enabled also seemed to suggest that the clicking had gone. This
+leads me to believe that the clicking sound is related in some way to
+preempt.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-04 18:32 ncrfgs         New Bug                                      
-08-21-04 18:32 ncrfgs         Distribution              => CruxPPC http://cruxppc.sunsite.dk/
-08-21-04 18:32 ncrfgs         Kernel Version            => 2.6.8.1         
+08-09-04 11:36 cabbagerat     New Bug                                      
+08-09-04 11:36 cabbagerat     Distribution              => Debian Unstable 
+08-09-04 11:36 cabbagerat     Kernel Version            => 2.6.7           
+08-09-04 11:37 cabbagerat     Bug Monitored: cabbagerat                    
+08-21-04 02:40 av710user      Bugnote Added: 0001603                       
+08-22-04 10:04 cabbagerat     Bugnote Added: 0001608                       
 ======================================================================
 
 
