@@ -1,17 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [linux-audio-dev] muse and /dev/rtc
-Date: Mon, 22 Nov 2004 13:21:07 -0500
-Message-ID: <1101147668.2873.29.camel@krustophenia.net>
-References: <200411202259.57503.lad@koloro.de>
-	 <20041122150120.GB20860@bth05w.ABSp.alcatel.be>
-	 <Pine.LNX.4.58.0411221633160.23424@wotan.suse.de>
-	 <200411221813.23092.rj@spamatica.se>
-	 <20041122175312.GA20957@bth05w.ABSp.alcatel.be>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+From: Eric Sharkey <sharkey@netrics.com>
+Subject: Re: problem with ALSA on AMD64 w/VIA chipset
+Date: Mon, 22 Nov 2004 13:26:38 -0500
+Message-ID: <E1CWIta-0001s1-00@mastermind.netrics.internal>
+References: <s5hu0rhvm5c.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041122175312.GA20957@bth05w.ABSp.alcatel.be>
+In-reply-to: Your message of "Mon, 22 Nov 2004 18:17:19 +0100."
+             <s5hu0rhvm5c.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,32 +15,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-(added alsa-devel to cc)
-
-On Mon, 2004-11-22 at 18:53 +0100, Alfons Adriaensen wrote:
-> Which leads to the following question I've been asking myself for some time:
+> > This happens with both 64 and 32 bit kernels, and no amount of
+> > twiddling with kernel parameters (ACPI/CPU frequency scaling, apic,
+> > preemption, etc.) seems to make any difference.
 > 
-> the ALSA sequencer API seems to allow *timestamped* events - you put such
-> an event in a queue and it will appear at the other end at the right moment.
-> If this is true, and if ALSA has an high precision timer available to
-> implement it, why should apps like MusE bother to do the fine timing
-> themselves ? 
+> Hmm, I just thought of cpurfreq, but your report sounds that it's not
+> the case.  Could you unload powernow-k8 module just to be sure?
 
-Yes, my thoughts exactly.  You don't even have to use the ALSA sequencer
-API, you can use the ALSA timer API directly.  You get multiple timer
-sources (system, RTC, sound card).  It should also be more portable.
-For example if your sound card's timer is supported by your ALSA driver
-like emu10k1 and ymfpci then I think you can use this timer to give
-better sync with the hardware.
+I've spent a good deal of time trying to track this down over the
+last couple of months.  I've compiled and booted under more configurations
+than I care to count.  I'm absolutely certain that with a kernel
+with no power management support at all, and all power management turned
+off in the bios, the problem still persists.
 
-ALSA devs, is this correct?
+> I think you'd better to ask this on LKML, since the symptom looks like
+> the kernel core problem.
 
-Lee
+Hmm.  Ok.
 
+If there's something you can think of that I could do to gather more
+information to help diagnose the problem, please let me know.
+
+Thanks,
+
+Eric
 
 
 -------------------------------------------------------
