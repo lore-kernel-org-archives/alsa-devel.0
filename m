@@ -1,13 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Error: firmware not found
-Date: Fri, 28 Jan 2005 17:34:48 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0501281713050.30185@denise.shiny.it>
-References: <s5hvf9lplgh.wl@alsa2.suse.de> <XFMail.20050126182942.pochini@shiny.it>
- <s5hpszrrxm7.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - tools 0000801]: Persistent "max-amp" level on hdspmixer inputs
+Date: Thu, 27 Jan 2005 21:47:27 +0100
+Message-ID: <69b3b5a1b6cefd9204f74a52dcf3667c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpszrrxm7.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 64624221
+	for <alsa-devel@alsa-project.org>; Thu, 27 Jan 2005 21:47:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,53 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>, Thierry Vignaud <tvignaud@mandrakesoft.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=801> 
+======================================================================
+Reported By:                kme
+Assigned To:                charbonnel
+======================================================================
+Project:                    ALSA - tools
+Issue ID:                   801
+Category:                   hdsp progs
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             01-10-2005 09:20 CET
+Last Modified:              01-27-2005 21:47 CET
+======================================================================
+Summary:                    Persistent "max-amp" level on hdspmixer inputs
+Description: 
+HDSPmixer shows constant "max-amp" (actually -6db or so) levels at all
+times in the first 8 channels.  And when sound is played internally the
+middle row meters (playback) show the left channel with maxed-out levels
+while the right channel shows nothing.  Peak meters (yellow), however,
+appear to work normally.
 
-On Thu, 27 Jan 2005, Takashi Iwai wrote:
+A screenshot of the mixer while playing a stereo soundfile routed to AN1+2
+and Analog (headphones) only with NOTHING connected to the inputs can be
+cound here:
 
-> > *sigh* I'll do some tests in the weekend to see how much
-> > is the impact of making all that stuff variable in terms
-> > of binary size and mess in the sources. Maybe I can fix
-> > it with some not very nice #define...
->
-> [Looks like my last post didn't come out due to system problems, so I
->  rewriting again the same thing]
->
-> You don't have to use variables (although it's better for a long
-> term).
+http://www.esm.rochester.edu/kevine/hdsp_screenshot.jpg
 
-Ahem - it DID use variables some versions ago. I replaced them with
-constants because it's quite pointless using variables for values that
-never change. Shortly after Echoaudio released the 3G cards... Btw it's
-not only a matter of variables, some functions are different, too.
+Note that the outputs (bottom row) show proper levels as do the yellow
+peak meters in playback (Out 1+2).  
+
+Signal quality is unaffected.
+======================================================================
+
+----------------------------------------------------------------------
+ slick - 01-15-05 19:32 
+----------------------------------------------------------------------
 
 
-> The problem is that you have two modules.  Combining them to a
-> single module wouldn't be too hard.
+----------------------------------------------------------------------
+ charbonnel - 01-27-05 21:47 
+----------------------------------------------------------------------
+I just posted a patch on alsa-devel that should fix the problem, could you
+please try it ?
 
-Ok, but I don't want to keep all that duplicated code loaded when only
-half of it is needed. I would prefer a tiny "loader" module that does the
-same work of "modprobe snd-layla3g snd-gina3g". I'll also search for other
-similar cases to see if someone has a better idea.
-
-
-> > Btw, I don't see what is the problem of having two drivers
-> > for the same ID. Does it break some rule ?
->
-> We may have, but we can't load them at the same time.
-> It's a tacit understanding that the drivers with the same id
-> conflict.
-
-..and I didn't check if it works at all if the drivers are not compiled
-as modules.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-10-05 09:20 kme            New Issue                                    
+01-15-05 19:27 slick          Note Added: 0003212                          
+01-15-05 19:28 slick          Issue Monitored: slick                       
+01-15-05 19:32 slick          Note Added: 0003213                          
+01-27-05 21:47 charbonnel     Note Added: 0003422                          
+======================================================================
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
