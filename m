@@ -1,11 +1,17 @@
-From: Maarten de Boer <mdeboer@iua.upf.es>
-Subject: cvs.alsa-project.org access problems
-Date: Thu, 13 Feb 2003 15:59:46 +0100
+From: Martijn Sipkema <msipkema@sipkema-digital.com>
+Subject: Re: MTP-AV problems (Re: intel8x0 sequencer & MTP-AV)
+Date: Thu, 13 Feb 2003 16:21:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030213155946.099e37f4.mdeboer@iua.upf.es>
+Message-ID: <000c01c2d373$8e27ada0$161b14ac@boromir>
+References: <1044258789.30428.61.camel@littlewolf2.littlewolf>
+ <s5h3cn5ino4.wl@alsa2.suse.de>
+ <1044273602.2013.6.camel@littlewolf2.littlewolf>
+ <s5hheb8l05o.wl@alsa2.suse.de> <002c01c2d371$47e5e890$161b14ac@boromir>
+ <s5hel6cky69.wl@alsa2.suse.de>
+Reply-To: Martijn Sipkema <msipkema@sipkema-digital.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,25 +21,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+[...]
+> > I suppose this doesn't mention AMT? Can I have this information. It
+> > might contain more than what I already have.
+>  
+> the info appeared in another thread (running-status bug on mtpav):
+> http://www.math.tu-berlin.de/~sbartels/unitor/unitor8_doc.txt
+> the project itself seems dead now...
 
-I am experiencing lots of problems accessing cvs.alsa-project.org
+That's the info I already had... :(
+I don't see why Emagic won't give the AMT protocol specs...
 
-bitone:~/alsa-cvs# cvs update alsa-lib
-cvs [update aborted]: end of file from server (consult above messages if any)
+--ms
 
-bitone:~/alsa-cvs# cvs update alsa-lib
-cvs [update aborted]: reading from server: Connection reset by peer
 
-Sometimes these errors occur only occasionally, but in the last half an
-hour I have not been able to do an update. I don't know if this is a 
-sourceforge problem in general, but it certainly is annoying. Is anybody
-else having these difficulties?
 
-Maarten
+
 
 
 -------------------------------------------------------
