@@ -1,14 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd-usb-midi, midi input, oss, oops!
-Date: Tue, 17 Sep 2002 11:49:38 +0200 (METDST)
+From: Anders Torger <torger@ludd.luth.se>
+Subject: Re: Why do I get broken pipe on write to a pcm in statePREPARED?
+Date: Tue, 17 Sep 2002 12:09:41 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0209170930500.5178-100000@studcom.urz.uni-halle.de>
-References: <200209162313.QAA04893@cmn29.stanford.edu>
+Message-ID: <200209171009.g8HA9f023120@d1o87.telia.com>
+References: <Pine.HPX.4.33n.0209171012400.10979-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200209162313.QAA04893@cmn29.stanford.edu>
+In-Reply-To: <Pine.HPX.4.33n.0209171012400.10979-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,107 +18,75 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net, Abramo Bagnara <abramo.bagnara@libero.it>
 List-Id: alsa-devel@alsa-project.org
 
-Fernando Pablo Lopez-Lezcano wrote:
-> After the reboot is done I conect the MidiSport 2x2 usb MIDI
-> interface. Hotplug recognizes the card, fxload loads the
-> firmware, the interface disconnects and reconnects, hotplug
-> recognizes that and loads snd-usb-audio (both "audio" and
-> "usb-midi" have been blacklisted). And that's it. With no
-> extra configuration snd-usb-audio is not automatically loading
-> snd-usb-midi (bug?). So I go ahead and load snd-usb-midi by
-> hand.
-
-snd-usb-midi should be loaded when you try to access the sequencer device.
-"aconnect -o" or trying to play/record something usually does the job.
-
-I think I have observed a similar bug when snd-usb-audio is already loaded
-for another device without MIDI, but this isn't the case here.
-
-> Sending midi from a keyboard makes the Midi IN LED blink (so the midi
-> bytes are getting to the interface) but I see no activity in the
-> program (which should be showing the midi bytes being received).
-> Checking /proc/asound/card1/midi0 I can see that Output 0 has a
-> non-zero value of "Tx bytes", but Input O has received nothing. Same
-> with Muse which uses the native alsa interface.
+On Tuesday 17 September 2002 11.05, you wrote:
+> Anders Torger wrote:
+> > On Monday 16 September 2002 21.31, you [Abramo Bagnara] wrote:
+> > > I think that the best behaviour is the current and it's also the
+> > > simplest to describe and to understand: poll/select never blocks
+> > > when there is nothing to wait.
+> > >
+> > > ... and in PREPARED state definitely there's nothing to wait from
+> > > sound card.
+> >
+> > I don't agree. (...)
+> >
+> > Also, as we have noted, there is no real use for the current
+> > behaviour (at least no-one has said what it is), while there is use
+> > for the proper work-as-all-other-file-descriptors behaviour.
 >
-> So everything seems to indicate things are working but
-> nothing is received by the programs and alsa.
-
-Please try the seq program in the alsa-lib/test directory to see whether
-the sequencer device works.
-"./seq decoder 72.0" will show incoming events.
-
-> So I say, let's try the oss drivers.
+> IMHO the current behaviour is the proper behaviour as implemented by
+> other file descriptors, and as mandated by POSIX.
 >
-> I unload all the alsa modules related with the second card
-> (which is the MidiSport). After that I load both "audio" and
-> "usb-midi", they say they recognize the card and they set up
-> two interfaces, /dev/midi00 and /dev/midi01. Trying to use pd
-> gets the same results, output works, input does not.
-
-Neither driver working may indicate some problem with the 2x2 firmware.
-Try using some other version.
-
-> Now I get curious and say, what if I load the alsa usb midi
-> modules? (I know I should not be doing this!) So I go ahead
-> and load snd-usb-audio and then snd-usb-midi, to my surprise
-> they load (I would imagine they would refuse to load because
-> the other driver is using the midi interface hardware):
-
-Please compare /proc/bus/usb/devices before and after. It really should
-not be possible to replace a driver already connected to the device.
-
-> Sep 16 15:42:06 nando kernel: snd-usb-midi: MIDIStreaming version 01.00
-> Sep 16 15:42:06 nando kernel: snd-usb-midi: detected 2 output jack(s) on endpoint 1
-> Sep 16 15:42:06 nando kernel: snd-usb-midi: detected 2 input jack(s) on endpoint 1
-> Sep 16 15:42:06 nando kernel: ALSA ../alsa-kernel/core/rawmidi.c:1425: unable
-> to register OSS rawmidi device 1:0
-> Sep 16 15:42:06 nando kernel: snd-usb-midi: endpoint 1: created 2 output and 2
-> input ports
+> <http://www.opengroup.org/onlinepubs/007904975/functions/write.html>
 >
-> Note that they cannot register the device (because usb-midi is
-> using it?) but the drivers stay loaded and seem to create the
-> endpoints.
-
-The OSS devices cannot be registered. The ALSA rawmidi and sequencer
-devices should work.
-
-> If I try to start pd things keep working (midi in
-> does not work, of course), but I get some errors (not
-> surprising):
+> says regarding pipes, FIFOs and sockets:
+> | The write() function shall fail if:
+> | (...)
+> | [EPIPE]
+> | An attempt is made to write to a pipe or FIFO that is not open for
+> | reading by any process, or that only has one end open.
+> | (...)
+> | A write was attempted on a socket that is shut down for writing, or
+> | is no longer connected.
+> |
+> > It makes sense to block, there may be another thread, or even
+> > another process starting the sound card.
 >
-> Sep 16 15:42:48 nando kernel: usb-uhci.c: ENXIO c0008580, flags 0, urb
-> deebaea0, burb defc3ce0
-> Sep 16 15:42:48 nando kernel: usbmidi: Cannot submit urb for MIDI-IN
-> Sep 16 15:43:31 nando kernel: usb-uhci.c: ENXIO c0008580, flags 0, urb
-> deebaea0, burb defc3ce0
-> Sep 16 15:43:31 nando kernel: usbmidi: Cannot submit urb for MIDI-IN
-
-usb-midi complains because snd-usb-midi has already submitted an urb.
-This is to be expected in this situation.
-
-> So I unload all modules, both alsa and oss versions dealing
-> with the MidiSport. They unload cleanly.
+> In the cases cited above, there may be another thread/process which
+> will open the other end of the FIFO, or connect to the socket. But
+> write() only looks at the state of the file descriptor at the time
+> the call is made, and does not take into regard what _might_ happen
+> in the future.
 >
-> The I load snd-usb-audio and snd-usb-midi _again_. They load.
+> The 'prepared' state is equivalent to the EPIPE cases above because
+> it's a state in which the pcm device is _not_ reading data.
 >
-> If I start pd I get a kernel oops:
+> > And it makes sense to return EAGAIN when writing to a non-blocking
+> > socket when it is not ready to accept data.
+>
+> write() (or send()) blocks or returns EAGAIN if the local buffer is
+> full and data is being sent away, but fails if there isn't somebody
+> listening at the other end.
 
-I think something got out of whack when two drivers tried to handle the
-same device simultaneously.
+Ok, this is a really good argument, thanks. Now I can see that the 
+current behaviour is not obviously broken, as I thought first. However, 
+this only applies if the analogy "sound card not runnning" = "no reader 
+in the other end" is used, and I don't think it is very natural, since 
+the reader in this case is the hardware, not another process. My 
+suggested behaviour would also apply on the POSIX behaviour, it is just 
+a matter of how one interprets the situation. And, I also think my 
+suggested behaviour is useful, while the current behaviour just makes 
+things a bit more difficult, although it is not a big thing.
 
-> Is there anything else I could test?
+However, with this explanation I understand your and Abramo's 
+viewpoint, and I understand why it can be seen as not being broken, but 
+instead a correct POSIX behaviour, so I'll stop arguing about this.
 
-Try to see what happens if you plug/unplug 50 times in 10 seconds.  ;-)
-
-
-Regards,
-Clemens
-
+/Anders Torger
 
 
 -------------------------------------------------------
