@@ -1,14 +1,13 @@
-From: "mahendra  sp" <mahendra_sp@rediffmail.com>
-Subject: Want your Help
-Date: 28 Apr 2003 12:07:22 -0000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: rme9652: possible deadlock
+Date: Mon, 28 Apr 2003 14:27:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030428120722.15330.qmail@webmail17.rediffmail.com>
-Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Message-ID: <Pine.LNX.4.44.0304281418140.1603-100000@pnote.perex-int.cz>
+References: <3EACFE4A.5070300@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <3EACFE4A.5070300@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +16,73 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jhall@maoz.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+On Mon, 28 Apr 2003, Abramo Bagnara wrote:
 
-  Thanks for replying. I am a student who is doing a project on 
-linux.
+> > It seems a bit complicated to me. We can do easy this block:
+> > 
+> > read_lock(link_manager);
+> > spin_lock(stream);
+> > ....
+> > if (stream_in_group)
+> >    spin_lock(group);
+> > ....
+> > if (stream_in_group)
+> >    spin_unlock(group);
+> > ....
+> > spin_unlock(stream);
+> > read_unlock(link_manager);
+> > 
+> > I cannot imagine any deadlock with this locking scheme, because stream 
+> > locks are independent now.
+> 
+> CPU1:
+> 
+> read_lock(link_manager);	read_lock(link_manager);
+> spin_lock(s1);			spin_lock(s2);
+> if (stream_in_group)		if (stream_in_group)
+> 	spin_lock(group);		spin_lock(group); /* Waiting */
+> spin_lock(s2); /* BOOM! */
+> 
+> I guess that 3rd version will be the one I propose ;-)
 
-   I have installed ALSA ESS 1938 driver as I have ESS 1938 sound 
-card driver. My main aim for going to ALSA driver is it supports 
-full dulex . My project consists of implementing the full duplex 
-in one of my modules. So i want to write a "C LANGUAGE APPLICATON 
-"  in which I want to  talk and also listen simultaneously. But 
-the problem is I  am not getting the documentation for Driver APIs 
-so that i can use in my application. So i requested for Driver API   
-documentation.Do you have any written  application code in c 
-language for Full Duplex ? If it is please send it to me   so that 
-i can readily use it and also enhance for my requirement. If u 
-have document for APIs please send it to me . I wanmt to know what 
-steps should bne followed for opening the device and congfiguring 
-it for full dulex operation.Please help me in this regard.
+Yep, it is in CVS now ;-) Except I don't use trylock...
 
-thanks for the reply,
-warm regards,
-mahendra.
+read_lock(link_manager);
+spin_lock(stream);
+....
+if (stream_in_group) {
+    spin_lock(group);
+    spin_unlock(stream);
+}
+....
+link_for_each(s) {	/* note that streams are locked in defined order now */
+    if (stream_in_group)
+        spin_lock(s);
+}
+....
+list_for_each(s) {
+    if (stream_in_group)
+        spin_unlock(s);
+}
+....
+if (stream_in_group) {
+    spin_lock(stream);
+    spin_unlock(group);
+}
+....
+spin_unlock(stream);
+read_unlock(link_manager);
 
+						Jaroslav
 
-
-
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
