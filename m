@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000565]: Bug reported to gnomemeeting team
-Date: Mon,  4 Oct 2004 15:01:38 +0200 (CEST)
+Date: Mon,  4 Oct 2004 15:58:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041004130138.71BFF38052@server.perex-int.cz>
+Message-ID: <20041004135849.4C27538052@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A608A2AB
-	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 15:05:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9978F2BA
+	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 15:58:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -36,7 +36,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             10-04-2004 14:35 CEST
-Last Modified:              10-04-2004 15:01 CEST
+Last Modified:              10-04-2004 15:58 CEST
 ======================================================================
 Summary:                    Bug reported to gnomemeeting team
 Description: 
@@ -62,11 +62,18 @@ arecord: begin_wave:1617: Wave doesn't support S16_BE format...
 
 As this is a plug device, it should work.
 
+----------------------------------------------------------------------
+ tiwai - 10-04-2004 15:58 CEST 
+----------------------------------------------------------------------
+WAV format doesn't support big-endian.  That's independent from plug
+layer.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 10-04-04 14:35 mirko          New Bug                                      
 10-04-04 15:01 jcdutton       Bugnote Added: 0002010                       
+10-04-04 15:58 tiwai          Bugnote Added: 0002011                       
 ======================================================================
 
 
