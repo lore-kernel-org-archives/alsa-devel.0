@@ -1,14 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: Paul Davis <pbd@op.net>
 Subject: Re: Pause and Resume testing needed
-Date: Sat, 13 Apr 2002 16:03:12 +0100
+Date: Sat, 13 Apr 2002 12:19:36 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CB848B0.6080001@superbug.demon.co.uk>
+Message-ID: <200204131618.g3DGIUX01135@post2.fast.net>
 References: <3CB83E44.10402@superbug.demon.co.uk>
-Reply-To: James@superbug.demon.co.uk
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Sat, 13 Apr 2002 15:18:44 BST."
+             <3CB83E44.10402@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,29 +19,15 @@ To: James@superbug.demon.co.uk
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
+>Are there any test applications which test the pause/resume functionallity.
+>
+>I have an app which is calling pause, then resume, but after resume, the 
+>sound is very choppy.
 
-> Hello
->
-> Are there any test applications which test the pause/resume 
-> functionallity.
->
-> I have an app which is calling pause, then resume, but after resume, 
-> the sound is very choppy.
->
-> I was hoping that there was an application out there which already 
-> worked with pause/resume so I can narrow down the problem to alsa or 
-> my application.
->
-> Cheers
-> James
->
->
-I found out what is wrong with my pausing problem. It is an alsa bug.
+there are quite a lot of audio interfaces that don't support
+pause/resume. its of questionable worth to use it in an application,
+since it will not work on cards without support for it. i generally
+just stop the audio and restart it again (prepare/start) when i need
+this type of thing. the difference is marginal.
 
-I have a SB Live.
-pausing and resuming works fine in all modes except AC3 passthru.
-If one paused an AC3 passthru stream, it becomes very jumpy.
-
-Cheers
-James
+--p
