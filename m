@@ -1,12 +1,10 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: Re: 1.0.4 snd-pcm.o dma_xxx errors
-Date: Sun, 4 Apr 2004 01:02:49 +0400
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Virus/Worms/Spam problem from portuguese dial-in mail server ?
+Date: Sun, 4 Apr 2004 09:37:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200404040102.49958@goldspace.net>
+Message-ID: <20040404073736.GA663@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,45 +15,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, "rmmod snd-page-alloc" have helped.
 
-Andrew
+Rui,
 
-======= On Sunday 04 April 2004 0:01, Takashi Iwai wrote: =======
-At Sat, 3 Apr 2004 21:54:03 +0200 (CEST),
-Jaroslav wrote:
-> 
-> On Sat, 3 Apr 2004, Andrew Gaydenko wrote:
-> 
-> > Just have tried 1.0.4. "etc/init.d/alsasound restart" gives:
-> > 
-> > Starting sound driver: snd-ice1724 /lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_alloc_pages_Rsmp_2cbfa9e2
-> > /lib/modules/2.4.25-lck1/kernel/sound/acore/snd-pcm.o: unresolved symbol snd_dma_set_reserved_Rsmp_77de065d
-> > 
-> > As you see. I have 2.4.25 kernrl with lck1 patch.
-> 
-> It looks that snd-page-alloc module is old or missing.
+damned. What's that? A dial-in account for spammers from netcabo.pt???
+Still in hope that you're not the reason for my virus/worm traffic explosion.
+Please, don't take it personally. It's only the spam/virus traffic I hate.
 
-"alsasound stop" won't unload the snd-page-alloc module for keeping
-the DMA buffers.  you have to rmmod it manually once when
-snd-page-alloc is updated.
+The reason, why you are on the IP blacklist is obvious: You are sending Spam.
+Nevertheless netcabo.pt shouldn't allow this...
 
 
-Takashi
+martin
 
 
--------------------------------------------------------
-This SF.Net email is sponsored by: IBM Linux Tutorials
-Free Linux tutorial presented by Daniel Robbins, President and CEO of
-GenToo technologies. Learn everything from fundamentals to system
-administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+Received: from localhost ([127.0.0.1] helo=projects.sourceforge.net)
+	by sc8-sf-list2.sourceforge.net with esmtp (Exim 4.30)
+	id 1B9Zxr-0001m5-4G; Fri, 02 Apr 2004 17:28:51 -0800
+Received: from sc8-sf-mx2-b.sourceforge.net ([10.3.1.12] helo=sc8-sf-mx2.sourceforge.net)
+	by sc8-sf-list2.sourceforge.net with esmtp (Exim 4.30)
+	id 1B9Zw2-0001Gi-Sw
+	for alsa-devel@lists.sourceforge.net; Fri, 02 Apr 2004 17:26:58 -0800
+Received: from a213-22-206-106.netcabo.pt ([213.22.206.106] helo=beta.rncbc.lan)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+	by sc8-sf-mx2.sourceforge.net with esmtp (Exim 4.30)
+	id 1B9Zw2-00084U-2T
+	for alsa-devel@lists.sourceforge.net; Fri, 02 Apr 2004 17:26:58 -0800
+Received: from www.rncbc.org (localhost [127.0.0.1])
+	by beta.rncbc.lan (8.11.6/8.11.0) with SMTP id i331OGW07653;
+	Sat, 3 Apr 2004 02:24:16 +0100
+Received: from gamma.rncbc.lan ([192.168.1.5])
+        (SquirrelMail authenticated user rncbc)
+        by www.rncbc.org with HTTP;
+        Sat, 3 Apr 2004 02:24:16 +0100 (WEST)
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
