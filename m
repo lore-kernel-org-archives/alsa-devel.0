@@ -1,16 +1,13 @@
-From: Mark Knecht <markknecht@comcast.net>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: ALSA 1.0.0rc1 released
-Date: Tue, 02 Dec 2003 20:12:52 -0800
+Date: Wed, 03 Dec 2003 16:08:50 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1070424772.22549.17.camel@Wizard.knechthome.com>
-References: <s5hu14kabjn.wl@alsa2.suse.de>
-	 <1070312195.3552.14.camel@Wizard.knechthome.com>
-	 <3FCCD6FF.30605@pianodisc.com>
+Message-ID: <3FCD8C02.3040207@boosthardware.com>
+References: <s5hu14kabjn.wl@alsa2.suse.de>	 <1070312195.3552.14.camel@Wizard.knechthome.com>	 <3FCCD6FF.30605@pianodisc.com> <1070424772.22549.17.camel@Wizard.knechthome.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FCCD6FF.30605@pianodisc.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,37 +16,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: derosier@pianodisc.com
+To: Mark Knecht <markknecht@comcast.net>
 Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2003-12-02 at 10:16, Steve deRosier wrote:
-> We went ahead and added code to our alsa client software to cleanly 
-> return to a PCM value of 0 and then stuffed a full buffer worth of 0s 
-> into the buffer before closeing the PCM in order to solve our pop 
-> problem.  I'm not sure how the OSS emulation stuff works since we don't 
-> use it, but maybe it could use this same treatment?  I'm assuming we 
-> don't want to change OSS client programs to fix it, so that would leave 
-> something in the emulation layer that should be changed.  Perhaps OSS 
-> automagically does this cleanup?  Mark, have you tried using the real 
-> OSS?  Do the pops happen with OSS?
+Mark Knecht wrote:
+>
+> I wish I didn't have to use OSS at all. Has anyone accomplished getting
+> all types of web-based multi-media to work just using Alsa? Any
+> mime.type files to lead the way?
+> 
 
-No, I haven't tried real OSS. I'm fairly new to Linux audio and have
-never used anything other than Alsa in all it's glory. I don't know how
-OSS would be installed under Gentoo. I don't see any ebuilds for it. I
-presume it will work if I build it from source by hand, but that does
-sound like a lot of work.
+I have recently been running all sorts with mplayer. at least all the 
+sorenson codec I could find plus mpegs and .wmvs. all through the alsa 
+driver.
 
-In my current case the pops only happen with OSS emulation under Alsa.
-All files that create pops using OSS emulation work perfectly if I use
-any native Alsa app to play them, so I really don't think it's the
-source material itself. 
+If you want help setting it up let me know. It has taken me a while to 
+get it right.
 
-I wish I didn't have to use OSS at all. Has anyone accomplished getting
-all types of web-based multi-media to work just using Alsa? Any
-mime.type files to lead the way?
 
-- Mark
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
 
 
 
