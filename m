@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000970]: No Sound
-Date: Wed, 23 Mar 2005 17:52:39 +0100
-Message-ID: <92319bce125b4999aaeb80efe1e3c5d3@bugtrack.alsa-project.org>
+Date: Wed, 23 Mar 2005 17:56:13 +0100
+Message-ID: <49bee047bfcf2c3c53725b4f0dbffa43@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E8243249
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:52:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CCB431BA
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:56:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             03-07-2005 20:33 CET
-Last Modified:              03-23-2005 17:52 CET
+Last Modified:              03-23-2005 17:56 CET
 ======================================================================
 Summary:                    No Sound
 Description: 
@@ -53,11 +53,6 @@ has duplicate       0000984 No Sound
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-22-05 22:04 
-----------------------------------------------------------------------
-More information is needed in order to address this bug report.
-
-----------------------------------------------------------------------
  mailavj - 03-23-05 17:52 
 ----------------------------------------------------------------------
 My kernel is 2.6.7-2 
@@ -66,6 +61,11 @@ my current driver is ALSA 1.0.6-2a
 jack and other settings are correct
 mixer is okay
 but hardware is not detected
+
+----------------------------------------------------------------------
+ jdthood - 03-23-05 17:56 
+----------------------------------------------------------------------
+Which modules have you tried to load?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -77,6 +77,7 @@ Date Modified  Username       Field                    Change
 03-16-05 14:56 tiwai          Relationship added       has duplicate 0000984
 03-22-05 22:04 jdthood        Note Added: 0004135                          
 03-23-05 17:52 mailavj        Note Added: 0004181                          
+03-23-05 17:56 jdthood        Note Added: 0004182                          
 ======================================================================
 
 
