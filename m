@@ -1,14 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: looking for developer/s
-Date: Fri, 16 Jul 2004 10:05:31 +0200
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000393]: ali5451 driver & suspend/resume
+Date: Fri, 16 Jul 2004 10:52:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716100531.1a7853ef.pochini@shiny.it>
-References: <007001c46acf$fc79ed00$174d10ac@tg>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040716085215.76C8526005@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <007001c46acf$fc79ed00$174d10ac@tg>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E18C525A
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 10:52:15 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 85EBF12506
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 10:52:15 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +19,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: TG Kang <tg@egosys.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 16 Jul 2004 09:58:19 +0900
-TG Kang <tg@egosys.net> wrote:
 
-> Among our products, Prodigy7.1 and QuataFire610 are on the top of the wish
-> list for now, but it doesn't mean we put aside other products.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000393
+======================================================================
+Reported By:                Nemaru
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     393
+Category:                   PCI - ali5451
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-16-2004 10:52 CEST
+Last Modified:              07-16-2004 10:52 CEST
+======================================================================
+Summary:                    ali5451 driver & suspend/resume
+Description: 
+In alsa/alsa-kernel/core/init.c(Revision 1.48)
+I found pci_restore_state to snd_card_pci_resume().
+However, there is no pci_save_state in snd_card_pci_suspend().
+There is no pci_save_state also in alsa/alsa-kernel/pci/ali5451.c(Revision
+1.55).
+Does pci_save_state fall out and become precocious?
 
-If this:
+In alsa/alsa-kernel/pci/ali5451.c(Revision 1.55).
+Although snd_power_change_state (card and SNDRV_CTL_POWER_D3hot) was found
+to ali_suspend, there is no snd_power_change_state (card and
+SNDRV_CTL_POWER_D0) in ali_resume.
+Does snd_power_change_state (card and SNDRV_CTL_POWER_D0) fall out and
+become precocious?
 
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=AudioTrak&card=Prodigy&chip=Envy24HT&module=ice1724
+======================================================================
 
-is the Prodigy7.1 you're talking about, it's already supported. I don't
-know if the driver supports all the features of the card, though.
-
-
---
-Giuliano.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-16-04 10:52 Nemaru         New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
