@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Breakage in alsa-driver/include/adriver.h on CVS
-Date: Thu, 3 Oct 2002 09:20:18 +0200 (CEST)
+Subject: Re: Audiophile 2496 S/PDIF Support
+Date: Thu, 3 Oct 2002 09:22:40 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210030920080.521-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0210021726190.12070-100000@marabou.research.att.com>
+Message-ID: <Pine.LNX.4.33.0210030921390.521-100000@pnote.perex-int.cz>
+References: <000001c26a6b$bf2da600$0201a8c0@rer>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0210021726190.12070-100000@marabou.research.att.com>
+In-Reply-To: <000001c26a6b$bf2da600$0201a8c0@rer>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,40 +16,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Pavel Roskin <proski@gnu.org>
+To: Robert Robinson <robbiex@bellsouth.net>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2 Oct 2002, Pavel Roskin wrote:
+On Wed, 2 Oct 2002, Robert Robinson wrote:
 
-> Hello!
-> 
-> ALSA on CVS doesn't compile.  alsa-driver/include/adriver.h has several 
-> problems:
-> 
-> /usr/local/src/alsa/alsa-driver/include/adriver.h:186: parse error before 
-> `dir'
-> /usr/local/src/alsa/alsa-driver/include/adriver.h:188: multiple storage 
-> classes in declaration of `devfs_find_and_unregister'
-> /usr/local/src/alsa/alsa-driver/include/adriver.h:188: warning: function 
-> declaration isn't a prototype
-> 
-> I'm using devfs, and the first error can be fixed by adding this code
-> above in the header:
-> 
-> #ifdef CONFIG_DEVFS_FS
-> #include <linux/devfs_fs_kernel.h>
-> #endif
-> 
-> "multiple storage classes" is apparently "extern" and "static" in the same 
-> declaration.
-> 
-> "function declaration isn't a prototype" - there should not be any
-> semicolon between `)' and `{'.
-> 
-> On the positive side, I appreciate the work on eliminating acconfig.h 
+> This is a re-post. We are still interested to know if work is planned to
+> implement digital I/O support for the M-Audio Audiophile 2496. Analog I/O
+> works fine with ALSA.
 
-Fixed. Thanks for this report.
+Note that support for digital I/O is in the driver. You may reach a small 
+bug, of course. I have not a spare time to debug this problem at a moment.
 
 						Jaroslav
 
