@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
-Date: Thu, 18 Nov 2004 19:26:28 +0100
-Message-ID: <a7103dab7cb0ee5b20f2298da03ca23a@bugtrack.alsa-project.org>
+Date: Thu, 18 Nov 2004 19:33:41 +0100
+Message-ID: <cd7083f98b55431cbc89c51ce87b596f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A8D0221D
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:26:28 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 049BA254
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:33:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r4
 ======================================================================
 Date Submitted:             11-18-2004 10:58 CET
-Last Modified:              11-18-2004 19:26 CET
+Last Modified:              11-18-2004 19:33 CET
 ======================================================================
 Summary:                    poor microphone recording quality on pcicmi
 Description: 
@@ -67,26 +67,6 @@ Under Windows, sound quality is a lot better with the same setup.
 ======================================================================
 
 ----------------------------------------------------------------------
- pbienst - 11-18-04 19:11 
-----------------------------------------------------------------------
-I applied the patch, but I'm not able to change these settings. With
-alsamixer, they don't budge, and with amixer I get:
-
-pbienst@pbienst:~: amixer -c 1 set MICBST unmute
-Simple mixer control 'MICBST',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [on]
-
-But immediately afterwards:
-
-pbienst@pbienst:~: amixer -c 1 get MICBST
-Simple mixer control 'MICBST',0
-  Capabilities: pswitch pswitch-joined
-  Playback channels: Mono
-  Mono: Playback [off]
-
-----------------------------------------------------------------------
  pbienst - 11-18-04 19:26 
 ----------------------------------------------------------------------
 In the absense of any user controls, I tried changing the options by
@@ -108,6 +88,11 @@ interact, it's like a combinatorial explosion.
 Are there any mixer settings which could be important, and others which
 are definitely unimportant for this problem?
 
+----------------------------------------------------------------------
+ tiwai - 11-18-04 19:33 
+----------------------------------------------------------------------
+They could be read only.  Do all of them behave so?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -118,6 +103,7 @@ Date Modified  Username       Field                    Change
 11-18-04 18:08 tiwai          File Added: cmipci-test.diff                    
 11-18-04 19:11 pbienst        Note Added: 0002459                          
 11-18-04 19:26 pbienst        Note Added: 0002460                          
+11-18-04 19:33 tiwai          Note Added: 0002461                          
 ======================================================================
 
 
