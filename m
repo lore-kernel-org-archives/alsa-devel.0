@@ -1,14 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: emagic mt4
-Date: Fri, 20 Feb 2004 12:36:26 +0100 (MET)
+From: Ludwig Schwardt <schwardt@sun.ac.za>
+Subject: Multiple Delta 1010LT woes
+Date: Fri, 20 Feb 2004 17:51:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402201214340.13625-100000@studcom.urz.uni-halle.de>
-References: <1077208889.5720.1.camel@ian-lnx.ycrdi.com>
+Message-ID: <40362CEE.8060907@sun.ac.za>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1077208889.5720.1.camel@ian-lnx.ycrdi.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,61 +15,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ian esten <deviant@custard.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-ian esten wrote:
-> On Thu, 2004-02-19 at 03:28, Clemens Ladisch wrote:
-> > Please post the output of "lsusb -v".
->
-> Bus 001 Device 040: ID 086a:0003 Emagic Soft-und Hardware GmbH
-> .
-> .
-> .
+Hi,
 
-These descriptors look very much like those of earlier Edirol devices.
-It may be possible that the MT4 is similar enough to speak the same
-protocol.
+I'm playing around with the M-Audio (MidiMan) Delta 1010LT card. My plan 
+is to install three of them, synced via word clock, and record the 
+resulting 24 analog channels via JACK. I understand this requires some 
+.asoundrc magic.
 
-Please apply the patch below and recompile ALSA.  The device and its
-ports will show up in ALSA, but I'm not sure if sending/receiving MIDI
-data will work.
+Questions:
 
+- Why does the card show up with 12 inputs under JACK? As far as I could 
+tell, the card has 8 analog ins and 2 spdif ins. Where are the extra two 
+inputs? Shouldn't the card then be a Delta 1210LT? :->
 
-HTH
-Clemens
+- I've got the "plug" plugin in .asoundrc to select the first eight 
+channels, but this has latency issues. Is "multi" the right way to go?
 
+- Repeated attempts to create a working multi plugin have failed, based 
+on all the usual multicard snippets floating around on the Web. I have 
+only one Delta at the moment, so I've tried it alone and together with 
+the dummy soundcard (i.e. one slave or two in the plugin definition). Is 
+it OK to have only one card in multi?
 
--- 
-Index: alsa-kernel/usb/usbquirks.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
-retrieving revision 1.28
-diff -u -r1.28 usbquirks.h
---- alsa-kernel/usb/usbquirks.h	18 Feb 2004 16:24:55 -0000	1.28
-+++ alsa-kernel/usb/usbquirks.h	20 Feb 2004 11:15:09 -0000
-@@ -714,4 +714,19 @@
+In JACK I get the error:
+ALSA: no playback configurations available (Invalid argument)
 
- },
+And with aplay and arecord I get:
+arecord: set_params:805: Broken configuration for this PCM: no 
+configurations available
 
-+/* Emagic devices */
-+{
-+	USB_DEVICE(0x086a, 0x0003),
-+	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
-+		.vendor_name = "Emagic",
-+		.product_name = "MT4",
-+		.ifnum = 2,
-+		.type = QUIRK_MIDI_FIXED_ENDPOINT,
-+		.data = & (const snd_usb_midi_endpoint_info_t) {
-+			.out_cables = 0x000f,
-+			.in_cables  = 0x0003
-+		}
-+	}
-+},
-+
- {
+Takashi suggested in an old post (can't find it now) that it might have 
+something to do with the lopsided input/output channel count of the 
+ICE1712. Any suggestions how to get past it, if that's the case?
 
+I would really love to hear from anyone who managed to string two or 
+more ICE1712 cards together and used them successfully for recording 
+under JACK.
+
+Thanks very much in advance,
+
+Ludwig Schwardt
 
 
 
