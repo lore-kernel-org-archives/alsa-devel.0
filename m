@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Tue, 1 Feb 2005 22:12:53 +0100
-Message-ID: <d36fc19228037dd0aa8c249958e8a699@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Tue, 1 Feb 2005 22:57:56 +0100
+Message-ID: <bc4706d10dc0dafebda32f46ef5a7a7a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 107A71E9
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 22:12:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 545C71EB
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 22:57:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,126 +21,81 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=818> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                Mark Knecht
-Assigned To:                charbonnel
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   818
-Category:                   PCI - RME HDSP
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               FC2
-Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
+Status:                     assigned
 ======================================================================
-Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              02-01-2005 22:12 CET
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              02-01-2005 22:57 CET
 ======================================================================
-Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
-9652 to be invalid
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-In my setup I's using 3 computers:
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
 
-1) PanetCCRMA with HDSP 9652 as the center of an audio hub
-
-2) Win XP GigaStudio with Hammerfall Light - two ADAT outputs streaming to
-HDSP 9652 (ADAT input for clock)
-
-3) Win XP Pro Tools Digi 002 Rack receiving GigaStudio audio from PC
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2
-
-So the signal flow looks like:
-
-XP         Linux           XP
-GSt ====> HDSP 9652 ====> Pro Tools
-   <=== (ADAT Clock)
-
-The HDSP 9652 is the master clock for the network. Both XP machine sync to
-the HDSP 9652.
-
-When no specific audio apps are running on the Linux box then this
-configuration will work for hours if not days with no problems. All audio
-data from GSt flows through the HDSP 9652's hardware and the hardware
-mixer sends it on to the Pro Tools box. It works perfectly.
-
-When Mozilla is started and I switch from page to page, after a few
-minutes I will receive a message on the Pro Tools box that the clock
-supplied by the HDSP 9652 was invalid. I can browse the same web pages on
-either XP box and I do not corrupt the clocks.
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+has duplicate       0000786 Master can't handle all channel
+related to          0000172 Master volume control only controls fro...
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 22:07 
+ adamk75 - 01-27-05 01:00 
 ----------------------------------------------------------------------
-When using the hdsp as a clock source on which your whole studio setup is
-dependant (without necessarily running an audio application, e.g. when
-doing hardware routing and setting the desired sample rate in hdspconf or
-through amixer), here are the options to prevent the audio clock to change
-:
-
-* make sure no application uses the card with unpredictable sample rate
-requirements (don't use it as the default device, don't use it through the
-oss emulation layer)
-
-* make sure that if ever applications access the card, they do it at the
-required sample rate (this can be done with the plughw device in your
-~/.asoundrc file)
-
-* run an audio application at the desired sample rate. when the device is
-opened the clock can't be changed by any other app. typical candidates
-here allowing you to keep using the card would be sound daemons (esd,
-artsd, jack...)
+pzad, could you send me this info as well?
 
 ----------------------------------------------------------------------
- Mark Knecht - 02-01-05 22:12 
+ adamk75 - 02-01-05 22:57 
 ----------------------------------------------------------------------
-* make sure no application uses the card with unpredictable sample rate
-requirements (don't use it as the default device, don't use it through the
-oss emulation layer)
-
-[MWK] Not practical but I understand.
-
-* make sure that if ever applications access the card, they do it at the
-required sample rate (this can be done with the plughw device in your
-~/.asoundrc file)
-
-[MWK] I like this solution but couldn't figure it out myself. If someone
-could put a default version on the Alsa HDSP card page that would be a big
-help. I'm happy to test.
-
-* run an audio application at the desired sample rate. when the device is
-opened the clock can't be changed by any other app. typical candidates
-here allowing you to keep using the card would be sound daemons (esd,
-artsd, jack...)
-
-Running Jack is a pretty good solution for me. In fact I've been running
-it a lot and not seen this problem so possibly I can report (a bit
-loosely) that this solution works. Certianly I can do that any time I'm
-doing important work.
-
-Thanks!
+pzad, please? :-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-14-05 18:35 Mark Knecht    New Issue                                    
-01-14-05 18:35 Mark Knecht    Distribution              => FC2             
-01-14-05 18:35 Mark Knecht    Kernel Version            =>
-2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
-02-01-05 21:35 charbonnel     Note Added: 0003466                          
-02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
-02-01-05 22:03 rlrevell       Note Added: 0003471                          
-02-01-05 22:07 charbonnel     Status                   assigned => resolved
-02-01-05 22:07 charbonnel     Resolution               open => not an issue
-02-01-05 22:07 charbonnel     Note Added: 0003472                          
-02-01-05 22:12 Mark Knecht    Status                   resolved => feedback
-02-01-05 22:12 Mark Knecht    Resolution               not an issue => reopened
-02-01-05 22:12 Mark Knecht    Note Added: 0003474                          
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
+01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
+01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
+01-04-05 22:38 rlrevell       Note Added: 0003086                          
+01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
+01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
+01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
+01-27-05 01:00 adamk75        Note Added: 0003418                          
+02-01-05 22:57 adamk75        Note Added: 0003475                          
 ======================================================================
 
 
