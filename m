@@ -1,16 +1,18 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: Re: dmix plugin problems -- Resend
-Date: Mon, 26 May 2003 21:16:21 -0700
+From: Matt Flax <flatmax@ieee.org>
+Subject: Re: Re: SiS7012 hang alsa version 0.9.3c
+Date: Tue, 27 May 2003 16:32:30 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305262116.21379.n8gray@caltech.edu>
-References: <200305261528.32421.n8gray@caltech.edu> <1053992910.1404.7.camel@localhost>
+Message-ID: <20030527063230.GA32370@ee.unsw.edu.au>
+References: <20030524170852.GB15643@ee.unsw.edu.au> <Pine.HPX.4.33n.0305261041530.24202-100000@studcom.urz.uni-halle.de> <20030526132610.GA27490@ee.unsw.edu.au>
+Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1053992910.1404.7.camel@localhost>
+Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA23603
+	for <alsa-devel@alsa-project.org>; Tue, 27 May 2003 07:48:00 +0200
 Content-Disposition: inline
+In-Reply-To: <20030526132610.GA27490@ee.unsw.edu.au>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,39 +21,115 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "David E. Storey" <dave@tamos.net>
-Cc: alsa <alsa-devel@lists.sourceforge.net>
+To: core sound <alsa-devel@alsa-project.org>
+Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 26 May 2003 04:48 pm, David E. Storey wrote:
-> nice. Your config just helped me make it work for me. I too have an
-> intel8x0. (I also have some other gear, but in essence I can use
-> alsaplayer and xmms on my intel8x0 simultaneously.) Not being an
-> expert in .asound voodoo, I would say that yours is a bit more
-> complicated than it needs to be. Without changing your .asound file,
-> have you tried:
->
-> aplay -D mydmix test.wav
+OK - it would appear the win2k loads this soundcard as a realtek ac'97 
+sound card. 
+It gives it :
+IRQ=05
+I/O=0xf800-0xf8ff
+I/O=0xfe80-0xfeff
 
-I'm pretty sure that will only work if the sample you're playing is at 
-the "correct" rate.  In other words, dmix doesn't do any resampling, so 
-if you try to play a file that has the wrong rate you'll get problems.  
-That's the reason for the extra layer with the "plug" plugin -- it does 
-rate conversion.
+Is it possible to specify these ? I tried loading the intel8x0 driver 
+with :
+modprobe snd-intel8x0 irq=5
+but the same problem with irq=0 happened as before.
 
-> The only other difference is that I don't have rate 44100. It is my
-> understanding that the intel8x0 is locked at 48000 for the hardware I
-> have. 
+There is a driver available at realtek :
+http://www.realtek.com.tw/downloads/downloads1-3.aspx?series=8&Software=True
 
-Certain files play with the "rate 44100" line and others don't, but more 
-play with it than without it.  I'd recommend testing it with the KDE_* 
-files in /usr/share/sounds if you have KDE installed.  They have lots 
-of funky sampling rates that aplay seems to choke on.
+If that helps at all ?
+
+Matt
+
+On Mon, May 26, 2003 at 11:26:10PM +1000, Matt Flax wrote:
+> Hi,
+> 
+> I  just checked the BIOS - it is a mobile bios and does not let you turn 
+> IRQs on/off nor other stuff ...
+> 
+> In the bios it reports the card as a SiS 7018.
+> This would mean it requires the trident driver.
+> 
+> Still no success ! I am   beginning to believe that it is something else 
+> ! It is a mobile combo chip ... SiS M650 and SiS962
+> 
+> dmesg prints:
+> Trident 4DWave PCI soundcard not found or device busy
+> 
+> Module inst. reports :
+> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: 
+> init_module: No such device
+> Hint: insmod errors can be caused by incorrect module parameters, 
+> including invalid IO or IRQ parameters.
+>       You may find more information in syslog or the output from dmesg
+> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: insmod 
+> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o failed
+> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: insmod 
+> snd-trident failed
+> 
+> 
+> lspci  -v  prints :
+> 
+> 00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] 
+> SiS7012 PCI Audio Accelerator (rev a0)
+>         Subsystem: CLEVO/KAPOK Computer: Unknown device 0400
+>         Flags: medium devsel
+>         I/O ports at 1c00 [disabled] [size=256]
+>         I/O ports at 1800 [disabled] [size=128]
+>         Capabilities: [48] Power Management version 2
+> 
+> 
+> 
+> 
+> On Mon, May 26, 2003 at 10:44:31AM +0200, Clemens Ladisch wrote:
+> > Matt Flax wrote:
+> > > When I try to load the intel alsa module I get a hang state, with this
+> > > output :
+> > > PCI: Enabling device 00:02.7 (0000 -> 0001)
+> > > PCI: No IRQ known for interrupt pin C of device 00:02.7. Please try
+> > > using pci=biosirq.
+> > > ALSA ../alsa-kernel/pci/intel8x0.c:2249: unable to grab IRQ 0
+> > >
+> > > So I appended that to the lilo.conf file and ran lilo, upon reboot -
+> > > same problem.
+> > 
+> > Apparently, your BIOS didn't allocate an interrupt for the AC'97 device.
+> > Try changing some PnP-related settings in the BIOS setup.
+> > 
+> > 
+> > HTH
+> > Clemens
+> > 
+> 
+> -- 
+> http://mffm.ee.unsw.edu.au
+> 
+> WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+> FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+> Vector Bass                : http://mffmvectorbass.sourceforge.net/
+> Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
+> 
+> 
+> -------------------------------------------------------
+> This SF.net email is sponsored by: ObjectStore.
+> If flattening out C++ or Java code to make your application fit in a
+> relational database is painful, don't do it! Check out ObjectStore.
+> Now part of Progress Software. http://www.objectstore.net/sourceforge
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 -- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+http://mffm.ee.unsw.edu.au
 
+WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+Vector Bass                : http://mffmvectorbass.sourceforge.net/
+Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
