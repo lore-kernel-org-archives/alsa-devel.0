@@ -1,12 +1,12 @@
-From: Johan Bilien <jobi@via.ecp.fr>
-Subject: ALSA crash on linux 2.6.0-test9 and USB audio
-Date: Thu, 6 Nov 2003 15:14:29 +0100
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: hdsp9632 mixer fix + gcc 2.9x compile fix
+Date: Thu, 06 Nov 2003 13:37:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031106141429.GA19456@via.ecp.fr>
+Message-ID: <3FAA408F.50201@undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/mixed;
+ boundary="------------050802010408090907080005"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,98 +18,199 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------050802010408090907080005
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+
 Hi,
 
-since I moved from test3 to test9 (test8 would not recognize my usb
-headset), I am experiencing a hang in ALSA playback almost everytime I
-use my USB headset (Plantronics). In the syslog, I get something like:
+The attached patch fixes matrix mixer and metering problems spotted by 
+Pentti Ala-Vannesluoma for H9632 cards and gcc 2.9x compile errors 
+reported by Martin Langer.
 
-Nov  6 15:00:09 naboo kernel: Debug: sleeping function called from
-invalid context at kernel/sched.c:1736
-Nov  6 15:00:09 naboo kernel: in_atomic():1, irqs_disabled():1
-Nov  6 15:00:09 naboo kernel: Call Trace:
-Nov  6 15:00:09 naboo kernel:  [__might_sleep+172/224]
-__might_sleep+0xac/0xe0
-Nov  6 15:00:09 naboo kernel:  [wait_for_completion+32/240]
-wait_for_completion+0x20/0xf0
-Nov  6 15:00:09 naboo kernel:  [_end+147956939/1070252488]
-hcd_unlink_urb+0x163/0x260 [usbcore]
-Nov  6 15:00:09 naboo kernel:  [_end+148363464/1070252488]
-snd_complete_urb+0x0/0xd0 [snd_usb_audio]
-Nov  6 15:00:09 naboo kernel:  [_end+147959157/1070252488]
-usb_unlink_urb+0x3d/0x40 [usbcore]
-Nov  6 15:00:09 naboo kernel:  [_end+148364069/1070252488]
-deactivate_urbs+0xad/0xb0 [snd_usb_audio]
-Nov  6 15:00:09 naboo kernel:  [_end+148364682/1070252488]
-snd_usb_pcm_trigger+0x52/0x60 [snd_usb_audio]
-Nov  6 15:00:09 naboo kernel:  [_end+148280253/1070252488]
-snd_pcm_do_stop+0x25/0x30 [snd_pcm]
-Nov  6 15:00:09 naboo kernel:  [_end+148279473/1070252488]
-snd_pcm_action_single+0x39/0x70 [snd_pcm]
-Nov  6 15:00:09 naboo kernel:  [_end+148279640/1070252488]
-snd_pcm_action+0x70/0x80 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148280423/1070252488]
-snd_pcm_stop+0x1f/0x30 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148300253/1070252488]
-snd_pcm_update_hw_ptr+0x145/0x1e0 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [schedule_timeout+109/192]
-schedule_timeout+0x6d/0xc0
-Nov  6 15:00:10 naboo kernel:  [sock_poll+41/64] sock_poll+0x29/0x40
-Nov  6 15:00:10 naboo kernel:  [_end+148292138/1070252488]
-snd_pcm_delay+0x52/0x170 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148293276/1070252488]
-snd_pcm_playback_ioctl1+0x64/0x4d0 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [sys_poll+642/720] sys_poll+0x282/0x2d0
-Nov  6 15:00:10 naboo kernel:  [sys_ioctl+256/672] sys_ioctl+0x100/0x2a0
-Nov  6 15:00:10 naboo kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
-Nov  6 15:00:10 naboo kernel:
-Nov  6 15:00:10 naboo kernel: bad: scheduling while atomic!
-Nov  6 15:00:10 naboo kernel: Call Trace:
-Nov  6 15:00:10 naboo kernel:  [schedule+1445/1456] schedule+0x5a5/0x5b0
-Nov  6 15:00:10 naboo kernel:  [common_interrupt+24/32]
-common_interrupt+0x18/0x20
-Nov  6 15:00:10 naboo kernel:  [wait_for_completion+152/240]
-wait_for_completion+0x98/0xf0
-Nov  6 15:00:10 naboo kernel:  [default_wake_function+0/48]
-default_wake_function+0x0/0x30
-Nov  6 15:00:10 naboo kernel:  [default_wake_function+0/48]
-default_wake_function+0x0/0x30
-Nov  6 15:00:10 naboo kernel:  [_end+147956939/1070252488]
-hcd_unlink_urb+0x163/0x260 [usbcore]
-Nov  6 15:00:10 naboo kernel:  [_end+148363464/1070252488]
-snd_complete_urb+0x0/0xd0 [snd_usb_audio]
-Nov  6 15:00:10 naboo kernel:  [_end+147959157/1070252488]
-usb_unlink_urb+0x3d/0x40 [usbcore]
-Nov  6 15:00:10 naboo kernel:  [_end+148364069/1070252488]
-deactivate_urbs+0xad/0xb0 [snd_usb_audio]
-Nov  6 15:00:10 naboo kernel:  [_end+148364682/1070252488]
-snd_usb_pcm_trigger+0x52/0x60 [snd_usb_audio]
-Nov  6 15:00:10 naboo kernel:  [_end+148280253/1070252488]
-snd_pcm_do_stop+0x25/0x30 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148279473/1070252488]
-snd_pcm_action_single+0x39/0x70 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148279640/1070252488]
-snd_pcm_action+0x70/0x80 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148280423/1070252488]
-snd_pcm_stop+0x1f/0x30 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148300253/1070252488]
-snd_pcm_update_hw_ptr+0x145/0x1e0 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [schedule_timeout+109/192]
-schedule_timeout+0x6d/0xc0
-Nov  6 15:00:10 naboo kernel:  [sock_poll+41/64] sock_poll+0x29/0x40
-Nov  6 15:00:10 naboo kernel:  [_end+148292138/1070252488]
-snd_pcm_delay+0x52/0x170 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [_end+148293276/1070252488]
-snd_pcm_playback_ioctl1+0x64/0x4d0 [snd_pcm]
-Nov  6 15:00:10 naboo kernel:  [sys_poll+642/720] sys_poll+0x282/0x2d0
-Nov  6 15:00:10 naboo kernel:  [sys_ioctl+256/672] sys_ioctl+0x100/0x2a0
-Nov  6 15:00:10 naboo kernel:  [syscall_call+7/11] syscall_call+0x7/0xb
+Thomas
 
-and so on. I am using the snd-usb-audio module, with XMMS ALSA output.
-Let me know what other details may help you.
+--------------050802010408090907080005
+Content-Type: text/plain;
+ name="hdsp9632.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="hdsp9632.patch"
 
--- 
-Johan
+--- hdsp.c.cvs	2003-11-01 09:06:45.000000000 +0100
++++ hdsp.c	2003-11-06 13:06:28.000000000 +0100
+@@ -454,6 +454,7 @@
+ 	unsigned short	      state;		     /* stores state bits */
+ 	u32		      firmware_cache[24413]; /* this helps recover from accidental iobox power failure */
+ 	size_t                period_bytes; 	     /* guess what this is */
++	unsigned char	      max_channels;
+ 	unsigned char	      qs_in_channels;	     /* quad speed mode for H9632 */
+ 	unsigned char         ds_in_channels;
+ 	unsigned char         ss_in_channels;	    /* different for multiface/digiface */
+@@ -1169,11 +1170,11 @@
+ 		/* set thru for all channels */
+ 
+ 		if (enable) {
+-			for (i = 0; i < HDSP_MAX_CHANNELS; i++) {
++			for (i = 0; i < hdsp->max_channels; i++) {
+ 				hdsp_write_gain (hdsp, hdsp_input_to_output_key(hdsp,i,i), UNITY_GAIN);
+ 			}
+ 		} else {
+-			for (i = 0; i < HDSP_MAX_CHANNELS; i++) {
++			for (i = 0; i < hdsp->max_channels; i++) {
+ 				hdsp_write_gain (hdsp, hdsp_input_to_output_key(hdsp,i,i), MINUS_INFINITY_GAIN);
+ 			}
+ 		}
+@@ -1181,7 +1182,7 @@
+ 	} else {
+ 		int mapped_channel;
+ 
+-		snd_assert(channel < HDSP_MAX_CHANNELS, return);
++		snd_assert(channel < hdsp->max_channels, return);
+ 
+ 		mapped_channel = hdsp->channel_map[channel];
+ 
+@@ -2902,9 +2903,9 @@
+ 
+ 	source = ucontrol->value.integer.value[0];
+ 	destination = ucontrol->value.integer.value[1];
+-
+-	if (source > 25) {
+-		addr = hdsp_playback_to_output_key(hdsp,source-26,destination);
++	
++	if (source >= hdsp->max_channels) {
++		addr = hdsp_playback_to_output_key(hdsp,source-hdsp->max_channels,destination);
+ 	} else {
+ 		addr = hdsp_input_to_output_key(hdsp,source, destination);
+ 	}
+@@ -2931,8 +2932,8 @@
+ 	source = ucontrol->value.integer.value[0];
+ 	destination = ucontrol->value.integer.value[1];
+ 
+-	if (source > 25) {
+-		addr = hdsp_playback_to_output_key(hdsp,source-26, destination);
++	if (source >= hdsp->max_channels) {
++		addr = hdsp_playback_to_output_key(hdsp,source-hdsp->max_channels, destination);
+ 	} else {
+ 		addr = hdsp_input_to_output_key(hdsp,source, destination);
+ 	}
+@@ -3177,7 +3178,7 @@
+ 
+ int snd_hdsp_create_controls(snd_card_t *card, hdsp_t *hdsp)
+ {
+-	unsigned int idx, limit;
++	unsigned int idx;
+ 	int err;
+ 	snd_kcontrol_t *kctl;
+ 
+@@ -3676,12 +3677,13 @@
+ 		   odd numbered channels to right, even to left.
+ 		*/
+ 		if (hdsp->io_type == H9632) {
+-			lineouts_base = 14;
++			/* this is the phones/analog output */
++			lineouts_base = 10;
+ 		} else {
+ 			lineouts_base = 26;
+ 		}
+ 		
+-		for (i = 0; i < HDSP_MAX_CHANNELS; i++) {
++		for (i = 0; i < hdsp->max_channels; i++) {
+ 			if (i & 1) { 
+ 				if (hdsp_write_gain (hdsp, hdsp_input_to_output_key (hdsp, i, lineouts_base), UNITY_GAIN) ||
+ 				    hdsp_write_gain (hdsp, hdsp_playback_to_output_key (hdsp, i, lineouts_base), UNITY_GAIN)) {
+@@ -3793,7 +3795,7 @@
+ {
+ 	int mapped_channel;
+ 
+-        snd_assert(channel >= 0 || channel < HDSP_MAX_CHANNELS, return NULL);
++        snd_assert(channel >= 0 || channel < hdsp->max_channels, return NULL);
+         
+ 	if ((mapped_channel = hdsp->channel_map[channel]) < 0) {
+ 		return NULL;
+@@ -3963,7 +3965,7 @@
+ 	hdsp_t *hdsp = _snd_pcm_substream_chip(substream);
+ 	int mapped_channel;
+ 
+-	snd_assert(info->channel < HDSP_MAX_CHANNELS, return -EINVAL);
++	snd_assert(info->channel < hdsp->max_channels, return -EINVAL);
+ 
+ 	if ((mapped_channel = hdsp->channel_map[info->channel]) < 0) {
+ 		return -EINVAL;
+@@ -4487,8 +4489,8 @@
+ 
+ static int snd_hdsp_hwdep_dummy_op(snd_hwdep_t *hw, struct file *file)
+ {
+-    /* we have nothing to initialize but the call is required */
+-    return 0;
++	/* we have nothing to initialize but the call is required */
++	return 0;
+ }
+ 
+ 
+@@ -4545,10 +4547,11 @@
+ 		}
+ 		if (hdsp->io_type == H9632) {
+ 			int j;
++			hdsp_9632_meters_t *m;
+ 			int doublespeed = 0;
+ 			if (hdsp_read (hdsp, HDSP_statusRegister) & HDSP_DoubleSpeedStatus)
+ 				doublespeed = 1;
+-			hdsp_9632_meters_t *m = (hdsp_9632_meters_t *)hdsp->iobase+HDSP_9632_metersBase;
++			m = (hdsp_9632_meters_t *)(hdsp->iobase+HDSP_9632_metersBase);
+ 			peak_rms = (hdsp_peak_rms_t *)arg;
+ 			for (i = 0, j = 0; i < 16; ++i, ++j) {
+ 				if (copy_to_user((void *)peak_rms->input_peaks+i*4, &(m->input_peak[j]), 4) != 0)
+@@ -4814,7 +4817,7 @@
+ 		return -EIO;
+ 	}
+ 	
+-	for (i = 0; i < HDSP_MAX_CHANNELS; ++i) {
++	for (i = 0; i < hdsp->max_channels; ++i) {
+ 		hdsp_write (hdsp, HDSP_inputEnable + (4 * i), 1);
+ 		hdsp_write (hdsp, HDSP_outputEnable + (4 * i), 1);
+ 	}
+@@ -4841,8 +4844,9 @@
+ 	
+ 	case H9632:
+ 		status = hdsp_read(hdsp, HDSP_statusRegister);
+-		aebi_channels = (status & HDSP_AEBI) ? 4 : 0;
+-		aebo_channels = (status & HDSP_AEBO) ? 4 : 0;
++		/* HDSP_AEBx bits are low when AEB are connected */
++		aebi_channels = (status & HDSP_AEBI) ? 0 : 4;
++		aebo_channels = (status & HDSP_AEBO) ? 0 : 4;
+ 		hdsp->card_name = "RME Hammerfall HDSP 9632";
+ 		hdsp->ss_in_channels = H9632_SS_CHANNELS+aebi_channels;
+ 		hdsp->ds_in_channels = H9632_DS_CHANNELS+aebi_channels;
+@@ -4929,7 +4933,6 @@
+ {
+ 	struct pci_dev *pci = hdsp->pci;
+ 	int err;
+-	int i;
+ 	int is_9652 = 0;
+ 	int is_9632 = 0;
+ 
+@@ -4948,6 +4951,7 @@
+ 	hdsp->control_register = 0;
+ 	hdsp->control2_register = 0;
+ 	hdsp->io_type = Undefined;
++	hdsp->max_channels = 26;
+ 
+ 	hdsp->card = card;
+ 	
+@@ -4974,6 +4978,7 @@
+ 		break;
+ 	case 0x96:
+ 		hdsp->card_name = "RME HDSP 9632";
++		hdsp->max_channels = 16;
+ 		is_9632 = 1;
+ 		break;
+ 	default:
+
+--------------050802010408090907080005--
+
+
 
 
 -------------------------------------------------------
