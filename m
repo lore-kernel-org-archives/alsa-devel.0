@@ -1,18 +1,13 @@
-From: Mark Canter <marcus@vfxcomputing.com>
-Subject: Re: Re: intel 8x0 went silent in 2.6.11
-Date: Tue, 8 Mar 2005 20:53:41 -0500 (EST)
-Message-ID: <Pine.LNX.4.62.0503082050270.3821@krusty.vfxcomputing.com>
-References: <4227085C.7060104@drzeus.cx> <29495f1d05030309455a990c5b@mail.gmail.com>
- <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
- <1109875926.2908.26.camel@mindpipe> <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>
- <1109876978.2908.31.camel@mindpipe> <Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com>
- <20050303154929.1abd0a62.akpm@osdl.org> <4227ADE7.3080100@drzeus.cx>
- <4228D013.8010307@drzeus.cx> <s5hmztfwon1.wl@alsa2.suse.de> <422CB68A.1050900@drzeus.cx>
- <s5hekerurz8.wl@alsa2.suse.de> <422CFB6E.1020002@drzeus.cx>
- <s5h1xaquzf0.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Wed, 9 Mar 2005 02:57:17 +0100
+Message-ID: <8f4fb239bf41b1c0185dadd8e7a13fd7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII; format=flowed
-In-Reply-To: <s5h1xaquzf0.wl@alsa2.suse.de>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C8C49173
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 02:57:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,49 +17,126 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pierre Ossman <drzeus-list@drzeus.cx>, Andrew Morton <akpm@osdl.org>, rlrevell@joe-job.com, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-I think I've gone through every possible value here from asound.state to 
-each setting in KDE itself.  Still, the only sound that works is the one 
-coming from line-out, without the port replicator, no sound exists 
-whatsoever.  Both of the below controls are set to false in asound.state 
-and cooresponding KDE settings in kmix.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
+======================================================================
+Reported By:                Q3Man
+Assigned To:                fmoraes
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   752
+Category:                   PCI - emu10k1x
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
+======================================================================
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              03-09-2005 02:57 CET
+======================================================================
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
+Description: 
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
 
-I think the concern becomes though, regardless of what kde was doing after 
-the fact, this condition didn't exits in <= 2.6.10 when no other 
-applications where changed around it.
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
 
-On Tue, 8 Mar 2005, Takashi Iwai wrote:
->
-> My question is its 'value'.  The entry in /etc/asound.state should
-> have a boolean value.
->
-> Let me repeat the explanation of the situation:
->
-> The existence of 'Headphone Jack Sense' and 'Line-in Jack Sense'
-> controls themselves are not the problem.  If they are set off, the
-> behavior of the driver must be identical with the older version.
-> No regression. The patch I mentionted turns off them as default unless
-> the device is known to work.  But the controls still exist, and you
-> can change them afterward manually.
->
-> So, the solution is once to turn off these controls via a mixer and
-> save the state via alsactl (usually the system does at shutdown), so
-> that the correct states are restored at the next reboot.  That's why I
-> asked you - to check the saved status of these controls.
->
-> If the correct values are saved there and still the problem exists,
-> someone else must have changed the mixer status.  For example, KDE
-> (kmix) seems to set up the mixer status by itself, and does not always
-> correctly.  That was my suspect.  I don't know GNOME does something
-> like that, too.
->
->
-> Takashi
->
+And similar ones in other alsa programs. 
+
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
+
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
+
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
+
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
+
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
+
+======================================================================
+
+----------------------------------------------------------------------
+ fmoraes - 01-22-05 23:24 
+----------------------------------------------------------------------
+I am wondering if this is related to the MIDI code. Can you compile the
+code and add some printk() calls to see which part of the probe method is
+failing?
+
+You can also try to comment out the part that initializes the MIDI support
+and see if that is the source of the problem.
+
+----------------------------------------------------------------------
+ fmoraes - 03-09-05 02:57 
+----------------------------------------------------------------------
+Can you provide an update to this report? Otherwise, I think it should be
+closed.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
+01-21-05 11:14 tiwai          Note Added: 0003341                          
+01-22-05 23:24 fmoraes        Note Added: 0003382                          
+03-09-05 02:57 fmoraes        Note Added: 0003821                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
