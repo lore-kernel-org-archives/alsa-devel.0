@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Fri, 15 Oct 2004 19:24:20 +0200 (CEST)
+Date: Fri, 15 Oct 2004 19:29:38 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015172420.0B6213B025@server.perex-int.cz>
+Message-ID: <20041015172938.F39383B007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6872730C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:24:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C8861E3
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:29:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-15-2004 19:24 CEST
+Last Modified:              10-15-2004 19:29 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -97,6 +97,16 @@ Also note that I tried in the past with and without preempt without making
 a major difference that I can still think of.
 (preemp activated right now btw)
 
+----------------------------------------------------------------------
+ lee - 10-15-2004 19:29 CEST 
+----------------------------------------------------------------------
+I get the occasional xrun with mplayer even with the latest 2.6 low latency
+kernels.  I figure it's a bug in mplayer's ALSA support.  VDR I don't
+know.  Do other users of that program report the same issue?
+
+There are many, many apps out there with buggy ALSA support but good OSS
+support.  Try a known good app like aplay or alsaplayer.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -108,6 +118,7 @@ Date Modified  Username       Field                    Change
 10-15-04 19:02 lee            Bugnote Added: 0002170                       
 10-15-04 19:12 KAtiOS         Bugnote Added: 0002171                       
 10-15-04 19:24 KAtiOS         Bugnote Added: 0002172                       
+10-15-04 19:29 lee            Bugnote Added: 0002173                       
 ======================================================================
 
 
