@@ -1,9 +1,14 @@
-From: Ted <ted@nowtsfree.freeserve.co.uk>
-Subject: cvsexport 2003-12-31/alsa-driver/acore/pcm_native.patch fails
-Date: Wed, 31 Dec 2003 05:18:37 +0000
+From: Glenn Maynard <g_sf@zewt.org>
+Subject: Re: pcm_plug.c:882: snd_pcm_plug_hw_params: Assertion `err >= 0' failed.
+Date: Thu, 1 Jan 2004 19:40:20 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031231051837.9FC394955@marimba.home.net>
+Message-ID: <20040102004020.GA27227@zewt.org>
+References: <20031224003200.GB25270@zewt.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20031224003200.GB25270@zewt.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -13,39 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: ted@nowtsfree.freeserve.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, Dec 23, 2003 at 07:32:00PM -0500, Glenn Maynard wrote:
+> The attached program results in:
+> 
+> ./a.out
+> a.out: pcm_plug.c:882: snd_pcm_plug_hw_params: Assertion `err >= 0' failed.
+> zsh: 22948 abort      ./a.out
+> 
+> This is with CVS alsa-utils (and 0.9.6 or 0.9.8), whatever is in 2.6.0 test9,
+> and an SBLive.  It goes away if the sample rate block is uncommented.
 
-The cvs export for 2003-12-31 will not build for me ...
+I've tested this on a different machine; it's happening on both
+snd_intel8x0 and snd_emu10k1, with 2.6.0 (final) and current CVS
+alsa-lib.
 
-copying file alsa-kernel/core/pcm_native.c
-patching file pcm_native.c
-Hunk #2 succeeded at 2656 (offset 47 lines).
-Hunk #4 succeeded at 2729 (offset 47 lines).
-Hunk #6 FAILED at 2796.
-Hunk #7 FAILED at 2823.
-Hunk #8 FAILED at 2851.
-Hunk #9 FAILED at 2878.
-Hunk #10 succeeded at 2957 (offset 51 lines).
-Hunk #11 FAILED at 2980.
-Hunk #13 FAILED at 2965.
-Hunk #14 succeeded at 3030 (offset 53 lines).
-Hunk #16 succeeded at 3072 (offset 53 lines).
-Hunk #18 succeeded at 3206 (offset 53 lines).
-6 out of 19 hunks FAILED -- saving rejects to file pcm_native.c.rej
-make[1]: *** [pcm_native.c] Error 1
-make[1]: Leaving directory `/u2/lfs/alsa-cvsexport-2003-12-31/alsa-driver/acore'
-make: *** [dep] Error 1
-
-The patch file in 2003-12-31/alsa-driver/acore/pcm_native.patch
-needs updating.
-
-Ted.
 -- 
-Ted <ted@nowtsfree.freeserve.co.uk>
-   http://www.nowtsfree.freeserve.co.uk
+Glenn Maynard
 
 
 -------------------------------------------------------
