@@ -1,19 +1,10 @@
-From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
-Subject: Re: question regarding latest CS4205 laptop soundcard driver
-Date: Tue, 26 Feb 2002 10:59:58 +0000
-Message-ID: <20020226105958.H12212@ecs.soton.ac.uk>
-References: <000001c1be5a$13453000$ac1f830a@ico>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Status of ALSA documentation?
+Date: Tue, 26 Feb 2002 15:49:02 +0100 (CET)
+Message-ID: <Pine.LNX.4.33.0202261547270.1968-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
-Received: from ecs.soton.ac.uk (inanna.ecs.soton.ac.uk [152.78.65.48])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA27800
-	for <alsa-devel@alsa-project.org>; Tue, 26 Feb 2002 12:00:19 +0100
-Received: (from swh@localhost)
-	by ecs.soton.ac.uk (8.11.6/8.11.2) id g1QAxxB13646
-	for alsa-devel@alsa-project.org; Tue, 26 Feb 2002 10:59:59 GMT
-Content-Disposition: inline
-In-Reply-To: <000001c1be5a$13453000$ac1f830a@ico>; from ico@fuse.net on Mon, Feb 25, 2002 at 07:11:02 -0500
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <200202251744.MAA19835@renoir.op.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,25 +13,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Paul Davis <pbd@Op.Net>
+Cc: "pshirkey@boosthardware.com" <pshirkey@boosthardware.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Feb 25, 2002 at 07:11:02 -0500, Ivica Bukvic wrote:
-> Finally, my last question is whether anyone has had any experience with
-> Dell=92s new line of Inspirons 4100 which have only one fan and have be=
-en
-> relatively altered from the old 4000/8000 models, also whether anyone
-> knows if that model still has the fan bug like the inspirons 4000/8000
-> do?
+On Mon, 25 Feb 2002, Paul Davis wrote:
 
-My 8100 doesn't appear to hav the fan bug (if you mean latency spikes whe=
-n
-it stops and starts).
+> I think that simply for working on this, Patrick should be made
+> webmaster for alsa-project.org. The simple fact that he has bothered
+> to do some work on the website moves him beyond almost anybody else on
+> the list, though in most cases, for all the right reasons.
 
-the linux-dell-laptops mailing list would be a good place to ask other
-questions, but no-one there uses alsa.
+It's fine with me. I offered write access to WWW tree to him a few days 
+ago.
 
-- Steve=20
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
+
 
 _______________________________________________
 Alsa-devel mailing list
