@@ -1,14 +1,12 @@
-From: Conrad Parker <conrad@vergenet.net>
-Subject: Re: Removal of /proc/asound ?
-Date: Tue, 20 May 2003 14:40:30 +1000
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: [linux-audio-dev] Alsa /dev/sequencer stuff
+Date: Tue, 20 May 2003 00:47:41 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030520044030.GD24175@vergenet.net>
-References: <20030517081625.6ef24458.erikd-alsa@mega-nerd.com> <Pine.LNX.4.44.0305171343140.21997-100000@pnote.perex-int.cz> <20030518081331.7b9eca31.erikd-alsa@mega-nerd.com> <s5h4r3re0a8.wl@alsa2.suse.de> <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <E19HywJ-0002tc-00@sc8-sf-list1.sourceforge.net>
+References: <000201c31e86$6cacf0f0$ac1f830a@ICO>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20030519200301.1c3276f7.erikd-alsa@mega-nerd.com>
+In-reply-to: Your message of "Tue, 20 May 2003 00:15:19 EDT."
+             <000201c31e86$6cacf0f0$ac1f830a@ICO>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +15,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: linux-audio-dev@music.columbia.edu
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 19, 2003 at 08:03:01PM +1000, Erik de Castro Lopo wrote:
-> 
-> I therefore strongly urge you to keep 2.4 functionality as it was and feel
-> free to do whatever is needed for the 2.5/2.6 kernel.
+>In my app (RTMix) I will be soon implementing multiple midi-input device
+>opens, so that the app can be controlled from as many of the midi
+>controllers simultaneously as possible. One way of devising this was to
+>design a separate thread for every open device (using raw midi /dev/midi
+>etc., although I will be re-implementing that to use ALSA devices
+>directly). 
 
-erik, you're hassling the wrong people -- a script exists to make the
-devices you want, this is a packaging problem for el Debian ALSA Psychos
-(knowing that erik uses debian), and a bog-standard GOTCHA for CVS users,
-unless it can be done by make install or something.
+although i've been a big advocate of using raw midi ports in the past,
+i've pretty swung around on this issue. i think you should use the
+ALSA sequencer API instead. that way you can connect applications to
+each other, rather than just applications to h/w. same thinking as
+JACK in this regard.
 
--- 
-    <K
-       <K
- <K
+>	    However, this might not be the most elegant way of doing
+>this, so what I was wondering is how does the /dev/sequencer correspond
+>to this issue? I mean, does it work the same way like addressing the raw
+>midi ports, are the message formats the same, and most importantly does
+>one SINGULAR /dev/sequencer encompass all of the midi ports that are
+>currently available?
+
+no, just one port. the OSS sequencer /dev/sequencer is only a
+scheduler - it has no routing capabilities at all.
+
+the ALSA sequencer (/dev/snd/seq etc.) is a multiplexer/demultiplexer,
+and handles both scheduling and routing, and covers all available h/w
+ports and registered s/w clients.
+
+don't leave home without it :)
 
 
 -------------------------------------------------------
