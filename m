@@ -1,12 +1,15 @@
 From: Glenn Maynard <glenn@zewt.org>
 Subject: Re: snd_pcm_wait returning EPIPE
-Date: Tue, 12 Oct 2004 19:30:02 +0000 (UTC)
+Date: Tue, 12 Oct 2004 19:31:44 +0000 (UTC)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20050101153250.GD15736@zewt.org>
+Message-ID: <20050101153250.GD15736__39535.7633861296$1097609504$gmane$org@zewt.org>
 References: <20041007152634.GK12858@zewt.org> <s5hwtxx4kxn.wl@alsa2.suse.de> <20041011141156.GU12858@zewt.org> <s5hfz4l4741.wl@alsa2.suse.de> <20041011152620.GW12858@zewt.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from h0040333b7dc3.ne.mediaone.net (h00045a576c6a.ne.client2.attbi.com [65.96.98.23])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91F2E2E4
+	for <alsa-devel@alsa-project.org>; Tue, 12 Oct 2004 21:03:56 +0200 (MEST)
 Content-Disposition: inline
 In-Reply-To: <20041011152620.GW12858@zewt.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
