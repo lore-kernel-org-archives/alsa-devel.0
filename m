@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: PCM Params
-Date: Tue, 25 May 2004 07:42:21 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: pcm buffer size
+Date: Tue, 25 May 2004 14:07:40 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405251142.i4PBgLP0010364@dhin.linuxaudiosystems.com>
-References: <20040525105028.39912.qmail@web25102.mail.ukl.yahoo.com>
+Message-ID: <Pine.HPX.4.33n.0405251358540.6093-100000@studcom.urz.uni-halle.de>
+References: <E1BSYzY-0004YC-00@mailer.emlix.com>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 25 May 2004 11:50:28 BST."
-             <20040525105028.39912.qmail@web25102.mail.ukl.yahoo.com>
+In-reply-to: <E1BSYzY-0004YC-00@mailer.emlix.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hi ,
->i'm trying to change the fragment size that the alsa
->driver is capturing/playing out. It's currently set at
->32 msecs(256 bytes).
->They are set in the runtime structure...
->   runtime->period_max ...etc
->Could anybody tell me which file these parameters are
->set in the alsa-driver directory?
+Nicolas H=FCppelsh=E4user wrote:
+> I'm using alsa 1.0.4.  How can I get a larger alsa buffer size?
 
-you should be using snd_pcm_hw_params_set_period_size()
+PCM devices have a default maximum buffer size and a maximum maxmimum
+buffer size.  For example, in the snd-usb-audio driver, it's 64 KB an=
+d
+128 KB.
+
+The current value (in KB) can be seen in the file
+/proc/asound/cardX/pcmXY/subX/prealloc.  You can change it with
+
+  echo 128 > /proc/asound/card0/pcm0p/sub0/prealloc
+
+
+In most cases, the maxmimum buffer size is constrained by hardware
+limitations, but in the case of snd-usb-audio, it should be safe to
+raise this value (look for the call to snd_pcm_lib_preallocate_pages(=
+)
+in usbaudio.c).
+
+
+HTH
+Clemens
+
 
 
 
