@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
-Date: Mon, 27 Dec 2004 15:48:26 +0100
-Message-ID: <cb85b005bd18b6f0760317c9e31c229b@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
+Date: Mon, 27 Dec 2004 15:48:45 +0100
+Message-ID: <1791b4ba266a668b022b8cc0e65a2832@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9557244
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:48:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8D9B6244
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:48:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=552> 
 ======================================================================
-Reported By:                ronis
-Assigned To:                perex
+Reported By:                footcow
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   665
-Category:                   0_compilation problem_!!!
+Issue ID:                   552
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
+Distribution:               Debian
+Kernel Version:             2.6.8.1
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-22-2004 19:31 CET
+Date Submitted:             09-30-2004 01:29 CEST
 Last Modified:              12-27-2004 15:48 CET
 ======================================================================
-Summary:                    Build failure in
-/usr/src/alsa/alsa-driver/acore/init.c
+Summary:                    FATAL: Error inserting snd_azx
 Description: 
-There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
-CONFIG_PCI).  Here's the log:
-
-  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
-/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
-make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
-make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
-make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.9'
-make: *** [compile] Error 2
-
-Adding an extra #endif at the end of the file fixes things, although, I'm
-not 100% sure that this is the right place  top put things.
-
-(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
-profile)
-
+Impossible to make running the AZX Alsa driver on my PC, ASUS P5GD2 Premium
+motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
+Family) High Definition Audio Controller (rev 03) integrated sound.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- ronis - 11-23-04 22:15 
+ footcow - 11-23-04 22:01 
 ----------------------------------------------------------------------
-OK I moved all the alsa-* directories out of the way, did cvs -z3 update
--dP, followed by my usual build script.   The build now completes fully
-and there are no
-rejected patch files.   Better yet, the driver works.
+No sorry I put another bug report for last release 1.0.7 ...
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666
 
-As you thought, my CVS tree must have been corrupted somehow.
+I have no sound, no mixer ... more details in this bug report ...
+But since 1.0.7rc2 ... the module loaded do not crash anymore my linux
+:o)
 
-I guess this can be closed.
-
-Thanks for your help.
+But I will be really happy to give you some help for testing with my
+configuration (AsusTek P5GD2) ... I really want to get sound ! ;o)
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 12:19 
+ rlrevell - 11-23-04 22:04 
 ----------------------------------------------------------------------
-Ok, closed now.
+OK then this one should be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-22-04 19:31 ronis          New Issue                                    
-11-23-04 15:59 tiwai          Note Added: 0002517                          
-11-23-04 16:52 ronis          Note Added: 0002523                          
-11-23-04 17:44 tiwai          Note Added: 0002524                          
-11-23-04 18:20 ronis          Note Added: 0002525                          
-11-23-04 18:27 tiwai          Note Added: 0002526                          
-11-23-04 22:15 ronis          Note Added: 0002535                          
-11-24-04 12:19 tiwai          Status                   assigned => resolved
-11-24-04 12:19 tiwai          Resolution               open => not an issue
-11-24-04 12:19 tiwai          Note Added: 0002548                          
+09-30-04 01:29 footcow        New Issue                                    
+09-30-04 01:29 footcow        Distribution              => Debian          
+09-30-04 01:29 footcow        Kernel Version            => 2.6.8.1         
+11-23-04 21:48 footcow        Note Added: 0002529                          
+11-23-04 21:54 rlrevell       Note Added: 0002532                          
+11-23-04 22:01 footcow        Note Added: 0002533                          
+11-23-04 22:04 rlrevell       Note Added: 0002534                          
+11-24-04 12:28 tiwai          Status                   new => resolved     
+11-24-04 12:28 tiwai          Resolution               open => fixed       
+11-24-04 12:28 tiwai          Assigned To               => tiwai           
 12-27-04 15:48 tiwai          Status                   resolved => closed  
 ======================================================================
 
