@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Driver headers used by alsa-lib
-Date: Wed, 9 Oct 2002 08:58:12 +0200 (CEST)
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: [alsa-cvslog] CVS: alsa-lib/src/pcm pcm.c,1.222,1.223
+Date: Wed, 09 Oct 2002 09:06:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210090845590.519-100000@pnote.perex-int.cz>
-References: <s5hlm592nd9.wl@alsa2.suse.de>
+Message-ID: <3DA3D582.4161E6F3@libero.it>
+References: <E17zA6Z-00073b-00@usw-pr-cvs1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hlm592nd9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,94 +16,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pavel Roskin <proski@gnu.org>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 8 Oct 2002, Takashi Iwai wrote:
+Jaroslav Kysela wrote:
+> 
+> Update of /cvsroot/alsa/alsa-lib/src/pcm
+> In directory usw-pr-cvs1:/tmp/cvs-serv27101
+> 
+> Modified Files:
+>         pcm.c
+> Log Message:
+> Fixes in documentation for fast status
+> 
+> Index: pcm.c
+> ===================================================================
+> RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm.c,v
+> retrieving revision 1.222
+> retrieving revision 1.223
+> diff -u -r1.222 -r1.223
+> --- pcm.c       21 Sep 2002 19:01:24 -0000      1.222
+> +++ pcm.c       9 Oct 2002 06:13:57 -0000       1.223
+> @@ -373,16 +373,21 @@
+>  parameters - avail_max and overrange are reset to zero after the status
+>  call.
+> 
+> -\subsection pcm_status_fast Obtaining fast device status
+> +\subsection pcm_status_fast Obtaining device status fast
+> 
+>  The function \link ::snd_pcm_avail_update \endlink updates the current
+>  available count of samples for writing (playback) or filled samples for
+> -reading (capture).
+> +reading (capture). It is a light version of
+> +\link ::snd_pcm_status_get_avail \endlink, because it does not require
+> +the user <-> kernel context switch, but the value is less accurate,
+> +because ring buffer pointers are updated in kernel drivers only when
+> +an interrupt occurs.
+>  <p>
 
-> At Fri, 4 Oct 2002 13:20:32 -0400 (EDT),
-> Pavel Roskin wrote:
-> > 
-> > Hello!
-> > 
-> > There is another configuration problem that needs to be fixed.  I had ALSA
-> > already installed (CVS version as of a week ago or so).  Today I compiled
-> > alsa-driver, alsa-lib and alsa-util and then started installing them.
-> > 
-> > I found that "make install" caused recompilation in alsa-lib.  It used to
-> > be like that, but this time I wanted to do it right.
-> > 
-> > I found that the reason for recompilation is new files in
-> > /usr/include/sound/, in particular asoundef.h.  It turmed out that there
-> > are two different files with this name - one is
-> > alsa-lib/include/asoundef.h, the other is alsa-kernel/include/asoundef.h.
-> > 
-> > Object files under alsa-lib were compiled against headers in
-> > /usr/include/sound/, and "make install" in alsa-kernel installed new
-> > headers there.  The dependency was recorded by the compiler, so the
-> > alsa-lib object files became out of date.
-> > 
-> > It seems to me that there are at least two things wrong here.  First is
-> > that the kernel should not be installing its headers in places where they
-> > can be accidentally used.  Most software should not need those headers at
-> > all.
-> > 
-> > For example, Linux kernel includes are available under linux and asm in
-> > /usr/include.  When I'm using them, I'm well aware of the fact that it's
-> > essentially a private kernel interface and that I should avoid it if
-> > possible.
-> 
-> well, not all people are aware of that inclusion of kernel headers
-> will break portability ;)
-> 
-> > If I include <sound/asoundef.h>, I would assume that it's something for 
-> > user-space software, not for kernel drivers.  Maybe kernel headers should 
-> > be installed under /usr/include/sound/kernel if we install them at all?
->  
-> sound header files are not necessary except for alsa-lib and hardware
-> specific applications like alsa-tools' ones.
-> i think /usr/include/sound is confusing.  it looks like normal header
-> files...
-> 
-> 
-> > The other problem is that alsa-lib should be using its own headers from
-> > its own distribution rather than the preinstalled ones, otherwise we have 
-> > a whole new problem with compiling against an older library.
-> 
-> right.
-> 
-> actually i use the extracted alsa-kernel header files to build
-> alsa-lib rpm package, too, so why not in the alsa-lib tree itself?
-> 
-> we need only three files from alsa-kernel, namely, asound.h,
-> asoundef.h and asequencer.h.  they can be copied into alsa-lib tree,
-> for example, under alsa-lib/include/alsa-kernel directory, which will
-> be not copied to the public place.
-> 
-> or, we can keep the alsa-kernel header files on
-> /usr/include/alsa/kernel directory, so that we don't need two distinct
-> directories which may confuse people.  (even in this case, the three
-> files above should be duplicated in alsa-lib, though.)
-> 
-> 
-> Jaroslav, how about this?
+Wrong here:
+1) snd_pcm_status_get_avail is only an accessor method
+2) snd_pcm_avail_update call is *needed* for chained PCM (to call
+snd_pcm_status does not do the needed things).
 
-The duplication of headers does not sound so bad.
-The /usr/include/alsa/kernel is a good place.
-Do not forget to include all headers files (or portions) which can be 
-used from user space (emu10k1.h, sscape_ioctl.h, sb16_csp.h, asound_fm.h, 
-probably all ainstr_* files etc.).
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
-
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
