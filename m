@@ -1,14 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Wed, 19 Jan 2005 20:45:06 +0100
-Message-ID: <13fdd7b21b356296140ad94657dec48d@bugtrack.alsa-project.org>
+From: Mark Knecht <markknecht@gmail.com>
+Subject: Re: Maintaining sound card at a specific frequency
+Date: Wed, 19 Jan 2005 11:49:04 -0800
+Message-ID: <5bdc1c8b050119114935d0795b@mail.gmail.com>
+References: <5bdc1c8b050116130511757cbf@mail.gmail.com>
+	 <Pine.HPX.4.33n.0501191004500.7621-100000@studcom.urz.uni-halle.de>
+Reply-To: Mark Knecht <markknecht@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 584EE176
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 20:45:06 +0100 (MET)
+In-Reply-To: <Pine.HPX.4.33n.0501191004500.7621-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,89 +19,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 19 Jan 2005 10:07:18 +0100 (MET), Clemens Ladisch
+<clemens@ladisch.de> wrote:
+> Mark Knecht wrote:
+> > However if I open Mozilla and browse around the Pro Tools side starts
+> > telling me that the ADAT clock is invalid. My suspicion is that the
+> > web page I went to in Mozilla has some sort of audio content on it and
+> > it's not encoded at the frequency I'm running at so Mozilla tries to
+> > change the frequency of the card to adjust.
+> 
+> If you don't care about sound in Mozilla(/Flash), you could load the
+> snd-dummy driver and redirect the /dev/dsp symlink to that 'card'
+> ("ln -sf /dev/dsp1 /dev/dsp", assuming the card number is 1).
+> 
+> HTH
+> Clemens
+> 
+> 
+Clemens,
+   Hi. No, on the contrary, I do care about Mozilla having audio
+access. From this thread I think the set of features people like me
+would be looking for would be something like this:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
-======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
-======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              01-19-2005 20:45 CET
-======================================================================
-Summary:                    Poor digital aidio quality
-Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
+1) When Alsa is started the sound card comes up running in a known
+frequency. Solved with an amixer command in rc.local or some other
+config file.
 
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
+2) When Alsa is started the sound card comes up with a default set of
+mixer values. Not sure how to solve this yet for the HDSP 9652 but I
+presume another set of amixer commands may do this also.
 
-The gnome volume control does not affect the output level when using
-libOSS.
+3) When browsing the web, playing games or doing some other set of
+"normal everyday user" functions, audio commands from the application
+will not change the frequency of the card. I presume that this *might*
+be accomplished with some new default device in my .asoundrc file and
+using the plughw macro and software resampling, along with some
+capability like Takashi's modification to lock the sample rate.
 
-I have by now muted everything in the alsamixer except the Master volume.
+4) When a special audio control app like qjackctl initializes Jack
+then Jack can change the sample rate of the card. This allows me to
+have the Linux box as the main sample rate controller over the network
+when it needs to be.
 
-Playing a CD works fine.
-======================================================================
+   I think the above set of ideas would be pretty much what I'm
+looking for, but that still needs to be discussed a bit before anyone
+starts making major changes.
 
-----------------------------------------------------------------------
- ddemmer - 01-19-05 18:34 
-----------------------------------------------------------------------
-Some more info.
+Thanks!
 
-Things are getting better. I dug a bit more into the xmms
-Options/Preferences. I noticed a "configure" button for the Alsa playback,
-and noted it was set to "default PCM" When I changed that to emu10k1x
-Front hw:0,0 playback was fine.
-
-So, I think the "default PCM" was reset to something strange when I had
-the SB16 installed. I'm sure that when I get the time to look into the
-alsa config I can fix that and everything else will be fine.
-
-However, perhaps you guys should look into how the configuration files are
-updated when installing/reinstalling cards.
-
-----------------------------------------------------------------------
- tiwai - 01-19-05 20:45 
-----------------------------------------------------------------------
-Make sure that you have no pcm.default definition in ~/.asoundrc.
-
-Just to be sure: instead of hw:0,0, please try plughw:0,0.
-Does it work, too?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
-01-03-05 16:49 stransky       Issue Monitored: stransky                    
-01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
-01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
-01-16-05 14:57 fmoraes        Note Added: 0003217                          
-01-16-05 20:43 ddemmer        Note Added: 0003221                          
-01-19-05 18:34 ddemmer        Note Added: 0003310                          
-01-19-05 20:45 tiwai          Note Added: 0003317                          
-======================================================================
-
-
+- Mark
 
 
 -------------------------------------------------------
