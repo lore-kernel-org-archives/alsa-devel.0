@@ -1,10 +1,13 @@
-From: comercial-newprint@in-out.es
-Subject: Re: Question
-Date: Mon, 15 Nov 2004 10:18:02 -0500
-Message-ID: <200411151518.iAFFI2OO011411@host.verdial.org>
-References: <200411151518.iAFFI0Hl011360@host.verdial.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Implementing ALSA compatibility in OSS
+Date: Mon, 15 Nov 2004 17:01:38 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411151655090.1751@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0411151354510.12617-100000@studcom.urz.uni-halle.de>
+ <Pine.LNX.4.58.0411151518070.9417@zeus.compusonic.fi>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200411151518.iAFFI0Hl011360@host.verdial.org>
+In-Reply-To: <Pine.LNX.4.58.0411151518070.9417@zeus.compusonic.fi>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,18 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Hannu Savolainen <hannu@opensound.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-El correo al cual a enviado este eMail no existe, para contactar con nosotros por favor envie sus correos a alguna de las siguientes direcciones.
+On Mon, 15 Nov 2004, Hannu Savolainen wrote:
 
-administración@in-out.es 	Administracion Grupo IN-out.
+> OSS is a driver API and it's definitely designed to be used directly.
 
-comercial@in-out.es		Dpto. Comercial Grupo IN-out.
+It's (and was) a broken idea. We have never ending trouble to reroute your
+API to ours, because you have not designed a proper library in the user
+space to handle application requests. While you can use alsa-lib to 
+reroute ALSA apps to the OSS driver, we have no such simple way for ALSA 
+-> OSS path. We must do an emulation in the kernel side or use some hacks 
+to do proper rerouting.
 
-pedidos@in-out.es		Pedidos Grupo IN-out.
+						Jaroslav
 
-grafismo@in-out.es		Dpto. diseño Grupo IN-out
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
