@@ -1,8 +1,8 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Giuliano Pochini <pochini@denise.shiny.it>
 Subject: Re: Virtual multi channel devices
-Date: Wed, 15 Sep 2004 10:05:01 +0200 (CEST)
+Date: Wed, 15 Sep 2004 10:41:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409151003100.1774@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0409151000430.30383@denise.shiny.it>
 References: <XFMail.20040913094642.pochini@shiny.it>
  <Pine.LNX.4.58.0409131332250.11209@linux.iitis.gliwice.pl>
  <20040914195357.698f1ebb.pochini@shiny.it> <Pine.LNX.4.58.0409150957440.14383@linux.iitis.gliwice.pl>
@@ -19,34 +19,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Artur Rataj <arataj@iitis.gliwice.pl>
-Cc: Giuliano Pochini <pochini@shiny.it>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+
 
 On Wed, 15 Sep 2004, Artur Rataj wrote:
 
 > On Tue, 14 Sep 2004, Giuliano Pochini wrote:
-> 
+>
 > > This is required if the cards can't syncronize the sample clock and it makes
 > > the thing much more complex and inaccurate.
-> >
-> 
+>
 > If synchronizing by interrupt times is inaccurate, then the cards
-> should have not only clock sync, but also start/stop sync? But such a
-> start/stop sync would probably require some support from the driver?
-> Does ALSA support it?
+> should have not only clock sync, but also start/stop sync?
 
-Yes, see snd_pcm_link()
+No, timestamps are accurate enough, but if the cards have indipendent
+sample clock, they use a different sample rate. Thus they go out of sync
+more and more over time and you need to resample one of the streams to
+keep them syncronized. It's a complex and CPU-hungry process. Instead, if
+the cards can sync the sample clock, you only have to correct the
+different start time, which is simple. Just add some padding in front of
+one of the substreams. My knowledge of the userspace API is very poor, but
+I think all the above can already be done using the timer API. Have a look
+at alsa-lib/test/latency.c .
 
-> And if yes, which cards are supported?
 
-All having this hw feature.
+> But such a start/stop sync would probably require some support from the
+> driver?
 
-						Jaroslav
+Yes, of course. It's a hardware feature.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+> Does ALSA support it? And if yes, which cards are supported?
+
+It supports sync start/stop of substreams that belong to the same card,
+but not among different cards AFAIK.
+I don't know if some cards can do syncronous start/stop.
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
