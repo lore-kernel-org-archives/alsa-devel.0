@@ -1,10 +1,9 @@
 From: Florian Bomers <Florian.Bomers@sun.com>
-Subject: Re: snd_pcm_hw_params_current() ?
-Date: Tue, 08 Oct 2002 12:30:24 -0700
+Subject: Re: snd_ prefix for module options
+Date: Tue, 08 Oct 2002 12:35:48 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DA33250.15311A94@sun.com>
-References: <Pine.LNX.4.33.0210041401090.713-100000@pnote.perex-int.cz>
-		<3D9DD827.B4C02E22@sun.com> <s5hk7kt2mik.wl@alsa2.suse.de>
+Message-ID: <3DA33394.A7C5D9AE@sun.com>
+References: <s5hfzvh2fid.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -18,62 +17,40 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-the thing that looks like bad API design is that snd_pcm_sw_params_current()
-exists and snd_pcm_hw_params_current() does not. I think it wouldn't even hurt
-if snd_pcm_hw_params_t would be cached in the lib for that. Maybe in a later
-ALSA revision, ALSA kernel support for that could be implemented.
+I like it a lot. Due to the prefix I was able to cleanly remove 0.5.x from my
+system, and we might want to do that later on with 0.9, too :)
 
-Thanks,
+And since I don't see any benefit in removing the prefix - other than cosmetic -
+keeping it will save time for distribution's programmers, sysadmins, writers,
+etc. to update their setup routines, configs, howtos, etc. :)
+
 Florian
+
 
 Takashi Iwai wrote:
 > 
-> At Fri, 04 Oct 2002 11:04:23 -0700,
-> Florian Bomers wrote:
-> >
-> > Jaroslav Kysela wrote:
-> > >
-> > > On Thu, 3 Oct 2002, Florian Bomers wrote:
-> > >
-> > > > Hi,
-> > > >
-> > > > there is snd_pcm_sw_params_current() but not snd_pcm_hw_params_current(). How
-> > > > can I get the current hardware configuration for a given snd_pcm_t handle ? Am I
-> > > > missing something ?
-> > >
-> > > Hardware parameters must be configured from application all time.
-> >
-> > So that means that I need to cache hw params if I ever want to use them again ?
-> > E.g. my app does this:
-> >
-> > open(), set hw params, set sw params
-> > free hw params and sw params to save memory
-> >
-> > work with the device: start/write/stop/etc.
-> >
-> > When I now want to know the buffer size, I would like to obtain the current hw
-> > params which I had set above to the pcm handle.
-> >
-> > I understand that I initially need to set hw params to a pcm handle before I
-> > could get current hw params, but once I did that, especially in prepared/running
-> > state, the device has well-defined hw params and why shouldn't people be allowed
-> > to query them ?
+> Hi,
 > 
-> simply because the query function is not implemented on the kernel
-> side :)
+> so far, all alsa modules use snd_ prefix for each module option.
+> iirc, there was a problem regarding namespace at the time of 2.0
+> kernel, and this was some workaround to avoid confliction.
+> but 2.2 and later kernels have no such a problem at all.
 > 
-> or, we can add the code to alsa-lib to duplicate the hw_params /
-> sw_params privately, and returns it via the query function.
-> but it's not much different fromt keeping hw_params or sw_params
-> record in the application by yourself.
+> so, i'd like to ask you how do you think to remove this snd_ prefix.
+> of course, there is one and only big problem - compatibility!
 > 
-> please note that on the kernel, hw_params and sw_params are not stored
-> as they are but their members are copied to runtime struct.  so if the
-> query api is implemented, we need a function to convert from runtime
-> to hw_params or sw_params.
+> the questions are
+> 
+> - whether we should really do it or not?  is it worthy?
+> 
+> and
+> 
+> - when? now or after 0.9.0-final release?
+> 
+> opinions, please?
 > 
 > Takashi
 > 
