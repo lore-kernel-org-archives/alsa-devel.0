@@ -1,12 +1,20 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: kernel 2.2
-Date: Wed, 7 Jan 2004 23:38:44 +0100
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: [Openal-devel] Software fallback.
+Date: Thu, 08 Jan 2004 01:32:34 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040107223844.GA15133@tuba.home>
+Message-ID: <1073539954.32109.28.camel@localhost>
+References: <1073270749.4149.35.camel@localhost>
+	 <1073320851.18395.109.camel@joe.fatnsoft.com>
+	 <1073354941.10064.15.camel@localhost>
+	 <1073369731.4993.1.camel@joe.fatnsoft.com>
+	 <1073395480.1386.6.camel@localhost>
+	 <21540.198.95.32.195.1073502943.squirrel@www.hibyte.com>
+Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <21540.198.95.32.195.1073502943.squirrel@www.hibyte.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,39 +23,67 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-I have two warnings with 2.2. The first one is still not fixed:
+I'm cross posting this from OpenAL, since it may have some relevance to
+ALSA.
 
-pci_compat_22.c: In function snd_pci_compat_release_region':
-pci_compat_22.c:384: warning: implicit declaration of function
-release_mem_region'
+As some already might know, i'm designing a ALSA - OpenAL interface for
+advanced hardware feature support.
 
+As far as i understood, they say that the would prefer to handle any
+kind of resource managing and moire specifically "software fallback"
+functions inside of each driver. I don't know yet much about the "plug"
+extensions, but i remember someone commenting that one can pass PCM data
+through LADSPA plugins with this. I was thinking that maybe such a kind
+of mechanism could be used to route "software fallback" PCM channels
+through appropriate software filters. Could anyone with more knowledge
+comment about that ?
 
-... and the second one needs this fix:
-
-
---- pcm_native.c~	Thu Jan  1 22:06:44 2004
-+++ pcm_native.c	Wed Jan  7 23:27:20 2004
-@@ -2901,8 +2901,14 @@
- 	if (size != PAGE_ALIGN(sizeof(snd_pcm_mmap_status_t)))
- 		return -EINVAL;
- 	area->vm_ops = &snd_pcm_vm_ops_status;
--	area->vm_private_data = substream;
--	area->vm_flags |= VM_RESERVED;
-+#ifndef LINUX_2_2
-+        area->vm_private_data = substream;
-+#else
-+        area->vm_private_data = (long)substream;
-+#endif
-+#ifdef VM_RESERVED
-+        area->vm_flags |= VM_RESERVED;
-+#endif
- 	return 0;
- }
+Best Regards
  
+
+On Wed, 2004-01-07 at 15:15, Garin Hiebert wrote:
+> > OK. I understood. But why is "all hardware sources is good, use hardware
+> > sources until you run out and then software" so bad at all ? I think
+> > that precisely that should be the most desirable behavior.
+> >
+> > For example the now dead A3D API includes a resource manager for
+> > handling this. So the sources that really need spatialization, they get
+> > it in hardware. Other things like ambient sounds and the like get other
+> > normal DMA channels. Only if the preset maximal software sources value
+> > is crossed, the next sources get "virtual" (no hardware nor software
+> > handles them). As soon as a new source is available, the most highest
+> > priority "virtual source" takes it place.
+> 
+> I suppose this would be a good item to put into a FAQ, if we had one (note
+> to self...).
+> 
+> The reason why hardware sources don't "rollover" to software sources is
+> that the transition from one to the other would be noticable in a really
+> bad way.  If you have a 7.1 speaker setup playing X sources with EAX
+> support, you don't want to add one more source and find that it is only
+> spatialized into the front two speakers without reverb -- that would just
+> sound strange.  On top of that, all of a sudden a game's framerate would
+> radically change.  You might be running along at 60 frames per second with
+> hardware sources, and then suddenly the game creates five software sources
+> and the framerate goes down to 45 fps because of the entirely new
+> rendering path being activated.
+> 
+> At some point, the application should deal with voice management anyways
+> -- having an un-constrained number of sources for your application will
+> just lead to miserable performance for no good reason (in that there
+> probably aren't 758 things you really should be listening to at the same
+> time anyways even if they can all be rendered).
+> 
+> Garin
+> 
+> 
+> 
+
 
 
 -------------------------------------------------------
