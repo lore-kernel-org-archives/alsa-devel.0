@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000497]: cdplayer and midi does'n work
-Date: Mon, 20 Sep 2004 17:43:02 +0200 (CEST)
+Subject: [ALSA - driver 0000214]: ac3 passthrough not working
+Date: Mon, 20 Sep 2004 17:44:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920154302.8FBA04904D@server.perex-int.cz>
+Message-ID: <20040920154445.7B75F4904E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E12FE335
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 17:43:02 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9FD3426130
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 17:43:02 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB2D1335
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 17:44:45 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,475 +22,165 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000497
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
 ======================================================================
-Reported By:                maciekb
+Reported By:                m_stolle
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     497
-Category:                   PCI - via82xx
+Bug ID:                     214
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.6.7
+Distribution:               Debian
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             09-11-2004 16:46 CEST
-Last Modified:              09-20-2004 17:43 CEST
+Date Submitted:             04-16-2004 05:06 CEST
+Last Modified:              09-20-2004 17:44 CEST
 ======================================================================
-Summary:                    cdplayer and midi does'n work
+Summary:                    ac3 passthrough not working
 Description: 
-I have A7V600-X motherboard with via8237 chipset
-My cdplayer does'n play and i do not have midi. 
+I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
+card.  Unfortunately, the hardware AC3 passthrough does not work. 
+Instead, I only get a high-pitched funny noise.
+
+The symptoms are the same in mplayer as well as in xine.  Verbose output
+of mplayer provided below:
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-13-2004 15:32 CEST 
+ m_stolle - 09-11-2004 05:25 CEST 
 ----------------------------------------------------------------------
-Make sure that you unmuted and raised the volume of CD mixer control.
-Please attach /etc/asound.state.
-
-The hardware doesn't support MIDI (playback).
-Possibly, the external MIDI UART is supported by snd-mpu401.
-If you want a soft MIDI synth, try the softsynth program like TiMidity.
+This bug is still present in 2.6.8.1  Am I the only one with this bug?
 
 ----------------------------------------------------------------------
- maciekb - 09-15-2004 22:17 CEST 
+ tiwai - 09-13-2004 15:41 CEST 
 ----------------------------------------------------------------------
-CD mixer control is unmuted, i also tried switch every control I have
-found.
-Here is asound.state:
-
-cat /var/lib/alsa/asound.state
-state.rev60 {
-        control.1 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Master Surround Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.2 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Master Surround Playback Volume'
-                value.0 16
-                value.1 16
-        }
-        control.3 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Center Playback Switch'
-                value false
-        }
-        control.4 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Center Playback Volume'
-                value 0
-        }
-        control.5 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'LFE Playback Switch'
-                value false
-        }
-        control.6 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'LFE Playback Volume'
-                value 0
-        }
-        control.7 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Surround Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.8 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Surround Playback Volume'
-                value.0 0
-                value.1 0
-        }
-        control.9 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Master Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.10 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Master Playback Volume'
-                value.0 19
-                value.1 19
-        }
-        control.11 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Master Mono Playback Switch'
-                value true
-        }
-        control.12 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Master Mono Playback Volume'
-                value 20
-        }
-        control.13 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Phone Playback Switch'
-                value false
-        }
-        control.14 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Phone Playback Volume'
-                value 0
-        }
-        control.15 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Mic Playback Switch'
-                value false
-        }
-        control.16 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Mic Playback Volume'
-                value 0
-        }
-        control.17 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Mic Boost (+20dB)'
-                value false
-        }
-        control.18 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Line Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.19 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Line Playback Volume'
-                value.0 23
-                value.1 23
-        }
-        control.20 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'CD Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.21 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'CD Playback Volume'
-                value.0 24
-                value.1 24
-        }
-        control.22 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Aux Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.23 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'Aux Playback Volume'
-                value.0 27
-                value.1 27
-        }
-        control.24 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'PCM Playback Switch'
-                value.0 true
-                value.1 true
-        }
-        control.25 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'PCM Playback Volume'
-                value.0 31
-                value.1 31
-        }
-        control.26 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.item.0 Mic
-                comment.item.1 CD
-                comment.item.2 Video
-                comment.item.3 Aux
-                comment.item.4 Line
-                comment.item.5 Mix
-                comment.item.6 'Mix Mono'
-                comment.item.7 Phone
-                iface MIXER
-                name 'Capture Source'
-                value.0 CD
-                value.1 CD
-        }
-        control.27 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Capture Switch'
-                value.0 false
-                value.1 false
-        }
-        control.28 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 15'
-                iface MIXER
-                name 'Capture Volume'
-                value.0 0
-                value.1 0
-        }
-        control.29 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.item.0 Mic1
-                comment.item.1 Mic2
-                iface MIXER
-                name 'Mic Select'
-                value Mic1
-        }
-        control.30 {
-                comment.access read
-                comment.type IEC958
-                iface MIXER
-                name 'IEC958 Playback Con Mask'
-                value
-'0fff000f00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-        }
-        control.31 {
-                comment.access read
-                comment.type IEC958
-                iface MIXER
-                name 'IEC958 Playback Pro Mask'
-                value
-cf00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-        }
-        control.32 {
-                comment.access 'read write'
-                comment.type IEC958
-                iface MIXER
-                name 'IEC958 Playback Default'
-                value
-'0082000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000'
-        }
-        control.33 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'IEC958 Playback Switch'
-                value true
-        }
-        control.34 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 3'
-                iface MIXER
-                name 'IEC958 Playback AC97-SPSA'
-                value 3
-        }
-        control.35 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.item.0 AC-Link
-                comment.item.1 'A/D Converter'
-                iface MIXER
-                name 'IEC958 Playback Source'
-                value AC-Link
-        }
-        control.36 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Exchange Front/Surround'
-                value false
-        }
-        control.37 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Spread Front to Surround and Center/LFE'
-                value false
-        }
-        control.38 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.item.0 Off
-                comment.item.1 '6 -> 4'
-                comment.item.2 '6 -> 2'
-                iface MIXER
-                name Downmix
-                value Off
-        }
-        control.39 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Surround Jack as Input'
-                value false
-        }
-        control.40 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Center/LFE Jack as Input'
-                value false
-        }
-        control.41 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'Stereo Mic'
-                value false
-        }
-        control.42 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'External Amplifier'
-                value true
-        }
-        control.43 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.item.0 Input1
-                comment.item.1 Input2
-                iface MIXER
-                name 'Input Source Select'
-                value Input1
-        }
-        control.44 {
-                comment.access 'read write'
-                comment.type ENUMERATED
-                comment.item.0 Input1
-                comment.item.1 Input2
-                iface MIXER
-                name 'Input Source Select'
-                index 1
-                value Input1
-        }
-        control.45 {
-                comment.access 'read write'
-                comment.type BOOLEAN
-                iface MIXER
-                name 'IEC958 Output Switch'
-                value false
-        }
-        control.46 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'VIA DXS Playback Volume'
-                value.0 31
-                value.1 31
-        }
-        control.47 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'VIA DXS Playback Volume'
-                index 1
-                value.0 31
-                value.1 31
-        }
-        control.48 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'VIA DXS Playback Volume'
-                index 2
-                value.0 31
-                value.1 31
-        }
-        control.49 {
-                comment.access 'read write'
-                comment.type INTEGER
-                comment.range '0 - 31'
-                iface MIXER
-                name 'VIA DXS Playback Volume'
-                index 3
-                value.0 31
-                value.1 31
-        }
-}
+How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
 
 ----------------------------------------------------------------------
- tiwai - 09-20-2004 17:43 CEST 
+ m_stolle - 09-17-2004 05:05 CEST 
 ----------------------------------------------------------------------
-The mixer setting looks OK.  Are you sure that you connected the
-"analog"-cable
-from CD-ROM to your mobo?
+I just recompiled alsa 1.0.7rc1
+
+still same problem 8-(
+
+----------------------------------------------------------------------
+ stoffel - 09-17-2004 10:45 CEST 
+----------------------------------------------------------------------
+I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
+(kernel 2.4.27). So, any solution for that problem ?
+
+ The 5.1 sound works without passthrough with following entry in
+.xine/config
+
+audio.alsa_a52_device:iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2.
+
+First I start mplayer with
+
+#mplayer -ao alsa1x:spdif dvd://
+.
+
+After that I could start xine and my 5.1 Soundsystem works (without
+passthrough !!!)
+ 
+I don't know how I get the information for the xine entry. I still probe
+many tools for alsa & co and so I've got the information. Where ? I don't
+know, sorry.
+
+edited on: 09-17-04 10:43
+
+edited on: 09-17-04 10:45
+
+----------------------------------------------------------------------
+ m_stolle - 09-17-2004 14:12 CEST 
+----------------------------------------------------------------------
+I have tried recreating those steps, but it still doesn't work.  I first
+start mplayer with exactly the options you describe (no sound though?). 
+Then I edited .xine/config, started xine, switched to 5.1 surround
+(instead of stereo 2.0), restart xine, no more sound.  Redid the mplayer
+command, started xine again, still no sound.
+
+Which version of xine/mplayer are you using?  AFAIK, the alsa1x driver for
+mplayer is not used anymore, it's just alsa ?  My Xine version is 0.99.1,
+my mplayer version is   1.0pre5-3.3.4.
+
+Thanks,
+  Martin
+
+----------------------------------------------------------------------
+ stoffel - 09-18-2004 16:55 CEST 
+----------------------------------------------------------------------
+Hello m_stolle,
+
+my mplayer version is  1.0pre4-3.3.1 and it works fine with mplayer and
+the alsa1x:spdif option. With xine (since version 0.98, I beleave) I must
+probe something. Most of the time it will be work, sometime it doesn*t
+;-(. But anytime with mplayer. 
+The 5.1 output by the laptop is on the left side (video and audio -> av
+adapter ). This output I connect with a 5.1 System (loudspeaker with an
+internal 5.1 decoder). Because the passthrough don't work, the 5.1 system
+play the 5.1 sound from the laptop (notebook). The internal decoder of the
+5.1 system will not be use.
+
+Sorry, for the bad english. I need a new course in english.I hope you
+understand me ;-).
+
+stefan
+
+edited on: 09-18-04 16:54
+
+edited on: 09-18-04 16:55
+
+----------------------------------------------------------------------
+ m_stolle - 09-18-2004 17:50 CEST 
+----------------------------------------------------------------------
+I think I understand you, but I am not sure what you mean.  The Inspiron
+8.2k does not have a 5.1 output, only a digital S/PDIF output (via dongle
+on the left side).  In general, when playing a DVD using software, there
+are two ways the sound can get out of the computer:  Either a Software
+surround (AC3/DTS) decoder is used and the decoded sound is to a sound
+card with multiple discrete analog outputs (not possible on I8.2k, because
+no such sound card), OR, the digital sound is "passed-through" to the
+S/PDIF and decoded by an external decoder.  I am assuming your speakers
+have a built-in digital decoder and use the S/PDIF output via the dongle. 
+Hence, you _ARE_ using pass-through.  Pass-through means bypassing the
+software decoder and using an external decoder.
+
+Maybe we should take this discussion off this bug-trackign system, can you
+eMail me at mstoll@sus.mcgill.ca ? (In case you are German, you can eMail
+me in German, as I am German, too)
+
+----------------------------------------------------------------------
+ tiwai - 09-20-2004 17:44 CEST 
+----------------------------------------------------------------------
+As tests, try ac3dec included in alsa-utils package.
+(Run with -C option.)
+
+This eliminates an ambiguous factor (the difference of apps).
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-11-04 16:46 maciekb        New Bug                                      
-09-11-04 16:46 maciekb        Distribution              => Debian unstable 
-09-11-04 16:46 maciekb        Kernel Version            => 2.6.7           
-09-13-04 15:32 tiwai          Bugnote Added: 0001745                       
-09-15-04 22:17 maciekb        Bugnote Added: 0001765                       
-09-20-04 17:43 tiwai          Bugnote Added: 0001790                       
+04-16-04 05:06 m_stolle       New Bug                                      
+04-16-04 05:06 m_stolle       Distribution              => Debian          
+04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
+09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
+09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
+09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
+09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
+09-17-04 10:42 stoffel        Bugnote Added: 0001778                       
+09-17-04 10:43 stoffel        Bugnote Edited: 0001776                      
+09-17-04 10:43 stoffel        Bugnote Deleted: 0001778                     
+09-17-04 10:45 stoffel        Bugnote Edited: 0001776                      
+09-17-04 14:12 m_stolle       Bugnote Added: 0001779                       
+09-18-04 16:52 stoffel        Bugnote Added: 0001782                       
+09-18-04 16:54 stoffel        Bugnote Edited: 0001782                      
+09-18-04 16:55 stoffel        Bugnote Edited: 0001782                      
+09-18-04 17:50 m_stolle       Bugnote Added: 0001783                       
+09-20-04 17:44 tiwai          Bugnote Added: 0001791                       
 ======================================================================
 
 
