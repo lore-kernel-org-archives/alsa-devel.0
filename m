@@ -1,18 +1,13 @@
-From: John covici <covici@ccs.covici.com>
-Subject: Re: controls for the ice1712
-Date: Fri, 5 Jul 2002 15:09:39 -0400
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: Hercules Game Theater - cs4630
+Date: Fri, 05 Jul 2002 23:16:51 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <15653.61171.491789.920166@ccs.covici.com>
-References: <m37kka5j0w.fsf@ccs.covici.com>
-	<87bs9mql1s.fsf@anima.lensflare.org>
-	<15653.53156.683885.482594@ccs.covici.com>
-	<87k7oaks2i.fsf@anima.lensflare.org>
-Reply-To: covici@ccs.covici.com
+Message-ID: <3D260CC3.3000303@cucumelo.org>
+References: <3D23675F.7070204@cucumelo.org> <s5h65zwrln0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87k7oaks2i.fsf@anima.lensflare.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,35 +16,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Andrew Nesbit <alnesbit@optushome.com.au>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Well, this tool uses gtk -- unless there is an ncurses version of gtk
-I am out of luck.  I cannot yet access X apps because I need speech
-output to tell me what is on the screen -- it may be coming, but not
-soon.
+Finally a answer from someone, however it does not make me happier -;) ....
 
-on  07/06/2002 Andrew Nesbit(alnesbit@optushome.com.au) wrote
- > John covici <covici@ccs.covici.com> writes:
- > 
- > > What is this package -- I never heard of it whatsoever  alsa-tools.
- > > Its nnot on the normal ftp site maybe its in cvs or something?
- > > 
- > 
- > ftp://ftp.alsa-project.org/pub/tools/alsa-tools-0.9.0rc1.tar.bz2
- > 
- > > And what does envy24 do?
- > 
- > envy24control.  It's the ALSA equivalent of the M-Audio control panel
- > utility that you find in MS Windows.  It lets you access all(?) of the
- > functionality of your ice1712-based card.
- > 
- > Andrew.
+>>and the codecs CS4694, CS4697 and so on. But what about the programmers
+>>guide, does it not exist any open document like "CS4630 Programmers
+>>Manual", or something similar, where it explain how to program the DSP
+>>?? or is that not public ???
+>>
+>
+>no.
+>
+... the same history repeats again, what do they win keeping thoose 
+f*ck*ing spec.
+closed ....
 
--- 
-         John Covici
-         covici@ccs.covici.com
+>>Then i've sent mail to Cirrus and Hercules, of course without any
+>>response (yet) ....
+>>
+> 
+>i've been asking to cirrus logic many times, but no responce, too.
+>apparently cirruslogic has no interest in this chip at all, since
+>they stopped producing this chip.
+>
+The cs4630 chip is still in list of Cirrus available products.
+
+Maybe it's meaningless to continue with this, but i'm a very obstinate 
+persson and have not
+given up yet.
+I suspect that the specifications we need for the cs4630 are chipped 
+ordering the
+reference board manufacturing kit (CMK4630-10) plus a lot of OrCAD PCB 
+stuff .
+I believe that the Game Theater XP card is probably 99% based on the 
+CMK4630 reference
+design + "a breakout box".
+Then i've been trying to contact Cirrus to get some price information about
+the CMK4630-10 manufacturing kit and try to know what's included and maybe
+order one (if it's not too expensive), but Cirrus just sucks and have 
+not given me any
+response yet. Then today i tried to call directly to a Cirrus 
+distributor where people
+was gone on vacations and gone for weekend, so things just sucks!
+
+/Benny
+
 
 
 -------------------------------------------------------
