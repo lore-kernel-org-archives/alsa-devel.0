@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: USB devices should not oops after disconnect now
-Date: Wed, 27 Nov 2002 12:06:53 +0100 (CET)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: AD1816
+Date: Sat, 30 Nov 2002 00:03:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211271157460.532-100000@pnote.perex-int.cz>
-References: <3DE4A184.4020706@boosthardware.com>
+Message-ID: <20021129230323.GA946@tuba.home>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA03924
-	for <alsa-devel@alsa-project.org>; Fri, 29 Nov 2002 21:44:56 +0100
-In-Reply-To: <3DE4A184.4020706@boosthardware.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,53 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 27 Nov 2002, Patrick Shirkey wrote:
 
-> Jaroslav Kysela wrote:
-> > 
-> > Note that you'll have to terminate all applications using that soundcard
-> > before you'll try to reconnect the device again. In next code, hopefully
-> > the applications will be somehow terminated to make the cleanup process
-> > automatic.
-> > 
-> 
-> 
-> Ok. That's the probable cause as I am having problems with jack not 
-> releasing the device.
-> 
-> It seems that hotpluging out is a tricky issue because we have to decide 
-> whether the application/s that are using the device should also be 
-> terminated.
-> 
-> Is it possible to transparently swap snd-usb-audio with snd-dummy if it 
-> has been installed? That could be a secondary default if people would 
+Hi,
 
-It's too complicated and probably an overdesign. Also, what to do, if
-another hardware is plugged to the system than previous one? The full
-handshake between driver and application have to be triggered all times
-(old "disconnected" file descriptors have to be closed).
+there was no ad1816 document on ftp.alsa-project.org and so I was looking
+around and I found one here, but I don't know how long it's there...
 
-> prefer their apps do not automatically segv.
+http://theblue.net/hardware/datasheet/Converter/AD1816.PDF
 
-We have two choices:
 
-1) terminate all applications using a signal (SIG_KILL or SIG_TERM)
-2) disable all operations with a file descriptor and give an error code
-   to applications when disconnect occured so they can decide what to 
-   do - terminate - or wait until hardware is not available again - (this
-   is my goal)
+martin
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+-- 
+"2b|!2b"
 
 
 -------------------------------------------------------
