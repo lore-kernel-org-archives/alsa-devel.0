@@ -1,8 +1,8 @@
-From: Apostolos <apostolos@aei.ca>
+From: Apostolos Dimitromanolakis <apostolos@aei.ca>
 Subject: Re: soundcard matrix
-Date: Wed, 26 Nov 2003 18:04:49 -0500
+Date: Wed, 26 Nov 2003 18:05:39 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FC53191.702@aei.ca>
+Message-ID: <3FC531C3.1000509@aei.ca>
 References: <20031126214244.GA14389@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-7; format=flowed
@@ -21,12 +21,8 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
- Also, please add the AudioTrak Prodigy 7.1 as supported..  (driver ice1724)
-
-
-
-
-
+ Also, please add the AudioTrak Prodigy 7.1 as supported..  (driver 
+ice1724)
 
 
 
