@@ -1,11 +1,10 @@
-From: Webmaster Refstart.NL <webmaster@refstart.nl>
-Subject: Support for VIA8233A chipset
-Date: Wed, 15 May 2002 10:12:30 +0200
+From: Gerard Janssen <g.janssen@its.tudelft.nl>
+Subject: How to address the S/PDIF output ports on a SBLive!
+Date: Fri, 17 May 2002 15:17:43 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020515101230.6d8391b6.webmaster@refstart.nl>
+Message-ID: <acqdu6$ecp$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,71 +14,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi developers,
+Hi,
 
-I've a Soltek DRV5 motherboard with a onboard VIA8233A/AC97 soundcard. I downloaded the ALSA 0.9.0rc1 drivers, and tried to get the sound working with the snd-via8233 module. The modules seems to be loading OK:
+I am trying to send multiple digital audio streams to different SPDIF
+outputs of my soundcard (SBLive! Player 1024, CT4830, Rev. 6). This
+soundcard has a 40 pins external audio connector with four SPDIF outputs
+indicated as SPDIF#0 - 3. 
 
-tussen root # modprobe snd-via8233
-tussen root # modprobe snd-seq-oss
-tussen root # modprobe snd-mixer-oss
-tussen root # modprobe snd-pcm-oss
-tussen root # lsmod
-Module                  Size  Used by    Not tainted
-snd-pcm-oss            36260   0  (unused)
-snd-mixer-oss          10016   0  (unused)
-snd-seq-oss            24576   0  (unused)
-snd-seq-midi-event      3592   0  [snd-seq-oss]
-snd-seq                42828   2  [snd-seq-oss snd-seq-midi-event]
-snd-seq-device          4000   0  [snd-seq-oss snd-seq]
-snd-via8233             5028   0  (unused)
-snd-pcm                55104   0  [snd-pcm-oss snd-via8233]
-snd-timer              11808   0  [snd-seq snd-pcm]
-snd-ac97-codec         23844   0  [snd-via8233]
-snd                    29416   0  [snd-pcm-oss snd-mixer-oss snd-seq-oss snd-seq-midi-event snd-seq snd-seq-device snd-via8233 snd-pcm snd-timer snd-ac97-codec]
-8139too                14848   1 
-mii                     1168   0  [8139too]
+When I use the "front" channel in ALSA, this signal is also send to the
+SPDIF#0 output. When I use "iec958:AES0=0x4 , AES1 = 0x82 , AES2 = 0x0 ,
+AES3 = 0x2",the signal is send to the SPDIF#1 output. Both SPDIF outputs
+can be addresses simultaneously with different stereo audio streams.
+However, I have not been able to send a signal to the SPDIF#2,3 outputs.
 
-
-But when I try to play a file I get this error:
-
-tussen root # aplay /usr/kde/3/share/sounds/pop.wav 
-Playing WAVE '/usr/kde/3/share/sounds/pop.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-ALSA lib pcm_hw.c:411:(snd_pcm_hw_drain) SNDRV_PCM_IOCTL_DRAIN failed: Input/output error
-
-
-My /proc/pci:
-
-tussen root # cat /proc/pci
-PCI devices found:
-<rip>
-  Bus  0, device  17, function  5:
-    Multimedia audio controller: VIA Technologies, Inc. VT8233 AC97 Audio Controller (rev 64).
-      IRQ 11.
-      I/O at 0xe000 [0xe0ff].
-<rip>
-
-
-My ALSA version:
-
-tussen root # cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 0.9.0rc1.
-Compiled on May 14 2002 for kernel 2.4.19-gentoo-r5 (SMP) with versioned symbols.
-
-
-Will the VIA8233A chipset be supported soon? There are more people with the same problem, see also http://forums.viaarena.com/messageview.cfm?catid=28&threadid=13756
-Please can you help us?
+How do I address the SPDIF#2,3 outputs? Is it possible to send more then 2
+(preferably four) stereo audio streams to the SPDIF outputs.
+I hope somebody can help me to solve this problem.
 
 Thanks in advance,
 
-Niek van der Maas.
+Gerard Janssen 
 
-_______________________________________________
- _    Powered by:     __        /
-| \ _ |_  o  _ __    /__|\|| | / |   o __
-|_/(/_|_) | (_|| |   \_|| ||_|/  |__ | | ||_|><
 
 _______________________________________________________________
 
