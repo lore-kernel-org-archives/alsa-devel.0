@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Wed, 16 Mar 2005 01:33:09 +0100
-Message-ID: <dd00f0e016d4a505735e9a8d11d28260@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
+Date: Wed, 16 Mar 2005 02:09:04 +0100
+Message-ID: <e9c354137a8dc6f94172bc9081871ae2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AFC0021F
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 01:33:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 290601B1
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 02:09:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,59 +23,265 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
 ======================================================================
-Reported By:                jnilles
-Assigned To:                
+Reported By:                Q3Man
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   963
-Category:                   PCI - cs46xx
+Issue ID:                   752
+Category:                   PCI - emu10k1x
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               SuSE
-Kernel Version:             
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.9-gentoo-r9
 ======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-16-2005 01:33 CET
+Date Submitted:             12-28-2004 05:12 CET
+Last Modified:              03-16-2005 02:09 CET
 ======================================================================
-Summary:                    Sounc card is mute
+Summary:                    ALSA > 1.0.5a does not load, failed with error -16
 Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
+I'm having some problems with alsa since 1.0.6a. Previously I just had the
+later versions masked, but now various kde packages require the latest
+alsa, so I'm having to tackle it now. ALSA seems to start normally,
+however I get this error in dmesg: 
+EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+
+I also get this error when running alsamixer: 
+alsamixer: function snd_ctl_open failed for default: No such device 
+
+And similar ones in other alsa programs. 
+
+Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
+code and it seems that the error is vaguely interrupt related, but I could
+not find the code that produces error -16. I've swapped interrupts around
+and disabled non-essential devices (usb, serial, parallel ports, removed
+network cards and sound cards - although that last one proved slightly
+less than helpful :) I've changed from having my bios manage irq's to
+having the OS handle them with zero success. 
+
+I've looked around for that error code in google for the last few weeks -
+since the release of 1.0.6a with limited success. Nothing relevant to my
+situation. 
+
+Important configs and error messages:
+$ lspci -v |grep audio -A4
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Flags: bus master, medium devsel, latency 32, IRQ 12
+        I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+(It is an actual EMU10k1X and not the Dell bastardized version)
+
+$ /etc/init.d/alsasound start; dmesg |tail -n1
+ * Loading ALSA drivers...
+ * Using ALSA OSS emulation
+ * Loading: snd-mixer-oss
+ * Loading: snd-pcm-oss
+ * Loading: snd-seq-oss
+ * Running card-dependent scripts
+ * Restoring Mixer Levels                                                
+[ ok ]
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+$ uname -a
+Linux tobin1 2.6.9-gentoo-r9
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
+2004 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
+
+If anyone needs any other config information, please let me know. Again,
+it works perfectly fine in 1.0.5a, the problems only appear in later
+versions.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-10-05 22:04 
+ Q3Man - 03-15-05 22:32 
 ----------------------------------------------------------------------
-You unmuted and raised the levels of Master Playback, PCM and DAC?
+I've done some more research. It appears that the error -16 referrs to the
+device already being in use - at least that's what the error is in
+reference to the kernel which I assume alsa is just passing through.
+
+Google has been helpful this morning, and I tried a few new approaches
+that I hadn't thought of before. Speifically:
+
+>From http://www.linuxforum.com/forums/index.php?showtopic=53033 :
+It appears that in some cases hotplug may attempt to load an oss driver
+for the card before alsa gets a chance. Although I had no oss drivers to
+load, I disabled hotplug and rebooted, with no noticeable change in my
+sound (although my poor usb mouse was quite upset at me). 
+
+From
+http://sourceforge.net/mailarchive/forum.php?forum_id=1751&style=flat&viewday=18&viewmonth=200402
+:
+It looks like someone had issues with isapnp and irq's. Although I don't
+have isapnp installed I went ahead and disabled isa support in the kernel
+bus options and recompiled. No noticeable change to alsa.
+
+From
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg12066.html
+(and more specifically
+http://www.mail-archive.com/alsa-user@lists.sourceforge.net/msg12089.html):
+More IO goodness, however here it appears that they are looking into io
+ports as well as irq's. a quick lspci and checking my /proc/interrupts and
+/proc/ioports turns up something interesting. The io ports are listed for
+the device like this:
+d000-d01f : 0000:00:09.0
+d400-d407 : 0000:00:09.1
+however the irq it is set to (currently 10) doesn't appear in
+/proc/interrupts:
+  8:          2          XT-PIC  rtc
+ 11:      54357          XT-PIC  nvidia
+I'm going to have to investigate this more. 
+
+There are a few other links that mention the problem as well, although
+none of them really get into a viable solution. For the interested, they
+are:
+http://archives.mandrakelinux.com/cooker/2004-03/msg03581.php
+http://lists.debian.org/debian-italian/2004/02/msg02411.html
+http://forum.mandrake.pl/lofiversion/index.php/t4148.html
+
+I guess right now my best shot is to try and figure out why the card isn't
+appearing under its irq in /proc/interrupts. I've already played around
+with various ACPI settings, and even disableing it with no success. If
+anyone has anything else to try, let me know. 
+
+# lspci -vv [snipped to relevant section]
+0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
+EMU10k1X
+        Subsystem: Creative Labs: Unknown device 1003
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin A routed to IRQ 10
+        Region 0: I/O ports at d000
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+0000:00:09.1 Input device controller: Creative Labs [SB Live! Value] Input
+device controller
+        Subsystem: Creative Labs: Unknown device 1003
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 32
+        Region 0: I/O ports at d400
+        Capabilities: [dc] Power Management version 2
+                Flags: PMEClk- DSI+ D1+ D2+ AuxCurrent=0mA
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+# cat /proc/interrupts
+           CPU0
+  0:    1930069          XT-PIC  timer
+  1:         10          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  5:     198204          XT-PIC  eth0
+  7:         56          XT-PIC  uhci_hcd, uhci_hcd, uhci_hcd
+  8:          2          XT-PIC  rtc
+ 11:     115336          XT-PIC  nvidia
+ 12:         66          XT-PIC  i8042
+ 14:       5243          XT-PIC  ide0
+ 15:         22          XT-PIC  ide1
+NMI:          0
+LOC:          0
+ERR:          0
+
+# cat /proc/ioports
+0000-001f : dma1
+0020-0021 : pic1
+0040-0043 : timer0
+0050-0053 : timer1
+0060-006f : keyboard
+0070-0077 : rtc
+0080-008f : dma page reg
+00a0-00a1 : pic2
+00c0-00df : dma2
+00f0-00ff : fpu
+0170-0177 : ide1
+01f0-01f7 : ide0
+02f8-02ff : serial
+0376-0376 : ide1
+03c0-03df : vga+
+  03c0-03df : vesafb
+03f6-03f6 : ide0
+03f8-03ff : serial
+0cf8-0cff : PCI conf1
+d000-d01f : 0000:00:09.0
+d400-d407 : 0000:00:09.1
+d800-d87f : 0000:00:0a.0
+  d800-d87f : sundance
+dc00-dc0f : 0000:00:11.1
+  dc00-dc07 : ide0
+  dc08-dc0f : ide1
+e000-e01f : 0000:00:11.2
+  e000-e01f : uhci_hcd
+e400-e41f : 0000:00:11.3
+  e400-e41f : uhci_hcd
+e800-e81f : 0000:00:11.4
+  e800-e81f : uhci_hcd
+
+dmesg errors upon loading module:
+PCI: Found IRQ 10 for device 0000:00:09.0
+ALSA
+/var/tmp/portage/alsa-driver-1.0.8/work/alsa-driver-1.0.8/alsa-kernel/pci/emu10k1/emu10k1x.c:967:
+Model 1003 Rev 00000000 Serial 10031102
+EMU10K1X: probe of 0000:00:09.0 failed with error -16
+
+# modinfo snd-emu10k1x
+author:         Francisco Moraes <fmoraes@nc.rr.com>
+description:    EMU10K1X
+license:        GPL
+parm:           index:Index value for the EMU10K1X soundcard.
+parm:           id:ID string for the EMU10K1X soundcard.
+parm:           enable:Enable the EMU10K1X soundcard.
+vermagic:       2.6.10-gentoo-r6 K7 gcc-3.3
+depends:        snd,snd-pcm,snd-page-alloc,snd-rawmidi,snd-ac97-codec
+alias:          pci:v00001102d00000006sv*sd*bc*sc*i*
+
+# uname -a
+Linux tobin1 2.6.10-gentoo-r6
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Tue Mar 15 12:09:09 PST
+2005 i686 AMD
+Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
 
 ----------------------------------------------------------------------
- jnilles - 03-16-05 01:33 
+ fmoraes - 03-16-05 02:09 
 ----------------------------------------------------------------------
-In YaST I set Master Playback, PCM and DAC at 100. Sound test produces
-zilch.
-As far as I can tell, no Mute check boxes in KAMix are checked except Mic.
+Have you tried my suggestion of commenting out the MIDI support in the
+emu10k1x.c file? That's one of the things I can think of that changed
+since 1.0.5.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-03-09-05 18:53 tiwai          Note Added: 0003840                          
-03-10-05 00:21 jnilles        Note Added: 0003846                          
-03-10-05 15:01 jdthood        Note Added: 0003856                          
-03-10-05 20:29 jnilles        Note Added: 0003872                          
-03-10-05 22:04 jdthood        Note Added: 0003874                          
-03-16-05 01:33 jnilles        Note Added: 0003926                          
+12-28-04 05:12 Q3Man          New Issue                                    
+12-28-04 05:12 Q3Man          File Added: einfo                            
+12-28-04 05:12 Q3Man          Distribution              => Gentoo          
+12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
+12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
+01-03-05 12:10 tiwai          Note Added: 0003054                          
+01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
+01-03-05 17:30 Q3Man          Note Added: 0003071                          
+01-16-05 14:54 fmoraes        Note Added: 0003216                          
+01-18-05 00:44 Q3Man          Note Added: 0003240                          
+01-20-05 02:23 Q3Man          Note Added: 0003322                          
+01-20-05 19:12 tiwai          Note Added: 0003332                          
+01-21-05 05:11 Q3Man          Note Added: 0003337                          
+01-21-05 11:14 tiwai          Note Added: 0003341                          
+01-22-05 23:24 fmoraes        Note Added: 0003382                          
+03-09-05 02:57 fmoraes        Note Added: 0003821                          
+03-15-05 17:34 Q3Man          Note Added: 0003916                          
+03-15-05 22:32 Q3Man          Note Added: 0003918                          
+03-16-05 02:09 fmoraes        Note Added: 0003927                          
 ======================================================================
 
 
