@@ -1,15 +1,15 @@
-From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Subject: ens1731 patch to enable rear output
-Date: Thu, 16 Jan 2003 21:26:57 +0100
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: General Guidelines?  (MIDI)
+Date: Thu, 16 Jan 2003 22:27:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301162126.57530.pieter.palmers@student.kuleuven.ac.be>
-References: <FLELKBEJMNABMIPKPAGMEECNDAAA.pieter.palmers@student.kuleuven.ac.be>
+Message-ID: <200301162227.36021.plcl@telefonica.net>
+References: <E18ZGLH-0005nh-00@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
-  charset="iso-8859-1"
+  charset="iso-8859-15"
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <FLELKBEJMNABMIPKPAGMEECNDAAA.pieter.palmers@student.kuleuven.ac.be>
+In-Reply-To: <E18ZGLH-0005nh-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +18,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
+To: Brian Victor <bhv1@psu.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Thursday 16 January 2003 21:08, Brian Victor wrote:
+> I've removed all attachments to wxWindows, so anyone should be able to
+> compile my test program.  So I don't have to keep sending snippits out
+> of context, the code is here:
+>
+> http://www.personal.psu.edu/users/b/h/bhv1/nowx.cc      or
+> http://www.personal.psu.edu/users/b/h/bhv1/nowx.cc.html (syntax colored)
+> (g++ nowx.cc -o nowx -lasound)
 
-It seems that my previous assumption was correct. I added a patch for the 
-ens1370.c driver that enables the rear output.
-It seems to be a mirror of the front output, but the 'surround' slider in 
-alsamixer controls volume separately from the output.
+In short: start the queue before sending events, add snd_seq_drain_output at 
+end of SetTempo method.
 
-By the way: the CVS server at sourceforge still refuses connections. So I 
-applied this to the latest CVS version I had locally.
+I wrote some example programs in plain C while learning ALSA API (player, 
+recorder, metronome, monitor...)
+http://perso.wanadoo.es/plcl/alsautil.tar.bz2
 
-Pieter
+More examples, for Kylix and FreePascal:
+http://perso.wanadoo.es/plcl/
 
+HTH
 
--------------------------
-1947,1950d1946
-< #ifdef CHIP1371
-<       /* enable the rear outputs */
-<       ensoniq->cssr |= (1 << 26);
-< #endif
---------------------------
+--- nowx.cc.old Thu Jan 16 22:11:17 2003
++++ nowx.cc     Thu Jan 16 22:08:59 2003
+@@ -64,14 +64,14 @@
+   wxMidiOutput outport(sequencer);
+   wxMidiQueue queue(sequencer);
+   int x;
+-  for (x = 0; x < 400; ++x)
+-  {
+-    queue.NoteOn(outport, x, 127, x);
+-  }
+   cout << "Queue will start in five seconds" << endl;
+   sleep(5);
+   cout << "Starting queue" << endl;
+   queue.StartQueue();
++  for (x = 0; x < 400; ++x)
++  {
++    queue.NoteOn(outport, x , 127, x);
++  }
+   while (1) {
+     sleep(1);
+   }
+@@ -181,6 +181,7 @@
+   snd_seq_queue_tempo_set_ppq(tpo, 128);
+   snd_seq_set_queue_tempo(m_drv.GetAlsaSeq(), m_queue, tpo);
+   snd_seq_queue_tempo_free(tpo);
++  snd_seq_drain_output(m_drv.GetAlsaSeq());
+ }
+
+ void wxMidiQueue::StartQueue()
 
 
 
