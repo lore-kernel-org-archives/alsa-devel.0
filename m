@@ -1,10 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Ctl events problem
-Date: Sun, 6 Mar 2005 18:02:52 +0100
-Message-ID: <20050306180252.22b03da3.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - WWW server 0000966]: Add Vendor - PPA
+Date: Sun, 6 Mar 2005 20:55:37 +0100
+Message-ID: <439b4f9da8d5e4be73cba793b863fd6a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A0F5179
+	for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2005 20:55:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,34 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=966> 
+======================================================================
+Reported By:                alexperry
+Assigned To:                
+======================================================================
+Project:                    ALSA - WWW server
+Issue ID:                   966
+Category:                   soundcard matrix
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             03-06-2005 20:55 CET
+Last Modified:              03-06-2005 20:55 CET
+======================================================================
+Summary:                    Add Vendor - PPA
+Description: 
+http://www.ppa-usa.com/
+Parts, Peripherals and Accessories Inc.
 
-I'm updating echomixer to make it take into account control events. It works
-well, but I have a problem with a "virtual" control. Some cards work this
-way:
-
-Inputs ----> monitor mixer ----
-                               \
-                                >----> line-out volume ----> Outputs
-                               /
-PCM -------> PCM volume -------
-
-But some cards do not have the line-out volume control and since it's a very
-handy feature echomixer emulates it by changing both PCM playback volume and
-monitor mixers according to the setting of the virtual line-out control. The
-problem is ALSA does not deliver events of that non-existent control...
-because it doesn't exist. It delivers events of PCM vol and mmixer instead,
-which is exactly the opposite of what I need. One possible solution is to
-move all that emulation stuff into the driver :-6 Otherwise is it possible
-to write a plugin for alsa-lib that does the emulation for cards that
-require it ?  (docs ?)  Other ideas ?
+Their website lists the soundcard products and provides Linux driver
+info.
+The "6CH SOUND CARD" for example uses the C-Media 8738 chip.
 
 
---
-Giuliano.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-06-05 20:55 alexperry      New Issue                                    
+======================================================================
+
+
 
 
 -------------------------------------------------------
