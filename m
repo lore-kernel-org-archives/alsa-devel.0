@@ -1,15 +1,12 @@
-From: Thorsten Haas <thorsten.haas@gmx.de>
-Subject: Re: Re: USB recording - repetitive peaks
-Date: Fri, 5 Jul 2002 11:06:06 +0200
+From: =?ISO-8859-1?Q?tapio_laxstr=F6m?= <tapio@iptime.fi>
+Subject: USB Audio - assertion
+Date: Fri, 05 Jul 2002 15:51:33 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207051106.06718.thorsten.haas@gmx.de>
-References: <3D208C5C.36649172@ladisch.de> <3D255A1F.6090505@boosthardware.com> <200207051038.36780.thorsten.haas@gmx.de>
+Message-ID: <3D259655.9090604@iptime.fi>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200207051038.36780.thorsten.haas@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,74 +15,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I like to use two soundcards in my system.
+Hi!
 
-I have an usb quattro and a trident compatible card. I read the manual at  
-http://www.boosthardware.com/LAU/guide/ and configured modules.conf:#
+Seems like USB Audio driver doesn't want to be on /dev/mixer0 ;)
+(ecasound thru /dev/dsp0 works fine but xmms, which wants to use mixer,=20
+fails).
 
-------------------------- snip --------------------------------------
-### NEW ALSA 0.9 from CVS 2002-07-05
+I didn't check the code; is it just buggy assertion or something else?
 
-##       General
-# ALSA portion
-  alias char-major-116 snd
-# OSS/Free portion
-  alias char-major-14 soundcore
+Current cvs version seems to work fine with my Emagic EMI 2|6 (on=20
+/dev/dsp1).
 
-##      Native Devices: ALSA portion
-# quattro usb
-  alias snd-card-0 snd-usb-audio
-  options snd-usb-audio snd_index=0 snd_id="Q4"
-# sis onboard (trident)
-  alias snd-card-1 snd-card-trident
-  options snd-card-trident snd_index=1 snd_id="SiS"
+---clip---
+[root@zappa asound]# insmod snd-usb-audio ; insmod snd-maestro3
+Using /lib/modules/2.4.19-pre8/kernel/sound/usb/snd-usb-audio.o
+Using /lib/modules/2.4.19-pre8/kernel/sound/pci/snd-maestro3.o
+[root@zappa asound]# cat cards
+0 [card0          ]: USB-Audio - USB Audio Driver
+                      EMAGIC GmbH Emagic EMI 2|6
+1 [card1          ]: Allegro - ESS Allegro PCI
+                      ESS Allegro PCI at 0x1400, irq 5
+[root@zappa asound]# xmms
+xmms: simple.c:1376: snd=5Fmixer=5Fselem=5Fget=5Fplayback=5Fvolume: Asserti=
+on=20
+`(unsigned int) channel < s->str[0].channels' failed.
+Aborted
+[root@zappa asound]# rmmod snd-usb-audio ; rmmod snd-maestro3
+[root@zappa asound]# insmod snd-maestro3 ; insmod snd-usb-audio
+Using /lib/modules/2.4.19-pre8/kernel/sound/pci/snd-maestro3.o
+Using /lib/modules/2.4.19-pre8/kernel/sound/usb/snd-usb-audio.o
+[root@zappa asound]# xmms
+[root@zappa asound]# cat cards
+0 [card0          ]: Allegro - ESS Allegro PCI
+                      ESS Allegro PCI at 0x1400, irq 5
+1 [card1          ]: USB-Audio - USB Audio Driver
+                      EMAGIC GmbH Emagic EMI 2|6
 
-##      Native Devices: OSS/Free portion
-# OSS Free Portion - Card 1 - quattro usb
-  alias sound-slot-0 snd-card-0
-  alias sound-service-0-0 snd-mixer-oss
-  alias sound-service-0-1 snd-seq-oss
-  alias sound-service-0-3 snd-pcm-oss
-  alias sound-service-0-8 snd-seq-oss
-  alias sound-service-0-12 snd-pcm-oss
-# OSS Free Portion - Card 2 - Trident
-  alias sound-slot-1 snd-card-1
-  alias sound-service-1-0 snd-mixer-oss
-  alias sound-service-1-3 snd-pcm-oss
-  alias sound-service-1-12 snd-pcm-oss
-------------------------- snap --------------------------------------
 
-After that i ran depmod -a and tried
-
-linda:~ # modprobe snd-card-trident
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
-snd_control_unregister_ioctl
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
-snd_switch_remove
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol snd_switch_free
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol snd_switch_add
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
-snd_switch_prepare
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
-snd_info_create_entry
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
-snd_control_register_ioctl
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol snd_switch_new
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
-snd_switch_free_one
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: insmod 
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o failed
-/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: insmod snd-card-trident failed
-
-Can someone please give me ahint what I did wrong here?
-
-Thorsten
-
-PS: SORRY for the length.
+--
+best regards
+--
+tapio laxstr=F6m
 
 
 
