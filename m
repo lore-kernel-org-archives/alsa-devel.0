@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000890]: no dialtone with modem & strange log "semaphore is not ready [0x1][0x701300]"
-Date: Wed, 2 Mar 2005 15:17:35 +0100
-Message-ID: <77578a49f2defa62ab01bbf6337b49c1@bugtrack.alsa-project.org>
+Date: Wed, 2 Mar 2005 15:19:00 +0100
+Message-ID: <38db4d92254f7e473cf1a117960d19f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EBC9F1D5
-	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 15:17:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4EAE1F8
+	for <alsa-devel@alsa-project.org>; Wed,  2 Mar 2005 15:19:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as RELATED TO issue 0000509.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=890> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             02-08-2005 14:33 CET
-Last Modified:              03-02-2005 15:17 CET
+Last Modified:              03-02-2005 15:19 CET
 ======================================================================
 Summary:                    no dialtone with modem & strange log "semaphore is
 not ready [0x1][0x701300]"
@@ -120,12 +120,6 @@ related to          0000509 Conexant Moden &quot;not ready&quot;
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 03-02-05 14:12 
-----------------------------------------------------------------------
-Have you tried to load "snd-intel8x0" and "snd-intel8x0m" modules in
-opposite order?
-
-----------------------------------------------------------------------
  perex - 03-02-05 15:15 
 ----------------------------------------------------------------------
 Alessandro Suardi <alessandro.suardi at gmail.com> wrote at linux-kernel
@@ -161,6 +155,12 @@ Feb 24 23:19:58 incident chat[2554]: ^M
 That is - I do get the codec_semaphore messages (though the error code
  is slightly different), but the modem connection works fine.
 
+----------------------------------------------------------------------
+ perex - 03-02-05 15:19 
+----------------------------------------------------------------------
+Please, can you provide output of ac97*regs like in bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=509?
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -169,6 +169,7 @@ Date Modified  Username       Field                    Change
 03-02-05 14:12 perex          Note Added: 0003772                          
 03-02-05 15:15 perex          Note Added: 0003778                          
 03-02-05 15:17 perex          Relationship added       related to 0000509  
+03-02-05 15:19 perex          Note Added: 0003779                          
 ======================================================================
 
 
