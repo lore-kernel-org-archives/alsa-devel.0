@@ -1,14 +1,12 @@
-From: Javier Conti <av@labcc.ch>
-Subject: Re: Fix for dell inspiron 8100 maestro3
-Date: Sat, 17 May 2003 04:45:12 +0200
+From: Arthur Peters <amp@singingwizard.org>
+Subject: ALSA + jack + xrun = kernel crash
+Date: 16 May 2003 20:54:01 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305170445.13074.av@labcc.ch>
-References: <200305161632.46562.av@labcc.ch> <s5hhe7vdjgc.wl@alsa2.suse.de>
+Message-ID: <1053136440.1197.213.camel@newbie.localnet.local>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_4Iax+/Rp3tEc1EJ"
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhe7vdjgc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,65 +15,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa dev list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hello, I am experiencing a reletivly hard crash (SysRq works but SysRq-B
+prints a message saying it will reboot then doesn't). The crash happens
+when jackd xruns. I've been reproducing it using "jackd -d alsa" (other
+options don't make a difference) then "ladccad". Once the system crashs
+the only way to get any responce is with SysRq. Keys don't echo to the
+console and I can't switch VTs.
 
---Boundary-00=_4Iax+/Rp3tEc1EJ
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Generally there is no error message or oops that I can see, even when
+debug=full is enable in ALSA. Early on I saw a message from jackd to the
+tune of "error write 512 somethings to device", but I have not been able
+to reproduce it. I am willing to run any tests that might help. I use
+journaling filesystems ;-) 
 
-On Friday 16 May 2003 17:01, Takashi Iwai wrote:
-> are you sure that the patch is correct?
-> your patch adds the same vendor an device id with the existing
-> inspiron 8000 (1028:00a4).
+My hardware is:
+Dual PIII 1Ghz with 512M RAM on a Tyan MB.
+SoundBlaster Live! Value
+ATI Radeon 8500 (using the closed-source ATI drivers; version 2.9.8)
 
-Ok, I found the correct values, repatched and now the modules tells me the 
-hack is enabled. With the other values, that didn't happen. Seen that, I 
-tried to recompile a vanilla alsa-driver version, to see if my previous patch 
-was doing some difference. The weird thing is that it still didn't work!
-I'm puzzled, since the wrong patch fixed the problem anyway...
+My software is:
+ALSA drivers 0.9.3a or current CVS
+Linux 2.4.20 (vanilla or gentoo patched)
+Jack 0.71.2
+Current Gentoo with testing packages enabled (~x86)
 
-I'm sorry for the "noise" but hope to be helpful by sending this patch which 
-includes the correct values.
+Thanks.
 
-Bye, Javier
+-Arthur
+
+PS: I have sporadic hard freezes when I use Xv heavily and I had to
+lower the AGP rate from 4x to 2x to prevent a crash when my X server
+loaded. This is just in case it might be related. It could be my MB I
+guess. [shiver]
+
+
 -- 
-Javier Conti - Labcc
-Tel: +41(0)91 690 0703
-Fax: +41(0)91 690 0702
-
---Boundary-00=_4Iax+/Rp3tEc1EJ
-Content-Type: text/x-diff;
-  charset="iso-8859-1";
-  name="maestro3.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="maestro3.patch"
-
---- maestro3.c	2003-04-23 12:06:36.000000000 +0200
-+++ /usr/src/modules/alsa-driver/alsa-kernel/pci/maestro3.c	2003-05-17 04:37:29.000000000 +0200
-@@ -947,8 +947,14 @@
- 		.amp_gpio = -1,
- 		.irda_workaround = 1,
- 	},
--	/* FIXME: Inspiron 8100 id should probably be here, too
--	 * (8200 irrelevant: has intel8x0 with CS4205) */
-+	/* Dell Inspiron 8100 */
-+	{
-+		.name = "Dell Inspiron 8100",
-+		.vendor = 0x1028,
-+		.device = 0x00e6,
-+		.amp_gpio = -1,
-+		.irda_workaround = 1,
-+	},
- 	/* NEC LM800J/7 */
- 	{
- 		.name = "NEC LM800J/7",
-
---Boundary-00=_4Iax+/Rp3tEc1EJ--
+Arthur Peters <amp@singingwizard.org>
 
 
 
