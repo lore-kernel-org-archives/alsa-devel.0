@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000622]: snd-ens1371 hisses and garbled sound
-Date: Tue, 2 Nov 2004 21:27:20 +0100
-Message-ID: <6c75c1927a80ff8faa8efe1703b5d2bf@bugtrack.alsa-project.org>
+From: "Yon Mercury" <swirlee@stickist.com>
+Subject: RE: Fw: Re: Echo Audio Indigo Generic Driver
+Date: Tue, 2 Nov 2004 13:45:58 -0700
+Message-ID: <20041102204558.M92165@stickist.com>
+References: <20041101212127.M93673@stickist.com> <XFMail.20041102093551.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D12BD1ED
-	for <alsa-devel@alsa-project.org>; Tue,  2 Nov 2004 21:27:20 +0100 (MET)
+In-Reply-To: <XFMail.20041102093551.pochini@shiny.it>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,107 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Giuliano Pochini <pochini@shiny.it>, Yon Mercury <swirlee@stickist.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Giuliano,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=622> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   622
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             11-01-2004 11:29 CET
-Last Modified:              11-02-2004 21:27 CET
-======================================================================
-Summary:                    snd-ens1371 hisses and garbled sound
-Description: 
-Please see Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=239575:
+Oh good, I'm glad I got your attention. I'm not fluent in the CARDBUS
+architecture. How does Echo handle this multiple bridge issue in Windows? Or
+is it handled by a separate bridge driver? If so, perhaps we need to add
+another layer to the ALSA architecture to handle different bridges. 
 
-    http://bugs.debian.org/239575
+I think that cardbus components not specific to the Echo Audio card should be
+handled by another team. I'm more an applications developer, but I'll support
+you in whatever way I can. 
 
-The submitter writes in part:
+-Jan
 
-------------------------------------------------------
-Before installing [Debian] sarge I happily used the ALSA sound system on a
-2.4.20 [kernel] with my SB PCI 128 soundcard. With the 2.4.24 kernel [...]
-the following problems occur:
-After initilization of the snd-ens1371 module a loud hiss comes out of the
-speakers. The artsd fails and displays a message that it will use the null
-output device. All ALSA or arts enabled apps either crash, remain in a
-infinite loop  initializing or start with sound disabled.
-------------------------------------------------------
 
-Another person adds:
-
-------------------------------------------------------
-Sound system is working rather properly but I get continual hisses out of
-my soundcard, some sound is coming out as well but is completely garbled.
-------------------------------------------------------
-
-Any idea what might be wrong?
-======================================================================
-
-----------------------------------------------------------------------
- jdthood - 11-02-04 21:27 
-----------------------------------------------------------------------
-One of the submitters added the following information.
-------------------------------------------------------
-[Using alsa-lib 1.0.6]
-
-Actually, I found a workaround to my problem under:
-http://www.mail-archive.com/gentoo-user@gentoo.org/msg39015.html
-
-It reads:
-> I upgraded to KDE 3.2 (also had an upgrade to alsa-driver .9.8) and
-afterward 
-> had bad sound.  (I have a Creative PCI 128 card, or something like that,
-that 
-> linux identifies as an Ensoniq 5880, for which alsa uses the ens1371
-card 
-> drivers, whatever)
+On Tue, 02 Nov 2004 09:35:51 +0100 (CET), Giuliano Pochini wrote
+> On 01-Nov-2004 Yon Mercury wrote:
+> > Dear ALSA-listers:
+> >
+> > This from Echo Audio, in response to my inquiry about an Indigo IO driver:
+> >
+> > I hope we can get a good low-end low latency laptop solution soon-- those
+> > RME boards are expensive!
 > 
-> If I turned up the volume (on the speaker) I got  a lot of hiss and
-static on 
-> the left channel.  Even when I turned the volume in kmix all the way
-down       
-> (should be just silence) I would get hiss, static and whatever was
-playing 
-> (like a song on xmms) 
+> I'm the one who developed the ALSA driver. Echoaudio told me
+> that dev infos required for Indigo support will be released
+> soon. But there is another problem: those infos are not enough.
+> My driver already supports all other PCMCIA cards, but none
+> of the people who tried it was able to make it work. The
+> problem lies in the CARDBUS bridge and reading the archives of
+> this ML I found that some people had troubles with RME cards,
+> too. An Echoaudio developer confirmed that he had to tweak the
+> registers of the bridge of one laptop to make it work. The
+> problem is complicated by the fact that there are several tens
+> of bridge chips around (read: different laptop --> different
+> fix) and all I get from the DSP is "init OK" or "init failed".
+> I have no idea of what the problem is. Suggestions are welcome.
 > 
-> After trying a lot of complex things, the solution was pretty simple,
-click 
-> the little Advanced box in kmix, and uncheck the button for IEC958.
-> 
+> --
+> Giuliano.
 
-That's what I did and it solved also my problem, though I would be 
-pretty happy to have some explanations on the why. I tried also with 
-alsamixer and (M)ute on IEC958 works as well, and the setup did survive 
-an "alsactl store/restore" cycle. So it looks good for me.
 
-So, for me, the severity can be reduced. I do still think that the 
-problem needs to be fixed (for new users), or at least documented.
-
-Cheers, Eric
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-01-04 11:29 jdthood        New Issue                                    
-11-02-04 21:27 jdthood        Note Added: 0002299                          
-======================================================================
 
 
 
