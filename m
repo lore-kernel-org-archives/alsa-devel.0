@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: libasound and libpthread
-Date: Tue, 30 Jul 2002 02:34:51 +0900
+Subject: Re: ALSA docs
+Date: Tue, 30 Jul 2002 02:55:52 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D457CBB.8050200@boosthardware.com>
-References: <E17ZCvd-0001wX-00@usw-sf-list1.sourceforge.net>
+Message-ID: <3D4581A8.80808@boosthardware.com>
+References: <E17Z9If-0003MS-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -17,38 +17,49 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Paul Davis <pbd@op.net>
-Cc: Abramo Bagnara <abramo.bagnara@libero.it>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Paul Davis wrote:
->>Paul Davis wrote:
+>>>i would personally work from a complete set of snd-* modules, and use
+>>>modinfo(1) + perl to get the information
 >>
->>>>I am working with Alsa 0.9.0beta12 version and I am also using posix
->>>>threads (libpthread) in my project. In the release version of the
->>>>program I link both libraries (libpthread, libasound) dynamically and
->>>>everything works well. In the debug version however, I have to do static
->>>>linking of the libpthread for proper debugging.
+>>Isn't that what happens in the INSTALL file anyway?
+> 
+> 
+> it doesn't look like it. there are several cards missing there, and it
+> looks hand-written rather then fetched from the source.
+> 
+> 
+>>>and put that into the temp
+>>>file that is inserted into the template, or if possible, put it
+>>>straight into the template.
 >>>
->>>why? i use pthreads a great deal, and i have never had to do this.
->>>
->>>and no, libasound does not use pthreads or any other form of threads.
 >>
->>Thomas, you should know to not rely too strong to Paul's words.
+>>IIRC doing the above would need access to a set of modules online. Seems 
+>>unneccesary when the INSTALL file is already available.
 >>
->>He own a big heart, but unfortunately a big mouth too, that he's often
->>unable to keep under control ;-)
+>>But I'm willing to be told otherwise if it makes the info more reliable.
 > 
 > 
-> its true. mea culpa. 
-> 
-> this is what we get for a library containing large chunks of code and
-> functionality not used by anyone except its author :)
-> 
-> is there anyone on the list except abramo or jaroslav that have ever
-> used the "shared" PCM device type?
+> it would be much more reliable if you got the options from the modules
+> themselves. even just running grep for MOD_PARM etc. would be better
+> than using the INSTALL file.
 > 
 
-I have looked into it but cannot see clear reason for using it.
+Do you mean that I should be parsing each driver file seperately?
+
+I think it would be easier to get the autoconf process to create a file 
+which prints all the modules options and controls to a file which is 
+included in the main alsa-drivers source dir eg the INSTALL file. Then I 
+can just parse that with php.
+
+This will definitely save on server traffic. And hence bills.
+
+Is there anyone who has the time to write this or at least give me a 
+good very specific how to do it?
+
+I guess some/most of the work is already done in the alsaconf scripts ???
 
 
 -- 
