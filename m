@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000942]: XMMS with alsa dmix output hangs
-Date: Fri, 25 Feb 2005 01:40:56 +0100
-Message-ID: <b8459566a327b0794c158d53c193b342@bugtrack.alsa-project.org>
+From: Glenn Maynard <glenn@zewt.org>
+Subject: Re: valgrind and alsa
+Date: Thu, 24 Feb 2005 21:57:46 -0500
+Message-ID: <20050225025746.GE27159@zewt.org>
+References: <421D9482.3090807@cs.ubc.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9ACC622C
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 01:40:56 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <421D9482.3090807@cs.ubc.ca>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,58 +16,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Feb 24, 2005 at 12:46:58AM -0800, Charles Buck Krasic wrote:
+> Hi,
+> 
+> I'm new to alsa development.   I have just implemented native alsa 
+> support in an application I've developed (a streaming video system).   
+> When checking my application with valgrind,  valgrin generates numerous 
+> alsa related warnings.   They all seem to originate from a single 
+> problem in my initial call to snd_pcm_writei.  Basically valgrind 
+> doesn't like that alsa is making an ioctl with unitialized data.  The 
+> following patch fixed the problem for me, it's just a one liner add the 
+> missing initializtion.
+> 
+> Cheers,
+> 
+> -- Buck
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=942> 
-======================================================================
-Reported By:                padde
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   942
-Category:                   mixer
-Reproducibility:            sometimes
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             02-25-2005 01:40 CET
-Last Modified:              02-25-2005 01:40 CET
-======================================================================
-Summary:                    XMMS with alsa dmix output hangs
-Description: 
-XMMS plays back through alsa-dmix, everything is fine. After some time
-(sometimes hours, but mostly between 2 to 5 mins, perhaps depending on
-system load or maybe just solar flux ;) ) xmms just hangs, one can move
-around the window, but closing isn't possible. Even 'killall xmms' won't
-shut it all the way down. "killall -9 xmms" will work though. I did an
-strace on xmms and put the last 1000 lines on my server
-(http://padde.dyndns.org/temp/test.log), they're of no use for me.
-All right.. after killing -9 xmms and starting it up again, it will play
-about the same time it played before, no matter which song, and then hang
-again. I tried various MP3 files, so I can be sure the source isn't
-corrupted. By the way: beep-media-player behaves exactly the same way
-(because it uses the same ALSA output plugin, I guess...)
-As far as I can tell, no other sound sources are involved, i.e. it doesn't
-matter if other sound sources are playing via dmix, too, or not.
-I didn't test with other programs much, but xine had hangs, too. While
-xmms comes to a stop, xine continued playing very very slowly (like frame
-by frame), the sound was chopped like that, too.
+> --- pcm_hw.c-old	2005-02-24 00:36:02.906722553 -0800
+> +++ pcm_hw.c	2005-02-24 00:35:37.390399025 -0800
+> @@ -664,6 +664,7 @@
+>  	struct sndrv_xferi xferi;
+>  	xferi.buf = (char*) buffer;
+>  	xferi.frames = size;
+> +	xferi.result = 0;
+>  	err = ioctl(fd, SNDRV_PCM_IOCTL_WRITEI_FRAMES, &xferi);
+>  	err = err >= 0 ? sync_ptr(hw, SNDRV_PCM_SYNC_PTR_APPL) : -errno;
+>  #ifdef DEBUG_RW
 
-======================================================================
+I'd guess that the "correct" fix would be to tell Valgrind that this
+particular value is a result, so it knows that it's normal for it to
+be uninitialized and that it becomes initialized by the ioctl.  (But
+there's probably no harm in this, either.)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-25-05 01:40 padde          New Issue                                    
-02-25-05 01:40 padde          File Added: .asoundrc-dmix                    
-======================================================================
-
-
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
