@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: EMU10K1 and the extra voice
-Date: Mon, 7 Jun 2004 09:21:20 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: An driver error when I using aplay!
+Date: Mon, 07 Jun 2004 09:24:26 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0406070920580.3294@pnote.perex-int.cz>
-References: <20040605125936.GA3478@lost.org.uk> <20040606045431.GA3025@zewt.org>
- <Pine.LNX.4.58.0406061239340.1780@pnote.perex-int.cz> <20040606180919.GB3025@zewt.org>
+Message-ID: <Pine.HPX.4.33n.0406070920300.6374-100000@studcom.urz.uni-halle.de>
+References: <20040607030408.4273.qmail@web15210.mail.bjs.yahoo.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040606180919.GB3025@zewt.org>
+In-reply-to: <20040607030408.4273.qmail@web15210.mail.bjs.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Glenn Maynard <g_sf@zewt.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: =?gb2312?q?Roc=20Wu?= <cooloney@yahoo.com.cn>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 6 Jun 2004, Glenn Maynard wrote:
+Roc Wu wrote:
+> > # ./aplay -t wav -f U8 -r 22050 alarm.wav
+> > Playing WAVE 'alarm.wav' : Unsigned 8 bit, Rate 22050 Hz, Mono
+> > ALSA lib pcm_plug.c:727:(snd_pcm_plug_hw_refine_schange)
+> > Unable to find an usable access for 'default'
+> > aplay: set_params:832: Sample format non available
+> >
+> > And the kernel driver will dump out the message as below:
+> > Badness in aaci_pcm_close at sound/arm/aaci.c:404
 
-> On Sun, Jun 06, 2004 at 12:40:31PM +0200, Jaroslav Kysela wrote:
-> > > Any relationship to the fact that I can only allocate 21 subdevices with
-> > > ALSA, but 31 with DirectSound?
-> > 
-> > Yes, 64 / 3 = 21 .
-> 
-> That stinks (but if it's necessary for decent latency, which it doesn't
-> get in Windows, oh well).  Shouldn't the driver report 21 substreams
-> instead of 32, though?
+This seems to be a bug in the sound driver.
 
-Nope. For mono streams - 64 / 2 = 32.
+However, arm/aaci.c is not part of the official ALSA distribution.
+AFAIK it's a patch written by Russell King.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
