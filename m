@@ -1,12 +1,20 @@
-From: Jan Depner <eviltwin69@cableone.net>
+From: <jfm3@ouroboros-complex.org>
 Subject: Re: Quick question
-Date: 03 Jun 2003 19:18:07 -0500
+Date: Tue, 3 Jun 2003 18:01:07 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054685888.21849.33.camel@eviltwin>
-References: <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <41743.24.225.156.130.1054688467.squirrel@webmail.ouroboros-complex.org>
+References: Your
+        message
+        of
+        "03
+        Jun
+        2003
+        13:58:08
+        EDT."
+        <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,78 +25,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: David Stuart <dave@sipquest.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-David,
 
-	I don't know that much about the internals of JACK but I do know this -
-all serious Linux sound apps either use or are preparing to use JACK. 
-I've gotten to the point where I look for that in an application.  If
-it's not JACK enabled I just move on to something else.
-
-Jan
-
-
-On Tue, 2003-06-03 at 19:38, Paul Davis wrote:
-> >Ah, I think you misunderstand me a little bit.. it's not that I am
-> >trying to do anything different than usual, it's that I'm having trouble
-> >with the basics. Specifically, the HOW-TOs that I have found all seem to
-> >have a different way of writing and reading to/from the hardware buffer.
-> 
-> thats because there are multiple ways to do it.
-> 
-> >I have not, as of yet, been able to find a clear description of the core
-> >concepts around writing and reading to the device. Also some recommend
-> >one way, and then another HOWTO says not to do it that way.. it's all
-> >rather confusing.
-> 
-> if you want something that's not confusing, then JACK is your
-> friend. it was specifically designed to cut away all the complexity
-> and force you to write a well-designed application (and yes, its me
-> who gets to define what well-designed means :)
-> 
-> and no, you don't need to modify anything about your stock RH system
-> to use JACK. the modifications are only needed if you want low
+> and no, you don't need to modify anything about your stock RH system to
+> use JACK. the modifications are only needed if you want low
 > latency, and such modifications would be needed to get this with just
 > ALSA anyway. a jack client will run just as well as a native ALSA
 > (better in some senses) when the jack server is run with equivalent
 > parameters for the audio hardware.
-> 
-> >For instance, I'm really not sure what size my buffer needs to be, if
-> >there is a difference between the "hardware buffer" and the buffer in my
-> >program, How "periods" work into all this, what's the difference between
-> >hw and plughw, etc. Also each of the examples seems to configure the
-> >hardware differently, which I find also odd..
-> 
-> there are many ways of doing this too.
-> 
-> >So to sum it up, the problem is not only that I'm new to ALSA, but that
-> >I'm new to sound programming in general. Is there somewhere I can go to
-> >learn the basics (at least enough to do capture and playback, beyond
-> >that I'm not as interested)?
-> 
-> if you're trying to learn sound programming, the last thing you want
-> to be messing with is a hardware abstraction layer that can handle any
-> audio h/w you can imagine. do yourself a favor and use jack
-> instead. you can focus on audio programming rather than how to setup
-> an audio interface. better yet, your application will talk to other
-> jack-enabled applications if and when you want to.
-> 
-> --p
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by:  Etnus, makers of TotalView, The best
-> thread debugger on the planet. Designed with thread debugging features
-> you've never dreamed of, try TotalView 6 free at www.etnus.com.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+Not only that, but there's Planet CCRMA, which allows you to make
+automated RPM package updates to your stock RH (like up2date or
+red-carpet, but cooler) that give you the low latency kernel, precompiled
+ALSA drivers, and enough Jack apps to keep you busy for quite some time.
+
+Jack is so great, many developers on this list have named their children
+after it. Do the right thing.
+
+(jfm3)
 
 
 
