@@ -1,13 +1,14 @@
-From: Janina Sajka <janina@rednote.net>
-Subject: Re: No dmix with HDSP Multiface
-Date: Mon, 28 Mar 2005 16:12:48 -0500
-Message-ID: <20050328211248.GG7520@rednote.net>
-References: <20050322180510.GA8180@rednote.net> <s5hfyymqwjo.wl@alsa2.suse.de> <20050323155908.GW8178@rednote.net> <s5hy8cel1mx.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001010]: Speaker output does not work.
+Date: Tue, 29 Mar 2005 03:20:19 +0200
+Message-ID: <4f634d1e64d01de3fe47ff76bc5a8d0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="J2SCkAp4GZ/dPZZf"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hy8cel1mx.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACFB820E
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 03:20:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,121 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Janina Sajka <janina@rednote.net>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1010> 
+======================================================================
+Reported By:                sylware
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1010
+Category:                   PPC - powermac
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Ubuntu Hoary
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             03-24-2005 10:24 CET
+Last Modified:              03-29-2005 03:20 CEST
+======================================================================
+Summary:                    Speaker output does not work.
+Description: 
+I use a powermac windtunnel newworld with a keywest snapper audio
+controller on the uninorth i2c bus (according to the /sys and /proc
+filesystems). I'm able to get sound from the headphone output at the front
+of the computer(it does automute the computer speaker when I plug the jack
+in) but I'm unable to get sound from the speaker output at the rear of the
+computer.
+======================================================================
 
-Takashi Iwai writes:
-> At Wed, 23 Mar 2005 10:59:08 -0500,
-> Janina Sajka wrote:
-> > 
-> > Takashi Iwai writes:
-> > > At Tue, 22 Mar 2005 13:05:10 -0500,
-> > > Janina Sajka wrote:
-> > > > 
-> > > > I have 1.0.9RC1 compiled and installed--but cannot get dmix to work. Am
-> > > > I going about it wrong? Or are there still known issues with dmix using
-> > > > RME hardware? Mine is a HDSP Multiface. Here's what I get:
-> > > >... snip snip ...
-> >  
-> > > The dmix PCM definition was slightly changed recently.  It no longer
-> > > takes SLAVE argument but CARD, DEV and SUBDEV.  For hw:0,0, it's like
-> > > 	dmix:CARD=0,DEV=0,RATE=48000
-> > > 
-> > > The default card and device are both 0, and the default rate is 48000,
-> > > in the case above, you don't need to pass arguments.  Just run like
-> > > 
-> > > 	% aplay -Dplug:dmix foo.wav
-> > 
-> > Still no sound, though:
-> > 
-> > #aplay -Dplug:dmix Any_Dream_Will_Do.wav
-> > ALSA lib pcm_direct.c:741:(snd_pcm_direct_initialize_slave) unable to
-> > install hw params
-> 
-> You need to specify FORMAT=S32_LE in the case of HDSP.
-> Add the following to ~/.asoundrc:
-> 
-> mydmix {
-> 	type plug
-> 	slave.pcm "dmix:FORMAT=S32_LE"
-> }		
-> 
-> 
-> Takashi
-Regret to say still no response:
+----------------------------------------------------------------------
+ sylware - 03-25-05 20:55 
+----------------------------------------------------------------------
+As far as I tried it, Nope.
 
-aplay -Dplug:dmix Any_Dream_Will_Do.wav
-ALSA lib pcm_direct.c:741:(snd_pcm_direct_initialize_slave) unable to
-install hw params
-ALSA lib pcm_dmix.c:728:(snd_pcm_dmix_open) unable to initialize slave
-aplay: main:508: audio open error: Device or resource busy
-[root@concerto
+But if I'm not mistaken, sound is sent on the (PCM,0)? You mean that if I
+modify the default PCM device on which the sound is sent, I will hear
+something from the speaker output? (I may be completely wrong).
+If what's above is right (will check it out tonight, coze guilty computer
+at girlfriend's place), "basic users" will never get their speaker output
+working! I just realized that there is no way to configure that from a
+"basic user" perspective (GNOME alsa mixer, esd emulation from polysound,
+gstreamer default audio output plugin)! Seems to be a job for direct or
+indirect alsa clients and no concern for ALSA... In order to do so, can we
+l10n name the PCMs in order to get some to configure the target alsa PCM
+(I'm thinking gstreamer alsa/polysound output filters)?
+(BTW... sorry for the "FAQ" level question).
 
-Perhaps I misunderstand .asoundrc? Since that's very possible, I'm
-attaching my current. Works to play directly and via spdif, but not
-dmix
-Thanks.
-.
+----------------------------------------------------------------------
+ sylware - 03-29-05 03:20 
+----------------------------------------------------------------------
+Ok I did some testing: there is sound on the speaker output that is
+controled with (PCM,0) and not (PCM,1)... but the sound is very weak... I
+had to put almost my hi-fi system to the max to hear something!(I
+rebooted... I almost burned me speakers with the "apple sound" at the
+start of the computer.
 
-
--- 
-
-Janina Sajka				Phone: +1.202.494.7040
-Partner, Capital Accessibility LLC	http://www.CapitalAccessibility.Com
-
-Chair, Accessibility Workgroup		Free Standards Group (FSG)
-janina@freestandards.org		http://a11y.org
-
-If Linux can't solve your computing problem, you need a different problem.
-
-
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename=".asoundrc"
-
-pcm.hdsp {
-        type hw
-        card 0
-}
-ctl.hdsp {
-        type hw
-        card 0
-}
-
-pcm.hdsp_analog {
-        type plug
-        ttable.0.0 1
-        ttable.1.1 1
-        ttable.2.2 1
-        ttable.3.3 1
-        ttable.4.4 1
-        ttable.5.5 1
-        ttable.6.6 1
-        ttable.7.7 1
-        slave.pcm hdsp
-}
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-24-05 10:24 sylware        New Issue                                    
+03-24-05 10:24 sylware        Distribution              => Ubuntu Hoary    
+03-24-05 10:24 sylware        Kernel Version            => 2.6.10          
+03-24-05 19:49 tiwai          Note Added: 0004198                          
+03-25-05 20:55 sylware        Note Added: 0004211                          
+03-29-05 03:20 sylware        Note Added: 0004242                          
+======================================================================
 
 
-pcm.hdsp_spdif {
-    type plug
-    ttable.0.16 1
-    ttable.1.17 1
-    slave.pcm hdsp
-}
-
-mydmix {
-        type plug
-        slave.pcm "dmix:FORMAT=S32_LE"
-}
- 
-
---J2SCkAp4GZ/dPZZf--
 
 
 -------------------------------------------------------
