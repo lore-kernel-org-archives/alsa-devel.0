@@ -1,12 +1,11 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [Please apply patch] Re: au88x0 - Replace spdif frequency
- control by IEC958 control
-Date: Mon, 21 Feb 2005 16:22:19 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502211620130.24184-100000@studcom.urz.uni-halle.de>
-References: <1108990563.3315.27.camel@localhost>
+Subject: Re: correcting incorrect ac'97 codec clock
+Date: Mon, 21 Feb 2005 16:26:32 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0502211624520.24184-100000@studcom.urz.uni-halle.de>
+References: <1108996683.3174.4.camel@icampbell-debian>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <1108990563.3315.27.camel@localhost>
+In-Reply-To: <1108996683.3174.4.camel@icampbell-debian>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,18 +15,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Raymond <rayau@netvigator.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Ian Campbell <icampbell@arcom.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Raymond wrote:
-> 1) What is the difference between Consumer mode and Professional mode ?
+Ian Campbell wrote:
+> I am working on a piece of hardware where the AC'97 codec clock was
+> erroneously set at 24MHz instead of the correct 24.5764MHz, this causes
+> the sound to come out slightly wrong, a 1000Hz sine wave is ~977Hz or
+> so.
+>
+> We'd prefer to have the kernel correct for this error rather than
+> expecting every application to do it.
 
-A different set of status bits.  See, for example, ALSA's asoundef.h,
-but it doesn't have many explanations.
-
-The main difference is that only consumer mode has the copyright bit
-so that devices can automatically disable copying.
+bus->clock is set to the sample rate of the AC'97 bus, and is 48000 by
+default.  Setting it to 46875 after creating the bus should help.
 
 
 HTH
