@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
-Date: Thu, 16 Dec 2004 18:22:16 +0100
-Message-ID: <2cd997270a9401c82895643b9d1bec27@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Thu, 16 Dec 2004 18:23:06 +0100
+Message-ID: <ee1148562e5ea85a28175843b2d91d61@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CE91024B
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:22:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8767524B
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:23:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,58 +22,106 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
 ======================================================================
-Reported By:                dlc
-Assigned To:                
+Reported By:                brentcfisher
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   706
-Category:                   PCI - ice1712
+Issue ID:                   671
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               DeMuDi1.2.0
-Kernel Version:             2.4.25
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.8.1
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-04-2004 00:36 CET
-Last Modified:              12-16-2004 18:22 CET
+Date Submitted:             11-24-2004 06:36 CET
+Last Modified:              12-16-2004 18:23 CET
 ======================================================================
-Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
-to reboot
+Summary:                    ALSA sound cuts out w/ message: ALSA
+sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
 Description: 
-System reboots when attempting to install a game under Wine.
+Particularily noticeable when watching a DVD via xine using AC3 Pass
+Through.  Sound will cut out momentarily (usually for no more than a
+second).  The skip is always accompanied by multiples of this message in
+the /var/log/messages file:
+
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
+
+These messages appear in the log file once or twice a minute although the
+sound only noticable cuts out every few minutes .  Very annoying on an
+HTPC.
 ======================================================================
 
 ----------------------------------------------------------------------
- dlc - 12-16-04 17:45 
+ brentcfisher - 12-16-04 17:53 
 ----------------------------------------------------------------------
-I pulled the Delta card and the crash failed to manifest.  I put it back in
-and the crash occurred as described.  Is there any kind of tracing
-available for the driver that would provide a better idea of what is
-occurring?  Or should I start looking at the code?
+Takashi,
+
+I dare say that it looks like you've done it!  I've watched a little over
+an hour's worth of video and there hasn't been a single bump in the sound.
+ Nor has there been a complaint in the error log!
+
+Outstanding!
+
+-Brent
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:22 
+ tiwai - 12-16-04 18:23 
 ----------------------------------------------------------------------
-I don't think it's a bug of drivers.  The code doesn't reach even to the
-initialization of sound stuff at all.
-
-Try much newer kernels?
+Thanks for confirmation.  I apply the patch to CVS now.
+Let's resolve this issue as FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-04 00:36 dlc            New Issue                                    
-12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
-12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
-12-07-04 18:52 tiwai          Note Added: 0002760                          
-12-07-04 19:22 dlc            Note Added: 0002763                          
-12-16-04 17:45 dlc            Note Added: 0002830                          
-12-16-04 18:22 tiwai          Note Added: 0002832                          
+11-24-04 06:36 brentcfisher   New Issue                                    
+11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
+11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
+11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-24-04 06:48 brentcfisher   Issue Monitored: brentcfisher                    
+11-24-04 23:50 squarooticus   Note Added: 0002584                          
+11-25-04 01:59 brentcfisher   Note Added: 0002585                          
+11-25-04 06:45 squarooticus   Note Added: 0002586                          
+12-02-04 19:34 tiwai          Note Added: 0002694                          
+12-06-04 02:24 brentcfisher   Note Added: 0002725                          
+12-07-04 18:24 tiwai          Note Added: 0002753                          
+12-07-04 18:24 tiwai          File Added: via-pointer-fix.diff                  
+ 
+12-08-04 05:03 brentcfisher   Note Added: 0002774                          
+12-08-04 12:13 tiwai          Note Added: 0002779                          
+12-08-04 16:33 brentcfisher   Note Added: 0002786                          
+12-08-04 16:35 tiwai          Note Added: 0002787                          
+12-08-04 16:36 tiwai          File Added: via-pointer-fix2.diff                 
+  
+12-08-04 17:02 brentcfisher   Note Added: 0002789                          
+12-09-04 15:35 tiwai          Note Added: 0002803                          
+12-09-04 15:35 tiwai          File Added: via-pointer-fix3.diff                 
+  
+12-10-04 16:59 brentcfisher   Note Added: 0002807                          
+12-11-04 23:30 brentcfisher   Note Added: 0002812                          
+12-12-04 03:14 squarooticus   Issue Monitored: squarooticus                    
+12-12-04 03:14 squarooticus   Issue End Monitor: squarooticus                   
+
+12-15-04 16:13 tiwai          Note Added: 0002827                          
+12-15-04 16:13 tiwai          File Added: via-pointer-fix4.diff                 
+  
+12-16-04 17:53 brentcfisher   Note Added: 0002831                          
+12-16-04 18:23 tiwai          Status                   new => resolved     
+12-16-04 18:23 tiwai          Resolution               open => fixed       
+12-16-04 18:23 tiwai          Assigned To               => tiwai           
+12-16-04 18:23 tiwai          Note Added: 0002833                          
 ======================================================================
 
 
