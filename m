@@ -1,16 +1,12 @@
-From: Anders Torger <torger@ludd.luth.se>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: RME HDSP 9652 vs DIGI 9652
-Date: Fri, 25 Jul 2003 11:35:12 +0200
+Date: Fri, 25 Jul 2003 07:11:19 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307251135.12420.torger@ludd.luth.se>
+Message-ID: <E19g0NT-0002iL-00@sc8-sf-list1.sourceforge.net>
 References: <1059100074.3f2095aaafe13@webdjn.unm.edu>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1059100074.3f2095aaafe13@webdjn.unm.edu>
-Content-Disposition: inline
+In-reply-to: Your message of "Thu, 24 Jul 2003 20:27:54 MDT."
+             <1059100074.3f2095aaafe13@webdjn.unm.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,25 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Sheltraw <sheltraw@unm.edu>, alsa-devel@lists.sourceforge.net
+To: Daniel Sheltraw <sheltraw@unm.edu>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Friday 25 July 2003 04.27, Daniel Sheltraw wrote:
-> Hello ALSA list
->
-> Are the registers of RME HDSP 9652 and DIGI 9652 identical. If
-> not does anyone have datasheets for the HDSP 9652. I need them
-> for a custom application and I just noticed that RME discontinued
-> the DIGI 9652. If not, do you have an email address for the RME
-> engineer that could provide the datasheets.
+>Are the registers of RME HDSP 9652 and DIGI 9652 identical. If
 
-No, the registers are not the same. However, you can make the HDSP 9652 
-behave almost exactly like an DIGI 9652. I think that the only way to 
-find out the registers is to look at the source code of the ALSA 
-driver, since I think RME is quite restrictive with who they share 
-their internal data sheets.
+no, not at all, although there are similarities.
 
-/Anders
+>not does anyone have datasheets for the HDSP 9652. I need them
+>for a custom application and I just noticed that RME discontinued
+>the DIGI 9652. If not, do you have an email address for the RME
+>engineer that could provide the datasheets.
+
+there was never a datasheet. the source code to the ALSA driver
+provides all the information i ever received from RME, plus quite a
+bit more learnt from experience. use the source for the rme9652.c
+driver. 
+
+--p
 
 
 
