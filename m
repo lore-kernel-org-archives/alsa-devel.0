@@ -1,8 +1,8 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: To: ALSA Soundcard Matrix maintainer
-Date: Thu, 01 May 2003 19:13:40 -0700 (PDT)
+Subject: AudioScience driver - need help
+Date: Thu, 01 May 2003 19:25:09 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030501191340.13435.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030501192510.17280.h002.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
@@ -17,41 +17,42 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: eliot@blennerhassett.gen.nz
 List-Id: alsa-devel@alsa-project.org
 
 Hello,
 
-according to the ALSA Soundcard Matrix page:
-"Corrections should be sent to the alsa-devel mailing
-list."
+a few of you with long memories may recall that I was
+on this list about a year ago asking about getting
+support for our soundcards.
 
-so heres one:
-AudioScience cards are missing from the list:
-All cards from
-http://www.audioscience.com/internet/products/products.htm
-except ASI2214 are candidates for an ALSA driver.
+The wheels have slowly turned, and now the company 
+http://www.audioscience.com
+rather than me personally)  want to have an ALSA driver
+for our cards.
 
-Summary:
+We will release our existing Linux device driver code
+under a GPL-compatible license.
 
-Based on TI TMS320C67xx DSP
-ASI6012
-ASI6122
-ASI6114
-ASI6118
-ASI6244
-ASI5111
+I have got the job of making an ALSA driver, or at
+least causing it to be made.
+How do I go about getting help from "The ALSA
+development team" (TADT) to write this driver?
 
-Based on Motorola DSP56301 DSP
-ASI4215
-ASI4346
-ASI4344
-ASI4342
+Is TADT just the members of this list, or a more
+defined group of people working (more or less) full
+time on the project?  I.e. who do I talk to?
 
-These would currently be highlighted green or grey in
-the matrix.
+The proposed Licence is based on the Zlib one.
+http://www.gzip.org/zlib/zlib_license.html
 
-thanks
+with the addition of 
+X. This software may only be used in conjunction with
+audio peripherals designed by AudioScience, Inc.
+
+Is this an acceptable restriction? Or do you think that
+this make it non-GPL-compatible?
+
+regards
 
 Eliot Blennerhassett
 AudioScience
