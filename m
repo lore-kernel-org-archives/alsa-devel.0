@@ -1,12 +1,13 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: How to tweak dmix?
-Date: Thu, 10 Mar 2005 22:22:36 -0800 (PST)
-Message-ID: <20050311062237.93862.qmail@web60801.mail.yahoo.com>
-References: <20050311002002.4B6B412867@sc8-sf-spam2.sourceforge.net>
-Reply-To: tsw@johana.com
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
+Date: Fri, 11 Mar 2005 08:27:59 +0100
+Message-ID: <94d2b94b47ae8ce21c99e304b4359be3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <20050311002002.4B6B412867@sc8-sf-spam2.sourceforge.net>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6CBEB1DE
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 08:27:59 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,69 +17,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---- Pierre Ossman <drzeus-list@drzeus.cx> wrote:
-> Message: 2
-> Date: Thu, 10 Mar 2005 23:14:29 +0100
-> From: Pierre Ossman <drzeus-list@drzeus.cx>
-> 
-> I've been looking for some guides on how you tweak the parameters in
-> dmix to get what you want but I haven't found any. I can just find
-> example after example without any explanation of the parameters.
-> 
-> The reason I want to tweak it is because the sound isn't "just right". I
-> can either get a lot of stuttering, or very short samples fail to be played.
-> 
-> My current setting is:
-> 
-> period_time	84000
-> buffer_time	340000
-> period_size	4096
-> buffer_size	32768
-> 
-> This gives me pleasant sound as long as the samples are long enough.
-> Short things newer survive long enough to reach the speakers.
-> 
-> If I remove *_size and set period_time to around half of buffer_time
-> then I can get short samples to play. But longer samples start to
-> stutter and the sound is awful.
-> 
-> I've been playing around with the values but since I don't really know
-> what I'm changing I haven't been able to find a solution that works
-> well. So I could really use some help here.
-> 
-> Rgds
-> Pierre
-> 
-> 
-I, too have struggled with these parameters.  The application I'm working with
-has no issues with latency (playback only), but stuttering IS a huge problem. 
-While I'm not really using dmix (I call the '...writei' routine directly), a
-proper setting of these would be nice.  What are the guidelines for these
-parameters, and what is their interaction?  Obviously they DO something, or the
-would be fixed to some value.  Do they matter if the number of channels varies?
- The documentation isn't as clear as it could be.
 
-Thanks.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=980> 
+======================================================================
+Reported By:                dobromir
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   980
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-11-2005 01:17 CET
+Last Modified:              03-11-2005 08:27 CET
+======================================================================
+Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
+Description: 
+I found in the alc850 spec that setting 12th bit in register 0x6a routes to
+spdif all data from ADC. I write small program that sets this register,
+and this works for me, but I use only 2 speakers configuration.
+Unfortunately I don't have enough 
+knowledge of alsa architecture to write a proper patch.
+======================================================================
 
-p.s.  In a couple of different applications (aplay among them), it seems that I
-get different "defaults" evn with the same (I try very hard here!) operating
-environment.  Do they change with different versions of the alsa lib?
+----------------------------------------------------------------------
+ dobromir - 03-11-05 08:27 
+----------------------------------------------------------------------
+12th bit means 1 << 12
 
-Thanks again.
-
--- 
-Tom Watson
-tsw@johana.com
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-11-05 01:17 dobromir       New Issue                                    
+03-11-05 08:27 dobromir       Note Added: 0003880                          
+======================================================================
 
 
-		
-__________________________________ 
-Do you Yahoo!? 
-Yahoo! Mail - 250MB free storage. Do more. Manage less. 
-http://info.mail.yahoo.com/mail_250
 
 
 -------------------------------------------------------
