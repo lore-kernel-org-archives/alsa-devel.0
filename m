@@ -1,14 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [alsa-cvslog] CVS: BEFORE REVERT  [SUCCESS]
-	C-Media CMI9761 -A- type, TESTING 01
-Date: Wed, 16 Feb 2005 17:24:36 -0500
-Message-ID: <1108592676.29298.30.camel@krustophenia.net>
-References: <E1D1Ttl-0000lb-In@sc8-pr-cvs1.sourceforge.net>
-	 <4213BB44.5060702@gmx.de>  <4213C289.7030500@gmx.de>
+From: Shayne O'Connor <forums@machinehasnoagenda.com>
+Subject: Re: emu10k1 multichannel support & 2.6.11.rc4 - bug?
+Date: Thu, 17 Feb 2005 10:40:51 +1100
+Message-ID: <4213DA03.8000100@machinehasnoagenda.com>
+References: <1108514291.3772.19.camel@krustophenia.net>	 <42129C4F.4060507@machinehasnoagenda.com>	 <1108515965.14789.1.camel@krustophenia.net>	 <4212D49F.40404@machinehasnoagenda.com>	 <1108530906.26851.2.camel@krustophenia.net>	 <4212F6EF.1040306@machinehasnoagenda.com>	 <421347C7.9080506@machinehasnoagenda.com> <1108574835.28955.2.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4213C289.7030500@gmx.de>
+In-Reply-To: <1108574835.28955.2.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,23 +16,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: t.schorpp@gmx.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2005-02-16 at 23:00 +0100, thomas schorpp wrote:
-> a) oss-apps sound on DXS slider nr 2 (xmms , /dev/mixer , dsp)
-> 
-> only discrete access to /dev/mixer (on/off), see if i can fix that (add 
-> pcm slider again, reading diff to 2.6.0)
-> 
-> suggest no fixed status without reaching that.
+Lee Revell wrote:
 
-This can't be fixed.  The softvol plugin won't work with the in-kernel
-OSS emulation.
+>On Thu, 2005-02-17 at 00:16 +1100, Shayne O'Connor wrote:
+>  
+>
+>>i've given up on applying the latest patches to cvs, but have
+>>encountered a strange problem when trying to apply the 008 version of
+>>the patch to the latest Planet CCRMA kernel ...
+>>
+>>i applied the patch and installed the alsa-driver to the correct module
+>>directory (basically performed the same steps as for the previous
+>>kernel, except with a cleanly decompressed alsa-driver package) ... but
+>>after loading the alsa modules and starting jack, i manage to get 16
+>>output channels, but only two input channels ... the hw:0,2 device is
+>>there, but qjackctl only lets me specify either "0" or "2" input
+>>channels ("0" ends up giving 2 channels) ...
+>>    
+>>
+>
+>ALSA CVS changes very fast so I am not surprised you are having
+>problems.  Now that all patches are in CVS, try it again in 24 hours and
+>let me know if you still have problems.
+>
+>  
+>
 
-Lee
+>Getting only 2 channels on the hw:0,2 device usually means you loaded
+>your old mixer settings after applying the patch.  You can't do that.
+>You have to load it with the default mixer settings, then manually
+>adjust the mixer.
+>  
+>
+it must have been something to do with this, cos i just booted into the
+newer kernel (2.6.11.rc4), started jack, and got 16 inputs :)
 
+btw - congratulations on your invaluable work and thanx for helping out
+a somewhat imbecilic tester like me ... is the email you use for these
+lists the one to use for paypal? as soon as i've got some moolah to
+spare, i'd like to donate a little thankyou.
+
+shayne
 
 
 -------------------------------------------------------
