@@ -1,14 +1,15 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: new "in-compatible" alsa-lib PCM API
-Date: Wed, 18 Sep 2002 22:44:30 +0100 (BST)
+From: Sverker Wiberg <sverkerw@swipnet.se>
+Subject: Re: Patch/soundfont uploader, anyone?
+Date: Wed, 18 Sep 2002 23:57:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020918214430.33930.qmail@web40605.mail.yahoo.com>
-References: <20020918213046.31539.qmail@web40605.mail.yahoo.com>
+Message-ID: <15752.63176.190274.272950@catskinner.nonet.update.uu.se>
+References: <15751.42958.682396.612116@catskinner.nonet.update.uu.se>
+	<20020918015213.A9311@sci.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020918213046.31539.qmail@web40605.mail.yahoo.com>
+In-Reply-To: <20020918015213.A9311@sci.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,28 +18,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: =?iso-8859-1?Q?Ville_Syrj=E4l=E4?= <syrjala@sci.fi>
+Cc: Sverker Wiberg <sverkerw@swipnet.se>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Chris Rankin <rankincj@yahoo.com> wrote: >  ---
-Jaroslav Kysela <perex@perex.cz> wrote: > On
-> The possible solutions from my perspective are:
-> - I install BOTH libraries, each with full headers
-> (somehow)
+Ville Syrj=E4l=E4 writes:
+ > On Wed, Sep 18, 2002 at 12:08:14AM +0200, Sverker Wiberg wrote:
+ > > Currently, my itch with ALSA (0.9.0rc3-0.1) is that I can't find a=
+ny
+ > > tool to upload patches (instruments, soundfonts) to my old GUS PnP=
 
-Oh yes, and the compatibility version has to go in
-/usr because that's where the rest of the world
-expects to find the ALSA headers.
+[...]
+ > ALSA doesn't support MIDI emulation on GUS.=20
 
-Chris
+Ouch! But you are right, of course.
 
+ > Only thing you can use at this time is the simple instuments for
+ > MOD playback.
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+...or for pmidi, which spins its wheel like a nice little hamster, but
+no sound is forthcoming. I thought that was because I hadn't uploaded
+any patches to the card, but now I wonder about the ROM patches (this
+tangent seems to lead over to the alsa-user list...enough of that!).
+Anyway, the patch set I really want to use is on my disk.
+
+/Sverker
 
 
 -------------------------------------------------------
