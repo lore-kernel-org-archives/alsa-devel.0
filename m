@@ -1,13 +1,20 @@
-From: kasper@303.nu
-Subject: es18xx - 1869 not working, debugging ALSA drivers
-Date: Tue, 5 Nov 2002 20:33:16 +0100
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: bugs in usb midi alsa code?
+Date: Tue, 5 Nov 2002 12:22:42 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200211052033.16712.kasper@303.nu>
+Message-ID: <Pine.LNX.4.44.0211051140430.21282-100000@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from cm-mail.stanford.edu (cm-mail.Stanford.EDU [171.64.197.135])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA13872
+	for <alsa-devel@alsa-project.org>; Tue, 5 Nov 2002 21:23:22 +0100
+Received: from cmn37.stanford.edu (cmn37.stanford.edu [171.64.197.186])
+	by cm-mail.stanford.edu (8.11.6/8.11.6) with ESMTP id gA5KMhL21217
+	for <alsa-devel@alsa-project.org>; Tue, 5 Nov 2002 12:22:43 -0800
+Received: from localhost (localhost [127.0.0.1])
+	by cmn37.stanford.edu (8.11.6/8.11.6) with ESMTP id gA5KMh323260
+	for <alsa-devel@alsa-project.org>; Tue, 5 Nov 2002 12:22:43 -0800
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +23,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The MIDI interface I'm using is a Midisport 2x2 (same results with a 1x1).
 
-I've been trying to get ALSA running on my Compaq Armada 3500 for quite a=
-=20
-while now. The soundchip is a es1869, which is supposed to be supported b=
-y=20
-the es18xx driver. It only works 1 out of 10 times though - and I figured=
- out=20
-when it works and when it doesn't... But that didn't help me much until n=
-ow,=20
-I tried to force it to always use the working mode, but that didn't work=20
-out...
+It works fine with alsa cvs of 2002-08-20, has problems with alsa cvs of
+2002-10-28.
 
-The OSS driver is working properly, but I use the Soundblaster driver, wh=
-ich=20
-is only half-duplex, and in fact, it's a different mode of the soundchip.
+This is a summary of what I have found so far. 
 
-I've been trying to debug the driver, but it's not really my thing... May=
-be=20
-there are some handy tricks to debug ALSA drivers? Or is it just:
-1) change the source
-2) compile the source
-3) see if it works (by loading the module.. and playing some audio)
-4) if it doesn't work restart with 1)
+OSS emulation (raw midi interface):
+  OSS programs using the raw midi interface emulation (I'm using pd) can't 
+  see both midi ports in the oss emulation world. They only see the first
+  port. This is confirmed by this:
 
-Are there tools to control soundchips without using this laborious cycle?=
- Some=20
-kind of framework to check out the stuff that is written in the chip's=20
-datasheet?
+  cat /proc/asound/oss/devices
+   18: [1- 2]: raw midi
 
-greetz,
-Kasper
+  Midi input and output works fine on the first port, byte counts can be 
+  read through cat /proc/asound/card1/midi0.
+
+  On the older alsa version the two interfaces show up:
+  cat /proc/asound/oss/devices
+   34: [2- 2]: raw midi
+   45: [2-13]: raw midi
+
+ALSA:
+  input does not seem to work at all. I'm using the Muse MIDI sequencer, 
+  with  the older alsa version it works fine (input), with the newer alsa 
+  version it does not record midi input at all. Output works fine on both 
+  alsa versions. 
+
+  The input byte counters in /proc/asound/card1/midi0 do not increment. 
+
+  cat /proc/asound/devices shows only one raw midi interface. This is on 
+  a two port device (but Muse lets me select either port). On the older 
+  alsa two devices show up on the listing. 
+
+Has someone out there tested a similar configuration?
+-- Fernando
+
 
 
 -------------------------------------------------------
