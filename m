@@ -1,14 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000635]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
-Date: Sun, 7 Nov 2004 21:41:50 +0100
-Message-ID: <0acc4b01df7623734b38e01e974f652f@bugtrack.alsa-project.org>
+From: "Rafael J. Wysocki" <rjw@sisk.pl>
+Subject: Re: 2.6.10-rc1-mm3: swsusp problems w/ ALSA driver, IRQs on AMD64
+Date: Sun, 7 Nov 2004 22:48:54 +0100
+Message-ID: <200411072248.54627.rjw__10507.1676931859$1099865142$gmane$org@sisk.pl>
+References: <200411062014.08202.rjw@sisk.pl> <20041107143858.GF1176@elf.ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-2"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2745823E
-	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 21:41:51 +0100 (MET)
+Received: from mail.digitalservice.pl (grendel.digitalservice.pl [217.67.200.140])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4BEEA1F9
+	for <alsa-devel@alsa-project.org>; Sun,  7 Nov 2004 22:50:03 +0100 (MET)
+Received: from mail.digitalservice.pl ([127.0.0.1])
+ by localhost (grendel [127.0.0.1]) (amavisd-new, port 10024) with SMTP
+ id 21170-07 for <alsa-devel@alsa-project.org>;
+ Sun,  7 Nov 2004 22:57:15 +0100 (CET)
+In-Reply-To: <20041107143858.GF1176@elf.ucw.cz>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,58 +26,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: Pavel Machek <pavel@suse.cz>, Andrew Morton <akpm@osdl.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sunday 07 of November 2004 15:38, Pavel Machek wrote:
+> Hi!
+> 
+> > I'm having some troubles with swsusp on 2.6.10-rc1-mm3 (Athlon 64-based 
+laptop 
+> > w/ NForce3 chipset), although I don't think that swsusp itself is to
+> > blame.
+> 
+> Did it work ok on other kernels?
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=635> 
-======================================================================
-Reported By:                betak
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   635
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-07-2004 21:41 CET
-Last Modified:              11-07-2004 21:41 CET
-======================================================================
-Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
-converters and GPIO not ready (0x1)
-Description: 
-I tried to install kernel-2.6.9 with alsa-driver-1.0.7rc2. I use Fedora
-Core 2  on my Fujitsu - Siemens Lifebook C1020 ( technical dokumentation -
-see http://212.52.234.17/index.cfm?fuseaction=dspcontent&lid=11&page=2 )
-When I try to load module snd_via82xx first , I am not able to load second
-modul - snd_via82xx. I recieve following message "Unknown symbol
-snd_verbode_printk" and modul is not loded.
-But when I tried to load sdn_via82xx_modem  first, then I recieve
-following message "MC'97 0 converters and GPIO not ready (0x1)".
-Snd_via82xx_modem is loaded , but I am not able to setup them.
-Any useful information from my system are attached.
-Can you help me to setup this modem driver  ? How can I create /dev/modem
-... ?
+On 2.6.10-rc1 it works even without pci=routeirq.  On 2.6.10-rc1-mm2 it did 
+after I had used pci=routeirq, but I have tried it only once.
 
-======================================================================
+> Does it work when you rmmod intel8x0 before suspend?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-07-04 21:41 betak          New Issue                                    
-11-07-04 21:41 betak          File Added: alsa.txt                         
-11-07-04 21:41 betak          Distribution              => Fedora Core 2   
-11-07-04 21:41 betak          Kernel Version            => 2.6.9           
-======================================================================
+Yes, it does, except for the pci=routeirq, which seems to be mandatory.
 
+Greets,
+RJW
 
+-- 
+- Would you tell me, please, which way I ought to go from here?
+- That depends a good deal on where you want to get to.
+		-- Lewis Carroll "Alice's Adventures in Wonderland"
 
 
 -------------------------------------------------------
