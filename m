@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000397]: Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
-Date: Sat, 25 Sep 2004 08:54:45 +0200 (CEST)
+Date: Sat, 25 Sep 2004 08:55:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925065445.789C3101E1@server.perex-int.cz>
+Message-ID: <20040925065542.D1835101E1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C950129A
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 08:54:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F05D29A
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 08:55:43 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               My own, based on Redhat 6.2
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-18-2004 16:41 CEST
-Last Modified:              09-25-2004 08:54 CEST
+Last Modified:              09-25-2004 08:55 CEST
 ======================================================================
 Summary:                    Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
 Description: 
@@ -83,6 +83,11 @@ how I will glady try)
 Morten Fangel
   morten_fangel@tdcadsl.dk
 
+----------------------------------------------------------------------
+ fangel - 09-25-2004 08:55 CEST 
+----------------------------------------------------------------------
+(ups, forgot to add that I'm using 2.6.8 kernel...)
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -94,6 +99,7 @@ Date Modified  Username       Field                    Change
 07-18-04 17:17 durval         Bug Monitored: durval                        
 07-30-04 17:32 tiwai          Bugnote Added: 0001502                       
 09-25-04 08:54 fangel         Bugnote Added: 0001908                       
+09-25-04 08:55 fangel         Bugnote Added: 0001909                       
 ======================================================================
 
 
