@@ -1,11 +1,10 @@
-From: "Peter Heatwole" <peter599@gotnet.net>
-Subject: Re: SPDIF and cs46xx ?
-Date: Sun, 16 Mar 2003 15:11:26 -0800
+From: "Quod E. Demonstrandum" <nib_maps@yahoo.com>
+Subject: apm and alsa driver for intel8x0 on dell inspiron 8200
+Date: Sun, 16 Mar 2003 17:44:02 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <f04009ebae9c4ef4ab19b91249203258.peter599@gotnet.net>
+Message-ID: <20030317014402.43727.qmail@web21010.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,27 +14,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Peter Heatwole wrote:
->    On a sidenote, ac3dec never makes the clicking noise; only xine does th=
-at=2E
-> But, I noticed that ac3dec always makes a click when I first start playing=2E=
 
-> Could this be a result of the different AES# configuration?
+Hello,
 
-   Never mind that question=2E  I just noticed that it's only during the DVD=
- menu
-("Air Force One" DVD) that I hear the clicking=2E  Once I get into the movie=
- only
-changing chapters clicks/hisses and is quiet=2E
+It would seem that apm/acpi access (reading /proc/apm
+or /proc/acpi, whichever is compiled into the kernel)
+corrupts sound on my computer, a dell i8200 running
+linux 2.4.20 and alsa 0.9.1.
+This does not happen with the OSS driver.  Moreover,
+gnomemeeting seems to work well, but .wav samples
+played by esd get corrupted if apm/acpi is accessed
+while they are played.
+
+Is this a known phenomenon?
+I know nothing about the ALSA project, but I can code:
+could you give me a few tips as to where to start
+debugging this?
+
+Thanks.
 
 
--- Peter Heatwole
-"Murphy was just a well known pessimist=2E"
-
+__________________________________________________
+Do you Yahoo!?
+Yahoo! Web Hosting - establish your business online
+http://webhosting.yahoo.com
 
 
 -------------------------------------------------------
