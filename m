@@ -1,13 +1,14 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: ALSA Soundcard Matrix.
-Date: 09 Jun 2003 19:44:14 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: bug in intel8x0 joystick/midi ?
+Date: Tue, 10 Jun 2003 11:29:16 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055202253.2735.17.camel@deimos>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <Pine.HPX.4.33n.0306101113450.1810-100000@studcom.urz.uni-halle.de>
+References: <33175.24.225.156.130.1055006496.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <33175.24.225.156.130.1055006496.squirrel@webmail.ouroboros-complex.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,23 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: jfm3@ouroboros-complex.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi, 
+jfm3@ouroboros-complex.org wrote:
+> I have intel8x0 on my mother board. There are headers for a joystick/midi
+> port I'd like to use. I look in BIOS and find joystick io=201, midi
+> io=330, and midi irq=10. I put this in modules.conf:
+>
+> options -k snd-intel8x0 index=0 mpu_port=330 joystick_port=201
+>
+> snd-mpu401-uart gets loaded, but no midi ports appear. I notice in the
+> source code to the driver three things.
+>
+> 3) The setup routine doesn't seem to look for joystick and midi. I don't
+> see the word "joystick" or "midi" in dmesg.
 
-The Aureal SoundCards have a working ALSA driver, and therefor the
-SoundCard matrix should at least show them green. More correct would be
-"supported". A preliminar driver (lacking some advanced features) will
-be offered soon to merge the ALSA tree. 
-Some people testing the driver would be great. As many probably already
-know, it can be found on: 
-http://savannah.nongnu.org/projects/openvortex/
+The joystick/midi part is handled by a separate logical PCI device
+(see the snd_intel8x0_joystick_ids array). Your chipset may not be
+listed in there.
 
-Thanks you very much.
-Best Regards. 
+> 2) There is no way to tell the driver what irq is the mpu401.
 
-Manuel Jander 
+Yes. Currently, the snd-intel8x0 module instructs the mpu401 driver to
+use polling, which would actually work. Theoretically. If you'd
+disregard some dropped MIDI bytes here and there.
+
+When the MIDI port has already been enabled by the BIOS, you can
+simply ignore the buggy stuff in snd-intel8x0 and use the snd-mpu401
+driver instead.
+
+
+HTH
+Clemens
+
 
 
 
