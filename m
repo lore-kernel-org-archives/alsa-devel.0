@@ -1,12 +1,18 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: PCMCIA and snd-hdsp
-Date: Wed, 28 Aug 2002 08:30:21 -0400
+From: Stephen Hassard <steve@hassard.net>
+Subject: M-Audio Sonica support
+Date: Wed, 28 Aug 2002 07:33:07 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17k1w9-0003RT-00@usw-sf-list1.sourceforge.net>
-References: <20020828055904.GA770@finnendahl.de>
+Message-ID: <20020828143307.GB468@SHLIAN>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 28 Aug 2002 07:59:04 +0200."
-             <20020828055904.GA770@finnendahl.de>
+Received: from lb1.angio.com ([207.23.249.14])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA05802
+	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2002 16:33:20 +0200
+Received: from shlian.angio.com (shlian.angio.com [192.168.100.174])
+	by lb1.angio.com (Postfix) with SMTP id 91F1E73C83
+	for <alsa-devel@alsa-project.org>; Wed, 28 Aug 2002 06:33:53 -0700 (PDT)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +21,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->after recompiling a kernel on my laptop, my RME HDSP configuration is
->broken. Does anybody have a working setup with the RME PCMCIA card and
->would be willing to share some information about the process of
->initialization off list?
+Hi,
 
-i don't have the working setup (with pcmcia), but i would obviously
-like to hear more about whatever has broken. do you still have the old
-kernel, and does it still work?
+I was trying to get my M-Audio Sonica to work under Alsa. It's a nifty
+little single channel out 24/96 USB audio device. Here's the product
+page: http://www.m-audio.com/products/consumer/sonica.php
 
---p
+I'm running the CVS version of Alsa from within the last hour.
+
+snd-usb-audio modprobes fine and doesn't give me any errors. /dev/dsp
+doesn't get created properly (snd-pcm-oss is loaded properly), not does
+/proc/asound/cards list anything ('--- no soundcards ---'). The device
+is properly detected by the linux kernel, as I get properly
+connect/disconnect messages. I'm using kernel v2.4.20pre4. The device is
+plugged into a UHCI controller (it's a USB 2.0 NEC controller).
+
+I was taking a look around the source to see if I could add the Sonica
+device ID, but I can't seem to find where to hack it (if it's even
+needed). Anyhow, the device ID for the Sonica is vend/prod 0x763/0x2805.
+Any help would be greatly appreciated.
+
+Thanks,
+Stephen Hassard
 
 
 -------------------------------------------------------
