@@ -1,15 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: 1.0.9rc1 release
-Date: Sun, 13 Mar 2005 18:33:37 -0500
-Message-ID: <1110756818.12226.9.camel@mindpipe>
-References: <Pine.LNX.4.58.0503131345570.1755@pnote.perex-int.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000988]: No errors, but no sound output
+Date: Mon, 14 Mar 2005 00:35:53 +0100
+Message-ID: <39fa65533d482fb370675b9f618d3f1c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B1D131B9
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 00:33:40 +0100 (MET)
-In-Reply-To: <Pine.LNX.4.58.0503131345570.1755@pnote.perex-int.cz>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 434C41C9
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 00:35:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,20 +17,56 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 2005-03-13 at 13:46 +0100, Jaroslav Kysela wrote:
-> Hi all,
-> 
-> 	1.0.9rc1 ALSA packages are available for download and testing...
 
-I would really like to see Mikael Magnusson's SBLive mixer patch, which
-adds a real master volume control and makes the mixer configuration more
-consistent with the Audigy, to make it into the 1.0.9 release.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=988> 
+======================================================================
+Reported By:                madCoder
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   988
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.6.11-gentoo-r2
+======================================================================
+Date Submitted:             03-14-2005 00:35 CET
+Last Modified:              03-14-2005 00:35 CET
+======================================================================
+Summary:                    No errors, but no sound output
+Description: 
+Sound was working fine in linux kernel 2.6.9 with ALSA version 1.0.6.  I
+upgraded the kernel to 2.6.11-gentoo-r2, which contains ALSA version
+1.0.8, and now I get no sound at all.  There are no error messages, the
+kernel modules are loaded properly and appear to be working fine.  Playing
+a file in XMMS, the spectrum analyzer shows that it should be playing
+sound, but I get nothing from the speakers.
 
-Lee
+I've already checked that all the mixer channels are unmuted and turned
+up, including DAC.  I know I'm not the only one, nor is this chipset the
+only one, that has had this problem, so is it something in the core that
+is causing all these problems, or are there just that many chipsets that
+have suddenly developed the inability to produce sound?
+
+lsmod, lspci, and /proc output are attached in Additional Info
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-14-05 00:35 madCoder       New Issue                                    
+03-14-05 00:35 madCoder       Distribution              => gentoo          
+03-14-05 00:35 madCoder       Kernel Version            => 2.6.11-gentoo-r2
+======================================================================
+
 
 
 
