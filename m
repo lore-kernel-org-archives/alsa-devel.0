@@ -1,71 +1,54 @@
-From: Ryan Underwood <nemesis-lists@icequake.net>
-Subject: Re: [Alsa-devel] mips fix
-Date: Tue, 16 Sep 2003 02:14:21 -0500
-Message-ID: <20030916071421.GV1804@dbz.icequake.net>
-References: <20030908033657.GB2359@dbz.icequake.net> <s5h8yoxu93q.wl@alsa2.suse.de>
+From: "Nick Hogle" <fozzy915@hotmail.com>
+Subject: Bug in pcm_plugin.c, function snd_pcm_plug_alloc?
+Date: Tue, 16 Sep 2003 02:26:43 -0700
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <Sea2-F56hIIqgRXrJro00002e39@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <bounce-debian-mips=debian-mips=m.gmane.org@lists.debian.org>
-Content-Disposition: inline
-In-Reply-To: <s5h8yoxu93q.wl@alsa2.suse.de>
-Resent-Message-ID: <RQxbMB.A.bO.WhrZ_@murphy>
-List-Post: <mailto:debian-mips@lists.debian.org>
-List-Help: <mailto:debian-mips-request@lists.debian.org?subject=help>
-List-Subscribe: <mailto:debian-mips-request@lists.debian.org?subject=subscribe>
-List-Unsubscribe: <mailto:debian-mips-request@lists.debian.org?subject=unsubscribe>
-List-Archive: <http://lists.debian.org/debian-mips/>
+Content-Type: text/plain; format=flowed
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: debian-mips@lists.debian.org
 List-Id: alsa-devel@alsa-project.org
 
+I believe this is a bug: the loop in plug_alloc doesn't iterate completely 
+through the plugin linked list.   The problem with this, is that 
+snd_pcm_plugin_alloc won't get called for every plugin in the list, and 
+vital components of those plugins won't be initialized.
 
-Hi,
+The solution would be to replace the while (plugin->next/prev) lines with 
+while (plugin), to move lines: plugin = plugin->next/prev to the spot just 
+after if (err < 0) return err;
 
-On Tue, Sep 09, 2003 at 08:09:45PM +0200, Takashi Iwai wrote:
-> At Sun, 7 Sep 2003 22:36:57 -0500,
-> Ryan Underwood wrote:
-> > 
-> > 
-> > In configure.in:
-> >   mips*)
-> >     c_opts="-mcpu=r4600 -G 0 -mips2 -fno-pic -mno-abicalls -mlong-calls"
-> >     processor="mips"
-> >     test "$CONFIG_ISA" = "probe" && CONFIG_ISA=
-> >     ;;
-> > 
-> > 
-> > -mcpu apparently needs to be changed for latest versions of gcc, as -mcpu
-> > is no longer an option on mips architecture.
-> 
-> ok, i tried to fix it on cvs.
-> could you give a try?
+I found that the aformentioned changes fixed a problem I was having with 
+reading from /dev/dsp.   Unless I set the rate to 48000, then read() would 
+always return 0.  This was because when read_transfer iterated through the 
+plugins, the "rate conversion" plugin, which had not been initialized, had 
+the value 0 in dst_channels[0].frames.  This caused the entire read call to 
+return 0.
 
-Hmm, using -DEXPORT_SYMTAB has a problem in module.h, which is included
-from adriver.h:
+BTW, I'm using the intel8x0 driver, and the latest 0.9.6 release of 
+alsa-drivers.
 
-#ifdef __GENKSYMS__
-#  define _set_ver(sym) sym
-#  undef  MODVERSIONS
-#  define MODVERSIONS
-#else /* ! __GENKSYMS__ */
-# if !defined(MODVERSIONS) && defined(EXPORT_SYMTAB)
-#   define _set_ver(sym) sym
-#   include <linux/modversions.h>
-# endif
-#endif /* __GENKSYMS__ */
+Anyone else agree that this is a bug?  Or am I missing something, that 
+requires that plug_alloc to NOT iterate completely through the list?
 
-Since MODVERSIONS is not defined with the mips kernel (module versioning
-is disabled) and EXPORT_SYMTAB is defined, it tries to include
-linux/modversions.h, which doesn't exist in the mips kernel.
+Thanks,
+-Nick
 
-Removing -DEXPORT_SYMTAB from Rules.make causes the build to die with:
-hwdep.c:501: error: syntax error before
-"this_object_must_be_defined_as_export_objs_in_the_Makefile"
+_________________________________________________________________
+Get 10MB of e-mail storage! Sign up for Hotmail Extra Storage.  
+http://join.msn.com/?PAGE=features/es
 
-on the last line which exports a symbol:
-EXPORT_SYMBOL(snd_hwdep_new);
 
-Any ideas?  I posted to debian-mips before and received no reply.
 
--- 
-Ryan Underwood, <nemesis at icequake.net>, icq=10317253
+-------------------------------------------------------
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
