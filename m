@@ -1,12 +1,14 @@
-From: Roger E Critchlow Jr <rec@elf.org>
-Subject: tecra 8100 / ymfpci
-Date: Wed, 03 Dec 2003 16:54:58 -0700
+From: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>
+Subject: Re: OSS midi emulation bug: 1.0.0pre3
+Date: Thu, 4 Dec 2003 17:41:49 +1030 (CST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FCE77D2.8000204@elf.org>
+Message-ID: <200312040711.hB47BnH21275@sprite.physics.adelaide.edu.au>
+References: <Pine.HPX.4.33n.0312021137010.10104-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0312021137010.10104-100000@studcom.urz.uni-halle.de> from "Clemens Ladisch" at Dec 02, 2003 11:42:32 AM
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,94 +17,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Jonathan Woithe <jwoithe@physics.adelaide.edu.au>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi --
+Clemens wrote:
+> Jonathan Woithe wrote:
+> > Under Jazz++, any "hold on" controller event which occurs within the first
+> > bar played gets turned off too quickly (assuming playback starts at beat one
+> > of a bar).  In fact, even if there are no subsequent "hold off" events
+> > within the entire midi file the "hold on" is still turned "off".  The
+> > turning off happens very soon after the "hold on" is transmitted - the "hold
+> > on" has some effect but it's very short lived.
+> 
+> Apparently, an Active Sensing message is being sent at the start of
+> the file.  ALSA sends one when a rawmidi port is closed, but I don't
+> know why this should happen at the start of the file.
+> 
+> Does this still happen when you use aconnect to connect some dummy
+> port (e.g. 0:0) to your sound card's output port before starting
+> Jazz++?
 
-  The appended has been moderating for a few weeks.
+I'm not entirely sure I understand what you mean by "dummy port".  What I
+did last night was insert the snd-seq-dummy.o module (or whatever it's
+called) which created a midi through interface which the system labelled
+62:0.  I then used aconnect to route this to the external port:
 
-  The funny thing is the other night I had 2.6.0-test11 playing sounds as
-clear as could be for a while.  But it has since, after miscellaneous
-reonfigs and reboots, reverted to making scratchy noises only.
+  aconnect 62:0 64:0
 
-  Getting toshiba specific acpi extensions, as in using the planet ccrma
-2.4.2-6.ll.rh90 kernel, didn't solve the problem for me either.  Perhaps
-SuSe tweaked the toshiba_acpi extensions?
+Then I started Jazz+ which still had its output directed to the MPU401 (64:0
+under ALSA on my system).  When I started playing, hold events suddenly
+worked as expected.  Directing Jazz++ to the midi through gave the same
+result.  If I exitted, removed the connection using "aconnect -d 62:0 64:0"
+and restarted Jazz++ then the hold events were broken again (note: the dummy
+module was still loaded).  Simply having this connection suddenly made midi
+hold controller events work.
 
-  But it seems likely, still, that the toshiba specific acpi may be
-banging bits in registers near or overlapping the ymfpci assignments,
-or that there's a power saver setting that semi-mutes the sound chip.
+There was one other thing - even though hold controller events worked as
+expected when the "midi through" was connected to the MPU401, there was one
+other side effect - the tempo over the first half of the first bar to be
+played was too fast.  This is exactly the same symptom exhibited by playmidi
+with or without the "midi through" connection in place.  So:
 
-  Hope this helps.  I'll probably stumble through getting the alsa
-cvs version compiled in a day or two.
+  With 62:0 connected to 64:0 and Jazz++/playmidi set to output to
+  /dev/sequencer (64:0 after OSS emulation's done its thing):
+    * hold controller events work as expected in both playmidi and jazz++
+    * the first half of the first bar played is sent to the MPU401
+      too quickly in both playmidi and jazz++
 
-- rec --
+  Without anything connected to 64:0 and Jazz++/playmidi still set as
+  before:
+    * hold controller events are broken around the first bar played 
+      from jazz++, but still seem to work from playmidi
+    * playmidi's tempo is still too fast over the first half of the first bar
+      played, but jazz++'s tempo is fine over the whole piece.
 
->
->Greetings --
->
->   I was just checking on this, again, since I have yet another Tecra 
->8100 for Alsa to fail to work on.  I see that there was a success back 
->in July under 0.9.5 (kernel unspecified), but I'm running the planet 
->ccrma alsa-driver-0.9.6-2 and there's still nothing but static coming 
->out of the speakers here.
->
->   But, I also noticed the following post over at linuxquestions.org 
->from 11-Nov-2003 which suggests that the problem is in the toshiba 
->specific power mgmt.  Apparently, on some current SuSe releases the Alsa 
->driver works on the Tecra 8100 between the install and the first reboot, 
->then produces static.  Talk about your unrewarding bug to work on.
->
->   None of this helps me, I'm running kernel-2.4.20-20.1.caps.rh90 from 
->planet ccrma, and there are no toshiba_acpi modules to be found.
->
->   Yet, I get the feeling that this bug may be reaching its expiration date.
->
->-- rec --
->
-> > Last edited by shutterbug on 11-11-2003 at 01:56 AM
-> >
->  
->
->>> Toshiba 8100 laptop sound on SuSE 9.0 	( post #6)
->>> 
->>> _It's interesting.
->>> Sound works properly after installation and before first boot.
->>> After that, sound is just crackles and clicks.
->>> Here is a solution for SuSE 9.0.
->>> 
->>> If you are good at the command line:
->>> Login as root.
->>> Edit the file /etc/sysconfig/powermanagement.
->>> Look for the line that starts with ACPI_MODULES.
->>> Change the line so that it says this:
->>> ACPI_MODULES="ac battery button fan processor thermal toshiba_acpi"
->>> Then exit, _save, and reboot.
->>> 
->>> Or if you prefer a GUI:
->>> Run the YaST2 program.
->>> Click on System in the left panel.
->>> Click on "Editor for /etc/sysconfig Files" in the right panel.
->>> In left panel of resulting Configuration Options screen,
->>> click to open up (make visible) System, Powermanagement,
->>> ACPI, General, ACPI_MODULES.
->>> In right panel replace Setting of: ACPI_MODULES
->>> to be:
->>> ac battery button fan processor thermal toshiba_acpi
->>> Then click Finish to close Configuration Options screen.
->>> Then click Close to close the YaST program.
->>> 
->>> Using either method, the only part of the settings that were missing
->>> for my Toshiba 8100 laptop was "toshiba_acpi".
->>> 
->>> I rebooted and the sound problems disappeared.
->>> IF FACT... the sound worked after initial installation and before first reboot,
->>> but even then it was pretty bad. Now the sound is quite good.
->>    
->>
+This seems to have raised more questions than it answered.  Is there
+anything else I can do to help track down this problem?
 
-
+Regards
+  jonathan
+-- 
+* Jonathan Woithe    jwoithe@physics.adelaide.edu.au                        *
+*                    http://www.physics.adelaide.edu.au/~jwoithe            *
+***-----------------------------------------------------------------------***
+** "Time is an illusion; lunchtime doubly so"                              **
+*  "...you wouldn't recognize a subtle plan if it painted itself purple and *
+*   danced naked on a harpsichord singing 'subtle plans are here again'"    *
 
 
 -------------------------------------------------------
