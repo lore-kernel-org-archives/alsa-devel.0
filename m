@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000497]: cdplayer and midi does'n work
-Date: Wed, 13 Oct 2004 18:23:48 +0200 (CEST)
+Date: Wed, 13 Oct 2004 18:28:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013162348.AF00B1B006@server.perex-int.cz>
+Message-ID: <20041013162823.2D06D1B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0EE282F1
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 18:23:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 799CB2F1
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 18:28:23 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 3D7C02F21B
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 18:28:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,12 +23,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000497
 ======================================================================
 Reported By:                maciekb
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Bug ID:                     497
@@ -33,12 +36,13 @@ Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               Debian unstable
 Kernel Version:             2.6.7
+Resolution:                 not a bug
 ======================================================================
 Date Submitted:             09-11-2004 16:46 CEST
-Last Modified:              10-13-2004 18:23 CEST
+Last Modified:              10-13-2004 18:28 CEST
 ======================================================================
 Summary:                    cdplayer and midi does'n work
 Description: 
@@ -489,6 +493,11 @@ It was it, I bought new comp and didn't check (think) that cable is
 connected.
 Sorry for disturbing.
 
+----------------------------------------------------------------------
+ tiwai - 10-13-2004 18:28 CEST 
+----------------------------------------------------------------------
+ok, closing now.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -499,6 +508,10 @@ Date Modified  Username       Field                    Change
 09-15-04 22:17 maciekb        Bugnote Added: 0001765                       
 09-20-04 17:43 tiwai          Bugnote Added: 0001790                       
 10-13-04 18:23 maciekb        Bugnote Added: 0002130                       
+10-13-04 18:28 tiwai          Bugnote Added: 0002131                       
+10-13-04 18:28 tiwai          Assigned To               => tiwai           
+10-13-04 18:28 tiwai          Resolution               open => not a bug   
+10-13-04 18:28 tiwai          Status                   new => resolved     
 ======================================================================
 
 
