@@ -1,11 +1,10 @@
-From: Antonio Gigetto <undergroundtango@tiscali.it>
-Subject: A few problems with the powermac driver
-Date: Tue, 19 Aug 2003 15:41:39 +0200
+From: Koblinger Egmont <egmont@uhulinux.hu>
+Subject: quadra sound
+Date: Tue, 19 Aug 2003 16:13:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <DBF8E26E-D24A-11D7-A645-000A27B0EF80@tiscali.it>
-Mime-Version: 1.0 (Apple Message framework v552)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <Pine.LNX.4.44.0308191610130.22686-100000@sziami.cs.bme.hu>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,30 +17,66 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi
-I have an iMac DV 400 ( here are the specs
-http://docs.info.apple.com/article.html?artnum=43099 ).
-I tried alsa with the powermac driver in the latest kernel source
-(2.6.0-test3) and also the latest alsa release (0.9.6) with kernel 2.4.0
-and in both cases i found the following problems:
--when plugging a headphone in one of the front jacks the speakers are
-muted (cool) but i also can't hear any sound from the headphones! The
-only workaround to this is to manually increase the level of the PC
-speaker: this way i can hear audio from the headphones but it also comes
-out from the speakers so the headphones are pretty useless.
--If i plug the headphones in the line-out jack on the side of the
-computer, again the speakers are muted (yay) and this time i also hear
-sound from the headphones (yay!) but no matter how low the volume is, it
-has a horrible distortion. I'm just stuck using the speakers (which in
-my case are broken so it's pretty annoying)
-Is anybody still working on the driver? I'm available for any question.
-Thanks in advance
-Antonio
+Hi,
+
+(I don't know if it's a bug in quadra, alsa or the linux kernel.)
+
+With kernel 2.4.20 + alsa 0.9.0rc6 everything went fine.
+
+With kernel 2.4.21 + alsa 0.9.6 all my applications keep on playing sounds except quadra (tried at least xmms, mpg123, mplayer and xblast).
+
+Relevant part of strace quadra with 2.4.20 + alsa 0.9.0rc6:
+[...]
+open("/dev/dsp", O_WRONLY)              = 5
+ioctl(5, SNDCTL_DSP_SETFRAGMENT, 0xbfffef5c) = 0
+ioctl(5, SNDCTL_DSP_GETBLKSIZE, 0x83106cc) = 0
+ioctl(5, SNDCTL_DSP_SETFMT, 0x83106c8)  = 0
+ioctl(5, SOUND_PCM_READ_CHANNELS, 0x83106c0) = 0
+ioctl(5, SOUND_PCM_READ_RATE, 0x83106c4) = 0
+[...]
+ioctl(5, SNDCTL_DSP_GETOSPACE, 0xbfffeff0) = 0
+write(5, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 8192) = 8192
+[...]
+ioctl(5, SNDCTL_DSP_GETOSPACE, 0xbfffeff0) = 0
+write(5, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 8192) = 8192
+[...]
+
+The same part of strace's output with 2.4.21 + alsa 0.9.6:
+[...]
+open("/dev/dsp", O_WRONLY)              = 5
+ioctl(5, SNDCTL_DSP_SETFRAGMENT, 0xbfffef5c) = 0
+ioctl(5, SNDCTL_DSP_GETBLKSIZE, 0x83106cc) = 0
+ioctl(5, SNDCTL_DSP_SETFMT, 0x83106c8)  = 0
+ioctl(5, SOUND_PCM_READ_CHANNELS, 0x83106c0) = 0
+ioctl(5, SOUND_PCM_READ_RATE, 0x83106c4) = 0
+[...]
+ioctl(5, SNDCTL_DSP_GETOSPACE, 0xbfffeff0) = 0
+write(5, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 8192) = 8192
+[...]
+ioctl(5, SNDCTL_DSP_GETOSPACE, 0xbfffeff0) = -1 EPIPE (Broken pipe)
+[...]
+
+and from now on all ioctl()'s on fd 5 return -1 errno==EPIPE and hence quadra doesn't even try to write() to it.
+
+Quadra is available from the usual sourceforge location. You may need some
+patches from the patches section if you use a recent version of gcc. The
+bug both appears with quadra 1.1.8 and currect cvs. Current cvs is better
+and easier to compile with gcc3.x.
+
+I have an SB AWE64 (ISA) card, snd-sbawe module.
+
+ALSA is compiled together with the kernel (as if it were modules shipped by the kernel), using Mandrake's patches for this purpose.
+
+
+
+Any help is appreciated,
+
+Egmont
 
 
 
 -------------------------------------------------------
-This SF.Net email sponsored by: Free pre-built ASP.NET sites including
-Data Reports, E-commerce, Portals, and Forums are available now.
-Download today and enter to win an XBOX or Visual Studio .NET.
-http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
+This SF.net email is sponsored by Dice.com.
+Did you know that Dice has over 25,000 tech jobs available today? From
+careers in IT to Engineering to Tech Sales, Dice has tech jobs from the
+best hiring companies. http://www.dice.com/index.epl?rel_code=104
