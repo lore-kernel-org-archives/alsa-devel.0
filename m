@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000288]: Can't play the 6 channels wave file
-Date: Tue, 22 Mar 2005 22:39:58 +0100
-Message-ID: <ce362d56bea4f3f5ce168851ca2245d0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
+Date: Wed, 23 Mar 2005 17:17:05 +0100
+Message-ID: <cd089eee81de3905667ebcfe157d28a2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 923AE291
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 22:39:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68BCE289
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 17:17:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,58 +21,64 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=288> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
 ======================================================================
-Reported By:                pshou
+Reported By:                Gregoire
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   288
-Category:                   CORE - pcm
+Issue ID:                   668
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Redhat7.3
-Kernel Version:             2.4.18-3
-Resolution:                 duplicate
-Duplicate:                  0
-Fixed in Version:           
+Status:                     new
+Distribution:               gentoo amd64
+Kernel Version:             2.6.10-rc2
 ======================================================================
-Date Submitted:             05-21-2004 09:40 CEST
-Last Modified:              03-22-2005 22:39 CET
+Date Submitted:             11-23-2004 16:04 CET
+Last Modified:              03-23-2005 17:17 CET
 ======================================================================
-Summary:                    Can't play the 6 channels wave file
+Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
+rc2
 Description: 
-I have a ALC655 for ICH5 motherboard.
-I used the aplay to play a 5.1 channels wave file, then show a error
-message "Can't use period equal to buffer size"
-I used the ICH2, ICH4 and ATi motherboard have the same problem.
+I have checked the changelog but I don't know what exactly have changed to
+see which change breake the AC3 passtrough ?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-22-05 22:39 
+ jdthood - 03-23-05 15:23 
 ----------------------------------------------------------------------
-Closing copy of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=307
+Submitter: Does AC3 passthru work when you build and use the latest ALSA
+modules from the alsa-driver tarball instead of the modules that come with
+your 2.6 kernel?
+
+----------------------------------------------------------------------
+ Gregoire - 03-23-05 17:17 
+----------------------------------------------------------------------
+Sorry, as it worked since post 2.6.10-rc2 kernels, I thought you fixed this
+issue.
+I use now 2.6.12-rc1 and it works perfectly, would it help if I do what
+you want with older kernels ?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-21-04 09:40 pshou          New Issue                                    
-05-21-04 09:40 pshou          Distribution              => Redhat7.3       
-05-21-04 09:40 pshou          Kernel Version            => 2.4.18-3        
-03-22-05 22:39 jdthood        Note Added: 0004143                          
-03-22-05 22:39 jdthood        Status                   new => closed       
-03-22-05 22:39 jdthood        Resolution               open => duplicate   
+11-23-04 16:04 Gregoire       New Issue                                    
+11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
+11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
+11-23-04 16:08 tiwai          Note Added: 0002518                          
+03-23-05 15:23 jdthood        Note Added: 0004158                          
+03-23-05 17:17 Gregoire       Note Added: 0004179                          
 ======================================================================
 
 
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
-Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
-for the chance to win $25,000 and application distribution. Enter today at
-http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
+This SF.net email is sponsored by Microsoft Mobile & Embedded DevCon 2005
+Attend MEDC 2005 May 9-12 in Vegas. Learn more about the latest Windows
+Embedded(r) & Windows Mobile(tm) platforms, applications & content.  Register
+by 3/29 & save $300 http://ads.osdn.com/?ad_id=6883&alloc_id=15149&op=click
