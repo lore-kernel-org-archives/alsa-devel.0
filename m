@@ -1,12 +1,16 @@
-From: "Lynn Haywood" <yyzpsqwtdb@ppams.com>
-Subject: Your mrtgage approval
-Date: Fri, 03 Dec 2004 12:45:02 -0600
-Message-ID: <xggsfeofkq@eurasia>
-Reply-To: "Lynn Haywood" <mcensgrcwq@ppams.com>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: [PATCH] New snd-audigyls driver available.
+Date: Fri, 03 Dec 2004 19:18:41 +0000
+Message-ID: <41B0BC11.5090106@superbug.co.uk>
+References: <41AF9A47.3060706@superbug.co.uk> <s5hk6rzzk5i.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="11976168757804798183"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50DB0308
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 20:18:42 +0100 (MET)
+In-Reply-To: <s5hk6rzzk5i.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,47 +20,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-conf@alsa-project.org
-Cc: alsa-devel-request@alsa-project.org, alsa-howto@alsa-project.org, alsa-devel-request-old@alsa-project.org, alsa-user-request-old@alsa-project.org, alsa-announce1@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.org, abramo@alsa-project.org, alsa-announce-request-old@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---11976168757804798183
-Content-Type: text/plain; charset=%CHARSET
-Content-Transfer-Encoding: quoted-printable
+Takashi Iwai wrote:
+> At Thu, 02 Dec 2004 22:42:15 +0000,
+> James Courtier-Dutton wrote:
+> 
+>>I have updated the snd-audigyls driver.
+>>It now consists of several .c files because the old audigyls.c was 
+>>getting too big.
+>>
+>>Please download from
+>>http://www.alsa-project.org/~james/alsa-driver/audigyls.0.0.20.tar.bz2
+>>
+>>untar that into ./alsa-driver/pci/emu10k1
+> 
+> 
+> How about to create its own subdirectory pci/audigyls?
+> There is no sharing module between audigyls and emu10k.
+> 
+> 
+> Takashi
+> 
+> 
 
-burke injudicious fallen harris watchmen 
-police altar counteract macedonia nco discordant bastard tend 
-bolshevik c cursive thule davies 
+There are no major similarities between the ca0106 driver and the emu10k 
+driver.
+So creating a new directory seems like a good idea to me.
+The chip on the card is labeled "CA0106-DAT", so maybe we should rename 
+audigyls to ca0106.
+So, the new directory would be ca0106, and the filename would change.
+e.g. audigyls_main.c -> ca0106_main.c
 
---11976168757804798183
-Content-Type: text/html; charset=%CHARSET
-Content-Transfer-Encoding: quoted-printable
+I think this renaming might be a good idea, because that driver works 
+with the "AudigyLS" and "Live 24bit" so calling the driver the 
+"audigyls" is a bit of a mistake really.
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<html>
-You have been approved for $441K You will recieve a fixed rate of 2.68=
-%
-<br>
-We need your input to complete the last step.
-<br>
-After doing so you will be contacted by 4 lenders.
-<br>
-Please visit our Iink below which does not ask for any sensitive informati=
-on
-<br>
-<br>
-<a href=3D"http://www.m0rtgage-free.com/index2.php?refid=3Dpop=20">60 Seco=
-nd Form</a>
-<br>
-<br>
-<br>
-<br>
-<a href=3D"http://www.ez-lenderz.com/remove.php?alsa-conf@alsa-project.org=
-">No Thanks</a>
-</html>
+So, just take the files, make those simple changes and then add them to 
+the alsa cvs.
 
---11976168757804798183--
-
+Cheers
+James
 
 
 -------------------------------------------------------
