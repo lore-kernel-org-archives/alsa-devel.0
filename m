@@ -1,14 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] MPU-401 fixes
-Date: Wed, 07 May 2003 10:31:46 +0200 (METDST)
+From: Petar Petkoff <tihomiroff@yahoo.com>
+Subject: "Buffer overrun" problem
+Date: Wed, 7 May 2003 01:42:18 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0305071010500.25787-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.44.0305070956200.7448-100000@pnote.perex-int.cz>
+Message-ID: <20030507084218.82861.qmail@web11503.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.LNX.4.44.0305070956200.7448-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,49 +14,60 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: tihomiroff@yahoo.com
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 6 May 2003, Takashi Iwai wrote:
-> > > Ok, I'm now using the spin_trylock check in the trigger function and
-> > > RX_LOOP and TX_LOOP protectors are removed now. Hopefully, it finally
-> > > solves our problem.
-> >
-> > i'm afraid no.  as mentioned before, we need to consider to avoid two
-> > things:
-> >
-> > 1. (infinite) recursive call of trigger() (via input_read())
-> > 2. double spinlocks around input_read() from irq handler and
-> >    the suceeding call of trigger()
-> >
-> > introducing spin_trylock() solves the case #2 but not case #1,
-> > since spin_trylock() always returns 1 on UP.
-> > for #1, an extra (formerly RX_LOOP bit) flag is still necessary.
->
-> I see. So the protectors are back in trigger() callbacks.
+    Hi,
+    Before a half year I wrote a simple capture daemon,
+using ALSA driver and lib ver. 0.9.0rc2. It works perfect...
+    Before a week or more I tried my old code with ALSA 
+driver and lib ver. 0.9.2, and some older: 
+	0.9.0rc3
+	0.9.0rc8
+	0.9.0rc8a
+	0.9.0rc8b
+	0.9.0rc8d
+    And the capture program doesn't work... 
+    Buffer Overrun!
+    
+    I have tested with this sound cards:
+	C-Media CMI8738 (snd-cmipci.o)
+	Creative PCI 128 ENS1371 (snd-ens1371.o)
+	Embedded sound in Intel 815 and later with 845EP (snd-intel8x0.o)
 
-Now the recursive call sequence describe by Takashi is still possible:
+    Here I'll paste functions and ONLY most improtant params...
+    
+    snd_pcm_hw_params_alloca
+    snd_pcm_open
+    snd_pcm_hw_params_any
+    snd_pcm_hw_params_set_access           (SND_PCM_ACCESS_RW_NONINTERLEAVED)
+    snd_pcm_hw_params_set_format           (SND_PCM_FORMAT_U8)
+    snd_pcm_hw_params_set_rate_near        (8000)
+    snd_pcm_hw_params_set_channels         (2)
+    max_buf = snd_pcm_hw_params_get_buffer_size_max
+    snd_pcm_hw_params_set_buffer_size      (max_buf)
+    snd_pcm_hw_params
+    pcm_return = snd_pcm_readn             (max_buf)
+    if (pcm_return < 0) { snd_pcm_prepare(); /* Buffer Overrun */}
+    
+    and snd_pcm_readn function returns value -5
+    
+    I tried with different cards and different value for buffer_size. 
+I found the values for buffer_size, when the program works without 
+buffer overruns...
+But I've lost compatibillity with cards, which I want to use.
 
->	irq
->	-> snd_mpu401_uart_interrupt()
->	-> lock
->	-> snd_mpu401_uart_input_read()
->		-> snd_rawmidi_receive()
->			-> rawmidi->event()
->				-> rawmidi->trigger() (in seq_midi.c)
->					-> snd_mpu401_uart_input_trigger()
-
-... so the interrupt probably should set the bit, too. OTOH the recursion
-isn't infinite anymore, so the current code really doesn't need any more
-fixing.
+    Where is the problem?
+    
+10x in Advance
+Petar T. Petkoff
 
 
-Regards,
-Clemens
-
-
+__________________________________
+Do you Yahoo!?
+The New Yahoo! Search - Faster. Easier. Bingo.
+http://search.yahoo.com
 
 
 -------------------------------------------------------
