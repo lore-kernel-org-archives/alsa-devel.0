@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000033]: Capture does not work with VIA VT8237 and ALC655
-Date: Fri, 16 Jul 2004 14:35:53 +0200 (CEST)
+Subject: [ALSA - driver 0000128]: modprobe -r snd-intel8x0 crash on Intel 865PERL
+Date: Fri, 16 Jul 2004 14:39:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716123553.CB6082C005@server.perex-int.cz>
+Message-ID: <20040716123925.DCE512C005@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1DF24244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:35:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3E1CE244
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 14:39:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,171 +22,107 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000033
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000128
 ======================================================================
-Reported By:                Niccolo Rigacci
+Reported By:                tfolks
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     33
-Category:                   PCI - via82xx
+Bug ID:                     128
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               alsa-source_1.0.1-1_all.deb
-Kernel Version:             2.4.22
+Distribution:               Fedora Core 1
+Kernel Version:             2.6.3-2.1.242
 ======================================================================
-Date Submitted:             02-03-2004 14:43 CET
-Last Modified:              07-16-2004 14:35 CEST
+Date Submitted:             03-10-2004 07:14 CET
+Last Modified:              07-16-2004 14:39 CEST
 ======================================================================
-Summary:                    Capture does not work with VIA VT8237 and ALC655
+Summary:                    modprobe -r snd-intel8x0 crash on Intel 865PERL
 Description: 
-I have a motherboard based on the VIA KT600 Northbridge and the VT8237
-Southbridge. The codec is an ALC655.
+Both the driver included in kernel 2.6.3 and in alsa-driver 1.0.3 crash on
+modprobe -r snd-intel8x0 with:
 
-I tried the ALSA module snd-via82xx. PCM audio works fine, but several
-things did not work:
+kernel: kernel BUG at fs/proc/generic.c:664!
+kernel: invalid operand: 0000 [https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001]
+kernel: PREEMPT SMP 
+kernel: CPU:    1
+kernel: EIP:    0060:[<c01863f9>]    Not tainted
+kernel: EFLAGS: 00010286   (2.6.3-2.1.242custom) 
+kernel: EIP is at remove_proc_entry+0xd9/0x110
+kernel: eax: ce74c300   ebx: e73c5a00   ecx: 00000000   edx: f4dd1780
+kernel: esi: 00000005   edi: da31d9b0   ebp: e97f2000   esp: e97f3eac
+kernel: ds: 007b   es: 007b   ss: 0068
+kernel: Process modprobe (pid: 4721, threadinfo=e97f2000 task=f1684d20)
+kernel: Stack: 00000004 da31d9b0 c01863c6 0000003c da31d980 e73c5a48
+faea5df0 d8213d80 
+kernel:        00000000 fae9d97c d8070600 d8070600 fae9d56e e97f2000
+fae9be26 00000000 
+kernel:        c015ab33 da2bfc80 00000000 da2bfc80 c01723a6 00000292
+da2bfc80 dcf13780 
+kernel: Call Trace:
+kernel:  [<c01863c6>] remove_proc_entry+0xa6/0x110
+kernel:  [<fae9d97c>] snd_info_unregister+0x32/0x5c [snd]
+kernel:  [<fae9d56e>] snd_info_card_free+0x20/0x42 [snd]
+kernel:  [<fae9be26>] snd_card_free+0x106/0x2f5 [snd]
+kernel:  [<c015ab33>] invalidate_inode_buffers+0xa/0x7f
+kernel:  [<c01723a6>] wake_up_inode+0x6/0x27
+kernel:  [<faeb1c0c>] snd_intel8x0_remove+0x13/0x1c [snd_intel8x0]
+kernel:  [<c01c97e0>] pci_device_remove+0x28/0x2a
+kernel:  [<c0203d8a>] device_release_driver+0x56/0x58
+kernel:  [<c0203da2>] driver_detach+0x16/0x21
+kernel:  [<c0203f90>] bus_remove_driver+0x39/0x6a
+kernel:  [<c0204296>] driver_unregister+0x8/0x19
+kernel:  [<c01c9957>] pci_unregister_driver+0xb/0x13
+kernel:  [<faeb1d9a>] alsa_card_intel8x0_exit+0xa/0x1f [snd_intel8x0]
+kernel:  [<c01383eb>] sys_delete_module+0x110/0x134
+kernel:  [<c014ca00>] unmap_vma+0x19/0x8a
+kernel:  [<c014ceff>] do_munmap+0x139/0x190
+kernel:  [<c014cf97>] sys_munmap+0x41/0x65
+kernel:  [<c02abaeb>] syscall_call+0x7/0xb
+kernel: 
+kernel: Code: 0f 0b 98 02 ef 03 2c c0 eb b5 8b 44 24 10 66 83 68 0a 01 eb
 
-- The MIC input does not work, no matter how I set alsamixer
-  controls (the OSS driver via82cxxx_audio, instead can
-  properly mix the input). LINE and CD inputs work.
 
-- Capture does not work. I tried to enable capturing from
-  MIC, LINE or CD, but no stream is received by arecord.
-  Also OSS emulation (/dev/dsp) does not receive any data.
-  I tried to set, unmute and capture any control in
-  alsamixer. The OSS dirver via82cxxx_audio can't capture
-  too.
+lspci -vv info:
 
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02)
+        Subsystem: Intel Corp.: Unknown device a000
+        Control: I/O- Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
+<TAbort- <MAbort- >SERR- <PERR-
+        Latency: 0
+        Interrupt: pin B routed to IRQ 17
+        Region 2: Memory at ffaff800 (32-bit, non-prefetchable)
+[size=512]
+        Region 3: Memory at ffaff400 (32-bit, non-prefetchable)
+[size=256]
+        Capabilities: [50] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=375mA
+PME(D0+,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-04-2004 17:49 CET 
+ tiwai - 03-12-2004 13:04 CET 
 ----------------------------------------------------------------------
-please attach /etc/asound.state and the contents of
-/proc/asound/card0/codec97#0/* files.
-
-----------------------------------------------------------------------
- ukonrad - 02-13-2004 18:42 CET 
-----------------------------------------------------------------------
-Same Problem with VT8235 and ALC650 on Asus A7V8x with 1.02c drivers,
-Kernel 2.6.2. When i plug in my tv card from line-in to mic jack there is
-sound but when i start krec the right channel is always louder as the
-left. When i  split the mic in kamix to left and right channel playing
-around with the activate buttons from the playback moves mic right slider
-to 0 ! Switching both input source to line and record from mic krec shows
-the right channel from line ( seems so ) and the left channel ~ -17db
-constant. Now when i thumb the mic ( ooooops ) on the table there is a
-little change in the left channel in krec visible. Switching the left
-input source in kamix to mic mutes both channels in krec. Under windows
-2000 ( argh ) recording works very fine from mic. Playback on linux works
-very fine including via dxs and spdif out.
-
-----------------------------------------------------------------------
- tiwai - 03-01-2004 19:17 CET 
-----------------------------------------------------------------------
-the mic input might be dependent on 'Input Source Select' enum control. 
-please make sure that 'Mic' is chosen.
-and, turn OFF 'Mic As Center/LFE'.  this means that the mic jack
-is used for center/lfe output!
-
-if it still doesn't help, my wild guesses are:
-
-- there could be a problem of mic-input bias level on the old
-  ALC650 chip.  try the attached patch.
-- there are two capture devices, hw:0,0 and hw:0,1.  try both.
-
-----------------------------------------------------------------------
- tiwai - 03-02-2004 12:29 CET 
-----------------------------------------------------------------------
-the last patch was broken.  the fixed one is uploaded.
-
-----------------------------------------------------------------------
- ukonrad - 03-03-2004 17:19 CET 
-----------------------------------------------------------------------
-i try to use the patch you uploaded, but in alsa-driver 1.02c as in 1.03
-patching failed ( not always, only hunk#1 ). The driver compiles but no
-change at all. How can i switch hw:0,0 hw:0,1 with normal mixer ( kmix
-kamix )??? !!!! With the partial applied patch capture from line in on
-right channel is broken by me. Is it possible that kmix or kamix are not
-able to switch right the recording channel. Kmix from kde3.2 seems very
-buggy ( you can select all channel at one to record :-( ) Is it possible
-to record ( for test ) with arecord ?? But what is the correct command to
-record from mic hw:0,0 or hw:0,1
-
-----------------------------------------------------------------------
- tiwai - 03-04-2004 11:00 CET 
-----------------------------------------------------------------------
-there is only one mixer.
-hw:0,0 and hw:0,1 are meant for the pcm, i.e.
-
-   % arecord -Dhw:0,1 -fdat foo.wav
-
-i don't know whether kmix or kamix is buggy.  try amixer or
-alsamixer, then.
-
-----------------------------------------------------------------------
- ukonrad - 03-06-2004 12:37 CET 
-----------------------------------------------------------------------
-I try to record with arecord with unpatched 1.02c kernel driver on
-2.6.4-rc1 today. Capture with both "input source select" switched to
-"line" and recording source "line" records bad from "line in" jack. Left
-channel shows input, right channel nothing or only still -30 db in krec.
-Recorded sound is clear but only mono ( left channel ). Switching the
-recording channel to "cd" ... same effect but also recorded sound is very
-noise and has NO dynamic. Xine both time shows only output on left
-channel. Capture with both "input source select" switched to "mic" and
-recording source "mic" records nothing from "mic" jack. I don't know where
-to start, there is nothing what has properly function when recording.
-
-----------------------------------------------------------------------
- ukonrad - 03-19-2004 18:05 CET 
-----------------------------------------------------------------------
-I am so crazy, first i have done "patch -p 1 'your patch'" in main
-directory "alsa-driver-1.0.3". Hunk 1 failed !!!! But i have to patch in
-"alsa-driver/alsa-kernel". With the patch applied recording from mic are
-OK. Thanks, and sorry ....
-
-----------------------------------------------------------------------
- Niccolo Rigacci - 04-18-2004 10:49 CEST 
-----------------------------------------------------------------------
-Solved.
-
-Sorry for not giving feedback to this thread, but I had very little time,
-yesterday I started to work to the problem again. First I upgraded to
-kernel 2.4.25 and alsa 1.0.3 (not the latest, but I prefer to stay with
-Debian Testing). Don't know what solved the problem, but now the MIC input
-works well and capturing works too.
-
-Many thanks to all the people working on this project.
+fixed on CVS.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-04 14:43 Niccolo RigacciNew Bug                                      
-02-04-04 17:49 tiwai          Bugnote Added: 0000154                       
-02-04-04 17:49 tiwai          Assigned To               => tiwai           
-02-04-04 17:49 tiwai          Status                   new => assigned     
-02-06-04 01:15 Niccolo RigacciFile Added: asound.state                     
-02-06-04 01:15 Niccolo RigacciFile Added: ac97#0-0                         
-02-06-04 01:15 Niccolo RigacciFile Added: ac97#0-0+regs                    
-02-13-04 18:42 ukonrad        Bugnote Added: 0000239                       
-02-14-04 10:52 ukonrad        Bug Monitored: ukonrad                       
-02-14-04 10:52 ukonrad        Bug End Monitor: ukonrad                     
-03-01-04 19:17 tiwai          Bugnote Added: 0000417                       
-03-01-04 19:17 tiwai          File Added: alc650-mic-bias.dif                    
-03-02-04 12:29 tiwai          Bugnote Added: 0000439                       
-03-02-04 12:30 tiwai          File Added: alc650-mic-bias2.dif                    
-03-03-04 17:19 ukonrad        Bugnote Added: 0000467                       
-03-04-04 11:00 tiwai          Bugnote Added: 0000476                       
-03-06-04 12:37 ukonrad        Bugnote Added: 0000517                       
-03-14-04 18:09 dESA54         Bug Monitored: dESA54                        
-03-19-04 18:05 ukonrad        Bugnote Added: 0000645                       
-04-18-04 10:49 Niccolo RigacciBugnote Added: 0000851                       
-04-23-04 17:20 tiwai          Resolution               open => fixed       
-04-23-04 17:20 tiwai          Status                   assigned => resolved
-07-16-04 14:35 tiwai          Status                   resolved => closed  
+03-10-04 07:14 tfolks         New Bug                                      
+03-10-04 07:14 tfolks         Distribution              => Fedora Core 1   
+03-10-04 07:14 tfolks         Kernel Version            => 2.6.3-2.1.242   
+03-12-04 13:04 tiwai          Bugnote Added: 0000575                       
+03-12-04 13:04 tiwai          Assigned To               => tiwai           
+03-12-04 13:04 tiwai          Resolution               open => fixed       
+03-12-04 13:04 tiwai          Status                   new => resolved     
+07-16-04 14:39 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
