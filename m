@@ -1,11 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Error: firmware not found
-Date: Sat, 22 Jan 2005 11:37:02 +0100
-Message-ID: <20050122113702.023929f1.pochini@shiny.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Sat, 22 Jan 2005 12:33:18 +0100
+Message-ID: <e9cf5243a9b4ac69844a56fb0893b6f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27BA41F6
+	for <alsa-devel@alsa-project.org>; Sat, 22 Jan 2005 12:33:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,44 +18,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+======================================================================
+Reported By:                jbrsubscribe
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   836
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
+======================================================================
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              01-22-2005 12:33 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
+Description: 
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
+======================================================================
 
-Since my echoaudio driver is the first driver which is using the new
-"standard" firmware loader, I can anticipate what you have to expect when
-other drivers will be converted to that interface: people will not be able
-to make them work.
+----------------------------------------------------------------------
+ mab - 01-22-05 09:06 
+----------------------------------------------------------------------
+Hi,
 
-I don't know what distributions are doing, but it is causing users (and, in
-turn, to me) a lot of trouble. I located these main problems in the latest
-hotplug scripts (hotplug-2004_09_23):
-
-
-- /etc/hotplug/firmware.agent sets FIRMWARE_DIR=/lib/firmware, but
-alsa-firmware install the files in /usr/lib/hotplug/firmware .
-
-- Some distros that originally shipped with linux 2.4 (like my YDL3.0) do
-not set /proc/sys/kernel/hotplug and .../modprobe because rc.sysinit looks
-for /proc/ksyms that doesn't exists with linux 2.6.
-
-- In /etc/hotplug/pci.agent:pci_map_modules() at line 123 I had to remove
-the break, otherwise the loop stops as soon as it finds the first matching
-PCI ID. This is not good because some cards (in my case the Layla3G and the
-Gina3G) have the same PCI card, but different external module.
-
-I prepared two RPMs with the latest hotplug scripts with the changes above
-(except the one in rc.sysinit). They require the chkconfig utility by
-RedHat. I hope they're useful:
-
-http://xoomer.virgilio.it/g_pochini/hotplug-base-2004_09_23-1.noarch.rpm
-http://xoomer.virgilio.it/g_pochini/hotplug-2004_09_23-1.noarch.rpm
+is working now.  thanks
 
 
 
---
-Giuliano.
+----------------------------------------------------------------------
+ 1g0R - 01-22-05 12:33 
+----------------------------------------------------------------------
+Hi mab,
+
+Is your spdif out working. If yes, can you tell me how do you make it
+work.
+Thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
+01-19-05 18:36 tiwai          Assigned To              tiwai =>            
+01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
+01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
+01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
+01-20-05 11:52 1g0R           Note Added: 0003325                          
+01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+01-20-05 19:11 tiwai          Note Added: 0003331                          
+01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
+01-21-05 05:56 1g0R           Note Added: 0003338                          
+01-21-05 08:16 mab            Note Added: 0003339                          
+01-21-05 11:08 1g0R           Note Added: 0003340                          
+01-21-05 12:04 tiwai          Note Added: 0003343                          
+01-21-05 12:05 tiwai          Note Added: 0003344                          
+01-21-05 16:55 mab            Note Added: 0003348                          
+01-21-05 17:26 tiwai          Note Added: 0003349                          
+01-21-05 22:08 1g0R           Note Added: 0003370                          
+01-22-05 09:04 mab            Note Added: 0003373                          
+01-22-05 09:06 mab            Note Edited: 0003373                         
+01-22-05 12:33 1g0R           Note Added: 0003374                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
