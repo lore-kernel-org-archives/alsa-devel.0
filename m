@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000672]: alternate ALS0200 ident string
-Date: Fri, 26 Nov 2004 12:32:24 +0100
-Message-ID: <956d93b4945372ebb51bda70dcdedcde@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000673]: alternate CS4235 ident string
+Date: Fri, 26 Nov 2004 12:32:00 +0100
+Message-ID: <364d0f0b613558e0bd87e1a51abdfeb7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 881F6235
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:32:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 845BE235
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 12:32:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=672> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=673> 
 ======================================================================
 Reported By:                basic
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   672
-Category:                   ISA - als100
+Issue ID:                   673
+Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -41,38 +41,40 @@ Kernel Version:
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-24-2004 07:31 CET
-Last Modified:              11-26-2004 12:32 CET
+Date Submitted:             11-24-2004 07:45 CET
+Last Modified:              11-26-2004 12:31 CET
 ======================================================================
-Summary:                    alternate ALS0200 ident string
+Summary:                    alternate CS4235 ident string
 Description: 
-recently dug up some older hardware to put togather a pc for my brother,
-found this OEM ALS0200 card, couldn't get the module to load, so
-downloaded pnptools and used pnpdump... long story short, here's the patch
-to get it to work.
+Found a CS4235 on a SiS530 based mainboard (no longer have the box, so no
+idea who built it), alsaconf could detect it but the driver would not
+load. Here's the patch, got the strings with isapnptools (pnpdump).
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 12:16 
+ tiwai - 11-24-04 12:15 
 ----------------------------------------------------------------------
-Please provide the summary, description and signed-off-by lines.
+Could you provide the summary, description and signed-off-by lines for your
+patch (as written in the main page)?
+
+Thanks.
 
 ----------------------------------------------------------------------
- tiwai - 11-26-04 12:32 
+ tiwai - 11-26-04 12:31 
 ----------------------------------------------------------------------
-Thanks, applied to CVS.
+Now applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 07:31 basic          New Issue                                    
-11-24-04 07:31 basic          File Added: als100.c.patch                    
-11-24-04 12:16 tiwai          Note Added: 0002546                          
-11-26-04 09:46 basic          File Added: als100.c.patch                    
-11-26-04 12:32 tiwai          Status                   new => resolved     
-11-26-04 12:32 tiwai          Resolution               open => fixed       
-11-26-04 12:32 tiwai          Assigned To               => tiwai           
-11-26-04 12:32 tiwai          Note Added: 0002602                          
+11-24-04 07:45 basic          New Issue                                    
+11-24-04 07:45 basic          File Added: cs4236.c.patch                    
+11-24-04 12:15 tiwai          Note Added: 0002545                          
+11-26-04 09:46 basic          File Added: cs4236.c.patch                    
+11-26-04 12:31 tiwai          Note Added: 0002601                          
+11-26-04 12:31 tiwai          Status                   new => resolved     
+11-26-04 12:31 tiwai          Resolution               open => fixed       
+11-26-04 12:31 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
