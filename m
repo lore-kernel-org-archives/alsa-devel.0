@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: intel ICH sample rate
-Date: Sun, 28 Dec 2003 11:32:44 +0100 (CET)
+From: Andre Batista de Oliveira <abo@netvisao.pt>
+Subject: Re: card_id() in initval.h
+Date: 28 Dec 2003 13:45:02 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312281129520.25504@pnote.perex-int.cz>
-References: <200312272109.hBRL9TVD031711@dhin.linuxaudiosystems.com>
+Message-ID: <x77k0hqco1.fsf@dorian.home.org>
+References: <x7k74nuwwq.fsf@dorian.home.org>
+	<Pine.LNX.4.58.0312270951580.8959@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312272109.hBRL9TVD031711@dhin.linuxaudiosystems.com>
+In-Reply-To: <Pine.LNX.4.58.0312270951580.8959@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,62 +18,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 27 Dec 2003, Paul Davis wrote:
+Jaroslav Kysela <perex@suse.cz> writes:
 
-> >yOn Sat, 27 Dec 2003, Paul Davis wrote:
-> >
-> >> >i've been getting my laptop with an ICH soundchip up to speed, and i
-> >> >just noticed for the first time yesterday that ALSA fails to get the
-> >> >speed to the rate that JACK requests. a quick google reveals that the
-> >> >OSS drivers only support 1 h/w rate, but there are suggestions that
-> >> >the ALSA driver works better. however, neither JACK nor alsaplayer can
-> >> >set the rate on my card to 44.1kHz - its stuck at 48kHz.
-> >> >
-> >> >this is alsa 1.0.0rc2 from Planet CCRMA. any clues?
-> >> 
-> >> this is using the snd-intel8x0 module. the wiki page has alerted me to
-> >> the ac97_clock option, but it seems ludicrous to have to rmmod &&
-> >> modprobe the module just to switch rates ...
-> >
-> >The ac97_clock option is for situation when another master clock crystal
-> >than standard one is used by hardware vendor. You cannot change the real
-> >rate with this option.
-> >
-> >It seems that your AC97 codec does not support VRA (variable rate) so it 
-> >is capable only 48kHz or we have a bug somewhere.
-> >
-> >Can you send me contents of /proc/asound/card0/codec97* files?
-> 
-> i am entirely willing to believe that it can only do 48kHz. its a
-> laptop (HP Pavilion), well known for having crapola audio interfaces
-> and relying on s/w to make things work. here's the codec97* file
-> (below).
-> 
-> meanwhile, i have found that the plughw layer doesn't work with JACK
-> anymore. it appears that any attempt to set the period size fails. any
-> ideas about that?
-> 
+> On Tue, 23 Dec 2003, Andre Batista de Oliveira wrote:
+> > When I try to specify the ID string for the card
+> > (snd-sgalaxy=3D1,0,Waverider,0x220,0x530,10,3),
+> > the kernel just reboots immediately, even before printing anything!
+>=20
+> Thanks for the bug report. Could you try this "official" patch?
+>=20
+> RCS file: /cvsroot/alsa/alsa-kernel/include/initval.h,v
+> retrieving revision 1.17
+> diff -u -r1.17 initval.h
+> --- initval.h	30 Oct 2003 14:21:07 -0000	1.17
+> +++ initval.h	27 Dec 2003 09:00:51 -0000
 
-> Extended ID      : codec=0 rev=2 AMAP DSA=0 SPDIF
-> Extended status  : PRL PRK PRJ PRI SPCV SPDIF=7/8
+Ok, it works!
+I tried it in a 2.6.0 kernel, which has the exact same get_id()
+function as the ALSA CVS 1.17 revision of initval.h.
 
-OK, no VRA, so you have only 48kHz hardware.
+You should also add #include <linux/bootmem.h> to avoid compilation
+warning: implicit declaration of function `alloc_bootmem'.
 
-Keep in mind that the intel8x0 driver must have period sizes with power of
-two. When 44.1kHz -> 48kHz resampling is done, the period size requested
-from application must be multiplied with this coeficient, too. But the 
-period_size_near function should work (or not? - then a bug is somewhere).
+Now I was thinking if there shouldn't be a free_bootmem()
+somewhere after the card id string parameter has been copied to the
+id field of the struct _snd_card ?!?
+Maybe right after strlcpy(card->id, xid, sizeof(card->id)), in the
+snd_card_new() function of core/init.c ?!?
+Or perhaps it should be the drivers' responsibility to do a
+free_bootmem() after calling snd_card_new() ?!?
+Then again, this is not a big memory leak to worry about...
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--=20
+Andr=E9 Batista de Oliveira
 
 
 -------------------------------------------------------
