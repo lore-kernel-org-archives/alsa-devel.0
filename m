@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:07:49 +0100
-Message-ID: <6f0ccdcc8f0f20a9780d438ec800841a@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:15:56 +0100
+Message-ID: <6900c838a51fe62aeef8a48628aed82b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F37E21B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:07:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D92D021B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:15:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:07 CET
+Last Modified:              01-21-2005 21:15 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,35 +51,22 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:05 
-----------------------------------------------------------------------
-make install
-Making install in utils
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[2]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[2]: Nothing to be done for `install-exec-am'.
-/bin/sh ../mkinstalldirs /usr/share/aclocal
- /usr/bin/install -c -m 644 alsa.m4 /usr/share/aclocal/alsa.m4
-/bin/sh ../mkinstalldirs /usr/lib/pkgconfig
- /usr/bin/install -c -m 644 alsa.pc /usr/lib/pkgconfig/alsa.pc
-make[2]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8/utils'
-make[1]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-make[2]: Entering directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-make[1]: Leaving directory `/usr/local/src/cmi9880/alsa-lib-1.0.8'
-[root@skynet alsa-lib-1.0.8]# 
-ok
-
-----------------------------------------------------------------------
  1g0R - 01-21-05 21:07 
 ----------------------------------------------------------------------
 [root@skynet alsa-lib-1.0.8]# ls /usr/lib/alsa
 ls: /usr/lib/alsa: Nincs ilyen fájl vagy könyvtár <--No file or directory
 found
 [root@skynet alsa-lib-1.0.8]#
+
+----------------------------------------------------------------------
+ tiwai - 01-21-05 21:15 
+----------------------------------------------------------------------
+There is no file indeed in /usr/lib/alsa indeed.  It's for external
+plugins.
+The internal plugins are found in /usr/lib/libasound.so.
+
+Check whether /usr/lib/libasound.so* files are correctly installed (check
+the date of files).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -123,6 +110,7 @@ Date Modified  Username       Field                    Change
 01-21-05 21:05 1g0R           Note Added: 0003355                          
 01-21-05 21:05 1g0R           Note Added: 0003357                          
 01-21-05 21:07 1g0R           Note Added: 0003358                          
+01-21-05 21:15 tiwai          Note Added: 0003359                          
 ======================================================================
 
 
