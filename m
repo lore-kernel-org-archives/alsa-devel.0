@@ -1,15 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: potential emu10k1 bug/issue for Audigy2 ZS Platinum Pro
-Date: Sat, 12 Feb 2005 13:35:24 -0500
-Message-ID: <1108233325.6059.2.camel@krustophenia.net>
-References: <420B8B23.2090404@vt.edu>
-	 <1108067206.10310.7.camel@krustophenia.net> <420BD024.8040602@vt.edu>
-	 <1108073563.11177.1.camel@krustophenia.net>
-	 <6.2.0.14.0.20050212100644.09c31778@pop.vt.edu>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000904]: PCM volume sliders are Left-Right switched for all 3 analog outputs on Audigy2 Platinum Pro ZS
+Date: Sat, 12 Feb 2005 20:26:36 +0100
+Message-ID: <906f17087110b4f843cff9650b670875@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <6.2.0.14.0.20050212100644.09c31778@pop.vt.edu>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E43F4202
+	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 20:26:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,72 +17,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rick Wright <riwright@vt.edu>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-02-12 at 10:12 -0500, Rick Wright wrote:
-> At 05:12 PM 2/10/2005 2/10/2005, Lee Revell wrote:
-> >On Thu, 2005-02-10 at 16:20 -0500, Rick Wright wrote:
-> > > > > The real problem is that the PCM output volume control sliders are
-> > > > > backwards (or perhaps the remapping the channels to L/R, rather 
-> > than R/L
-> > > > > will fix this).  For example: PCM Front L slider controls the 
-> > volume of
-> > > > > playback_9 which is the RIGHT Front signal, PCM Front R slider 
-> > controls
-> > > > > playback_10 which is the LEFT Front signal.  This is true for all 
-> > of the
-> > > > > Stereo Output channel pairs.  If you think about it, the PCM 
-> > sliders are
-> > > > > actually controlling the correct physical L & R outputs on the 
-> > card, but
-> > > > > the alsa_pcm:playback signals being routed to those physical channels
-> > > > > are reversed, make sense?
-> > > > >
-> > > > > Is this a bug?  If so, what is the proper place/way to report it so 
-> > that
-> > > > > I don't use any more of your time?  Has it already been fixed?  I know
-> > > > > you mentioned v008 still had problems...
-> > > > >
-> > > > >
-> > > >
-> > > > ISTR that this is a hardware bug, and the kX driver works around it.  I
-> > > > will look into it.
-> > > >
-> > > > Are the channels reversed if you use JACK with the default stereo PCM,
-> > > > hw:0,0?
-> > > >
-> > > >
-> > > Using hw:0,0 for BOTH the Input & Output devices in QJackCtl:
-> > > (actually, input probably doesn't matter, huh?)
-> > > playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
-> > > the PCM LEFT slider
-> > > playback_2 maps to Stereo Output #1 LEFT and volume is controlled by
-> > > the PCM RIGHT slider
-> > >
-> > > In this case, it seems that slider is controlling the correct
-> > > playback_x stream, but the stream is mapped to the wrong stereo
-> > > channel of the soundcard.
-> >
-> >This does look like an upstream bug.  Can you verify that the channels
-> >are still reversed without my patch?
-> >
-> >Lee
-> 
-> 
-> Lee,
-> 
-> Should I report this issue on the ALSA bugtracking system or is it already 
-> being worked on?
-> 
 
-Please file a bug report.  We will have to work around this behavior in
-the driver.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=904> 
+======================================================================
+Reported By:                riwright
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   904
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             &nbsp;2.6.10-1.741
+======================================================================
+Date Submitted:             02-12-2005 20:26 CET
+Last Modified:              02-12-2005 20:26 CET
+======================================================================
+Summary:                    PCM volume sliders are Left-Right switched for all 3
+analog outputs on Audigy2 Platinum Pro ZS
+Description: 
+Using either the stereo PCM device (hw:0,0) or Lee Revell's multichannel
+patch PCM device (hw:0,3), the volume control sliders
+(gnome-volume-control) incorrectly control the L & R channels of the
+soundcard's analog outputs (i.e. they are backward).
 
-The next step is to figure out exactly which devices are affected.
+For example for the multichannel case (think 5.1 speaker setup), the PCM
+Front LEFT slider controls the Stereo Output
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 RIGHT channel and vice
+versa.  The PCM Surround LEFT slider controls the Stereo Output
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 RIGHT
+channel and vice versa.  Finally, the PCM Center slider controls the
+Stereo Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 RIGHT
+channel and the PCM LFE slider controls the Stereo
+Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 LEFT
+channel....this is backwards too, the Center should be Left
+and LFE Right.
 
-Lee
+Using the 2 channel stereo PCM (hw:0,0) the Front Left slider controls the
+Stereo Output https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 RIGHT
+channel and vice versa.  The card's Stereo Output's
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2 &
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3 are not available.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-12-05 20:26 riwright       New Issue                                    
+02-12-05 20:26 riwright       Distribution              => Fedora Core 3   
+02-12-05 20:26 riwright       Kernel Version            =>  2.6.10-1.741   
+======================================================================
+
 
 
 
