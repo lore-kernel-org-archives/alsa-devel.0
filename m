@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Sun, 3 Apr 2005 22:28:12 +0200
-Message-ID: <70678942f82edac172fe5725e6eaca71@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001031]: Sound Blaster Live! 7.1 24-bit (ID: 10061102) muted
+Date: Sun, 3 Apr 2005 13:30:38 +0200
+Message-ID: <70784272e327aa46b6c5d65f9908184f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD937207
-	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 22:28:12 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A80E51F8
+	for <alsa-devel@alsa-project.org>; Sun,  3 Apr 2005 13:30:38 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,125 +22,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue requires your FEEDBACK.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1031> 
 ======================================================================
-Reported By:                twinsen
-Assigned To:                perex
+Reported By:                Oleg Ivanenko
+Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1014
-Category:                   0_compilation problem_!!!
+Issue ID:                   1031
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               custom: PXA255/uClibc
-Kernel Version:             2.6.11.5
+Status:                     feedback
+Distribution:               
+Kernel Version:             2.4.29
 ======================================================================
-Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              04-03-2005 22:28 CEST
+Date Submitted:             04-01-2005 16:25 CEST
+Last Modified:              04-03-2005 13:30 CEST
 ======================================================================
-Summary:                    card detect function is never called in pxa2xx-ac97
+Summary:                    Sound Blaster Live! 7.1 24-bit (ID: 10061102) muted
 Description: 
-Hi there,
-I have a some problem with this driver. The environment:
-ALSA source: alsa-driver-1.0.9rc1
-Kernel source: linux-2.6.11.5 (stock)
+Firstly, sorry for my ugly english.
 
-I cross compiled the kernel and the alsa source for arm target with a 
-toolchain from handhelds.org. I used the following configure command
-line:
+I've subj soundcard, kernel 2.4.29 and alsa 1.0.8
 
-./configure --with-cards=pxa2xx-ac97 
---with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
+corresponding alsa-driver ca0106 compiled and installed perfectly (imho).
+no any errors. lsmod view all modules
+alsa-lib and alsa-utils compiled and installed too whithout errors
+/proc/asound/ looks seems a very good
 
-config runs without problems, when running make gcc complains about
-"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
-orig: include/linux/pci.h), but compiles ok. 
+alsamixer is working (mute/unmute, changing level), but I don't hear
+anything with aplay, mplayer or mpg321 :(
+jack start fails too
 
-The problem:
-I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
-snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
-/proc/asound/cards.
-I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
-module init function registers the new driver:
-driver_register(&pxa2xx_ac97_driver);
+I've onboard sound card intel8x0 on the same computer -- it's work fine
+when alone module loaded, whithout ca0106.
 
-The driver struct contains a probe function:
-.probe          = pxa2xx_ac97_probe,
-but it's never called, so the driver doesn't even check the existance of
-the sound card. Why is that? Did I srcew up the cross compiling?
-Thanks:
-	George
+Any required logs, lspci etc will be sent. Just say what you need.
+
+PS. i've similar problem as described in report "0000906: OSS mixer does
+not work" too
 ======================================================================
 
 ----------------------------------------------------------------------
- twinsen - 04-03-05 21:47 
+ jcdutton - 04-01-05 22:59 
 ----------------------------------------------------------------------
-Partly Resolved! :)
-The platform_device_register() call was missing from my board support
-file. Now the driver load ok, but i get the following error messages when
-trying to run speaker-test:
+The volume by default is set to 0, so no sound.
+Run at the command line "alsamixer" and adjust the "Analog Front" volume
+control.
+You should then get sound from the Green jack on the card.
 
-# speaker-test -c 2 -Dhw:0,0 -r 44100 -f 440 -F S16_LE
-
-speaker-test 0.0.7
-
-Playback device is hw:0,0
-Stream parameters are 44100Hz, S16_LE, 2 channels
-Sine wave rate is 440.0000Hz
-Trizeps2 audio startup
-Rate set to 44100Hz (requested 44100Hz)
-Buffer size range from 8 to 32Trizeps2 audio shutdown
-768
-Period size range from 8 to 2040
-Periods = 4
-Buffer time Trizeps2 audio startup
-size 575
-To choose buffer_size = 15052
-To choose period_size =Trizeps2 audio shutdown
- 3763
-was set period_size = 0
-was set buffer_size = 15056
-UnaTrizeps2 audio startup
-ble to set sw params for playback: Invalid argument
-Setting of Trizeps2 audio shutdown
-swparams failed: Invalid argument
-
-(this goes on forever, until i hit ctrl-c)
- Do you have any idea why this happens? Cross-compilation problem? Where
-to start debugging?
-Thanks!
-
-----------------------------------------------------------------------
- twinsen - 04-03-05 22:28 
-----------------------------------------------------------------------
-I've made an strace log of speakertest running:
-http://blackmilk.dyndns.org/arm/speakertest_strace.txt
-Seemingly the following kernel calls fail:
-
-ioctl(3, SNDCTL_TMR_TIMEBASE or TCGETS, 0xbedfa7d8) = -1 ENOTTY
-(Inappropriate ioctl for device)
-
-old_mmap(NULL, 4096, PROT_READ, MAP_SHARED, 4, 0x80000000) = -1 ENXIO (No
-such device or address)
-
-I hope this helps :)
+Use of the speaker-test application can help.
+e.g.
+speaker-test -c2 -Dplug:front
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 00:04 twinsen        New Issue                                    
-03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
-03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
-03-29-05 16:25 tiwai          Note Added: 0004247                          
-03-29-05 23:43 twinsen        Note Added: 0004259                          
-04-03-05 21:47 twinsen        Note Added: 0004321                          
-04-03-05 22:28 twinsen        Note Added: 0004322                          
+04-01-05 16:25 Oleg Ivanenko  New Issue                                    
+04-01-05 16:25 Oleg Ivanenko  Kernel Version            => 2.4.29          
+04-01-05 22:59 jcdutton       Note Added: 0004296                          
+04-03-05 13:30 jcdutton       Status                   assigned => feedback
 ======================================================================
 
 
