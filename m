@@ -1,12 +1,14 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: [PATCH] fixes au88x0 problem with older kernel
-Date: Sat, 17 Jan 2004 00:47:15 +0100
+From: "freeman.liu" <freeman.liu@sun.com>
+Subject: Re: A bug in intel8x0.c
+Date: Sat, 17 Jan 2004 09:47:54 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040116234715.GA535@tuba.home>
+Message-ID: <4008944A.8050209@sun.com>
+References: <Pine.HPX.4.33n.0401161308300.25394-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <Pine.HPX.4.33n.0401161308300.25394-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,34 +17,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Clemens Ladisch wrote:
 
-This will fix a problem with undeclared PCI_DEVICE_ID_VIA_8365_1
+>freeman.liu wrote:
+>  
+>
+>>At the end of the function snd_intel8x0_codec_semaphore. If we
+>>couldn't get the semaphore in 1 ms, we'll reset the register and
+>>return EBUSY. But to reset the register, we should do a
+>>iaputword ( chip, 0, 0 ), according to the datasheet, write any
+>>value the this register will reset the register.
+>>But in the code, what we did is iagetword ( chip, 0 ).
+>>    
+>>
+>
+>At that point, we don't want to reset the semaphore but to access a
+>dummy AC'97 register so that the semaphore flag is cleared even if we
+>actually got the semaphore (from the igetbyte in the printk).  (The
+>iagetword/iaputword functions access AC'97 registers, not ICH
+>registers.)
+>
+>  
+>
+Semaphore is clear when a writing operation is finished, and it' done 
+automatically
+by the hardware. I think you have misunstandard the code, the printk is 
+just print
+out the sema register and global-status register for debug.
+
+Look at the comment after the iagetword. And read the ac97 specification.
+Read the ac97 reset register will return the value. write any value to 
+it will reset the
+ac97 registers. When code run to this point there must be some error in 
+the hardware,
+so we need a reset.
+
+>HTH
+>Clemens
+>
+>
+>  
+>
 
 
-Index: alsa-driver/pci/au88x0/au88x0.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/pci/au88x0/au88x0.c,v
-retrieving revision 1.6
-diff -u -r1.6 au88x0.c
---- alsa-driver/pci/au88x0/au88x0.c	13 Jan 2004 08:39:14 -0000	1.6
-+++ alsa-driver/pci/au88x0/au88x0.c	16 Jan 2004 23:40:00 -0000
-@@ -46,6 +46,13 @@
- MODULE_LICENSE("GPL");
- MODULE_DEVICES("{{Aureal Semiconductor Inc., Aureal Vortex Sound Processor}}");
- 
-+#ifndef PCI_VENDOR_ID_VIA 
-+#define PCI_VENDOR_ID_VIA 0x1106
-+#endif
-+#ifndef PCI_DEVICE_ID_VIA_8365_1
-+#define PCI_DEVICE_ID_VIA_8365_1 0x8305
-+#endif
-+
- #ifndef MODULE
- /* format is: snd-mychip=enable,index,id */
- static int __init alsa_card_vortex_setup(char *str) {
+-- 
+
+	Best regards
+	Freeman Liu
+
+
 
 
 -------------------------------------------------------
