@@ -1,43 +1,49 @@
-From: James Courtier-Dutton <james.dutton@gmail.com>
-Subject: Re: [Alsa-devel] Re: irq handler top half timestamps
-Date: Mon, 20 Dec 2004 11:52:54 +0000
-Message-ID: <ad2655cb041220035292dc971@mail.gmail.com>
-References: <007001c4e682$c366aec0$161b14ac@boromir>
-	 <Pine.HPX.4.33n.0412201205010.20003-100000@studcom.urz.uni-halle.de>
-Reply-To: James Courtier-Dutton <james.dutton@gmail.com>
+From: "Jo I. Herring" <j_i.herring_28@winking.be>
+Subject: Premium Replica Watches
+Date: Mon, 20 Dec 2004 19:54:24 +0800
+Message-ID: <dc2701c4e68a$7cf9271b$6bdb7a3e@xsall.nl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0412201205010.20003-100000@studcom.urz.uni-halle.de>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Martijn Sipkema <martijn@entmoot.nl>, Lee Revell <rlrevell@joe-job.com>, Florian Schmidt <mista.tapas@gmx.net>, Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, Ingo Molnar <mingo@elte.hu>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from xsall.nl (adsl-68-72-125-189.dsl.chcgil.ameritech.net [68.72.125.189])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 40AA52B0
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 12:54:52 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 20 Dec 2004 12:10:25 +0100 (MET), Clemens Ladisch
-<clemens@ladisch.de> wrote:
-> 
-> The ALSA API assumes constant-sized periods.  (Jack's Tascam USB
-> driver bypasses the ALSA API.)
+Get the Finest Rolex Watch Replica!
 
-Maybe we should add support for varying size periods. e.g. For when
-resampling from 44100 to 48000.
-I was thinking of maybe adding the "next_period_size" variable as one
-of the returned variables from the copy_areas sections in the rate
-plugin.
+We only sell premium watches. There's no battery in these replicas just
+like the real ones since they charge themselves as you move. The second h=
+and
+moves JUST like the real ones, too. These original watches sell in stores
+for thousands of dollars. We sell them for much less.=20
 
-> HTH
-> Clemens
->
+- Replicated to the Smallest Detail
+- 98% Perfectly Accurate Markings=20
+- Signature Green Sticker w/ Serial Number on Watch Back
+- Magnified Quickset Date
+- Includes all Proper Markings
+
+Visit us: http://www.vanai.com/rep/rolx/
+
+Christmas discount this week only! Make your order before the prices go u=
+p.
+
+
+No thanks: http://www.vanai.com/z.php
+
 
 
 -------------------------------------------------------
