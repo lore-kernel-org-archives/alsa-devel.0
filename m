@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000766]: Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
-Date: Mon, 3 Jan 2005 14:32:28 +0100
-Message-ID: <1db7a9f4130aafac85d02d9b2aa9f657@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
+Date: Mon, 3 Jan 2005 15:10:06 +0100
+Message-ID: <61e89816492254ab481bd11059a4f661@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A3652D3
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 14:32:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 653642D3
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 15:10:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,82 +24,110 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=766> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
 ======================================================================
-Reported By:                cyclon
-Assigned To:                perex
+Reported By:                misnagid
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   766
-Category:                   0_compilation problem_!!!
+Issue ID:                   749
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               
-Kernel Version:             
+Distribution:               Fedora FC3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-31-2004 14:38 CET
-Last Modified:              01-03-2005 14:32 CET
+Date Submitted:             12-26-2004 15:37 CET
+Last Modified:              01-03-2005 15:10 CET
 ======================================================================
-Summary:                    Truble with alsa 1.0.7 (1.0.8rc1 too) on 2.6.10
+Summary:                    Buzz from ALSA setup
 Description: 
-Don't compile.
-
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:
-In function `tx_loop':
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
-warning: passing arg 3 of pointer to function makes integer from
-pointerwithout a cast
-/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/drivers/serialmidi.c:327:
-error: too many arguments to function
-make[4]: ***
-[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers/serialmidi.o]
-Error 1
-make[3]: ***
-[/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild/../drivers]
-Error 2
-make[2]: ***
-[_module_/var/tmp/portage/alsa-driver-1.0.7-r4/work/alsa-driver-1.0.7/kbuild]
-Error 2
-make[1]: *** [modules] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.10-gentoo-r1-na'
-make: *** [compile] Error 2
-
-!!! ERROR: media-sound/alsa-driver-1.0.7-r4 failed.
-!!! Function src_compile, Line 88, Exitcode 2
-!!! Parallel Make Failed
-!!! If you need support, post the topmost build error, NOT this status
-message.
-
-Use: gcc version 3.3.4 20040623 (Gentoo Linux 3.3.4-r1, ssp-3.3.2-2,
-pie-8.7.6)
+I get an almost constant buzz from speakers when I've tried to use ALSA. 
+Have followed your directions from the online web page directions to the
+letter.  Still buzz.
+Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
+Have tried everything I've seen about this problem.
+OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
+driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
+successful in all other regards install of Fedora FC3.
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 12:23 
+ misnagid - 01-03-05 00:36 
 ----------------------------------------------------------------------
-Not reproducible with vanilla 2.6.10 kernel and the latest CVS version.
-
-Is your kernel patched?
+Dear Peter,
+As you requested, I have submitted a bug notification to the web site you
+referred me to at Red Hat Fedora Bugzilla.
+Bug 143971 has been added to the database
 
 ----------------------------------------------------------------------
- cyclon - 01-03-05 14:32 
+ pzad - 01-03-05 15:10 
 ----------------------------------------------------------------------
-Yes, my kernel is patched - 2.6.10-gentoo-r1.
+Could you try to connect your speakers to rear (surround output) ??
+You should set "Master", "PCM", "Surround" volume. and try to play sound
+with aplay.
 
-P.S. Sorry, I have no more this truble in 1.0.8rc1, in 1.0.8rc1 another
-problem (see 0000775).
+If you have mic try to use mic too - set "Mic", "Master", "Surround".
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 14:38 cyclon         New Issue                                    
-01-02-05 11:02 cyclon         Issue Monitored: cyclon                      
-01-02-05 11:02 cyclon         Issue End Monitor: cyclon                    
-01-03-05 12:23 tiwai          Note Added: 0003058                          
-01-03-05 14:32 cyclon         Note Added: 0003063                          
+12-26-04 15:37 misnagid       New Issue                                    
+12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
+12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
+12-26-04 15:58 pzad           Note Added: 0002935                          
+12-26-04 16:31 misnagid       Note Added: 0002936                          
+12-26-04 16:44 misnagid       Note Added: 0002937                          
+12-26-04 16:56 pzad           Note Added: 0002938                          
+12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
+12-26-04 18:17 misnagid       Note Added: 0002942                          
+12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
+12-26-04 19:44 misnagid       File Added: test.state                       
+12-26-04 19:44 misnagid       Note Added: 0002945                          
+12-26-04 20:02 misnagid       Note Added: 0002946                          
+12-26-04 20:09 misnagid       Note Added: 0002947                          
+12-26-04 20:22 pzad           File Added: newtest.state                    
+12-26-04 20:27 pzad           Note Added: 0002948                          
+12-26-04 20:32 pzad           Note Added: 0002949                          
+12-26-04 20:59 misnagid       Note Added: 0002950                          
+12-26-04 21:11 misnagid       Note Added: 0002951                          
+12-26-04 21:19 pzad           Note Added: 0002952                          
+12-26-04 21:22 pzad           Note Added: 0002953                          
+12-26-04 21:43 misnagid       Note Added: 0002954                          
+12-26-04 21:47 pzad           Note Added: 0002955                          
+12-26-04 22:18 misnagid       Note Added: 0002956                          
+12-26-04 23:46 misnagid       Note Added: 0002957                          
+12-27-04 10:46 pzad           Note Added: 0002958                          
+12-27-04 16:33 misnagid       Note Added: 0002964                          
+12-27-04 16:34 misnagid       File Added: test2.state                      
+12-27-04 16:38 misnagid       Note Added: 0002965                          
+12-27-04 16:45 pzad           Note Added: 0002966                          
+12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
+12-27-04 17:57 misnagid       Note Added: 0002969                          
+12-27-04 18:16 pzad           Note Added: 0002970                          
+12-27-04 18:43 misnagid       Note Added: 0002971                          
+12-27-04 19:27 misnagid       Note Added: 0002972                          
+12-27-04 21:09 misnagid       Note Added: 0002975                          
+12-27-04 21:31 pzad           Note Added: 0002976                          
+12-27-04 21:47 misnagid       Note Added: 0002977                          
+12-27-04 21:49 misnagid       Note Added: 0002978                          
+12-27-04 22:00 pzad           Note Added: 0002979                          
+12-27-04 22:29 misnagid       Note Added: 0002980                          
+12-27-04 22:54 pzad           Note Added: 0002981                          
+12-27-04 23:15 misnagid       Note Added: 0002982                          
+12-27-04 23:19 misnagid       Note Added: 0002983                          
+12-27-04 23:46 pzad           Note Added: 0002984                          
+12-27-04 23:48 misnagid       Note Added: 0002985                          
+12-28-04 21:13 rlrevell       Note Added: 0002987                          
+01-03-05 00:36 misnagid       Note Added: 0003049                          
+01-03-05 15:10 pzad           Note Added: 0003064                          
 ======================================================================
 
 
