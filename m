@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Wed, 23 Mar 2005 19:40:33 +0100
-Message-ID: <aedfa0e61994e4b128662c0bc05deabb@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Wed, 23 Mar 2005 20:46:34 +0100
+Message-ID: <1c1551913bb9585367f20215a59a883d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0082923F
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 19:40:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1F2A7279
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 20:46:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,62 +23,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                sHINOBI
-Assigned To:                jcdutton
+Reported By:                yure
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   907
-Category:                   PCI - ca0106
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Status:                     new
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              03-23-2005 19:40 CET
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              03-23-2005 20:46 CET
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-23-05 12:56 
+ tiwai - 03-11-05 16:17 
 ----------------------------------------------------------------------
-Oops, sorry I thought of emu10k1x...
+This must be the alsa-driver or alsa-lib problem, rather than the app's 
+bug.  I don't figure out yet...
 
-You're referring to ALSA native apps, not OSS apps, right?
+----------------------------------------------------------------------
+ tiwai - 03-23-05 20:46 
+----------------------------------------------------------------------
+Setting the slowptr option in dmix seems improving.  I don't get noise so
+far.
 
-----------------------------------------------------------------------
- sHINOBI - 03-23-05 19:40 
-----------------------------------------------------------------------
-Ah my mistake. ALSA-native apps seems to be OK. I've noticed these problems
-mainly in games (KIS, Majesty Nwn) and in Xine (when I choose OSS audio
-driver). XMMS seems to be working both in ALSA and OSS output plugin.
-Without the above mentioned asound.conf these problems are also in
-ALSA-native apps (in Xine it should be corrected by setting resampling to
-48 kHz).
-I hope I wrote it a little bit cleaner now :-).
+Could you try the attached patch, dmix-slowptr.diff?  It's a patch to
+alsa-lib, changing only dmix.conf config file.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
-03-22-05 22:14 tiwai          Note Added: 0004138                          
-03-22-05 22:56 sHINOBI        Note Added: 0004144                          
-03-23-05 12:56 tiwai          Note Added: 0004155                          
-03-23-05 19:40 sHINOBI        Note Added: 0004185                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
+03-23-05 20:46 tiwai          Note Added: 0004187                          
 ======================================================================
 
 
