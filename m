@@ -1,14 +1,12 @@
-From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
-Subject: Re: Native Sample Format
-Date: Sun, 14 Apr 2002 14:08:49 +0200 (CEST)
+From: Paul Davis <pbd@op.net>
+Subject: Re: Fwd: Re: USB Quattro Linux support
+Date: Sun, 14 Apr 2002 09:08:14 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0204141404170.14691-100000@yme.mo.himolde.no>
-References: <3CB93DE0.C3AE15C9@t-online.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: 8BIT
+Message-ID: <200204141306.g3ED6wX27769@post2.fast.net>
+References: <20020414071946.186963ED3@sitemail.everyone.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3CB93DE0.C3AE15C9@t-online.de>
+In-Reply-To: Your message of "Sun, 14 Apr 2002 00:19:45 PDT."
+             <20020414071946.186963ED3@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,23 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Frank Uepping <Frank.Uepping@t-online.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: pshirkey@boosthardware.com
+Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 14 Apr 2002, Frank Uepping wrote:
->This is not a ALSA specific question (so I apologize if this is
->inappropriate)
->and directed to driver programmers.
->Are the sample formats ALAW and MULAW supported by all soundcards in
->Hardware?
->What is a native sample format supported by all soundcards?
+>This is a multi-part message in MIME format...
 
-There is none, I suspect. Some pro sundcards support only one sample
-format (24bit) in hardware, some old cards do only 8bit in hardware... and
-A/MULAW is not supported in hardware by all cards, no.
+AKA: This is a message in which the content is about 2% of the message
+body :)
 
---
-Erik I. Bolsø | email: <knan at mo.himolde.no>
-The UNIX philosophy basically involves giving you enough rope to
-hang yourself.  And then a couple of feet more, just to be sure.
+>I'm trying to get some specs from midiman for the usb quattro. They have asked
+> this question. Can anyone fill me in so I can relay the info?
+
+>Is there "class driver" support under Linux?
+
+I suspect he means something like "audio class", "printer class",
+etc. The answer is yes, sort of. What we have right now is a single
+USB audio driver for OSS that attempts to implement the audio class
+and also contains the inevitable long list of per-device hacks needed
+to work around the fact that almost no manufacturer fully complies
+with the class specification.
+
+However, its for OSS, which is a problem, and we don't yet have a USB
+framework for ALSA worked out, which is even more of a problem. Its
+still unclear at this point whether the ALSA framework will be:
+
+      application<->alsa-lib<->alsa-driver<->low-level-ALSA-USB-class-driver
+
+OR
+
+      application<->alsa-lib<->low-level-non-ALSA-USB-class-driver
+
+the first one is easier to write, the second one is more flexible.
+
+--p
