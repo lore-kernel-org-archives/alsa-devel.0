@@ -1,88 +1,51 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: trouble with dosemu and alsa oss emulation (and a
- fix for alsa)
-Date: Mon, 8 Sep 2003 09:14:40 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309080913350.30087@pnote.perex-int.cz>
-References: <20030906200943.GA5128@quark.fsb.hr>
+From: Daniel Blueman <daniel.blueman@gmx.net>
+Subject: [2.6.0-test4] [BUG, ALSA] no 44.1KHz sound for i8x0 ICH2...
+Date: Mon, 8 Sep 2003 11:33:58 +0200 (MEST)
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <31962.1063013638@www28.gmx.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030906200943.GA5128@quark.fsb.hr>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Vedran Rodic <vedran@quark.fsb.hr>
-Cc: alsa-devel@lists.sourceforge.net, linux-msdos@vger.kernel.org
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+To: alsa-devel@lists.sourceforge.net, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 6 Sep 2003, Vedran Rodic wrote:
+I can't get any sound output with an Intel 815 chipset at 44.1KHz. ALSA
+reports the sound chipset can clock to 41KHz.
 
-> Hi.
->
-> I'm having trouble with latest ALSA and oss emulation. I'm using dosemu to
-> play some DOS games and I've noticed that sound in DOS apps stops playing
-> after short time (depending on the app).
->
->
-> I'm regulary updating both alsa and dosemu, I suspected dosemu first, since
-> I had no problems whatsoever with alsa oss emulation.
->
-> It turned out that this was not dosemu problem, but alsa oss emulation problem.
-> I've tracked it down to a change in  alsa-kernel/core/oss/pcm_oss.c.
-> The change is here:
-> http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/alsa/alsa-kernel/core/oss/pcm_oss.c.diff?r1=1.40&r2=1.41
+What information do I need to post here?
 
-Please, try patch bellow.
+Please CC me on any replies.
 
-					Jaroslav
+--- [ lspci -v ]
 
+00:1f.5 Multimedia audio controller: Intel Corp. 82801BA/BAM AC'97 Audi=
+o
+(rev 11)
+        Subsystem: Dell Computer Corporation: Unknown device 00be
+        Flags: bus master, medium devsel, latency 0, IRQ 10
+        I/O ports at c800 [size=3D256]
+        I/O ports at cc40 [size=3D64]
 
-Index: pcm_oss.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/oss/pcm_oss.c,v
-retrieving revision 1.47
-diff -u -r1.47 pcm_oss.c
---- pcm_oss.c	3 Sep 2003 13:43:41 -0000	1.47
-+++ pcm_oss.c	8 Sep 2003 07:12:58 -0000
-@@ -1394,6 +1394,10 @@
- 	}
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DELAY, &delay);
-+		if (err == -EPIPE || err == -ESTRPIPE) {
-+			err = 0;
-+			delay = 0;
-+		}
- 	} else {
- 		err = snd_pcm_oss_capture_position_fixup(substream, &delay);
- 	}
-@@ -1454,7 +1458,12 @@
- 	} else {
- 		if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 			err = snd_pcm_kernel_ioctl(substream, SNDRV_PCM_IOCTL_DELAY, &avail);
--			avail = runtime->buffer_size - avail;
-+			if (err == -EPIPE || err == -ESTRPIPE) {
-+				avail = runtime->buffer_size;
-+				err = 0;
-+			} else {
-+				avail = runtime->buffer_size - avail;
-+			}
- 		} else {
- 			err = snd_pcm_oss_capture_position_fixup(substream, &avail);
- 		}
+--- [ dmesg ]
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Advanced Linux Sound Architecture Driver Version 0.9.6 (Wed Aug 20 20:2=
+7:13
+2003 UTC).
+PCI: Found IRQ 10 for device 0000:00:1f.5
+PCI: Sharing IRQ 10 with 0000:00:1f.3
+PCI: Setting latency timer of device 0000:00:1f.5 to 64
+hub 1-0:0: debounce: port 1: delay 100ms stable 4 status 0x301
+intel8x0: clocking to 41151          <----- should be 44100?
+ALSA device list:
+  #0: Intel 82801BA-ICH2 at 0xc800, irq 10
 
+--=20
+Daniel J Blueman
 
--------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+COMPUTERBILD 15/03: Premium-e-mail-Dienste im Test
+--------------------------------------------------
+1. GMX TopMail - Platz 1 und Testsieger!
+2. GMX ProMail - Platz 2 und Preis-Qualit=E4tssieger!
+3. Arcor - 4. web.de - 5. T-Online - 6. freenet.de - 7. daybyday - 8. e=
+-Post
