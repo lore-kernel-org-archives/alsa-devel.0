@@ -1,8 +1,8 @@
 From: dunk fordyce <mailinglist@dunkfordyce.co.uk>
 Subject: Re: seg fault
-Date: Tue, 18 Jun 2002 19:46:32 +0200
+Date: Tue, 18 Jun 2002 19:47:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020618194632.3511f4fe.mailinglist@dunkfordyce.co.uk>
+Message-ID: <20020618194759.4b012083.mailinglist@dunkfordyce.co.uk>
 References: <20020618175932.0bc0ad84.mailinglist@dunkfordyce.co.uk>
 	<20020618174425.GA1730@orbital.xs4all.nl>
 Reply-To: him@dunkfordyce.co.uk
@@ -19,11 +19,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Andy Lo-A-Foe <andy@alsaplayer.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-yep u were right :)
+now im wondering whats the best way to play multiple samples at once?
+
+im looking at various sources and think its something to do with poll'ing?
+
+any clues?
 
 
 On Tue, 18 Jun 2002 19:44:25 +0200
