@@ -1,13 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Driver Programming
-Date: Mon, 29 Nov 2004 10:19:44 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411291004150.13337@denise.shiny.it>
-References: <200411290327.iAT3RTlT019644@localhost.localdomain>
- <41AADFD3.6030001@fetron.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000690]: Audigy LS using ALSA+JACK: jackd watchdog timeout
+Date: Mon, 29 Nov 2004 10:19:17 +0100
+Message-ID: <713b5f42a52dcdad31c7fb2a52ede9c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41AADFD3.6030001@fetron.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA2A42A5
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 10:19:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,39 +18,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Klaus Fetscher <K.Fetscher@t-online.de>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=690> 
+======================================================================
+Reported By:                tilman75
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   690
+Category:                   PCI - audigyls
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian GNU/Linux unstable (Mon Nov 29 10:03:51 CET
+2004)
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-29-2004 10:19 CET
+Last Modified:              11-29-2004 10:19 CET
+======================================================================
+Summary:                    Audigy LS using ALSA+JACK: jackd watchdog timeout
+Description: 
+the jackd server program cannot be run to produce sound.
+instead, after being executed, on first attempt to start a JACK-client, it
+renders the fatal error message:
+jackd watchdog: timeout - killing jackd
+see the steps to reproduce for information on hard- and software versions.
+======================================================================
 
-On Mon, 29 Nov 2004, Klaus Fetscher wrote:
-
-> Okay, I found my error. No, I am calling snd_pcm_new(chip->card, "name",
-> DEV_x, ONE_OUT, ONE_IN, &pcm); three times. During the last call, the
-> parameter ONE_IN is 0 (because I only have three output channels and two
-> input channels).
->
-> When I list the /proc/asound/card0 directory, I can see pcm0c, pcm1c,
-> pcm0p, pcm1p, pcm2p. And with substream->pcm->device I can detect, which
-> device I am using. All seems to be okay.
-
-If you want to play a 6-channel track you have to open all tree devices
-and the hw should support sync-start. (There was a typo in the my message:
-THREE_OUT and TWO_IN should have been 6 and 4).
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-29-04 10:19 tilman75       New Issue                                    
+11-29-04 10:19 tilman75       Distribution              => Debian GNU/Linux
+unstable (Mon Nov 29 10:03:51 CET 2004)
+11-29-04 10:19 tilman75       Kernel Version            => 2.6.9           
+======================================================================
 
 
-> Another question belonging to the Control names of the mixer. Is it
-> correct, to use "Master Volume" three times for the different output
-> channels (the channels are independent from each other) ?
-
-I don't think so.  IMO you should register one "Master Volume" as an
-int[6]. or maybe you can register three "Master Volume n". Applications
-will have problems accessing them anyway :)
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
