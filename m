@@ -1,11 +1,9 @@
-From: Peter Enderborg <pme@ufh.se>
+From: Paul Davis <pbd@Op.Net>
 Subject: Re: Rawmidi bug or missed feature?
-Date: Sat, 02 Mar 2002 20:15:44 +0100
-Message-ID: <3C8124E0.4FDDECD1@ufh.se>
-References: <200203021858.NAA13670@renoir.op.net>
-Mime-Version: 1.0
-Content-Type: multipart/alternative;
- boundary="------------E9092D81C8422CBA2BDEFA1B"
+Date: Sat, 02 Mar 2002 14:31:50 -0500
+Message-ID: <200203021931.OAA16335@renoir.op.net>
+In-reply-to: Your message of "Sat, 02 Mar 2002 20:15:44 +0100."
+             <3C8124E0.4FDDECD1@ufh.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,93 +12,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
+To: Peter Enderborg <pme@ufh.se>
 Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+>How can we get the same performance i userspace? For me it is the
+>processor/OS schedule that gives the limit for that, and in kernel we
+>get
+>the hardware as the limit.
 
---------------E9092D81C8422CBA2BDEFA1B
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+there are two things done by the sequencer:
 
-Paul Davis wrote:
+     a) routing/multiplexing
+	
+	this is mostly a matter of code design and memory management,
+	and can be handled just as well in user space as in the
+	kernel, perhaps even better (other libs can be used, for
+	instance). there is almost nothing i can think of relating to
+	this work that requires or even benefits from a kernel side
+	location. 
 
-> >How do you solve the problem with sharing hardware then?
->
-> I don't. I intend to wait for (and contribute too, if I can) what I
-> consider the correct solution:
->
->   a) sequencer genuinely split into:
->
->           1) a router/multiplexer
->           2) a scheduler
->
->   b) sequencer moves into user space
->
-> As I've said before, I don't consider the current kernel-side
-> implementation of the sequencer, nor its merging of two completely
-> different functions, to be in anyone's interest. I think that Frank
-> was (like myself and everyone else) somewhat "blinded" by the fact
-> that OSS put the sequencer in the kernel, and we did not know that it
-> was possible to get similar performance in user space.
+     b) scheduling
+     
+        the kernel has no special access to system hardware for timing
+	that is not available to a root-enabled or CAP_RESOURCE-enabled	
+	task. the default system timer that the vast majority of
+	sequencer users will use is of much worse resolution than some
+	of the alternatives such as the RTC and a PCM audio
+	clock.	
 
-How can we get the same performance i userspace? For me it is the
-processor/OS schedule that gives the limit for that, and in kernel we
-get
-the hardware as the limit.
+	however, both of these sources (as well as the default system
+	timer) are available to user space processes. there is a
+	small overhead involved, on the order of 2-10 microseconds, if
+	that. 
 
->
->
-> For the time being, I have hardware solutions that work for me when I
-> need to do complex MIDI routing (i.e. dedicated h/w MIDI patchbays),
-> and I never run multiple apps using the same port.
->
-> --p
+	Since the sequencer would have to run with these permissions
+	to be useful, as a user space process it has the same
+	scheduling capabilities as it does in the kernel (for our
+	purposes; obviously, it can't schedule processes in the same
+	way as the OS task scheduler, but then for that matter,
+	neither can the existing kernel sequencer).
 
---
-foo!
+	the processor has no part to play in scheduling except for
+	executing code. fast processors don't schedule faster other
+	than in the sense that they execute the scheduling code
+	(whether its in user space or not) more or less quickly.
+	
+By putting the sequencer in user space we:
 
+  a) remove a large and necessarily complex piece of code from the
+       kernel, nearly always a good thing
+  b) allow it to be developed more flexibly (code errors don't
+       cause system panics or hangs)
+  c) can make it more modular
+  d) can port it to non-Linux systems more easily
+  e) can extend it to work within or alongside other designs more easily
 
-
---------------E9092D81C8422CBA2BDEFA1B
-Content-Type: text/html; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
-<html>
-Paul Davis wrote:
-<blockquote TYPE=CITE>>How do you solve the problem with sharing hardware
-then?
-<p>I don't. I intend to wait for (and contribute too, if I can) what I
-<br>consider the correct solution:
-<p>&nbsp; a) sequencer genuinely split into:
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1) a router/multiplexer
-<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2) a scheduler
-<p>&nbsp; b) sequencer moves into user space
-<p>As I've said before, I don't consider the current kernel-side
-<br>implementation of the sequencer, nor its merging of two completely
-<br>different functions, to be in anyone's interest. I think that Frank
-<br>was (like myself and everyone else) somewhat "blinded" by the fact
-<br>that OSS put the sequencer in the kernel, and we did not know that
-it
-<br>was possible to get similar performance in user space.</blockquote>
-How can we get the same performance i userspace?&nbsp;For me it is the
-<br>processor/OS schedule that gives the limit for that, and in kernel
-we get
-<br>the hardware as the limit.
-<blockquote TYPE=CITE>&nbsp;
-<p>For the time being, I have hardware solutions that work for me when
-I
-<br>need to do complex MIDI routing (i.e. dedicated h/w MIDI patchbays),
-<br>and I never run multiple apps using the same port.
-<p>--p</blockquote>
-
-<pre>--&nbsp;
-foo!</pre>
-&nbsp;</html>
-
---------------E9092D81C8422CBA2BDEFA1B--
-
+--p
 
 _______________________________________________
 Alsa-devel mailing list
