@@ -1,15 +1,13 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: hardware channel mixing
-Date: Fri, 3 Sep 2004 15:58:01 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000479]: [Patch] VIA based AC97 modem driver
+Date: Fri,  3 Sep 2004 15:52:39 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040903155801.1ae48548@mango.fruits.de>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-	<Pine.LNX.4.58.0409030913180.9962@pat.dumaisnet.ca>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040903135239.0EF602D0C0@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0409030913180.9962@pat.dumaisnet.ca>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CC092CD
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 15:52:39 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,32 +16,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: pat@dumaisnet.ca
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 3 Sep 2004 09:15:06 -0400 (EDT)
-Patrick Dumais <pat@dumaisnet.ca> wrote:
 
-> 
-> Thanks a lot, I've been looking for that information.
-> 
-> So this would mean that the only solution would be to snd_pcm_open() a
-> device for each sound file that I want to play simultenaously?
+The following bug has been RESOLVED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000479
+======================================================================
+Reported By:                sashak
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     479
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+======================================================================
+Date Submitted:             09-02-2004 21:24 CEST
+Last Modified:              09-03-2004 15:52 CEST
+======================================================================
+Summary:                    [Patch] VIA based AC97 modem driver
+Description: 
+New 'via82xx_modem.c' driver supports VIA based AC97 modems. (tested with
+2.6.8.1). The patch (for alsa-driver) is uploaded.
+======================================================================
 
-If you are programming an app that needs to play several sounds at once,
-it is a very bad idea to rely on the hardware provifding hw mixing. Most
-SC's do not provide hw mixing. 
+----------------------------------------------------------------------
+ tiwai - 09-03-2004 15:52 CEST 
+----------------------------------------------------------------------
+Thanks, the patch was applied to CVS.
 
-So the solution really is to do the mixing yourself before sending the
-sound to the soundcard [mixing sounds is pretty trivial -> add them.
-only take care about the headroom].
-
-OTOH: if you write this app only for yourself and you know you will
-always use a SC with hw mixing, feel free to use snd_pcm_open for every
-sound you play..
-
-flo
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-02-04 21:24 sashak         New Bug                                      
+09-02-04 21:24 sashak         File Added: via-modem.patch                    
+09-03-04 15:52 tiwai          Bugnote Added: 0001692                       
+09-03-04 15:52 tiwai          Resolution               open => fixed       
+09-03-04 15:52 tiwai          Status                   assigned => resolved
+======================================================================
 
 
 -------------------------------------------------------
