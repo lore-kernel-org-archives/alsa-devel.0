@@ -1,12 +1,12 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000575]: alsa mixer settings and sporatic loss of sound
-Date: Tue, 22 Mar 2005 09:43:39 +0100
-Message-ID: <7fb6387bd01bbb3625087b2d91a9d128@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001004]: Doesn't accept all sample rates, when capturing sound in S16_LE or S16_BE format.
+Date: Tue, 22 Mar 2005 09:43:40 +0100
+Message-ID: <b6589356eb0420792ec5fa0ac42ac894@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 77E701E5
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB9581EA
 	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 09:43:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,61 +21,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=575> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1004> 
 ======================================================================
-Reported By:                grapnell
+Reported By:                hyp
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   575
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   1004
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     closed
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware
+Kernel Version:             2.4.29
 ======================================================================
-Date Submitted:             10-09-2004 18:09 CEST
+Date Submitted:             03-21-2005 19:26 CET
 Last Modified:              03-22-2005 09:43 CET
 ======================================================================
-Summary:                    alsa mixer settings and sporatic loss of sound
+Summary:                    Doesn't accept all sample rates, when capturing
+sound in S16_LE or S16_BE format.
 Description: 
-one thing i have noticed about alsa, is a very small event can trigger a
-major crash of alsa, such as the forced quit of a non-responding
-application that uses sound etc will cause alsa to crash, and I cannot get
-sound support to come back unless I reboot. also, the mixer settings will
-not save, I have to unmute and restore all the mixer settings manually
-everytime I reboot.
+When I request to capture sound with: 8000Hz, S16 LE, stereo the ioctl
+returns me that the accepted values are the same as requested. But the
+whole read()-ed data is captured with 44100 or 48000Hz (I don't know 
+the right value, I guess it by ear), independendly from the requested
+sample rate.
+
+I tried to capture sound via sox's recorder. For example with command:
+# rec -c 1 -d /dev/dsp0 -f s -r 8000 p.snd
+When I started to play this file, I noticed that the file is captured 
+with 44100 or 48000Hz sample rate, but in the .snd header are written
+that the file is recorder with 8000Hz sample rate (as I have requested 
+it). If I set the sample rate to 48000 and play the tune, it sounds 
+good. Also this problem can be seen with my own oss recorder.
+
+When I'm using anouther sound card, for example Creative Ensoniq 1371
+or Creative EMU10K1 everything is good!
+
+best regards.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-12-04 14:40 
+ hyp - 03-21-05 19:30 
 ----------------------------------------------------------------------
-The crash really depends on the hardware.  Please describe as precisely
-as possible which board you have, on which kernel and distro with which
-ALSA driver version, and what happens with which procedure how
-frequently.
-
-The mixer setting is FAQ.  It's a feature.
+ups...
+Intel ICH5 with Analog Devices AD1985
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 13:28 
+ hyp - 03-22-05 09:43 
 ----------------------------------------------------------------------
-In the absence of the additional information that would be required
-to deal with this bug report, I suggest that it be closed.
+I'm sorry for my confusion!!!
+This is a side effect from an improper loading of snd-ca0106, which card
+doesn't exist.
+So this post can be closed...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-09-04 18:09 grapnell       New Issue                                    
-10-12-04 14:40 tiwai          Note Added: 0002095                          
-03-20-05 13:28 jdthood        Note Added: 0004084                          
-03-22-05 09:43 jdthood        Status                   new => closed       
-03-22-05 09:43 jdthood        Resolution               open => unable to
-duplicate
+03-21-05 19:26 hyp            New Issue                                    
+03-21-05 19:26 hyp            Distribution              => Slackware       
+03-21-05 19:26 hyp            Kernel Version            => 2.4.29          
+03-21-05 19:30 hyp            Note Added: 0004121                          
+03-22-05 09:43 hyp            Note Added: 0004123                          
 ======================================================================
 
 
