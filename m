@@ -1,10 +1,11 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: the RME situation
-Date: Sun, 28 Nov 2004 00:30:26 -0500
-Message-ID: <1101619826.21427.30.camel@krustophenia.net>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Mixer control names out of control?
+Date: Sun, 28 Nov 2004 10:00:23 +0100
+Message-ID: <200411280900.iAS90NIP014838@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,26 +16,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: peter@developers.dk
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-So as you may know RME announced there will be no open source drivers
-for their firewire products, due to (IMO valid) IP concerns.  They are
-certain to get a flood of hatemail from Linux users.
+>First of all, the AC97 driver uses the name "IEC958 Playback SPSA".
+What's wrong with "IEC958 Playback Volume"?
 
-My suggestion was that someone on this list might want to be the voice
-of reason and offer to write a closed source ALSA driver, under NDA, for
-reasonable compensation of course.  I can't see why they would say no,
-unless they are already working on one.
+IEC958 Playback SPSA - this is not volume - this controls what AC97
+slot will be used for spdif output.
 
-Maybe if they set a precedent that the Linux audio community are not all
-RMS worshipping zealots then we would have more supported hardware.  I
-think Nvidia proved that Linux users will get behind you if you have
-superior hardware and quality drivers, even if they are binary only.
+AFAIK
+simple mixer element !=3D kernel mixer control. simple mixer element can
+containd 6 kernel controls (mayby more):
+Playback Volume
+Playback Switch
+Playback Route
 
--- 
-Lee Revell <rlrevell@joe-job.com>
+Capture Volume
+Capture Switch
+Capture Route
 
+>Front,Rear,Side
+I think there is not constraint on names, there is only recomendation.
+On some cards you are unable to fit to default names, because you want
+name something what has diffrent meaning as control on other card.
+Have you better names for this ?
+
+Peter Zubaj=0A____________________________________=0Ahttp://www.pobox.sk/ -=
+ najvacsi slovensky freemail=0A=0A=0A
 
 
 -------------------------------------------------------
