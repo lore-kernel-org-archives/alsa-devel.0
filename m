@@ -1,10 +1,10 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
+From: Shayne O'Connor <forums@machinehasnoagenda.com>
 Subject: Re: Bug in emu10k1 multichannel support
-Date: Fri, 11 Feb 2005 00:26:08 +0100
-Message-ID: <420BED90.8090609@glocalnet.net>
+Date: Fri, 11 Feb 2005 10:33:55 +1100
+Message-ID: <420BEF63.60402@machinehasnoagenda.com>
 References: <1106091073.24484.60.camel@krustophenia.net>	 <s5hpt01tler.wl@alsa2.suse.de> <1106970885.3051.88.camel@krustophenia.net>	 <41FE5838.4060907@glocalnet.net> <1108073865.11177.6.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 In-Reply-To: <1108073865.11177.6.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
@@ -16,14 +16,18 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Mikael Magnusson <mikaelmagnusson@glocalnet.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 Lee Revell wrote:
-> On Mon, 2005-01-31 at 17:09 +0100, Mikael Magnusson wrote:
-> 
+
+>On Mon, 2005-01-31 at 17:09 +0100, Mikael Magnusson wrote:
+>  
+>
 >>Lee Revell wrote:
 >>...
+>>    
 >>
 >>>OK, I have posted the latest version:
 >>>
@@ -39,7 +43,8 @@ Lee Revell wrote:
 >>>structure internally as for regular PCM substreams, but only the "mono"
 >>>component is exposed to userspace.
 >>>
->>
+>>>      
+>>>
 >>...
 >>
 >>I'm having problems with emu10k1-multichannel-v008.patch. I have made a 
@@ -47,26 +52,31 @@ Lee Revell wrote:
 >>bug is triggered when I play a song in xmms, and at the same time run 
 >>the test program.
 >>
-> 
-> 
-> Thanks, I have found and fixed the bug.
-> 
-> http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v009.patch
-> 
-> I believe the patch should now be mergeable.  All known bugs have been
-> fixed, and since I announced it on LAU and LAD the patch has had fairly
-> widespread testing.
-> 
-> I will break the patch up and post one patch per file in the next few
-> days.
-> 
-> Lee
-> 
+>>    
+>>
+>
+>Thanks, I have found and fixed the bug.
+>
+>http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v009.patch
+>
+>I believe the patch should now be mergeable.  All known bugs have been
+>fixed, and since I announced it on LAU and LAD the patch has had fairly
+>widespread testing.
+>
+>I will break the patch up and post one patch per file in the next few
+>days.
+>  
+>
+does this one have both the capture and playback patches? if not, would
+it be possible to combine the two, because i haven't had any success
+patching the cvs alsa driver that already contains the capture (or is
+that playback?) patch ...
 
-I'm still having the same problem with emu10k1-multichannel-v009.patch 
-and current CVS.
+i'm currently using the 008 patch, without too much drama ... except the
+slightly frustrating capturing of playback channels along with ac97 ...
+though this could be due to incorrect mixer settings ...
 
-/Mikael Magnusson
+shayne
 
 
 -------------------------------------------------------
