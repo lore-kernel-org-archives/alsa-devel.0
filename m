@@ -1,12 +1,16 @@
-From: =?gb2312?q?li=20Tom?= <tom374233@yahoo.com.cn>
-Subject: C-Media Error: "No such device"
-Date: Tue, 8 Apr 2003 11:37:24 +0800 (CST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: dsnoop, dshare and dmix plugins
+Date: Tue, 08 Apr 2003 14:07:19 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030408033724.24598.qmail@web15103.mail.bjs.yahoo.com>
+Message-ID: <3E925907.50307@boosthardware.com>
+References: <Pine.LNX.4.44.0303191801460.1351-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; boundary="0-346634662-1049773044=:24596"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from www2.webhosting.cx (www2.webhosting.cx [207.44.198.86])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA32105
+	for <alsa-devel@alsa-project.org>; Tue, 8 Apr 2003 07:20:36 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,69 +19,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
---0-346634662-1049773044=:24596
-Content-Type: text/plain; charset=gb2312
-Content-Transfer-Encoding: 8bit
+Jaroslav Kysela wrote:
+>
+> 
+> And finally the dshare plugin (used standard stereo device and using left 
+> and right channels separately):
+> 
+> pcm.dshare_left {
+>         type dshare
+>         ipc_key 6678293
+>         ipc_key_add_uid yes
+>         slave {
+>                 pcm "hw:0,0"
+>         }
+>         bindings {
+>                 0 0
+>         }
+> }
+> 
+> pcm.dshare_right {
+>         type dshare
+>         ipc_key 6678293
+>         ipc_key_add_uid yes
+>         slave {
+>                 pcm "hw:0,0"
+>         }
+>         bindings {
+>                 0 1
+>         }
+> }
+> 
+
+Using the above example I get this error.
+
+  arecord -f cd -D plug:dshare_left
+ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for 
+symbol _snd_pcm_dshare_open
+ALSA lib pcm.c:1802:(snd_pcm_open_conf) symbol _snd_pcm_dshare_open is 
+not defined inside (null)
+arecord: main:479: audio open error: No such device or address
+
+I would also like to test out the alsa_jack plugin but cannot find a 
+reference to it anywhere. Has it been removed temporarily?
 
 
-Hi all,
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-I downloaded alsa-driver-0.9.2. I followed the install guide. I meet a problem when "modprobe card". The following is the output:
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
-------------------------------------
+Goldie, 8 Nov, 2002
+The Scotsman
 
-[root@localhost alsa-driver-0.9.2]# modprobe snd-cmipci
-
-/lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o: init_module: No such device
-
-Hint: insmod errors can be caused by incorrect module parameters, including invalid IO or IRQ parameters.
-
-You may find more information in syslog or the output from dmesg
-
-/lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o: insmod /lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o failed
-
-/lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o: insmod snd-cmipci failed
-
-------------------------------------
-
-I use Redhat 8.0 with kernel 2.4.18-14. My sound card is C-Media.  My sound card ID auto-detected by OSS is 0x434d X 0x4941.
-
-Who know the reason or had meet the problem?
-
-Thank you very much for any help!
-
-Tom
-
-
-
----------------------------------
-Do You Yahoo!?
-"雅虎通网络KTV, 随时随地免费卡拉OK~~"
---0-346634662-1049773044=:24596
-Content-Type: text/html; charset=gb2312
-Content-Transfer-Encoding: 8bit
-
-<P>Hi all,</P>
-<P>I downloaded <SPAN lang=EN-US style="FONT-SIZE: 10.5pt; FONT-FAMILY: 'Times New Roman'; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 宋体; mso-font-kerning: 1.0pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA">alsa-driver-0.9.2. I followed the install guide. I meet a problem when "modprobe card". The following is the output:</SPAN></P><SPAN lang=EN-US style="FONT-SIZE: 10.5pt; FONT-FAMILY: 'Times New Roman'; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 宋体; mso-font-kerning: 1.0pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA">
-<P>------------------------------------</P>
-<P></SPAN><SPAN lang=EN-US style="FONT-SIZE: 10.5pt; FONT-FAMILY: 'Times New Roman'; mso-bidi-font-size: 12.0pt; mso-fareast-font-family: 宋体; mso-font-kerning: 1.0pt; mso-ansi-language: EN-US; mso-fareast-language: ZH-CN; mso-bidi-language: AR-SA"><SPAN lang=EN-US>[root@localhost alsa-driver-0.9.2]# modprobe snd-cmipci</SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US>/lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o: init_module: No such device</SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US>Hint: insmod errors can be caused by incorrect module parameters, including invalid IO or IRQ parameters.</SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US>You may find more information in syslog or the output from dmesg</SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US>/lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o: insmod /lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o failed<?xml:namespace prefix = o ns = "urn:schemas-microsoft-com:office:office" /><o:p></o:p></SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=EN-US>/lib/modules/2.4.18-14/kernel/sound/pci/snd-cmipci.o: insmod snd-cmipci failed<o:p></o:p></SPAN></P>
-<P>------------------------------------</P>
-<P>I use Redhat 8.0 with kernel 2.4.18-14. My sound card is C-Media.&nbsp; My sound card ID auto-detected by OSS is 0x434d X 0x4941.</P>
-<P>Who know the reason or had meet the problem?</P>
-<P>Thank you very much for any help!</P>
-<P>Tom</SPAN></P><p><br><hr size=1><b>Do You Yahoo!?</b><br>
-<a href="http://rd.yahoo.com/mail_cn/tag/?http://cn.messenger.yahoo.com//chat/index.html
-">"雅虎通网络KTV, 随时随地免费卡拉OK~~"</a>
---0-346634662-1049773044=:24596--
 
 
 -------------------------------------------------------
