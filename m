@@ -1,10 +1,10 @@
-From: jing@unm.edu
-Subject: a question about RME HDSP 96xx
-Date: Sun, 10 Aug 2003 22:37:03 -0600
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Re: RME HDSP 9632 driver
+Date: Mon, 11 Aug 2003 09:00:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1060576623.3f371d6fa1fff@webdjn.unm.edu>
+Message-ID: <32833.62.106.184.128.1060585201.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,14 +18,24 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,guys,
+> Is there an RME HDSP 9632 driver in development?
+> The current hdsp driver from 0.9.6 will not load claiming the device is
+not  present.
+>
+> Thank you.
+>
+>
 
-I am curious to know what kind of DAC chip RME HDSP 96xx
-uses? Is it AD1855 or AD1852, or something else?
+No that I know of. The hdsp 9632 is quite different from the other hdsp
+cards. Supporting it will require non-trivial driver adaptation. Right now
+the driver claims the device is not present because it doesn't recognise
+the card revision number (>= 0x96). I've asked RME about the card, I'll
+let you know.
 
-Your response will be highly appreciated,
+Thomas
 
-jing
+
+
 
 
 -------------------------------------------------------
