@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000610]: Abit AV8 entry required for programs that do not use 48k (Fix inside)
-Date: Wed, 27 Oct 2004 04:23:11 +0200
+Subject: [ALSA - driver 0000608]: module snd-bt87x throws "kernel: Aieee - PCI error!" repeatedly
+Date: Wed, 27 Oct 2004 09:12:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <bc7b3dff722da0b7fc643afa9ec55277@bugtrack.alsa-project.org>
+Message-ID: <8ea54baae76e750b168cd2be15d1bda4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7ECCD2F9
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 04:23:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA9B32DE
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 09:12:07 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,81 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=610> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=608> 
 ======================================================================
-Reported By:                badbunny
-Assigned To:                
+Reported By:                orclex
+Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   610
-Category:                   PCI - via82xx
+Issue ID:                   608
+Category:                   PCI - bt87x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3 X86_64
+Status:                     assigned
+Distribution:               debian Linux
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             10-27-2004 01:37 CEST
-Last Modified:              10-27-2004 04:23 CEST
+Date Submitted:             10-26-2004 22:08 CEST
+Last Modified:              10-27-2004 09:12 CEST
 ======================================================================
-Summary:                    Abit AV8 entry required for programs that do not use
-48k (Fix inside)
+Summary:                    module snd-bt87x throws "kernel: Aieee - PCI error!"
+repeatedly
 Description: 
-For programs such as Doom 3 or aplay (that use 41k channels)...This card in
-it's current state of only accepting 48k streams is not working out for
-these type programs. Adding the following to the whitelist[] in via82xx.c
-resolves this problem:
+The audio module snd-bt87x throws repeatedly errors.
+So dmesg lists errors continual:
+Aieee - PCI error! status 0x008008, PCI status 0x8280
 
-{ .vendor = 0x147b, .device = 0x1415, .action = VIA_DXS_NO_VRA }, /* Abit
-AV8 */
+/var/log/syslog contains these lines:
+Oct 26 20:53:01 orclex kernel: Aieee - PCI error! status 0x008008, PCI
+status 0x8280
+Oct 26 20:53:36 orclex last message repeated 4 times
+Oct 26 20:54:36 orclex last message repeated 7 times
+Oct 26 20:55:36 orclex last message repeated 4 times
+Oct 26 20:56:36 orclex last message repeated 35 times
+Oct 26 20:57:38 orclex last message repeated 28 times
+Oct 26 20:58:36 orclex last message repeated 37 times
+Oct 26 20:59:36 orclex last message repeated 9 times
+Oct 26 21:00:36 orclex last message repeated 157 times
+Oct 26 21:01:36 orclex last message repeated 48 times
 
-I have have fully tested this. I also ran using VIA_DXS_ENABLE, but it
-causes a hiss in the sound. So this works the best. Without this users
-whould just have to know to set "dxs_support=4"...I think it's best this
-be in the driver.
-
-Below is lspci output:
-lspci -nvs 00:11.5
-00:11.5 Class 0401: 1106:3059 (rev 60)
-        Subsystem: 147b:1415
-        Flags: medium devsel, IRQ 177
-        I/O ports at e400 [size=256]
-        Capabilities: [c0] Power Management version 2
-
-lspci -vs 00:11.5
-00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: ABIT Computer Corp.: Unknown device 1415
-        Flags: medium devsel, IRQ 177
-        I/O ports at e400 [size=256]
-        Capabilities: [c0] Power Management version 2
-
+When I remove the snd-bt87x module the error does not appear.
 ======================================================================
 
 ----------------------------------------------------------------------
- badbunny - 10-27-04 03:06 
+ Clemens Ladisch - 10-27-04 09:12 
 ----------------------------------------------------------------------
-This also fixes a problem with gstreamer and alsasink plugin interaction
-with this card.
+"PCI status 0x8xxx" means that there was a parity error on the PCI bus. 
+This error was detected (not caused) by the TV card.
 
-----------------------------------------------------------------------
- badbunny - 10-27-04 04:23 
-----------------------------------------------------------------------
-one last remark...wouldn't it be better behavior for the via82xx to set
-cards to VIA_DXS_NO_VRA rather than VIA_DXS_48K when it does not know the
-card. I'm not familiar with all the sound cards that use this, but for
-future cards I see this as being better behavior for the driver & less
-headache for the user.
+It's possible that the sound card takes the PCI bus when it isn't allowed
+to, or that your chipset doesn't arbitrate the PCI bus correctly.  (The
+latter happens with some VIA chipsets.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-27-04 01:37 badbunny       New Issue                                    
-10-27-04 01:37 badbunny       Distribution              => Fedora Core 3 X86_64
-10-27-04 01:37 badbunny       Kernel Version            => 2.6.9           
-10-27-04 03:06 badbunny       Note Added: 0002271                          
-10-27-04 04:23 badbunny       Note Added: 0002272                          
+10-26-04 22:08 orclex         New Issue                                    
+10-26-04 22:08 orclex         Distribution              => debian Linux    
+10-26-04 22:08 orclex         Kernel Version            => 2.6.9           
+10-27-04 09:12 Clemens LadischNote Added: 0002273                          
 ======================================================================
 
 
