@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000511]: [PATCH] 15_alsamixer_doc_keycase
-Date: Tue, 9 Nov 2004 16:37:03 +0100
-Message-ID: <256ac4ba056e27ac767270181e6fcd28@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000516]: [PATCH] 20_alsaconf_lspci
+Date: Tue, 9 Nov 2004 16:37:32 +0100
+Message-ID: <3cd732f53ec650e0a886125acaaac369@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 939B02B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:37:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6DED92B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:37:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,55 +24,60 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=511> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=516> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   511
-Category:                   alsamixer
+Issue ID:                   516
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2004 19:43 CEST
+Date Submitted:             09-21-2004 19:52 CEST
 Last Modified:              11-09-2004 16:37 CET
 ======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_keycase
+Summary:                    [PATCH] 20_alsaconf_lspci
 Description: 
-Patch for alsamixer.1 to make it mention that commands given in upper case
-can also be entered in lower case
+Patch to make alsaconf parse lspci output correctly
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-04 19:49 
+ jdthood - 09-24-04 13:25 
 ----------------------------------------------------------------------
-Summary: mention that commands given to alsamixer in upper case can also be
-entered in lower case
+>  Could you check whether the attached patch (for CVS, 0.7.0rc1)
+> works on your system?
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+Yes.  Works for me.
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 12:01 
+ tiwai - 09-24-04 13:29 
 ----------------------------------------------------------------------
-Applied.  Thanks.
+Ok, now applied.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:43 jdthood        New Issue                                    
-09-21-04 19:43 jdthood        File Added: 15_alsamixer_doc_keycase.dpatch       
-            
-09-22-04 18:13 tiwai          Note Added: 0001814                          
-09-23-04 19:49 jdthood        Note Added: 0001837                          
-09-24-04 12:01 tiwai          Status                   new => resolved     
-09-24-04 12:01 tiwai          Resolution               open => fixed       
-09-24-04 12:01 tiwai          Assigned To               => tiwai           
-09-24-04 12:01 tiwai          Note Added: 0001868                          
+09-21-04 19:52 jdthood        New Issue                                    
+09-21-04 19:52 jdthood        File Added: 20_alsaconf_lspci.dpatch              
+     
+09-22-04 18:16 tiwai          Note Added: 0001815                          
+09-22-04 22:34 jdthood        Note Added: 0001819                          
+09-23-04 14:11 tiwai          Note Added: 0001824                          
+09-23-04 19:48 jdthood        Note Added: 0001836                          
+09-24-04 11:39 tiwai          Note Added: 0001863                          
+09-24-04 11:40 tiwai          File Added: alsaconf-detect-fix.dif               
+    
+09-24-04 13:25 jdthood        Note Added: 0001878                          
+09-24-04 13:29 tiwai          Status                   new => resolved     
+09-24-04 13:29 tiwai          Resolution               open => fixed       
+09-24-04 13:29 tiwai          Assigned To               => tiwai           
+09-24-04 13:29 tiwai          Note Added: 0001879                          
 11-09-04 16:37 tiwai          Status                   resolved => closed  
 ======================================================================
 
