@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000452]: Rate control sticks in IEC958 value
-Date: Wed, 25 Aug 2004 23:56:34 +0200 (CEST)
+Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
+Date: Thu, 26 Aug 2004 01:18:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040825215634.B59A914026@server.perex-int.cz>
+Message-ID: <20040825231816.6EE4214026@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0CB3A297
-	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 23:56:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D26EE249
+	for <alsa-devel@alsa-project.org>; Thu, 26 Aug 2004 01:18:16 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,51 +22,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000452
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
 ======================================================================
-Reported By:                Andrew
-Assigned To:                
+Reported By:                Cyrille
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     452
-Category:                   PCI - ice1724
+Bug ID:                     432
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Slackware 10
+Kernel Version:             2.4.24
 ======================================================================
-Date Submitted:             08-18-2004 12:51 CEST
-Last Modified:              08-25-2004 23:56 CEST
+Date Submitted:             08-08-2004 19:02 CEST
+Last Modified:              08-26-2004 01:18 CEST
 ======================================================================
-Summary:                    Rate control sticks in IEC958 value
+Summary:                    Impossible de se connecter : NODIALTONE
 Description: 
-After setting Multi Track Internal Clock control
-to IEC958 value, this control sticks in this value.
-It is impossible to change the control value to any
-other of the enumerated values. Rebooting does not
-help here. All audio apps do not work now.
+I've got a TOSHIBA SATELITTE A30 222 laptop
+Sound card and modem are based upon ATI IXP
+But I'm not able to run modem in spite of the differents bug-report on
+ALSA web site
+(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
+-
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+ -
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
+) and on Unixtrix.com (http://www.unixtrix.com/)
+
+Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
+-, I'm always in the same situation : compilation is OK, modem driver OK
+but I'm not able to connect : NODIALTONE
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 17:02 CEST 
+ sashak - 08-25-2004 19:11 CEST 
 ----------------------------------------------------------------------
-The attached patch should fix.
+There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
+bit in ATI_REG_CMD register (reg 003, bit 27 - look in
+'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
+to reported here - DMA works ok, line still be disconnected.
+
+Uploaded patch solves the problem.
 
 ----------------------------------------------------------------------
- Andrew - 08-25-2004 23:56 CEST 
+ netstar - 08-26-2004 01:18 CEST 
 ----------------------------------------------------------------------
-I have tried the driver from current CVS - the problem seem to be
-gone away without suggested patch. Is it still worth to try the patch?
+Additional problems with patch when applied to alsa CVS.  All conditions
+necessary are met.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 12:51 Andrew         New Bug                                      
-08-25-04 17:02 tiwai          Bugnote Added: 0001623                       
-08-25-04 17:02 tiwai          File Added: ice1724-rate-lock.dif                    
-08-25-04 23:56 Andrew         Bugnote Added: 0001629                       
+08-08-04 19:02 Cyrille        New Bug                                      
+08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
+08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
+08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
+08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
+08-25-04 19:11 sashak         Bugnote Added: 0001624                       
+08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
+08-26-04 01:18 netstar        Bugnote Added: 0001630                       
 ======================================================================
 
 
