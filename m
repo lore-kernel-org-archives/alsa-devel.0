@@ -1,12 +1,14 @@
-From: despair@adelphia.net
-Subject: xine & cvs alsa
-Date: Mon, 27 Jan 2003 09:25:06 -0500
+From: Uros Bizjak <uros@kss-loka.si>
+Subject: Re: IRQ trouble...[notices]
+Date: Mon, 27 Jan 2003 15:37:32 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030127142506.GA18353@earthlink.net>
+Message-ID: <3E35442C.3010809@kss-loka.si>
+References: <3E32E87C.9000505@student.kuleuven.ac.be> <3E34D495.8050605@kss-loka.si> <3E34F410.5010400@student.kuleuven.ac.be> <3E3511F2.9070206@kss-loka.si> <3E353AC9.9000901@esat.kuleuven.ac.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <3E353AC9.9000901@esat.kuleuven.ac.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +17,71 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Pieter Palmers <ppalmers@esat.kuleuven.ac.be>
+Cc: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-For a week, maybe a bit more (I didn't watch any movies for over a week,
-and haven't had time to try searching cvs to pin down the date) xine has
-been dying when I try to watch movies in 4.0, 5.0, or 5.1. Stereo works
-without any problems, though.
+Pieter Palmers wrote:
 
-Here's the error message:
-audio_alsa_out: Audio Device name = surround40
-audio_alsa_out: Number of channels = 4
-ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for symbol _snd_pcm_hook_ctl_elems_install
-ALSA lib pcm_hooks.c:527:(snd_pcm_hook_add_conf) symbol _snd_pcm_hook_ctl_elems_install is not defined inside (null)
-xiTK received SIGSEGV signal, RIP.
-Aborted
+> There is one remark though: Your driver oops at some times (null 
+> pointer dereference), ie when doing: (sam_ucode.c)
+>    err = snd_sam9407_init_command(NULL, bytes, 7, NULL, 0, -1);
+>
+> The problem is in the magic_cast:
+> When calling this with queue=NULL, the magic_cast causes an oops, 
+> which is pretty normal I guess. I wonder why it didn't in your tests.
+>
+> /* transmit init command sequence to sam9407 */
+> int snd_sam9407_init_command(sam9407_io_queue_t * queue,
+>                 u8 *cmd_buffer, int cmd_bytes,
+>                 u8 *rcv_buffer, int rcv_bytes,
+>                 int ack)
+> {
+>    sam9407_t *sam = snd_magic_cast(sam9407_t, queue->sam, return 
+> -EINVAL);
+>
+>    signed long end_time;
+>    int err;
+>
+>    unsigned long flags;
+>
+>    if (queue) {
+> (...)
 
-Is this an API change, xine doing something shifty that it got away with
-up until now, or something else entirely? Anything I can do to work around
-it? Movies just aren't the same in stereo... :)
 
-Thanks,
-Ragnvald Maartmann-Moe IV
+  Yikes! This is an unfinished ""cleanup"" stuff. I was trying to get 
+rid all the queue setup overhead when command actually didn't expect any 
+response (when ACK = -1). These commands should be called with:
+
+/* transmit init command sequence to sam9407 */
+int snd_sam9407_init_command(sam9407_t *sam,
+                sam9407_io_queue_t * queue,
+                u8 *cmd_buffer, int cmd_bytes,
+                u8 *rcv_buffer, int rcv_bytes,
+                int ack)
+
+  (The same applies to snd_sam9407_command())
+
+  Following this, calls to these two commands should be fixed to use 
+*sam variable.  sam9407_t *sam should be removed from 
+sam9407_io_queue_t. In snd_sam9407_queue_prepare() function, remove test 
+for (ack >= 0) and allways use
+
+        queue->error = -EIO;
+        queue->ack = ack & 0xff;
+        set_bit(SAM_QUEUE_WAIT_ACK, &queue->status);
+        set_bit(SAM_QUEUE_BUSY, &queue->status);
+
+codepath.
+
+Commands without acknowledge should now be called with
+snd_sam9407_[init_]command(sam, NULL, buffer,  num_cmd,  XXXX,  X, X);
+
+where X doesn't matter.
+
+    Uros.
+
+
 
 
 -------------------------------------------------------
