@@ -1,14 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio/Midiman - partial success
-Date: Mon, 16 Sep 2002 09:05:27 +0200 (METDST)
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: [alsa-cvslog] CVS: alsa-kernel/isa cmi8330.c,1.10,1.11
+Date: Mon, 16 Sep 2002 09:22:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0209160853230.11671-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.31.0209132140320.13642-200000@lorien.wv.mentorg.com>
+Message-ID: <m2sn0acsa8.fsf@vador.mandrakesoft.com>
+References: <E17qVU2-0005tc-00@usw-pr-cvs1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/mixed; boundary="=-=-="
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <Pine.LNX.4.31.0209132140320.13642-200000@lorien.wv.mentorg.com>
+Received: from vador.mandrakesoft.com (office.mandrakesoft.com [195.68.114.34])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA08721
+	for <alsa-devel@alsa-project.org>; Mon, 16 Sep 2002 09:21:27 +0200
+In-Reply-To: <E17qVU2-0005tc-00@usw-pr-cvs1.sourceforge.net> (Jaroslav
+ Kysela's message of "Sun, 15 Sep 2002 02:14:26 -0700")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,44 +20,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Pikus, Fedor" <fedor_pikus@mentorg.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@users.sourceforge.net>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fedor G. Pikus wrote:
-> Latest TOT drivers from CVS, compiled, installed, rebooted WITH DUO OFF.
-> Ran /etc/init.d/alsasound start, turned Duo on.
-> Check /proc/asound/card1/stream0 - everything is there (I attached the file)
+--=-=-=
+
+Jaroslav Kysela <perex@users.sourceforge.net> writes:
+
+> Update of /cvsroot/alsa/alsa-kernel/isa
+> In directory usw-pr-cvs1:/tmp/cvs-serv22649
 >
-> Do /etc/init.d/alsasound stop, then /etc/init.d/alsasound start - only 2
-> interfaces are present. Ok, let's see what /etc/init.d/alsasound stop
-> does not unload... 2 modules, audio and soundcore. Do stop, unload those,
-> do start - all 5 interfaces are there. Now I see what's the problem with
-> booting while Duo is on: as soon as USB controller is initialized, hotplug
-> kicks in and loads audio module.
+> Modified Files:
+> 	cmi8330.c 
+> Log Message:
+> fix nor non-IsaPnP build
 
-"audio" is the OSS driver from the kernel. As you've seen, having two
-drivers compete for one device isn't desirable. Usually, the OSS drivers
-should be disabled when using ALSA.
-
-Either
-- deactivate the OSS drivers and recompile the kernel, or
-- delete audio.o, or
-- add audio to the blacklist file in /etc/hotplug.
-
-> Now, can someone tell me why this fails:
-> arecord -f S16_LE -r 96000 -c 2 -D hw:1,0 /tmp/test.wav
-> Recording WAVE '/tmp/test.wav' : Signed 16 bit Little Endian, Rate 96000 Hz, Stereo
-> arecord: pcm_read:1049: read error: Input/output error
-> (after several seconds).
-
-Anything in /var/log/mesages?
-Does it happen with 24 bits, too?
-Is the data in the file correct (as far as is has been recorded)?
+wouldn't something like this (untesterd) be better than redefining
+isapnp_* ?
 
 
-HTH
-Clemens
+--=-=-=
+Content-Type: text/x-patch
+Content-Disposition: attachment; filename=cmi_vs_isa.diff
+
+Index: isa/Config.in
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/isa/Config.in,v
+retrieving revision 1.6
+diff -u -3 -p -r1.6 Config.in
+--- isa/Config.in	24 Jul 2002 10:42:17 -0000	1.6
++++ isa/Config.in	16 Sep 2002 07:19:37 -0000
+@@ -28,7 +28,7 @@ fi
+ dep_tristate 'Turtle Beach Maui,Tropez,Tropez+ (Wavefront)' CONFIG_SND_WAVEFRONT $CONFIG_SND
+ dep_tristate 'Avance Logic ALS100/ALS120' CONFIG_SND_ALS100 $CONFIG_SND $CONFIG_ISAPNP
+ dep_tristate 'Aztech Systems AZT2320' CONFIG_SND_AZT2320 $CONFIG_SND $CONFIG_ISAPNP
+-dep_tristate 'C-Media CMI8330' CONFIG_SND_CMI8330 $CONFIG_SND
++dep_tristate 'C-Media CMI8330' CONFIG_SND_CMI8330 $CONFIG_SND CONFIG_ISAPNP
+ dep_tristate 'Diamond Technologies DT-019X, Avance Logic ALS-007' CONFIG_SND_DT019X $CONFIG_SND $CONFIG_ISAPNP
+ dep_tristate 'Yamaha OPL3-SA2/SA3' CONFIG_SND_OPL3SA2 $CONFIG_SND
+ dep_tristate 'Aztech Sound Galaxy' CONFIG_SND_SGALAXY $CONFIG_SND
+
+--=-=-=--
 
 
 
