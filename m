@@ -1,12 +1,12 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: Bug in emu10k1 multichannel support
-Date: Fri, 11 Feb 2005 21:32:03 +0100
-Message-ID: <420D1643.4020501@glocalnet.net>
-References: <1106091073.24484.60.camel@krustophenia.net>	 <s5hpt01tler.wl@alsa2.suse.de> <1106970885.3051.88.camel@krustophenia.net>	 <41FE5838.4060907@glocalnet.net>	 <1108073865.11177.6.camel@krustophenia.net>	 <420BED90.8090609@glocalnet.net>	 <1108086929.16531.2.camel@krustophenia.net> <1108147270.20365.0.camel@krustophenia.net>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Re: [Alsa-user] Re: Re: SB Live! PCM control
+Date: Fri, 11 Feb 2005 21:47:55 +0100
+Message-ID: <420D19FB.40603@pobox.sk>
+References: <420270C1.3000706@voicenet.com>	 <1107457227.7256.37.camel@krustophenia.net>	 <4202A72C.3000007@superbug.co.uk>	 <1108141670.20188.4.camel@krustophenia.net>	 <420D0112.2050509@superbug.co.uk> <1108153994.20365.39.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108147270.20365.0.camel@krustophenia.net>
+In-Reply-To: <1108153994.20365.39.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Adam K Kirchhoff <adamk@voicenet.com>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Some GPRs are wasted for mute switches. ALSA uses tone controls for all 
+channels (kx only for front), ...
+
 Lee Revell wrote:
-> On Thu, 2005-02-10 at 20:55 -0500, Lee Revell wrote:
-> 
->>On Fri, 2005-02-11 at 00:26 +0100, Mikael Magnusson wrote:
->>
->>>I'm still having the same problem with emu10k1-multichannel-v009.patch 
->>>and current CVS.
->>>
->>
->>Thanks, I verified the bug is still there in 009.  I must have screwed
->>up the patch, because I'm sure I fixed it.  I will post version 010
->>soon.
->>
-> 
-> 
-> Please try this patch, on top of 009.
-> 
-> Lee
-> 
 
-Yes, it's working for me.
-
-/Mikael Magnusson
+>There is something gravely wrong with the default SBLive DSP config if
+>we don't have enough extra GPRs to implement a master volume.  The kX
+>driver does everything we do plus a chorus, reverb, and FX mixer.
+>
+>Lee
+>
+>  
+>
 
 
 -------------------------------------------------------
