@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000225]: No PCM-mixer on Epox 8RDA3I and no sound
-Date: Wed, 23 Mar 2005 15:45:37 +0100
-Message-ID: <edf6f1eed058e59ec96c9f61c5d1f874@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000319]: Cannot control main volume independently for left and right channels
+Date: Wed, 23 Mar 2005 15:28:31 +0100
+Message-ID: <5824549f30b9d166e4cdeb8668bd3887@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D539289
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:45:38 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4254A26B
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 15:28:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,80 +21,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0000255 has been set as DUPLICATE OF the following issue.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=225> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=319> 
 ======================================================================
-Reported By:                qeldroma
+Reported By:                walrus121
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   225
-Category:                   PCI - intel8x0
+Issue ID:                   319
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               gentoo 2004.1
-Kernel Version:             2.6.5-gentoo-dev-sources
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma (from Planet CCRMA)
 ======================================================================
-Date Submitted:             04-20-2004 10:50 CEST
-Last Modified:              03-23-2005 15:45 CET
+Date Submitted:             05-31-2004 17:46 CEST
+Last Modified:              03-23-2005 15:28 CET
 ======================================================================
-Summary:                    No PCM-mixer on Epox 8RDA3I and no sound
+Summary:                    Cannot control main volume independently for left
+and right channels
 Description: 
-I recently changed from a leadtek nforce2 board to the epox nforce2 board.
-AFAIK, they got both the same onboard audio chip, so i didn't changed any
-setting i had done for the leadtek, because i could keep them in my eyes.
-
-But now, all is working well (xmms even shows the equalizer going up and
-down!), but i can't hear anything.
-
-First i thought, sthg. is muted, but a look at "alsamixer" told me, that
-all is up and unmuted. Only PCM is not changeable and keeps at 0%.
-
->From the leadtek i know, that PCM is the main-volume tab in alsa, so i
-think, that this broken PCM-mixer is the reason fro the broken alsa.
-
-Btw, i am not the only person with this fault.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000255 CM9739 does not sound
+I have tried with numerous volume control programs, and I get the same
+result.  If I try to adjust one channel, the values of the two channels
+are averaged in some strange way and are rebalanced to the center.  I know
+that this must be a driver-specific issue because I can control the two
+channels independently for my Sound Blaster AWE 64 Value card, also in my
+computer, and because it doesn't seem to matter which mixer I use.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-04 12:28 
+ rlrevell - 11-17-04 19:22 
 ----------------------------------------------------------------------
-if it's CM9739 codec, it's a feature.  there is no PCM volume control.
+Can you verify the bug with the latest ALSA version. 1.0.7?
 
 ----------------------------------------------------------------------
- qeldroma - 04-20-04 12:39 
+ jdthood - 03-23-05 15:28 
 ----------------------------------------------------------------------
-No sound, no feature ;-)
-
-If it's not this mixer, sthg. else must be the cause.
-
-----------------------------------------------------------------------
- jdthood - 03-23-05 15:45 
-----------------------------------------------------------------------
-Submitter: Problems like this are often the result of faulty mixer
-settings.
-Were you ever able to resolve the problem, e.g., by adjusting mixer
-settings
-with gamix or by upgrading your ALSA drivers to the latest release?
+Submitter: Can you verify the bug still exists in the latest ALSA release?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-04 10:50 qeldroma       New Issue                                    
-04-20-04 10:50 qeldroma       Distribution              => gentoo 2004.1   
-04-20-04 10:50 qeldroma       Kernel Version            =>
-2.6.5-gentoo-dev-sources
-04-20-04 12:28 tiwai          Note Added: 0000871                          
-04-20-04 12:39 qeldroma       Note Added: 0000873                          
-03-23-05 15:45 jdthood        Note Added: 0004165                          
-03-23-05 15:45 jdthood        Relationship added       has duplicate 0000255
+05-31-04 17:46 walrus121      New Issue                                    
+05-31-04 17:46 walrus121      File Added: modules.conf                     
+05-31-04 17:46 walrus121      Distribution              => Fedora Core 1   
+05-31-04 17:46 walrus121      Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma (from Planet CCRMA)
+11-17-04 19:22 rlrevell       Note Added: 0002441                          
+03-23-05 15:28 jdthood        Note Added: 0004160                          
 ======================================================================
 
 
