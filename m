@@ -1,14 +1,12 @@
-From: Apostolos Dimitromanolakis <apostolos@aei.ca>
-Subject: Re: Prodigy 7.1 ?
-Date: Fri, 17 Oct 2003 02:40:43 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [PATCH] YMF754 direct recording
+Date: Fri, 17 Oct 2003 09:25:12 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F8F8EEB.4000303@aei.ca>
-References: <3FF3EBB8.6020503@aei.ca>	<1066221700.7989.63.camel@caernarfon>	<s5hzng2irjx.wl@alsa2.suse.de>	<200310151535.00442.mark@egghead.free-online.co.uk> <s5hvfqqin6b.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0310170922230.4146-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvfqqin6b.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,77 +19,110 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Takashi Iwai wrote:
-
->>The Prodigy 7.1 is identically the same card as the Aureon Space 7.1....just 
->>different firmware and digital coaxial instead of toslink.
->>    
->>
->
->then you can fake the subvendor id (VT1724_SUBDEVICE_AUREON71_SPACE)
->defined in aureon.h by replacing it with your card's id, which is
->shown in the EEPROM output in /proc/asound/card0/ice1724.
->
->we might need to tune up eeprom entries to match with the actual
->hardware, but in theory it should be ok as it is.
->  
->
-
-Unfortunately I tried that and it doesn't work. A patch was needed since 
-the reported eeprom size was 120 and no provision was made for that. I 
-was able to get an eeprom dump and it doesn't look quite as the data for 
-the aureon eeprom:
-
-EEPROM dump: 45 53 49 33 78 78 78 78 45 47 4f 53 59 53 ff ff ff ff ff ff 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff 
-ff ff ff ff
-
-Module loads and report ICE1724 at ALSA but no sound at all. The 
-following errors appear:
-
-PCI: Found IRQ 11 for device 00:0a.0
-invalid EEPROM version 120
-AC'97 0:0 does not respond - RESET
-ice1712: cannot initialize pro ac97, skipped
-
-and here is the lspci data (after module loaded):
-
-00:0a.0 Multimedia audio controller: IC Ensemble Inc ICE1724 [Envy24HT] 
-(rev 01)
-        Subsystem: Unknown device 4933:4553
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop- 
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- 
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32
-        Interrupt: pin A routed to IRQ 11
-        Region 0: I/O ports at a000 [size=32]
-        Region 1: I/O ports at 9800 [size=128]
-        Capabilities: [80] Power Management version 1
-                Flags: PMEClk- DSI- D1- D2+ AuxCurrent=0mA 
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-00: 12 14 24 17 05 00 10 02 01 00 01 04 00 20 00 00
-10: 01 a0 00 00 01 98 00 00 00 00 00 00 00 00 00 00
-20: 00 00 00 00 00 00 00 00 00 00 00 00 33 49 53 45
-30: 00 00 00 00 80 00 00 00 00 00 00 00 0b 01 00 00
-40: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-50: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-60: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-70: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-80: 01 00 01 04 00 00 00 00 00 00 00 00 00 00 00 00
-90: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-a0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-b0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-c0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-d0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-e0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
-f0: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+This patch adds a control to enable S/PDIF direct recording (without
+resampling) on the YMF754.
 
 
+Index: alsa-kernel/pci/ymfpci/ymfpci_main.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ymfpci/ymfpci_main.c,v
+retrieving revision 1.43
+diff -u -r1.43 ymfpci_main.c
+--- alsa-kernel/pci/ymfpci/ymfpci_main.c	14 Oct 2003 13:59:21 -0000	1.43
++++ alsa-kernel/pci/ymfpci/ymfpci_main.c	17 Oct 2003 06:49:00 -0000
+@@ -1136,7 +1136,7 @@
+
+ 	if (rpcm)
+ 		*rpcm = NULL;
+-	if ((err = snd_pcm_new(chip->card, "YMFPCI - AC'97", device, 0, 1, &pcm)) < 0)
++	if ((err = snd_pcm_new(chip->card, "YMFPCI - PCM2", device, 0, 1, &pcm)) < 0)
+ 		return err;
+ 	pcm->private_data = chip;
+ 	pcm->private_free = snd_ymfpci_pcm2_free;
+@@ -1145,7 +1145,8 @@
+
+ 	/* global setup */
+ 	pcm->info_flags = 0;
+-	strcpy(pcm->name, "YMFPCI - AC'97");
++	sprintf(pcm->name, "YMFPCI - %s",
++		chip->device_id == PCI_DEVICE_ID_YAMAHA_754 ? "Direct Recording" : "AC'97");
+ 	chip->pcm2 = pcm;
+
+ 	snd_pcm_lib_preallocate_pci_pages_for_all(chip->pci, pcm, 64*1024, 256*1024);
+@@ -1369,6 +1370,61 @@
+ 	.put =		snd_ymfpci_spdif_stream_put
+ };
+
++static int snd_ymfpci_drec_source_info(snd_kcontrol_t *kcontrol, snd_ctl_elem_info_t *info)
++{
++	static char *texts[3] = {"AC'97", "IEC958", "ZV Port"};
++
++	info->type = SNDRV_CTL_ELEM_TYPE_ENUMERATED;
++	info->count = 1;
++	info->value.enumerated.items = 3;
++	if (info->value.enumerated.item > 2)
++		info->value.enumerated.item = 2;
++	strcpy(info->value.enumerated.name, texts[info->value.enumerated.item]);
++	return 0;
++}
++
++static int snd_ymfpci_drec_source_get(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *value)
++{
++	ymfpci_t *chip = snd_kcontrol_chip(kcontrol);
++	unsigned long flags;
++	u16 reg;
++
++	spin_lock_irqsave(&chip->reg_lock, flags);
++	reg = snd_ymfpci_readw(chip, YDSXGR_GLOBALCTRL);
++	spin_unlock_irqrestore(&chip->reg_lock, flags);
++	if (!(reg & 0x100))
++		value->value.enumerated.item[0] = 0;
++	else
++		value->value.enumerated.item[0] = 1 + ((reg & 0x200) != 0);
++	return 0;
++}
++
++static int snd_ymfpci_drec_source_put(snd_kcontrol_t *kcontrol, snd_ctl_elem_value_t *value)
++{
++	ymfpci_t *chip = snd_kcontrol_chip(kcontrol);
++	unsigned long flags;
++	u16 reg, old_reg;
++
++	spin_lock_irqsave(&chip->reg_lock, flags);
++	old_reg = snd_ymfpci_readw(chip, YDSXGR_GLOBALCTRL);
++	if (value->value.enumerated.item[0] == 0)
++		reg = old_reg & ~0x100;
++	else
++		reg = (old_reg & ~0x300) | 0x100 | ((value->value.enumerated.item[0] == 2) << 9);
++	snd_ymfpci_writew(chip, YDSXGR_GLOBALCTRL, reg);
++	spin_unlock_irqrestore(&chip->reg_lock, flags);
++	return reg != old_reg;
++}
++
++static snd_kcontrol_new_t snd_ymfpci_drec_source __devinitdata = {
++	.access =	SNDRV_CTL_ELEM_ACCESS_READWRITE,
++	.iface =	SNDRV_CTL_ELEM_IFACE_MIXER,
++	.name =		"Direct Recording Source",
++	.info =		snd_ymfpci_drec_source_info,
++	.get =		snd_ymfpci_drec_source_get,
++	.put =		snd_ymfpci_drec_source_put
++};
++
+ /*
+  *  Mixer controls
+  */
+@@ -1690,6 +1746,11 @@
+ 		return err;
+ 	kctl->id.device = chip->pcm_spdif->device;
+ 	chip->spdif_pcm_ctl = kctl;
++
++	/* direct recording source */
++	if (chip->device_id == PCI_DEVICE_ID_YAMAHA_754 &&
++	    (err = snd_ctl_add(chip->card, kctl = snd_ctl_new1(&snd_ymfpci_drec_source, chip))) < 0)
++		return err;
+
+ 	/*
+ 	 * shared rear/line-in
 
 
 
