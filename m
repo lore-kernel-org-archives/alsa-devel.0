@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000754]: parameter mpu_port dissapeared from 1.0.6 to 1.0.7 midi device is ot detected
-Date: Wed, 29 Dec 2004 17:36:47 +0100
-Message-ID: <a65531c67c11c7f6eb6c175a3f1e7055@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000758]: Full duplex is not working in OSS emulation.
+Date: Wed, 29 Dec 2004 17:39:23 +0100
+Message-ID: <d305d4fcb399864d9136d699fb667a04@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0ABA2DD
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:36:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE1B72DD
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 17:39:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,75 +22,65 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=754> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=758> 
 ======================================================================
-Reported By:                jmfrank
-Assigned To:                tiwai
+Reported By:                croiset
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   754
-Category:                   PCI - intel8x0
+Issue ID:                   758
+Category:                   PCI - RME 96
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian/GNU Linux
-Kernel Version:             2.6.9
-Resolution:                 not an issue
-Fixed in Version:           
+Status:                     new
+Distribution:               Redhat 7.2
+Kernel Version:             2.4.7
 ======================================================================
-Date Submitted:             12-28-2004 23:56 CET
-Last Modified:              12-29-2004 17:36 CET
+Date Submitted:             12-29-2004 10:15 CET
+Last Modified:              12-29-2004 17:39 CET
 ======================================================================
-Summary:                    parameter mpu_port dissapeared from 1.0.6 to 1.0.7
-midi device is ot detected
+Summary:                    Full duplex is not working in OSS emulation.
 Description: 
-Dear Developer,
-this is my first filed bug ever, so I might not have done everything
-correct.
-I never got midi running on my p4p800 Deluxe mainboard also it worked on a
-P4C800 Deluxe Board with the same configuration. Difference is a 865 to
-875 in Chip-Version.
-Now Midi isn't detected anymore since the midi support is gone completly,
-without an update in the documentation.
-
-This no I do not hear any sound issue. I want to access a midi-keyboard.
-I am willing to do testing for you.
-
-Many thanks for your assistance.
-
-Johannes Frank
+If I play something with one player, I am unable to record something on the
+same device.
+The same thing ispossible with the other cards I have.
 ======================================================================
 
 ----------------------------------------------------------------------
- jmfrank - 12-29-04 17:26 
+ croiset - 12-29-04 14:54 
 ----------------------------------------------------------------------
-Thank you it loaded sucessfully. And now the port is there.
+I use nas for playing. This application open the device in write mode
+only.
 
-This solves the issue. You should update the intel8x0 documentation
-though.
+cf nas.conf option : readwrite "no"  # for open(device, O_WRONLY|O_SYNC,
+0666);
+This exact configuration is working with all cards I have except the RME
+96/8.
 
-Again many thanks.
+The recorder open the device like that : open(_opt->device,
+O_RDONLY|O_NONBLOCK )
 
 ----------------------------------------------------------------------
- tiwai - 12-29-04 17:36 
+ tiwai - 12-29-04 17:39 
 ----------------------------------------------------------------------
-OK, let's close now.
+Hmm, I don't see problems in rme96.c.
+Could you check whether the devices are really opened in O_WRONLY and
+O_RDONLY?  Maybe strace can show better.
+Also, you can check /proc/asound/card0/pcm*/sub0/* files as the current
+state, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 23:56 jmfrank        New Issue                                    
-12-28-04 23:56 jmfrank        Distribution              => Debian/GNU Linux
-12-28-04 23:56 jmfrank        Kernel Version            => 2.6.9           
-12-29-04 14:18 tiwai          Note Added: 0002999                          
-12-29-04 17:26 jmfrank        Note Added: 0003002                          
-12-29-04 17:36 tiwai          Status                   new => resolved     
-12-29-04 17:36 tiwai          Resolution               open => not an issue
-12-29-04 17:36 tiwai          Assigned To               => tiwai           
-12-29-04 17:36 tiwai          Note Added: 0003003                          
+12-29-04 10:15 croiset        New Issue                                    
+12-29-04 10:15 croiset        Distribution              => Redhat 7.2      
+12-29-04 10:15 croiset        Kernel Version            => 2.4.7           
+12-29-04 14:17 tiwai          Note Added: 0002998                          
+12-29-04 14:54 croiset        Note Added: 0003000                          
+12-29-04 17:39 tiwai          Note Added: 0003004                          
 ======================================================================
 
 
