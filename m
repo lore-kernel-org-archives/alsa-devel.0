@@ -1,16 +1,14 @@
-From: Ross Miller <miller@penguinstation.net>
-Subject: Re: AudioTrak Optoplay...
-Date: Fri, 6 Jun 2003 00:34:53 -0600
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: weird snd_ctl_open() behavior
+Date: Fri, 06 Jun 2003 09:21:23 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306060034.53324.miller@penguinstation.net>
-References: <200306021418.26840.miller@penguinstation.net> <s5hisrmm2kx.wl@alsa2.suse.de>
-Reply-To: miller@penguinstation.net
+Message-ID: <Pine.HPX.4.33n.0306060914010.22933-100000@studcom.urz.uni-halle.de>
+References: <Pine.LNX.4.44.0306051041350.29666-100000@cmn24.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hisrmm2kx.wl@alsa2.suse.de>
+In-reply-to: <Pine.LNX.4.44.0306051041350.29666-100000@cmn24.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,38 +17,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Gary Scavone <gary@ccrma.Stanford.EDU>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday 04 June 2003 06:47, Takashi Iwai wrote:
+Gary Scavone wrote:
+> I'm making use of a card's id (via the snd_ctl_card_info_get_id()
+> function) to access a device.  Recently, I noticed some inconsistent
+> behavior.  On a machine with an OmniIO box, if no "id" is set in the
+> /etc/modules.conf file, a default id of "66" is returned.
 
-> a possible reason is that either we set up the interface correctly, or
-> we pass too many packets for the requested status.
-> i added nrpacks module option in usbaudio driver.  please set
-> nrpacks=3D2 to reduce the max number of URB packets.
->
-> the changes were committed to cvs now, so please give a try.
->
-The changes you made allowed me to play sound through the device, but I=20
-still get those usb-check-bandwidth messages, regardless of whether or no=
-t=20
-I used the "nrpacks=3D2" option for the snd-usb-audio module.  Is there=20
-anything else we can try?  The driver is usable as-is, but all those=20
-messages fill up the syslog pretty quick.
+The default card id is composed of the letters and numbers of the last
+word of the card's name (as seen in /proc/asound/cards).
 
-Also, although a volume control shows up in alsamixer (and that's all tha=
-t=20
-shows up in alsamixer) it doesn't seem to affect the sound coming out of=20
-the optical port; it only controls sound coming out of the analog=20
-headphone jack.  I don't know if this is a limitation of the hardware, or=
-=20
-if something in the software isn't getting set correctly.  It'd be nice t=
-o=20
-have a software volume control for the optical out, though.
+> So, when I attempt to use the snd_ctl_open() function, my ascii
+> identifier looks like "hw:66" and the function call fails.  If I
+> provide an "id" in /etc/modules.conf (ex. id=omniIO), then my ascii
+> identifier looks like "hw:omniIO" and the call to snd_ctl_open()
+> works.
 
-Thanks,
--Ross
+The first parameter to hw specifies the card; if it looks like a number,
+it will be interpreted as the card number.
+
+> On my home laptop with a Maestro2e chipset, I don't have this problem
+> (though I need to look more carefully at this when I go home because I
+> don't use the value returned from snd_ctl_card_info_get_id() if the
+> string length is zero and that might be happening on my laptop).
+
+The id is intended to provide a more readable identification than the card
+number (for humans).  If you want to access a device from your program,
+I'd suggest to use the card number instead because it's guaranteed to
+never fail.
+
+
+HTH
+Clemens
+
 
 
 
