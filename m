@@ -1,14 +1,12 @@
-From: ljp <ljp@llornkcor.com>
-Subject: Re: Setting alsamixer settings from API
-Date: 18 Feb 2003 15:59:58 -0700
+From: Mathias Kretschmer <mathias@lemur.sytes.net>
+Subject: VIA EPIA (VT1612A) and SPDIF
+Date: Tue, 18 Feb 2003 19:17:47 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045609200.19289.106.camel@shippin>
-References: <00c801c2d79a$3a4dae20$0100a8c0@Pblaptop>
+Message-ID: <3E52CD2B.7090505@lemur.sytes.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <00c801c2d79a$3a4dae20$0100a8c0@Pblaptop>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,67 +15,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pete Barnard <petebarnard@tiscali.co.uk>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-mixer API is a bit under documented. 
-but you can look at amixer and alsamixer for hints.
-There is some mixer docs generated if you have doxygen installed, but
-theres no link to it from the rest of the documentation, you have to
-look at the docs dir.
+Hi,
 
+I'm wondering if anyone has SPDIF working on the
+VIA EPIA ESP5000 under rc7?
 
+Analog output is working fine for me using rc7 and the CVS via82xx 
+module (1.25). But, I didn't have any luck getting SPDIF (PCM) to work 
+using a Pioneer Digital Receiver.
 
-On Tue, 2003-02-18 at 15:08, Pete Barnard wrote:
-> Hi,
-> 
-> I have just finished writing a sound capture program using ALSA 0.9.0rc7 and
-> Red Hat Linux 7.2.  Whilst there are no problems with the operation of the
-> program some users are complaining that whenever they re-boot their machines
-> and re-start my sound program, they have to :
-> 1. bring up alsamixer
-> 2. unmute everything in alsamixer
-> 3. set the ADC capture flag on in alsamixer
-> 4. adjust various volume settings in alsamixer.
-> 5. Bring up the gnome audiomixer gui (the sound comes out in mono until the
-> audiomixer is brought up - without even changing any settings -  I don't
-> know what's going on there???).
-> 
-> It all seems a lot of hassle for the average, non-IT trained users and I do
-> like to keep them HAPPY.
-> 
-> Are there API function calls which allow altering alsamixer settings etc
-> from within the program code?  Any information on this (or direction to
-> useful documentation) would be appreciated.
-> 
-> Regards,
-> 
-> Pete
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
--- 
-My cat's a debugger....
+Any success reports or any hints which knobs to turn to make it work ?
 
-Potter, Lorn, "ljp"
-core developer / Web Administrator
-Project OPIE- the Open Palmtop Integrated Environment
-http://opie.handhelds.org | http://www.opie.info (german) |
-http://www.opie.us
-IRC: irc.freenode.net #opie #opie.de
+Cheers,
 
-llornkcor@handhelds.org
-llornkcor@helixcommunity.org
+Mathias
+
+Some info from /proc/asound:
+
+[root@musicbox root]# cat /proc/asound/cards
+0 [rev40          ]: VIA686A - VIA 82C686A/B rev40
+                      VIA 82C686A/B rev40 at 0xdc00, irq 10
+
+[root@musicbox root]# cat /proc/asound/card0/ac97#0
+0-0/0: VIA Technologies VIA1612A
+
+Capabilities     : -headphone out-
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : Reserved 27
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 AMAP DSA=0 SPDIF VRA
+Extended status  : SPDIF=3/4 SPDIF VRA
+PCM front DAC    : 44100Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer PCM Copyright Category=0x2 Generation=1 
+Rate=48kHz
 
 
 
