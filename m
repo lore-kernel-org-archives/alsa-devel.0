@@ -1,15 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: newbie problem with control settings
-Date: Thu, 24 Mar 2005 10:27:18 -0500
-Message-ID: <1111678039.6235.4.camel@mindpipe>
-References: <Pine.HPX.4.33n.0503241100420.10960-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000540]: alsa driver will no longer function
+Date: Thu, 24 Mar 2005 16:50:18 +0100
+Message-ID: <f79363032067d190d4bdb1fb1ee28c21@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2BB6B200
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 16:27:21 +0100 (MET)
-In-Reply-To: <Pine.HPX.4.33n.0503241100420.10960-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9BB7524B
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 16:50:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,26 +17,85 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: "D. Hugh Redelmeier" <hugh@mimosa.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-03-24 at 11:06 +0100, Clemens Ladisch wrote:
-> > Perhaps also boolean controls that could have a name other than
-> > "mute".
-> 
-> These controls aren't named "Mute"; this is a gnome-volume-control
-> bug.
 
-FWIW, I just installed Gnome 2.10 on one of my machines and the mixer is
-*drastically* better.  The views are split into Playback and Capture,
-the widgets are much cleaner looking, and most of the "advanced"
-controls are hidden by default.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=540> 
+======================================================================
+Reported By:                wolftech
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   540
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core
+Kernel Version:             2.6.5-1.3
+======================================================================
+Date Submitted:             09-25-2004 15:03 CEST
+Last Modified:              03-24-2005 16:50 CET
+======================================================================
+Summary:                    alsa driver will no longer function
+Description: 
+Alsa-1.2.10
 
-Many of the bug reports about incomprehensible mixer, especially for the
-emu10k1, will be resolved when users switch.
+lsmod 
 
-Lee
+snd_mixer_oss          13824  0
+snd_intel8x0           26280  0
+snd_ac97_codec         50436  1 snd_intel8x0
+snd_pcm                68872  1 snd_intel8x0
+snd_timer              17156  1 snd_pcm
+snd_page_alloc          7940  2 snd_intel8x0,snd_pcm
+gameport                3328  1 snd_intel8x0
+snd_mpu401_uart         4864  1 snd_intel8x0
+snd_rawmidi            17184  1 snd_mpu401_uart
+snd_seq_device          6152  1 snd_rawmidi
+snd                    38372  8
+snd_mixer_oss,snd_intel8x0,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+soundcore               6112  1 snd
+
+
+
+How reproducible:
+in XMMS, select Alsa driver, attempt to play an mp3/cd, get:
+
+Please check that the sound card is configured properly and You have the
+correct output plugin selected and no other program is blocking the
+soundcard.
+
+======================================================================
+
+----------------------------------------------------------------------
+ jdthood - 03-23-05 16:30 
+----------------------------------------------------------------------
+> alsa driver will no longer function
+
+Submitter: Did you ever manage to solve this problem?
+
+----------------------------------------------------------------------
+ jdthood - 03-24-05 16:50 
+----------------------------------------------------------------------
+Please provide hardware information: mainboard, sound chipset, lspci
+output.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-25-04 15:03 wolftech       New Issue                                    
+09-25-04 15:03 wolftech       Distribution              => Fedora Core     
+09-25-04 15:03 wolftech       Kernel Version            => 2.6.5-1.3       
+09-28-04 16:04 djtm           Note Added: 0001947                          
+03-23-05 16:30 jdthood        Note Added: 0004177                          
+03-24-05 16:50 jdthood        Note Added: 0004193                          
+======================================================================
+
 
 
 
