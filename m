@@ -1,12 +1,12 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: GUS driver status : multiple open of /dev/dsp ?
-Date: Fri, 07 Jun 2002 12:22:02 -0400
+From: Lawrence Abbott <lawrieabbott@iprimus.com.au>
+Subject: Envy24control, Hoontech DSP24 + C-port  fix
+Date: Sat, 08 Jun 2002 00:28:55 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17GMUB-0000Vj-00@usw-sf-list1.sourceforge.net>
-References: <20020607163222.A25401@sci.fi>
+Message-ID: <3D00DF47.3000609@iprimus.com.au>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------070502030005040000040504"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Fri, 07 Jun 2002 16:32:22 +0300."
-             <20020607163222.A25401@sci.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,29 +15,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Ville Syrj l <syrjala@sci.fi>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->On Thu, Jun 06, 2002 at 09:20:31PM -0400, Paul Davis wrote:
->> >The problem with GUS synth is that it uses non-interleaved data layout so
->> >it's not relly useful for pcm stuff. alsa-lib doesn't want to do
->> >the required conversion for some reason.
->> 
->> i find this very suprising and somewhat hard to believe. the
->> hammerfall also uses a non-interleaved data layout (as all the best
->> cards do :), and yet despite the fact that the driver contains no code
->> to handle an interleaved stream, aplay via plughw:N,0 works just
->> fine i.e. alsa-lib handles the conversion perfectly. what makes you
->> think it doesn't work?
->
-># aplay -D plughw:0,1 stereo.wav
->aplay: set_params:754: Access type not available
+This is a multi-part message in MIME format.
+--------------070502030005040000040504
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-can you try it with the -I option, and also the -m option (in all
-combinations)?
+FWIW, Ive had a problem with Envy24 control not showing all the  audio 
+routing options under the patchbay/router tab (H/W outs 1 to 8 not 
+shown). I found that  adding a couple of lines to 
+alsa-driver-0.9.0rc1/alsa-kernel/pci/ice1712.c fixes the problem for me 
+:)   (see patch).
 
---p
+Lawrie
+
+
+--------------070502030005040000040504
+Content-Type: text/plain;
+ name="ice1712.c.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ice1712.c.patch"
+
+diff -Naur old/ice1712.c new/ice1712.c
+--- old/ice1712.c	Fri Jun  7 23:10:00 2002
++++ new/ice1712.c	Fri Jun  7 23:48:24 2002
+@@ -3773,6 +3773,9 @@
+ 	case ICE1712_SUBDEVICE_DELTA1010:
+ 		ice->num_adcs = ice->num_dacs = ice->num_total_dacs = 8;
+ 		break;
++	case ICE1712_SUBDEVICE_STDSP24:
++                ice->num_adcs = ice->num_dacs = ice->num_total_dacs = 8;
++                break;
+ 	case ICE1712_SUBDEVICE_EWS88D:
+ 		has_i2c = 1;
+ 		break;
+
+--------------070502030005040000040504--
 
 
 _______________________________________________________________
