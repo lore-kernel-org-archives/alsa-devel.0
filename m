@@ -1,21 +1,14 @@
-From: Nicolas GRAZIANO <nicolas.graziano@wanadoo.fr>
-Subject: [PATCH] correct a oops in snd-azx if model=allout
-Date: Wed, 05 Jan 2005 09:00:37 +0100
-Message-ID: <41DB9EA5.8090504@wanadoo.fr>
+From: =?ISO-8859-1?Q?David_G=F3mez?= <dabisu@gmail.com>
+Subject: Re: snd_intel8x0m and semaphore warning
+Date: Wed, 5 Jan 2005 10:19:54 +0100
+Message-ID: <ae4c7157050105011915abcf6e@mail.gmail.com>
+References: <1104879394.3516.30.camel@shadow.local>
+Reply-To: =?ISO-8859-1?Q?David_G=F3mez?= <dabisu@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 23ADE2D4
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2005 09:00:40 +0100 (MET)
-Received: from localhost.localdomain (robinson-3-82-66-38-107.fbx.proxad.net [82.66.38.107])
-	by postfix4-2.free.fr (Postfix) with ESMTP id 3F70A2A0012
-	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2005 09:00:39 +0100 (CET)
-Received: from localhost ([127.0.0.1])
-	by localhost.localdomain with esmtp (Exim 4.34)
-	id 1Cm65u-00029D-Im
-	for alsa-devel@alsa-project.org; Wed, 05 Jan 2005 09:00:38 +0100
+In-Reply-To: <1104879394.3516.30.camel@shadow.local>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,48 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "Nickolay V. Shmyrev" <nshmyrev@yandex.ru>
+Cc: alsa-devel@lists.sourceforge.net, Sasha Khapyorsky <sashak@smlink.com>
 List-Id: alsa-devel@alsa-project.org
 
+Hi Nickolay ;),
 
-Correct the handling of an array terminated by {}; (introduce in CVS 
-version 1.6 of file hda_codec.c)
+On Wed, 05 Jan 2005 01:56:34 +0300, Nickolay V. Shmyrev
+<nshmyrev@yandex.ru> wrote:
+> Hi I know there was problems with sound card driver snd_intel8x0, now
+> very often problem is the same kind of warning with snd_intel8x0m modem
+> driver:
 
-Nicolas GRAZIANO
+It's broken, at least in 2.6.10. In my case, if i loaded the modem
+driver, the sound one stopped working (with a lot of semaphore
+errors...) My solution is not using the modem driver by now :(. I
+think that Takashi said that there was a problem in common
+initialization in both drivers, so i hope it gets fixed soon ;)
 
+regards,
 
+--=20
 
-
-
-Index: pci/azx/hda_codec.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/pci/azx/hda_codec.c,v
-retrieving revision 1.8
-diff -u -r1.8 hda_codec.c
---- pci/azx/hda_codec.c 4 Jan 2005 11:06:19 -0000       1.8
-+++ pci/azx/hda_codec.c 5 Jan 2005 07:46:06 -0000
-@@ -878,11 +878,15 @@
-  */
- int snd_hda_create_spdif_out_ctls(struct hda_codec *codec, hda_nid_t nid)
- {
--       int i, err;
-+       int  err;
-+
-        snd_kcontrol_t *kctl;
--
--       for (i = 0; i < ARRAY_SIZE(dig_mixes); i++) {
--               kctl = snd_ctl_new1(&dig_mixes[i], codec);
-+
-+       snd_kcontrol_new_t * dig_mix;
-+       dig_mix=dig_mixes;
-+
-+       for (; dig_mix->name; dig_mix++) {
-+               kctl = snd_ctl_new1(dig_mix, codec);
-                kctl->private_value = nid;
-                if ((err = snd_ctl_add(codec->bus->card, kctl)) < 0)
-                        return err;
-
-
+David G=F3mez
 
 
 -------------------------------------------------------
