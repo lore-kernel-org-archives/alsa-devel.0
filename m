@@ -1,14 +1,11 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Current Hardware Parameter Settings
-Date: Fri, 26 Mar 2004 12:39:58 +0100 (CET)
+From: "guan yim" <guanyim@hotmail.com>
+Subject: Re: Test: SBLive! (C) 2003 need extra effort on Rear Analog Output
+Date: Fri, 26 Mar 2004 13:40:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20040326123958.pochini@shiny.it>
-References: <20040325162009.54160.qmail@web25101.mail.ukl.yahoo.com>
+Message-ID: <SEA2-F33lIOiyQMGi3t000256a6@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040325162009.54160.qmail@web25101.mail.ukl.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,30 +14,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
-Cc: ALSA LIST <alsa-devel@lists.sourceforge.net>
+To: pzad@pobox.sk
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-On 25-Mar-2004 Brian Furey wrote:
-> Thanks Giuliano,
+
+
+>From: p z oooo <pzad@pobox.sk>
+>Reply-To: p z oooo <pzad@pobox.sk>
+>To: guanyim@hotmail.com
+>CC: alsa-devel@lists.sourceforge.net
+>Subject: Re: [Alsa-devel] Test: SBLive! (C) 2003 need extra effort on Rear 
+>Analog Output
+>Date: Fri, 26 Mar 2004 08:27:57 +0100
 >
-> How can I get a dump of the current hardware configuration space?
+>In alsa-driver/alsa-kernel/emu10k1/emumixer there are two static
+>arrays:
+>1) static char *emu10k1_remove_ctls[]
+>remove from this array:
+>"Surround Playback Switch",
+>"Surround Playback Volume",
+>
+>2)
+>static char *emu10k1_rename_ctls[]
+>remove from this array:
+>"Surround Digital Playback Volume", "Surround Playback Volume",
+>
+>recompile, you will maybe have these controls in mixer:
+>"Surround Digital Playback Volume"
+>"Surround Playback Volume"
+>
+>unmute and set volume for both volume.
+>
+>If not working - try same with center, and LFE.
+>
+>If not working - this must be other problem
+>
+>Peter Zubaj
+>
 
-Hmm, lspci ?  :)
-If you mean how to get the capabilities of the card, it's a bit
-tricky. The caps are not a static thing. Each setting may rure
-others. For example, a card has 8 channels and supports these
-formats: S32_LE and S16_LE. But all combinations may not be
-available. When the application sets format=S16_LE the driver
-may restrict the max number of channels to 2. And if it sets
-channels=4 the driver removes S16_LE from the list.
-I can't help you anyway because I know nearly nothing about the
-userspace API.
 
+Thanks...I have tried just now. It doesn't work. So alsamixer is indeed 
+innocent :)
+By the way, I am quite curious that....why suddenly the SBLive 2003 can't 
+even be used with alsa 0.9.8, while SBLive 2001, 2002 can... What's the good 
+purpose for Creative to do something that makes SBLive 2003 looks like 
+another new card ? When using alsa 0.9.8, snd-emu10k1 says it cannot find 
+the card :)
 
---
-Giuliano.
+_________________________________________________________________
+Add photos to your messages with MSN 8. Get 2 months FREE*. 
+http://join.msn.com/?page=features/featuredemail
+
 
 
 -------------------------------------------------------
