@@ -1,12 +1,16 @@
-From: Gustavo Guillermo <gustavo@compunauta.com>
-Subject: [REPORT as said in via82xx.c] ad1980 Asus A7V8X-X Working
-Date: Mon, 12 Jan 2004 06:12:04 GMT
+From: Lorn Potter <lpotter@trolltech.com>
+Subject: Re: Moving from OSS to ALSA
+Date: Mon, 12 Jan 2004 08:29:54 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040112.6120400.1307345935@linux.local>
+Message-ID: <200401120829.54299.lpotter@trolltech.com>
+References: <20040111181311.7726a5b5.james@jigsawdezign.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO_8859-15
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20040111181311.7726a5b5.james@jigsawdezign.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,26 +19,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, gus_est_prgms@yahoo.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm use via82xx module for ad1980 Asus A7V8X-X with option dxs_support=3D=
-1=20
-and weird sounds gets out, master channel volume seems to be Surround,=20
-and VIA DXS (first one) needs to be at 75% to hear full volume, other=20
-positions doesn't work.
+On Monday 12 January 2004 4:13 am, James Wright wrote:
+>  I am currently looking into rewriting our current OSS sound routines to
+> native ALSA, as it seems OSS will invariably be phased out now that the
+> ALSA driver is distrubuted with the Linux kernel, plus ALSA seems to have a
+> great number of benefits for us.
 
-PCM sound from whatever is a little bit weird because conversion to 48k,=
-=20
-but just fine, if we use arts, we can set sampling to 48k and everything=
-=20
-is perfect.
+Personally, I hope OSS compat will never be phased out. Why? OSS is simple, 
+and concise. If I am writing a simple audio recording/playing app, I can get 
+the job done using OSS code in _much_ less lines of code.
 
-I will try to modify, by my self surround by master channel from=20
-via82xx.c, but when I finish the read of documentation of api (I'm newbe=
-)
 
-Best regards.
+_Dont get me wrong_, ALSA is great and a lot more powerful than OSS, but it is 
+lacking a simple API. 
+Ever try to write an In/Out volume control mixer in OSS? Ever try to port that 
+same mixer to ALSA?  From what I can gather (alsa seems to be lacking mixer 
+docs/tutorial) , the only way to change the mic input level (alsa), I have to 
+enumerate over every mixer gizmo and check to see if its the mic, and then 
+change it if I think it appears to be the Mic.
+
+Using OSS, I can do that in one line.
+
+
+
+
 
 
 -------------------------------------------------------
