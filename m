@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000428]: unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
-Date: Fri, 22 Oct 2004 16:49:26 +0200
+Subject: [ALSA - driver 0000559]: 64 Bit Drivers for Analog Devices SoundMax
+Date: Fri, 22 Oct 2004 16:55:45 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <ea665e6ebda5fa499de61eb2edb4dec9@bugtrack.alsa-project.org>
+Message-ID: <a202cd67e173a4efb7b546edf65e28b2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56E1629D
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:49:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2761D29D
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:55:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -24,74 +24,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=428> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=559> 
 ======================================================================
-Reported By:                svetljo
+Reported By:                sandy bodell
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   428
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
+Issue ID:                   559
+Category:                   OTHERS
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               Mandrake cooker
-Kernel Version:             2.6.7
-Resolution:                 unable to duplicate
+Distribution:               Suse
+Kernel Version:             2.6.5-7.108
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-06-2004 21:15 CEST
-Last Modified:              10-22-2004 16:49 CEST
+Date Submitted:             10-02-2004 13:46 CEST
+Last Modified:              10-22-2004 16:55 CEST
 ======================================================================
-Summary:                    unresolved symbols in snd-pcm.ko on alpha
-linux-2.6.7
+Summary:                    64 Bit Drivers for Analog Devices SoundMax
 Description: 
-trying to compile latest alsa driver 1.0.6-rc1
-results in unresolved symbols at module link time
-in snd-pcm.ko
+Are there any 64 bit drivers available anywhere for this chipset?
 
-gcc-3.4 , linux-2.6.7
-
-here is the message:
-*** Warning: "__ioremap" [sound/core/snd-pcm.ko] undefined!
-*** Warning: "virt_to_phys" [sound/core/snd-pcm.ko] undefined!
-
-which results in unusable alsa drivers
+Thanks
 ======================================================================
 
 ----------------------------------------------------------------------
- svetljo - 08-13-04 14:40 
+ Clemens Ladisch - 10-02-04 15:08 
 ----------------------------------------------------------------------
-general /*probably stupid */ question
+When compiled with a 64 bit kernel, the drivers are 64 bit, too.
 
-why don't you use remap_page_range instead of io_remap_page_range 
-wouldn't this solve the problem
+The driver for your device is snd-intel8x0 or snd-via82xx or snd-atiixp,
+depending on your chipset.
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:49 
+ perex - 10-22-04 16:55 
 ----------------------------------------------------------------------
-Please, reopen if this bug still exists with 1.0.7rc2..
+Yes, there is no difference between source code for 32-bit and 64-bit
+drivers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-04 21:15 svetljo        New Issue                                    
-08-06-04 21:15 svetljo        Distribution              => Mandrake cooker 
-08-06-04 21:15 svetljo        Kernel Version            => 2.6.7           
-08-11-04 19:31 svetljo        Issue Monitored: svetljo                     
-08-12-04 11:09 svetljo        Note Added: 0001552                          
-08-12-04 11:35 perex          Note Added: 0001553                          
-08-12-04 11:42 svetljo        Note Added: 0001554                          
-08-12-04 11:54 perex          Note Added: 0001555                          
-08-12-04 12:06 svetljo        Note Added: 0001556                          
-08-12-04 12:45 svetljo        Note Added: 0001557                          
-08-12-04 14:07 svetljo        Note Added: 0001558                          
-08-13-04 14:40 svetljo        Note Added: 0001563                          
-10-22-04 16:49 perex          Status                   assigned => resolved
-10-22-04 16:49 perex          Resolution               open => unable to
-duplicate
-10-22-04 16:49 perex          Note Added: 0002249                          
+10-02-04 13:46 sandy bodell   New Issue                                    
+10-02-04 13:46 sandy bodell   Distribution              => Suse            
+10-02-04 13:46 sandy bodell   Kernel Version            => 2.6.5-7.108     
+10-02-04 15:08 Clemens LadischNote Added: 0002006                          
+10-22-04 16:55 perex          Status                   new => resolved     
+10-22-04 16:55 perex          Resolution               open => fixed       
+10-22-04 16:55 perex          Assigned To               => perex           
+10-22-04 16:55 perex          Note Added: 0002250                          
 ======================================================================
 
 
