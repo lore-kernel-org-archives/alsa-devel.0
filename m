@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: hdsp9652 (kind of) working
-Date: Fri, 30 May 2003 10:30:18 -0400
+From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+Subject: Re: position at sun/paul davis
+Date: Fri, 30 May 2003 16:37:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19Lkor-0003ny-00@sc8-sf-list1.sourceforge.net>
-References: <3ED7663E.7020405@klingt.org>
+Message-ID: <20030530143751.GA1805@finnendahl.de>
+References: <20030530073714.GA878@finnendahl.de> <1054303201.1532.8.camel@Wizard.knechthome.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 30 May 2003 16:10:06 +0200."
-             <3ED7663E.7020405@klingt.org>
+Content-Disposition: inline
+In-Reply-To: <1054303201.1532.8.camel@Wizard.knechthome.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,39 +17,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: d <dieb13@klingt.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->just to let you know:
->i asked the previous owner of my hdsp 9652 card and he gave me the hint 
->to use alsa 0.9rc7 plus a patch to ignore the reality and handle the 
->card as a hdsp+digiface:
->
->*** hdsp.c.orig 2003-05-30 14:01:17.000000000 +0200
->--- hdsp.c      2003-05-30 13:20:12.000000000 +0200
->***************
->*** 2978,2983 ****
->--- 2978,2984 ----
->
->         switch (rev & 0xff) {
->         case 0xa:
->+       case 0x68:
->                 /* hdsp_initialize_firmware() will reset this */
->                 hdsp->card_name = "RME Hammerfall DSP";
->                 break;
->
->he said, this patch was posted on the list once. (!?!)
->
->the card now works with audible results, but still has two issues:
->1) the card ignores alsamixer, but the sound comes out at a regular level.
->2) i get constant clicks (about 2/sec), but that might come from the 
->duron hardware i'm using.
+Am Freitag, den 30. Mai 2003 um 07:00:02 Uhr (-0700) schrieb Mark Knecht:
+> Orm,
+>    I must say that I think this is the biggest bunch of crap I've seen
+> on a Linux list in a long time. This list is no place for this sort of
+> discussion and it's really a low act on your part to publish innuendo
+> and rumor like it was the truth.
 
-that's phenomenonally helpful. i'll take a look at this as soon as i
-can. 
+Hi Mark,
+
+my sincere apologies, if I offended you, Paul or anybody else on this
+list. Paul posted this information on jackit-devel, as was the job
+offer so I considered my post appropriate. No low act intended on my
+side.
+
+I'll quote his mail below in case you didn't read it.
+
+sorry fore the noise. I'll take the blame.
+
+Orm
+
+---------------------------------------------------------------
+-------Original Message-------
+From: Paul Davis <paul@linuxaudiosystems.com>
+Sent: 05/28/03 03:55 PM
+To: jackit-devel@lists.sourceforge.net
+Subject: [Jackit-devel] Re: position at sun
+
+> 
+> I'd just like to point out that Sun decided that my resume wasn't
+adequate for the position that was posted here yesterday. Apparently,
+Sun's representative said "the candidate must have in depth Linux
+kernel experience.  Also experience in implementation of OSS and/or
+ALSA framework and has contributed to the Linux Opensrc community."
+
+I'm taking this as a personal affront for the time being. If you think
+you or someone else has a better resume to match what Sun advertised,
+you should probably get in touch with them. Be sure to send Sun my
+regards.
+
+Oh well, Ardour is a more interesting project anyway :)
 
 --p
+-------------------------------------------------------
 
 
 -------------------------------------------------------
