@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
-Date: Mon, 21 Feb 2005 19:21:49 +0100
-Message-ID: <ea69be3003dc62a1fdcaa545095c3f39@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Mon, 21 Feb 2005 19:57:46 +0100
+Message-ID: <8ed59cf0ac0decd5c4cb29100d7c05ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7586AD2
-	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 19:21:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DDDA1147
+	for <alsa-devel@alsa-project.org>; Mon, 21 Feb 2005 19:57:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,148 +23,73 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
 ======================================================================
-Reported By:                christophe
+Reported By:                1g0R
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   917
-Category:                   PCI - intel8x0
+Issue ID:                   848
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Ununtu
-Kernel Version:             2.6.11-rc3
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
 ======================================================================
-Date Submitted:             02-17-2005 20:16 CET
-Last Modified:              02-21-2005 19:21 CET
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              02-21-2005 19:57 CET
 ======================================================================
-Summary:                    intel8x0 ACPI suspend/resume trouble
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
-I have a problem with the driver for my soundcard after
-ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
-problem with prior kernels, I first tried with 2.6.8).
-
-This is a IBM x40 laptop (23865FU) with an intel chipset.
-
-The relevant lspci line is:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
-Audio Controller (rev
-+01)
-
-The driver I use is snd_intel8x0.
-
-The problem is that after a suspend/resume cycle the sound
-output is either off or only on one side or with statics.
-
-I tried to do:
-
-~$ alsactl power off
-~$ alsactl power on
-
-without any change.
-
-If I suspend/resume multiple time I can get the sound output
-a little better (like on one side instead of off). But so far
-to get the correct sound back I need to reboot.
-
-Is it a known problem?
-Is there a way to force the driver to reinitialized the chipset?
-
-Thanks for alsa,
-Christophe
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
 ======================================================================
 
 ----------------------------------------------------------------------
- christophe - 02-21-05 19:16 
+ 1g0R - 02-19-05 19:51 
 ----------------------------------------------------------------------
-I saved all proc files before and after a suspend/resume cycle and look at
-the diff:
+Thanks tiwai, i will try it.
 
-In /proc/asound/card0/intel8x0 
-I have the following diff:
-before: Global control        : 0xc0000002
-after:  Global control        : 0x00000002
-
-/proc/asound/card0/pcm0p/sub0/[status,sw_params,hw_params] contains
-"closed" after while they have more content before but I suspect it's
-normal.
-And the file /proc/asound/card0/pcm0p/sub0/info contains the same in both
-case except the value of subdevices_avail which is 0 before and 1 before.
-
-Finally I have the following change in the registers:
-
-before:
-0:10 = 8989
-0:12 = 9f9f
-0:14 = 0000
-0:16 = 9f9f
-0:18 = 1010
-0:1a = 0000
-0:1c = 8080
-...
-0:76 = 2010
-
-after:
-0:10 = 8909
-0:12 = 9f1f
-0:14 = 0000
-0:16 = 9f1f
-0:18 = 1010
-0:1a = 0000
-0:1c = 8000
-...
-0:76 = 0010
-
-I will try to figure out the meaning of the global control and the
-registers. The sound output was perfect before and crappy after (symmetric
-for once, but the more I increase the pcm volume the crappier it becomes
-until a certain point where I get only sound from the left channel).
+Have a nice day.
+Best regards:
+1g0R
 
 ----------------------------------------------------------------------
- christophe - 02-21-05 19:21 
+ 1g0R - 02-21-05 19:57 
 ----------------------------------------------------------------------
-For the control word, the meaning of the most significant c seems to be
-related to the s/dif output which is strange especially since I don't have
-a digital output AFAIK.
+Hi,
 
-#define ICH_REG_GLOB_CNT      0x2c  /* dword - global control */
-#define   ICH_PCM_SPDIF_MASK  0xc0000000  /* s/pdif pcm slot mask (ICH4)
-*/
-...
-#define   ICH_PCM_SPDIF_78 0x40000000  /* s/pdif pcm on slots 7&8 */
-#define   ICH_PCM_SPDIF_69 0x80000000  /* s/pdif pcm on slots 6&9 */
+how can i remove ",v" from the end of filename?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-17-05 20:16 christophe     New Issue                                    
-02-17-05 20:16 christophe     Distribution              => Ununtu          
-02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
-02-17-05 20:30 tiwai          Note Added: 0003636                          
-02-17-05 21:01 christophe     Note Added: 0003639                          
-02-17-05 21:06 christophe     Note Added: 0003640                          
-02-17-05 22:38 christophe     Note Added: 0003643                          
-02-18-05 09:29 alexs81        Issue Monitored: alexs81                     
-02-18-05 09:41 alexs81        Note Added: 0003649                          
-02-18-05 18:00 christophe     Note Added: 0003657                          
-02-18-05 20:34 alexs81        File Added: output_proc_asound_card0_codec97_0    
-               
-02-18-05 20:35 alexs81        Note Added: 0003659                          
-02-18-05 20:50 christophe     Note Added: 0003660                          
-02-18-05 21:13 alexs81        Note Added: 0003661                          
-02-18-05 21:16 christophe     Note Added: 0003662                          
-02-18-05 21:32 alexs81        Note Added: 0003663                          
-02-18-05 21:39 rlrevell       Note Added: 0003664                          
-02-19-05 02:40 christophe     Note Added: 0003668                          
-02-19-05 12:07 alexs81        Note Added: 0003669                          
-02-19-05 22:15 christophe     Note Added: 0003671                          
-02-19-05 22:16 christophe     Note Added: 0003672                          
-02-21-05 19:16 christophe     Note Added: 0003681                          
-02-21-05 19:21 christophe     Note Added: 0003682                          
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
 ======================================================================
 
 
