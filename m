@@ -1,13 +1,14 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <syrjala@sci.fi>
-Subject: [PATCH] Maestro2 hw volume fix
-Date: Tue, 17 Feb 2004 08:20:41 +0200
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Creamware Noah, snd-usb-audio capable?
+Date: Tue, 17 Feb 2004 13:43:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040217062041.GA6708@sci.fi>
+Message-ID: <Pine.HPX.4.33n.0402171255310.21550-100000@studcom.urz.uni-halle.de>
+References: <1076956588.2859.6.camel@chief.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="IS0zKkzwUGydFO0o"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-reply-to: <1076956588.2859.6.camel@chief.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,59 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hartmut Geissbauer wrote:
+> I tried it vice versa. (first unloading snd-usb-audio then plugging the
+> device)
+> Now it appears in /proc/bus/usb/devices
 
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I guess "it" is the device and not the audio interfaces.
 
-The attached patch fixes hardware volume buttons on my Dell Inspiron 7000=
-=20
-laptop. The chip is ESS Maestro2 (0x125d:0x1968).
+> But the output /var/log/messages seems a little bit bad in the end.
+>
+> kernel: usb 1-2.4: configuration #1 chosen from 2 choices
+> kernel: usb 1-2.4: registering 1-2.4:1.0 (config #1, interface 0)
+> kernel: drivers/usb/core/usb.c: usb_hotplug
+> usb.agent[2413]: Keeping default configuration with /sys//devices/pci0000:00/0000:00:02.0/usb1/1-2/1-2.4
+> kernel: snd-usb-audio 1-2.4:1.0: usb_probe_interface
+> kernel: snd-usb-audio 1-2.4:1.0: usb_probe_interface - got id
+> kernel: usb 1-2.4: usb_disable_device nuking non-ep0 URBs
+> kernel: usb 1-2.4: unregistering interface 1-2.4:1.0
 
-I have no idea if this will break things for someone else. Since the=20
-datasheet didn't help me understand the registers involved I just printed=
-=20
-their contents and came up with the used bits.
+The last two lines _may_ be correct when the configuration changes.
 
-All registers had the following values in my tests:
-mute:     0x99
-vol down: 0x77
-vol up:   0xBB
+Could you try to re-load snd-usb-audio (now, hopefully, with the new
+configuration)?
 
---=20
-Ville Syrj=E4l=E4
-syrjala@sci.fi
-http://www.sci.fi/~syrjala/
 
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="maestro_hwvol.patch"
+If that doesn't work, it would be possible to write a separate program
+that switches the configuration, so that the audio driver can be
+loaded later.
 
---- alsa-driver-0.9.8/alsa-kernel/pci/es1968.c.orig	2003-10-14 16:59:20.000000000 +0300
-+++ alsa-driver-0.9.8/alsa-kernel/pci/es1968.c	2004-02-17 08:06:22.000000000 +0200
-@@ -1967,14 +1967,14 @@
- 
- 	/* FIXME: more clean up is needed.. */
- 	val = chip->ac97->regs[AC97_MASTER];
--	if (x & 1) {
-+	if (!(x & 2)) {
- 		/* mute */
- 		snd_ac97_write_cache(chip->ac97, AC97_MASTER, val ^ 0x8000);
- 		snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
- 			       &chip->master_switch->id);
- 	} else {
- 		val &= 0x7fff;
--		if (((x>>1) & 7) > 4) {
-+		if (!(x & 4)) {
- 			/* volume up */
- 			if ((val & 0xff) > 0)
- 				val--;
 
---IS0zKkzwUGydFO0o--
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
