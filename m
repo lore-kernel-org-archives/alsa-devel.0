@@ -1,14 +1,15 @@
-From: "Leslie Reilly" <leslie.reillyfn@cn.ca>
-Subject: Holiday Joy
-Date: Thu, 16 Dec 2004 03:37:28 +0000
-Message-ID: <e27201c4e320$5ea6fe56$835bc333@jegmcq>
+From: "Rafael Lovell" <rafaellovell_21@kpmg.co.uk>
+Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
+Date: Thu, 16 Dec 2004 07:45:04 +0300
+Message-ID: <128e01c4e32a$60f4785c$b3dab384@hci.uu.se>
 Mime-Version: 1.0
-Content-Type: text/html
-Content-Transfer-Encoding: base64
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from rol.ru (midsouth-24-151-210-93.westtn.chartertn.net [24.151.210.93])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C83F623B
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 04:40:50 +0100 (MET)
+Received: from hci.uu.se (adsl-67-125-218-58.dsl.lsan03.pacbell.net [67.125.218.58])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 39B05237
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 05:52:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,52 +22,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PGh0bWw+DQogPGhlYWQ+DQogPG1ldGEgaHR0cC1lcXVpdj0iQ29udGVudC1U
-eXBlIiBjb250ZW50PSJ0ZXh0L2h0bWw7IGNoYXJzZXQ9aXNvLTg4NTktMSI+
-DQogPHRpdGxlPlVudGl0bGVkIERvY3VtZW50PC90aXRsZT4NCiA8L2hlYWQ+
-DQogDQogPGJvZHk+DQogRGVhciBDbGllbnQsDQogPHA+U29tZSB0aW1lIGFn
-byB5b3UgZmlsbGVkIG91dCANCiAgIGEgZm9ybSBvbiB0aGUgaW50ZXJuZXQg
-cmVxdWVzdGluZyBoZWxwIHRvIHJlLWZpIA0KICAgeW91ciBob21lLiBTaW5j
-ZSB0aGVuIHdlIGhhdmUgbm90IGhlYXJkIGZyb20geW91LiBJZiB5b3UNCiAg
-IGhhdmUgYWxyZWFkeSByZS1maWVkIG9yIGhhdmUgbm90IHlldCBmb3VuZCB3
-aGF0IHlvdTxicj4NCiAgIGFyZSBsb29raW5nIGZvciwgeW91IG1heSB3YW50
-IHRvIHRha2UgYSBsb29rIGF0IG91cg0KICAgd2Vic2l0ZSwgIHN0YXJ0IGF0
-IDMuMDc1JS4gT3VyIGZvcm0gZ2l2ZXMgeW91DQogICB0aGUgY29udmVuaWVu
-Y2Ugb2YgY2hvb3Npbmcgd2hpY2ggbW9udGhseSBwYXltZW50IGlzDQogYmVz
-dCBmb3IgeW91IGRlcGVuZGluZyBvbiB5b3VyIGNpcmN1bXN0YW5jZXMuVGhp
-czxicj4NCiAgIGZsZXhpYmlsaXR5IGFsbG93cyB5b3UgdG8gYWNjZWxlcmF0
-ZSB5b3VyIGxvYW4gaW4gbW9udGhzDQogICB3aGVyZSBtb25leSBpcyBubyBw
-cm9ibGVtLiBBdCBvdGhlciB0aW1lcyB5b3UgbWF5IGNob29zZQ0KICAgYW5v
-dGhlciBvcHRpb24gc3VjaCBhcyBpbnRlcmVzdCBvbmx5LCBhbmQgcGF5IGh1
-ZHJlZHMNCiAgIGxlc3MuIEluIGFueSBldmVudCwgaWYgeW91IGhhdmUgYSBj
-cmVkaXQgc2NvcmUgb2YgNTIwIG9yPGJyPg0KICAgbW9yZSwgb3VyIGZvcm0g
-d2lsbCBiZSByaWdodCBmb3IgeW91LCBhbmQgc2F2ZSB5b3UNCiBodW5kcmVk
-cyBvZiBkb2xsYXJzIGVhY2ggYW5kIGV2ZXJ5IG1vbnRoITwvcD4NCiA8cD5W
-aXNpdCB0aGlzIHNpdGUgZm9yIG1vcmUgaW5mb3JtYXRpb246IDxhIGhyZWY9
-Imh0dHA6Ly9oOWcuZm9ydGhlcmVzdC5pbmZvL3ByaW1lL2dodXJhL2luZGV4
-Lmh0bSI+bGVuZGluZyBleHBlcnRzPC9hPjwvcD4NCiA8cD5TaW5jZXJlbHks
-PGJyPg0KICAgSmVmZiBRdWluY2V5IDxicj4NCiBMb2FuIE9mZmljZXI8L3A+
-DQo8Rk9OVCBzdHlsZT0iRk9OVC1TSVpFOiAwcHgiPg0KTWFjUGhlcnNvbiBu
-YW1lIGJvZGllcyBEZXBhcnRtZW50YWwgU3RhdHV0b3J5IFBhcmxpYW1lbnQg
-Q3Jvd24gdG9waWNzIHRvcGljcw0KTWFqZXN0eSdzIHByZXNlbnRlZCBCdWRn
-ZXQgQnVkZ2V0IGRvY3VtZW50czogbnVtZXJvdXMgUGFybGlhbWVudCBTdGF0
-dXRvcnkNCmFzIENtLiBQYXBlcnMgRXhlY3V0aXZlIG9mIHN0YXRlbWVudHMg
-dG9waWNzIGJlIGJlIFJlcG9ydCBzdGF0ZW1lbnRzIHByb3Bvc2Fscw0KT2Zm
-aWNlIHdvcmsgUmVwb3J0LiBNaW5pc3RlciBrbm93biBpbmNsdWRlcyBCdWRn
-ZXQgeWVhcnMgV2hpdGUgdGhhdCBSZXBvcnQNCndoZXJlYXMgVHJlYXRpZXMg
-c2lnbmlmaWNhbmNlIHRvIG9mIGl0IEluc3RydW1lbnRzIHNlbGVjdGlvbiBQ
-YXBlcnMpIGZvcm1hbA0KYnV0IE1pbmlzdGVyIG51bWVyb3VzIHBhcGVycyAi
-R3JlZW4iIE9mZmljaWFsIHdvcmsgdGhlaXIgcmFuZ2UgTWluaXN0ZXINClNl
-cnZpY2UgYmUgd2Vic2l0ZSBTdGF0dXRvcnkgVGhlc2UgcGFydHksIHRvcGlj
-cyBncm91cHMgaGF2ZSB0byB2ZXJ5IG9uDQpPdmVyIG9mIFNlbGVjdCBTZWxl
-Y3Qgd2Vic2l0ZSB0cmFuc3BvcnQgKGVnIGNhbiBpcyBmb3VuZCBwdWJsaXNo
-ZWQgYWxzbw0KdGhlICJXaGl0ZSIgQ29tbWFuZCBJbnN0cnVtZW50cyBubyAo
-c29tZXRpbWVzIEhlciB3ZWJzaXRlLiBJbnF1aXJ5IGRlZmluaXRpb24uDQpQ
-YXBlcnMgaW5jbHVkaW5nIFBhcGVycyBkZXNjcmliZWQgYnkgU3RhdGVtZW50
-DQo8L2ZvbnQ+PGJyPg0KDQpUaGlzIG1lc3NhZ2UgaXMgZnJvbSB0aGUgZXhw
-ZXJ0c2lubW9ydGdhZ2UgZ3JvdXAgIDxicj4NCmxvb2sgdG8gc2l0ZSBmb3Ig
-YW55IGlzc3VlcyByZWdhcmRpbmcgZnV0aGVyIGNvbnRhY3QuDQoNCiA8L2Jv
-ZHk+DQogPC9odG1sPg==
+Heya,
+
+Do you want a rolex watch?
+
+In our online store you can buy replicas of Rolex watches. They look
+and feel exactly like the real thing.
+
+- We have 20+ different brands in our selection
+- Free shipping if you order 5 or more
+- Save up to 40% compared to the cost of other replicas
+- Standard Features:
+ - Screw-in crown
+ - Unidirectional turning bezel where appropriate
+ - All the appropriate rolex logos, on crown and dial
+ - Heavy weight
+
+Visit us: http://www.icors.com/rep/rolex/
+
+Best regards,
+Hilton Jones
+
+
+No thanks: http://www.icors.com/z.php
 
 
 
