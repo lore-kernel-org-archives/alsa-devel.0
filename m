@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sat, 27 Nov 2004 22:05:19 +0100
-Message-ID: <836d45bedd0bc5427e918cb91cecbc89@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000645]: azx driver is a bit broken
+Date: Sat, 27 Nov 2004 19:32:00 +0100
+Message-ID: <940da05432399c4f41565e9a9bedca90@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 475DC20D
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2004 22:05:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 15627266
+	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2004 19:32:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,124 +24,111 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=645> 
 ======================================================================
-Reported By:                bons78
+Reported By:                russell
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   167
-Category:                   SPARC - cs4231
+Issue ID:                   645
+Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian/unstable
-Kernel Version:             linux-2.6.4+
+Distribution:               Debian/Ubuntu
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-27-2004 22:05 CET
+Date Submitted:             11-12-2004 16:58 CET
+Last Modified:              11-27-2004 19:32 CET
 ======================================================================
-Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Summary:                    azx driver is a bit broken
 Description: 
-alsamixer crashes system hard when snd-ioctl32 is loaded.
-System still responds to some sysrq commands (sync remount boot show) -
-sysrq (term killall) has no effect.
-There's no chance to do any other keyboard input. No logs, no traps, no
-oops. Machine still responds to ping,(even port 22 stays open) but login
-via ssh is not possible. 
+The azx driver doesn't work well on the hardware which I have. It pretty
+much doesn't work at all in OSS emulation mode. The following patch
+improves its stability on my machine enormously (although it is still not
+100%), and makes OSS emulation work nicely. As a side effect, the code is
+simplified, and to my fairly untrained eyes seems a bit more efficient.
 
-alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
-does not crash the system then.
-So I suspect a problem in the ioctl32 wrapper.
+There are also a number of fixes in this patch which make the driver work
+more like my understanding of the Intel "High Definition Audio
+Specification Revision 1.0" document, and my limited understanding of the
+ALSA system. These include:
 
+ - ALSA buffer size now matches the Cyclic Buffer Length (length of entire
+buffer)
+ - ALSA period size now matches size of each BDL, the number of BDLs are
+properly set, and the BDLEs are not changed during playback (as suggested
+in the azx spec)
 
+The #define'd STREAM_REST_BIT was renamed to STREAM_RESET_BIT (because
+that's what it is).
 
+This is a patch to azx.c only, and is against the current CVS version
+(1.11).
+
+I have not done *ANY* work on the capture side of things -- most of my
+diffs for output can probably be translated almost directly for input.
+
+There are some other issues which should be addressed in this driver. Off
+the top of my head:
+ - Will pci_set_dma_mask() be needed if the card is not capable of 64 bit
+addressing? Perhaps.
+ - The mixer code in 1.0.7rc2 causes a crash on my system, I have pointed
+this out to Clemens Ladisch in email. I will work on this problem soon if
+nobody else has the time. Commenting out the mixer initialisation code is
+working well for me at the moment :)
+ - The driver still does not work 100%. When my system is very idle, I get
+repeated sections of sound. I used to get a LOT of static, but with my
+changes it now just sounds like ALSA is never updating the buffer. I'm
+completely baffled by this, any suggestions for me to try, or hints on
+debugging this sort of behaviour would be appreciated!
+
+And one issue which I am unclear on, what does the fifo_size field in the
+snd_pcm_hardware_t struct actually define?
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-27-04 19:25 
+ pforai - 11-27-04 16:06 
 ----------------------------------------------------------------------
-Thanks for checking.  Just to be sure, could you try snd-dummy driver and
-timidity on sparc64?
-Since it works on x86-64, I guess it's driver-specific.  (EPIPE error
-means usually the buffer under/overrun.)
+@russell:
+I have _exactly_ the same problem with my i915GAVL onboard (alc860) snd
+card! 
+reported by lspci as:
+Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High Definition Audio
+Controller (rev 03)
+
+didn't have time to apply the patch, is alsa-drvr 1.07 within 2.6.10rcX?
+azx isn't even shipped with kernel 2.6.9-mmX, so couldn't test it by now.
+
+
+tried with 1.07 - mixer crashes system.
+
+edited on: 11-27-04 16:06
 
 ----------------------------------------------------------------------
- eradicator - 11-27-04 22:05 
+ tiwai - 11-27-04 19:32 
 ----------------------------------------------------------------------
-It happens with snd-ens1371, snd-sun-cs4231, and snd-dummy
+I'm rewriting the driver code heavily for the time being.
+The code from Realtek will be merged there, too, so the support on
+ALC880/260 should be improved.  Will check your patch, too.
+
+About the DMA mask, no, it's not needed.  The chip supports 64bit - that
+is, it accepts any physical address in 64bit.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 00:02 bons78         New Issue                                    
-03-30-04 00:02 bons78         Distribution              => debian/unstable 
-03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
-04-13-04 19:41 tiwai          Note Added: 0000795                          
-07-04-04 22:32 weeve          Note Added: 0001381                          
-07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
-11-19-04 05:45 weeve          Note Added: 0002474                          
-11-19-04 05:46 weeve          Issue Monitored: weeve                       
-11-19-04 05:55 rlrevell       Note Added: 0002475                          
-11-20-04 10:23 eradicator     Note Added: 0002478                          
-11-20-04 11:14 eradicator     Note Added: 0002479                          
-11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
- 
-11-20-04 16:36 sjoerd         Note Added: 0002480                          
-11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
-11-21-04 03:05 eradicator     Note Added: 0002482                          
-11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:39 eradicator     Note Added: 0002485                          
-11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
-            
-11-21-04 11:50 eradicator     Note Added: 0002486                          
-11-21-04 11:57 eradicator     Note Added: 0002487                          
-11-21-04 12:54 sjoerd         Note Added: 0002488                          
-11-21-04 17:44 sjoerd         Note Added: 0002489                          
-11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
-11-21-04 22:46 sjoerd         Note Added: 0002492                          
-11-22-04 00:08 eradicator     Note Added: 0002493                          
-11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
-            
-11-22-04 00:49 eradicator     Note Added: 0002494                          
-11-22-04 16:22 tiwai          Note Added: 0002508                          
-11-23-04 10:16 eradicator     Note Added: 0002514                          
-11-23-04 15:34 tiwai          Note Added: 0002515                          
-11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
-    
-11-24-04 10:26 eradicator     Note Added: 0002544                          
-11-24-04 12:53 eradicator     Note Added: 0002553                          
-11-24-04 13:01 eradicator     Note Added: 0002556                          
-11-24-04 13:01 tiwai          Note Added: 0002557                          
-11-24-04 13:09 tiwai          Note Added: 0002559                          
-11-24-04 14:29 eradicator     Note Added: 0002563                          
-11-24-04 14:52 tiwai          Note Added: 0002564                          
-11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
-         
-11-24-04 23:24 eradicator     Note Added: 0002582                          
-11-24-04 23:31 eradicator     Note Added: 0002583                          
-11-25-04 12:22 tiwai          Note Added: 0002588                          
-11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
-          
-11-26-04 08:26 eradicator     Note Added: 0002594                          
-11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
-       
-11-26-04 09:22 eradicator     File Added: alsa.strace                      
-11-26-04 09:22 eradicator     Note Added: 0002595                          
-11-26-04 12:40 tiwai          Note Added: 0002604                          
-11-26-04 15:17 tiwai          Note Added: 0002606                          
-11-26-04 15:17 tiwai          File Added: ioctl32-user-alloc-hack3.diff         
-          
-11-26-04 20:31 eradicator     Note Added: 0002611                          
-11-26-04 21:05 eradicator     Note Added: 0002612                          
-11-26-04 21:40 eradicator     Note Added: 0002613                          
-11-26-04 21:40 eradicator     File Added: strace                           
-11-26-04 21:53 eradicator     Note Added: 0002614                          
-11-27-04 19:25 tiwai          Note Added: 0002616                          
-11-27-04 22:05 eradicator     Note Added: 0002618                          
+11-12-04 16:58 russell        New Issue                                    
+11-12-04 16:58 russell        File Added: azx.c.diff                       
+11-12-04 16:58 russell        Distribution              => Debian/Ubuntu   
+11-12-04 16:58 russell        Kernel Version            => 2.6.8.1         
+11-12-04 17:30 russell        Note Added: 0002399                          
+11-15-04 22:28 Grazy          Issue Monitored: Grazy                       
+11-23-04 21:53 footcow        Note Added: 0002531                          
+11-27-04 16:04 pforai         Note Added: 0002615                          
+11-27-04 16:06 pforai         Note Edited: 0002615                         
+11-27-04 19:32 tiwai          Note Added: 0002617                          
 ======================================================================
 
 
