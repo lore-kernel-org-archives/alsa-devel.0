@@ -1,19 +1,19 @@
-From: Info@NSR.ru
+From: Andrew Gaydenko <a@etver.com>
 Subject: CVS lock
-Date: Sun, 17 Oct 2004 12:18:33 +0400
+Date: Sun, 17 Oct 2004 12:19:07 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410171218.33659@goldspace.net>
+Message-ID: <200410171219.07823@goldspace.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="koi8-r"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from fast.goldspace.net (fast.goldspace.net [80.246.65.161])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2F0C02AB
-	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2004 10:18:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DB96143
+	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2004 10:18:58 +0200 (MEST)
 Received: from fast.goldspace.net (from.goldspace.net [222.87.74.134])
-	by fast.goldspace.net (8.12.11/8.12.11) with ESMTP id i9H8ISPj029706
-	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2004 12:18:28 +0400
+	by fast.goldspace.net (8.12.11/8.12.11) with ESMTP id i9H8Iw6v029713
+	for <alsa-devel@alsa-project.org>; Sun, 17 Oct 2004 12:18:58 +0400
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
