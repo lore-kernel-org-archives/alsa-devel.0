@@ -1,12 +1,12 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: Re: alsalib symbol problem
-Date: Tue, 17 Sep 2002 09:57:07 -0400
+Subject: Re: Configuration Spaces
+Date: Tue, 17 Sep 2002 10:08:40 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17rIoq-0002eX-00@usw-sf-list1.sourceforge.net>
-References: <87u1kolow9.fsf@zaphod.blackdown.de>
+Message-ID: <E17rJ03-0005lg-00@usw-sf-list1.sourceforge.net>
+References: <20020917094800.A3340@atl.lmco.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 17 Sep 2002 15:35:50 +0200."
-             <87u1kolow9.fsf@zaphod.blackdown.de>
+In-reply-to: Your message of "Tue, 17 Sep 2002 09:48:00 EDT."
+             <20020917094800.A3340@atl.lmco.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,38 +15,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Juergen Kreileder <jk@blackdown.de>
-Cc: Tim Goetze <tim@quitte.de>, Florian Bomers <Florian.Bomers@sun.com>, alsa-devel@lists.sourceforge.net
+To: Chuck Winters <cwinters@atl.lmco.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> you probably are calling alsa from a shared object -- try 
->> 
->>   dlopen ("libasound.so", RTLD_LAZY | RTLD_GLOBAL);
->> 
->> in your module's init function.
->
->The need for RTLD_GLOBAL is somewhat ugly, usually one wants to load
->plugins with RTLD_LOCAL.  
+>My knowledge of signals is that the period is the time it takes a signal to 
+>complete 1 cycle.  So what is the snd_pcm_hw_params_set_period used for?
+>Is the "period" a property of the signal, or an arbitrary property set by
+>the programmer for performance, fidelity, etc.
 
-the suggestion is not that *your* plugin should use RTLD_GLOBAL, but
-that RTLD_GLOBAL needs to be used when alsa-lib is linked into the
-address space.
+no, a period in ALSA is, put relatively simply, the interval between
+interrupts from the audio interface. it defines the latency for audio
+handling. 
 
-if you don't use RTLD_GLOBAL, then the symbols in libasound are not
-availble for subsequently-loaded dynamically linked code.
+if you set the buffer size to 256 frames, and the period size to 64
+frames, there will be 4 interrupts per iteration over the buffer:
+every time the card has 64 frames of audio or space in the buffer, it
+will interrupt the CPU. 
 
->Is there any reason ALSA can't do something like 
->
->   if (name == NULL) {
->       Dl_info dlinfo;
->       static int dummy;
->       dladdr((void *) &dummy, &dlinfo);
->       name = dlinfo.dli_fname;
->   }
+for background on how an audio interface works and some perspectives
+on programming with ALSA, check out
 
-perhaps because this implementation of dlopen is platform specific?
-the dladdr function and the dlinfo structure are not present in
-my version of glibc, at least not as far as i can tell.
+    http://www.op.net/~pbd/alsa-audio.html
 
 --p
 
