@@ -1,17 +1,15 @@
-From: Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
-Subject: Re: Hammerfall (hdsp) initialization problem
-Date: Tue, 27 Jul 2004 12:07:06 -0400
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: alsa-conf cvscompile fails with 'friend declaration
+ requires class-key'
+Date: Tue, 27 Jul 2004 18:19:22 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1090944426.4065.10.camel@modemcable182.55-70-69.mc.videotron.ca>
-References: <1090607568.17750.7.camel@modemcable182.55-70-69.mc.videotron.ca>
- <20040724100520.26b4ac8f@laptop>
- <1090734488.3156.2.camel@modemcable182.55-70-69.mc.videotron.ca>
- <1090754189.15178.8.camel@localhost> <s5hbri15zpj.wl@alsa2.suse.de>
+Message-ID: <Pine.HPX.4.33n.0407271815490.28456-100000@studcom.urz.uni-halle.de>
+References: <s5hfz7d60v1.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5hbri15zpj.wl@alsa2.suse.de>
+In-reply-to: <s5hfz7d60v1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,25 +19,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Thomas Charbonnel <thomas@undata.org>, Tim Blechmann <TimBlechmann@gmx.net>, alsa-devel@lists.sourceforge.net
+Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> The problem is that you have to know the PCI pointer to call
-> dma_alloc_coherent() correctly beforehand.  Otherwise you'll get on=
-ly
-> ZONE_DMA under 16MB region.
+Takashi Iwai wrote:
+> (It's there just for historical reason.
+>  Removing a cvs module isn't trivial...)
 
-Still, there must be *something* that can be done, no? What are other
-OSs doing about that? I mean, the card manual doesn't say "if you ins=
-ert
-this card after boot, it won't work", so I don't see why ALSA
-fundamentally couldn't support hot-plugging cards.
+"cvs update -P" should do the job.  :)
 
-=09Jean-Marc
 
---=20
-Jean-Marc Valin <Jean-Marc.Valin@USherbrooke.ca>
-Universit=E9 de Sherbrooke
+Regards,
+Clemens
 
 
 
