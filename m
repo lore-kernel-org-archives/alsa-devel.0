@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Thu, 13 Jan 2005 20:48:55 +0100
-Message-ID: <25c0e9dac102bdf2d024beac36aa39c0@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000816]: No connexion sound & long time to connect
+Date: Thu, 13 Jan 2005 22:51:41 +0100
+Message-ID: <b85109131c52e8e9718b25c218f176a4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 51A442F2
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 20:48:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 61988285
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 22:51:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816> 
 ======================================================================
-Reported By:                gvy
-Assigned To:                
+Reported By:                Cyrille
+Assigned To:                sashak
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   815
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   816
+Category:                   PCI - atiixp-modem
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Slackware
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              01-13-2005 20:48 CET
+Date Submitted:             01-13-2005 22:51 CET
+Last Modified:              01-13-2005 22:51 CET
 ======================================================================
-Summary:                    missing DESTDIR support with hotplug dir
+Summary:                    No connexion sound & long time to connect
 Description: 
-with intoruction of hotplug dir I had to kludge in RPM buildroot into
-configure parameters -- it doesn't belong there, it's rather install-time
-not compile-time (and definitely not configure-time).
+Hi,
+On my Toshiba Satellite A30 laptop with ATI IXP MODEM I have finally
+succeeded to run my modem (1002:434d  ATI) on a slackware 10.0 with 2.4.26
+kernel.
+(I'm using it at this time)
+But, 2 little bugs :
+- first : no sound during numbering & connexion
+- second : there's a long time (20 secondes approximtively) before
+connexion (after ATDT command).
 
-hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
-too.
+I give you this info :
+
+I use :
+- slmodem-2.9.10
+- alsa-1.0.7
+- connexion with kppp (KDE 3.2)
+
+=======================
+root@tromatism:/home/cyrille# aplay -l
+**** List of PLAYBACK Hardware Devices ****
+card 0: IXP [ATI IXP], device 0: ATI IXP AC97 [ATI IXP AC97]
+  Subdevices: 1/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+card 1: Modem [ATI IXP Modem], device 0: ATI IXP MC97 [ATI IXP MC97]
+  Subdevices: 0/1
+  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+======================
+
+
+Can you explain the problem ?
+Should I wait the alsa-driver 1.0.8 ?
+
+Cheers,
+Cyrille
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 20:33 
-----------------------------------------------------------------------
-$DESTDIR works fine for me...
-
-The hotplug directory is really /usr/lib/hotplug (or better /lib/hotplug
-in the recent version).  It shouldn't depend on $prefix.
-
-----------------------------------------------------------------------
- gvy - 01-13-05 20:48 
-----------------------------------------------------------------------
-Failed for me with exactly this (expanded rpm macro):
-
-/usr/bin/make 'INSTALL=/bin/install -p'
-prefix=/var/tmp/alsa-firmware-buildroot/usr
-exec_prefix=/var/tmp/alsa-firmware-buildroot/usr
-bindir=/var/tmp/alsa-firmware-buildroot/usr/bin
-sbindir=/var/tmp/alsa-firmware-buildroot/usr/sbin
-sysconfdir=/var/tmp/alsa-firmware-buildroot/etc
-datadir=/var/tmp/alsa-firmware-buildroot/usr/share
-includedir=/var/tmp/alsa-firmware-buildroot/usr/include
-libdir=/var/tmp/alsa-firmware-buildroot/usr/lib
-libexecdir=/var/tmp/alsa-firmware-buildroot/usr/lib
-localstatedir=/var/tmp/alsa-firmware-buildroot/var/lib
-sharedstatedir=/var/tmp/alsa-firmware-buildroot/usr/com
-mandir=/var/tmp/alsa-firmware-buildroot/usr/share/man
-infodir=/var/tmp/alsa-firmware-buildroot/usr/share/info install
-
-The inconsistency is that everything else gets installed just fine like
-before.
-%makeinstall DESTDIR=%buildroot would yield double prefix substitution for
-any other installation path, and I'm too dumb this evening to crank up a
-Makefile.* patch... so leaving the %configure parameter as is right now.
-
-PS: sorry for typos and thanks for your work, Takashi!  Domo arigato!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-05 20:21 gvy            New Issue                                    
-01-13-05 20:33 tiwai          Note Added: 0003199                          
-01-13-05 20:48 gvy            Note Added: 0003201                          
+01-13-05 22:51 Cyrille        New Issue                                    
+01-13-05 22:51 Cyrille        Distribution              => Slackware       
+01-13-05 22:51 Cyrille        Kernel Version            => 2.4.26          
 ======================================================================
 
 
