@@ -1,13 +1,12 @@
-From: "Tasso Mulzer" <tasso@tasso.dynodns.net>
-Subject: Re: compaq presario laptop, via686a + AMD duron, sound not work
-Date: Fri, 15 Feb 2002 15:55:14 +0100
-Message-ID: <000101c1b630$c6499100$edc89582@LAPTOP>
-Reply-To: <tasso@cs.tu-berlin.de>
+From: Guenther Sohler <guenther.sohler@newlogic.com>
+Subject: Most simple use of sequencer in ALSA
+Date: Fri, 15 Feb 2002 16:20:23 +0100 (MET)
+Message-ID: <a4j9tq$aan$1@quimby2.netfonds.no>
+Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <Pine.LNX.4.44.0202150852110.9063-100000@rmjokers11>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <XFMail.020204113205.guenther.sohler@newlogic.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,26 +18,47 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Same for me .. 
+I have simplified the seq.c in the alsa-driver-test direcory for me
+to also understand.
 
-I even tried setting the EAPD to high (patching the kernel-driver), but
-don't know what's connected to the EAPD. I don't want to open my
-notebook (was too expensive!) ..
-I think here some Information from SoundMAX/Compaq/... Would be VERY
-helpful - but don't know where to get it.
+The program is now quite short and outputs a note and quits
 
-Does anybody have a datasheet for the specific chip in the notebook?! ..
-I only have a sheet for AD1881, it was the only one that I could find.
-Think, the chip in the notebook is very similar to the AD1881 (maybe
-wrong!).
+here is it
+-----------
 
-So .. Now we are almost five guys with the same problem (found messages
-in some forums from two other people) .. Should be enough to get the
-thing going, isn't it?!
+#include <stdio.h>
+#include "alsa/asoundlib.h"
 
-Thanks
 
-Tasso ;)
+int main(int argc, char *argv[])
+{
+        snd_seq_t *handle;
+        snd_seq_event_t ev;
+
+        snd_seq_open(&handle, "hw", SND_SEQ_OPEN_DUPLEX, 0);
+        snd_seq_alloc_queue(handle);
+        
+        bzero(&ev, sizeof(ev));
+        ev.dest.client=65;
+        ev.dest.port=0;
+        ev.type = SND_SEQ_EVENT_NOTEON;
+        ev.data.note.channel = 0;
+        ev.data.note.note = 64 ;
+        ev.data.note.velocity = 127;
+        snd_seq_event_output_direct(handle, &ev);
+        sleep(1);
+        ev.type = SND_SEQ_EVENT_NOTEOFF;
+        snd_seq_event_output_direct(handle, &ev);
+        snd_seq_drain_output(handle);
+        return 0;
+}
+
+There are two questions ?
+
+Why doesn't it work if I allocate no queue ? There is no need for a queue as i
+directly output events
+What does "hw" mean ? what are the other possibilities ?
+
 
 
 _______________________________________________
