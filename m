@@ -1,16 +1,19 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0000551]: Audigy ES
-Date: Wed, 29 Sep 2004 22:57:59 +0200 (CEST)
+Date: Wed, 29 Sep 2004 22:44:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040929205759.AB5B39073@server.perex-int.cz>
+Message-ID: <20040929204402.345899006@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F2EB32F4
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:57:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E322267
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:44:35 +0200 (MEST)
+Received: from mail.perex.cz (outgoing.perex-int.cz [192.168.100.253])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4EECD2789B
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:44:32 +0200 (MEST)
 Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id BB59F278F8
-	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:57:59 +0200 (MEST)
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 441242789C
+	for <alsa-devel@alsa-project.org>; Wed, 29 Sep 2004 22:44:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +26,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000551
 ======================================================================
@@ -39,7 +42,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-29-2004 22:44 CEST
-Last Modified:              09-29-2004 22:57 CEST
+Last Modified:              09-29-2004 22:44 CEST
 ======================================================================
 Summary:                    Audigy ES
 Description: 
@@ -56,22 +59,10 @@ sound matrix? Also, if you'd like any info regarding that card, just let
 me know.
 ======================================================================
 
-----------------------------------------------------------------------
- Jakub Z - 09-29-2004 22:57 CEST 
-----------------------------------------------------------------------
-Well I have an issue with it that I didn't have with a SB Live!. When I do
-a 'alsactl restore' while playing an mp3, I get:
-
-alsactl: set_control:966: Cannot write control '2:0:0:EMU10K1 PCM Send
-Routing:0' : Operation not permitted
-
-I have to stop the playback and do a 'alsactl restore', then it works.
-
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 09-29-04 22:44 Jakub Z        New Bug                                      
-09-29-04 22:57 Jakub Z        Bugnote Added: 0001976                       
 ======================================================================
 
 
