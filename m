@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: Some proposed ALSA sysfs changes to stock kernel
- from GregKH
-Date: Tue, 20 Jan 2004 10:50:30 +0100 (CET)
+From: mru@kth.se (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
+Subject: Re: Some proposed ALSA sysfs changes to stock kernel from GregKH
+Date: Tue, 20 Jan 2004 11:19:46 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401201050030.1857@pnote.perex-int.cz>
+Message-ID: <yw1x7jzmq5vh.fsf@ford.guide>
 References: <400C9CA1.6030706@starhub.net.sg> <yw1xllo3ouek.fsf@ford.guide>
+ <Pine.LNX.4.58.0401201050030.1857@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <yw1xllo3ouek.fsf@ford.guide>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,33 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 20 Jan 2004, M?ns Rullg?rd wrote:
+Jaroslav Kysela <perex@suse.cz> writes:
 
-> R Chan <rspchan@starhub.net.sg> writes:
-> 
-> > Greg KH is proposing some sysfs changes to the stock kernel - any
-> > impact on CVS ALSA? Is it ok to rely solely on CVS ALSA - I always
-> > build 2.6 from the stock tree and then immediately overwrite the
-> > sound directory with ALSA CVS.
-> 
-> Those patches do not apply cleanly to the latest ALSA version.  There
-> are some minor conflicts, all easily resolved.  I'm not sure whether
-> anything else depends on the ALSA changes, but I wouldn't think so.
-> I've been running ALSA 1.0.1 merged with Greg's patches for some
-> time, and it seems to be working well.
+> On Tue, 20 Jan 2004, M?ns Rullg?rd wrote:
+>
+>> R Chan <rspchan@starhub.net.sg> writes:
+>> 
+>> > Greg KH is proposing some sysfs changes to the stock kernel - any
+>> > impact on CVS ALSA? Is it ok to rely solely on CVS ALSA - I always
+>> > build 2.6 from the stock tree and then immediately overwrite the
+>> > sound directory with ALSA CVS.
+>> 
+>> Those patches do not apply cleanly to the latest ALSA version.  There
+>> are some minor conflicts, all easily resolved.  I'm not sure whether
+>> anything else depends on the ALSA changes, but I wouldn't think so.
+>> I've been running ALSA 1.0.1 merged with Greg's patches for some
+>> time, and it seems to be working well.
+>
+> We will merge these patches when they're merged to mainstream.
 
-We will merge these patches when they're merged to mainstream.
+I suppose someone will also update the drivers as needed.  Only the
+intel8x0 driver has been updated.  The rest should still work as
+before these patches.
 
-						Jaroslav
+-- 
+Måns Rullgård
+mru@kth.se
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
