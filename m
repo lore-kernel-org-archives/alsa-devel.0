@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Thu, 16 Dec 2004 18:32:11 +0100
-Message-ID: <cc65b5b521bec60cc16ea769fc389eb4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000705]: RME96 Driver crashes
+Date: Thu, 16 Dec 2004 18:27:35 +0100
+Message-ID: <a979e7ad23db209e1ce884645528ba69@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 184E2249
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:32:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB058249
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:27:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,121 +24,68 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
 ======================================================================
-Reported By:                footcow
+Reported By:                FishB8
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
+Issue ID:                   705
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
+Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              12-16-2004 18:32 CET
+Date Submitted:             12-03-2004 23:43 CET
+Last Modified:              12-16-2004 18:27 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    RME96 Driver crashes
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
-
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
+Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
+it to crash. Whenever an audio program uses ALSA and stops playing the
+driver hangs. When trying to start JACK, it never gets started but the CPU
+hits 100%. It's impossible to kill any of the programs because any program
+dealing with processes hangs as well. The system will not totally shut
+down and has to be reset. Kernel 2.6.8 works just fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 12-12-04 00:58 
+ martin - 12-15-04 20:06 
 ----------------------------------------------------------------------
-I have applied the last CVS.
-OK now no more Oops in Lines settings.
-
-But sorry I miss understand what you mean here :
-"To playback, make sure that you unmute the volume. Press 'M' on the
-corresponding volume."
-
-Under alsamixer ... Everything is unmute as you can see on my screenshot.
-I send you a new one because with this last release I have two new choice
-: Line-In As Surround and Mic As Center/LFE.
-
-Also what you mean with :
-"There is no h/w playback volume on this codec chip!"
-???
-No possibility to define the volume ??
-I'm under KDE ... if I run Kmix in the output form I have nothing, in the
-input form I have 2 capture option, and in the last option tab
-(interuptors), I can see all the option I see with alsamix (PCM, Surround,
-Centr, LFE etc.) ...
-
-So I still have no sound output for the moment !
-What can I give you to have more technical details ?
+Yes, same result with POSIX SHM support :(
 
 ----------------------------------------------------------------------
- tiwai - 12-16-04 18:32 
+ tiwai - 12-16-04 18:27 
 ----------------------------------------------------------------------
-Other people confirmed that the driver works with this codec chip, so your
-problem must be a configuration issue.
-
-The driver has been updated again recently, so try always the latest CVS
-version.
-
-The chip has really no hardware volume control at all.  See the datasheet
-of CMI9880.
+Could you try the old version of JACK (e.g. 0.98.x) to check the changes
+for swparams threshold in the recent JACK version has any influence on the
+behavior on rme32/96?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
+12-03-04 23:43 FishB8         New Issue                                    
+12-03-04 23:43 FishB8         File Added: config                           
+12-03-04 23:43 FishB8         Distribution              => Gentoo          
+12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 12:30 martin         Note Added: 0002715                          
+12-04-04 17:56 FishB8         Note Added: 0002717                          
+12-04-04 19:21 FishB8         Note Added: 0002718                          
+12-04-04 20:18 eradicator     Issue Monitored: eradicator                    
+12-07-04 18:44 tiwai          Note Added: 0002758                          
+12-07-04 23:06 FishB8         Note Added: 0002768                          
+12-08-04 12:08 tiwai          Note Added: 0002776                          
+12-09-04 00:22 FishB8         Note Added: 0002796                          
+12-09-04 11:22 tiwai          Note Added: 0002798                          
+12-12-04 20:04 martin         Note Added: 0002819                          
+12-12-04 23:35 FishB8         Note Added: 0002820                          
+12-13-04 19:28 martin         Note Added: 0002822                          
+12-15-04 06:09 FishB8         Note Added: 0002825                          
+12-15-04 20:06 martin         Note Added: 0002828                          
+12-16-04 18:27 tiwai          Note Added: 0002835                          
 ======================================================================
 
 
