@@ -1,13 +1,12 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Paul Davis <pbd@op.net>
 Subject: Re: current buglets
-Date: Fri, 16 Aug 2002 00:46:02 +0900
+Date: Thu, 15 Aug 2002 11:59:04 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5BCCBA.2030705@boosthardware.com>
+Message-ID: <E17fMzs-0005hC-00@usw-sf-list1.sourceforge.net>
 References: <s5hbs84tesw.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Thu, 15 Aug 2002 15:46:55 +0200."
+             <s5hbs84tesw.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,30 +19,22 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
-> 
-> how about to gather the bugs of the current driver and list them as
-> known bugs on the web?
-> it would be nice to see such things on alsa or wiki's card page,
-> so that users can know that you are not alone :)
-> 
+>known bugs i know of (and am working on) are:
 
-Done. There is a link ot hte page in the matrix and any card that has a 
-reference in the file has it dsplayed on it's personal install docs page.
+hdsp
+   - cold+warm boot required to get output working
+   - 96kHz and 88.2kHz not accessible via PCM interface
 
-PHP is sooo kewl.
+rme9652
+   - 96kHz and 88.2kHz not accessible via PCM interface
 
+wavefront
+   - cs4232 PCM output does not work at all (produces white noise)
 
+i will be working on the hdsp+rme9652 ones soon; the cs4232 one
+will have to fall in someone else's lap.
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
-
+--p
 
 
 -------------------------------------------------------
