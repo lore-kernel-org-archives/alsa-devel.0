@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: YES! :-) Was: Bug: ALSA Sequencer or MTPAV - easy to reproduce
-Date: Wed, 12 Feb 2003 18:33:18 -0500
+From: Mark Knecht <markknecht@attbi.com>
+Subject: RE: Further info: Bug: ALSA Sequencer or MTPAV - easy
+	to reproduce
+Date: 12 Feb 2003 17:20:12 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18j6JC-0002K5-00@sc8-sf-list1.sourceforge.net>
-References: <20030212134436.3b9e2f10.rpav@nwlink.com>
+Message-ID: <1045099213.1982.4.camel@Godzilla>
+References: <Pine.LNX.4.44.0302122223430.30420-100000@pnote.perex-int.cz>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="=-ba44p+mu1DEpmTcFsNGF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 12 Feb 2003 13:44:36 PST."
-             <20030212134436.3b9e2f10.rpav@nwlink.com>
+In-Reply-To: <Pine.LNX.4.44.0302122223430.30420-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +17,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ryan Pavlik <rpav@nwlink.com>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->For a somewhat elegant solution, it may be possible to have the mtpav
->track the last device and running status.  I initially thought this
->would be impossible, but it looks like it could be done in
->snd_mtpav_output_port_write() (mtpav.c:298).  I will work on this and
->submit a patch shortly, unless someone suggests a better solution.
 
-FYI, the isa/wavefront driver does the same thing (it has two ports
-and uses un-assigned MIDI bytes to switch between them). you might (or
-might not) find it useful to take look there.
+--=-ba44p+mu1DEpmTcFsNGF
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
---p
+On Wed, 2003-02-12 at 13:25, Jaroslav Kysela wrote:
+> On Wed, 12 Feb 2003, Mark Knecht wrote:
+> 
+> > Jaroslav,
+> >    Hi. Actually, I had been looking around for where to report this sort of
+> > problem. I'm using an HDSP 9652 for MIDI input and getting stuck notes on
+> > all soft synths I'm using. (amSynth, ZynAddSubFx and iiwusynth) I'm at a bit
+> > of a loss as to how to debug this, but I do see the problem.
+> > 
+> >    I have found that it is independent of MIDI applications, as I see the
+> > problem if I just use kaconnect to hook MIDI input to the soft synth and
+> > qjackconnect to hook analog output to my speakers.
+> 
+> Could you try the command 'dd if=/dev/snd/midiC0D0 of=abcd bs=1' and play
+> some notes on connected keyboard? In the file abcd will be the raw context
+> of midi input, so we can determine, if it's driver or sequencer problem.
+> 
+> 						Jaroslav
+
+Hi,
+   OK, as requested, here's a few chords and some notes. However, I
+cannot hear the soft synth when doing this, and I normally only get a
+stuck note once every 5-10 minutes, so there's no guarantee that there's
+anything interesting in here.
+
+   Maybe I could record something, using Rosegarden, until I get a stuck
+note, and give you a MIDI file? Don't know if that would be of much help
+as this problem is not terribly repeatable yet.
+
+   Is there any way I can pipe this input to my soft synth so I can hear
+what I'm doing?
+
+Cheers,
+Mark
+
+--=-ba44p+mu1DEpmTcFsNGF
+Content-Disposition: attachment; filename=midi_notes
+Content-Type: application/octet-stream; name=midi_notes
+Content-Transfer-Encoding: base64
+
+kD9DkENVkDxVkEMAkDwAkD8AkD5QkDtSkENVkEMAkDsAkD4AkDxSkENVkEFVkEMAkDwAkEEAkDxO
+kD9JkENMkEMAkDwAkD8AkENKkDtGkD5GkEMAkD4AkDsAkDpKkD5JkDdOkD4AkDcAkDoAkDdKkDlG
+kDcAkDo3kDkAkDwOkDoAkD5HkDwAkD4A
+
+--=-ba44p+mu1DEpmTcFsNGF--
+
 
 
 -------------------------------------------------------
