@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000370]: CMedia 8768 Support
-Date: Sun, 10 Oct 2004 04:48:57 +0200 (CEST)
+Date: Sun, 10 Oct 2004 04:57:02 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041010024857.1F9443F01A@server.perex-int.cz>
+Message-ID: <20041010025702.191BA3F01A@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B8AC24D
-	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2004 04:48:57 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7125221A
+	for <alsa-devel@alsa-project.org>; Sun, 10 Oct 2004 04:57:02 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-07-2004 04:59 CEST
-Last Modified:              10-10-2004 04:48 CEST
+Last Modified:              10-10-2004 04:57 CEST
 ======================================================================
 Summary:                    CMedia 8768 Support
 Description: 
@@ -232,6 +232,20 @@ I use AMD 64-bit kernel 2.6.8-rc2.
 I will attach /etc/asound.state and /proc/asound/card0/cmipci as
 suggested.
 
+----------------------------------------------------------------------
+ robg - 10-10-2004 04:57 CEST 
+----------------------------------------------------------------------
+I checked and my /etc/asound.state and /proc/asound/card0/cmipci were
+identical to those uploaded by patrick so I didn't upload them.
+
+Using aplay I get the following error:
+
+#aplay /usr/lib/mozilla/res/samples/test.wav
+ Playing WAVE '/usr/lib/mozilla/res/samples/test.wav' : Unsigned 8 bit,
+Rate
+ 22050 Hz, Mono
+ aplay: pcm_write:1115: write error: Input/output error
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -257,6 +271,7 @@ Date Modified  Username       Field                    Change
 10-09-04 09:29 patrick        Bugnote Added: 0002061                       
 10-09-04 09:30 patrick        Bugnote Edited: 0002061                      
 10-10-04 04:48 robg           Bugnote Added: 0002064                       
+10-10-04 04:57 robg           Bugnote Added: 0002065                       
 ======================================================================
 
 
