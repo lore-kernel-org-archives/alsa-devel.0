@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000445]: 1.0.6 breaks redhat alsasound script
-Date: Sun, 15 Aug 2004 19:25:07 +0200 (CEST)
+Date: Sun, 15 Aug 2004 23:13:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040815172507.5E8CC1102F@server.perex-int.cz>
+Message-ID: <20040815211307.D12E81102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A77B9260
-	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 19:25:07 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6DDE3182BA
-	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 19:25:07 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7B5FF219
+	for <alsa-devel@alsa-project.org>; Sun, 15 Aug 2004 23:13:08 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000445
 ======================================================================
@@ -41,7 +38,7 @@ Distribution:               redhat
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-15-2004 19:25 CEST
-Last Modified:              08-15-2004 19:25 CEST
+Last Modified:              08-15-2004 23:13 CEST
 ======================================================================
 Summary:                    1.0.6 breaks redhat alsasound script
 Description: 
@@ -68,11 +65,18 @@ FATAL: Module snd_seq_midi already in kernel.
 ...
 ======================================================================
 
+----------------------------------------------------------------------
+ c0ff - 08-15-2004 23:13 CEST 
+----------------------------------------------------------------------
+It's a bug in alsa /proc read function (core/info.c). 2.6.8-rc4 kernel does
+not have this bug, but alsa-driver-1.0.5a has.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
 08-15-04 19:25 deathpudding   New Bug                                      
 08-15-04 19:25 deathpudding   Distribution              => redhat          
+08-15-04 23:13 c0ff           Bugnote Added: 0001568                       
 ======================================================================
 
 
