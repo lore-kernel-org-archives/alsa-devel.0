@@ -1,14 +1,11 @@
-From: Anders Torger <torger@ludd.luth.se>
-Subject: Re: RME DIGI96 ADAT input selection bug fix
-Date: Thu, 3 Jul 2003 10:00:13 +0200 (MEST)
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: hdsp driver status
+Date: Thu, 3 Jul 2003 13:12:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.GSO.4.55.0307030958250.27426@brother.ludd.luth.se>
-References: <200307012014.59778.torger@ludd.luth.se> <s5hadbxkzb5.wl@alsa2.suse.de>
- <200307021503.29038.torger@ludd.luth.se> <s5hsmppjchl.wl@alsa2.suse.de>
+Message-ID: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="----=_20030703131254_39457"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hsmppjchl.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,47 +14,101 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Martin Langer <martin-langer@gmx.de>, Anders Torger <torger@ludd.luth.se>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_20030703131254_39457
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-On Wed, 2 Jul 2003, Takashi Iwai wrote:
+Hi,
 
-> At Wed, 2 Jul 2003 15:03:28 +0200,
-> Anders Torger wrote:
-> >
-> >
-> > On Wednesday 02 July 2003 12.17, Takashi Iwai wrote:
-> > > Hi,
-> > >
-> > > At Tue, 1 Jul 2003 20:14:59 +0200,
-> > >
-> > > Anders Torger wrote:
-> > > > Stefan Mueller found a bug in my Digi96 driver. Sometimes I write
-> > > > != when I mean == or the other way around:
-> > >
-> > > thanks, applied to cvs.
-> > >
-> > > BTW, shall i apply the patch by Martin Langer for unifying the clock
-> > > source control?  it's been pending for long time for evaluation.
-> >
-> > Oh, sorry, I have forgot about that one, could I get to look at the
-> > patch again? I suppose it is ok, but it could potentially make the
-> > driver refuse sampling from the input (returning -EIO) when there is no
-> > signal there.
->
-> well, i think you're referring to a different patch (yeah, i remember
-> there was something like that, too).
->
-> the patch below is the one i wanted to include.
-> basically this changes only the name of clock source control element
-> to be compliant to the definition in ControlNames.txt.
+I've been off the net and busy for a long time. I apologize to anyone
+whose mail I didn't answer during this period. I'm slowly catching up with
+the huge activity that has been going on this list, focusing on the hdsp
+driver issues. I'd like to summarize the driver status :
 
-Ah, thanks. It looks perfectly ok to me, I suggest that you apply it.
-Sorry for not reacting earlier...
+Fixed :
+* Marcus, Jaroslav : thanks for having solved the long (ever ? :)
+lasting hdsp midi bug !
 
-/Anders
+Done:
+* Takashi : I succesfully tested your memory preallocation patch (only
+the hdsp part of it, actually), thanks for it. (Thanks too for the
+addition of hdspconf to cvs, it is indeed the latest version).
+
+Remaining:
+* HDSP9652: the matrix mixer isn't yet handled right.
+* Rev11 + Multiface: either the firmware file is wrong or the io-box
+firmware upload scenario has changed for this card revision. Has anyone
+ever had success with this combination (or rev11 + Digiface) ?
+
+The attached patch :
+* Reenables the hdsp_check_for_iobox function Paul bypassed in his
+previous patch. This function is needed for mobile setups. It handles the
+cases where the iobox has been unplugged/replugged or lost power supply.
+* Fixes the channel limit Mark has reported on the HDSP9652 (24 instead of
+26).
+* Fixes a locking issue reported by Joshua N Pritikin.
+
+David, Jesse and Patrick, I'm back at work on the totalmix clone. It
+should be out for testing really soon. Sorry for having been so
+unresponsive lately.
+
+Thomas
+
+
+
+------=_20030703131254_39457
+Content-Type: application/octet-stream; name="hdsp-03-07-03.patch"
+Content-Disposition: attachment; filename="hdsp-03-07-03.patch"
+Content-Transfer-Encoding: base64
+
+LS0tIGhkc3AuYy5vbGQJMjAwMy0wNy0wMyAxMjoyMzo1Mi4wMDAwMDAwMDAgKzAyMDAKKysrIGhk
+c3AuYwkyMDAzLTA3LTAzIDEyOjI0OjA3LjAwMDAwMDAwMCArMDIwMApAQCAtNzYsOCArNzYsOCBA
+QAogI2RlZmluZSBESUdJRkFDRV9EU19DSEFOTkVMUyAgICAgMTQKICNkZWZpbmUgTVVMVElGQUNF
+X1NTX0NIQU5ORUxTICAgIDE4CiAjZGVmaW5lIE1VTFRJRkFDRV9EU19DSEFOTkVMUyAgICAxNAot
+I2RlZmluZSBIOTY1Ml9EU19DSEFOTkVMUyAgICAgICAgMjQKLSNkZWZpbmUgSDk2NTJfU1NfQ0hB
+Tk5FTFMgICAgICAgIDI0CisjZGVmaW5lIEg5NjUyX0RTX0NIQU5ORUxTICAgICAgICAyNgorI2Rl
+ZmluZSBIOTY1Ml9TU19DSEFOTkVMUyAgICAgICAgMTQKIAogLyogV3JpdGUgcmVnaXN0ZXJzLiBU
+aGVzZSBhcmUgZGVmaW5lZCBhcyBieXRlLW9mZnNldHMgZnJvbSB0aGUgaW9iYXNlIHZhbHVlLgog
+ICovCkBAIC00OTcsMTUgKzQ5NywxNSBAQAogCiBzdGF0aWMgaW5saW5lIGludCBoZHNwX2NoZWNr
+X2Zvcl9pb2JveCAoaGRzcF90ICpoZHNwKQogewotCXJldHVybiAwOwotI2lmIDAKKworCWlmICho
+ZHNwLT5pb190eXBlID09IEg5NjUyKSByZXR1cm4gMDsKIAlpZiAoaGRzcF9yZWFkIChoZHNwLCBI
+RFNQX3N0YXR1c1JlZ2lzdGVyKSAmIEhEU1BfQ29uZmlnRXJyb3IpIHsKIAkJc25kX3ByaW50ayAo
+IkhhbW1lcmZhbGwtRFNQOiBubyBEaWdpZmFjZSBvciBNdWx0aWZhY2UgY29ubmVjdGVkIVxuIik7
+CiAJCWhkc3AtPnN0YXRlICY9IH5IRFNQX0Zpcm13YXJlTG9hZGVkOwogCQlyZXR1cm4gLUVJTzsK
+IAl9CiAJcmV0dXJuIDA7Ci0jZW5kaWYKKwogfQogCiBzdGF0aWMgaW50IHNuZF9oZHNwX2xvYWRf
+ZmlybXdhcmVfZnJvbV9jYWNoZShoZHNwX3QgKmhkc3ApIHsKQEAgLTgzNSw2ICs4MzUsMTEgQEAK
+IAlpbnQgY3VycmVudF9yYXRlOwogCWludCByYXRlX2JpdHM7CiAKKwkvKiBBU1NVTVBUSU9OOiBo
+ZHNwLT5sb2NrIGlzIGVpdGhlciBoZWxwLCBvcgorCSAgIHRoZXJlIGlzIG5vIG5lZWQgZm9yIGl0
+IChlLmcuIGR1cmluZyBtb2R1bGUKKwkgICBpbml0aWFsaXphdGlvbikuCisJKi8KKwkKIAlpZiAo
+IShoZHNwLT5jb250cm9sX3JlZ2lzdGVyICYgSERTUF9DbG9ja01vZGVNYXN0ZXIpKSB7CQogCQlp
+ZiAoY2FsbGVkX2ludGVybmFsbHkpIHsKIAkJCS8qIHJlcXVlc3QgZnJvbSBjdGwgb3IgY2FyZCBp
+bml0aWFsaXphdGlvbiAqLwpAQCAtODY2LDggKzg3MSw2IEBACiAJICAgZXhpc3RzIGZvciBleHRl
+cm5hbGx5LWRyaXZlbiByYXRlIGNoYW5nZXMuIEFsbCB3ZSBjYW4gZG8KIAkgICBpcyB0byBmbGFn
+IHJhdGUgY2hhbmdlcyBpbiB0aGUgcmVhZC93cml0ZSByb3V0aW5lcy4gICovCiAKLQlzcGluX2xv
+Y2tfaXJxKCZoZHNwLT5sb2NrKTsKLQogCXN3aXRjaCAocmF0ZSkgewogCWNhc2UgMzIwMDA6CiAJ
+CWlmIChjdXJyZW50X3JhdGUgPiA0ODAwMCkgewpAQCAtOTA2LDcgKzkwOSw2IEBACiAJCXJhdGVf
+Yml0cyA9IEhEU1BfRnJlcXVlbmN5OTZLSHo7CiAJCWJyZWFrOwogCWRlZmF1bHQ6Ci0JCXNwaW5f
+dW5sb2NrX2lycSgmaGRzcC0+bG9jayk7CiAJCXJldHVybiAtRUlOVkFMOwogCX0KIApAQCAtOTE0
+LDcgKzkxNiw2IEBACiAJCXNuZF9wcmludGsgKCJjYW5ub3QgY2hhbmdlIGJldHdlZW4gc2luZ2xl
+LSBhbmQgZG91YmxlLXNwZWVkIG1vZGUgKGNhcHR1cmUgUElEID0gJWQsIHBsYXliYWNrIFBJRCA9
+ICVkKVxuIiwKIAkJCSAgICBoZHNwLT5jYXB0dXJlX3BpZCwKIAkJCSAgICBoZHNwLT5wbGF5YmFj
+a19waWQpOwotCQlzcGluX3VubG9ja19pcnEoJmhkc3AtPmxvY2spOwogCQlyZXR1cm4gLUVCVVNZ
+OwogCX0KIApAQCAtOTQ1LDcgKzk0Niw2IEBACiAJCWhkc3BfdXBkYXRlX3NpbXBsZV9taXhlcl9j
+b250cm9scyAoaGRzcCk7CiAJfQogCi0Jc3Bpbl91bmxvY2tfaXJxKCZoZHNwLT5sb2NrKTsKIAly
+ZXR1cm4gMDsKIH0KIApAQCAtMzM0Niw5ICszMzQ2LDEzIEBACiAJLyogaG93IHRvIG1ha2Ugc3Vy
+ZSB0aGF0IHRoZSByYXRlIG1hdGNoZXMgYW4gZXh0ZXJuYWxseS1zZXQgb25lID8KIAkgKi8KIAor
+CXNwaW5fbG9ja19pcnEoJmhkc3AtPmxvY2spOwogCWlmICgoZXJyID0gaGRzcF9zZXRfcmF0ZSho
+ZHNwLCBwYXJhbXNfcmF0ZShwYXJhbXMpLCAwKSkgPCAwKSB7CisJCXNwaW5fdW5sb2NrX2lycSgm
+aGRzcC0+bG9jayk7CiAJCV9zbmRfcGNtX2h3X3BhcmFtX3NldGVtcHR5KHBhcmFtcywgU05EUlZf
+UENNX0hXX1BBUkFNX1JBVEUpOwogCQlyZXR1cm4gZXJyOworCX0gZWxzZSB7CisJCXNwaW5fdW5s
+b2NrX2lycSgmaGRzcC0+bG9jayk7CiAJfQogCiAJaWYgKChlcnIgPSBoZHNwX3NldF9pbnRlcnJ1
+cHRfaW50ZXJ2YWwoaGRzcCwgcGFyYW1zX3BlcmlvZF9zaXplKHBhcmFtcykpKSA8IDApIHsK
+
+------=_20030703131254_39457--
+
 
 
 -------------------------------------------------------
