@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000605]: memalloc.c:53 build error
-Date: Wed, 27 Oct 2004 17:43:19 +0200
+Date: Wed, 27 Oct 2004 17:58:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7af58fc24801d27039d07c137d5df5f1@bugtrack.alsa-project.org>
+Message-ID: <4c21db9094e407b27e1db6d282e76ed2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 151FB278
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 17:43:19 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D2CA527B
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 17:58:36 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             10-26-2004 12:37 CEST
-Last Modified:              10-27-2004 17:43 CEST
+Last Modified:              10-27-2004 17:58 CEST
 ======================================================================
 Summary:                    memalloc.c:53 build error
 Description: 
@@ -61,65 +61,6 @@ make[4]: *** [/wrk/cvs/alsa/alsa-driver/kbuild/../acore/memalloc.o] Error
 ======================================================================
 
 ----------------------------------------------------------------------
- lee - 10-27-04 17:27 
-----------------------------------------------------------------------
-Same error here.  If you want to work around it here's how I fixed my
-tree:
-
-Index: alsa-kernel/pci/emu10k1/emu10k1.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1.c,v
-retrieving revision 1.28
-diff -u -r1.28 emu10k1.c
---- alsa-kernel/pci/emu10k1/emu10k1.c   23 Oct 2004 16:10:27 -0000     
-1.28
-+++ alsa-kernel/pci/emu10k1/emu10k1.c   27 Oct 2004 15:25:33 -0000
-@@ -48,24 +48,25 @@
- static int max_synth_voices[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] =
-64};
- static int max_buffer_size[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] =
-128};
- static int enable_ir[SNDRV_CARDS] = {[0 ... (SNDRV_CARDS - 1)] = 0};
-+static int boot_devs;
-
--module_param_array(index, int, NULL, 0444);
-+module_param_array(index, int, boot_devs, 0444);
- MODULE_PARM_DESC(index, "Index value for the EMU10K1 soundcard.");
--module_param_array(id, charp, NULL, 0444);
-+module_param_array(id, charp, boot_devs, 0444);
- MODULE_PARM_DESC(id, "ID string for the EMU10K1 soundcard.");
--module_param_array(enable, bool, NULL, 0444);
-+module_param_array(enable, bool, boot_devs, 0444);
- MODULE_PARM_DESC(enable, "Enable the EMU10K1 soundcard.");
--module_param_array(extin, int, NULL, 0444);
-+module_param_array(extin, int, boot_devs, 0444);
- MODULE_PARM_DESC(extin, "Available external inputs for FX8010.
-Zero=default.");
--module_param_array(extout, int, NULL, 0444);
-+module_param_array(extout, int, boot_devs, 0444);
- MODULE_PARM_DESC(extout, "Available external outputs for FX8010.
-Zero=default.");
--module_param_array(seq_ports, int, NULL, 0444);
-+module_param_array(seq_ports, int, boot_devs, 0444);
- MODULE_PARM_DESC(seq_ports, "Allocated sequencer ports for internal
-synthesizer.");
--module_param_array(max_synth_voices, int, NULL, 0444);
-+module_param_array(max_synth_voices, int, boot_devs, 0444);
- MODULE_PARM_DESC(max_synth_voices, "Maximum number of voices for
-WaveTable.");
--module_param_array(max_buffer_size, int, NULL, 0444);
-+module_param_array(max_buffer_size, int, boot_devs, 0444);
- MODULE_PARM_DESC(max_buffer_size, "Maximum sample buffer size in MB.");
--module_param_array(enable_ir, bool, NULL, 0444);
-+module_param_array(enable_ir, bool, boot_devs, 0444);
- MODULE_PARM_DESC(enable_ir, "Enable IR.");
-
- static struct pci_device_id snd_emu10k1_ids[] = {
-
-This should be fixed according to the CVS log, maybe sourceforge CVS has
-not updated yet.
-
-----------------------------------------------------------------------
  Clemens Ladisch - 10-27-04 17:43 
 ----------------------------------------------------------------------
 lee, your fix is just the reserve of the CVS change that broke things (i.e.
@@ -134,6 +75,13 @@ currently works _only_ with later kernels.
 The alsa-driver package needs some compatibility code to make it work with
 older kernels again.  I'll write something until tomorrow.
 
+----------------------------------------------------------------------
+ lee - 10-27-04 17:58 
+----------------------------------------------------------------------
+OK, thanks, I was seeing this problem before the CVS message so I just
+figured the CVS update was to fix this, looks like it actually introduces
+the problem.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -141,6 +89,7 @@ Date Modified  Username       Field                    Change
 10-27-04 15:58 Clemens LadischNote Added: 0002274                          
 10-27-04 17:27 lee            Note Added: 0002276                          
 10-27-04 17:43 Clemens LadischNote Added: 0002277                          
+10-27-04 17:58 lee            Note Added: 0002278                          
 ======================================================================
 
 
