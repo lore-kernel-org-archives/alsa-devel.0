@@ -1,12 +1,17 @@
-From: =?iso-8859-1?q?Dinesh=20Ahuja?= <mdlinux7@yahoo.co.in>
-Subject: ALSA Programming Interface for Kernel 2.6.8
-Date: Tue, 7 Sep 2004 11:32:37 +0100 (BST)
+From: Adam Tla/lka <atlka@pg.gda.pl>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Tue, 7 Sep 2004 12:34:08 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040907103237.46836.qmail@web8503.mail.in.yahoo.com>
+Message-ID: <20040907103408.GB4584@sunrise.pg.gda.pl>
+References: <200408310852.i7V8qSKk023731@www4.pobox.sk> <Pine.LNX.4.58.0408311131310.1762@pnote.perex-int.cz> <20040906204559.GA4584@sunrise.pg.gda.pl> <Pine.LNX.4.58.0409071050020.1723@linux.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from sunrise.pg.gda.pl (sunrise.pg.gda.pl [153.19.40.230])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 222B3280
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 12:34:25 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0409071050020.1723@linux.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,33 +20,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have build and installed Kernel 2.6.8 which has a
-ALSA support. I want to do a programming with ALSA
-API's and for that I should get the hold of developers
-kit which will provide me all the neccessary headers
-and libraries to work with.
+On Tue, Sep 07, 2004 at 11:05:05AM +0200, Jaroslav Kysela wrote:
+> On Mon, 6 Sep 2004, Adam Tla/lka wrote:
+> There is always a drift between system and card's timing.
+ALSA appl/hw_ptr calculated position is also not exact ;-).
+If I know system time and card hw_ptr it is enough to calculate desired
+position and correct time drift. 
 
-Could anyone suggest me how to proceed with ALSA
-programming and from where I can get the Developer Kit
-for my new Kernel 2.6.8.
+> The appl_ptr is not moved in mmap_begin. The mmap_begin function only 
+> returns the actual position to ring buffer based on appl_ptr.
+That's right. I do mmap_begin to obtain appl offset in ALSA buffer
+and mmap_commit to move the appl pointer so we have no buffer
+underrun and appl offset is equal to hw offset (approximately).
+Now I can update the ALSA buffer from OSS buffer.
 
-I have following ALSA version from
-/proc/asound/version
+> We need the intelligent mmap transport for additional functionality 
+> (conversions, resampling etc.). I think it's the proper way and nobody 
+> (except OSS emulation) has the useability problem. You can still move 
+> backwards (although it is problematic when you have a mixing on the path).
+As I wrote before I use dmix plugin and of course there is a route
+plugin on the path so moving backwards not works. I want to mix OSS apps
+with ALSA apps so everything could be played simultaniously.
+Using ALSA hw:0,0 device for OSS emulation doesn't make any sense for me.
 
-Advanced Linux Sound Architecture Driver Version 1.0.4
-(Mon May 17 14:31:44 2004 UTC).
-Compiled on Sep  7 2004 for kernel 2.6.8.
+Talking about proper using mmaped mode in games, samplers and other apps
+which can generate sound at any time (not exactly - precision is about
+1 to several app frames) which of them could you show here?
+As I know xmms mmaped mode is broken and I just don't know an app
+which uses this mode with success.
+I just need a good example.
+
+Also some widely used programs have problems using native ALSA approach.
+For example mplayer plays sound a bit too late (in dmix case) which
+could be easily observed ("Bruce Almighty"). What is interesting playing
+the same data with aoss and OSS calls we have proper A/V sync.
+Mplayer's A/V status line shows perfect sync in both cases.
+It's mplayers case but shows us that maybe we need a good manual
+describing proper use of ALSA api. Not only what particular parameter
+means but also how properly set them and how to recover from errors.
+With good examples of course ;-).
+
+> err < 0 -> error code
+> err == 0 -> no action (appl_ptr was unchanged in case when you're already 
+> behind hw_ptr)
+OK, but in case of delay < 0 if I then do err = snd_pcm_forward(pcm, -delay)
+I will get err < 0 (probably from rate plugin). So what should I do to recover
+from this situaction?
+
+> > Also what is the meaning of snd_pcm_available > alsa.buffer_size?
+> You're too late, so you need to fill (or better skip via forward) some 
+> more samples to synchronize appl_ptr.
+Forward generates an error, so how to calculate correct appl_ptr
+now and recover from error?
 
 Regards
-Dinesh
 
-
-________________________________________________________________________
-Yahoo! India Matrimony: Find your life partner online
-Go to: http://yahoo.shaadi.com/india-matrimony
+-- 
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
