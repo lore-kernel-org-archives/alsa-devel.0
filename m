@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000170]: pcm.c:2344: snd_pcm_area_copy: Assertion `0' failed, usb-audio, edirol ua-5
-Date: Fri, 16 Jul 2004 12:57:48 +0200 (CEST)
+Subject: [ALSA - driver 0000143]: Kernel Oops
+Date: Fri, 16 Jul 2004 13:05:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716105748.4BA1326009@server.perex-int.cz>
+Message-ID: <20040716110527.68A2526008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9355C244
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:57:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4C0A255
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 13:05:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,65 +22,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000170
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000143
 ======================================================================
-Reported By:                bgolenko
+Reported By:                subodh
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     170
-Category:                   USB - usb-audio
+Bug ID:                     143
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian testing/unstable
-Kernel Version:             2.6.4
+Distribution:               Gentoo
+Kernel Version:             2.6.5-rc1
 ======================================================================
-Date Submitted:             03-30-2004 15:40 CEST
-Last Modified:              07-16-2004 12:57 CEST
+Date Submitted:             03-18-2004 00:55 CET
+Last Modified:              07-16-2004 13:05 CEST
 ======================================================================
-Summary:                    pcm.c:2344: snd_pcm_area_copy: Assertion `0' failed, usb-audio, edirol ua-5
+Summary:                    Kernel Oops
 Description: 
-Device Edirol UA-5 (USB)
-configuration - recording, 24 bit, 96000Hz
-Working correctly with arecord, but I want to have a
-nice GUI ;)
-I'm trying to setup snd-gtk-alsa (version 7.2-1). It is unable to work
-with S24_3LE sample format natively, so I tried to setup a pcm plug to
-convert it on the fly.
-
-After selecting recording from the menu it shows a recording panel for a
-moment and than crashes with the message
-pcm.c:2344: snd_pcm_area_copy: Assertion `0' failed
-
-
+When ever i compile something on my box i get a Oops
 ======================================================================
 
 ----------------------------------------------------------------------
- bgolenko - 03-30-2004 15:43 CEST 
+ perex - 03-23-2004 15:57 CET 
 ----------------------------------------------------------------------
-I forgot to mention - same behaviour with the latest CVS sources
-
-----------------------------------------------------------------------
- perex - 03-31-2004 16:29 CEST 
-----------------------------------------------------------------------
-Yes, it was bug in alsa-lib (unimplemented code for 24-bit samples). It's
-fixed in CVS now.
+It does not look like ALSA bug. It looks like memory corruption.
+Ask on the Linux kernel mailing list.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 15:40 bgolenko       New Bug                                      
-03-30-04 15:40 bgolenko       Distribution              => Debian testing/unstable
-03-30-04 15:40 bgolenko       Kernel Version            => 2.6.4           
-03-30-04 15:43 bgolenko       Bugnote Added: 0000720                       
-03-30-04 15:49 bgolenko       Bug Monitored: bgolenko                      
-03-31-04 16:25 perex          Assigned To              Clemens Ladisch => perex
-03-31-04 16:29 perex          Bugnote Added: 0000723                       
-03-31-04 16:29 perex          Resolution               open => fixed       
-03-31-04 16:29 perex          Status                   assigned => resolved
-07-16-04 12:57 tiwai          Status                   resolved => closed  
+03-18-04 00:55 subodh         New Bug                                      
+03-18-04 00:55 subodh         File Added: oops.out                         
+03-18-04 00:55 subodh         Distribution              => Gentoo          
+03-18-04 00:55 subodh         Kernel Version            => 2.6.5-rc1       
+03-18-04 00:56 subodh         File Added: lspci.out                        
+03-18-04 00:56 subodh         File Added: dmesg.out                        
+03-18-04 00:57 subodh         File Added: .config                          
+03-18-04 00:57 subodh         File Added: ksymoops.txt                     
+03-23-04 15:57 perex          Bugnote Added: 0000662                       
+03-23-04 15:57 perex          Assigned To               => perex           
+03-23-04 15:57 perex          Resolution               open => not a bug   
+03-23-04 15:57 perex          Status                   new => resolved     
+07-16-04 13:05 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
