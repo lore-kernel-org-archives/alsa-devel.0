@@ -1,15 +1,9 @@
-From: Georgi Georgiev <chutz@gg3.net>
-Subject: Re: Creative/emu10k1 status? (working Line-In2)
-Date: Wed, 31 Dec 2003 06:04:41 +0900
+From: Ted <ted@nowtsfree.freeserve.co.uk>
+Subject: alsa-lib-1.0.0rc2/src/pcm/pcm.c and RATE: NONE ??
+Date: Wed, 31 Dec 2003 07:09:39 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031230210440.GB17637@lion.gg3.net>
-References: <S19421AbTKNSdA/20031114183300Z+1380@nic.funet.fi>
-Reply-To: Georgi Georgiev <chutz-dated-1074027884.1287165cfb51@gg3.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="UlVJffcvxoiEqYs2"
+Message-ID: <20031231070940.0AEF14958@marimba.home.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <S19421AbTKNSdA/20031114183300Z+1380@nic.funet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,145 +12,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: kouhia@nic.funet.fi, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: ted@nowtsfree.freeserve.co.uk
 List-Id: alsa-devel@alsa-project.org
 
+Hello and happy new year.
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm having problems getting the pcm hw parameters set up correctly:
 
-> Hello. What is the latest status of Creative/emu10k1 support?
-> 
-> I have Alsa driver where the LiveDrive Line-In2 ("Line LiveDrive 1")
-> on capture bus does not work. We checked the case with Alsa developers
-> but the problem remained. A quick look at the Alsa-Devel archives
-> reveals that others have had the same problem this year.
-> 
-> Before anyone jumps and tell that they are able to record from
-> the Line-In2, I can tell that that is possible via AC97, which
-> is wrong way.
-> 
->  !! If you think your capture works, mail me and we   !!
->  !! *verify* it together with my test mixer settings. !!
+| $ sg audio -c "./aplay /opt/qt-2.2.4/examples/sound/sounds/1.wav"
+| Playing WAVE '/opt/qt-2.2.4/examples/sound/sounds/1.wav' : \
+| 	Unsigned 8 bit, Rate 8000 Hz, Mono
+| aplay: set_params:875: Unable to install hw params:
+| ACCESS:  RW_INTERLEAVED
+| FORMAT:  U8
+| SUBFORMAT:  STD
+| SAMPLE_BITS: 8
+| FRAME_BITS: 8
+| CHANNELS: 1
+| RATE: NONE					<---- looks bad
+| PERIOD_TIME: (1365333 1365334)		<---- ditto
+| PERIOD_SIZE: (183712867 183712868)		<---- ditto
+| PERIOD_BYTES: (183712867 183712868)
+| PERIODS: (1 2)
+| BUFFER_TIME: (1365333 1365334)
+| BUFFER_SIZE: 183712912
+| BUFFER_BYTES: 183712912
+| TICK_TIME: 10000
 
-I was playing with the alsa source in kernel-2.6.0 and after "fixing" a few
-things, my Line-In2 started working as expected.
+Running aplay under gdb reveals:
 
-This is my testing procedure:
+| (gdb) where
+| #0  snd_pcm_hw_param_set_near (pcm=0x805ad08, params=0xbffff654,
+|     var=SNDRV_PCM_HW_PARAM_RATE, val=0xbffff5dc, dir=0x0) at pcm_params.c:787
+| #1  0x4005459a in __snd_pcm_hw_params_set_rate_near (pcm=0x805ad08,
+|     params=0xbffff654, val=0xbffff5dc, dir=0x0) at pcm.c:3593
+| #2  0x400582a4 in snd_pcm_hw_params_set_rate_near (pcm=0x805ad08,
+|     params=0xbffff654, val=134555356, dir=0x0) at pcm.c:6437
+| #3  0x804c4fd in set_params () at aplay.c:841
+| #4  0x804ec53 in playback_go (fd=4, loaded=0, count=8580, rtype=2,
+|     name=0xbffffca9 "/opt/qt-2.2.4/examples/sound/sounds/1.wav")
+|     at aplay.c:1776
+| #5  0x804f0ef in playback (
+|     name=0xbffffca9 "/opt/qt-2.2.4/examples/sound/sounds/1.wav")
+|     at aplay.c:1899
+| #6  0x804b796 in main (argc=2, argv=0xbffffb44) at aplay.c:553
+| #7  0x40101856 in __libc_start_main (main=0x804ad7c <main>, argc=2,
+|     argv=0xbffffb44, init=0x8049d68 <_init>, fini=0x804fa94 <_fini>,
+|     rtld_fini=0x4000a480 <_dl_fini>, stack_end=0xbffffb3c)
+|     at ../sysdeps/generic/libc-start.c:92
 
-- Headset plugged in the Headphones and Mic of the LiveDrive. Card is Live
-  Platinum (with the IEEE1394).
+| (gdb) list 780,786
+| 780     int snd_pcm_hw_param_set_near(snd_pcm_t *pcm, snd_pcm_hw_params_t *params,
+| 781                                   snd_pcm_hw_param_t var,
+| 782                                   unsigned int *val, int *dir)
+| 783     {
+| 784             snd_pcm_hw_params_t save;
+| 785             int err;
+| 786             unsigned int best = *val, saved_min;
+| (gdb) print *val
+| $2 = 134555356
+| (gdb) print **val
+| $3 = 8000		<---- this is what should be assigned to "best"
+| (gdb) print best
+| $4 = 134555356
 
-- Unload all alsa modules and confirm nothing is loaded.... cat
-  /proc/asound/cards says "no cards". My sound-related modules are compiled in
-  the kernel and only the card-specific drivers are modules.
+The 4th argument to snd_pcm_hw_param_set_near(), and
+the 3rd argument to __snd_pcm_hw_params_set_rate_near(),
+named "val", seems to have been dereferenced once too often.
 
-- modprobe snd-emu10k1
+I suspect the macro __P_OLD_NEAR1(pfx, name, ret_type) in /src/pcm/pcm.c,
+but have also seen the discussion early in November, 2003,
 
-- set a few volume levels (all are default, module is freshly loaded and
-  alsactl is not used). I set the headphones, so I can be more than sure that I
-  do not record what I am hearing. The names do not correspond to the original
-  ones, because of the changes to the source.
+  Subject: Re: [Alsa-devel] switch to new PCM API for 1.0 release
+    between Jaroslav Kysela <perex@suse.cz> and
+	    Martin Langer <martin-langer@gmx.de>
 
-  amixer cset numid=36,iface=MIXER,name='Headphone Playback Volume',index=1 50,50
-  amixer cset numid=24,iface=MIXER,name='LiveDrive Line1 Capture Volume' 100,100
-  amixer cset numid=25,iface=MIXER,name='LiveDrive Line1 Capture Switch' on,on
+where the cause was mixing libraries or headers of different versions.
+I have not found any sign of this here, although it does seem strange
+that there are not more people reporting the same problem.
 
-  In reality I used alsamixer to set these three values, but for clarity I show
-  the amixer commands here.
+alsa-lib-1.0.0rc2 was configured with
+CFLAGS="-g -O2" LDFLAGS="-g -O2" ./configure \
+	--with-versioned=no --with-debug=yes
 
-- Test recording
+alsa-utils-1.0.0rc2 was configured with
+CFLAGS="-g O2" LDFLAGS="-g O2" ./configure
 
-  arecord -f cd > out.wav
-  aplay out.wav
+and I'm using gcc 2.95.3 and linux-2.2.25.
 
-Works fine and nothing was heard while recording. AC97 capture level is down,
-Capture switch is off etc.
-
-The exact same procedure does not work using the original sources.
-
-I attach my patch, but it is already too late (it is MORNING already) for me to
-check what exactly "fixed" the problem. The reason I started playing with the
-sources, was because gamix had trouble identifying some of the controls, so I
-decided to change the names to more reasonable values. I also removed the
-indexing of the "LiveDrive Line" controls and it suddenly worked as if by
-magic. I hope some guru creates a more reasonable patch.
-
-One more thing. Happy New Year! I hope this patch makes a bunch of us happy,
-even in its present very ugly state.
-
+Ted.
 -- 
-\    Georgi Georgiev   \  A long memory is the most subversive idea in \
-/     chutz@gg3.net    /  America.                                     /
-\   +81(90)6266-1163   \                                               \
-
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="alsa-emu10k1.patch"
-
---- linux-2.6.0/sound/pci/emu10k1/emufx.c	2003-12-18 11:58:56.000000000 +0900
-+++ linux-2.6.0/sound/pci/emu10k1/emufx.c	2003-12-31 04:52:31.907050521 +0900
-@@ -159,7 +159,7 @@
- 	/* 0x0f */ "Rear Right",
- 	/* 0x10 */ "AC97 Front Left",
- 	/* 0x11 */ "AC97 Front Right",
--	/* 0x12 */ "ADC Caputre Left",
-+	/* 0x12 */ "ADC Capture Left",
- 	/* 0x13 */ "ADC Capture Right",
- 	/* 0x14 */ NULL,
- 	/* 0x15 */ NULL,
-@@ -1897,7 +1897,7 @@
- 		/* Line LiveDrive Playback Volume */
- 		for (z = 0; z < 2; z++)
- 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_LINE1_L + z, gpr + z);
--		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
-+		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line1 Playback Volume", gpr, 0);
- 		gpr += 2;
- 	
- 		/* Line LiveDrive Capture Volume + Switch */
-@@ -1905,8 +1905,8 @@
- 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_LINE1_L + z, gpr + 2 + z);
- 			VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
- 		}
--		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Capture Volume", gpr, 0);
--		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
-+		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line1 Capture Volume", gpr, 0);
-+		snd_emu10k1_init_stereo_onoff_control(controls + i++, "LiveDrive Line1 Capture Switch", gpr + 2, 0);
- 		gpr += 4;
- 	}
- 	
-@@ -1928,21 +1928,21 @@
- 	}
- 	
- 	if (emu->fx8010.extin_mask & ((1<<EXTIN_LINE2_L)|(1<<EXTIN_LINE2_R))) {
--		/* Line LiveDrive Playback Volume */
-+		/* Line2 LiveDrive Playback Volume */
- 		for (z = 0; z < 2; z++)
- 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_LINE2_L + z, gpr + z);
--		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
--		controls[i-1].id.index = 1;
-+		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line2 Playback Volume", gpr, 0);
-+		//controls[i-1].id.index = 1;
- 		gpr += 2;
- 	
--		/* Line LiveDrive Capture Volume */
-+		/* Line2 LiveDrive Capture Volume */
- 		for (z = 0; z < 2; z++) {
- 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_LINE2_L + z, gpr + 2 + z);
- 			VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
- 		}
--		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Capture Volume", gpr, 0);
--		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
--		controls[i-1].id.index = 1;
-+		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line2 Capture Volume", gpr, 0);
-+		snd_emu10k1_init_stereo_onoff_control(controls + i++, "LiveDrive Line2 Capture Switch", gpr + 2, 0);
-+		//controls[i-1].id.index = 1;
- 		gpr += 4;
- 	}
- 
-
---UlVJffcvxoiEqYs2--
+Ted <ted@nowtsfree.freeserve.co.uk>
+   http://www.nowtsfree.freeserve.co.uk
 
 
 -------------------------------------------------------
