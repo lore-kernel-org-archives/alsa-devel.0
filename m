@@ -1,8 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [PATCH] emu10k1: fix P16V breakage
 	for	non	Audigy2 cards
-Date: Thu, 17 Mar 2005 11:00:04 -0500
-Message-ID: <1111075205.23171.13.camel@mindpipe>
+Date: Thu, 17 Mar 2005 11:20:59 -0500
+Message-ID: <1111076459.23171.16.camel@mindpipe>
 References: <1110950511.19984.9.camel@mindpipe>
 	 <1110950832.19984.13.camel@mindpipe> <4238A516.7070802@superbug.co.uk>
 	 <1111074813.23171.11.camel@mindpipe>  <s5hhdja1cz1.wl@alsa2.suse.de>
@@ -24,23 +24,12 @@ Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel <alsa-devel@lists.s
 List-Id: alsa-devel@alsa-project.org
 
 On Thu, 2005-03-17 at 16:58 +0100, Takashi Iwai wrote:
-> At Thu, 17 Mar 2005 10:53:32 -0500,
-> Lee Revell wrote:
-> > 
-> > On Wed, 2005-03-16 at 21:28 +0000, James Courtier-Dutton wrote:
-> > > Thank you for fixing the bug.
-> > > The "unhandled interrupt" should be commented out. It is used for 
-> > > reverse engineering certain features.
-> > > 
-> > 
-> > OK, updated patch attached.
-> 
 > Already applied the older one except but the change to printk.
 > (Is that identical with the new one, right?)
 
-Yes, that's the only change.
-
-Thanks, I didn't see it on the CVS commit list.
+Are you sure you committed it?  I still haven't seen the CVS commit
+message.  And there does not seem to be a list delay since I got the
+commit message for the "misc oopses" patch immediately.
 
 Lee
 
