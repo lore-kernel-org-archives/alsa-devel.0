@@ -1,14 +1,15 @@
-From: "Markus Bollinger" <bollinger@digigram.com>
-Subject: alsa-lib-1.0.6 compile errors on kernel 2.6.3
-Date: Fri, 22 Oct 2004 16:48:12 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000458]: Alsa-driver doesn't compile on x86_64
+Date: Fri, 22 Oct 2004 16:47:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <08F1D234AF91E540BC1F43889E2A6AA701E5C652@digiexch.digigram.com>
+Message-ID: <b4e9bf520007b86e2f9aff403bcaf0f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 778F4242
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:47:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +18,112 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello !
 
-I have errors compiling alsa-lib-1.0.6 with =
-include/linux/byteorder/swab.h
-on a 2.6.3 kernel (Mandrake)
-(compiling file fm.c)
+The following issue requires your FEEDBACK.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=458> 
+======================================================================
+Reported By:                aldg
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   458
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     feedback
+Distribution:               Mandrake
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             08-21-2004 12:17 CEST
+Last Modified:              10-22-2004 16:47 CEST
+======================================================================
+Summary:                    Alsa-driver doesn't compile on x86_64
+Description: 
+make  -C ioctl32 modules
+make[2]: Entering directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
+gcc -D__KERNEL__ -DMODULE=1
+-I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
+-I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
+-fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -DKBUILD_BASENAME=ioctl32   -c -o ioctl32.o ioctl32.c
+In file included from ioctl32.c:2:
+../../alsa-kernel/core/ioctl32/ioctl32.c: In function
+`_snd_ioctl32_ctl_elem_list':
+../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: implicit
+declaration of function `compat_ptr'
+../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: assignment makes
+pointer from integer without a cast
+In file included from ioctl32.c:2:
+../../alsa-kernel/core/ioctl32/ioctl32.c: In function
+`_snd_ioctl32_ctl_elem_value':
+../../alsa-kernel/core/ioctl32/ioctl32.c:302: warning: assignment makes
+pointer from integer without a cast
+gcc -D__KERNEL__ -DMODULE=1
+-I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
+-I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
+-fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
+-Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -DKBUILD_BASENAME=pcm32   -c -o pcm32.o pcm32.c
+In file included from
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/linux/compat.h:1,
+                 from ../../alsa-kernel/core/ioctl32/ioctl32.h:29,
+                 from ../../alsa-kernel/core/ioctl32/pcm32.c:27,
+                 from pcm32.c:2:
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
+redefinition of `compat_time_t'
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
+`compat_time_t' previously declared here
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:7: error:
+redefinition of `struct compat_timespec'
+/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:12: error:
+redefinition of `struct compat_timeval'
+In file included from pcm32.c:2:
+../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xferi':
+../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: implicit declaration
+of function `compat_ptr'
+../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: assignment makes
+pointer from integer without a cast
+In file included from pcm32.c:2:
+../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xfern':
+../../alsa-kernel/core/ioctl32/pcm32.c:260: warning: assignment makes
+pointer from integer without a cast
+../../alsa-kernel/core/ioctl32/pcm32.c:268: warning: assignment makes
+pointer from integer without a cast
+make[2]: *** [pcm32.o] Error 1
+make[2]: Leaving directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
+make[1]: *** [_modsubdir_ioctl32] Error 2
+make[1]: Leaving directory
+`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore'
+make: *** [compile] Error 1
 
-Error messages are quite identic with following bug :
-http://sourceforge.net/mailarchive/message.php?msg_id=3D8973854
+======================================================================
 
-Is it a known bug ? Patch available ?
+----------------------------------------------------------------------
+ perex - 10-22-04 16:47 
+----------------------------------------------------------------------
+Can you try with 1.0.7rc2?
 
-ciao,
-Markus.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-21-04 12:17 aldg           New Issue                                    
+08-21-04 12:17 aldg           Distribution              => Mandrake        
+08-21-04 12:17 aldg           Kernel Version            => 2.4.27          
+10-22-04 16:47 perex          Note Added: 0002248                          
+10-22-04 16:47 perex          Status                   assigned => feedback
+======================================================================
 
-P.S. alsa-lib-1.0.7rc2 gives the same error
 
-
-You can find Digigram at:
-AES US, San Francisco, USA, October 28-31, 2004
 
 
 -------------------------------------------------------
