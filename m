@@ -1,14 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: GadgetLabs Driver for Alsa Linux
-Date: Wed, 20 Oct 2004 13:28:48 -0400
+From: Martin Habets <errandir_news@mph.eclipse.co.uk>
+Subject: Re: latencytest for PPC?
+Date: Wed, 20 Oct 2004 18:54:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1098293328.1429.135.camel@krustophenia.net>
-References: <LEEHJNBIEAAEJEHBEGDBGEJICFAA.mazarick@bellsouth.net>
+Message-ID: <20041020175433.GA3653@palantir8>
+References: <20041018123725.GA2154@palantir7.mph.eclipse.net> <1098220826.23367.6.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <LEEHJNBIEAAEJEHBEGDBGEJICFAA.mazarick@bellsouth.net>
+Content-Disposition: inline
+In-Reply-To: <1098220826.23367.6.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mike Mazarick <mazarick@bellsouth.net>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Jole <jole@conwaycorp.net>, Waldemar Haszlakiewicz <waldemar.haszlakiewicz@siol.net>, Jay Schwichtenberg <jays@aracnet.com>
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: MPH Kernel <opendev@mph.eclipse.co.uk>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 2004-10-20 at 12:40, Mike Mazarick wrote:
-> The current
-> plan is to develop it with the Planet CCRMA setup for Fedora Core 1 (kernel
-> 2.4, alsa .9)
+On Tue, Oct 19, 2004 at 05:20:27PM -0400, Lee Revell wrote:
+> Untested on PPC but should work:
+> 
+> http://www.ussg.iu.edu/hypermail/linux/kernel/0409.1/0665.html
 
-This is probably a waste of time.  By the time you get the driver
-working everyone will probably be on 2.6.  I would just start there. 
-Then, if you really need to support 2.4 you can backport it.
+Well, hardly! The code is in arch/i386 and rtc.c, neither of which are
+available for PPC. I don't see how to port this either.
 
-Lee
-
-
+-- 
+Martin
 
 
 -------------------------------------------------------
