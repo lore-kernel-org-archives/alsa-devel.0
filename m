@@ -1,16 +1,15 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: ADPCM 16kbps and other formats
-Date: Fri, 16 Aug 2002 15:47:59 -0700 (PDT)
+From: Paul Davis <pbd@op.net>
+Subject: Re: PCM ioctls
+Date: Sat, 17 Aug 2002 07:59:31 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020816224759.14004.qmail@web11504.mail.yahoo.com>
-References: <s5hvg6x8dhi.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200208171157.NAA13178@alsa.alsa-project.org>
+References: <20020816221225.10207.qmail@web11504.mail.yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web11504.mail.yahoo.com (web11504.mail.yahoo.com [216.136.172.36])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id AAA04851
-	for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2002 00:48:22 +0200
-In-Reply-To: <s5hvg6x8dhi.wl@alsa2.suse.de>
+Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA13178
+	for <alsa-devel@alsa-project.org>; Sat, 17 Aug 2002 13:57:30 +0200
+In-Reply-To: Your message of "Fri, 16 Aug 2002 15:12:25 PDT."
+             <20020816221225.10207.qmail@web11504.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,30 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+>There are 3 standard PCM ioctls, and a driver could potentially support others
+>via its own ioctl function registered in the snd_pcm_ops_t structure. Could
+>anyone give me a hint regarding how an application could then call such
+>standard and other ioctls?
 
-It is my understanding that the SNDRV_PCM_FORMAT_IMA_ADPCM format supported by
-ALSA is the 32kbps variant of G.726 standard in telephony (vs. propriatory
-variants like MS-ADPCM).
+i'm not going to do that, but i will point you at the "hwdep" API,
+which exists specifically to provide a way to make hw-dependent
+operations available that don't map into the existing ALSA API. you
+create a hwdep device within the driver; apps can open it, and call
+whatever ioctl's you provide. 
 
-I would like to add support for at least the 16kbps variant of G.726 (24kbps
-and 40kbps are other possibilities), and wonder if an entirely different format
-should be used for each (vs. one G.726 format and PCM subtypes)?
+its a bad idea for general purpose software, of course, since such s/w
+can't know about your specific ioctls, but it works well for writing
+h/w specific control apps. i have an app for the wavefront synth, for
+example, which has a whole bunch of operations that don't fit into any
+of the existing PCM, MIDI or Sequencer APIs. these are implemented via
+the hwdep API, such as it is.
 
-Of course, any hints as to how one adds new PCM formats to ALSA would be
-immensely welcomed.
-
-Thanks,
-Guilhem.
-
-
-__________________________________________________
-Do You Yahoo!?
-HotJobs - Search Thousands of New Jobs
-http://www.hotjobs.com
+--p
 
 
 -------------------------------------------------------
