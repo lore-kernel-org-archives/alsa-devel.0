@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000919]: Master volume doesn't control rear speakers...
-Date: Fri, 18 Feb 2005 15:00:34 +0100
-Message-ID: <c95e68d52d19065f24d7940b49642679@bugtrack.alsa-project.org>
+Date: Fri, 18 Feb 2005 15:02:28 +0100
+Message-ID: <a0fe6ee64178b65246616cb21e32a4b5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4C9F24E
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 15:00:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E22024E
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 15:02:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-18-2005 12:41 CET
-Last Modified:              02-18-2005 15:00 CET
+Last Modified:              02-18-2005 15:02 CET
 ======================================================================
 Summary:                    Master volume doesn't control rear speakers...
 Description: 
@@ -49,17 +49,18 @@ affected at all.
 ======================================================================
 
 ----------------------------------------------------------------------
- adamk75 - 02-18-05 14:41 
-----------------------------------------------------------------------
-Then shouldn't "master" be renamed?  A master volume control implies that
-it will control the volume of all output.  Clearly this isn't the case.
-
-----------------------------------------------------------------------
  tiwai - 02-18-05 15:00 
 ----------------------------------------------------------------------
 Maybe.  It's called as Master only from a traditional reason.  For example,
 OSS uses this control as the Master control.
 I myself don't mind to change it except for compatibility reason.
+
+----------------------------------------------------------------------
+ tiwai - 02-18-05 15:02 
+----------------------------------------------------------------------
+Also, this register controls the master volume of the mixing among PCM and
+input signals from Line, Mic, etc (although its output is routed only to
+Front).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -70,6 +71,7 @@ Date Modified  Username       Field                    Change
 02-18-05 14:32 tiwai          Note Added: 0003652                          
 02-18-05 14:41 adamk75        Note Added: 0003653                          
 02-18-05 15:00 tiwai          Note Added: 0003654                          
+02-18-05 15:02 tiwai          Note Added: 0003655                          
 ======================================================================
 
 
