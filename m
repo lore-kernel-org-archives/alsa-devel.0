@@ -1,12 +1,11 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Alsa + 2.6 kernel + Program freezee
-Date: Sun, 19 Oct 2003 12:06:43 -0400
+From: Denis Sbragion <d.sbragion@infotecna.it>
+Subject: Re: Minor Revo Bug
+Date: Wed, 22 Oct 2003 09:44:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310191606.h9JG6hKx030568@oud.linuxaudiosystems.com>
-References: <200310171255.26909.boci@coder.hu>
+Message-ID: <5.1.0.14.1.20031022094429.033682a0@pop3.infotecna.lcl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Fri, 17 Oct 2003 12:55:26 +0200."
-             <200310171255.26909.boci@coder.hu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,23 +14,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso-8859-1?q?H=E1ber=20J=E1nos?= <boci@coder.hu>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I use kernel 2.6 with Alsa (2.6 kernel internal ALSA). And some program is 
->freezee or going to zombie.
->Example KDE artsd use alsa and some program want to acces it (example 
->MozillaFirebird flash plugin) the accessing program going to zombie. (I try 
->to desable artsD because if I use mplayer and Mozilla, or I rerun mplayer too 
->fast)...
->Anybody have some idea?
+Hello Mark,
 
-you've got hardware that doesn't support multiopen, artsd has it in
-use already, and the other program is not opening in non-blocking
-mode. this means it waits for the device to be closed by artsd.
+At 15.06 21/10/2003 +0100, you wrote:
+> >The left front channel is always mute when the M-Audio Revolution
+> >(ice1724) driver is started/restarted with all mixer settings saved
+> >on exit. The other channels are fine.
+>
+> >Moving the DAC volume slider in alsamixer unmutes this channel.
+>
+>I should add:
+>
+>1) This bug does not exist in version 0.9.6, so it probably has
+>    something to do with the recent bug fixes in ice1724?
+>
+>2) Volume settings are restored correctly in alsamixer on startup but
+>    the left front channel is mute until the DAC volume slider is moved
+>    up or down.
 
-shutdown artsd and stop running it. thats my best guess.
+may be this could help: this exact same thing happens also with the 
+Terratec EWX 24/96 (ice1712), but on the right channel. This small quirk is 
+lasting since 0.9.0rc5 with the EWX. I tryed to find the source of the 
+problem myself, but I've never been hable to indentify a real bug, either 
+in the driver or in alsactl.
+
+Bye,
+--
+	Denis Sbragion
+	InfoTecna
+	Tel: +39 0362 805396, Fax: +39 0362 805404
+	URL: http://www.infotecna.it
+
 
 
 -------------------------------------------------------
