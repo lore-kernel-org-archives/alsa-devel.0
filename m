@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000558]: Hardware Monitoring is missing for EWS88D
-Date: Mon,  4 Oct 2004 18:55:11 +0200 (CEST)
+Subject: [ALSA - driver 0000555]: ATI IXP 150 - Does Not work majority of the time.
+Date: Mon,  4 Oct 2004 18:57:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041004165511.119DF4A046@server.perex-int.cz>
+Message-ID: <20041004165704.EFC154A046@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F90025E
-	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 18:55:11 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52E9925E
+	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 18:57:05 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,47 +20,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000558
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000555
 ======================================================================
-Reported By:                theitch
-Assigned To:                
+Reported By:                bremedios
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     558
-Category:                   PCI - ice1712
-Reproducibility:            always
+Bug ID:                     555
+Category:                   PCI - atiixp
+Reproducibility:            sometimes
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               FC 1 - CCRMA
-Kernel Version:             2.4.26
+Status:                     resolved
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.8.1
+Resolution:                 won't fix
 ======================================================================
-Date Submitted:             10-02-2004 05:03 CEST
-Last Modified:              10-04-2004 18:55 CEST
+Date Submitted:             09-30-2004 20:53 CEST
+Last Modified:              10-04-2004 18:57 CEST
 ======================================================================
-Summary:                    Hardware Monitoring is missing for EWS88D
+Summary:                    ATI IXP 150 - Does Not work majority of the time.
 Description: 
-The Hardware Monitoring for the the envy24/ice1712-based Terratec EWS88D
-does not function when using the ice1712 driver.
+Majority of the time (approx 70%) the board boots and reports timeout
+errors.  In these cases the sound driver fails to load, thus trying to use
+any sound applications results in failure.
+
+Trying to unload and reload the modules when it fails does not seem to
+help.
+
+Shutting down and Starting up seems to eventually fix the problem.
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-04-2004 18:55 CEST 
+ tiwai - 10-01-2004 17:03 CEST 
 ----------------------------------------------------------------------
-It's a bug of jack.  Since EWS88D has no analog I/O for multi-channel
-mode, it doesn't have the corresponding control for analog but only
-for SPDIF.
+What happens if you start with pci=noacpi or acpi=off?
+
+----------------------------------------------------------------------
+ bremedios - 10-01-2004 19:17 CEST 
+----------------------------------------------------------------------
+pci=noacpi has the result of getting the ATI IXP 150 to work.
+
+I guess this is actually an ACPI bug then right?
+
+----------------------------------------------------------------------
+ tiwai - 10-04-2004 18:57 CEST 
+----------------------------------------------------------------------
+Yes, it must be an ACPI issue.   Close this bug now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-02-04 05:03 theitch        New Bug                                      
-10-02-04 05:03 theitch        Distribution              => FC 1 - CCRMA    
-10-02-04 05:03 theitch        Kernel Version            => 2.4.26          
-10-03-04 20:36 theitch        Bug Monitored: theitch                       
-10-04-04 18:55 tiwai          Bugnote Added: 0002012                       
+09-30-04 20:53 bremedios      New Bug                                      
+09-30-04 20:53 bremedios      File Added: messages                         
+09-30-04 20:53 bremedios      Distribution              => Fedora Core 2   
+09-30-04 20:53 bremedios      Kernel Version            => 2.6.8.1         
+10-01-04 17:03 tiwai          Bugnote Added: 0002000                       
+10-01-04 19:17 bremedios      Bugnote Added: 0002005                       
+10-04-04 18:57 tiwai          Bugnote Added: 0002014                       
+10-04-04 18:57 tiwai          Resolution               open => won't fix   
+10-04-04 18:57 tiwai          Status                   assigned => resolved
 ======================================================================
 
 
