@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Testing Audio driver
-Date: Thu, 18 Mar 2004 10:05:15 +0100 (CET)
+From: "Pavana Sharma" <pavans@india.ti.com>
+Subject: RE: Testing Audio driver
+Date: Thu, 18 Mar 2004 14:45:56 +0530
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403181003560.1835@pnote.perex-int.cz>
-References: <000601c40cc1$ae444e30$f8b6a8c0@ent.ti.com>
+Message-ID: <000901c40cc9$9f771d80$f8b6a8c0@ent.ti.com>
+References: <Pine.LNX.4.58.0403181003560.1835@pnote.perex-int.cz>
+Reply-To: <pavans@india.ti.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <000601c40cc1$ae444e30$f8b6a8c0@ent.ti.com>
+In-Reply-To: <Pine.LNX.4.58.0403181003560.1835@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,9 +19,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pavana Sharma <pavans@india.ti.com>
+To: 'Jaroslav Kysela' <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+Thank you,
+
+
+-----Original Message-----
+From: Jaroslav Kysela [mailto:perex@suse.cz]
+Sent: Thursday, March 18, 2004 2:35 PM
+To: Pavana Sharma
+Cc: alsa-devel@lists.sourceforge.net
+Subject: Re: [Alsa-devel] Testing Audio driver
+
 
 On Thu, 18 Mar 2004, Pavana Sharma wrote:
 
@@ -39,6 +53,7 @@ alsa-lib and type 'make pcm' in the test directory.
 Jaroslav Kysela <perex@suse.cz>
 Linux Kernel Sound Maintainer
 ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
