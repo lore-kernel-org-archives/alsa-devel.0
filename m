@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000811]: 1.0.8-rc2 base/treble adjustment does not work with "tone" button enabled
-Date: Mon, 14 Feb 2005 19:32:45 +0100
-Message-ID: <ad254d88b576862ab03c5cb2db14754f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
+Date: Mon, 14 Feb 2005 19:33:47 +0100
+Message-ID: <19a3b392acffe109d5b1b2cd10eef840@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E9E5819C
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:32:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E98F81DD
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:33:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,58 +23,82 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=811> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
 ======================================================================
-Reported By:                vinyvat
-Assigned To:                
+Reported By:                Luke-Jr
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   811
-Category:                   PCI - emu10k1
+Issue ID:                   626
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
 Distribution:               
-Kernel Version:             2.6.8.1
-Resolution:                 not an issue
+Kernel Version:             
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-12-2005 18:58 CET
-Last Modified:              02-14-2005 19:32 CET
+Date Submitted:             11-03-2004 15:14 CET
+Last Modified:              02-14-2005 19:33 CET
 ======================================================================
-Summary:                    1.0.8-rc2 base/treble adjustment does not work with
-"tone" button enabled
+Summary:                    Oops on cat /dev/urandom > /dev/dsp
 Description: 
-With 1.8.0-rc2, using any alsa mixer apps (alsamixer, kmix,
-gnome-alsa-mixer), the base/treble adjustment does nothing even when I
-make sure the "Tone" button is clicked.
+Oops: kernel access of bad area, sig: 11
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
+tainted
+MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+DAR: D254203C, DSISR: 40000000
+TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
+GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
+00000B03
+GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
+00000000
+GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
+00000000
+GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
+00000B03
+NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
+LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+Call trace:
+ [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+ [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
+ [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
+ [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
+ [c0058320] vfs_write+0x114/0x13c
+ [c0058424] sys_write+0x4c/0x90
+ [c00063a0] ret_from_syscall+0x0/0x44
 
-Reproduce:
-/etc/init.d/alsa start
-alsaplayer # to play some music
-alsamixer
-
-adjust base/treble - no difference in sound, even when "tone" is enabled.
 ======================================================================
 
 ----------------------------------------------------------------------
- vinyvat - 01-13-05 06:22 
+ Luke-Jr - 11-10-04 15:14 
 ----------------------------------------------------------------------
-Please close this bug. Cannot reproduce any more with 1.0.8-rc2 ( maybe was
-too late at night ? )
+Didn't fix it.
+
+----------------------------------------------------------------------
+ tiwai - 01-13-05 17:06 
+----------------------------------------------------------------------
+This is fixed (on 2.6.10 kernel, too).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 18:58 vinyvat        New Issue                                    
-01-12-05 18:58 vinyvat        Kernel Version            => 2.6.8.1         
-01-13-05 06:22 vinyvat        Note Added: 0003181                          
-01-13-05 12:52 tiwai          Status                   new => resolved     
-01-13-05 12:52 tiwai          Resolution               open => not an issue
-01-13-05 12:52 tiwai          Assigned To               => tiwai           
-01-13-05 12:52 tiwai          Assigned To              tiwai =>            
-02-14-05 19:32 tiwai          Status                   resolved => closed  
+11-03-04 15:14 Luke-Jr        New Issue                                    
+11-09-04 18:51 tiwai          Note Added: 0002334                          
+11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
+11-09-04 19:41 tiwai          Note Added: 0002349                          
+11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
+11-10-04 12:10 tiwai          Note Added: 0002365                          
+11-10-04 14:05 Luke-Jr        Note Added: 0002373                          
+11-10-04 14:20 tiwai          Note Added: 0002374                          
+11-10-04 15:14 Luke-Jr        Note Added: 0002375                          
+01-13-05 17:06 tiwai          Status                   assigned => resolved
+01-13-05 17:06 tiwai          Resolution               open => fixed       
+01-13-05 17:06 tiwai          Note Added: 0003187                          
+02-14-05 19:33 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
