@@ -1,13 +1,13 @@
-From: Stephen Hassard <steve@hassard.net>
-Subject: Re: Updated: via8233 driver -- testers wanted
-Date: Mon, 27 May 2002 07:29:07 -0700
+From: "Joerg Amann" <Joerg.Amann@inka.de>
+Subject: AC3 out with ENS1371 (Reg 0x1c bit 1)
+Date: Mon, 27 May 2002 18:40:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.1.1.2.2.20020527072432.00aa3078@www.angiotech.com>
-References: <s5hit59emm8.wl@alsa2.suse.de>
+Message-ID: <033c01c2059d$37985650$6465020a@optiplex>
+Reply-To: "Joerg Amann" <Joerg.Amann@novanetwork.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0339_01C205AD.FAE57CE0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hit59emm8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,54 +19,80 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi there,
+This is a multi-part message in MIME format.
 
-I just tried from CVS (within the last 20 mins) on my MSI KT266A chipset 
-with VT8233 southbridge and have a few problems. I've compiled and 
-modprobe'd all the req'd modules. The VT8233 detected properly, I've setup 
-OSS emulation and /dev/dsp exists. I try playing an mp3 stream thru xmms 
-and everything looks okay (no errors), but when I run any of the alsa apps 
-(alsactl store, alsamixer) I get a "function snd_ctl_open failed for 
-default: Sound protocol is not compatible" error .. I'm definitely using 
-the right lib and utils from the cvs ..
+------=_NextPart_000_0339_01C205AD.FAE57CE0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-later,
-Steve
+I have installed alsa 0.9.0beta12 and PCM out over SPDIF is working =
+fine,
+bat I cant get AC3 to work (using ac3play, ac3dec or ac3spdif).
+All I get is the noise of data. I think the SPDIF frames are not tagged
+as non audio. From the tech specs =
+(http://www.resus.univ-mrs.fr/~mikael/Data/Misc/es1373.ps.gz or
+http://www.resus.univ-mrs.fr/~mikael/Data/Misc/es1373_spec.zip as Word =
+Doc)
+I get the info the it is possible to set the Info via Register 0x1C bit =
+1. In the driver source I can=B4t
+find any line touching Reg 0x1C.
+Is it used by the alsa driver ? Is it possible to implement it ?
 
-At 03:39 PM 27/05/2002 +0200, Takashi Iwai wrote:
->Hi,
->
->with help of VIA tech, i've changed via8233 drivers to support VT8233A
->chip, which has been not working so far.
->the changes were already commited to cvs.
->
->so, if someone has VIA8233 chipsets, please test the latest cvs
->version, and report back to this ML.  (please check via8233.c has
->rev.1.16.)
->
->this change affects not only to VT8233A but also VT8233 and VT8233C
->chips.  it'd be appreciated if owners of these chips can test the
->driver.
->
->also, if your hardware supports multiple channels (4/6 playbacks) or
->spdif i/o, please let me know.  these features are not implemented,
->but could be done relatively easily.
->
->
->thanks,
->
->Takashi
->
->_______________________________________________________________
->
->Don't miss the 2002 Sprint PCS Application Developer's Conference
->August 25-28 in Las Vegas -- http://devcon.sprintpcs.com/adp/index.cfm
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
+Greetings
+
+Joerg
+
+
+------=_NextPart_000_0339_01C205AD.FAE57CE0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>I have installed alsa 0.9.0beta12 and =
+PCM out over=20
+SPDIF is working fine,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>bat I cant get AC3 to work (using =
+ac3play, ac3dec=20
+or ac3spdif).</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>All I get is the noise of data. I think =
+the SPDIF=20
+frames are not tagged</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>as non audio. From the tech specs (<A=20
+href=3D"http://www.resus.univ-mrs.fr/~mikael/Data/Misc/es1373.ps.gz">http=
+://www.resus.univ-mrs.fr/~mikael/Data/Misc/es1373.ps.gz</A>&nbsp;or</FONT=
+></DIV>
+<DIV><FONT face=3DArial size=3D2><A=20
+href=3D"http://www.resus.univ-mrs.fr/~mikael/Data/Misc/es1373_spec.zip">h=
+ttp://www.resus.univ-mrs.fr/~mikael/Data/Misc/es1373_spec.zip</A>&nbsp;as=
+=20
+Word Doc)</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>I get the info the it is possible to =
+set the Info=20
+via Register 0x1C bit 1. In the&nbsp;driver source I =
+can=B4t</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>find any line&nbsp;touching Reg =
+0x1C.</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2>Is it used by the alsa driver ? Is it =
+possible to=20
+implement it ?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Greetings</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Joerg</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV></BODY></HTML>
+
+------=_NextPart_000_0339_01C205AD.FAE57CE0--
 
 
 _______________________________________________________________
