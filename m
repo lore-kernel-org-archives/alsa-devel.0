@@ -1,16 +1,13 @@
-From: Jan Depner <eviltwin69@cableone.net>
-Subject: Re: alsa timer slippage
-Date: 14 Dec 2003 08:38:51 -0600
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: listing devices.
+Date: Mon, 15 Dec 2003 00:12:39 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1071412731.10990.11.camel@eviltwin>
-References: <200312141335.00239.cannam@all-day-breakfast.com>
-	<1071410558.10990.3.camel@eviltwin>
-	<200312141434.59757.cannam@all-day-breakfast.com>
+Message-ID: <3FDC7DE7.1040003@boosthardware.com>
+References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin> <200312141434.59757.cannam@all-day-breakfast.com> <200312141448.21384.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312141434.59757.cannam@all-day-breakfast.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,45 +16,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Cannam <cannam@all-day-breakfast.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Multiple soundcards usually have to use word clock or some proprietary
-method of syncing the cards.  Usually one card will be the master and
-the others slaves.  I know you can put up to 4 ST Audio DSP24 cards in
-one system and set one up as master.  I believe the same is true for the
-M-Audio Delta 1010.
+I'm looking but I can't find a way to get the list of all available 
+devices including virtual devices defined in the .asoundrc
 
-As for having a bad timer on a system, I've worked a lot with realtime
-systems and sometimes you just get a lemon.
+Is there any function that provides this?
 
-Jan
+If not has there been any thought put into how it can be accomplished?
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
 
-On Sun, 2003-12-14 at 08:34, Chris Cannam wrote:
-> On Sunday 14 Dec 2003 2:02 pm, Jan Depner wrote:
-> > If I'm not mistaken the timing for your audio is coming from your
-> > sound card not your system clock.
-> 
-> Is that so?  Obvious though it is, that simply hadn't occurred to me.
-> 
-> I mentally ruled out a hardware problem quite early on because I 
-> wasn't seeing this problem when using a low-latency kernel on the 
-> same hardware -- but maybe I just hadn't done enough testing with the 
-> low-latency kernel.  I'll give it another shot.
-> 
-> The other points that brings to mind are, what if you have more than 
-> one soundcard or no soundcard at all (only say USB devices)? and what 
-> if the soundcard's just a chip on the motherboard, as mine is -- 
-> wouldn't it get its own timing from the system clock?  It's plausible 
-> that this crappy i810 could have a crappy timer, though this example 
-> would be unusually crappy.
-> 
-> 
-> Chris
-> 
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
 
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
 
 
 
