@@ -1,15 +1,14 @@
-From: Vojtech Pavlik <vojtech@suse.cz>
-Subject: Re: [2.6 patch] OSS gameport fixes
-Date: Thu, 10 Mar 2005 16:57:29 +0100
-Message-ID: <20050310155729.GB27494@ucw.cz>
-References: <20050304033215.1ffa8fec.akpm@osdl.org> <200503070941.59365.petkov@uni-muenster.de> <20050307215206.GH3170@stusta.de> <d120d50005030714126e345fe2@mail.gmail.com> <20050307230633.GJ3170@stusta.de> <20050309113217.GB21688@stusta.de> <d120d5000503100736212a9c87@mail.gmail.com>
+From: Sebastian Benoit <benoit-lists@fb12.de>
+Subject: Juli@-Card and hanging process snd-ak4114/0
+Date: Thu, 10 Mar 2005 18:03:32 +0100
+Message-ID: <20050310170354.GH78387@mail.webmonster.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from mail.suse.cz (styx.suse.cz [82.119.242.94])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA3E1197
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 16:57:28 +0100 (MET)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="GV0iVqYguTV4Q9ER"
+Received: from mail.webmonster.de (datasink.webmonster.de [194.162.162.209])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 7318E1B2
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 18:03:33 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <d120d5000503100736212a9c87@mail.gmail.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,49 +18,51 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: dtor_core@ameritech.net
-Cc: Adrian Bunk <bunk@stusta.de>, Borislav Petkov <petkov@uni-muenster.de>, perex@suse.cz, Andrew Morton <akpm@osdl.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, linux-input@atrey.karlin.mff.cuni.cz
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Mar 10, 2005 at 10:36:57AM -0500, Dmitry Torokhov wrote:
-> On Wed, 9 Mar 2005 12:32:17 +0100, Adrian Bunk <bunk@stusta.de> wrote:
-> > This patch adds dummy gameport_register_port, gameport_unregister_port
-> > and gameport_set_phys functions to gameport.h for the case when a driver
-> > can't use gameport.
-> > 
-> > This fixes the compilation of some OSS drivers with GAMEPORT=n without
-> > the need to #if inside every single driver.
-> > 
-> > This patch also removes the non-working and now obsolete SOUND_GAMEPORT.
-> > 
-> > This patch is also an alternative solution for ALSA drivers with similar
-> > problems (but #if's inside the drivers might have the advantage of
-> > saving some more bytes of gameport is not available).
-> > 
-> > The only user-visible change is that for GAMEPORT=m the affected OSS
-> > drivers are now allowed to be built statically (but they won't have
-> > gameport support).
-> > 
-> 
-> Hi Adrian,
-> 
-> I have somewhat mixed feeling about the patch. Some solutions is
-> definitely needed but I don't like allocating memory that will never
-> be used. I think I would perfer #ifdefing gameport support is OSS
-> modules, _if_ #ifdefs are out of line and not in the middle of code
-> path.
-> 
-> I'll let Vojtech decide which way he wants to go - he could probably
-> apply the patch and then we could convert drivers one by one and kill
-> the stubs later.
 
-OK, I'll add it, since it fixes immediate breakage. I'll also accept
-patches that #ifdef-out the relevant parts of sound drivers if gameport
-support is not present.
+--GV0iVqYguTV4Q9ER
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Vojtech Pavlik
-SuSE Labs, SuSE CR
+
+Hi,
+
+I already reported this in a note to issue 930 of the ALSA bugtracking
+system:
+
+I've a Juli@-Soundcard working with the current CVS-driver.
+
+The main problem is, that a process "snd-ak4114/0" is using 60% of my CPU
+time. I would like to solve this problem, and have started reading trough
+the code. But it seems I need some pointers where to look ;-)
+
+/Benno
+--=20
+Sebastian Benoit <benoit-lists@fb12.de>
+My mail is GnuPG signed -- Unsigned ones are bogus -- http://www.gnupg.org/
+GnuPG 0xD777DBA7 2003-09-10 D02B D0E0 3790 1AA1 DA3A  B508 BF48 87BF D777 D=
+BA7
+
+Democratization of the internet must be opposed at all costs. The
+infestation ecommerce was bad enough, but to allow regular people to post
+their diaries online -- well, that's simply intolerable.
+
+--GV0iVqYguTV4Q9ER
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.0 (FreeBSD)
+
+iD8DBQFCMH36v0iHv9d326cRAmDGAJwLccpRzrqQYfKJbfzjbms0hGFUBwCgqJvn
+J3Oc5hk/qAyR9HJzZOnPo+M=
+=B3Es
+-----END PGP SIGNATURE-----
+
+--GV0iVqYguTV4Q9ER--
 
 
 -------------------------------------------------------
