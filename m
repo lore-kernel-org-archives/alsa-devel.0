@@ -1,13 +1,15 @@
-From: --friar <friar@zendragon.com>
-Subject: problems loading cmipci module with A7M266-D
-Date: Sat, 30 Nov 2002 22:09:37 -0500
+From: Matthias Weiss <matthias.weiss@inode.at>
+Subject: Re: Debugging driver modules
+Date: Sun, 1 Dec 2002 15:27:44 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200212010309.WAA07518@www.zendragon.com>
+Message-ID: <6302.49866885624$1038753109@news.gmane.org>
+References: <1038695263.19113.12.camel@vermin2.joe.net> <E18IBVD-0004hD-00@sc8-sf-list1.sourceforge.net>
+Reply-To: matthias.weiss@inode.at
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-ID: <7508.1038712177.1@localhost>
+Content-Disposition: inline
+In-Reply-To: <E18IBVD-0004hD-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,41 +21,30 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Ok, I've now tried both the 0.9.0rc6 and just built the latest
-version from cvs, neither module works.  I am running Slackware and
-have compiled both the 2.4.20 (SMP) kernel and the modules using the
-standard 2.95.3 20010315 (release) gcc.
+On Sat, Nov 30, 2002 at 12:38:20PM -0500, Paul Davis wrote:
+> >I have a STAudio DSP24 mkII and I have noticed that recent changes(after
+> >NOV 13) in the CVS creates an ICE1712 driver that locks up my kernel.
+> >Instead of just complaining about this problem I thought I might try to
+> >narrow down the location in the driver that is causing the lockup.
+> >
+> >Does anyone have any tips on debugging the driver modules? Is anyone
+> >using a debugger to do this? I have looked at UML, but I am not sure if
+> >there is a way to access the sound hardware with it.
+> 
+> use the "single" kernel option on the boot command line. this will
+> shorten start up times considerably. once you're at the shell prompt,
+> mount any necessary filesystems by hand, modprobe the drivers, and
+> test using a console window. i generally find that this shortens the
+> crash-reboot-edit-recompile-reboot-crash cycle by a factor of at least
+> three. mount any filesystems that don't need to be writable with the
+> "ro" option so that any crash leaves them untouched.
 
-"lspci -v" gives:
-02:04.0 Multimedia audio controller: C-Media Electronics Inc CM8738 (rev 10)
-        Subsystem: Asustek Computer, Inc.: Unknown device 8077
-        Flags: bus master, stepping, medium devsel, latency 32
-        I/O ports at c800 [size=256]
-        Capabilities: [c0] Power Management version 2
+Couldn't "user mode linux" be used to avoid the "reboot" stage?
 
-With "modprobe snd-cmipci" I get:
-/lib/modules/2.4.20/kernel/sound/pci/snd-cmipci.o: init_module: No such device
-
-various "ls -ld /dev/dsp" gives:
-jolt# ls -ld /dev/dsp
-lrwxrwxrwx    1 root     root            9 Nov 30 21:52 /dev/dsp -> /dev/dsp0
-jolt# ls -ld /dev/dsp0
-crw-rw-rw-    1 root     root      14,   3 Nov 30 21:52 /dev/dsp0
-jolt# ls -ld /dev/dsp1 
-crw-rw-rw-    1 root     root      14,  19 Nov 30 21:52 /dev/dsp1
-
-
-The standard kernel cmpci.o module will load,
-but doesn't provide an openable /dev/dsp.
-
-Any ideas?  I'll provide any further information, if needed.
-It works fine under Windows 2000.
-
---friar
-
+matthias
 
 
 -------------------------------------------------------
-This SF.net email is sponsored by: Get the new Palm Tungsten T 
-handheld. Power & Color in a compact size! 
-http://ads.sourceforge.net/cgi-bin/redirect.pl?palm0002en
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
