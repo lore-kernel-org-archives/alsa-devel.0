@@ -1,12 +1,12 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: Re: hdsp on big-endian
-Date: Wed, 22 May 2002 09:56:28 -0400
+Subject: Re: alsa mmap-mode does not block on poll?
+Date: Wed, 22 May 2002 10:00:21 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17AWZX-00026H-00@usw-sf-list1.sourceforge.net>
-References: <s5hoff8fg62.wl@alsa2.suse.de>
+Message-ID: <200205221358.g4MDwNj23290@post2.fast.net>
+References: <20020521162616.GB17561@jesus>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 22 May 2002 15:47:17 +0200."
-             <s5hoff8fg62.wl@alsa2.suse.de>
+In-Reply-To: Your message of "Tue, 21 May 2002 12:26:21 EDT."
+             <20020521162616.GB17561@jesus>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +15,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Andy Wingo <wingo@pobox.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->basically PCI bus is accessed as LE.  that's why in_le32 is used
+>Hi folks. I have a probably silly issue that will most likely have a
+>really quick answer. For some reason, polling on a playback fd is not
+>blocking, even though I set avail_min to be one period's worth (for
+>example, 1024). Instead it returns immediately, avail_update gives me
+>something on the order of 16 frames, and I end up busy-waiting until I
+>have one period's worth of data. Would someone mind taking a look at
+>this loop? It worked a long time ago, but I can't figure out what the
+>problem is now. This is with rc1.
 
-OK, well apparently on OS X, either RME didn't use standard macros for
-this (most likely), or there are no standard macros for this.
-
->there.  we can access to io without considration of endianess as long
->as using readX/writeX.
-
-Sounds like it, yes. Very nice.
-
---p
+does it do this on different hardware?
 
 _______________________________________________________________
 
