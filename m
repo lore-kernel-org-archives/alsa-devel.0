@@ -1,11 +1,12 @@
 From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: capture buffers on SBLIVE...
-Date: Sat, 29 Jun 2002 21:26:44 +0200
+Subject: Re: alsa-conf will not compile.
+Date: Sat, 29 Jun 2002 21:37:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D1E09F4.46DDF834@folkwang-hochschule.de>
+Message-ID: <3D1E0C7B.AFDB896F@folkwang-hochschule.de>
+References: <3D17B909.20006@superbug.demon.co.uk> <s5hofdy56ko.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,46 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: James@superbug.demon.co.uk, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello * !
+Takashi Iwai wrote:
+> 
+> At Tue, 25 Jun 2002 01:27:53 +0100,
+> James Courtier-Dutton wrote:
+> >
+> > Has anyone managed to get "alsa-conf" to compile ?
+> >
+> > I use the current CVS, but it will not compile.
+> > Is "alsa-conf" of any use any more ?
+> 
+> no, it's not maintained atm.
+> it was designed for the old system.  since then, some things have been
+> changed.
+> 
+> iirc the following problems have to be solved:
+> 
+> - rewrite the parser for outputs of new modprobe/modinfo
+> - rewrite the code to use snd-xxx instead of snd-card-xxx
+> - the module syntax description was moved from the built-in module
+>   description to /lib/modules/XXX/modules.generic_string.
+>   the parser must look at the latter file.
+> 
 
-i'm tracking down a nasty problem i have with jack. is there any way to
-increase the periods-per-hardware-buffer setting on an sblive for
-capture ? jackd refuses to do that, and i wonder whether it's a hardware
-limitation.
-
-
-kleineronkel:~ # jackd -R -d alsa -d hw:0 -n 4 -p 2048
-jackd 0.37.1
-
-alsa PCM driver args:
-    -d alsa-pcm-name (default: default)
-    -r sample-rate (default: 48kHz)
-    -p frames-per-period (default: 1024)
-    -n periods-per-hardware-buffer (default: 2)
-    -H (use hardware monitoring if available, default: no)
-    -D (duplex, default: yes)
-    -C (capture, default: duplex)
-    -P (playback, default: duplex)
-    -z[r|t|s|-] (dither, rect|tri|shaped|off, default: off)
-
-Copyright 2001-2002 Paul Davis and others.
-jackd comes with ABSOLUTELY NO WARRANTY
-This is free software, and you are welcome to redistribute it
-under certain conditions; see the file COPYING for details
-
-creating alsa driver ... hw:0|2048|4|48000|swmon
-ALSA: cannot set number of periods to 4 for capture
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-jack main caught signal 15
-
-
-best,
-
-j=F6rn
+since SuSE 8.0 autoconfigures ALSA in a breeze, perhaps they might be
+willing to share some of their yast2 magic ? ;) <hint />
 
 
 -------------------------------------------------------
