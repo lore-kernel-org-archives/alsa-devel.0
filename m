@@ -1,10 +1,10 @@
-From: John Covici <covici@ccs.covici.com>
-Subject: weird results using aplay on Midiman audiofile 24/96 card
-Date: Thu, 11 Jul 2002 04:52:40 -0400
+From: Free Ekanayaka <free@centrotemporeale.it>
+Subject: Compinling ALSA modules with different kernel configurations
+Date: Thu, 11 Jul 2002 14:09:12 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m365zmr6hz.fsf@ccs.covici.com>
+Message-ID: <Pine.LNX.4.44.0207111359220.1773-100000@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,23 +14,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have been trying to use a Midiman Audiofile 24/96 under Linux with
-output to the sp/diff output and I am getting the following results.
 
-Silence if I play a stereo file 16 bit 44.100 hz
+Hi there,
+	I have to use differetly compiled kernels (same
+version and revision but different .config) for my desktop and
+my laptop.
 
-For a mono file of the same characteristics, I get it to play but
-with the pitches all reduced as though it were at the wrong sample
-rate.
+How can I avoid to compile ALSA modules two times (one per kernel
+configuration) and make my kernels share the same modules  ?
 
-Any assistance would be appreciated.
+(I've tried to use the modules compiled with my laptop kernel
+configuration on the desktop, but I got unresolved symbols).
 
--- 
-         John Covici
-         covici@ccs.covici.com
+thank you
+
+Free
+
+
 
 
 -------------------------------------------------------
