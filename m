@@ -1,13 +1,15 @@
-From: tom burkart <alsa@aussec.com>
-Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
-Date: Wed, 11 Jun 2003 23:09:35 +1000 (EST)
+From: Gorm David Lai <lai@daimi.au.dk>
+Subject: Re: problems with rme digi96/8
+Date: 11 Jun 2003 15:17:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306112305230.1814-100000@home.aussec.com>
-References: <Pine.HPX.4.33n.0306111132500.7104-100000@studcom.urz.uni-halle.de>
+Message-ID: <1055337460.1392.45.camel@duff>
+References: <1054808252.7022.8.camel@duff> <20030605190335.GB493@tuba.home>
+	<1054893994.2069.47.camel@duff>  <20030609172302.GA498@tuba.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0306111132500.7104-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <20030609172302.GA498@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,21 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Today, Clemens Ladisch wrote:
+I also have problems with aplay. Maybe this is related?
 
-> What, exactly, does "doesn't work properly" mean? It doesn't compile?
-> "modprobe snd-ymfpci" fails? Error messages in /var/log/messages?
-> "aplay something.wav" crashes? The computer explodes? Green demons
-> coming out of your speakers?
-:-)  oops.  Sorry about the vagueness...
+The following command:
 
-"aplay something.wav" causes scratchy sounds to be emitted from the
-speakers.
+aplay -D hw:0,1 -c 8 ~/cavi/sound/01/01\ Track\ \ 1.wav
 
-tom.
+Which gives the following output:
+
+Playing WAVE '/users/lai/cavi/sound/01/01 Track  1.wav' : Signed 16 bit
+Little Endian, Rate 44100 Hz, Stereo
+aplay: set_params:810: Channels count non available
+
+
+/Gorm
 
 
 
