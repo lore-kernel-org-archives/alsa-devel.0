@@ -1,12 +1,16 @@
-From: "Daniel Schnell" <daniel.schnell@gmx.net>
-Subject: Q: is the ALSA-lib API thread-safe
-Date: Thu, 5 Aug 2004 09:57:00 +0200
+From: "Martin Langer" <martin-langer@gmx.de>
+Subject: Re: 1.0.6rc1 packages
+Date: Thu, 5 Aug 2004 09:48:57 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1e2101c47ac1$ca702340$2c0aa8c0@lumpidu>
+Message-ID: <26012.1091692137@www37.gmx.net>
+References: <32796.192.168.1.5.1091660025.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_1E1E_01C47AD2.8D665030"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 0E67310A
+	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 09:48:57 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,77 +19,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Rui Nuno Capela <rncbc@rncbc.org>
+Cc: alsa-devel@alsa-project.org, annabellesgarden@yahoo.de, tiwai@suse.de, perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------=_NextPart_000_1E1E_01C47AD2.8D665030
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+> Tomorrow I'll try on my dreaded laptop, Mdk10.0, 2.6.8-rc2 UP kernel,
+> where recent snd-usb-usx2y it's known to freeze the whole system :(
+> 
+> BTW, it's not a SMP vs. UP issue, as I've tested today on a SMP kernel
+> with a very same config as of my other box, and the freezing result was
+> the same.
 
-Hi,
+different usb controllers? Problems with non-UHCI?
 
-is the ALSA-Lib-API thread-safe concerning the following scenario:
-
-
-in thread 1 the audio-processing takes place via snd_pcm_avail_update(), =
-
-snd_pcm_begin(), snd_pcm_commit(). In thread 2 I call the functions:=20
-snd_pcm_hwsync(), snd_pcm_avail_update() to get the actual delay via
-bufferframes - snd_pcm_avail_update(). Should I lock these calls or
-should I use instead snd_pcm_avail() in thread 2 ?
-Is there any difference concerning thread-safety between the hw: layer =
-or the plug: layer ?
-
-Confused,
-
-Ciao,
-
-Daniel.
-
-------=_NextPart_000_1E1E_01C47AD2.8D665030
-Content-Type: text/html;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; =
-charset=3Diso-8859-1">
-<META content=3D"MSHTML 6.00.2800.1400" name=3DGENERATOR>
-<STYLE></STYLE>
-</HEAD>
-<BODY bgColor=3D#ffffff>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Times New Roman" =
-size=3D3>Hi,<BR><BR>is=20
-the ALSA-Lib-API thread-safe concerning the following =
-scenario:<BR><BR><BR>in=20
-thread 1 the audio-processing takes place via snd_pcm_avail_update(),=20
-</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Times New Roman"=20
-size=3D3>snd_pcm_begin(), snd_pcm_commit(). In thread 2 I call the =
-functions:=20
-</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Times New Roman"=20
-size=3D3>snd_pcm_hwsync(), snd_pcm_avail_update() to get the actual =
-delay=20
-via</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Times New Roman" =
-size=3D3>bufferframes -=20
-snd_pcm_avail_update(). Should I lock these calls or</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Times New Roman" =
-size=3D3>should I use=20
-instead snd_pcm_avail() in thread 2 ?</FONT></FONT></DIV>
-<DIV><FONT face=3DArial size=3D2><FONT face=3D"Times New Roman" =
-size=3D3>Is there any=20
-difference concerning thread-safety between the hw: layer or the plug: =
-layer=20
-?<BR><BR>Confused,<BR><BR>Ciao,<BR><BR>Daniel.</FONT><BR></DIV></FONT></B=
-ODY></HTML>
-
-------=_NextPart_000_1E1E_01C47AD2.8D665030--
+-- 
+NEU: WLAN-Router für 0,- EUR* - auch für DSL-Wechsler!
+GMX DSL = supergünstig & kabellos http://www.gmx.net/de/go/dsl
 
 
 
