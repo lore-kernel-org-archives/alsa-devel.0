@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000783]: Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
-Date: Mon, 3 Jan 2005 16:52:02 +0100
-Message-ID: <e3e833edb384f92e436e1b6a9d405061@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000701]: Here is a speaker-test man page
+Date: Mon, 3 Jan 2005 16:55:06 +0100
+Message-ID: <85f70adbd2e60b4989253eed01b8d378@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 30D1B343
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:52:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB7FF28B
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:55:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,74 +22,49 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=783> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=701> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   783
-Category:                   CORE OSS - pcm
+Project:                    ALSA - utils
+Issue ID:                   701
+Category:                   aplay/arecord
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     closed
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-03-2005 16:40 CET
-Last Modified:              01-03-2005 16:52 CET
+Date Submitted:             12-02-2004 13:44 CET
+Last Modified:              01-03-2005 16:55 CET
 ======================================================================
-Summary:                    Bug in handling of NONBLOCK in core/oss/pcm_oss.c?
+Summary:                    Here is a speaker-test man page
 Description: 
-I just discovered that Ubuntu is applying the patch presented below.  It
-adds three lines to snd_pcm_oss_read1().
+Attached is a speaker-test man page which I believe was submitted to Debian
+by James Courtier-Dutton.  Please proof read it before including it.
 
-(The patch comes from this file:
-http://people.ubuntu.com/~scott/ongoing-merge/alsa-driver/alsa-driver_merged.patch
-)
-
-The patch doesn't appear in your cvs.  I decided that I should forward it
-to you for consideration.  If it's correct, it's probably obvious to you
-that it is; if it isn't correct, it's probably obvious to you that it
-isn't.
-
-Note that the three lines added by the patch are copied verbatim out of
-snd_pcm_oss_write1().
-
---- alsa-driver_1.0.7-2/sound/core/oss/pcm_oss.c	2004-11-11
-06:41:05.000000000 +0000
-+++ alsa-driver_1.0.7-2ubuntu1/sound/core/oss/pcm_oss.c	2004-12-11
-12:46:11.806838912 +0000
-@@ -926,6 +926,9 @@ static ssize_t snd_pcm_oss_read1(snd_pcm
- 			buf += tmp;
- 			bytes -= tmp;
- 			xfer += tmp;
-+			if ((substream->ffile->f_flags & O_NONBLOCK) != 0 &&
-+			    tmp != runtime->oss.period_bytes)
-+				break;
- 		}
- 	}
- 	return xfer;
-
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 16:52 
+ tiwai - 12-02-04 15:45 
 ----------------------------------------------------------------------
-Any bug reports about this?
-
-I don't think the patch is necessary.  When the returned value is less
-than the expected, it's still OK.  At the next read, it should receive
--EAGAIN.  So, the code will get out of loop anyway at the next read.
+Applied to CVS with minor changes.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:40 jdthood        New Issue                                    
-01-03-05 16:52 tiwai          Note Added: 0003068                          
+12-02-04 13:44 jdthood        New Issue                                    
+12-02-04 13:44 jdthood        File Added: speaker-test.1                    
+12-02-04 15:45 tiwai          Status                   new => resolved     
+12-02-04 15:45 tiwai          Resolution               open => fixed       
+12-02-04 15:45 tiwai          Assigned To               => tiwai           
+12-02-04 15:45 tiwai          Note Added: 0002682                          
+01-03-05 16:55 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
