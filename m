@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000631]: card detected but no sound
-Date: Tue, 16 Nov 2004 17:00:48 +0100
-Message-ID: <6a0e973b21bc81ba3d5e610afda8816c@bugtrack.alsa-project.org>
+From: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
+Subject: Re: Conversion from S16 format to ALAW
+Date: Tue, 16 Nov 2004 17:32:17 +0100
+Message-ID: <419A2B91.8070803@ma.tech.ascom.ch>
+References: <4199B349.4080404@ma.tech.ascom.ch> <Pine.LNX.4.58.0411160926111.21901@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4F35F250
-	for <alsa-devel@alsa-project.org>; Tue, 16 Nov 2004 17:00:48 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0411160926111.21901@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=631> 
-======================================================================
-Reported By:                poleta33
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   631
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               gentoo
-Kernel Version:             2.4.26-gentoo
-Resolution:                 not an issue
-Fixed in Version:           
-======================================================================
-Date Submitted:             11-05-2004 16:29 CET
-Last Modified:              11-16-2004 17:00 CET
-======================================================================
-Summary:                    card detected but no sound
-Description: 
-I've installed alsa with alsaconf... everything runs perfectly but I've got
-no sound... (I've tried to unmute amixer with no success).. now i'm
-totally lost... I've got one error on dmesg dealing with JEDEC but cannot
-solve...
+Thanks Jaroslav and Takashi for your questions; they served as inputs !
 
-gva1080 distfiles # amixer info
-Card default 'I82801BAICH2'/'Intel 82801BA-ICH2 at 0xdc00, irq 17'
-  Mixer name    : 'Analog Devices AD1885'
-  Components    : 'AC97a'
-  Controls      : 36
-  Simple ctrls  : 25
+I was not explicitly specifying the format (-f A_LAW), considering that 
+since the plugin type itself is "alaw". I missed the fact that I 
+specified default format of this plugin to be S16_LE in my alsa.conf !
 
-gva1080 distfiles # ls -l /dev/dsp
-lr-xr-xr-x  1 root root 9 Nov  5 16:24 /dev/dsp -> sound/dsp
+I have another question about the warning given in function header of 
+snd_pcm_alaw_open (same applies for corresponding mulaw function).
 
+Does the warning suggest that applications should not be using this 
+function directly, they should instead configure their alsa.conf and use 
+snd_pcm_open ?
 
-======================================================================
+Manu
 
-----------------------------------------------------------------------
- poleta33 - 11-09-04 14:33 
-----------------------------------------------------------------------
-you can close it...
-
-sorry...
-
-----------------------------------------------------------------------
- tiwai - 11-16-04 17:00 
-----------------------------------------------------------------------
-Ok, closed now.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-05-04 16:29 poleta33       New Issue                                    
-11-05-04 16:29 poleta33       Distribution              => gentoo          
-11-05-04 16:29 poleta33       Kernel Version            => 2.4.26-gentoo   
-11-09-04 14:30 poleta33       Note Added: 0002321                          
-11-09-04 14:33 poleta33       Note Added: 0002322                          
-11-16-04 17:00 tiwai          Status                   new => resolved     
-11-16-04 17:00 tiwai          Resolution               open => not an issue
-11-16-04 17:00 tiwai          Assigned To               => tiwai           
-11-16-04 17:00 tiwai          Note Added: 0002429                          
-======================================================================
-
+Jaroslav Kysela wrote:
+> On Tue, 16 Nov 2004, Manu Sharma wrote:
+> 
+> 
+>>Hi all,
+>>
+>>I am trying to sample and play alaw streams on my iPAQ 5500. The HW 
+>>driver registers support for S16_LE only. So, to achieve my purpose, I 
+>>register a plugin like following in my alsa.conf file:
+>>
+>>pcm.alaw {
+>>	type alaw
+>>	slave {
+>>		pcm  "hw:0.0"
+>>		format S16_LE
+>>	}
+>>}
+>>
+>>With this, when I use arecord to capture sound, I get an error "arecord: 
+>>set_params:832: Sample format not available".
+> 
+> 
+> Could you specify the full command? It should be something like:
+> 
+> arecord -D alaw -f A_LAW ...
+> 
+> Anyway, the default device should do this job for you also:
+> 
+> arecord -f A_LAW ...
+> 
+> 						Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project, SUSE Labs
+> 
+> 
 
 
 
