@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000744]: no sound
-Date: Mon, 27 Dec 2004 19:35:29 +0100
-Message-ID: <05716569ccd27615a97695f4cfd5deeb@bugtrack.alsa-project.org>
+From: Daniel Svensson <nano@nittionio.nu>
+Subject: snd-emu10k1x samplerate capabilities
+Date: Mon, 27 Dec 2004 20:47:58 +0000
+Message-ID: <1104180478.4396.5.camel@paranoia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B64D427D
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 19:35:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +15,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+The snd-emu10k1x driver accepts samplerates that the hardware is not
+capable of handling.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=744> 
-======================================================================
-Reported By:                kluczus
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   744
-Category:                   PCI - es1968
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               PLD
-Kernel Version:             2.6.8
-======================================================================
-Date Submitted:             12-23-2004 23:34 CET
-Last Modified:              12-27-2004 19:35 CET
-======================================================================
-Summary:                    no sound
-Description: 
-on the notebook armada e500 i have a sound card ESS 1978, device was
-detected but i have no sound (module es1968), alsamixer is telling me that
-"snd_ctl_open failed for default: no such file or directory",
-in modprobe.conf i have "alias char-major-116 snd
-alias snd-card-0 snd-es1968
-alias char-major-14 soundcore
-alias sound-slot-0 snd-card-0
-alias sound-service-0-0 snd-mixer-oss
-alias sound-service-0-1 snd-seq-oss
-alias sound-service-0-3 snd-pcm-oss
-alias sound-service-0-8 snd-seq-oss
-alias sound-service-0-12 snd-pcm-oss
-options snd major=116 cards_limit=1 device_mode=0660
-options snd-es1968 index=0
-"
-on the OSS with module maestro it was worknig but i want to use alsa :)
-the same problem with alsa on this equipment i have also on Fedora3
+rate = 44100;
+err = snd_pcm_hw_params_set_rate_near (pcm, hwparams, &rate, NULL);
 
-sorry for my english, i hope that you uderstand me :)
-======================================================================
+err should be less than zero if the requested rate is 44100, or the rate
+should be set to 48000. As it's handled now when that line is executed
+the samplerate is set to 44100 and sound is broken.
 
-----------------------------------------------------------------------
- tiwai - 12-27-04 19:35 
-----------------------------------------------------------------------
-Make sure that the driver is really loaded and initialized.
-Check /proc/asound/cards whether you have the valid entry.
-
-If yes, it's likely the problem of device files.  Check whether you have
-valid /dev/snd/* device files (and proper permissions).
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-23-04 23:34 kluczus        New Issue                                    
-12-23-04 23:34 kluczus        Distribution              => PLD             
-12-23-04 23:34 kluczus        Kernel Version            => 2.6.8           
-12-26-04 15:06 kluczus        Issue Monitored: kluczus                     
-12-27-04 19:35 tiwai          Note Added: 0002974                          
-======================================================================
-
+-- Daniel Svensson
 
 
 
