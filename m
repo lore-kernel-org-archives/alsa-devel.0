@@ -1,15 +1,12 @@
-From: Jeffrey Baker <jwbaker@acm.org>
-Subject: Re: intel8x0, ad198x, no sound
-Date: Sun, 18 May 2003 14:17:25 -0700
+From: Chris Rankin <rankincj@yahoo.com>
+Subject: [PATCH] snd-sscape.o and snd-pnp.o
+Date: Sun, 18 May 2003 22:26:26 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030518211725.GC3375@noodles>
-References: <20030518194617.GA3302@noodles> <20030518202706.GA3466@noodles>
+Message-ID: <200305182126.h4ILQQku010611@wittsend.radionet>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20030518202706.GA3466@noodles>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,65 +15,88 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 18, 2003 at 01:27:06PM -0700, Jeffrey Baker wrote:
-> On Sun, May 18, 2003 at 12:46:17PM -0700, Jeffrey Baker wrote:
-> > This is related to the mail last week regarding the Asus P4PE with
-> > ad1980 sound chip.  I got an Asus P4P800 with the ad1985.  The
-> > intel8x0 driver works but there are problems with the sound routing.
-> > There is no sound at all coming from the main (line out) output.
-> > If I plug headphones into the line in jack, there is sound but it
-> > appears to be some kind of surround output, because it lacks all low
-> > frequencies entirely.  No sound comes from the microphone jack.
-> > 
-> > I think the problem may be related to the "intelligent" jack sensing
-> > built into this hardware.  It is supposed to be able to detect when
-> > you've got your headphones plugged into the wrong jack and reroute
-> > the audio.  Either that, or the chip is stuck in some surround mode
-> > that isn't quite working.
-> 
-> Hi.  It helps to read the datasheet.  Although this isn't stated in
-> the motherboard's documentation, the headphone amplifier is, in
-> fact, connected to the line-in jack.  There is a register (0x76)
-> which controls the input for the headphone amp.  It can be either 0
-> for the surround DAC or 1 for the mixer.  By default it is 0.  This
-> explains why I am hearing high-passed surround audio from the
-> headphones.
-> 
-> I glanced at intel8x0.c, but it wasn't immediately obvious how to
-> set registers on the codec.
+Takashi,
 
-Ah OK.  I added this patch to ac97_codec.c:
+I have managed to enable the SoundScape driver on my machine. It wasn't too difficult,
+once I worked out why it was refusing to find the sound card on the ISA-PnP bus. The
+PnP compatibility module appears to implement the new API on an as-needed basis,
+and so I have added suuport for the PNP_DRIVER_RES_DO_NOT_CHANGE flag. I
+hope that I have understood this flag correctly. The idea is that it's better to load the
+firmware once at boot-time and then keep the device active.
 
---- ac97_codec.c        2003-04-11 00:45:23.000000000 -0700
-+++ /root/ac97_codec.c  2003-05-18 14:12:27.000000000 -0700
-@@ -104,6 +104,7 @@
- { 0x41445363, 0xffffffff, "AD1886A",           patch_ad1881,   NULL },
- { 0x41445370, 0xffffffff, "AD1980",            patch_ad1980,   NULL },
- { 0x41445372, 0xffffffff, "AD1981A",           patch_ad1881,   NULL },
-+{ 0x41445375, 0xffffffff, "AD1985",            patch_ad1980,   NULL },
- { 0x414c4300, 0xfffffff0, "RL5306",            NULL,           NULL },
- { 0x414c4310, 0xfffffff0, "RL5382",            NULL,           NULL },
- { 0x414c4320, 0xfffffff0, "RL5383",            NULL,           NULL },
+Cheers,
+Chris
 
-
-This makes proper headphone-power audio emerge from the line-out
-jack.  But, the main level is controlled by the "Surround" slider in
-the mixer, which isn't exposed to the OSS mixer interface.  
-
-It seems like mixer routing for this codec is a little screwed up.
-If the SURR_OUT and LINE_OUT are going to be swapped once in
-software (reg 0x76 <- 0x420), and then the motherboard vendor is
-swapping them again in hardware (by wiring the SURR_OUT/HP_OUT pin
-to the line out and the LINE_OUT to the LINE_IN), it's all very
-confusing.
-
-What needs to happen to make the mixer sliders correspond to their
-actual effects?
-
--jwb
+Index: isa/sscape.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/isa/sscape.c,v
+retrieving revision 1.15
+diff -u -r1.15 sscape.c
+--- isa/sscape.c	15 May 2003 15:02:56 -0000	1.15
++++ isa/sscape.c	18 May 2003 21:12:01 -0000
+@@ -1431,7 +1431,7 @@
+ }
+ 
+ static struct pnp_card_driver sscape_pnpc_driver = {
+-	.flags = PNP_DRIVER_RES_DISABLE,
++	.flags = PNP_DRIVER_RES_DO_NOT_CHANGE,
+ 	.name = "sscape",
+ 	.id_table = sscape_pnpids,
+ 	.probe = sscape_pnp_detect,
+Index: support/pnp/pnp.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/support/pnp/pnp.c,v
+retrieving revision 1.9
+diff -u -r1.9 pnp.c
+--- support/pnp/pnp.c	9 May 2003 14:06:51 -0000	1.9
++++ support/pnp/pnp.c	18 May 2003 21:12:30 -0000
+@@ -111,7 +111,7 @@
+ 	if (c >= 'A' && c <= 'F')
+ 		return (c - 'A') + 10;
+ 	if (c >= 'a' && c <= 'f')
+-		return (c = 'a') + 10;
++		return (c - 'a') + 10;
+ 	return 0x0f;
+ }
+ 
+@@ -145,7 +145,9 @@
+ 	if (parse_id(id, &vendor, &function) < 0)
+ 		return NULL;
+ 	dev = (struct pnp_dev *)isapnp_find_dev((struct isapnp_card *)clink->card, vendor, function, (struct isapnp_dev *)from);
+-	if (dev->p.active)
++	if ( (dev != NULL) &&
++	     (dev->p.active) &&
++	     !(clink->driver->flags & PNP_DRIVER_RES_DO_NOT_CHANGE) )
+ 		return NULL;
+ 	return dev;
+ }
+@@ -204,6 +206,10 @@
+ 			}
+ 		} while (card != NULL);
+ 	}
++
++	if (ninst != NULL)
++		kfree(ninst);
++ 
+ 	return res;
+ }
+ 
+@@ -218,8 +224,9 @@
+ 		if (inst->link.driver == drv) {
+ 			list_del(p);
+ 			drv->remove(&inst->link);
+-			for (i = 0; i < PNP_MAX_DEVICES && inst->devs[i]; i++)
+-				pnp_release_card_device(inst->devs[i]);
++			if ( !(drv->flags & PNP_DRIVER_RES_DO_NOT_CHANGE) )
++				for (i = 0; i < PNP_MAX_DEVICES && inst->devs[i]; i++)
++					pnp_release_card_device(inst->devs[i]);
+ 			kfree(inst);
+ 		}
+ 	}
 
 
 -------------------------------------------------------
