@@ -1,13 +1,13 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: Experimental USB audio support
-Date: Fri, 31 May 2002 20:09:31 +0900
+Date: Fri, 31 May 2002 20:14:36 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CF759EB.981BEADE@boosthardware.com>
+Message-ID: <3CF75B1C.64F308D1@boosthardware.com>
 References: <s5hy9e2hk02.wl@alsa2.suse.de>
 		<3CF5B58B.59E5A233@boosthardware.com>
 		<s5hwutkhhhj.wl@alsa2.suse.de>
-		<3CF74113.46D53687@boosthardware.com>
-		<s5hofewhd1u.wl@alsa2.suse.de> <s5hk7pkh9pi.wl@alsa2.suse.de>
+		<3CF7430E.F1994375@boosthardware.com>
+		<s5hn0ughcx1.wl@alsa2.suse.de> <s5hlma0h9uj.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
@@ -26,27 +26,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
 > 
-> now a new version is cvs.  it dumps the descriptor at
-> /proc/asound/cardX/descriptor.  if the cvs servers is not sync'ed,
-> please let me know.  i'll send you a patch.
+> At Fri, 31 May 2002 11:41:46 +0200,
+> I wrote:
+> >
+> > > > > devfs: devfs_register(): device already registered: "unknown"
+> > > >
+> > > > this is a bug of sound_core.c.  you can fix it by replacing
+> > > > sound_core.c with the one in alsa-kernel tree.
+> > > >
+> > >
+> > > General question. Is the above likely to cause problems if I don't swap
+> > > them?
+> >
+> > no, it works fine on 2.4 kernel, too.  i'm using it.
+> 
+> err, my statement was not clear --
 > 
 
-Will try now just recompiling the kernel. Can't get 2.4.19-pre9-ac3 to
-work though :(
+Yep :)
 
-> btw, you might try another hub module.  for uhci there are two
-> modules, uhci and usb-uhci.  i'm not sure which one is better,
-> though.
+> original sound_core.c is ok as long as if you don't use devfs _and_
+> multiple cards.  the one in alsa-kernel is fixed for such a
+> condition.  but, generally, swapping to the fixed one will cause no
+> problem.  it's fully compatible.
 > 
 
-They are in the process of deciding at the moment over in usb land. We
-have until the end of June to make ourselves heard. Currently there are
-4 different versions in circulation and the head of development wants to
-cut that down to one. So we should do some testing with regards to
-latency before they make the final decision. I'm assuming that the URB
-code is relevant to Audio latency.
+So as long as I don't use devfs I don't need it. Currently I still use
+the /proc interface but I don't have concrete understanding of the
+difference between the two yet. fromwhat I gathered you have to specify
+devfs in the kernel for it to be used. Is that correct?
 
-
+Anyway I definitely use multiple cards so I will do the change if
+neccessary.
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
