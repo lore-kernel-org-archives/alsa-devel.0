@@ -1,32 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [ANNOUNCE] USB MIDI support for ALSA
-Date: Mon, 13 May 2002 21:21:56 +0200
+From: Adam K Kirchhoff <adamk@voicenet.com>
+Subject: Re: Re: Yamaha 754 question...
+Date: Mon, 13 May 2002 17:33:33 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CE01254.901318C3@ladisch.de>
+Message-ID: <Pine.LNX.4.10.10205131720120.3704-100000@sorrow.ashke.com>
+References: <s5hd6w086j2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118] (may be forged))
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA11529
-	for <alsa-devel@alsa-project.org>; Mon, 13 May 2002 21:21:59 +0200
-Received: from mserv1.urz.uni-halle.de ([141.48.3.145] helo=mserv1)
-	  by mailgate.uni-halle.de with esmtp (EXIM Version 3.35)
-	  for <alsa-devel@alsa-project.org>
-	  id 177LOP-00062U-00; Mon, 13 May 2002 21:21:57 +0200
-Received: from conversion-daemon.mail.uni-halle.de by mail.uni-halle.de
- (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- id <0GW200A01CGC1T@mail.uni-halle.de> for alsa-devel@alsa-project.org; Mon,
- 13 May 2002 21:21:56 +0200 (MEST)
-Received: from studcom.urz.uni-halle.de
- (studcom.urz.Uni-Halle.DE [141.48.3.19]) by mail.uni-halle.de
- (iPlanet Messaging Server 5.2 (built Feb 21 2002))
- with ESMTP id <0GW20036HDSKTV@mail.uni-halle.de> for
- alsa-devel@alsa-project.org; Mon, 13 May 2002 21:21:56 +0200 (MEST)
-Received: from ladisch.de (ifiu23.informatik.Uni-Halle.DE [141.48.14.23])
-	by studcom.urz.uni-halle.de (8.9.3 (PHNE_22672)/8.9.3)
- with ESMTP id VAA12186	for <alsa-devel@alsa-project.org>; Mon,
- 13 May 2002 21:21:56 +0200 (METDST)
+In-Reply-To: <s5hd6w086j2.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -35,25 +16,66 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I've written a daemon which connects the ALSA sequencer with the
-usbdevfs device file of a USB MIDI device. You can get it at
-<http://www.informatik.uni-halle.de/~ladischc/usbmidid.html>.
+On Mon, 13 May 2002, Takashi Iwai wrote:
 
-It requires a kernel with USB and usbdevfs support (obviously), and
-with hotplugging support and hotplugging scripts installed correctly.
+> At Mon, 13 May 2002 08:54:57 -0400 (EDT),
+> Adam K Kirchhoff wrote:
+> > 
+> > 
+> > It's looking good so far :-)
+> > 
+> > I applied the patch and recompiled.  I haven't had much chance to test
+> > since I had to leave for work (I'll test more tonight), but alsaplayer
+> > worked without using the ch4dup bit from .asoundrc...  xmms worked fine,
+> > with both the Alsa output plugin and the OSS plugin.  In all three cases,
+> > I was getting four speaker output.
+>  
+> good.
+> the only concern is whether snd_ymfpci_ac3_init/_done is properly
+> handled.  could you check (by adding printk in these routines, for
+> example) whether these functions are called only once per open/close
+> devices?
 
-It should work with most USB MIDI devices, but currently it has been
-tested with Roland SC-8820 only. I don't have the slightest idea
-whether the code for parsing the device descriptors of fully compliant
-devices works at all. :-) So, please tell me if it works for you.
+I'll try that out tonight.
 
+> also, could you check multiple playbacks?
 
-Clemens
+I'm getting some interesting results with this :-)
+
+I'm booted into KDE and I have artsd running...  As KDE starts up artsd
+plays it's audio file fine, with all four speakers.
+
+If I set xmms to use the OSS output plugin, the mp3 I'm playing starts up
+fine with all four speakers...  Somewhere along the way, the rear channel
+drops out completely.  It seems to be hit or miss.  Sometimes I can
+actually get through the file without any problems.  Sometimes it drops
+out nearly immediately.
+
+A sure fire way to duplicate the problem, though, is to start up
+alsaplayer with another song..  Both songs will now play on all four
+speakers.  So now I have artsd running, xmms running with the OSS plugin,
+and alsaplayer is running :-)  If I quit alsaplayer, the rear speakers
+will cut out for the song playing on xmms.  If I then hit "x" to restart
+the song, it begins again with all four speakers :-)
+
+> > In addition, alsamixer shows a new option "4ch Duplication" so, in theory,
+> > I can turn it off and have two alsaplayers going, one stream on the front
+> > channel and a different one on the rear channel.  I haven't tested that
+> > yet, though.
+>  
+> this is even possible without my patch.
+
+Yeah, I did notice that too.  The only reason I mentioned it this time
+around is because I thought it was nice that it was still possible to do
+this by muting that switch :-)
+
+Adam
+
 
 _______________________________________________________________
 
