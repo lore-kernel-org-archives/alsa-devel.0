@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [BUG] alsa-lib leaves sound device open for child
- processes
-Date: Sat, 8 Feb 2003 20:53:14 +0100 (CET)
+From: rob buse <rcbuse@filter24.org>
+Subject: midi clock + timers
+Date: 08 Feb 2003 15:44:35 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302082051580.1141-100000@pnote.perex-int.cz>
-References: <20030208204557.5f8de78f.sebastian_kapfer@web.de>
+Message-ID: <1044737075.31824.9.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030208204557.5f8de78f.sebastian_kapfer@web.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +15,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sebastian Kapfer <sebastian_kapfer@web.de>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "rankincj@yahoo.com" <rankincj@yahoo.com>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 8 Feb 2003, Sebastian Kapfer wrote:
 
-> On Sat, 8 Feb 2003 12:50:01 +0100 (CET)
-> Jaroslav Kysela <perex@suse.cz> wrote:
-> 
-> > > All of the remaining applications should be
-> > > considering what will happen to their resources on
-> > > exec(), and I see no reason why careless programmers
-> > > should have a few of their bugs swept under the rug
-> > > for them.
-> > 
-> > I fully agree here.
-> 
-> Can anyone comment on exactly how an alsa-lib client app should make
-> sure that exec'd processes don't inherit file handles? I can't find a
-> way to know the FD number which alsa-lib uses. snd_pcm_file_descriptor
-> is gone. What replaced it?
 
-The applications should use snd_pcm_close() function (or related one 
-snd_*_close()). Note that more complex plugins can use more file 
-descriptors so the application is not able to enumerate them.
+hello everyone.
 
-						Jaroslav
+I'm curious if anyone else has run into this problem, and perhaps what
+your solutions are.  I have my kernel, 2.4.20, timer set at 1000Hz, low
+latency patch + preempt patch.  
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Now, I have my sequencer that prebuffers midi clock into the alsa
+sequencer, so they are in the queue way before they need to get played. 
+My problem is, I get all these little glitches from my delays that sync
+to midi clock, as if there is jitter in the clock.  I am not really sure
+what else to do..   is this a kernel issue?  I mean, I figure if the
+clocks triggering at ~1ms, and a tick has to go out every 20ms for a
+120bpm song..  this shouldn't be an issue.  right ?
+
+Any suggestions?  I'm out of ideas...
+
+thanks!
+rob buse
+
+
 
 
 
