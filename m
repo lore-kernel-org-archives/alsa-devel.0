@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000619]: load fx to the card don't run correctly.
-Date: Sun, 31 Oct 2004 12:17:46 +0100
-Message-ID: <a57fd5b81dada2c5d1589fa191247e19@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000620]: Pb with chorus and reverb gestion
+Date: Sun, 31 Oct 2004 12:25:53 +0100
+Message-ID: <b94983f44d54e9e942dfb0bf262a1e72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A0422283
-	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 12:17:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAEA52D8
+	for <alsa-devel@alsa-project.org>; Sun, 31 Oct 2004 12:25:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=619> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=620> 
 ======================================================================
 Reported By:                hg
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   619
-Category:                   ISA - sb16/sbawe
+Issue ID:                   620
+Category:                   CORE - sequencer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,18 +39,18 @@ Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             10-31-2004 12:17 CET
-Last Modified:              10-31-2004 12:17 CET
+Date Submitted:             10-31-2004 12:25 CET
+Last Modified:              10-31-2004 12:25 CET
 ======================================================================
-Summary:                    load fx to the card don't run correctly.
+Summary:                    Pb with chorus and reverb gestion
 Description: 
-load fx to the card don't run correctly.
+Pb with chorus and reverb gestion with driver as emu8000
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-31-04 12:17 hg             New Issue                                    
+10-31-04 12:25 hg             New Issue                                    
 ======================================================================
 
 
