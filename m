@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000780]: More laptops with LEDs (from: 0000667- How to integrate turning on and off LED:s on laptops)
-Date: Tue, 4 Jan 2005 00:17:38 +0100
-Message-ID: <b4aa83afd449b45ba8ad881eba720fa8@bugtrack.alsa-project.org>
+From: Adrian Bunk <bunk@stusta.de>
+Subject: 2.6.10-mm1: ALSA ac97 compile error with CONFIG_PM=n
+Date: Tue, 4 Jan 2005 01:11:30 +0100
+Message-ID: <20050104001130.GT2980@stusta.de>
+References: <OF0551C40F.E8032010-ON86256F7E.007EFEBA-86256F7E.007EFF1F@raytheon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E308C2AC
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 00:17:38 +0100 (MET)
+Received: from mailout.stusta.mhn.de (mailout.stusta.mhn.de [141.84.69.5])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 6EFAD239
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 01:11:31 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <OF0551C40F.E8032010-ON86256F7E.007EFEBA-86256F7E.007EFF1F@raytheon.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,113 +20,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mark_H_Johnson@raytheon.com
+Cc: Andrew Morton <akpm@osdl.org>, lkml <linux-kernel@vger.kernel.org>, perex@suse.cz, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jan 03, 2005 at 05:07:08PM -0600, Mark_H_Johnson@raytheon.com wrote:
+> I was looking to compare RT latency between this kernel and the latest from
+> Ingo and I had the following warnings / errors building 2.6.10-mm1:
+> 
+> [no apparent compile / link errors]
+> *** Warning: "snd_ac97_restore_iec958" [sound/pci/ac97/snd-ac97-codec.ko]
+> undefined!
+> *** Warning: "snd_ac97_restore_status" [sound/pci/ac97/snd-ac97-codec.ko]
+> undefined!
+>...
+> To fix this, should I just add the EXPORT_SYMBOL lines for these symbols
+>   snd_ac97_restore_status  snd_ac97_restore_iec958
+> or is something more needed?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=780> 
-======================================================================
-Reported By:                piesis
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   780
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
-======================================================================
-Date Submitted:             01-03-2005 12:39 CET
-Last Modified:              01-04-2005 00:17 CET
-======================================================================
-Summary:                    More laptops with LEDs (from: 0000667- How to
-integrate turning on and off LED:s on laptops)
-Description: 
-The previous issue
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0000667 is marked as
-fixed and resolved, but it is not
-good:
-there seem to exist (many) more laptops utilizing this mute led feature,
-therefore the list of machines with this quirk should stay somehow open
-and updateable.
+That's not the problem, since function and definition are in the same 
+module.
 
-Not all machines currently available are included (only two so far);
-New models will appear.
+You didn't send your .config, but looking at the code it seems 
+CONFIG_PM=n was the culprit.
 
-To begin with - my HP zv5000 has the same led (I used an amixer command in
-lineakd to mute sound and turn on the led with that key).
-If I'm not wrong, the respective PCI IDs are:
+As a workaround, it should work after enabling the following option:
+  Power management options (ACPI, APM)
+    Power Management support
 
-.vendor = 0x10de,
-.device = 0x00da,
-(from lspci:
-0000:00:06.0 Class 0401: 10de:00da (rev a2)
-0000:00:06.0 Multimedia audio controller: nVidia Corporation nForce3 Audio
-(rev a2))
+This is only a workaround, I've Cc'ed the ALSA maintainers for a real 
+fix.
 
-The AC97 codec is AD1981B.
+> Thanks.
+>   --Mark Johnson <mailto:Mark_H_Johnson@Raytheon.com>
 
-But there exists an equivalent laptop - Compaq r3000, so I will try to get
-some info about IDs in those machines and post them here.
+cu
+Adrian
 
-Final note about this issue in whole:
-what is this "External Amp" used/intended for?
-Because: if we mute the main output, then there is no signal to the amp -
-it may safely be shut down? Or is this control pin used for something else
-as well?
+-- 
 
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-03-05 14:23 
-----------------------------------------------------------------------
-For more quirks, simply open a new bug entry at each time.
-I don't like to open the bugs just for future.
-
-The pci id you provided doesn't help, unfortunately.
-Please provide the PCI "subsystem" ID, which is shown via lspci -nv.
-
-"External Amplifier" is for that it's called: it controls EAPD pin.
-On some machines, the external amplifier is turned on/off with this pin. 
-On most of machines, however, it doesn't mean anything.  The amp doesn't
-exist or not controllable via this bit.
-
-----------------------------------------------------------------------
- piesis - 01-04-05 00:17 
-----------------------------------------------------------------------
-Sorry for my unpolite first line.
-It really isn't a good idea to keep old unclosed bugs.
-
-Here are those subsystem IDs:
-103c:006d
-
-About the EAPD thing - I understand that it controls an output pin of the
-chip - I was wondering what use is beeing made of this control in real
-life - like on other laptops and so on.
-Well, I don't suppose you know (everything), but ..
-
-A reverse approach: if this pin gets hardcoded to master mute, do any
-usage cases suffer - is there a ground for it not to be linked to master
-mute?
-
-(perhaps this could be so for specific controllers/codecs, like the
-AD1981, not just separate machines, like this HP zv5000)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-03-05 12:39 piesis         New Issue                                    
-01-03-05 12:39 piesis         Distribution              => Gentoo          
-01-03-05 12:39 piesis         Kernel Version            => 2.6.9-gentoo-r9 
-01-03-05 14:23 tiwai          Note Added: 0003061                          
-01-04-05 00:17 piesis         Note Added: 0003077                          
-======================================================================
-
+       "Is there not promise of rain?" Ling Tan asked suddenly out
+        of the darkness. There had been need of rain for many days.
+       "Only a promise," Lao Er said.
+                                       Pearl S. Buck - Dragon Seed
 
 
 
