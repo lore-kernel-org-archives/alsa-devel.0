@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: devices/subdevices, hw:/plughw:
-Date: Sat, 21 Sep 2002 07:44:20 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: AW: usb quattro
+Date: Sat, 21 Sep 2002 17:02:04 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209210741360.503-100000@pnote.perex-int.cz>
-References: <3D8B5A8E.7000709@boosthardware.com>
+Message-ID: <3D8C277C.2070808@boosthardware.com>
+References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>	<s5hvg5jwgvk.wl@alsa2.suse.de>	<3D7912A2.1000908@boosthardware.com> <s5hy9abzefz.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D8B5A8E.7000709@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,44 +16,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Florian Bomers <Florian.Bomers@sun.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 21 Sep 2002, Patrick Shirkey wrote:
+Takashi Iwai wrote:
 
-> Florian Bomers wrote:
-> > (I initially posted this to alsa-user without answers. Hope to get more lucky
-> > here...)
-> > 
-> > Hi,
-> > 
-> > sorry for those general questions, but I wasn't able to find anything on the
-> > archives or in the ALSA documentation.
-> > 
-> > What is the meaning of devices vs. subdevices ? What is an example where a
-> > device would have several subdevices, as opposed to the card having several
-> > devices ? 
+> the resolution of usb-audio device is 1ms.  this value is fixed.
+> thus you need to adjust the period size according to the sample rate
+> if you want to achieve the real-time response with a small period
+> size.
 > 
-> A card is a device. The available pcm channels are sub devices.
+> that means:
+> - the sample rate should be 48kHz (or 32kHz), which can be divided by
+>   1000, and should not be 44.1kHz.
+> - the period size should be aligned to (rate / 1000).
+>   in the case of 48kHz, the period size should be 48, 96, 192, ...
+> 
+> please try this combination.
+> 
 
-Not really. A card can have several PCM devices. Each PCM device can have 
-1-N PCM subdevices (where N is not limited). Note that each subdevices 
-should have same parameters. Mostly, subdevices are used for cards 
-allowing multi-open (hardware sample mixing).
+This is not working properly here.
 
-> yes plughw:0,0 is the same as hw:0,0 but with automatic sample rate 
-> conversion.
+Using 48khz with the above or higher sample rates I get many xruns from 
+jackd and it is impossible to connect ardour.
 
-Right.
+However if I use 44100/48000 with the default period size of 1024 then 
+it takes jack a while to warm the card up (about 5-10 seconds) and then 
+I get no xruns. However the sound quality is scratchy.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
