@@ -1,12 +1,14 @@
 From: "J. Scott Amort" <jsamort@shaw.ca>
-Subject: Problem loading module snd-emu10k1
-Date: Thu, 06 Nov 2003 21:30:10 -0800
+Subject: Re: Problem loading module snd-emu10k1
+Date: Thu, 06 Nov 2003 23:44:55 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1068183010.16578.15.camel@enlightenment.baobobmusic.ca>
+Message-ID: <1068191094.24931.2.camel@enlightenment.baobobmusic.ca>
+References: <1068183010.16578.15.camel@enlightenment.baobobmusic.ca>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <1068183010.16578.15.camel@enlightenment.baobobmusic.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,60 +20,33 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Well, I seemed to have solved this - found this patch:
 
-I can't get module emu10k1 to load with 0.9.8.  It compiles fine, but
-when I try modprobe snd-emu10k1, I get:
-
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-init_module: No such device
-Hint: insmod errors can be caused by incorrect module parameters,
-including invalid IO or IRQ parameters.
-      You may find more information in syslog or the output from dmesg
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-insmod
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o
-failed
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-insmod snd-emu10k1 failed
-
-Here is the insmod output:
-
-Using
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-unresolved symbol snd_hwdep_new_R87e4a6ea
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-unresolved symbol snd_util_memhdr_new_R86b9ead1
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-unresolved symbol __snd_util_mem_alloc_Raf5d58ef
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-unresolved symbol __snd_util_memblk_new_R970b7c65
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-unresolved symbol __snd_util_mem_free_R74f21f45
-/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/emu10k1/snd-emu10k1.o:
-unresolved symbol snd_util_memhdr_free_Rd52ead8c
-
-And of course, the device does exist, here is lspci -vv:
-
-00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev
-08)
-        Subsystem: Creative Labs CT4832 SBLive! Value
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 32 (500ns min, 5000ns max)
-        Interrupt: pin A routed to IRQ 5
-        Region 0: I/O ports at b000 [size=32]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+Index: alsa-kernel/pci/emu10k1/emumixer.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emumixer.c,v
+retrieving revision 1.18
+diff -u -r1.18 emumixer.c
+--- alsa-kernel/pci/emu10k1/emumixer.c	23 Oct 2003 14:34:53 -0000	1.18
++++ alsa-kernel/pci/emu10k1/emumixer.c	2 Nov 2003 11:23:13 -0000
+@@ -540,10 +540,6 @@
+ 			return -ENOMEM;
+ 		if ((err = snd_ctl_add(card, kctl)))
+ 			return err;
+-		if ((kctl = snd_ctl_new1(&snd_emu10k1_spdif_control, emu)) == NULL)
+-			return -ENOMEM;
+-		if ((err = snd_ctl_add(card, kctl)))
+-			return err;
+ 	}
  
-Running Fedora Core 1.  Any guidance would be appreciated!
+ 	if (emu->audigy) {
 
-Thanks,
+,applied it and presto!  Also, I discovered that Fedora Core 1 ships
+with two versions of gcc - 3.3.2 and 3.2.3, the latter for kernel
+compiling.  So, in addition to applying the patch, I compiled with the
+3.2.3 gcc version.  Anyways, it works now, so I am happy.
+
+Best Regards,
 
 Scott
 
