@@ -1,14 +1,20 @@
-From: James Tappin <james@tappin.me.uk>
-Subject: Re: Testers of M-Audio Delta/Audiophile cards wanted
-Date: Thu, 19 Sep 2002 18:54:29 +0100
+From: "Jack O'Quin" <joq@io.com>
+Subject: Re: new "in-compatible" alsa-lib PCM API
+Date: 19 Sep 2002 14:36:15 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020919185429.78213ea3.james@tappin.me.uk>
-References: <s5h7khiqh4g.wl@alsa2.suse.de>
+Message-ID: <87y99xzs9c.fsf@sulphur.joq.us>
+References: <Pine.LNX.4.33.0209191723150.6991-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7khiqh4g.wl@alsa2.suse.de>
+Received: from sulphur.joq.us (dsl-65-188-41-49.telocity.com [65.188.41.49])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA14334
+	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2002 21:36:28 +0200
+Received: from sulphur.joq.us (joq@localhost [127.0.0.1])
+	by sulphur.joq.us (8.12.3/8.12.3/Debian -4) with ESMTP id g8JJaIUM019652
+	(version=TLSv1/SSLv3 cipher=EDH-RSA-DES-CBC3-SHA bits=168 verify=OK)
+	for <alsa-devel@alsa-project.org>; Thu, 19 Sep 2002 14:36:18 -0500
+In-Reply-To: <Pine.LNX.4.33.0209191723150.6991-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,48 +23,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Sep 2002 14:49:19 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+Jaroslav Kysela <perex@perex.cz> writes:
 
-> Hi,
-> 
-> can M-Audio Delta or Audiophile users test the latest ice1712 driver?
-> i'd like to confirm that the new one works fine before removing the
-> old code.
-> 
-> the ice1712 codes are split to several files for better readability,
-> and now located under alsa-kernel/pci/ice1712 directory on cvs.
-> there is no new functionality added due to this change.
-> 
-> since the old ice1712.c is still compiled as default, you'll have to
-> run "make" on alsa-driver/pci/ice1712.  the new files are not compiled
-> otherwise.
-> then copy snd-ice1712.o on that directory to
-> /lib/modules/XXX/kernel/sound/pci directory manually, run "depmod -a",
-> and reload the module. 
+> 	your almost all negative messages persuaded me to wait awhile with 
+> new function prototypes. 
 
-With the Midiman Audiophile: aplay/arecord work correctly as does
-recording from gramofile and playback via gwc (both use the OSS api). With
-snd playback works but recording gives a no device error -- but that may
-be because it's the version from Debian/Woody and it may be build against
-an incompatible version of something (since I haven't tried to record with
-snd since I switched from SuSE to Debian I'm not sure if the new driver
-has any responsibility for this). 
+Thanks for listening, Jaroslav.  :-)
 
-Since I don't have any digital hardware I've not tested the AC97/SPDIF
-stuff.
+I intended my comments to be "negative" only in the narrow sense
+("let's don't do this"), and not in the broader meanings of
+"obstructive" or "pessimistic".
 
-Best regards,
-	James
+You're doing an important job, and we all appreciate it.
 
+Regards,
 -- 
-James Tappin,               O__      "I forget the punishment for using
-james@tappin.me.uk         --  \/`    Microsoft --- Something lingering
-http://www.xena.uklinux.net/          with data loss in it I fancy"  
+  Jack O'Quin
+  Austin, Texas, USA
+  http://www.stellajazz.com
 
 
 -------------------------------------------------------
