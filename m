@@ -1,11 +1,13 @@
-From: =?utf-8?q?Grace Qclawss?= <fearwedtht@allenschimneysweepservice.com>
-Subject: =?utf-8?q?Rolex Mart?=
-Date: Sat, 4 Dec 2004 23:10:01 +0000
-Message-ID: <E1CameT-0007mu-B3@sc8-sf-mx2.sourceforge.net>
+From: Joshua Kwan <joshk@triplehelix.org>
+Subject: Re: [PATCH] Fix ALSA resume
+Date: Sat, 04 Dec 2004 19:39:28 -0800
+Message-ID: <41B282F0.3020704@triplehelix.org>
+References: <1102195391.1560.65.camel@tux.rsn.bth.se> <20041204172855.350100d0.akpm@osdl.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	 boundary="T9ZvR4vwpXRmwG1huVUQs"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20041204172855.350100d0.akpm@osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,52 +17,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?utf-8?q?Jeff Aify?= <alsa-devel@lists.sourceforge.net>
+To: Andrew Morton <akpm@osdl.org>
+Cc: Martin Josefsson <gandalf@wlug.westbo.se>, torvalds@osdl.org, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
+Andrew Morton wrote:
+> But Joshua crosses his heart and swears that the pci_disable_device() is
+> also needed for a successful swsusp resume.
 
---T9ZvR4vwpXRmwG1huVUQs
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+I never said I had any problems with resuming.
 
-Genuine Replicas Watches
+That said, I tried removing the pci_disable_device call and things seem
+to still work. So I guess it can be left out?
 
-We have the following trademarks available likewise:
-
-Harry Winston
-Patek Philippe
-IWC
-Zenith
-Tudor
-
-http://agloeoroueli.vvatch.com/replica/vron/midescj.htm
---T9ZvR4vwpXRmwG1huVUQs
-Content-Type: text/html;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD>
-<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
-<STYLE></STYLE>
-</HEAD>
-<HTML>
-<BODY>
-<A href=3D"http://ohadslrfueo.aaiy.com/rep/vron/ffrhwa.cfm">
-Veritable Reproductions Wristwatches
-</A><BR>
-We offer the following trademarks available too:<BR>
-Frank Muller<BR>
-Patek Philippe<BR>
-IWC<BR>
-Breitling<BR>
-Omega<BR>
-</BODY>
-</HTML></HTML>
---T9ZvR4vwpXRmwG1huVUQs--
-
+-- 
+Joshua Kwan
 
 
 -------------------------------------------------------
