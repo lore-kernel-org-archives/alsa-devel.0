@@ -1,12 +1,11 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Re: doc-page
-Date: Mon, 08 Dec 2003 00:43:21 +0900
+From: Arve Knudsen <aknuds-1@broadpark.no>
+Subject: Query devices in a non-blocking fashion
+Date: Sun, 07 Dec 2003 18:07:51 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FD34A99.9050309@boosthardware.com>
-References: <20031204194243.4841b5a7.mista.tapas@gmx.net> <3FCF87DB.10106@boosthardware.com> <20031205171604.GA19309@tuba.home>
+Message-ID: <oprztlvdeyq1sf88@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,45 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Martin Langer wrote:
-> Thank you very much, Patrick for the work you've done until now.
-> 
-> But one point I still miss is some kind of browseable Changelog. And a good
-> complete changelog history is also good for detecting bugs.
-> 
-> Well, only the users in the mailling lists can know if driver xy has changed
-> (or maybe improved) since the last version or not. So normal users have to
-> try out each version. And that's far away from perfect IMHO.
-> 
+I'd like to be able to query the capabilities (number of channels, buffer=
+=20
+size etc.) of ALSA devices in the system, even if they should be in use b=
+y=20
+some other process. The only current way to probe device capabilities is=20
+to open a pcm, and use snd_pcm_hw_params, correct? At least this is my=20
+current approach, but I'd like to query the devices without first=20
+acquiring exclusive access. If there is currently no way around acquiring=
+=20
+a device for querying, maybe this requirement could be loosened in a=20
+future version of ALSA?
 
-Nice idea. I think I know how this can be accomplished too.
+Regards
 
-I'll look into it.
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+Arve Knudsen
 
 
 -------------------------------------------------------
