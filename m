@@ -1,13 +1,14 @@
-From: "Dan Nyborg" <nyborg@www.vertice.ca>
-Subject: Re: hdsp + acpi/apm = bug/feature?
-Date: Mon, 1 Dec 2003 14:58:53 -0600
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: Intel8x0 problems with rc1
+Date: Tue, 02 Dec 2003 13:00:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031201205800.M98871@vertice.ca>
-References: <20031130122331.GB15972@sirius.home> <3FCA1B3E.7020102@vertice.ca> <3FCB2AFB.5070205@undata.org>
+Message-ID: <3FCC7EC4.6050200@undata.org>
+References: <3FCB855F.7080505@undata.org>	<s5hd6b8fl1s.wl@alsa2.suse.de> <s5h8ylwfk40.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FCB2AFB.5070205@undata.org>
+In-Reply-To: <s5h8ylwfk40.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,58 +17,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Thomas Charbonnel <thomas@undata.org>, Dan Nyborg <nyborg@vertice.ca>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hello,
-
-i don't have the up to date patch for acpi and had the same problem even
-without the low latency patch. i'm going to hold out upgrading until 2.6...
-right now, i'm having too much fun with the hdsp ;) - for two months it sat
-idle... dust (yes dust!) collected on it!
-
-big thanks for all your software,
-
-dan.
-
-On Mon, 01 Dec 2003 12:50:19 +0100, Thomas Charbonnel wrote
-> Dan Nyborg wrote :
+Takashi Iwai wrote :
+> At Mon, 01 Dec 2003 19:30:07 +0100,
+> I wrote:
 > 
-> > hello,
-> > 
-> > some posts were made by myself a couple of months back regarding system 
-> > lockups experienced with the hdsp driver - my system would lock during 
-> > capture or playback.
-> > 
-> > this lock has been traced to kernel power management, either acpi or 
-> > apm. when either of these are enabled, i experience locks. without them, 
-> > no problems.
-> > 
-> > i use a 2.4.20 kernel with andrew morton's low latency patch. the cpu is 
-> > an athlon.
-> > 
-> > thanks,
-> > 
-> > dan.
-> > 
+>>At Mon, 01 Dec 2003 19:15:59 +0100,
+>>Thomas Charbonnel wrote:
+>>
+>>>Hi,
+>>>
+>>>I'm testing rc1, and I have problems with my laptop's internal intel8x0
+>>>soundcard :
+>>>* Using OSS emulation, after between 19 and 20 seconds of playing the
+>>>sound gets garbled for a few seconds and then comes back to normal. This
+>>>happens each time I stop and start playback again.
+>>>* Using alsa natively there is a performance problem : running jack with 
+>>>the card (-p 1024) I get 3 or 4 xruns per second (I used to run this 
+>>>card with -p 64 with previous alsa versions !).
+>>
+>>could you give the specific version which ran properly?
 > 
-> Hi Dan,
 > 
-> There is no power management support in the hdsp driver at the 
-> moment, so the problem you have shouldn't come from this (and is 
-> definitely not a 'feature' :) Did you use the kernel's built in ACPI 
-> support or an up-to-date patch from the linux acpi project ? Did you 
-> try without the the low latency patch ? What I would suggest is that 
-> you try the new 2.4.23 kernel. The problem you're experiencing might 
-> have been fixed.
+> does the attached patch make difference (if you give use_civ=0 option)
+> ?
 > 
-> Thomas
 
+Sorry, it does not make a difference. Incidentally I tried to run the 
+card at 48000 Hz, and everything works as expected. Running at 44100 Hz 
+results in the problems I mentioned above.
 
+Thomas
 
---
-Open WebMail Project (http://openwebmail.org)
 
 
 
