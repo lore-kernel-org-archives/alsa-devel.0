@@ -1,18 +1,15 @@
-From: j_f@laposte.net
-Subject: Re: [Alsa-user] Re: Audigy and FPS 5300 rear speakers
-	problem
-Date: 23 May 2002 23:38:31 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: ALSA Hammerfall DSP driver
+Date: Thu, 23 May 2002 18:34:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1022183789.1195.40.camel@localhost.localdomain>
-References: <1022074808.4314.14.camel@bob.aix.diginext.fr>
-	<s5hn0usfff5.wl@alsa2.suse.de>
-	<1022104324.1710.4.camel@localhost.localdomain>
-	<s5hadqrfdv5.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <200205232232.g4NMW9b04424@post2.fast.net>
+References: <3CED4A57.9E8EC888@telia.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hadqrfdv5.wl@alsa2.suse.de>
+Received: from post2.fast.net (post2.fast.net [209.92.1.22])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA21177
+	for <alsa-devel@alsa-project.org>; Fri, 24 May 2002 00:32:20 +0200
+In-Reply-To: Your message of "Thu, 23 May 2002 22:00:23 +0200."
+             <3CED4A57.9E8EC888@telia.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,34 +18,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: Marcus Andersson <054185595@telia.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Le jeu 23/05/2002 =E0 10:49, Takashi Iwai a =E9crit :
-(...)
->=20
-> could you send me your /etc/asound.state?
-I would be pleased to do so, but I don't have any /etc/asound.state
-file... May be I messed something ? I fact I haven't any asound.* file
-on my hard disk.... It seems to be wrong 'cause readind /etc/alsa.conf I
-saw a reference to a file named /etc/asound.conf...
+>Paul Davis wrote:
+>> i have been using alsamixer to control the playback volumes, and it
+>> seems to work fine. amixer reports the values correctly as well, so
+>> try
+>> 
+>>     amixer cget numid=11  # channel 1 playback volume
+>
+>numid=11,iface=MIXER,name='Chn',index=1
+>  ; type=INTEGER,access=rw---,values=1,min=0,max=65536,step=1
+>  : values=49818
+>
+>>     amixer cget numid=17  # channel 2 playback volume
+>
+>numid=17,iface=MIXER,name='Chn',index=2
+>  ; type=INTEGER,access=rw---,values=1,min=0,max=65536,step=1
+>  : values=49818
 
->=20
-> > Any others ideas ?
->=20
-> try to remove /etc/asound.state once, reload the driver and configure
-> the mixer status again.
-It would be nice but as I didn't have such a file, it is difficult for
-me to delete it ;)
+these values indicate that the playback volumes are set so that you
+should be able to hear stuff. unfortunately, there is no way to read
+the actual h/w values - these rely on a driver-side cache. but with
+this setting, i hear stuff played by aplay and/or ardour.
 
-Is it possible that a previous install of alsa 0.9 can cause such a
-problem ?
+i know its mundane, but are you sure you have the cables hooked up
+correctly? you can set the passthru control 
 
-Thanks again
+	   amixer cset name=Passthru 1
 
-Jean-Francois
+and check that passthru is working OK.
 
+>Could it be that my kernel is too old? 2.4.7.
+>
+>Could it be that I am using alsa-utils-0.9.0rc1? The one in CVS fails
+>with:
+
+no, neither of these are likely causes.
+
+>Is it possible to route sound to the line out port?
+
+there are two levels of control. the "line out" control, which is a
+boolean, and not represented by the ALSA controls (but the driver
+turns it on). then there is the matrix mixer; the line outs are
+channels ... hmmm ... on a multiface, i'm not sure if they will be
+channels 25+26 or 19+20. 
+
+these aren't represented in the regular PCM interface, because they
+are not playback streams per se. Instead, you control what is sent to
+them via the matrix mixer. this works, but there aren't any ALSA tools
+that can use the matrix mixer control yet. see the discussion about
+this over the last few weeks. jaroslav and abramo seem to think its ok
+to have thousands of controls; takashi and myself prefer a different
+model. its not resolved yet.
+
+>Which channel and card do the OSS layer use? How can I control this?
+
+/dev/dsp0 -> plughw:0,0,0  # card 0, device 0, subdevice 0
+/dev/dsp1 -> plughw:1,0,0  # card 1, device 0, subdevice 0
+/dev/dsp2 -> plughw:2,0,0  # card 2, device 0, subdevice 0
+
+there are ways to modify this, but this is the basic setup for OSS
+emulation under ALSA. the channels used will start at the first one.
+i haven't tried OSS emulation on either of my RME cards, but its
+reported to work.
+
+--p
 
 _______________________________________________________________
 
