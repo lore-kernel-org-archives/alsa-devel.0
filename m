@@ -1,12 +1,16 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
-Date: Wed, 14 Jul 2004 00:13:59 +0200
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: [PATCH]snd-usb-usx2y 0.7.1 against cvs head:     
+     please test it!
+Date: Tue, 13 Jul 2004 23:12:26 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <312e8eaccf6689e485b5748b0a99d06d@bugtrack.alsa-project.org>
+Message-ID: <32788.192.168.1.5.1089756746.squirrel@www.rncbc.org>
+References: <200407131155.43747.annabellesgarden@yahoo.de>  
+    <s5hwu17andn.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hwu17andn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,101 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Karsten Wiese wrote:
+> Hi,
+> this module version sports "no sleeping" in ALSA's pcm START/STOP
+> callbacks.
+> It could need a little more testing, as the changes are many.
+> Here it works well with kernels "planet CCRMA's 2.4.26" and "vanilla
+> 2.6.7 all debug flags I found enabled".
 
-A BUGNOTE has been added to this bug.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0383
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                Luke
-Assigned To:                pzad
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     383
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:              =20
-Kernel Version:            =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-13-2004 17:45 CEST
-Last Modified:              07-14-2004 00:13 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Audigy LS - Capturing from Mic and kernel oop=
-s
-Description:=20
-I just updated my cvs repository and rebuilt the snd_audigyls module to
-check if my former reported bugs are fixed.
-Unfortunateley, my kernel oopsed once again.
+Just built from cvs against a custom 2.6.7-cko6 kernel on a SUSE 9.1
+SMP/HT box, and assured that the patch is already applied.
 
-I tried to capture some voice of my mic with no success. Maybe I don't ge=
-t
-the explanation in the cvs log. I attached a screenshot to review my
-alsamixer settings. This is what I used to configure it:
+Erm... I get the following while modprobing snd-usb-usx2y:
 
-"The MIC and LINE IN use the AC97 chip.
+WARNING: Error inserting snd_hwdep
+(/lib/modules/2.6.7-cko6.0smp/kernel/sound/acore/snd-hwdep.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
+FATAL: Error inserting snd_usb_usx2y
+(/lib/modules/2.6.7-cko6.0smp/kernel/sound/snd-usb-usx2y.ko): Unknown
+symbol in module, or unknown parameter (see dmesg)
 
-The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
-controlling CAPTURE. Then, instead of sending that output to the
-speakers, it sends it to the Philips 1361T ADC. This results in high
-quality ADC conversion.
-E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
-Set MASTER volume.
-There is a new control for "CAPTURE feedback into PLAYBACK". If one does
-not want any feedback, leave it at it's minimum."
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Then the relevant dmesg says:
 
-----------------------------------------------------------------------
- jcdutton - 07-13-2004 19:40 CEST=20
-----------------------------------------------------------------------
-Fixed in latest cvs.
-Fixed by:
-[alsa-cvslog] CVS: alsa-kernel/core memalloc.c,1.34,1.35
+snd_hwdep: Unknown symbol snd_kcalloc
+snd_usb_usx2y: Unknown symbol snd_hwdep_new
 
-----------------------------------------------------------------------
- Luke - 07-14-2004 00:13 CEST=20
-----------------------------------------------------------------------
-Nice one!
-Works like a charm now!!! *wohoo*
-Thx for your quick support and double-thumbs-up!
+So I guess something went wrong on my snd-usb-usx2y build. OTOH, the
+onboard snd-intel8x0 based is loaded and working without a glitch.
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-13-04 17:45 Luke           New Bug                                    =
- =20
-07-13-04 17:45 Luke           File Added: audigyoops                     =
- =20
-07-13-04 17:50 Luke           File Added: audigyscreen.png               =
-    =20
-07-13-04 19:40 jcdutton       Bugnote Added: 0001415                     =
- =20
-07-14-04 00:13 Luke           Bugnote Added: 0001416                     =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+So, too pity I can't get my us224 onto the testing right now.
 
+Any ideas?
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 
