@@ -1,13 +1,11 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: PCM hw mixing with volume
-Date: Sun, 07 Mar 2004 12:36:29 -0400
+Date: Sun, 7 Mar 2004 17:41:52 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078677389.1477.31.camel@localhost>
+Message-ID: <Pine.LNX.4.58.0403071739310.1926@pnote.perex-int.cz>
 References: <1078671074.18057.17.camel@renegade>
-Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <1078671074.18057.17.camel@renegade>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,21 +16,12 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Ove Kaaven <ovek@transgaming.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sun, 7 Mar 2004, Ove Kaaven wrote:
 
-Aureal Hardware can do this in hardware, but this feature has not been
-exposed. I would be interested :D Maybe this could be done using some
-well defined  controls. That would be needed for OpenAL support anyway.
-Any comments ?
-
-Best Regards
-
-Manuel Jander
-
-On Sun, 2004-03-07 at 10:51, Ove Kaaven wrote:
 > We have some games that want to mix several dynamic sound streams.
 > That's easy enough at first glance, just snd_pcm_open() for each stream
 > they want to output (and do software mixing when that fails). However,
@@ -47,20 +36,19 @@ On Sun, 2004-03-07 at 10:51, Ove Kaaven wrote:
 > Are you planning to standardize such features or design a
 > device-independent API for it? (And my manager wants to know which ALSA
 > release this might get implemented in...)
-> 
-> 
-> 
-> 
-> -------------------------------------------------------
-> This SF.Net email is sponsored by: IBM Linux Tutorials
-> Free Linux tutorial presented by Daniel Robbins, President and CEO of
-> GenToo technologies. Learn everything from fundamentals to system
-> administration.http://ads.osdn.com/?ad_id=1470&alloc_id=3638&op=click
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
+I'm working on this issue right now, but I cannot estimate the release 
+time, because my work is hightly interrupted with the ALSA maintenance
+issues.
+
+Hopefully, the API will be functional in a few months.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
