@@ -1,15 +1,14 @@
-From: "Ivica Ico Bukvic" <ico@fuse.net>
-Subject: RE: snd-hdsp oddities
-Date: Mon, 5 Jul 2004 11:51:46 -0400
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Testers needed: memio-mmap patch (rme32,rme96,nm256)
+Date: Mon, 5 Jul 2004 20:47:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040705155127.LTDI27242.smtp3.fuse.net@64BitBadass>
-References: <20040705130008.B25490@flint.arm.linux.org.uk>
+Message-ID: <20040705184731.GA564@tuba.home>
+References: <s5hllikor62.wl@alsa2.suse.de> <20040620101135.GA755@tuba.home> <s5hd63fallg.wl@alsa2.suse.de> <20040701201326.GA567@tuba.home> <s5hzn6i8tf5.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040705130008.B25490@flint.arm.linux.org.uk>
+Content-Disposition: inline
+In-Reply-To: <s5hzn6i8tf5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,53 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Russell King' <rmk+alsa@arm.linux.org.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, pilo.c@wanadoo.fr
 List-Id: alsa-devel@alsa-project.org
 
-Your posts are not being rejected for "no reason," but because you need to
-subscribe to the list to be able to post (just like the alsa-dev list). That
-being said, I am cross-posting exactly for this reason, as I want to target
-both the subscribers of lad and alsa-dev as this pertains to both groups
-(especially because some of the members, such as yourself, are subscribed to
-just one of these).
-
-What I can do, however, is try to use bcc fields so that way you should
-never see the other lists this has been cross-posted to and therefore your
-e-mailing client should never reply to them either. This, however will still
-require you to make sure that a copy of your e-mail reaches the alsa-dev
-list by adding it to the cc: field and therefore will ask for the same
-amount of attention as just removing lad list from the list of recipients...
-
-Best wishes,
-
-Ivica Ico Bukvic, composer & multimedia sculptor
-http://meowing.ccm.uc.edu/~ico/
- 
-
-> -----Original Message-----
-> From: Russell King [mailto:rmk@arm.linux.org.uk] On Behalf Of Russell King
-> Sent: Monday, July 05, 2004 8:00 AM
-> To: ico@fuse.net
-> Cc: alsa-devel@lists.sourceforge.net
-> Subject: Re: [Alsa-devel] snd-hdsp oddities
+On Fri, Jul 02, 2004 at 02:50:22PM +0200, Takashi Iwai wrote:
+> At Thu, 1 Jul 2004 22:13:26 +0200,
+> Martin Langer wrote:
+>  
+> > FYI: The situation is that I get only silence in fullduplex_mode after a
+> > short time. But nevertheless in the beginning it is correct.
 > 
-> Could you please refrain from cross posting between here and the
-> linux-audio-dev mailing list?
-> 
-> For those of us who aren't on the linux-audio-dev list, we regularly
-> get our replies rejected for no reason by the moderator there.  (See
-> attached message.)
-> 
-> Thanks.
-> 
-> --
-> Russell King
->  Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
->  maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
->                  2.6 Serial core
+> How about the attached patch?
 
+Fine, there's no longer silence via the indirect way. But I'm still unhappy
+because the resulting data fragments on playback and capturing aren't clean.
+I mean there are often capturing fragments in the playback data; and OTOH 
+you can get playback fragments during capturing. And the length of this
+fragments and the winning data type (playback or capture) seems to be chaotic
+for my ears.
 
+Nevertheless thanks for the patch.
+
+martin
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
