@@ -1,9 +1,13 @@
-From: Andrew Burgess <aab@cichlid.com>
-Subject: Re: alsa 9.4 + SBLive! + USB iMic = hard lockup
-Date: Fri, 20 Jun 2003 12:19:07 -0700
+From: Dennis van der Meer <dvdmeer@wanadoo.nl>
+Subject: Re: Compile errors with current cvs
+Date: Sat, 21 Jun 2003 00:26:21 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200306201919.h5KJJ7V24815@athlon.cichlid.com>
+Message-ID: <5.1.0.14.2.20030621002339.01e2b1f8@192.168.10.1>
+References: <5.1.0.14.2.20030619205332.01e2f670@192.168.10.1>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <5.1.0.14.2.20030619205332.01e2f670@192.168.10.1>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,52 +19,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I tried this with alsa 9.2 and same result. It did work one time
-however, which I did not see with 9.4. Any suggestions would be welcome,
-I've had no response to my initial email.
+I did some checking since the current cvs version still does not compile 
+properly
+and found out that someone might have forgotten to update the file
+alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c
+The struct _snd_ac97 seems to be missing a definition (build_ops).
 
-Andrew Burgess said:
+>When trying to compile the latest cvs version I got the following errors:
+>
+>In file included from ac97_codec.c:1:
+>../../alsa-kernel/pci/ac97/ac97_codec.c: In function `snd_ac97_mixer_build':
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1394: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1394: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1395: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1417: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1417: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1418: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1424: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1424: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1425: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1436: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1436: structure has no member 
+>named `build_ops'
+>../../alsa-kernel/pci/ac97/ac97_codec.c:1437: structure has no member 
+>named `build_ops'
+>make[3]: *** [ac97_codec.o] Error 1
+>make[2]: *** [_modsubdir_ac97] Error 2
+>make[1]: *** [compile] Error 1
+>install: cannot create regular file `/sbin/init.d/alsasound': No such file 
+>or directory
+>cp: cannot stat `snd-ac97-codec.o': No such file or directory
+>cp: cannot stat `snd-ak4531-codec.o': No such file or directory
+>make[3]: *** [_modinst__] Error 1
+>make[2]: *** [_modinst_ac97] Error 2
+>make[1]: *** [install-modules] Error 1
+>make: *** [build] Error 2
 
-> kernel 2.4.21-rc7-ac1
-> alsa 9.4 (drivers, utils, libs)
-> Tyan dual athlon MP S2460 motherboard
-> (I tried it once with numcpus=1 just in case its an SMP
-> problem, no change)
-> 
-> My SBLive! is the default soundcard.
-> 
-> imic is defined in .asoundrc as:
-> 
->   pcm.imic {
->     type hw
->     card 1
->   }
->   ctl.imic {
->     type hw
->     card 1
->   }
-> 
-> I get a hard lockup (need to cycle power) when I try either:
-> 
->   arecord -v -D imic --rate 44100 -f S16_LE - | aplay -v -
-> 
-> or
-> 
->   arecord -v --rate 44100 -f S16_LE - | aplay -D imic  -v -
-> 
-> and then ^C to stop. Note, it runs fine until I ^C.
-> 
-> Running imic->imic or sblive->sblive works fine, ^C and rerun,
-> no problem. I've been using the SBLive! for years. I just
-> purchased the iMic.
-> 
-> It does print the "Aborted by signal Interrupt..." message
-> from alsa-lib twice (for arecord and aplay)
-> 
-> No log messages, oopses or other screen messages -- just locks up.
-> I have the driver configured --with-debug=full.
-> 
-> How may I help debug this further?
 
 
 -------------------------------------------------------
