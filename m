@@ -1,13 +1,10 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000791]: snd-ioctl32 is failing on x86_64 (no crashes, just errors)
-Date: Mon, 14 Feb 2005 19:31:57 +0100
-Message-ID: <d265de80c0d5f9b92080a0444f2e08ff@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - lib 0000812]: SNDRV_PCM_IOCTL_DELAY failed:
+Date: Mon, 14 Feb 2005 19:32:19 +0100
+Message-ID: <20050214183219.C474D11D@alsa.alsa-project.org>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 794B5248
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:31:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C474D11D
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:32:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,88 +17,89 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
+Message-ID: <cae13c33ad337ad64651f1ce9bf246d8@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=791> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=812> 
 ======================================================================
-Reported By:                chutzimir
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   791
-Category:                   OTHERS
+Project:                    ALSA - lib
+Issue ID:                   812
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             01-07-2005 02:28 CET
-Last Modified:              02-14-2005 19:31 CET
+Date Submitted:             01-12-2005 19:06 CET
+Last Modified:              02-14-2005 19:32 CET
 ======================================================================
-Summary:                    snd-ioctl32 is failing on x86_64 (no crashes, just
-errors)
+Summary:                    SNDRV_PCM_IOCTL_DELAY failed: 
+SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
 Description: 
-Running a 32-bit version of any application on my 64-bit 2.6.10 kernel
-fails with:
+This is Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=287583: please see
+http://bugs.debian.org/287583
+for the full report.
 
-$ amixer -c 0
-amixer: Mixer hw:0 load error: Invalid argument
+Summary: The user runs xmms with the ALSA output plugin and gets huge
+numbers of error messages:
 
-for example. I have snd-ioctl32 loaded properly (lsmod shows it).
+..
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+..
 
-Kernel is vanilla 2.6.10 and I just tried it with version 1.0.8rc2 of
-alsa-driver. Also, alsa-lib and alsa-utils version 1.0.8rc2 are
-installed in my 64-bit environment, and also in the 32-bit chroot env
-where I am trying to run amixer from. The distro is Gentoo, and I also
-have their alsa-headers-1.0.8_rc2 installed in the 32-bit chroot.
+
+The problem disappeared when the user reverted to libasound2 1.0.6-5.
+Indeed, it seems that the error message in question was only added to
+libasound2 in 1.0.7.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- chutzimir - 01-10-05 20:38 
+ jdthood - 01-12-05 19:09 
 ----------------------------------------------------------------------
-Thanks go to Takashi san for the following fix:
+See also Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=290034:
 
-Index: alsa-kernel/core/ioctl32/ioctl32.c
-===================================================================
-RCS file: /suse/tiwai/cvs/alsa/alsa-kernel/core/ioctl32/ioctl32.c,v
-retrieving revision 1.30
-diff -u -r1.30 ioctl32.c
---- alsa-kernel/core/ioctl32/ioctl32.c  15 Dec 2004 15:26:24 -0000     
-1.30
-+++ alsa-kernel/core/ioctl32/ioctl32.c  10 Jan 2005 13:36:49 -0000
-@@ -238,7 +238,7 @@
-                struct sndrv_aes_iec958 iec958;
-         } value;
-         unsigned char reserved[128];
--};
-+} __attribute__((packed));
- 
- 
- /* hmm, it's so hard to retrieve the value type from the control id.. */
+    http://bugs.debian.org/290034
 
 ----------------------------------------------------------------------
- tiwai - 01-12-05 15:17 
+ tiwai - 01-12-05 20:42 
 ----------------------------------------------------------------------
-Fixed on CVS.
+This is partly a problem of xmms ALSA output plugin.
+
+But, anyway, this messages no longer appears on alsa-lib 1.0.8.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-07-05 02:28 chutzimir      New Issue                                    
-01-07-05 02:28 chutzimir      Distribution              => Gentoo          
-01-07-05 02:28 chutzimir      Kernel Version            => 2.6.10          
-01-10-05 20:38 chutzimir      Note Added: 0003138                          
-01-12-05 15:17 tiwai          Status                   new => resolved     
-01-12-05 15:17 tiwai          Resolution               open => fixed       
-01-12-05 15:17 tiwai          Assigned To               => tiwai           
-01-12-05 15:17 tiwai          Note Added: 0003172                          
-01-12-05 15:17 tiwai          Assigned To              tiwai =>            
-02-14-05 19:31 tiwai          Status                   resolved => closed  
+01-12-05 19:06 jdthood        New Issue                                    
+01-12-05 19:09 jdthood        Note Added: 0003176                          
+01-12-05 20:42 tiwai          Status                   new => resolved     
+01-12-05 20:42 tiwai          Resolution               open => fixed       
+01-12-05 20:42 tiwai          Assigned To               => tiwai           
+01-12-05 20:42 tiwai          Note Added: 0003177                          
+01-12-05 20:42 tiwai          Assigned To              tiwai =>            
+02-14-05 19:32 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
