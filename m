@@ -1,11 +1,8 @@
-From: "Tais M. Hansen" <tais.hansen@osd.dk>
-Subject: Aplay duration
-Date: Wed, 29 Jan 2003 01:05:09 +0100
+From: Daniel Pouzzner <douzzer@mega.nu>
+Subject: Re: 192khz working for anyone?  and  RME96 patch broke
+Date: Wed, 29 Jan 2003 01:18:06 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301290105.13357.tais.hansen@osd.dk>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="------------Boundary-00=_L88GL6ZNQU706DR1DXWU"
+Message-ID: <200301290618.h0T6I6k95459@mail.mega.nu>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,85 +12,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>what is the kernel message?
 
---------------Boundary-00=_L88GL6ZNQU706DR1DXWU
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Ah ha.
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+  ALSA ../../alsa-kernel/pci/ice1712/ice1712.c:2472: invalid EEPROM version 120
 
-Hi,
+the driver wants version 1 and barfs on anything else.
 
-There's a minor problem with the duration parameter for aplay. When used =
-like=20
-this:
+If I disable the error-out at that point in the code, here's what
+results:
 
-aplay -d 10 test.wav
+  ALSA ../../alsa-kernel/pci/ice1712/ice1712.c:2472: invalid EEPROM version 120
+  ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1829: AC'97 0:0 does not respond - RESET [REC_GAIN = 0xffff]
+  ice1712: cannot initialize pro ac97, skipped
+  devfs_register(unknown): could not append to parent, err: -17
+  devfs_register(unknown): could not append to parent, err: -17
+  devfs_register(unknown): could not append to parent, err: -17
 
-It's supposed to play 10 seconds of the wav-file, but it only plays about=
-=20
-0.1sec. The problem lies in the function playback() in aplay.c where=20
-calc_count() is called before hwparams is updated (by calling test_wave()=
-)=20
-with the actual wave-parameters.
+The module then deals with the card well enough for it to come up in
+amixer with read/write access, but not well enough to actually make
+sounds.  Only S32_LE is accepted at all, the others producing "aplay:
+set_params:1346: Sample format non available".  If S32_LE is used,
+aplay and record block for a few seconds, then product
 
-I've attached a quick and dirty fix for this particular issue.
+  aplay: pcm_write:1623: write error: Input/output error
 
-- --=20
-Regards,
-Tais M. Hansen
-OSD
+or
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.0 (GNU/Linux)
+  arecord: pcm_read:1710: read error: Input/output error
 
-iQIVAwUBPjcat4IvLOJqwYc4AQKuBQ//da2oy/kWE7SCs86DCE9BERkjG1LZkN/X
-enYGlTBmS76qOmx+xZNRRRgEKzemzvEg6ANh4n6EVag1DL7ftTo62KWZMTxDyAps
-D8M4xmDKjHPwPr0F8sC+CC0OfSbzjOSVHVYmXSxlFU0JYeinP8/Y0oSxCwLpjYiP
-AJGaI9gRHbebWkX/xmQ+FvqdFgHtLn5WCT+1nmcTroA74Kv9nlUgt/LUKzZ+AHSA
-gEtjpFUIC2OQayMiLJ08nXdeiClUQLEGNziRK3v6+Yx0q8V8HCLgo71xFqbjmvd9
-xhOi5+4XRN4CHEMgcAPWWeuEq50F44dq+BNSDxCQRoCNqsJ58S2usyqtcY4iIkMp
-0wceF/90rMFaL4T5ytA3QE4+916enhOJyPh694XJu1o2tnJ2eO3uiw/LRVV8qs/Q
-xvm04HVASSMNlu/oR7Gf5vBQdfzBOEY1yUZnzUKku7J9l5cMdHYJDMCfWC4QQ0j7
-UGxR2Tg64DTAirs51BlQ7XT2spWWPE/tGigyOMccdwNIpEHJkhSWg8h2Q9mNYkRd
-Yd+hC2YjyXZIaCuRR7tI4T/GXMpEWKXkrC2K4DvhwizWx1KF6fUaDWLd95W+lVXi
-kdwu0V9qv6F4vdrrFNdPqKEbgyzySt7qC0O/b1K+UK2oBFgglnC8Q66cY4Ukb88M
-wik2uv5W4+U=3D
-=3DaZey
------END PGP SIGNATURE-----
 
---------------Boundary-00=_L88GL6ZNQU706DR1DXWU
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="alsa-aplay-duration-patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="alsa-aplay-duration-patch"
+Other glitches:
 
-Index: ./alsa-utils/aplay/aplay.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/aplay/aplay.c,v
-retrieving revision 1.155
-diff -u -4 -p -r1.155 aplay.c
---- ./alsa-utils/aplay/aplay.c	19 Dec 2002 11:26:55 -0000	1.155
-+++ ./alsa-utils/aplay/aplay.c	28 Jan 2003 23:55:34 -0000
-@@ -1796,8 +1796,9 @@ static void playback(char *name)
- 		goto __end;
- 	}
- 	/* read bytes for WAVE-header */
- 	if ((dtawave = test_wavefile(fd, audiobuf, dta)) >= 0) {
-+		count = calc_count();
- 		playback_go(fd, dtawave, count, FORMAT_WAVE, name);
- 	} else {
- 		/* should be raw data */
- 		init_raw_data();
+  douzzer@triceps douzzer $ /usr/sbin/alsactl -f /tmp/bla store 2
+  /usr/sbin/alsactl: get_controls:484: snd_ctl_open error: No such device
 
---------------Boundary-00=_L88GL6ZNQU706DR1DXWU--
 
+Clearly more work is needed in the driver.  I'm sure I'm missing some
+vital details on the card needed to do it, not to mention, some vital
+skills (I'm a hacker of neither the linux kernel nor the ALSA
+kernel).
 
 
 -------------------------------------------------------
