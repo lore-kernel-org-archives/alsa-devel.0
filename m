@@ -1,14 +1,14 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
 Subject: Re: Trying to get alsa-driver to build on a 2.6.x kernel.
-Date: Fri, 30 Jan 2004 14:04:56 +0000
+Date: Fri, 30 Jan 2004 14:46:44 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <401A6488.9060108@superbug.demon.co.uk>
-References: <401963AC.8080603@superbug.demon.co.uk> <s5hekthsnlx.wl@alsa2.suse.de>
+Message-ID: <401A6E54.5010605@superbug.demon.co.uk>
+References: <401963AC.8080603@superbug.demon.co.uk>	<s5hekthsnlx.wl@alsa2.suse.de>	<401A6488.9060108@superbug.demon.co.uk> <s5h7jz9sewo.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010606020204010802060708"
+ boundary="------------000906080907070900050102"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekthsnlx.wl@alsa2.suse.de>
+In-Reply-To: <s5h7jz9sewo.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,330 +22,599 @@ Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
---------------010606020204010802060708
+--------------000906080907070900050102
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 
 Takashi Iwai wrote:
-> At Thu, 29 Jan 2004 19:49:00 +0000,
+> At Fri, 30 Jan 2004 14:04:56 +0000,
 > James Courtier-Dutton wrote:
 > 
 >>[1  <text/plain; us-ascii (7bit)>]
->>I have been told that one should be able to build alsa-driver on a 2.6.x 
->>kernel, but it fails here.
+>>Takashi Iwai wrote:
 >>
->>I attach config.log for your information.
->>I also attach the console output from running
->>./configure --with-cards=emu10k1,intel8x0,usb-audio
+>>>At Thu, 29 Jan 2004 19:49:00 +0000,
+>>>James Courtier-Dutton wrote:
+>>>
+>>>
+>>>>[1  <text/plain; us-ascii (7bit)>]
+>>>>I have been told that one should be able to build alsa-driver on a 2.6.x 
+>>>>kernel, but it fails here.
+>>>>
+>>>>I attach config.log for your information.
+>>>>I also attach the console output from running
+>>>>./configure --with-cards=emu10k1,intel8x0,usb-audio
+>>>>
+>>>>Can anyone help?
+>>>
+>>>
+>>>how about the patch below?
+>>>
+>>>
+>>>Takashi
 >>
->>Can anyone help?
+>>Much better, configure finishes now, but compile fails.
+>>Now I get a PDE error. See attachment.
+>>It would be nice if configure could somehow check for and work around 
+>>the PDE error.
 > 
 > 
-> how about the patch below?
+> please show config.log.  configure didn't detect PDE by some reason.
 > 
 > 
 > Takashi
-
-Much better, configure finishes now, but compile fails.
-Now I get a PDE error. See attachment.
-It would be nice if configure could somehow check for and work around 
-the PDE error.
-
-Cheers
-James
+> 
+> 
+See attached.
 
 
---------------010606020204010802060708
+--------------000906080907070900050102
 Content-Type: text/plain;
- name="alsa-fail.txt"
+ name="config.log"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="alsa-fail.txt"
+ filename="config.log"
 
-Script started on Fri Jan 30 14:00:39 2004
-sh-2.05b# ./cvscompile --with-cards=emu10k1,intel8x0,usb-audio
-make: Nothing to be done for `all-deps'.
-configure.in:887: warning: AC_TRY_RUN called without default to allow cross compiling
-./configure --with-cards=emu10k1,intel8x0,usb-audio
-loading cache ./config.cache
-checking for gcc... (cached) gcc
-checking whether the C compiler (gcc  ) works... yes
-checking whether the C compiler (gcc  ) is a cross-compiler... no
-checking whether we are using GNU C... (cached) yes
-checking whether gcc accepts -g... (cached) yes
-checking for ranlib... (cached) ranlib
-checking for a BSD compatible install... (cached) /usr/bin/install -c
-checking how to run the C preprocessor... (cached) gcc -E
-checking for ANSI C header files... (cached) yes
-checking for working const... (cached) yes
-checking for inline... (cached) inline
-checking whether time.h and sys/time.h may both be included... (cached) yes
-checking whether gcc needs -traditional... (cached) no
-checking for current directory... /usr/local/alsacvs/alsa-driver
-checking cross compile... 
-checking for directory with kernel source... /lib/modules/2.6.2-rc2/build
-checking for kernel version... 2.6.2-rc2
-checking for GCC version... Kernel compiler: gcc 3.3.2 20031218 (Gentoo Linux 3.3.2-r5, propolice-3.3-7) Used compiler: gcc (GCC) 3.3.2 20031218 (Gentoo Linux 3.3.2-r5, propolice-3.3-7)
-checking for built-in ALSA... no
-checking for existing ALSA module... yes
-checking for Red Hat kernel... auto
-checking for Red Hat kernel... no
-checking to modify of kernel linux/kmod.h... no
-checking for kernel linux/compiler.h... yes
-checking for kernel linux/pm.h... yes
-checking for kernel linux/spinlock.h... yes
-checking for kernel linux/irq.h... yes
-checking for kernel linux/threads.h... yes
-checking for kernel linux/rwsem.h... yes
-checking for kernel linux/gameport.h... yes
-checking for kernel linux/devfs_fs_kernel.h... yes
-checking for kernel linux/highmem.h... yes
-checking for kernel linux/workqueue.h... yes
-checking for kernel asm/hw_irq.h... yes
-checking for kernel linux/device.h... yes
-checking for kernel linux/jiffies.h... yes
-checking for kernel linux/compat.h... yes
-checking for kernel linux/adb.h... yes
-checking for kernel linux/cuda.h... yes
-checking for kernel linux/pmu.h... yes
-checking for kernel module symbol versions... no
-checking for PCI support in kernel... yes
-checking for SGI/MIPS (HAL2) architecture... no
-checking for directory to store kernel modules... /lib/modules/2.6.2-rc2/kernel/sound
-checking for verbose printk... on
-checking for debug level... none
-checking for ISA support in kernel... yes
-checking for processor type... i686
-checking for i386 machine type... default
-checking for SMP... yes
-checking for Video device support in kernel... yes
-checking for ISA PnP driver in kernel... yes
-checking for PnP driver in kernel... yes
-checking for Kernel ISA-PnP support... no
-checking for Kernel ISA-PnP module support... no
-checking for strlcpy... yes
-checking for snprintf... yes
-checking for vmalloc_to_page... no
-checking for old kmod... no
-checking for PDE... no
-checking for pci_set_consistent_dma_mask... no
-checking for tty->count is the atomic type... no
-checking for driver version... 1.0.2
-checking for sequencer support... yes
-checking for OSS/Free emulation... yes
-checking for RTC callback support in kernel... yes
-checking for USB support... yes
-checking for kernel PCMCIA
-checking for PCMCIA support... no
-checking for PCMCIA module support... no
-checking for PC9800 support in kernel... no
-checking for which soundcards to compile driver for... emu10k1 intel8x0 usb-audio
-creating ./config.status
-creating version
-creating Makefile.conf
-creating snddevices
-creating utils/alsa-driver.spec
-creating utils/buildrpm
-creating toplevel.config
-creating utils/alsasound
-creating utils/alsasound.posix
-creating include/config.h
-include/config.h is unchanged
-creating include/config1.h
-include/config1.h is unchanged
-creating include/version.h
-include/version.h is unchanged
-creating include/autoconf-extra.h
-include/autoconf-extra.h is unchanged
-Hacking autoconf.h...
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/acore'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/oss'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/oss'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/seq'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/seq/instr'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/seq/instr'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/seq/oss'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/seq/oss'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/seq'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore'
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/i2c'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/i2c/other'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/i2c/other'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/i2c'
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/opl3'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/opl3'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/opl4'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/opl4'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/mpu401'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/mpu401'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/vx'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/vx'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers'
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/isa'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/msnd'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/msnd'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/ad1816a'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/ad1816a'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/ad1848'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/ad1848'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/cs423x'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/cs423x'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/es1688'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/es1688'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/gus'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/gus'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/opti9xx'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/opti9xx'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/sb'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/sb'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/wavefront'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/wavefront'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa'
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/synth'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/synth/emux'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/synth/emux'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/synth'
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/pci'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/pdplus'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/pdplus'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/mixart'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/mixart'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/au88x0'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/au88x0'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ac97'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ac97'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ali5451'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ali5451'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/cs46xx'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/cs46xx'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/emu10k1'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/emu10k1'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/korg1212'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/korg1212'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/nm256'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/nm256'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/rme9652'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/rme9652'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/trident'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/trident'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ymfpci'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ymfpci'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ice1712'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ice1712'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/vx222'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/vx222'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci'
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver/usb'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/usb/usx2y'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/usb/usx2y'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver/usb'
-make dep
-make[1]: Entering directory `/usr/local/alsacvs/alsa-driver'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/acore'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/oss'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/oss'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/seq'
-make[4]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/seq/instr'
-make[4]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/seq/instr'
-make[4]: Entering directory `/usr/local/alsacvs/alsa-driver/acore/seq/oss'
-make[4]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/seq/oss'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore/seq'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/acore'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/i2c'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/i2c/other'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/i2c/other'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/i2c'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/opl3'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/opl3'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/opl4'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/opl4'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/mpu401'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/mpu401'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/drivers/vx'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers/vx'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/drivers'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/isa'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/msnd'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/msnd'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/ad1816a'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/ad1816a'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/ad1848'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/ad1848'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/cs423x'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/cs423x'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/es1688'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/es1688'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/gus'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/gus'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/opti9xx'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/opti9xx'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/sb'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/sb'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/isa/wavefront'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa/wavefront'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/isa'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/synth'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/synth/emux'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/synth/emux'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/synth'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/pci'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/pdplus'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/pdplus'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/mixart'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/mixart'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/au88x0'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/au88x0'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ac97'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ac97'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ali5451'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ali5451'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/cs46xx'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/cs46xx'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/emu10k1'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/emu10k1'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/korg1212'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/korg1212'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/nm256'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/nm256'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/rme9652'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/rme9652'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/trident'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/trident'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ymfpci'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ymfpci'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/ice1712'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/ice1712'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/pci/vx222'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci/vx222'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/pci'
-make[2]: Entering directory `/usr/local/alsacvs/alsa-driver/usb'
-make[3]: Entering directory `/usr/local/alsacvs/alsa-driver/usb/usx2y'
-make[3]: Leaving directory `/usr/local/alsacvs/alsa-driver/usb/usx2y'
-make[2]: Leaving directory `/usr/local/alsacvs/alsa-driver/usb'
-make[1]: Leaving directory `/usr/local/alsacvs/alsa-driver'
-make -C /lib/modules/2.6.2-rc2/build SUBDIRS=/usr/local/alsacvs/alsa-driver/kbuild modules
-make[1]: Entering directory `/usr/src/linux-2.6.2-rc2'
-*** Warning: Overriding SUBDIRS on the command line can cause
-***          inconsistencies
-make[2]: `arch/i386/kernel/asm-offsets.s' is up to date.
-  CC [M]  /usr/local/alsacvs/alsa-driver/kbuild/../acore/hwdep.o
-In file included from /usr/local/alsacvs/alsa-driver/include/sound/driver.h:42,
-                 from /usr/local/alsacvs/alsa-driver/acore/hwdep.c:22:
-/usr/local/alsacvs/alsa-driver/include/adriver.h:134: error: redefinition of `PDE'
-include/linux/proc_fs.h:257: error: `PDE' previously defined here
-make[3]: *** [/usr/local/alsacvs/alsa-driver/kbuild/../acore/hwdep.o] Error 1
-make[2]: *** [/usr/local/alsacvs/alsa-driver/kbuild/../acore] Error 2
-make[1]: *** [/usr/local/alsacvs/alsa-driver/kbuild] Error 2
-make[1]: Leaving directory `/usr/src/linux-2.6.2-rc2'
-make: *** [compile] Error 2
-sh-2.05b# exit
-exit
+This file contains any messages produced by compilers while
+running configure, to aid debugging if configure makes a mistake.
 
-Script done on Fri Jan 30 14:01:08 2004
+configure:577: checking for gcc
+configure:690: checking whether the C compiler (gcc  ) works
+configure:706: gcc -o conftest    conftest.c  1>&5
+configure:732: checking whether the C compiler (gcc  ) is a cross-compiler
+configure:737: checking whether we are using GNU C
+configure:765: checking whether gcc accepts -g
+configure:799: checking for ranlib
+configure:857: checking for a BSD compatible install
+configure:916: checking how to run the C preprocessor
+configure:996: checking for ANSI C header files
+configure:1102: checking for working const
+configure:1177: checking for inline
+configure:1217: checking whether time.h and sys/time.h may both be included
+configure:1254: checking whether gcc needs -traditional
+configure:1301: checking for current directory
+configure:1307: checking cross compile
+configure:1333: checking for directory with kernel source
+configure:1356: checking for kernel version
+configure:1418: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:1453: checking for GCC version
+configure:1499: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:1651: checking for built-in ALSA
+configure:1673: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure: failed program was:
+#line 1660 "configure"
+#include "confdefs.h"
 
---------------010606020204010802060708--
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#ifndef CONFIG_SND
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:1695: checking for existing ALSA module
+configure:1717: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:1738: checking for Red Hat kernel
+configure:1761: checking for Red Hat kernel
+configure:1783: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure: failed program was:
+#line 1770 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(RED_HAT_LINUX_KERNEL) && !defined(RED_HAT_LINUX_KERNEL_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:1803: checking to modify of kernel linux/kmod.h
+configure:1822: checking for kernel linux/compiler.h
+configure:1848: checking for kernel linux/pm.h
+configure:1874: checking for kernel linux/spinlock.h
+configure:1900: checking for kernel linux/irq.h
+configure:1926: checking for kernel linux/threads.h
+configure:1952: checking for kernel linux/rwsem.h
+configure:1978: checking for kernel linux/gameport.h
+configure:2004: checking for kernel linux/devfs_fs_kernel.h
+configure:2030: checking for kernel linux/highmem.h
+configure:2056: checking for kernel linux/workqueue.h
+configure:2091: checking for kernel asm/hw_irq.h
+configure:2117: checking for kernel linux/device.h
+configure:2143: checking for kernel linux/jiffies.h
+configure:2171: checking for kernel linux/compat.h
+configure:2199: checking for kernel linux/adb.h
+configure:2227: checking for kernel linux/cuda.h
+configure:2255: checking for kernel linux/pmu.h
+configure:2286: checking for kernel module symbol versions
+configure:2308: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure: failed program was:
+#line 2295 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(CONFIG_MODVERSIONS) && !defined(CONFIG_MODVERSIONS_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:2331: checking for PCI support in kernel
+configure:2353: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:2371: checking for SGI/MIPS (HAL2) architecture
+configure:2385: checking for directory to store kernel modules
+configure:2414: checking for verbose printk
+configure:2438: checking for debug level
+configure:2510: checking for ISA support in kernel
+configure:2532: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:2552: checking for processor type
+configure:2650: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:2859: checking for i386 machine type
+configure:2897: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include   conftest.c  1>&5
+configure:2940: checking for SMP
+configure:2962: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure:2990: checking for Video device support in kernel
+configure:3012: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure:3030: checking for ISA PnP driver in kernel
+configure:3045: checking for PnP driver in kernel
+configure:3064: checking for Kernel ISA-PnP support
+configure:3086: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure: failed program was:
+#line 3073 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(CONFIG_ISAPNP) && !defined(CONFIG_ISAPNP_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:3106: checking for Kernel ISA-PnP module support
+configure:3128: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure: failed program was:
+#line 3115 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(CONFIG_ISAPNP_MODULE) && !defined(CONFIG_ISAPNP_MODULE_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:3195: checking for strlcpy
+configure:3215: gcc -c -Wall -Werror -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+configure:3235: checking for snprintf
+configure:3254: gcc -c -Wall -Werror -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+configure:3274: checking for vmalloc_to_page
+configure:3294: gcc -c -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
+                 from configure:3284:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
+                 from configure:3284:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
+                 from configure:3284:
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mm.h:4,
+                 from configure:3284:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
+configure: failed program was:
+#line 3279 "configure"
+#include "confdefs.h"
+
+#define __KERNEL__
+#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
+#include "/lib/modules/2.6.2-rc2/build/include/linux/time.h"
+#include "/lib/modules/2.6.2-rc2/build/include/linux/mm.h"
+
+int main() {
+
+  struct page * (*func)(void*);
+  func = vmalloc_to_page;
+
+; return 0; }
+configure:3314: checking for old kmod
+configure:3332: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+configure: In function `main':
+configure:3327: warning: too many arguments for format
+configure:3352: checking for PDE
+configure:3372: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/processor.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/prefetch.h:13,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/list.h:7,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/wait.h:14,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:12,
+                 from configure:3361:
+/lib/modules/2.6.2-rc2/build/include/asm/system.h: In function `__set_64bit_var':
+/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
+/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from configure:3361:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from configure:3361:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h: At top level:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from configure:3361:
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from configure:3361:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from configure:3361:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h: In function `hard_smp_processor_id':
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:76: warning: implicit declaration of function `GET_APIC_ID'
+configure: failed program was:
+#line 3357 "configure"
+#include "confdefs.h"
+
+#define __KERNEL__
+#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
+#include "/lib/modules/2.6.2-rc2/build/include/linux/fs.h"
+#include "/lib/modules/2.6.2-rc2/build/include/linux/proc_fs.h"
+
+int main() {
+
+	struct proc_dir_entry * (*func)();
+	func = PDE;
+
+; return 0; }
+configure:3392: checking for pci_set_consistent_dma_mask
+configure:3411: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/processor.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/prefetch.h:13,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/list.h:7,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:348,
+                 from configure:3401:
+/lib/modules/2.6.2-rc2/build/include/asm/system.h: In function `__set_64bit_var':
+/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
+/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
+                 from configure:3401:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
+                 from configure:3401:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h: At top level:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
+                 from configure:3401:
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
+                 from configure:3401:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/sched.h:23,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/module.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/device.h:21,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/pci.h:350,
+                 from configure:3401:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h: In function `hard_smp_processor_id':
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:76: warning: implicit declaration of function `GET_APIC_ID'
+configure: failed program was:
+#line 3397 "configure"
+#include "confdefs.h"
+
+#define __KERNEL__
+#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
+#include "/lib/modules/2.6.2-rc2/build/include/linux/pci.h"
+
+int main() {
+
+	int (*func)();
+	func = pci_set_consistent_dma_mask;
+
+; return 0; }
+configure:3431: checking for tty->count is the atomic type
+configure:3450: gcc -c -g -O2 -Wall -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default  conftest.c 1>&5
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/processor.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/prefetch.h:13,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/list.h:7,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/wait.h:14,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:12,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
+                 from configure:3440:
+/lib/modules/2.6.2-rc2/build/include/asm/system.h: In function `__set_64bit_var':
+/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
+/lib/modules/2.6.2-rc2/build/include/asm/system.h:193: warning: dereferencing type-punned pointer will break strict-aliasing rules
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
+                 from configure:3440:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:6:25: mach_mpspec.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:18,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
+                 from configure:3440:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h: At top level:
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:9: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:10: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:19: error: `MAX_APICS' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:20: error: conflicting types for `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:8: error: previous declaration of `mp_bus_id_to_type'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: `MAX_MP_BUSSES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:24: error: conflicting types for `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:12: error: previous declaration of `mp_bus_id_to_pci_bus'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:50: error: `MAX_APICS' undeclared here (not in a function)
+In file included from /lib/modules/2.6.2-rc2/build/include/asm/smp.h:20,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
+                 from configure:3440:
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: `MAX_IRQ_SOURCES' undeclared here (not in a function)
+/lib/modules/2.6.2-rc2/build/include/asm/io_apic.h:160: error: conflicting types for `mp_irqs'
+/lib/modules/2.6.2-rc2/build/include/asm/mpspec.h:22: error: previous declaration of `mp_irqs'
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
+                 from configure:3440:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:72:26: mach_apicdef.h: No such file or directory
+In file included from /lib/modules/2.6.2-rc2/build/include/linux/smp.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/topology.h:33,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/mmzone.h:304,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/gfp.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/slab.h:15,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/percpu.h:4,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/rcupdate.h:42,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/dcache.h:10,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/fs.h:17,
+                 from /lib/modules/2.6.2-rc2/build/include/linux/tty.h:20,
+                 from configure:3440:
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h: In function `hard_smp_processor_id':
+/lib/modules/2.6.2-rc2/build/include/asm/smp.h:76: warning: implicit declaration of function `GET_APIC_ID'
+configure: In function `main':
+configure:3445: error: request for member `counter' in something not a structure or union
+configure: failed program was:
+#line 3436 "configure"
+#include "confdefs.h"
+
+#define __KERNEL__
+#include "/lib/modules/2.6.2-rc2/build/include/linux/config.h"
+#include "/lib/modules/2.6.2-rc2/build/include/linux/tty.h"
+
+int main() {
+
+	struct tty_struct tty;
+	atomic_read(&tty.count);
+
+; return 0; }
+configure:3622: checking for driver version
+configure:3637: checking for sequencer support
+configure:3666: checking for OSS/Free emulation
+configure:3705: checking for RTC callback support in kernel
+configure:3737: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure:3763: checking for USB support
+configure:3785: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure:3869: checking for PCMCIA support
+configure:3891: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure: failed program was:
+#line 3878 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(CONFIG_PCMCIA) && !defined(CONFIG_PCMCIA_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:3911: checking for PCMCIA module support
+configure:3933: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure: failed program was:
+#line 3920 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(CONFIG_PCMCIA_MODULE) && !defined(CONFIG_PCMCIA_MODULE_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:3969: checking for PC9800 support in kernel
+configure:3991: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
+configure: failed program was:
+#line 3978 "configure"
+#include "confdefs.h"
+
+#include "/lib/modules/2.6.2-rc2/build/include/linux/autoconf.h"
+int main( void ) {
+#if !defined(CONFIG_X86_PC9800) && !defined(CONFIG_X86_PC9800_MODULE)
+  exit(1);
+#else
+  exit(0);
+#endif
+}
+
+configure:4089: checking for which soundcards to compile driver for
+
+--------------000906080907070900050102--
 
 
 -------------------------------------------------------
