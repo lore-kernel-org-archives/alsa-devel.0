@@ -1,12 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Audigy 2 emu10k2 with 24bit audio samples.
-Date: Mon, 17 May 2004 12:40:09 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: SIS 7012 / CMI 9739
+Date: Tue, 18 May 2004 12:12:51 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40A8A499.7070504@superbug.demon.co.uk>
+Message-ID: <Pine.HPX.4.33n.0405181208440.27420-100000@studcom.urz.uni-halle.de>
+References: <20040514134223.2e7cea05@goose>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20040514134223.2e7cea05@goose>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +17,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: Sebastian Urbach <sebastian@urbach.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I understand the the Audigy 2 DSP (emu10k2) handles 24bits in the DSP at 
-a max rate of 48Khz. It uses an as yet undocumented extra chip for 
-96/192 Khz.
+Sebastian Urbach wrote:
+> I want to ask what happend with the following patch regarding the CMI
+> 9739 ? :
+>
+> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg10804.html
+>
+> Are there any plans to fix the problem in the regular alsa release ?
 
-Does anyone know how we could get the alsa emu10k1 live/audigy driver to 
-accept 24bit audio from the application.
-At the moment, when I send alsa-lib a 24bit audio sample, it reaches the 
-sound card as 16bit.
+Yes.  There are plans to write a plugin that would implement a volume
+control in software, for ALSA PCM devices.  But, currently, it's
+nothing more than a plan ...
 
-Cheers
-James
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
