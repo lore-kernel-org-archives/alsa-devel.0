@@ -1,14 +1,11 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: ALSA homepage redesign
-Date: Sun, 21 Apr 2002 03:26:10 -0700 (PDT)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: spam attacks
+Date: Sun, 21 Apr 2002 22:19:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020421102610.B556E36FA@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+Message-ID: <a9v3ru$d85$2@main.gmane.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,34 +14,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: James@superbug.demon.co.uk, alsa-devel@lists.sourceforge.net
+To: ALSA development <alsa-devel@alsa-project.org>, ALSA user <alsa-user@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello all,
 
---- James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
->>>
->
->Currently, xine (http://xine.sf.net) supports the 0.9.x alsa interface 
->but not the 0.5.x interface.
->I think we should have a section on the web site for the different 
->applications which support different alsa versions.
->
->Cheers
->James
->
->
+	because ALSA mailing list are under high spam attacks, these 
+actions were arranged:
 
-This is already happening and I will add xine.
+- restricted e-mail size to 60kB (maximum)
+- allowed posts from subscribed members only, other posts must be
+  approved by administrator (me)
 
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
+Notice for non-subscribed posters or posters with more e-mail addresses:
+I am not able to check all e-mails immediately, so an approval may take 
+hours or a few days.
 
+Please, avoid large attachments - use URLs rather.
 
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
+						Jaroslav
 
-_____________________________________________________________
-Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
