@@ -1,15 +1,14 @@
-From: "Doris Epps" <epps@selecttrading.se>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Fri, 17 Dec 2004 04:33:02 -0200
-Message-ID: <671101c4e402$a86281a5$2cebc274@dit.ou.dk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
+Date: Fri, 17 Dec 2004 10:36:58 +0100
+Message-ID: <5fba6ce32bb76461e320521902cbcc71@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from dit.ou.dk (u159-1.u219-71.giga.net.tw [219.71.159.1])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 458EB18D
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2004 07:36:35 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14D522B9
+	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2004 10:36:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,112 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+The following issue has been REOPENED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
+======================================================================
+Reported By:                IMAMUDDIN AKBAR
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   727
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               FEDORA CORE 3
+Kernel Version:             2.6.9-1.667
+======================================================================
+Date Submitted:             12-16-2004 09:09 CET
+Last Modified:              12-17-2004 10:36 CET
+======================================================================
+Summary:                    segmentation fault when running modprobe & alsaconf,
+no sound, no mixer on D915GAV
+Description: 
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+i have compiled alsa-driver-1.0.7 alsa-lib-1.0.7 alsa-utils-1.0.7
+but thereis still no sound, and nomiser appear when running alsamixer
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+i use Intel D915GAV with lspci -v:
+00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Intel Corp.: Unknown device e203
+        Flags: bus master, fast devsel, latency 0, IRQ 169
+        Memory at ffa3c000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70] Express Unknown type IRQ 0
+        Capabilities: [100] Virtual Channel
+        Capabilities: [130] Unknown (5)
 
-Visit us: http://vanai.com/rep/rolex/
+when i run 
+# modprobe snd-azx
+Segmentation fault
+#lsmod
+snd_azx                31094  6
+snd_pcm_oss            51752  0
+snd_mixer_oss          21760  1 snd_pcm_oss
+snd_pcm                89860  2 snd_azx,snd_pcm_oss
+snd_timer              27524  1 snd_pcm
 
-Best regards,
-Hilton Jones
+when i run amixer
+no mixer appear on screen
+
+and when i reboot my computer it cannot boot and just hang...
+so i have to uninstall all alsa from rescue to boot again.
+
+Help me to make mysound work fine...
+ 
 
 
-No thanks: http://www.vanai.com/z.php
+
+
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 12-16-04 17:21 
+----------------------------------------------------------------------
+Fixed in the cvs version.
+
+----------------------------------------------------------------------
+ IMAMUDDIN AKBAR - 12-17-04 10:36 
+----------------------------------------------------------------------
+I have download the latest cvs version and try to 
+install it. actually i cant find the configure file on
+alsa-driver/ and when i run ./cvscompile it's said
+that  there is no configure file so i just copy the
+configure  file from alsa-driver-1.0.7rc2 that i'd
+download before.
+then i run ./cvscompile it worked but suddenly exit
+after this ..:
+make[1]: Entering directory `/lib/modules/2.6.9-1.667/build'
+Makefile:500: /lib/modules/2.6.9-1.667/build/arch/@ARCH@/Makefile: No such
+file or directory
+make[1]: *** No rule to make target 
+'/lib/modules/2.6.9-1.667/build/arch/@ARCH@/Makefile'.
+ Stop.
+make[1]: Leaving directory `/lib/modules/2.6.9-1.667/build'
+make: *** [compile] Error 2
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-16-04 09:09 IMAMUDDIN AKBARNew Issue                                    
+12-16-04 17:21 tiwai          Status                   new => resolved     
+12-16-04 17:21 tiwai          Resolution               open => fixed       
+12-16-04 17:21 tiwai          Assigned To               => tiwai           
+12-16-04 17:21 tiwai          Note Added: 0002829                          
+12-16-04 17:21 tiwai          Assigned To              tiwai =>            
+12-17-04 10:36 IMAMUDDIN AKBARDistribution              => FEDORA CORE 3   
+12-17-04 10:36 IMAMUDDIN AKBARKernel Version            => 2.6.9-1.667     
+12-17-04 10:36 IMAMUDDIN AKBARStatus                   resolved => feedback
+12-17-04 10:36 IMAMUDDIN AKBARResolution               fixed => reopened   
+12-17-04 10:36 IMAMUDDIN AKBARNote Added: 0002848                          
+======================================================================
+
 
 
 
