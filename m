@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Sat, 25 Sep 2004 17:45:22 +0200 (CEST)
+Subject: [ALSA - driver 0000542]: custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
+Date: Sat, 25 Sep 2004 19:31:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925154522.7F7D125018@server.perex-int.cz>
+Message-ID: <20040925173120.88CE325017@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F218129D
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 17:45:22 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0C4A287
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 19:31:20 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9D12425EC4
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 19:31:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,106 +23,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000425
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000542
 ======================================================================
-Reported By:                rncbc
-Assigned To:                karsten
+Reported By:                ahasver
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     425
-Category:                   USB - usb-usx2y
+Bug ID:                     542
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
-Distribution:               Mandrake 10.0 Official
-Kernel Version:             2.6.8-rc2
+Distribution:               debian sid
+Kernel Version:             2.6.9rc1
 ======================================================================
-Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-25-2004 17:45 CEST
+Date Submitted:             09-25-2004 19:31 CEST
+Last Modified:              09-25-2004 19:31 CEST
 ======================================================================
-Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
+Summary:                    custom kernel with latest alsa-source fails when CONFIG_SND_DEBUG_MEMORY is NOT set
 Description: 
-As of ALSA 1.0.6rc1, the US-x2y PCM device driver module exposes a hard
-conflict on OHCI based USB controllers, causing a complete system lockup
--- kernel oops on an interrupt handler -- exactly upon starting or
-openning the PCM device for audio playback. 
+Compiling a custom kernel with latest alsa-source from cvs fails:
+
+[...]
+sound/built-in.o(.text+0x122c): In function `snd_card_new':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x2b87): In function `snd_info_entry_open':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x2cb8): In function `snd_info_entry_open':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x2d68): In function `snd_info_entry_open':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x343f): In function `snd_info_create_entry':
+: undefined reference to `kcalloc'
+sound/built-in.o(.text+0x38a9): more undefined references to `kcalloc'
+follow
+make[1]: *** [.tmp_vmlinux1] Fehler 1
+make[1]: Leaving directory `/usr/src/linux-2.6.9-rc1'
+make: *** [stamp-build] Fehler 2
+
 ======================================================================
-
-----------------------------------------------------------------------
- rncbc - 08-06-2004 12:16 CEST 
-----------------------------------------------------------------------
-Just to add, that this issue does not occur as of previous
-alsa-driver-1.0.5a, same platform, kernel or hardware. Seems to have been
-introduced on CVS semewhere since mid-July. Something about "no sleeping"
-in ALSA's pcm START/STOP callbacks, but no sure.
-
-----------------------------------------------------------------------
- karsten - 09-23-2004 20:52 CEST 
-----------------------------------------------------------------------
-that seams to have something to do with a threaded IRQ10?
-Does it also happen with hardirq_preempting off?
-Please geneate oops traces from the 2.6.9-rc2-mmx-Sy kernel also. 
-If those traces also happen in non usx2y-module area,
-find out, which snd_*() call triggers the oops.
-Check wether it happens if you disable hyperthreads.
-Erm, did I fail to include some important errorchecks after calling
-kernel/usb functions?
-Run with at least ALSA debug options enabled. Other kernel debug options
-may help too.
-
-----------------------------------------------------------------------
- rncbc - 09-24-2004 09:43 CEST 
-----------------------------------------------------------------------
-Please note that this problem is not related to the voluntary-preempt
-kernel patch nor is SMP/HT related. The machine where its beeing exposed
-is a Compaq Presario 2516EA (laptop), P4 2.533GHz (UP, no-HT enabled).
-
-Also FWIW, it doesn't matter if ACPI is enabled or not. The point where
-the kernel oops occurs seems to be always under ohci_hcd (see
-hard-screenshot).
-
-----------------------------------------------------------------------
- rncbc - 09-25-2004 17:18 CEST 
-----------------------------------------------------------------------
-Now using 2.6.9-rc2-mm3-S6 (voluntary-preempt).
-
-One thing I've noticed, but just related to VP, is that while having
-hardirq-preempt=1 and /proc/irq/10/ohci_hcd/threaded=1, the kernel
-doesn't
-crash when opening the PCM hw device (either via jackd or aplay). But
-still useless or zombie anyway. It does crash however when I unplug my
-US-224 (switch its power down).
-
-With hardirq-preempt=0 or /proc/irq/10/ohci_hcd/threaded=0, I get the
-same
-old bad behavior: a kernel oops somewhere on the ohci_irq handling,
-almost
-immediately when the PCM device is open (e.g. by jackd or aplay). Yet
-another screenshot added here (usx2y-oops4.png).
-
-----------------------------------------------------------------------
- karsten - 09-25-2004 17:45 CEST 
-----------------------------------------------------------------------
-its always dl_done_list().
-Please post unassembly of the oops.
-Look in linux/Documentation/oops-tracing.txt for assistence.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-06-04 10:53 rncbc          New Bug                                      
-08-06-04 10:53 rncbc          File Added: usx2y-oops3.png                    
-08-06-04 10:53 rncbc          Distribution              => Mandrake 10.0 Official
-08-06-04 10:53 rncbc          Kernel Version            => 2.6.8-rc2       
-08-06-04 12:16 rncbc          Bugnote Added: 0001538                       
-09-23-04 20:52 karsten        Bugnote Added: 0001849                       
-09-24-04 09:43 rncbc          Bugnote Added: 0001858                       
-09-25-04 17:13 rncbc          File Added: usx2y-oops4.png                    
-09-25-04 17:18 rncbc          Bugnote Added: 0001911                       
-09-25-04 17:45 karsten        Bugnote Added: 0001912                       
+09-25-04 19:31 ahasver        New Bug                                      
+09-25-04 19:31 ahasver        Distribution              => debian sid      
+09-25-04 19:31 ahasver        Kernel Version            => 2.6.9rc1        
 ======================================================================
 
 
