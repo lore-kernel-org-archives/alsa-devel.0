@@ -1,18 +1,13 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [ALSA - lib 0000396]: /dev/mixer problem with
-	alsa-lib 1.0.5
-Date: Fri, 24 Sep 2004 15:20:12 -0400
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000524]: [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
+Date: Fri, 24 Sep 2004 21:23:25 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1096053611.10831.12.camel@krustophenia.net>
-References: <20040924113645.54CC1101DE@server.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040924192325.0A550B09D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3E1611CD
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 21:20:14 +0200 (MEST)
-In-Reply-To: <20040924113645.54CC1101DE@server.perex-int.cz>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C01B293
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 21:23:25 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,24 +16,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: bugtrack@alsa-project.org
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-09-24 at 07:36, bugtrack@alsa-project.org wrote:
-> Description: 
-> When I try to play a movie in Mplayer (tried with version 1.0pre5 and
-> 1.0pre4) i receive this output:
-> ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
-> alsa-control: mixer attach /dev/mixer error: No such file or directory
 
-These mplayer issues are getting to be a FAQ.  If anyone else reports
-mplayer issues, they need to use Mplayer CVS.  ALSA support is just
-plain broken in all released versions.  If the user cannot upgrade the
-only workaround is to use the OSS emulation.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000524
+======================================================================
+Reported By:                jdthood
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Bug ID:                     524
+Category:                   general
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             09-22-2004 23:38 CEST
+Last Modified:              09-24-2004 21:23 CEST
+======================================================================
+Summary:                    [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
+Description: 
+--- aserver/aserver.c.orig      2004-09-04 16:16:53.000000000 +0200
++++ aserver/aserver.c   2004-09-04 16:34:56.000000000 +0200
+@@ -1006,7 +1006,8 @@
+ int main(int argc, char **argv)
+ {
+        static struct option long_options[] = {
+-               {"help", 0, 0, 'h'}
++               {"help", 0, 0, 'h'},
++                { 0 , 0 , 0, 0 }
+        };
+        int c;
+        snd_config_t *conf;
+======================================================================
 
-Lee 
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 18:17 CEST 
+----------------------------------------------------------------------
+Please provide a signed-off-by line...
 
+----------------------------------------------------------------------
+ jdthood - 09-24-2004 21:23 CEST 
+----------------------------------------------------------------------
+Summary: Terminate long_options array
+
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-22-04 23:38 jdthood        New Bug                                      
+09-23-04 18:17 tiwai          Bugnote Added: 0001828                       
+09-24-04 21:23 jdthood        Bugnote Added: 0001904                       
+======================================================================
 
 
 -------------------------------------------------------
