@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Thu, 13 Jan 2005 20:33:29 +0100
-Message-ID: <9b7b4d8e2db1ab24ef290d0fe6bc5db5@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000792]: alsa fails to initialize after UDEV is installed
+Date: Thu, 13 Jan 2005 20:42:56 +0100
+Message-ID: <cf3076a24deb36fa988b5dc6cd923266@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 67DFE2F6
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 20:33:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1386F2F6
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 20:42:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,47 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=792> 
 ======================================================================
-Reported By:                gvy
-Assigned To:                
+Reported By:                sluce
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   815
-Category:                   
+Project:                    ALSA - lib
+Issue ID:                   792
+Category:                   alisp
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              01-13-2005 20:33 CET
+Date Submitted:             01-08-2005 04:12 CET
+Last Modified:              01-13-2005 20:42 CET
 ======================================================================
-Summary:                    missing DESTDIR support with hotplug dir
+Summary:                    alsa fails to initialize after UDEV is installed
 Description: 
-with intoruction of hotplug dir I had to kludge in RPM buildroot into
-configure parameters -- it doesn't belong there, it's rather install-time
-not compile-time (and definitely not configure-time).
+I'm really running 1.0.7 but that wasn't an option above.
+The kernel reports that it finds my CMI8330 card and alsa says:
+pnp: the driver 'cmi8330' has been registered
+pnp: match found with the PnP device '01:01.00' and the driver 'cmi8330'
+pnp: match found with the PnP device '01:01.03' and the driver 'cmi8330'
+pnp: Device 01:01.00 activated.
+pnp: Device 01:01.03 activated.
+ALSA sound/isa/sb/sb_common.c:130: SB [0x220]: DSP chip found, version =
+4.13
 
-hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
-too.
+I am unable to use the sound card.  KDE is configured to use alsa but is
+unable to open the sound device.
+
+I'll happily provide more information if you tell me what you want to see.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 20:33 
+ sluce - 01-13-05 17:53 
 ----------------------------------------------------------------------
-$DESTDIR works fine for me...
+Thanks to Thomas Hood, this issue is resolved.  The problem was a too
+backlevel hotplug installation.  I upgraded hotplug to sarge and all is
+well.
 
-The hotplug directory is really /usr/lib/hotplug (or better /lib/hotplug
-in the recent version).  It shouldn't depend on $prefix.
+
+
+----------------------------------------------------------------------
+ tiwai - 01-13-05 20:42 
+----------------------------------------------------------------------
+OK, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-05 20:21 gvy            New Issue                                    
-01-13-05 20:33 tiwai          Note Added: 0003199                          
+01-08-05 04:12 sluce          New Issue                                    
+01-08-05 18:43 sluce          Issue Monitored: sluce                       
+01-08-05 18:44 sluce          Issue End Monitor: sluce                     
+01-08-05 23:34 sluce          File Added: 792.txt                          
+01-08-05 23:35 sluce          Note Added: 0003131                          
+01-10-05 15:03 tiwai          Note Added: 0003136                          
+01-10-05 20:49 sluce          Note Added: 0003139                          
+01-12-05 06:05 sluce          Note Edited: 0003139                         
+01-13-05 17:52 sluce          Note Added: 0003197                          
+01-13-05 17:53 sluce          Note Edited: 0003197                         
+01-13-05 20:42 tiwai          Status                   new => resolved     
+01-13-05 20:42 tiwai          Resolution               open => fixed       
+01-13-05 20:42 tiwai          Assigned To               => tiwai           
+01-13-05 20:42 tiwai          Note Added: 0003200                          
 ======================================================================
 
 
