@@ -1,15 +1,12 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: [lack of] dynamic detection/loading of modules
-Date: 04 Mar 2003 19:05:58 -0800
+From: Andrei Boros <andrei@srr.ro>
+Subject: alsa-lib cvs version fails to compile
+Date: Wed, 05 Mar 2003 10:12:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046833558.6760.255.camel@cmn37.Stanford.EDU>
-References: <E18oElA-0005cD-00@sc8-sf-list1.sourceforge.net>
-	<1046378100.22559.23.camel@cmn37.Stanford.EDU>
+Message-ID: <3E65B16B.2DB7080D@srr.ro>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1046378100.22559.23.camel@cmn37.Stanford.EDU>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +15,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Ivica Bukvic <ico@fuse.net>, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > >lists about this and to do it cleanly it would be nice to have available
-> > >in /proc/asound the list of modules currently loaded. That is not
-> > >available today (I think Takashi said he might add that)."
-> > 
-> > cat /proc/modules | grep '^snd'
 
-I wrote this:
+ On a Slackware 7.0 system, kernel 2.2.23 I have the following
+situation:
 
-> This relies in an (AFAIK) unenforceable convention (all modules that
-> start with "snd" are alsa modules). I think the information has to come
-> from within the alsa driver, or from some place that actually knows that
-> the module _is_ an alsa module. IMHO a name is not enough. 
+alsa-0.9-rc7 works (driver, lib, tools).
 
-True, but I was wrong nevertheless. For the proposed use your solution
-works fine because we already know the name of the alsa module we want
-to check for (DOH!!!). 
+Due to some isapnp related problems, Takashi Iwai sent me a patch and
+asked me to try in on the cvs version. While I still have problems with
+the driver part, when I tried to compile alsa-lib from cvs I get the
+following errors:
 
--- Fernando
+cd alsa-lib
+./cvscompile
+-----------------------------------------------------------------------------------
+gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -O2 -Wall -W
+-pipe -g -Wp,-MD,.deps/timer_query.pp -c  -fPIC -DPIC timer_query.c -o
+timer_query.lo
+{standard input}: Assembler messages:
+{standard input}:3105: Error: invalid attempt to declare external
+version name as default in symbol `snd_timer_query_status@@ALSA_0.9.0'
+make[2]: *** [timer_query.lo] Error 1
+make[2]: Leaving directory `/serve/install/alsa-cvs/alsa-lib/src/timer'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-lib/src'
+make: *** [all-recursive] Error 1
+-----------------------------------------------------------------------------------
 
 
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
