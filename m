@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000397]: Bad sound quality on Asus K8V SE Deluxe (VIA8237 + AD1980)
-Date: Tue, 25 Jan 2005 22:46:36 +0100
-Message-ID: <6b36d00cbe82b33b3fd4f59fb05b90db@bugtrack.alsa-project.org>
+From: Fernando Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: hdsploader, firmware and 1.0.8?
+Date: 24 Jan 2005 22:44:44 -0800
+Message-ID: <1106635483.14021.45.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFAC3223
-	for <alsa-devel@alsa-project.org>; Tue, 25 Jan 2005 22:46:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,104 +15,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>, "Michael E. Smith" <melkhorn@gmx.de>
 List-Id: alsa-devel@alsa-project.org
 
+Hi alsa gurus... I just got a message from one of my Planet CCRMA users,
+the ability of his two machines to load the hdsp firmware has
+dissapeared after updating to the latest alsa packages I released (1.0.8
+final). 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=397> 
-======================================================================
-Reported By:                durval
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   397
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               My own, based on Redhat 6.2
-Kernel Version:             2.4.26
-======================================================================
-Date Submitted:             07-18-2004 16:41 CEST
-Last Modified:              01-25-2005 22:46 CET
-======================================================================
-Summary:                    Bad sound quality on Asus K8V SE Deluxe (VIA8237 +
-AD1980)
-Description: 
-Sound quality is noticiably bad; even someone with not-so-sensitive ears as
-me perceives the low-frequency and high-frequency components of sound
-getting mixed up and losing definition. I thought it could be a problem
-with my hardware or speaker system, but rebooting the machine under
-Windows2000 and playing the same music showed much better quality. 
-======================================================================
+I'm still waiting for more data, but I'm including the relevant parts of
+what he wrote to the list, in the hope that someone will already have
+experience with this problem and how to fix it. I know hotplug should be
+trying to download the firmware, but shouldn't hdsploader work anyway?
 
-----------------------------------------------------------------------
- badbunny - 10-27-04 00:27 
-----------------------------------------------------------------------
-I have a K8V and it works beutifully with the ALSA drivers. If you are
-using the latest ALSA drivers, there is quirk in the driver that sets the
-driver to the equilaent of "dxs_support=4". I'm running currently running
-2.6.9. But I've been using it since 2.6.4.
+A couple of other users have reported success with echoaudio cards
+(which also require firmware loading, I think) so this is unexpected. 
 
-----------------------------------------------------------------------
- dvega - 01-25-05 22:46 
-----------------------------------------------------------------------
-I've similar problems on my ASUS A7V600-X MotherBoard (VIA8237 + AD1888).
-I'm using kernel 2.6.10 on Gentoo. I've tried different values for
-dxs_support and ac97_quirk parameters with no success
+Thanks for any help.
+-- Fernando
 
-It's difficult to explain. You can hear some high frecuency ticks/pauses
-intermixed with the sound.
+-----Forwarded Message-----
 
-I've compiled the driver with DEBUG, but I can't see anything usefull.
+From: Michael E. Smith
+To: planetccrma@ccrma.Stanford.EDU
+Subject: [PlanetCCRMA] Help! HDSP firmware suddenly fails to load...
+Date: 25 Jan 2005 03:47:17 +0100
 
-=========== dmesg output at boot ============
-ACPI: PCI interrupt 0000:00:11.5[C] -> GSI 22 (level, low) -> IRQ 22
-PCI: Setting latency timer of device 0000:00:11.5 to 64
-ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
-ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
-ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
-ALSA sound/pci/via82xx.c:587: codec_read: codec 0 is not valid [0xfe0000]
-=============================================
+I've just upgraded my two CCRMA boxes to the latest from the CCRMA
+repositories and now my Digiface firmware won't load:
 
-============= lspci -vv extract ==============
-0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
-        Subsystem: ASUSTeK Computer Inc.: Unknown device 810d
-        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR- FastB2B-
-        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Interrupt: pin C routed to IRQ 22
-        Region 0: I/O ports at e000
-        Capabilities: [c0] Power Management version 2
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
-=============================================
+        hdsploader - firmware loader for RME Hammerfall DSP cards
+        Looking for HDSP + Multiface or Digiface cards :
+        Card 0 : RME Hammerfall DSP at 0x3e800000, irq 11
+        Upload firmware for card hw:0
+        Hwdep ioctl error on card hw:0 : Invalid argument.
+        
+This is the first time since switching to Fedora Core 2 and CCRMA that
+I've had a problem with the HDSP.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-18-04 16:41 durval         New Issue                                    
-07-18-04 16:41 durval         Distribution              => My own, based on
-Redhat 6.2
-07-18-04 16:41 durval         Kernel Version            => 2.4.26          
-07-18-04 16:43 durval         Note Added: 0001457                          
-07-18-04 17:16 durval         Note Added: 0001458                          
-07-18-04 17:17 durval         Issue Monitored: durval                      
-07-30-04 17:32 tiwai          Note Added: 0001502                          
-09-25-04 08:54 fangel         Note Added: 0001908                          
-09-25-04 08:55 fangel         Note Added: 0001909                          
-10-12-04 14:56 tiwai          Note Added: 0002101                          
-10-27-04 00:27 badbunny       Note Added: 0002267                          
-01-25-05 22:26 dvega          Issue Monitored: dvega                       
-01-25-05 22:46 dvega          Note Added: 0003412                          
-======================================================================
+Both machines refuse to load the firmware similarly, but not quite the
+same. To wit, the laptop (cardbus/digiface) consistantly produces the
+above error, while the desktop (pci/digiface) does it once and then
+doesn't see a card at all.
 
+It does, however, show up (on both machines) on an lspci listing. Also,
+snd-hdsp shows up in lsmod.
+
+dmesg snippet:
+
+        ALSA /usr/src/rpm/BUILD/alsa-driver-1.0.8/alsa-kernel/pci/rme9652/hdsp.c:647: 
+        	Hammerfall-DSP: no Digiface or Multiface connected!
+        ALSA /usr/src/rpm/BUILD/alsa-driver-1.0.8/alsa-kernel/pci/rme9652/hdsp.c:5086:
+        	 card initialization pending : waiting for firmware
+        
+It would appear as though the firmware is attempting to be loaded
+automatically at some point during user login (I can see from the lights
+on the digiface), resulting in the error even before I attempt to load
+it using hdsploader. 
 
 
 
