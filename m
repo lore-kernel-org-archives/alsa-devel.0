@@ -1,11 +1,13 @@
-From: Daniel MacDonald <danboid@yahoo.co.uk>
-Subject: BUG REPORT: NFORCE2/Soundstorm recording broke
-Date: Sat, 4 Oct 2003 02:52:39 -0700 (PDT)
+From: Antonio Willy Malara <behappy@maialone.com>
+Subject: .asoundrc plugin setup
+Date: Sat, 4 Oct 2003 12:22:24 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031004095239.3516.qmail@web86304.mail.ukl.yahoo.com>
+Message-ID: <20031004102224.GA21682@Zeryn>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; format=flowed; charset=ISO-8859-15
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,54 +19,69 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-My setup is:
+i have some troubles with an usb-audio device (an imic) on linux ppc 
+(an ibook2), i think becouse of endianness related troubles..
 
-ALSA driver 0.9.7a, 0.9.7 lib
-Linux kernel 2.4.21
-RedHat 9
-ASUS A7N8X Deluxe/ NFORCE2 chipset with Soundstorm
-onboard sound
+my big trouble is that jack says:
 
-Playback of both PCM and MIDI sound works fine but the
-problem is that recording doesn't work under ALSA.
-When I type 'arecord -l' I get this:
+willy@Zeryn:~$ jackd -d alsa -d hw:1
+jackd 0.80.0
+[...]
+JACK compiled with System V SHM support
+loading driver ..
+creating alsa driver ... hw:1|hw:1|1024|2|48000|nomon|swmeter|rt
+open
+Sorry. The audio interface "hw:1"doesn't support either of the two 
+hardware sample formats that jack can use.
+ALSA: cannot configure capture channel
+starting engine
+engine driver not set; cannot start
+[...]
 
-**** List of CAPTURE Hardware Devices ****
-card 0: nForce2 [NVidia nForce2], device 0: Intel ICH
-[NVidia nForce2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+i've setupped an .asounrc like that:
 
-but the when I issue 'arecord -t wav -f cd -d 6
-test.wav' I just get a silent test.wav file. I've
-tried recording under Audacity too and that produces
-similiar results, unless I use the OSS kernel driver
-and then I can record in 16-bit, 44.1khz stereo but
-not mono and no full-duplex either.
+pcm.imic {
+         type hw
+         card 1
+}
+  ctl.imic2 {
+         type hw
+         card 1
+}
+  pcm_slave.sl3 {
+         pcm imic
+         format S16_LE
+}
+  pcm.imic2 {
+         type plug
+         slave sl3
+}
 
-The funny thing is that full duplex recording under
-ALSA did actually work under Audacity with my same
-hardware setup- this was when I was running Mandrake
-9.1 and an earlier ALSA version (0.9.2 or
-thereabouts), so I know it is possible.
+and jack at least start, but it dont playback anything:
 
-I've reported this bug to this list before but either
-it just got ignored or there are no ALSA developers
-who own a NFORCE2 board. If this isn't the right place
-to report such bugs I would appreciate if someone
-forwarded this to the right address or told me where
-to send it.
+willy@Zeryn:~$ jackd -d alsa -d imic2
+jackd 0.80.0
+[...]
+creating alsa driver ... imic2|imic2|1024|2|48000|nomon|swmeter|rt
+open
+You appear to be using the ALSA software "plug" layer, probably
+[...]
 
-Thanks,
+You appear to be using the ALSA software "plug" layer, probably
+[...] starting engine
+ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: 
+Broken pipe
+could not start playback (Broken pipe)
+jackd: signal 2 received
+jack main caught signal 2
+received signal 15 during shutdown (ignored)
+willy@Zeryn:~$
 
-dan
+its a mine fault or alsa fault?? i think that with that .asoundrc this 
+things should work...
 
-http://www.transelement.co.uk
-
-__________________________________
-Do you Yahoo!?
-The New Yahoo! Shopping - with improved product search
-http://shopping.yahoo.com
+tanks for attention
+wil
 
 
 -------------------------------------------------------
