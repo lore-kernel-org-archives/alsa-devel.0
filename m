@@ -1,44 +1,37 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [ANN] hdspmixer-1.1
-Date: Thu, 31 Jul 2003 00:06:43 -0400
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307310406.h6V46hK8003037@localhost.localdomain>
-References: <3F291F31.1060603@boosthardware.com>
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 31 Jul 2003 22:52:49 +0900."
-             <3F291F31.1060603@boosthardware.com>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Thomas Charbonnel <thomas@undata.org>, alsa-devel@lists.sourceforge.net
+From: Steve Harris <S.W.Harris=jaJdc+oKuOm+cE1VCfRBVw@public.gmane.org>
+Subject: Re: novation remote 25 usb midi controller
+Date: Thu, 31 Jul 2003 09:15:18 +0100
+Sender: linux-audio-user-admin=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Message-ID: <20030731081518.GC10473@ecs.soton.ac.uk>
+References: <3F288002.214F08C9@zhevny.com>
+Reply-To: linux-audio-user=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-audio-user-admin@music.columbia.edu>
+Content-Disposition: inline
+In-Reply-To: <3F288002.214F08C9@zhevny.com>
+Errors-To: linux-audio-user-admin@music.columbia.edu
+List-Help: <mailto:linux-audio-user-request@music.columbia.edu?subject=help>
+List-Post: <mailto:linux-audio-user@music.columbia.edu>
+List-Subscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
+	<mailto:linux-audio-user-request@music.columbia.edu?subject=subscribe>
+List-Unsubscribe: <http://music.columbia.edu/mailman/listinfo/linux-audio-user>,
+	<mailto:linux-audio-user-request@music.columbia.edu?subject=unsubscribe>
+List-Archive: <http://music.columbia.edu/pipermail/linux-audio-user/>
+To: linux-audio-user <linux-audio-user=oG0YroN0ZiqENrSoib9kfje48wsgrGvP@public.gmane.org>, "alsa-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org" <alsa-devel=5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
->Testing today with ardour reveals that the mute buttons have no effect 
->on the recorded signal.
->
->How do the mute buttons work? I fond it difficult to distinguish between 
->on and off. Why is the default color red? Does that mean they are on by 
->default?
->
->IMO the default should be no color and when they are on they should be red.
+On Wed, Jul 30, 2003 at 10:33:38 -0400, Eric Dantan Rzewnicki wrote:
+> lsusb returns nothing and there is nothing in /proc/bus/usb/devices (
+> which I
+> guess says the same thing. ) 
 
-thomas is copying RME to avoid confusion. it might be better to ask
-them :)
+Do you mean absolutly nothing, or just no MIDI devices? I always see
+the system hubs and bridges and so on.
+ 
+> ./configure --with-cards=ice1712,usb-audio --with-sequencer=yes
+> --with-oss=no
 
->I also missed a control for the headphone output.
+I'l be usb-midi, not usb-audio.
 
-AN1 and AN2 ("analog")
-
-
-
--------------------------------------------------------
-This SF.Net email sponsored by: Free pre-built ASP.NET sites including
-Data Reports, E-commerce, Portals, and Forums are available now.
-Download today and enter to win an XBOX or Visual Studio .NET.
-http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
+- Steve 
