@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000524]: [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
-Date: Fri, 24 Sep 2004 21:23:25 +0200 (CEST)
+Subject: [ALSA - driver 0000538]: error on loading modules
+Date: Fri, 24 Sep 2004 21:42:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924192325.0A550B09D@server.perex-int.cz>
+Message-ID: <20040924194220.257CDB09D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C01B293
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 21:23:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAC1F297
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 21:42:20 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 34BC525EE5
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 21:42:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,58 +23,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000524
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000538
 ======================================================================
-Reported By:                jdthood
+Reported By:                microft
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     524
-Category:                   general
+Project:                    ALSA - driver
+Bug ID:                     538
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               slackware
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             09-22-2004 23:38 CEST
-Last Modified:              09-24-2004 21:23 CEST
+Date Submitted:             09-24-2004 21:42 CEST
+Last Modified:              09-24-2004 21:42 CEST
 ======================================================================
-Summary:                    [PATCH] aserver.c -- terminate long options list and thus prevent segmentation fault on invalid command line options
+Summary:                    error on loading modules
 Description: 
---- aserver/aserver.c.orig      2004-09-04 16:16:53.000000000 +0200
-+++ aserver/aserver.c   2004-09-04 16:34:56.000000000 +0200
-@@ -1006,7 +1006,8 @@
- int main(int argc, char **argv)
- {
-        static struct option long_options[] = {
--               {"help", 0, 0, 'h'}
-+               {"help", 0, 0, 'h'},
-+                { 0 , 0 , 0, 0 }
-        };
-        int c;
-        snd_config_t *conf;
+I just compiled and installed the drivers, lib and utils on my Asus S5200N,
+according to the instructions on this page:
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Intel&card=i820&chip=i820&module=intel8x0#Inst
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:17 CEST 
-----------------------------------------------------------------------
-Please provide a signed-off-by line...
-
-----------------------------------------------------------------------
- jdthood - 09-24-2004 21:23 CEST 
-----------------------------------------------------------------------
-Summary: Terminate long_options array
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 23:38 jdthood        New Bug                                      
-09-23-04 18:17 tiwai          Bugnote Added: 0001828                       
-09-24-04 21:23 jdthood        Bugnote Added: 0001904                       
+09-24-04 21:42 microft        New Bug                                      
+09-24-04 21:42 microft        Distribution              => slackware       
+09-24-04 21:42 microft        Kernel Version            => 2.4.26          
 ======================================================================
 
 
