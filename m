@@ -1,15 +1,19 @@
-From: Peter Kirk <pwk.linuxfan@gmx.de>
-Subject: Re: smart and automatic use of dmix and dsnoop - feature suggestion.
-Date: Mon, 17 Nov 2003 20:48:50 +0100
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: smart and automatic use of dmix and dsnoop -
+ feature suggestion.
+Date: Mon, 17 Nov 2003 21:04:50 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200311172049.14303.pwk.linuxfan@gmx.de>
-References: <200311171940.hAHJeSsp013730@oud.linuxaudiosystems.com>
+Message-ID: <20031117210450.6757b75b.mista.tapas@gmx.net>
+References: <200311141221.hAECLqlT003018@oud.linuxaudiosystems.com>
+	<200311171434.50285.pwk.linuxfan@gmx.de>
+	<s5hfzgnjc88.wl@alsa2.suse.de>
+	<200311171918.54453.pwk.linuxfan@gmx.de>
+	<s5hzneuj0ds.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200311171940.hAHJeSsp013730@oud.linuxaudiosystems.com>
-Content-Disposition: inline
+In-Reply-To: <s5hzneuj0ds.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,50 +22,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: pwk.linuxfan@gmx.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-WARNING: Unsanitized content follows.
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On Mon, 17 Nov 2003 19:49:51 +0100
+Takashi Iwai <tiwai@suse.de> wrote:
 
-Am Montag, 17. November 2003 20:40 schrieb Paul Davis:
-> >> well, my concern is that with the high-end cards, people tend to stick
-> >> with the quality of sounds.  that means, any reason to reduce the
-> >> quality wouldn't be acceptable for some people.  since dmix will do it
-> >> silently (if needed), it might be unacceptable.
-> >
-> >what ? are you suggesting there are people out there that would rather
-> > have=3D =3D20
-> >_NO_ sound instead of a (quality wise) slightly degraded sound ? I cant
-> > rea=3D ly=3D20
-> >believe it :P. If they wanted to have maximum quality, they shouldnt ope=
-n=3D
-> >=3D20
-> >more soundstreams than their hardware can handle...
->
-> the RME hardware has 16-26+ channels, but only one stream.
+> anyway, it's just a concern.  the answer for this question would be
+> just a questionary to users (and a good documentation or user-friendly
+> GUI tool to configure).
 
-Ok,
+As a user that has owned a cheapo soundcard before my current one i can
+only say: I would have loved nothing more than hassle free software
+mixing done automagically by alsa..
 
-here we come to my ignorance on sound drivers/hardware/terminology. If I ta=
-lk=20
-about a stream I mean one application --> soundcard link. What would a=20
-channel be ? And what a stream if not what I defined a line up?=20
-Maybe this is off topic though, and propably I should google it.
+Sadly this doesn't solve all sound problems since many apps seem to have
+still problems with dmix and it will take some time until app writers
+adjust. But from my point of view this would be the right thing [tm].
+Maybe it would also be possible to set dmix's parameters to more
+"compatible" settings.. Maybe it even is with .asoundrc-magic..
 
-Peter
-- --=20
-I'm so broke I can't even pay attention.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.3 (GNU/Linux)
+I also don't know how good OSS emu can be used in conjunction with dmix.
 
-iD8DBQE/uSYng2ieGvTmHiURAq/+AJwIb4RCu7cmw5Dzv6nni2nSKM7ihACeMEPw
-CE3OSEeIJ8gDFwJjTtM9WRM=3D
-=3DlhHZ
------END PGP SIGNATURE-----
-
+Florian Schmidt
 
 
 -------------------------------------------------------
