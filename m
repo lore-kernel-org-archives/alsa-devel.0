@@ -1,16 +1,13 @@
-From: "Katherine S. Burris" <katherine.sburris_zj@stapro.cz>
-Subject: (no subject)
-Date: Tue, 26 Oct 2004 16:28:11 +0000
+From: "Caroline Temple" <templetc@car.co.id>
+Subject: No more doctors visits.
+Date: Mon, 25 Oct 2004 10:55:32 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <d5fd01c4bb78$1f1a3dac$bab8a30d@cibs10.sns.it>
+Message-ID: <3d3a01c4ba81$0f0eed2d$b80d82e4@thomas-stremski.de>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cibs10.sns.it (adsl-68-92-54-97.dsl.hstntx.swbell.net [68.92.54.97])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3EB292F5
-	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 02:33:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,19 +16,15 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org, alsa-cvslog@alsa-project.org, alsa-announce@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<b>Always wanted an expensive watch such as a Rolex?<br>
-Stop dreaming and check out these bargains at throw away prices.<p></b>
+Get Prescription medications delivered to your doorstep overnight.
+No more doctor visits no more doctor fee's.
+Stop paying expensive medical bills. Buy online and save.
 
-<b>This week only special:</b> REAL GOLD 18K Replicas from $75-$250<p>
-<a href=3D"http://mlotymbgjj.beud.com/replica/gagabob/dxplgvakoeyh">CLlCK=
- HERE to view brochure</a>
-<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
-<a href=3D"http://lgwqxidoyfmk.beud.com/z.php">no thanks</a>
-</html>
+Visit us here: http://demerc.com/?refid=3D12
+
 
 
 
