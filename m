@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Sun, 13 Mar 2005 14:49:52 +0100
-Message-ID: <cb4e5c8be2ed411c81618b89f2e34629@bugtrack.alsa-project.org>
+Date: Sun, 13 Mar 2005 16:23:11 +0100
+Message-ID: <84385734e2286b18069f822231f89d78@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7955B19A
-	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 14:49:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A1BAD1E9
+	for <alsa-devel@alsa-project.org>; Sun, 13 Mar 2005 16:23:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.8-ac8
 ======================================================================
 Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              03-13-2005 14:49 CET
+Last Modified:              03-13-2005 16:23 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
@@ -53,15 +53,6 @@ the command run normally, but no output on spdif out.the same with xmms
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 03-12-05 23:11 
-----------------------------------------------------------------------
-Hi Tiwai,
-
-I tried the CVS version of alsa-driver,lib,utils, but no success.
-I set the iecset, and alsamixer, but no sound from digital out.
-Any solution?
-
-----------------------------------------------------------------------
  1g0R - 03-13-05 14:49 
 ----------------------------------------------------------------------
 Hi Tiwai,
@@ -70,6 +61,33 @@ The same problem with alsa 1.0.9rc1.
 
 Best regards :
 1g0R
+
+----------------------------------------------------------------------
+ 1g0R - 03-13-05 16:23 
+----------------------------------------------------------------------
+Hi tiwai,
+
+Lets see from the begining:
+1. Compiling
+alsa-driver
+a, configure --with-cards=hda-intel --with-oss=yes --with-sequencer=yes
+b, make, make install
+alsa-lib
+alsa-utils
+alsa-oss
+the same (configure,make,make install)
+2. alsaconf
+3. modprobe.conf editing. Add the following line: options snd-hda-intel
+model=full_dig
+4. cp /usr/lib/libasound* /lib
+5. check the iec958 is on (but 0 volume level), and not muted.ok.
+6. check the cabling between computer and receiver.
+7. iecset (i dont know the perfect options, but i tried some)
+8. aplay something.wav
+9. i cant hear anything from speakers.But the receiver see something,
+because when i mute iec958 output, the receiver change the type of input
+signal.
+10. help please
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +115,7 @@ Date Modified  Username       Field                    Change
 02-22-05 19:05 1g0R           Note Added: 0003709                          
 03-12-05 23:11 1g0R           Note Added: 0003900                          
 03-13-05 14:49 1g0R           Note Added: 0003902                          
+03-13-05 16:23 1g0R           Note Added: 0003903                          
 ======================================================================
 
 
