@@ -1,14 +1,13 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: Quattro woes or: What does "SNDRV_PCM_IOCTL_START failed" mean?
-Date: Tue, 11 Mar 2003 19:02:10 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib linking problem
+Date: Tue, 11 Mar 2003 19:21:11 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030311180209.GC1812@fliwatut.scifi>
-References: <20030310223321.GA10836@fliwatut.scifi> <s5hwuj62pbv.wl@alsa2.suse.de> <20030311103209.GA4139@fliwatut.scifi> <s5hllzm2hcc.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0303111917390.1352-100000@pnote.perex-int.cz>
+References: <s5hbs0i2dga.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hllzm2hcc.wl@alsa2.suse.de>
+In-Reply-To: <s5hbs0i2dga.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,40 +16,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andrei Boros <andrei@srr.ro>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Takashi Iwai hat gesagt: // Takashi Iwai wrote:
+On Tue, 11 Mar 2003, Takashi Iwai wrote:
 
-> make sure that you starting the jack with 48kHz and the period size
-> aligned to 48, such as 48, 96, 192...
+> At Tue, 11 Mar 2003 15:58:44 +0200,
+> Andrei Boros wrote:
+> > 
+> > Jaroslav Kysela wrote:
+> > > 
+> > > It looks like libtool problem. The 1.4.2 version is ok.
+> > > 
+> > 
+> > I see configure doing this:
+> > checking for versioned symbols... broken libtool - use libtool v1.4+; no
+> > versions
+> > 
+> > Is this so critical? If not, linking should work fine given this
+> > warning, or else configure should halt.
+> 
+> not too critical but i recommend you to update it than using too old
+> version if the update is not difficult.
+> 
+> a workaroud is to pass --with-versioned=no to configure script, btw.
 
-Sorry, but I do not understand this fully. First, I'd rather like to
-run at 44.1 kHz, because that's a bit less computation for the
-softsynth I'm using. Will this lead to problems? I can live with a bit
-higher latency.
+This workaround doesn't work. I'm working on this problem.
 
-Second: the alsa driver of jack has these options:
+						Jaroslav
 
-alsa PCM driver args: 
-    -d alsa-pcm-name (default: default)
-    -r sample-rate (default: 48kHz)
-    -p frames-per-period (default: 1024)
-    -n periods-per-hardware-buffer (default: 2)
+P.S. Problems in my list before 0.9.0final:
 
-I had to run with "-n 3", with "-n 2" jack wouldn't start. 
+1) OSS seq emulator segfaults (seems some memory leak)
+   - try alsa-driver/test/seq2 test utility to run several times
+   - if you'll work on this problem ASAP, please drop an e-mail, otherwise
+     I'm working on it
+2) vxpocket drivers don't work with the dmix plugin (machine hangup)
+   - I'll disable the dmix plugin for this card and solve problem later
+3) alsa-lib - symbol versions
+4) vmalloc_to_page() problem again
 
-The period size you mentioned must be "-p frames-per-period", if I'm
-right?
-So if running with 44.1 kHz, should I use something like "-p 1025"
-where  41*25 = 1025?
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-But this doesn't work with Pd, which expects powers of 2...
-
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
