@@ -1,14 +1,15 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Major Bug in Alsa 0.9  for over 1 year
-Date: Fri, 25 Oct 2002 14:58:20 +0200 (METDST)
+From: "Jon Webb" <jon.a.webb@verizon.net>
+Subject: Resetting audio device with ALSA
+Date: Fri, 25 Oct 2002 12:47:03 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0210251450120.5597-100000@studcom.urz.uni-halle.de>
-References: <DAELIEGDPLDDCIJPAICBGEBACEAA.annabellesgarden@yahoo.de>
+Message-ID: <NDBBKIJJGLFEOIAKKJICMEHMDDAA.jon.a.webb@verizon.net>
+References: <02060613013400.00759@linux>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <DAELIEGDPLDDCIJPAICBGEBACEAA.annabellesgarden@yahoo.de>
+In-Reply-To: <02060613013400.00759@linux>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +18,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: kreuzritter2000@gmx.de, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
-> > insmod snd-cs4232
-> > Using /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o
-> > /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4232.o:
-> > unresolved symbol
-> > snd_card_new_R506deba1
->
-> the "_R506deba1" makes me think snd-cs4232.o is compiled with module
-> versionnumbers
-> and the module, snd_card_new lives in, haS been made without module version
-> numbers.
+Hello, I'm having trouble with resetting an ALSA audio device (an RME 9652
+Hammerfall card) when the audio input buffer overflows. I'm using the
+following code:
+	rc = snd_pcm_drain(pcmIn);
+	rc = snd_pcm_prepare(pcmIn);
+	rc = snd_pcm_start(pcmIn);
+where pcmIn is a snd_pcm_t* variable that's been initialized by
+snd_pcm_open. I don't usually any problems reading from the device using the
+same variable, and the return code from the above calls is always zero, but
+it appears that once my audio input buffer overflows, I can never get going
+again--it just keeps overflowing (snd_pcm_readn returns -EPIPE). Any ideas
+what I'm doing wrong?
 
-No, that's caused by using insmod. Using modprobe instead ensures that all
-required modules are loaded.
-
-> > modprobe snd-cs4236
-> > /lib/modules/2.4.19/kernel/sound/isa/cs423x/snd-cs4236.o: init_module: No such device
-
-Here, the module initialization code did run, but it didn't find the sound
-card. This seems to be some problem with ISA PnP.
-
-Oliver, please try specifying the configuration manually, i.e.
-	modprobe snd-cs4236 isapnp=0 port=...
-with all the options listed in the INSTALL file.
-
-
-HTH
-Clemens
+Jon Webb
+pingAUDIO
 
 
 
