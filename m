@@ -1,8 +1,8 @@
-From: Bob Ham <rah@bash.sh>
-Subject: pcm_jack and jack chicken-and-egg situation
-Date: 05 Mar 2003 00:02:30 +0000
+From: jfm3 <jfm3@ouroboros-complex.org>
+Subject: snd-serialmidi broken on running status
+Date: 04 Mar 2003 21:47:34 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1046822550.8620.193.camel@insanity.tek.net>
+Message-ID: <1046832475.16872.12.camel@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
@@ -18,19 +18,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+I think snd-serialmidi is broken for MS-124W MIDI interfaces in MB mode,
+and that it has something to do with running status not being handled
+correctly.
 
-The new pcm_jack thing presents a bit of a chicken and egg problem; I
-just compiled alsa-lib twice because jack depends on alsa-lib and if you
-configure alsa-lib with jack support, it depends on jack.  Would it be
-possible for pcm_jack to be distributed seperately?
+You need my patch, which I posted previously, to get MB mode working at
+all.
 
-Cheers,
+The MS-124W seems to work in SA mode.
 
-Bob
+When I run this interface over a USB serial converter, there seems to be
+60 ms round trip time for a MIDI byte. Sad news indeed.
 
 -- 
-Bob Ham <rah@bash.sh>
+(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
 
 
 
