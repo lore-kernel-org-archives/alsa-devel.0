@@ -1,13 +1,16 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: Re: alsa-cvs linking error
-Date: Mon, 07 Apr 2003 13:32:17 +0300
+From: Matthias Saou <matthias@rpmforge.net>
+Subject: Re: [Alsa-user] alsa cvs, redhat9, kernel 2-4-20-8
+Date: Mon, 7 Apr 2003 12:27:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E9153B1.6F8DC8A5@srr.ro>
-References: <Pine.LNX.4.44.0304071004470.2574-100000@pnote.perex-int.cz>
+Message-ID: <20030407122753.104effb3.matthias@rpmforge.net>
+References: <se8e13a5.075@mail.teklinks.com>
+	<20030405120028.6812ba7e.matthias@rpmforge.net>
+	<s5hznn2r4n9.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hznn2r4n9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,40 +19,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: jsanders@teklinks.com, jason@corekin.no-ip.com
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai <tiwai@suse.de> wrote :
 
-> 
-> Fixed in CVS. Thanks.
+> the current alsa code checks the existence of __WORK_INITIALIZER
+> macro.  if it's defined, no wrapper function is used.
+> in rh's include/linux/workqueue.h, is this macro defined?
 
-Just updated. New problems:
+Yes, it is... from /usr/src/linux-2.4.20-x/include/linux/workqueue.h:
 
-gcc -D__KERNEL__ -DMODULE=1
--I/serve/install/alsa-cvs/alsa-driver/include  -I/usr/src/linux/include
--O2 -march=i586 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD  
--DEXPORT_SYMTAB -c pnp.c
-pnp.c:324: parse error before `pnp_exit'
-pnp.c:325: warning: return-type defaults to `int'
-pnp.c: In function `pnp_exit':
-pnp.c:326: warning: control reaches end of non-void function
-pnp.c: In function `__cleanup_module_inline':
-pnp.c:329: warning: return from incompatible pointer type
-make[2]: *** [pnp.o] Error 1
-make[2]: Leaving directory
-`/serve/install/alsa-cvs/alsa-driver/support/pnp'
-make[1]: *** [_modsubdir_pnp] Error 2
-make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-driver/support'
-make: *** [compile] Error 1
+#define __WORK_INITIALIZER(n, f, d) {                           \
+        .entry  = { &(n).entry, &(n).entry },                   \
+        .func = (f),                                            \
+        .data = (d) }
 
+Matthias
 
 -- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
+Clean custom Red Hat Linux rpm packages : http://freshrpms.net/
+Red Hat Linux release 8.0.9x (Phoebe) running Linux kernel 2.4.20-2.54
+Load : 0.61 0.29 0.18, AC on-line, battery charging: 100% (5:37)
 
 
 -------------------------------------------------------
