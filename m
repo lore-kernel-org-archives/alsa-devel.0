@@ -1,15 +1,13 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: ANNOUNCE: amidimon [alsa seq event viewer]
-Date: Thu, 23 Sep 2004 20:10:32 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000505]: SPDIF sound distorted on non-48000 rates
+Date: Thu, 23 Sep 2004 19:58:31 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923201032.3ec5bad2@mango.fruits.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040923175831.C73C54500F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 386FE300
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:56:25 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B032311
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 19:58:32 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,22 +16,91 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, alsa-user@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi,
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000505
+======================================================================
+Reported By:                ramendik
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     505
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               RH-based
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-19-2004 10:03 CEST
+Last Modified:              09-23-2004 19:58 CEST
+======================================================================
+Summary:                    SPDIF sound distorted on non-48000 rates
+Description: 
+I have an Intel ICH AC97 sound subsystem, on an Intel i865 motherboard(ASUS
+P4P800). It has an analog output and an SPDIF output.When I play 48Khz
+files, thinks are OK on all outputs. But when I play 44.1 Khz files, the
+sound on the SPDIF output is audibly distorted. The analog output is OK.
 
-i just wanted to let you guys know that i have [at some point in the
-past] written a small alsa seq event viewer. Maybe it's useful for
-anyone. It served me well when i needed it.
+I am using the 2.6.8.1 kernel, and tried both the ALSA inside it (1.0.4)
+and newer alsa-driver 1.0.7rc1. This same problem shows up with 2.6.6 and
+2.6.7 kernels. So apparently it's present across several versons of ALSA.
 
-Automatic port connection doesn't work as opposed to what the docs and
---help text say.
+======================================================================
 
-http://www.affenbande.org/~tapas/wiki/index.php?amidimon
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 18:37 CEST 
+----------------------------------------------------------------------
+Which ac97 codec?  Please attach /proc/asound/card0/codec97#0/* files.
+Also, check the IEC958 status bits (run iecset) during playback of
+44.1kHz samples.
 
-flo
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:50 CEST 
+----------------------------------------------------------------------
+Well, iecset showed 48000 Hz during the playback of 44100 Hz samples. So
+apparently this is the bug. Here is the full result:
+
+# iecset
+Mode: consumer
+Data: audio
+Rate: 48000 Hz
+Copyright: protected
+Emphasis: none
+Category: PCM coder
+Original: original
+Clock: 1000 ppm
+
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:52 CEST 
+----------------------------------------------------------------------
+I have uploaded both files from /proc/asound/card0/codec97#0/ .
+
+----------------------------------------------------------------------
+ ramendik - 09-23-2004 19:58 CEST 
+----------------------------------------------------------------------
+BTW, "iecset rate 44100" does make things better on 44100 Hz - but breaks
+them on 48000.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-19-04 10:03 ramendik       New Bug                                      
+09-19-04 10:03 ramendik       Distribution              => RH-based        
+09-19-04 10:03 ramendik       Kernel Version            => 2.6.8.1         
+09-19-04 10:05 ramendik       Bug Monitored: ramendik                      
+09-23-04 18:37 tiwai          Bugnote Added: 0001831                       
+09-23-04 19:50 ramendik       Bugnote Added: 0001839                       
+09-23-04 19:51 ramendik       File Added: ac97#0-0                         
+09-23-04 19:52 ramendik       File Added: ac97#0-0+regs                    
+09-23-04 19:52 ramendik       Bugnote Added: 0001843                       
+09-23-04 19:58 ramendik       Bugnote Added: 0001845                       
+======================================================================
 
 
 -------------------------------------------------------
