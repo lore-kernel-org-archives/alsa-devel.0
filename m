@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000684]: unresolver symbols for gus interwave
-Date: Sun, 28 Nov 2004 14:54:38 +0100
-Message-ID: <e92a8785af71482a57b76521abdebc4d@bugtrack.alsa-project.org>
+From: Carlos Pita <carlosjosepita@yahoo.com.ar>
+Subject: oss raw midi emulation
+Date: Sun, 28 Nov 2004 12:14:24 -0300
+Message-ID: <200411281214.24321.carlosjosepita@yahoo.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 277A11F1
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 14:54:39 +0100 (MET)
+Received: from smtp206.mail.sc5.yahoo.com (smtp206.mail.sc5.yahoo.com [216.136.129.96])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 53C021E7
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 16:10:33 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,46 +23,43 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=684> 
-======================================================================
-Reported By:                led
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   684
-Category:                   ISA - GUS (classic, max, extreme, interwave)
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               redhat
-Kernel Version:             self compiled 2.4.27 and 2.4.28
-======================================================================
-Date Submitted:             11-28-2004 14:54 CET
-Last Modified:              11-28-2004 14:54 CET
-======================================================================
-Summary:                    unresolver symbols for gus interwave
-Description: 
-Since alsa driver 1.0.6 there are unresolved symbols for gus interwave
-driver. I include console report from restarting the driver showing the
-problem. In 1.0.7 version is the same. 1.0.5 works fine.
-======================================================================
+What should be /dev/midi??   ?
+Symlimks to /dev/snd/midiC?D?  ?
+Or devices with the correct major/minor numbers specified by the oss manual ?
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-28-04 14:54 led            New Issue                                    
-11-28-04 14:54 led            File Added: alsa_unresolved_symbols.ascii         
-          
-11-28-04 14:54 led            Distribution              => redhat          
-11-28-04 14:54 led            Kernel Version            => self compiled 2.4.27
-and 2.4.28
-======================================================================
+I'm asking because I need to use snd-virmidi in order to connect pd (which has no support
+for alsa midi yet) with muse or vkeybd. So I'm doing:
 
+> modprobe snd-virmidi
+> cat /proc/asound/devices
+  [...]
+  43: [1- 3]: raw midi
+  42: [1- 2]: raw midi
+  41: [1- 1]: raw midi
+  40: [1- 0]: raw midi
+> ln -s /dev/snd/midiC1D0 /dev/midi10
+> pd -midiindev 11
+(with -midiindev N,  pd will open /dev/midiM with M=N-1, just a quirk)
+Then I aconnect muse or vkeybd to alsa client VirMIDI 1-0.
 
+It works fine, but is this the right way to do it? For me it was
+a matter of trial and error.
+
+Also, debian sarge predefines the following four devices:
+
+crw-rw----  1 root audio 14,  2 2004-10-26 21:40 /dev/midi00
+crw-rw----  1 root audio 14, 18 2004-10-26 21:40 /dev/midi01
+crw-rw----  1 root audio 14, 34 2004-10-26 21:40 /dev/midi02
+crw-rw----  1 root audio 14, 50 2004-10-26 21:40 /dev/midi03
+
+which suggests that /dev/midi?? shouldn't be symlinked as I'm
+doing with /dev/midi10.
+
+Thank you.
+Regards,
+Carlos
 
 
 -------------------------------------------------------
