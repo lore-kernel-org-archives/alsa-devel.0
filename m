@@ -1,13 +1,14 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: The ALSA Situation
-Date: Fri, 12 Nov 2004 10:07:14 +0100 (CET)
-Message-ID: <XFMail.20041112100714.pochini@shiny.it>
-References: <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+From: asbjs@stud.ntnu.no (Asbjørn Sæbø)
+Subject: Re: Lowest latency: JACK, or ALSA directly?
+Date: Fri, 12 Nov 2004 10:11:35 +0100
+Message-ID: <20041112091135.GB3167@stud.ntnu.no>
+References: <20041111144152.GA12443@stud.ntnu.no> <200411111534.iABFY8UK012314@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org>
+Content-Disposition: inline
+In-Reply-To: <200411111534.iABFY8UK012314@localhost.localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,41 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Linus Torvalds <torvalds@osdl.org>
-Cc: alsa-devel@lists.sourceforge.net, Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, Takashi Iwai <tiwai@suse.de>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Nov 11, 2004 at 10:34:08AM -0500, Paul Davis wrote:
+> [JACK]
+> it doesn't *add* any latency at all. what it might conceivably do is
+> to prevent a given application from reaching the lowest possible
+> latency, because of the extra context switching involved in JACK. so
+> far, however, this doesn't appear to be the case - people have JACK
+> running at the same latency settings as they could get with ALSA. so
+> the effect is marginal if its measurable at all.
 
-On 11-Nov-2004 Linus Torvalds wrote:
+That sounds very good.
+=20
+> >Although I so far barely have gotten into ALSA programming, it does se=
+em
+> >to be manageable in difficulty. (Don't laugh, I am an aconcy austican,=
+ not a=3D20
+> >programmer.)  How is programming against JACK in comparison?
+>=20
+> JACK is *massively* simpler.
 
->> Oh, that's hard to tell what should be the "default" parameters.
->> This strongly depends on the board.
->
-> Which is exactly why apps should not even try to set them.
-
-Yes, as far as all involved apps ask for the save "basic"
-parameters: sample rate and number of channels.
-
-
->> ALSA tries to provide as much function as possible.  This results in
->> variety of configurations, i.e. the famous complexity.
->
-> That may or may not be a valid excuse.
->
-> Complexity also often arises from bad decisions. And the decision to only
-> have one user open at a time appears like a pretty fundamentally bad one.
-
-Well, perhaps I'm missing the point, but I don't see why
-applications should be able to use the same hw stream at
-the same time if the hw doesn't support mixing. The
-result would not be what the user expects.
-
-IMHO alsa should use dmix by default, unless the
-application explicitly asks for bypassing it.
+That also sounds very good.  It looks like I am in for a switch to JACK.
+(Although I may miss the opportunity to dig myself into a hole digesting=20
+the ALSA API. ;-)
 
 
---
-Giuliano.
+Thanks!
+
+Asbj=F8rn
 
 
 -------------------------------------------------------
