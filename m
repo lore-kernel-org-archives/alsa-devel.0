@@ -1,12 +1,12 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: RME9636 - still struggling
-Date: Tue, 22 Apr 2003 08:30:56 -0400
+From: Frank Barknecht <fbar@footils.org>
+Subject: vmalloc_to_page and building alsa 0.9.2 on kernel 2.4.18
+Date: Tue, 22 Apr 2003 16:10:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E197wrr-0001y7-00@sc8-sf-list1.sourceforge.net>
-References: <1050606592.3e9efc003ef4b@webmail.nith.no>
+Message-ID: <20030422141031.GA9845@fliwatut.scifi>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Thu, 17 Apr 2003 21:09:52 +0200."
-             <1050606592.3e9efc003ef4b@webmail.nith.no>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,33 +15,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Arve Knudsen <knuarv@nith.no>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: 190052@bugs.debian.org
 List-Id: alsa-devel@alsa-project.org
 
->Here I am again, still not able to get a single noise out of my Hammerfall Lit
->e 
->with Alsa (0.9.2). The OSS interface seems to work, though I haven't done 
->anything with it programmatically.
->As Paul (Davis) suggested earlier I've now tried the non-interleaved method, 
->writing to all 18 channels of the card, using mmap, 32bit signed integers. 
->However, I get no output. I even modified the pcm.c test program that comes wi
->th 
->alsa-lib so that it would work with my card (changed the sample format), and I
-> 
->get no output from that either (using the direct_noninterleaved method).
->Is it supposed to be this hard? I bet I'm doing something wrong, but I can't s
->ee 
->what at this point. As far as I know there isn't any mixer to unmute with this
-> 
->card?
+Hallo,
 
-i can't recall whether or not aplay works for you. if it does, then
-the problems are caused by errors in your code which we can't comment
-on unless we can see the code. if it doesn't, then we'll need to ask
-some more questions.
+I'm struggling with building alsa-0.9.2 on my trusted old kernel
+2.4.18. Here's some info, cc'ed to the Debian-ALSA team. Regardless of
+what I do I always get unresolved symbols for snd-page-alloc:
 
---p
+# depmod -ae
+depmod: *** Unresolved symbols in /lib/modules/2.4.18/alsa/snd-page-alloc.o
+depmod:         vmalloc_to_page
+
+
+This is a warning I get for this while compiling the modules with
+gcc-3.2.3: 
+
+sgbuf.c: In function `store_page_tables':
+sgbuf.c:70: warning: implicit declaration of function `vmalloc_to_page'
+sgbuf.c:70: warning: assignment makes pointer from integer without a cast
+
+I'm using the sources from the Debian packages, but as I read about a
+bug in the Makefiles, for which Clemens submitted a patch, I also
+tried building with the (a)core Makefiles from CVS, but without
+success.
+
+Then I searched the web, what this "vmalloc_to_page" is, and I found,
+that it should be defined in the Kernel-sources. But a "grep -rl
+vmalloc_to_page /usr/src/linux/" returns no hits! So 2.4.18 doesn't
+seem to have this function.
+
+This also is, what the configure script detects. From "config.log":
+
+configure:3735: checking for vmalloc_to_page
+configure:3761: gcc -c -g -O2 -I/usr/src/linux/include  conftest.c >&5
+configure: In function `main':
+configure:3753: `vmalloc_to_page' undeclared (first use in this function)
+configure:3753: (Each undeclared identifier is reported only once
+configure:3753: for each function it appears in.)
+
+
+Now alsa-driver/acore/sgbuf.c checks for a version number, before
+using vmalloc_to_page, for example like this:
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(2, 4, 0)
+                page = vmalloc_to_page(vmaddr + (i << PAGE_SHIFT));
+
+
+I don't know if that matters, though, it just raised my interest:
+Could this be a wrong check? 
+
+And more importantly to me: How can I get alsa-0.9.2 to work on
+2.4.18?
+
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
