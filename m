@@ -1,7 +1,7 @@
 From: matthieu castet <castet.matthieu@free.fr>
-Subject: use pnp instead of acpi for mpu401
-Date: Fri, 04 Feb 2005 20:32:01 +0100
-Message-ID: <4203CDB1.7090200@free.fr>
+Subject: Using specific code for midi/gameport instead of generic one.
+Date: Fri, 04 Feb 2005 20:37:16 +0100
+Message-ID: <4203CEEC.9000700@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -19,18 +19,15 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-now that pnp support acpi via pnpacpi, couldn't be better to use pnp for 
-mpu401 instead of acpi ?
+what's the advantage of using specific code (via82xx.c for example) for 
+managing midi/gameport instead of the generic module mpu401 and ns558 ?
 
-You can find here [1] a page I send to this mailling list a long time 
-ago. It will need some cleanning.
-
-Any comments ?
+These modules should be able to use pnp layer, so they should be able to 
+know/change the io ports in use without writing directly in LPC pci device.
 
 regards,
-Matthieu
 
-[1] http://castet.matthieu.free.fr/pnp/alsa_pnp.patch
+Matthieu CASTET
 
 
 -------------------------------------------------------
