@@ -1,16 +1,14 @@
-From: Domen Puncer <domen@coderock.org>
-Subject: Re: [patch 1/2] gus_wave.c - vfree() checking cleanups
-Date: Tue, 11 Jan 2005 12:18:10 +0100
-Message-ID: <20050111111810.GA4978@nd47.coderock.org>
-References: <20050110183635.D3FC21F1ED@trashy.coderock.org> <s5hoefwtg6x.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
+Date: Tue, 11 Jan 2005 13:11:23 +0100
+Message-ID: <e40dcd7e2e6fa0cd341e285e662c3fa7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from trashy.coderock.org (coderock.org [193.77.147.115])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3E942DE
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 12:18:14 +0100 (MET)
-Content-Disposition: inline
-In-Reply-To: <s5hoefwtg6x.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86ABE2EA
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 13:11:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,27 +18,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: perex@suse.cz, alsa-devel@alsa-project.org, jlamanna@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 11/01/05 11:26 +0100, Takashi Iwai wrote:
-> At Mon, 10 Jan 2005 19:36:35 +0100,
-> domen@coderock.org wrote:
-> > 
-> > gus_wave.c vfree() checking cleanups.
-> 
-> I think Jaroslav isn't responsible for OSS stuff.
-> Could you repost it LKML rather than ALSA ML?
 
-In maintainers, he's listed under SOUND, and that deceived me.
-Will report to lkml later.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=726> 
+======================================================================
+Reported By:                vassili
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   726
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               debian
+Kernel Version:             2.6.8, custom build
+======================================================================
+Date Submitted:             12-15-2004 17:26 CET
+Last Modified:              01-11-2005 13:11 CET
+======================================================================
+Summary:                    headphone output on the docking station (Dell
+Lattitude D400) does not work
+Description: 
+Support of a headphone jack on the docking station is missing.
 
-Thanks.
+Hardware: Dell Latitude D400 with docking station, 
+Intel 82810DB AC97 Audio
+======================================================================
 
-> 
-> 
-> Takashi
+----------------------------------------------------------------------
+ tiwai - 01-07-05 19:56 
+----------------------------------------------------------------------
+Which codec?  Attach the contents of /proc/asound/card0/codec97#0/* files
+(and /etc/asound.state).
+
+----------------------------------------------------------------------
+ vassili - 01-11-05 13:11 
+----------------------------------------------------------------------
+Kernel upgraded to 2.6.10, using ALSA driver from that kernel.
+
+If "IEC958 Playback AC97-SPSA" is muted, there is strongly distorted 
+signal on the headphone jack of the docking station.
+Otherwise, there is not output at all.
+
+Master (internal speaker of the laptop) - working OK
+Headphone on the laptop - working OK
+digital out on the docking station - untested
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-15-04 17:26 vassili        New Issue                                    
+12-15-04 17:26 vassili        Distribution              => debian          
+12-15-04 17:26 vassili        Kernel Version            => 2.6.8, custom build
+01-07-05 19:56 tiwai          Note Added: 0003120                          
+01-11-05 13:02 vassili        File Added: codecs                           
+01-11-05 13:11 vassili        Note Added: 0003144                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
