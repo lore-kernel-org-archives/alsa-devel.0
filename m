@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: capture with non-interleaved mode
-Date: Thu, 16 Oct 2003 08:04:20 -0400
+From: =?iso-8859-15?q?G=FCnther=20Montag?= <Safari.Doktor@addcom.de>
+Subject: env LD_PRELOAD=/usr/lib/libaoss.so ....
+Date: Thu, 16 Oct 2003 14:13:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200310161204.h9GC4KHA013898@oud>
-References: <1066244996.3f8d9b8432ca9@webmail.utbm.fr>
+Message-ID: <200310161413.28379.Safari.Doktor@addcom.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 15 Oct 2003 21:09:56 +0200."
-             <1066244996.3f8d9b8432ca9@webmail.utbm.fr>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,25 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Cyril.Coquilleau@UTBM.fr" <Cyril.Coquilleau@utbm.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, hfterm-hackers@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I've not managed to fix this bug into my program... Do you see the error on my
-> 
->code (bad soundcard initialization or other) or have you got another way to 
->propose me to capture the two channels of my soundcard separately ?
+hello friends
+when I start my ham program with this preload
+it says
+***
+hfkernel_user will be started by /usr/local/bin/hfkernel start
+hfkernel[235]: hfkernel 0.4.1 starting...
+ALSA lib pcm.c:1809:(snd_pcm_open_noupdate) Unknown PCM dsp0
+hfkernel[235]: error: open: No such file or directory
+***
+although I called the soundcard right with /dev/dsp0,
+the device is there (cat file > /dev/dsp0 gives a sound),
+the same with /dev/adsp
+somewhere (where?) on the way it seems to eat the /dev!
 
-try increasing BUF_SIZE to 4096 and see what happens. 128
-frames/period is in seriously low-latency territory, and i doubt that
-your program is designed for that. if i was to make a guess, you
-probably try to write to disk after reading from the audio interface,
-in the same thread, yes? sorry, you can't do that for 128
-frames/period, and a general design rule, you shouldn't ever do it
-(though it obviously works for some simple programs with just stereo
-in).
+Another question:
+I looked into the file alsa-lib-0.9.7/src/pcm/pcm.c, where this#
+function snd_pcm_open_noupdate is,
+thanjs Jaroslav for the very interesting documentation,
+You made my day,
+but if You have time tell me: it looks like html,
+how  can I read it as html?
 
---p
+tnaks a lot
+G=FCnther
+Safari.Doktor@addcom.de
 
 
 -------------------------------------------------------
