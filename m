@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000181]: ./alsa-kernel/pci/au88x0/Makefile: No such file or directory
-Date: Fri, 22 Oct 2004 16:43:20 +0200
+Subject: [ALSA - driver 0000172]: Master volume control only controls front speakers
+Date: Fri, 22 Oct 2004 16:44:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4450e411aae94d0edf0b2255559d94e4@bugtrack.alsa-project.org>
+Message-ID: <c64f048202b24977ab3d5607079b8f0f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E79829A
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:43:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B72E729A
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:44:06 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,59 +22,61 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A new RELATIONSHIP has been added to the following issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=181> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=172> 
 ======================================================================
-Reported By:                pashgan
+Reported By:                gruberroland
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   181
-Category:                   0_compilation problem_!!!
+Issue ID:                   172
+Category:                   PCI - ens1371
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     resolved
+Status:                     assigned
 Distribution:               
-Kernel Version:             
-Resolution:                 unable to duplicate
-Fixed in Version:           
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             04-03-2004 11:22 CEST
-Last Modified:              10-22-2004 16:43 CEST
+Date Submitted:             03-31-2004 11:50 CEST
+Last Modified:              10-22-2004 16:44 CEST
 ======================================================================
-Summary:                    ./alsa-kernel/pci/au88x0/Makefile: No such file or
-directory
+Summary:                    Master volume control only controls front speakers
 Description: 
-Compilation stop at:
-/home/pashgan/source/drivers/alsa-driver/kbuild/../pci/au88x0/Makefile:8:
-/home/pashgan/source/drivers/alsa-driver/alsa-kernel/pci/au88x0/Makefile:
-No such file or directory
+The master volume control has no effect on the rear speakers.
+The rear speakers can be controlled by "Sigmatel Surround" but not
+completly muted.
 
+I use "Sigmatel 4-Speaker Stereo" to get sound on all 4 speakers. The
+speakers are plugged into both output plugs on the soundcard.
+
+I tried all volume controls that are provided, there seems to be no master
+control.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000154 Master volume only controls front outpu...
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-23-04 17:23 
+ perex - 03-31-04 16:35 
 ----------------------------------------------------------------------
-it works fine on 1.0.4 with my system.
-
-please confirm with 1.0.4 release?
-
-----------------------------------------------------------------------
- perex - 10-22-04 16:43 
-----------------------------------------------------------------------
-I cannot duplicate.
+It's feature request. We haven't designed abstract mixer layer at the
+moment,
+but you are allowed to control fully hardware anyway. If you cannot mute
+completely the rear speakers, then it's probably hardware problem.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-04 11:22 pashgan        New Issue                                    
-04-23-04 17:23 tiwai          Note Added: 0000904                          
-10-22-04 16:43 perex          Status                   assigned => resolved
-10-22-04 16:43 perex          Resolution               open => unable to
-duplicate
-10-22-04 16:43 perex          Note Added: 0002246                          
+03-31-04 11:50 gruberroland   New Issue                                    
+03-31-04 11:50 gruberroland   Kernel Version            => 2.4.25          
+03-31-04 16:33 perex          Assigned To               => perex           
+03-31-04 16:33 perex          Severity                 major => feature    
+03-31-04 16:33 perex          Status                   new => assigned     
+03-31-04 16:35 perex          Note Added: 0000725                          
+10-22-04 16:44 perex          Relationship added       related to 0000154  
 ======================================================================
 
 
