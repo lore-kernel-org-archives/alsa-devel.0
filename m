@@ -1,14 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA 1.0.5
-Date: Mon, 31 May 2004 15:32:12 +0200 (CEST)
+From: "Robert Rozman" <rozman@fri.uni-lj.si>
+Subject: What lower cost 7+1 cards can be used as reliable 4xstereo device under Alsa ?
+Date: Mon, 31 May 2004 16:59:47 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405311531490.1799@pnote.perex-int.cz>
-References: <E1BUbHW-0005Wg-PQ@sc8-sf-list2.sourceforge.net>
- <200405311258.53199.plcl@telefonica.net>
+Message-ID: <00ce01c4471f$eb319530$6500a8c0@Lapitopi>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200405311258.53199.plcl@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 31 May 2004, Pedro Lopez-Cabanillas wrote:
+Hi,
 
-> > Mobo: Gigabyte 7VT600 with chipset VIA KT600
-> > Sound: Integrated Realtek ALC655 AC97 codec
-> > http://tw.giga-byte.com/MotherBoard/Products/Products_Spec_GA-7VT600.htm
-> 
-> Anybody using the same hardware should avoid the 1.0.5 driver, IMO.
-> Relevant sources are ac97_codec.c and ac97_patch.c. The problem was
-> related to a mutex deadlock.
+I'd like to have device with 4 independent stereo channels. I wonder what
+card is lower cost, 7+1 channel, widely known, that could be also used for 4
+independent stereo devices under Alsa - it's important to work flawlessly in
+this mode (I'm running alc650 as 3 stereo channels but do get some weird
+artifacts with dmix plugin).
 
-1.0.5a will be released shortly with this bug-fix.
+Any config examples, experience would be helpful ...
 
-						Jaroslav
+Thanks in advance,
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Robert.
+
+
 
 
 -------------------------------------------------------
