@@ -1,13 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
-Date: Wed, 9 Mar 2005 03:32:51 +0100
-Message-ID: <054a84acd1c45183187a0068cc157068@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Re: intel 8x0 went silent in 2.6.11
+Date: Tue, 08 Mar 2005 22:02:52 -0500
+Message-ID: <1110337373.7123.4.camel@mindpipe>
+References: <4227085C.7060104@drzeus.cx>
+	 <29495f1d05030309455a990c5b@mail.gmail.com>
+	 <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
+	 <1109875926.2908.26.camel@mindpipe>
+	 <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>
+	 <1109876978.2908.31.camel@mindpipe>
+	 <Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com>
+	 <20050303154929.1abd0a62.akpm@osdl.org> <4227ADE7.3080100@drzeus.cx>
+	 <4228D013.8010307@drzeus.cx> <s5hmztfwon1.wl@alsa2.suse.de>
+	 <422CB68A.1050900@drzeus.cx> <s5hekerurz8.wl@alsa2.suse.de>
+	 <422CFB6E.1020002@drzeus.cx> <s5h1xaquzf0.wl@alsa2.suse.de>
+	 <Pine.LNX.4.62.0503082050270.3821@krusty.vfxcomputing.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14115174
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 03:32:51 +0100 (MET)
+Content-Type: multipart/mixed; boundary="=-FJZigvHJNOcnzt2N+89+"
+In-Reply-To: <Pine.LNX.4.62.0503082050270.3821@krusty.vfxcomputing.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,190 +26,113 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Mark Canter <marcus@vfxcomputing.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Pierre Ossman <drzeus-list@drzeus.cx>, Andrew Morton <akpm@osdl.org>, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
-======================================================================
-Reported By:                rbechard1
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   971
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-08-2005 01:50 CET
-Last Modified:              03-09-2005 03:32 CET
-======================================================================
-Summary:                    Compilation Errors - Cannot find specific files
-during compilation
-Description: 
-When installing the application using the method described in this link:
+--=-FJZigvHJNOcnzt2N+89+
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
+On Tue, 2005-03-08 at 20:53 -0500, Mark Canter wrote:
+> I think I've gone through every possible value here from asound.state to 
+> each setting in KDE itself.  Still, the only sound that works is the one 
+> coming from line-out, without the port replicator, no sound exists 
+> whatsoever.  Both of the below controls are set to false in asound.state 
+> and cooresponding KDE settings in kmix.
+> 
+> I think the concern becomes though, regardless of what kde was doing after 
+> the fact, this condition didn't exits in <= 2.6.10 when no other 
+> applications where changed around it.
 
-I get error messages during the compilation, yet the process tells me it
-has completed successfully. When I go to configure my sound card it has
-the correct driver loaded but yet there is no sound. When I checked the
-mixer settings nothing is muted. 
+If you revert both the attached patches, does it work?
 
-There is no option within the sound configuration panel to switch to the
-correct driver.
-======================================================================
+They are against alsa CVS, so to back these patches out from your 2.6.11
+tree do this:
 
-----------------------------------------------------------------------
- fmoraes - 03-09-05 02:10 
-----------------------------------------------------------------------
-What compilation errors do you receive? Are they on the emu10k1x module or
-on other parts of ALSA? Also, the module is not loaded above, so you will
-get no sound.
+  cd linux-2.6.11/sound/pci/ac97
+  patch -p0 -R < ac97-2.patch
+  patch -p0 -R < ac97.patch
 
-Also, what Linux are you using?
-
-Francisco
-
-----------------------------------------------------------------------
- rbechard1 - 03-09-05 03:32 
-----------------------------------------------------------------------
-Reply to your questions:
-
-What compilation errors do you receive?
-
-Here are partial outputs from the various compilations:
-
-    Driver ALSA 1.08 is below:
+Lee
 
 
-make[4]: Nothing to be done for `install-exec-am'.
- /bin/sh ../../../mkinstalldirs /usr/share/alsa/cards/SI7018
-  /usr/bin/install -c -m 644 ./SI7018/sndoc-mixer.alisp
-/usr/share/alsa/cards/SI7018/SI7018/sndoc-mixer.alisp
- /usr/bin/install: cannot create regular file
-`/usr/share/alsa/cards/SI7018/SI7018/sndoc-mixer.alisp': No such file or
-directory
-  /usr/bin/install -c -m 644 ./SI7018/sndop-mixer.alisp
-/usr/share/alsa/cards/SI7018/SI7018/sndop-mixer.alisp
- /usr/bin/install: cannot create regular file
-`/usr/share/alsa/cards/SI7018/SI7018/sndop-mixer.alisp': No such file or
-directory
- make[4]: *** [install-SI7018DATA] Error 1
- make[4]: Leaving directory `/usr/src/alsa/alsa-lib-1.0.8/src/conf/cards'
- make[3]: *** [install-am] Error 2
- make[3]: Leaving directory `/usr/src/alsa/alsa-lib-1.0.8/src/conf/cards'
- make[2]: *** [install-recursive] Error 1
- make[2]: Leaving directory `/usr/src/alsa/alsa-lib-1.0.8/src/conf'
- make[1]: *** [install-recursive] Error 1
- make[1]: Leaving directory `/usr/src/alsa/alsa-lib-1.0.8/src'
- make: *** [install-recursive] Error 1
-
-Are they on the emu10k1x module or on other parts of ALSA?
-
-I dont know. I am new to Linux. The entire script output and everything I
-entered is located under the "steps to reproduce" subsection of this
-form.
 
 
-Error when trying to add files to the kernal is below:
 
+--=-FJZigvHJNOcnzt2N+89+
+Content-Disposition: attachment; filename=ac97-2.patch
+Content-Type: text/x-patch; name=ac97-2.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
 
-modprobe snd-emu10k1x;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
-snd-seq-oss
- WARNING: Error inserting snd-timer
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-timer.ko): Unknown symbol
-in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-pcm
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-pcm.ko): Unknown symbol in
-module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-seq-device
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/seq/snd-seq-device.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-rawmidi
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-rawmidi.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-timer
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-timer.ko): Unknown symbol
-in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-pcm
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-pcm.ko): Unknown symbol in
-module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-seq-device
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/seq/snd-seq-device.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-rawmidi
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-rawmidi.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
- FATAL: Error inserting snd-emu10k1x
-(/lib/modules/2.6.3-7mdk/kernel/sound/pci/emu10k1/snd-emu10k1x.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
- FATAL: Error running install command for snd-emu10k1x
- WARNING: Error inserting snd-mixer-oss
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/oss/snd-mixer-oss.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-timer
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-timer.ko): Unknown symbol
-in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-pcm
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-pcm.ko): Unknown symbol in
-module, or unknown parameter (see dmesg)
- FATAL: Error inserting snd-pcm-oss
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/oss/snd-pcm-oss.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
- FATAL: Error inserting snd-mixer-oss
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/oss/snd-mixer-oss.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-seq-device
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/seq/snd-seq-device.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-timer
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/snd-timer.ko): Unknown symbol
-in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-seq
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/seq/snd-seq.ko): Unknown
-symbol in module, or unknown parameter (see dmesg)
- WARNING: Error inserting snd-seq-midi-event
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/seq/snd-seq-midi-event.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
- FATAL: Error inserting snd-seq-oss
-(/lib/modules/2.6.3-7mdk/kernel/sound/acore/seq/oss/snd-seq-oss.ko):
-Unknown symbol in module, or unknown parameter (see dmesg)
+Index: ac97_patch.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
+retrieving revision 1.69
+retrieving revision 1.70
+diff -u -r1.69 -r1.70
+--- ac97_patch.c	17 Jan 2005 13:47:20 -0000	1.69
++++ ac97_patch.c	20 Jan 2005 11:43:19 -0000	1.70
+@@ -1113,6 +1113,7 @@
+ 	switch (subid) {
+ 	case 0x103c0890: /* HP nc6000 */
+ 	case 0x103c006d: /* HP nx9105 */
++	case 0x17340088: /* FSC Scenic-W */
+ 		/* enable headphone jack sense */
+ 		snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11);
+ 		break;
+
+--=-FJZigvHJNOcnzt2N+89+
+Content-Disposition: attachment; filename=ac97.patch
+Content-Type: text/x-patch; name=ac97.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
+
+Index: ac97_patch.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/ac97/ac97_patch.c,v
+retrieving revision 1.68
+retrieving revision 1.69
+diff -u -r1.68 -r1.69
+--- ac97_patch.c	11 Jan 2005 15:57:20 -0000	1.68
++++ ac97_patch.c	17 Jan 2005 13:47:20 -0000	1.69
+@@ -1107,13 +1107,25 @@
+ #endif
+ };
  
-Please explain your statement below as I dont understand. The ALSA program
-1.0.8 now loads correctly during boot process but the sound mixer portion
-fails every time.
++static void check_ad1981_hp_jack_sense(ac97_t *ac97)
++{
++	u32 subid = ((u32)ac97->subsystem_vendor << 16) | ac97->subsystem_device;
++	switch (subid) {
++	case 0x103c0890: /* HP nc6000 */
++	case 0x103c006d: /* HP nx9105 */
++		/* enable headphone jack sense */
++		snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11);
++		break;
++	}
++}
++
+ int patch_ad1981a(ac97_t *ac97)
+ {
+ 	patch_ad1881(ac97);
+ 	ac97->build_ops = &patch_ad1981a_build_ops;
+ 	snd_ac97_update_bits(ac97, AC97_AD_MISC, AC97_AD198X_MSPLT, AC97_AD198X_MSPLT);
+ 	ac97->flags |= AC97_STEREO_MUTES;
+-	snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11); /* HP jack sense */
++	check_ad1981_hp_jack_sense(ac97);
+ 	return 0;
+ }
+ 
+@@ -1144,7 +1156,7 @@
+ 	ac97->build_ops = &patch_ad1981b_build_ops;
+ 	snd_ac97_update_bits(ac97, AC97_AD_MISC, AC97_AD198X_MSPLT, AC97_AD198X_MSPLT);
+ 	ac97->flags |= AC97_STEREO_MUTES;
+-	snd_ac97_update_bits(ac97, AC97_AD_JACK_SPDIF, 1<<11, 1<<11); /* HP jack sense */
++	check_ad1981_hp_jack_sense(ac97);
+ 	return 0;
+ }
 
- "Also, the module is not loaded above, so you will get no sound."
-
-Also, what Linux are you using?
-
-Mandrake 10 with Kernel linux-2.6.3-7mdk 
-
-
-Thankyou for your help
-
-ROb :-)
-
-
- Also, the module is not loaded above, so you will get no sound.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-08-05 01:50 rbechard1      New Issue                                    
-03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
-03-08-05 09:52 rbechard1      Note Added: 0003812                          
-03-09-05 02:10 fmoraes        Note Added: 0003819                          
-03-09-05 03:32 rbechard1      Note Added: 0003825                          
-======================================================================
-
+--=-FJZigvHJNOcnzt2N+89+--
 
 
 
