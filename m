@@ -1,12 +1,16 @@
-From: "M. Nentwig" <nentwig@users.sourceforge.net>
-Subject: Hammerfall DSP: Midi-related audio dropouts workaround / question
-Date: Fri, 15 Nov 2002 08:45:33 +0200
+From: "Men Muheim" <muheim@gmx.ch>
+Subject: read time information
+Date: Fri, 15 Nov 2002 11:28:53 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DD4980D.8C70735B@users.sourceforge.net>
+Message-ID: <001201c28c91$cc64f470$461d8481@profi>
+References: <200201212159.QAA05738@renoir.op.net>
+Reply-To: <men@ife.ee.ethz.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200201212159.QAA05738@renoir.op.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,40 +19,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: paul@linuxaudiosystems.com
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+For synchronization purpose I need the current time of my sound card
+(information on the sample that is currently played out might be
+sufficient / ADAT-Synch timecode) I did anticipate that the functions 
 
-a couple of days I wrote about audio dropouts caused by MIDI data.
-Now I found a workaround: Unloading the uhci (USB) driver, loading the
-hammerfall driver, reloading the uhci driver gets rid of the dropouts.
-Also plugging in a USB device helps. Both USB controller and hdsp share
-the same interrupt on my laptop.
+      snd_pcm_status_alloca(&status);
+	snd_pcm_status_get_tstamp(status, timestamp);
 
-Before I found this workaround, I spent some time hacking the hdsp
-driver. I created a new thread, that sleeps
-('interruptible_sleep_on(sth)'), until the MIDI interrupt wakes it
-('wake_up'(sth)). As long as it's doing no real work (just counting MIDI
-events for example), everything works fine.
-But as soon as I take the MIDI processing out of the interrupt (or
-remove it completely), the machine locks up. Probably during the
-interrupt - even the 'magic sysrq key' is dead. And I don't understand
-this at all. Does the hardware crash, if I don't empty the MIDI FIFO
-queue in time?
-The crash occurs also, when MIDI processing is removed from a vanilla
-hdsp driver.
+do help me with this, but obviously they only call gettimeofday()
+instead of returning a sound card time information (see
+http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2latency_8c-example
+.html#example_test_latency). From the API description I have found that 
 
-Some related observations:
-- The dropouts disappear, if I disable MIDI interrupts. But then MIDI in
-is unreliable, big surprise.
-- The dropouts don't get any better, if I don't submit the received data
-to alsa at the end of the MIDI-in processing.
+snd_pcm_hwsynch(...)
+snd_pcm_delay(...)
 
-Regards
+must be used to get the current sample positions of the DAC/ADC. But
+these functions do not seem to work on my system (alsa-0.9.0rc5 and an
+RME9652 sound card). Besides that I want to read the ADAT-Synch timecode
+instead of the buffer relative sample offset.
 
-Markus
+Therefore I was looking for another solution to get the time. I tried to
+use the ALSA timer interface
+(http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2timer_8c-example.
+html#example_test_timer). But unfortunately I am getting a "timer time
+out!", which means that 
+
+snd_timer_poll_descriptors(...)
+
+did fail. Is the timer interface implemented for the By the RME9652? By
+the way I do not understand how the sample number to the read time do
+correlate with each other.
+
+I would appreciate any help with this because if I cannot solve this
+problem, I have to move to Windows ASIO (what a pitty!) ASIO provides
+the functions
+
+ASIOGetSamplePosition(...)
+bufferSwitchTimeInfo(...) 
+
+which do exactly what I need.
+
+Regards,
+
+Men
 
 
 
