@@ -1,11 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: How do I make -D hw:0,1 default?
-Date: Tue, 3 Jun 2003 20:28:51 +0200 (CEST)
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: How do I make -D hw:0,1 default?
+Date: Tue, 3 Jun 2003 11:34:14 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306032028280.1174-100000@pnote.perex-int.cz>
+Message-ID: <NDBBLGIKBJENLAMOLFHGOEBBCGAB.mknecht@controlnet.com>
 References: <NDBBLGIKBJENLAMOLFHGEEAJCGAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-Reply-To: <NDBBLGIKBJENLAMOLFHGEEAJCGAB.mknecht@controlnet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,44 +18,52 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <mknecht@controlnet.com>
-Cc: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Jun 2003, Mark Knecht wrote:
-
-> Hi,
->    Yesterday evening I found that I could use aplay -D hw:0,1 and get sound
-> out of Alsa. This was cool, but I don't normally do anything with aplay.
-> Other apps that use sound are still locking up hard.
-> 
->    I thought the .asoundrc file was supposed to make this happen
-> automatically, but apparently the one on the sound card page at the Alsa
-> site does not do this for me. Can someone tell me how to make this the
-> default?
-> 
 > .asoundrc from Alsa site:
-> 
+>
 >         pcm.via82xx {
 >            type hw
 >            card 0
 >         }
-> 
+>
 >         ctl.via82xx {
 >            type hw
 >            card 0
 >         }
-> 
+>
 > Maybe I need to include the ',1' interface somehow? How would I do that?
+>
+> Thanks,
+> Mark
 
-Add 'device 1' to {} section.
+Would this be correct?
+(Info taken from
+http://alsa.opensrc.org/index.php?page=.asoundrc
+)
 
-						Jaroslav
+         pcm.via82xx {
+            type hw
+            card 0
+            device 0
+            subdevice 1
+         }
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+         ctl.via82xx {
+            type hw
+            card 0
+            device 0
+            subdevice 1
+         }
+
+Or do I need to give it a different name and call it specifically for every
+application that needs sound? This is the part I cannot seem to find info
+on....
+
+Thanks,
+Mark
+
 
 
 
