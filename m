@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000984]: No Sound
-Date: Thu, 17 Mar 2005 18:55:43 +0100
-Message-ID: <7d269055cce40ba99f379586a7a37339@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Thu, 17 Mar 2005 19:31:12 +0100
+Message-ID: <1853eef5d116b809b6a496f5f8f52018@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3C1B23B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 18:55:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A756520D
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 19:31:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,69 +23,100 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
 ======================================================================
-Reported By:                mailavj
-Assigned To:                tiwai
+Reported By:                1g0R
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   984
-Category:                   CORE - pcm
+Issue ID:                   848
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
-Kernel Version:             2.6.7-2
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
 ======================================================================
-Date Submitted:             03-12-2005 19:09 CET
-Last Modified:              03-17-2005 18:55 CET
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              03-17-2005 19:31 CET
 ======================================================================
-Summary:                    No Sound
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
-my sound card is Sound MAX integrated Audio with Intel D865 GBF
-motherboard..
-i'm not getting sound output..
-kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
-Is there any way to get sound out put on this card using this driver.. 
-please help
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000970 No Sound
-======================================================================
 
 ----------------------------------------------------------------------
- mailavj - 03-17-05 18:50 
+ 1g0R - 03-13-05 16:23 
 ----------------------------------------------------------------------
-My chipset is AD1985 from Analogdevices and my motherboard is Intel D865GBF
+Hi tiwai,
+
+Lets see from the begining:
+1. Compiling
+alsa-driver
+a, configure --with-cards=hda-intel --with-oss=yes --with-sequencer=yes
+b, make, make install
+alsa-lib
+alsa-utils
+alsa-oss
+the same (configure,make,make install)
+2. alsaconf
+3. modprobe.conf editing. Add the following line: options snd-hda-intel
+model=full_dig
+4. cp /usr/lib/libasound* /lib
+5. check the iec958 is on (but 0 volume level), and not muted.ok.
+6. check the cabling between computer and receiver.
+7. iecset (i dont know the perfect options, but i tried some)
+8. aplay something.wav
+9. i cant hear anything from speakers.But the receiver see something,
+because when i mute iec958 output, the receiver change the type of input
+signal.
+10. help please
 
 ----------------------------------------------------------------------
- rlrevell - 03-17-05 18:55 
+ 1g0R - 03-17-05 19:31 
 ----------------------------------------------------------------------
-What part of "try the later version of ALSA. 1.0.6 is way too old for
-debugging" don't you understand?
+another try:
+
+ac3dec -P _letoltesek/cmi9880/Surround-SDL-testfiles/dolby-enlighten.wav
+Using PCM device 'plug:iec958:{AES0 0x87 AES1 0x0 AES2 0x0 AES3 0x0}'
+
+but no sound from speakers...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 19:09 mailavj        New Issue                                    
-03-16-05 13:00 tiwai          Note Added: 0003952                          
-03-16-05 14:56 tiwai          Relationship added       duplicate of 0000970
-03-16-05 14:56 tiwai          Duplicate ID             0 => 970            
-03-16-05 14:56 tiwai          Status                   new => resolved     
-03-16-05 14:56 tiwai          Resolution               open => duplicate   
-03-16-05 14:56 tiwai          Assigned To               => tiwai           
-03-16-05 14:56 tiwai          Assigned To              tiwai =>            
-03-17-05 18:49 mailavj        Distribution              => Debian          
-03-17-05 18:49 mailavj        Kernel Version            => 2.6.7-2         
-03-17-05 18:49 mailavj        Status                   resolved => feedback
-03-17-05 18:49 mailavj        Resolution               duplicate => reopened
-03-17-05 18:49 mailavj        Note Added: 0003981                          
-03-17-05 18:49 mailavj        Assigned To               => tiwai           
-03-17-05 18:50 mailavj        Note Added: 0003982                          
-03-17-05 18:55 rlrevell       Note Added: 0003983                          
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+02-04-05 15:02 tiwai          Note Added: 0003507                          
+02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
+02-05-05 06:06 mab            Issue Monitored: mab                         
+02-05-05 08:46 1g0R           Note Added: 0003518                          
+02-14-05 22:27 1g0R           Note Added: 0003612                          
+02-14-05 22:28 1g0R           Note Added: 0003613                          
+02-18-05 18:55 tiwai          Note Added: 0003658                          
+02-19-05 19:51 1g0R           Note Added: 0003670                          
+02-21-05 19:57 1g0R           Note Added: 0003683                          
+02-22-05 14:29 tiwai          Note Added: 0003699                          
+02-22-05 19:05 1g0R           Note Added: 0003709                          
+03-12-05 23:11 1g0R           Note Added: 0003900                          
+03-13-05 14:49 1g0R           Note Added: 0003902                          
+03-13-05 16:23 1g0R           Note Added: 0003903                          
+03-17-05 19:31 1g0R           Note Added: 0003984                          
 ======================================================================
 
 
