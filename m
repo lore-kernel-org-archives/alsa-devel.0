@@ -1,14 +1,10 @@
-From: Melchior FRANZ <mfranz@aon.at>
-Subject: Re: cvs/head -- malign changes since v1-0-7
-Date: Sat, 18 Dec 2004 19:16:27 +0100
-Message-ID: <200412181916.27780@pflug2.gphy.univie.ac.at>
-References: <200412101817.32986@pflug2.gphy.univie.ac.at>
+From: Olaf Hering <olh@suse.de>
+Subject: sound/core/pcm_lib.c:158: BUG
+Date: Sun, 19 Dec 2004 00:53:59 +0100
+Message-ID: <20041218235359.GA3782@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200412101817.32986@pflug2.gphy.univie.ac.at>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,22 +18,13 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-* Melchior FRANZ -- Friday 10 December 2004 18:17:
-> FYI: I'm running alsa as included in Linux 2.6.9 on x86 (SuSE 9.2).
-> When I install alsa-lib from cvs/head, the system starts to use
-> around 40% of the cpu performance after having played some sound.
-> ("top" doesn't show any responsible process -- it's the system.)
-> Only "rcalsasound restart" stops the CPU cycle burning. This doesn't
-> happen with v1-0-7.
 
-Sorry, this was probably false alarm. There were other sound problems
-after that, too. Finally the on-board sound chip died, and today in the
-morning the whole motherboard committed suicide. Everything is up again
-(with a new soundcard, too) and runs fine. (Sound Blaster Live! 5.1 ...
-very cool. :-)
+Is this just debug output, or should I be worried about it?
 
-Thanks and sorry
-m.
+linux-2.6.10-rc3-olh/sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x1000
+
+This is an ibook2, playing mp3 with xmms, alsa version is 1.0.3, from sles9.
+I remember no failures in the last couple hours.
 
 
 -------------------------------------------------------
