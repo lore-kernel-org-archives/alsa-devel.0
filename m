@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000209]: Sometimes XMMS stop playing songs (dmix used)
-Date: Sun, 28 Nov 2004 18:33:28 +0100
-Message-ID: <1dc024a77c82e73188507c6e696691e4@bugtrack.alsa-project.org>
+From: Carlos Pita <carlosjosepita@yahoo.com.ar>
+Subject: Re: oss raw midi emulation
+Date: Sun, 28 Nov 2004 16:57:29 -0300
+Message-ID: <200411281657.29397.carlosjosepita@yahoo.com.ar>
+References: <200411281214.24321.carlosjosepita@yahoo.com.ar> <Pine.LNX.4.58.0411281622150.11615@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1E899243
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 18:33:29 +0100 (MET)
+Received: from smtp201.mail.sc5.yahoo.com (smtp201.mail.sc5.yahoo.com [216.136.129.91])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4845725E
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 20:53:36 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0411281622150.11615@pnote.perex-int.cz>
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,85 +25,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sunday 28 November 2004 12:22, you wrote:
+> On Sun, 28 Nov 2004, Carlos Pita wrote:
+> 
+> > which suggests that /dev/midi?? shouldn't be symlinked as I'm
+> > doing with /dev/midi10.
+> 
+> No, debian or snddevices script in the driver package does right job.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=209> 
-======================================================================
-Reported By:                srr
-Assigned To:                
-======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   209
-Category:                   
-Reproducibility:            sometimes
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             04-14-2004 11:41 CEST
-Last Modified:              11-28-2004 18:33 CET
-======================================================================
-Summary:                    Sometimes XMMS stop playing songs (dmix used)
-Description: 
-Sometimes XMMS stop playing songs and show message that says "Audio device
-not
-properly configured or busy". It happends when new song just start
-playing. If I click on Play button, songs continued playing. 
+debian sarge only creates /dev/midi00, ..., /dev/midi03. I need the
+/dev/midi10, ..., /dev/midi13 ones. Perhaps if I install udev they will
+be created when virmidi is loaded (my kernel has hotplug enabled,
+but does virmidi send a hotplug add event? I'm really short of
+knowledge here).
 
-I can't repeat this bug, it happends 3-5 times in day.
+I think that my current /dev/ fs is a "static" one, since debian udev package
+is not installed and devfs fs creation is disabled at boot time. But I don't know
+how to be sure. If the /dev/ fs is "static", would snddevices add the
+needed /dev/midi10../dev/midi13 files?
 
-If i start mpg123 and xmms they are play simultaniously (even if i start
-10
-copies of mpg123)
-
-This is output from xmms:
-
-ALSA lib pcm_hw.c:1057:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
-Device
-or resource busy
-ALSA lib pcm_dmix.c:868:(snd_pcm_dmix_open) unable to open slave
- 
-** WARNING **: alsa_setup(): Failed to open pcm device (default): Device
-or
-resource busy
-
-
-======================================================================
-
-----------------------------------------------------------------------
- martin - 10-20-04 20:42 
-----------------------------------------------------------------------
-Yes, there is some mmap bug. But in my case it happens only in case of
-conversion. If I'm playing a file in a format that isn't supported by my
-rme32 hardware (e.g. mono) it will hang and the prompt doesn't came back
-(infinite loop?). Formats that are supported by the hardware are running
-fine.
-
-This happens with aplay, so it's not related to xmms.
-The rme32 in halfduplex-mode works with mmap and that's the reason why I
-believe it's the same bug.
-
-----------------------------------------------------------------------
- martin - 11-28-04 18:33 
-----------------------------------------------------------------------
-At least my rme32 problems are fixed in CVS. (see also bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611 for a
-patch)
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-14-04 11:41 srr            New Issue                                    
-04-16-04 11:54 tiwai          Note Added: 0000832                          
-04-20-04 07:39 srr            Note Added: 0000869                          
-04-20-04 07:41 srr            Issue Monitored: srr                         
-10-14-04 22:40 chtephan       Note Added: 0002160                          
-10-20-04 20:42 martin         Note Added: 0002218                          
-11-28-04 18:33 martin         Note Added: 0002626                          
-======================================================================
-
-
+Regards,
+Carlos
 
 
 -------------------------------------------------------
