@@ -1,16 +1,16 @@
 From: Carlos Pita <carlosjosepita@yahoo.com.ar>
 Subject: Re: oss raw midi emulation
-Date: Sun, 28 Nov 2004 16:57:29 -0300
-Message-ID: <200411281657.29397.carlosjosepita@yahoo.com.ar>
+Date: Sun, 28 Nov 2004 14:34:12 -0300
+Message-ID: <200411281434.12978.carlosjosepita@yahoo.com.ar>
 References: <200411281214.24321.carlosjosepita@yahoo.com.ar> <Pine.LNX.4.58.0411281622150.11615@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp201.mail.sc5.yahoo.com (smtp201.mail.sc5.yahoo.com [216.136.129.91])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4845725E
-	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 20:53:36 +0100 (MET)
+Received: from smtp202.mail.sc5.yahoo.com (smtp202.mail.sc5.yahoo.com [216.136.129.92])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 53411243
+	for <alsa-devel@alsa-project.org>; Sun, 28 Nov 2004 18:30:21 +0100 (MET)
 In-Reply-To: <Pine.LNX.4.58.0411281622150.11615@pnote.perex-int.cz>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
