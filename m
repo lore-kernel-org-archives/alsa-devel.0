@@ -1,17 +1,14 @@
-From: Steffen Sauder <steffensauder@gmx.de>
-Subject: Re: Re: ice1712 driver broken in 2.6.1-mm kernels
-Date: Wed, 21 Jan 2004 19:06:39 +0100
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: hdsp: output fader control via command line
+Date: Wed, 21 Jan 2004 17:09:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <400EBFAF.1080205@gmx.de>
-References: <1074633766.6579.2.camel@moria.arnor.net>	<Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>	<1074637277.6579.16.camel@moria.arnor.net>	<Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>	<400E9603.8010103@gmx.de> <s5hu12pfh1a.wl@alsa2.suse.de>
+Message-ID: <400EA449.9010301@undata.org>
+References: <400BA58C.3050400@idmt.fraunhofer.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id TAA19233
-	for <alsa-devel@alsa-project.org>; Wed, 21 Jan 2004 19:05:56 +0100
-In-Reply-To: <s5hu12pfh1a.wl@alsa2.suse.de>
+In-Reply-To: <400BA58C.3050400@idmt.fraunhofer.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,32 +17,75 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA Development <alsa-devel@alsa-project.org>
+To: Martin Dausel <dauselm@idmt.fraunhofer.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
+Martin Dausel wrote :
+> Hello,
+> i want to initialize my hdsp 9652 at startup to unmute the outputs 
+> without using hdspmixer.
+> 
 
->At Wed, 21 Jan 2004 16:08:51 +0100,
->Steffen Sauder wrote:
->  
->
->>Is there any reason why the patch is against 2.6.1-rc1? I was quite 
->>satisfied with 2.6.1 and don't really want to go back to its first rc. 
->>Should I just try to apply the patch to 2.6.1 or 2.6.1-mmX? Will it work 
->>for sure, probably or definetly not?
->>    
->>
->
->i guess it's a typo of 2.6.2-rc1?
->
->
->  
->
-oh, silly me thought that pros never do typos :o)
+The outputs are not "muted", but the matrix mixer is empty.
 
-works fine with 2.6.2-rc1 as well, I'm so glad...
+> Before the output fader controls were removed from the alsa control 
+> interface i used this script:
+> 
+> ********************************************************
+> 
+>     #!/bin/bash
+>      
+>     i=0
+>     j=0
+>     count=26
+>     count2=52
+>     until [ $i -gt $count ]; do
+>        
+>         # inner loop delete all routing
+>         j=0
+>         until [ $j -gt $count2 ]; do
+>                     amixer cset numid=5 $j,$i,0
+>                     j=`expr $j + 1`
+>         done
+>        
+>         # set default routing software output n routes to hardware output n
+>         amixer cset numid=5 `expr $i + 26`,$i,32768
+>         i=`expr $i + 1`
+> 
+>         # set ouput faders to 0dB
+>         amixer cset iface=MIXER,name='Chn',index=$i 32768
+>     done
+> 
+> **********************************************************
+> 
+> Using the current alsa driver i can't use the line "amixer cset 
+> iface=MIXER,name='Chn',index=$i 32768".
+> Is there any alternative (excluding hdspmixer)?
+> 
 
-Steffen
+You can use amixer with the Mixer control.
+
+> It would be very nice if there would be an parameter for the snd-hdsp 
+> module to control if the ouptuts are muted or at 0dB ( in a way like the 
+> "line_outs_monitor" parameter ).
+> 
+
+Could be done. Maybe at some point I'll add a parameter so that you can 
+choose amongst the default hdspmixer presets at module insertion time.
+
+> Is it possible to initialize the hdsp with a saved hdspmixer setting 
+> without using hdspmixer or better said without running X.
+> 
+
+You can do so with a small shell script and the Mixer element of amixer. 
+You can find more information on the syntax browsing the alsa-dev 
+archive and on the hdsp card page of the alsa-project website.
+I plan to add an option to export a shell script restoring the current 
+setup in the next hdspmixer release.
+
+Thomas
+
 
 
 
