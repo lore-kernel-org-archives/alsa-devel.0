@@ -1,11 +1,8 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Compile warning: lock types in alsa-kernel/core/init.c
-Date: Sat, 7 Dec 2002 23:15:18 +0000 (GMT)
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: SB Live
+Date: Sun, 8 Dec 2002 10:45:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021207231518.93281.qmail@web40601.mail.yahoo.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <20021208084548Z15776-10698+1995@nic.funet.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,52 +13,34 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: perex@suse.cz
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello. Nobody replied to this question:
 
-I was compiling the ALSA CVS drivers this evening when
-I saw this compiler warning whizz past. I think that
-this lock is a spinlock and not a rwlock.
+What internal sample rate the emu10k1 is using when arecord
+uses 44100 Hz sampling rate? Someone of you claimed emu10k1
+uses 48000 Hz as internal sampling rate. Then does Alsa driver
+do any sample rate conversion between 44100 Hz and 48000 Hz?  
 
-Cheers,
-Chris
+The site opensource.creative.com has an emu10k1 driver.
+Has any of you tried that driver succesfully?
+Can I use that driver with Alsa? That is, does alsamixer work
+and adjust the emu10k1 driver settings?
 
-Index: alsa-kernel/core/init.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/core/init.c,v
-retrieving revision 1.23
-diff -u -u -r1.23 init.c
---- alsa-kernel/core/init.c     4 Dec 2002 14:57:32
--0000       1.23
-+++ alsa-kernel/core/init.c     7 Dec 2002 23:12:19
--0000
-@@ -152,13 +152,13 @@
-        struct file_operations *f_ops, *old_f_ops;
-        int err;
- 
--       write_lock(&card->files_lock);
-+       spin_lock(&card->files_lock);
-        if (card->shutdown) {
--               write_unlock(&card->files_lock);
-+               spin_unlock(&card->files_lock);
-                return 0;
-        }
-        card->shutdown = 1;
--       write_unlock(&card->files_lock);
-+       spin_unlock(&card->files_lock);
- 
-        /* phase 1: disable fops (user space)
-operations for ALSA API */
-        write_lock(&snd_card_rwlock);
+I think RedHat has OSS drivers installed, so, if I don't have to
+compile anything, I would like to try if the mixer problem
+goes away with that other emu10k1 driver.
 
+Well, basically Creative has sold me a hardware which does not
+work. They had no problems in taking my money, but when it
+comes to giving a minimal information for implementing a working
+Alsa driver for their card, they slam the door at us. (Like a door
+don't open for a nigger in Alabama.) They are discriminating Linux
+users.
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+Best regards,
+
+Juhana
 
 
 -------------------------------------------------------
