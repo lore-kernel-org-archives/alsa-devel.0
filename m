@@ -1,14 +1,15 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: possible problems with rc6 aplay
-Date: 15 Dec 2002 14:15:43 -0800
+From: Henry Walpool <apkennedy@firstlinux.net>
+Subject: Re: [PATCH] envy24control.[ch] update for hoontech
+    cards.
+Date: Sun, 15 Dec 2002 16:15:16 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1039990543.2516.9.camel@Godzilla>
-References: <3DFCFB5A.9B34D27C@earthlink.net>
+Message-ID: <20021216001517.2A6C93A9D@sitemail.everyone.net>
+Reply-To: apkennedy@firstlinux.net
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3DFCFB5A.9B34D27C@earthlink.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,134 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: patrick reardon <swpatrick@earthlink.net>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>, Henry Walpool <apkennedy@firstlinux.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Patrick,
-   I'm not an Alsa expert so take all of this with a grain of salt. The
-difference between 48K and 44.1K is indeed about a whole step, so that's
-consistent with your results. You have 48000 samples that are supposed
-to take one second to play, but you are taking more than one second to
-play then. The result is the output tuning is low.
+The Hoontech Media 7.1 card has a consumer/professional option at least under windows. I would assume that with the correct information from hoontech one could program this under alsa. Of course I don't have a clue, I'm just guessing here.
 
-   Since CDs are ALWAYS 44.1K, this would make sense when you burn a CD.
-You could get around this by resampling the 48K input down to 44.1K.
-There is some open source software for doing that.
+Thanks for the information.
 
-   This will change the quality of the sound a bit, and is the main
-reason I always work at 44.1K.
+--- Jaroslav Kysela <perex@suse.cz> wrote:
+>On Sat, 14 Dec 2002, Henry Walpool wrote:
+>
+>> Added some code to block out the error messages for the hoontech cards
+>> when someone tries to access the professional/consumer option. I tried
+>> to get the information from hoontech but no luck. I don't think it would
+>> be that hard to add the correct code to enable these functions but
+>> hoontech is not talking unfortunately. Hoontech even stopped responding
+>> to my e-mails. The last response I got was "e-mail the alsa-developers".
+>> "They have all the information about hoontech cards already."
+>
+>The original hoontech cards have hardwired support (in hardware) for 
+>consumer mode only.
+>
+>						Jaroslav
+>
+>-----
+>Jaroslav Kysela <perex@suse.cz>
+>Linux Kernel Sound Maintainer
+>ALSA Project, SuSE Labs
 
-   I don't remember how to do it, but there is an option I've seen in
-some .asoundrc files that allows you to set the frequency of the
-Hammerfall. I have two Hammerfalls, so I suppose I had better learn to
-do that one of these days.
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
 
-Good luck,
-Mark
-
-
-On Sun, 2002-12-15 at 13:59, patrick reardon wrote:
-> hi everyone:
-> 
-> i'm running on a PIII with kernel 2.4.18 and Alsa 0.9.0rc6 and a Hammerfall 9636 card. 
-> Alsa has been working fine for the last year, or so it seems.  recently a scsi CD burner
-> was installed.  i have some recordings of live performances made with "arecord", version
-> 0.9.0beta8a.  they play back just fine, but when i tried to burn them to CD, they were low
-> by about 2 to 3 half steps.  
-> 
-> Joerg Shilling suggested that Alsa was writing the wrong headers.  so i upgraded to rc6
-> and on the first try on each of the old WAV files, "aplay" also played them too slowly. 
-> however, on subsequent runs, everything was fine again.  i don't understand this behaviour
-> at all.
-> 
-> someone on LAU suggested that since it was too low by about 2-3 half steps, data was being
-> recorded at 48000 but Alsa thought it was at 44100.  
-> 
-> info in /proc/asound/hammerfall/rme9652:
-> 
-> ------------snip-------------
-> .
-> .
-> Latency: 4096 samples (2 periods of 16384 bytes)
-> Hardware pointer (frames): 0
-> Passthru: no
-> Clock mode: autosync
-> Pref. sync source: ADAT1
-> 
-> IEC958 input: Coaxial
-> IEC958 output: Coaxial only
-> IEC958 quality: Consumer
-> IEC958 emphasis: off
-> IEC958 Dolby: off
-> IEC958 sample rate: error flag set
-> 
-> ADAT Sample rate: 44100Hz
-> .
-> .
-> ---------snip-----------------
-> 
-> 
-> for months up until about an hour ago the ADAT sample rate read 48000.  in that hour i
-> changed my .asoundrc from 
-> 
-> 
-> -----------snip---------------
-> pcm.hammerfall {	#"hammerfall" is the alias for "snd-rme9652" in /etc/modules.conf
-> 	type hw
-> 	card0
-> }
-> 
-> ctl.hammerfall {
-> 	type hw
-> 	card0
-> }
-> -----------snip---------------
-> 
-> 
-> to the following
-> 
-> 
-> -----------snip---------------
-> 
-> pcm.rme9652 {   #changed from "hammerfall" to "rme9652" on 12.15.2002
->    type hw
->    card 0
-> }
-> 
-> ctl.rme9652 {   #same as above comment
->    type hw
->    card 0
-> }
-> ---------snip-----------------
-> 
-> 
-> after the .asoundrc change i recorded a fresh WAV and burned it to CD but with the same
-> problem -- too slow.  also, with the new .asoundrc, version rc6 plays WAV's recorded with
-> the old .asoundrc and version rc6 a little too fast.  i'm at a loss for new ideas to debug
-> this.
-> 
-> can anyone enlighten me about this, or does anyone know where i can download some
-> reference WAV files (for example, a middle C tone) to check whether the burning problem
-> might involve Alsa or whether it's something else in my setup?
-> 
-> any pointers would be greatly appreciated.
-> 
-> tia,
-> patrick
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:
-> With Great Power, Comes Great Responsibility 
-> Learn to use your power at OSDN's High Performance Computing Channel
-> http://hpc.devchannel.org/
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-
+_____________________________________________________________
+Select your own custom email address for FREE! Get you@yourchoice.com w/No Ads, 6MB, POP & more! http://www.everyone.net/selectmail?campaign=tag
 
 
 -------------------------------------------------------
