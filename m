@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000920]: 97_debian_alsaconf_cfgfile.dpatch: Change file used by Debian
-Date: Fri, 18 Feb 2005 22:08:36 +0100
-Message-ID: <7dc70a8a65b75f527a49953fc2ba1cca@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000921]: 15_alsaconf_fix_opt: Fix typo in 'modinfo' option
+Date: Fri, 18 Feb 2005 22:11:00 +0100
+Message-ID: <612ce53eb77f6640f7e6f1fcf53f5fe5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A474624B
-	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 22:08:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 70940242
+	for <alsa-devel@alsa-project.org>; Fri, 18 Feb 2005 22:11:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,29 +23,25 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=920> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=921> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   920
+Issue ID:                   921
 Category:                   alsaconf
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-18-2005 22:08 CET
-Last Modified:              02-18-2005 22:08 CET
+Date Submitted:             02-18-2005 22:10 CET
+Last Modified:              02-18-2005 22:10 CET
 ======================================================================
-Summary:                    97_debian_alsaconf_cfgfile.dpatch: Change file used
-by Debian
+Summary:                    15_alsaconf_fix_opt: Fix typo in 'modinfo' option
 Description: 
-    Summary: Change the Debian configuration file name
-
-    The patch changes the file name to which alsaconf writes
-    if the system is Debian
+    Summary: Fix typo in alsaconf "modinfo" option
 
     Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
@@ -54,9 +50,9 @@ Description:
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-05 22:08 jdthood        New Issue                                    
-02-18-05 22:08 jdthood        File Added: 97_debian_alsaconf_cfgfile.patch      
-             
+02-18-05 22:10 jdthood        New Issue                                    
+02-18-05 22:10 jdthood        File Added: 15_alsaconf_fix_opt.patch             
+      
 ======================================================================
 
 
