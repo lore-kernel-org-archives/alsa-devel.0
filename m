@@ -1,10 +1,12 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: more pcm test program weirdness
-Date: Thu, 22 Jan 2004 16:37:17 +0100
+From: "Ed Wildgoose" <Ed@Wildgooses.com>
+Subject: Re: HDSP 9632 driver and expansion cards
+Date: Thu, 22 Jan 2004 15:32:32 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040122163717.28f31f25.mista.tapas@gmx.net>
+Message-ID: <013301c3e0fc$f4ea92e0$5d40a8c0@FRiskMan.com>
+References: <1074650862.6893.10.camel@rivendell.home.local> <400E74F6.1040803@undata.org> <02f701c3e04e$1f39d2e0$5d40a8c0@FRiskMan.com> <400EEDE9.80208@undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,208 +17,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> > I haven't had time to try and get any sound out of it yet!  However, it
+is
+> > detected correctly in the mixer, and the driver thinks that there are 4
+> > extra channels.  I need to get some jack socket convertors to get some
+sound
+> > out, but will let you know.
+> >
+>
+> Please do so, thanks.
 
-Hi,
+Hi Thomas,  I tested this, and it does seem to work ok!  I literally just
+squirted some sound through a single channel briefly, so this is nothing
+more than a "it works" test.  I will get some plugs over the next few days
+for better trials.  Thanks so much for your work on this!
 
-i tried the pcm test program from the alsa-lib test program and it fails
-for quite a few transfer modes... Before i go into details on that i
-have to say that everything else i use alsa for works very nicely:
-playing music via xmms' alsa plugin; watching movies with mplayer and
-the alsa9 output plugin; playing Enemy Territory via the OSS emu, etc..
-I just checked the pcm test program out of curiosity..
+> For the "jittery & broken up audio" problem, are you running an
+> optimized audio kernel (preempt + lowlatency patched) ?
+> How frequent is frequently ? Can you find any relation between the audio
+> problems and external factors (disk access, heavy load, etc...) ?
 
-The modes that do not work are: "write", "write_and_poll" and
-"direct_write". All the other modes work [async, etc..]. "to work" in
-this case means to produce audible output on my sepakers. Here's an
-example output for the write method:
+I'm using 2.6.1 mm-1 with the pre-empt option switched on.  With low system
+load I seem to be able to get JACK to work for short periods with 1.5ms
+latency!  3ms and up latency works with JACK, reasonably despite some
+processing with Brutefir going on as well...
 
+I only tried it a couple of times, and I forget now whether I used both OSS
+emulation and ALSA devices, or just one?  However, the effect was something
+like when you are feeding an audio file to the card at a fixed rate, and
+it's playing it at a faster rate, you get continuous snatches of sound and
+underflows leaving a short gap before sound restarts (multiple times per
+second).
 
-tapas@mango:~/source/build_stuff/sound/alsa-lib-1.0.1/test$ ./pcm 
-Playback device is plughw:0,0
-Stream parameters are 44100Hz, S16_LE, 1 channels
-Sine wave rate is 440.0000Hz
-Using transfer method: write
-
-At this point it hangs, no output..  strace shows it hangs in an ioctl
-[i ctrl-c'ed at the last ioctl() after some seconds]:
-
-...
-ioctl(4, 0x400c4150, 0xbffff6a0)        = 0
-ioctl(4, 0x400c4150, 0xbffff6a0)        = 0
-ioctl(4, 0x400c4150, 0xbffff6a0)        = 0
-ioctl(4, 0x400c4150, 0xbffff6a0)        = 0
-ioctl(4, 0x400c4150 <unfinished ...>
-
-
-A bt in gdb shows:
-
-(gdb) run
-Starting program:
-/home/tapas/source/build_stuff/sound/alsa-lib-1.0.1/test/pcm 
-[New Thread 16384 (LWP 12912)]
-Playback device is plughw:0,0
-Stream parameters are 44100Hz, S16_LE, 1 channels
-Sine wave rate is 440.0000Hz
-Using transfer method: write
-
-[here it hangs, so i ctrl-c'ed]
-
-Program received signal SIGINT, Interrupt.
-[Switching to Thread 16384 (LWP 12912)]
-0x402140b4 in ioctl () from /lib/libc.so.6
-(gdb) bt
-#0  0x402140b4 in ioctl () from /lib/libc.so.6
-#1  0x400627e7 in snd_pcm_hw_writei (pcm=0xfffffe00, buffer=0xfffffe00, 
-    size=4294966784) at pcm_hw.c:609
-#2  0x40052d77 in snd_pcm_writei (pcm=0xbffff640, buffer=0x8056718, 
-    size=1074544976) at pcm_local.h:368
-#3  0x08049ad7 in write_loop (handle=0x80565f8, samples=0x8056718, 
-    areas=0x804d360) at pcm.c:219
-#4  0x0804b271 in main (argc=1, argv=0xbffffb04) at pcm.c:835
+I will try it again and document exactly which apps and what my setup is.
+Sorry for the vague problem report...  In the meantime I'm actually using
+the PAD card for general duties (ie watching TV)
 
 
-jcdutton's speaker-test program shows the exact same behaviour, so he
-suspected it's an alsa bug. Something along the line that writei()
-should always work but fails to go to direct mode in this case or
-something..
+> For the mixer controls : there were some in the past, but I removed them
+> because I couldn't find any clean solution to deal with them while
+> changing speed mode (because their number changes at this occasion).
+> Maybe Jaroslav or Takashi have an idea on the subject ? When I last
+> worked on this, the only solution I could find would have been to mess
+> up with a semaphore held by the alsa-lib layer and although it would
+> have worked, it would have been plain ugly.
+> Anyway I plan a massive redesign of the way the driver and userspace
+> apps interact regarding the matrix mixer, mostly to enable several
+> application to access the mixer at the same time in a cooperative way
+> (how about an alsaseq client or a ladspa plugin accessing the matrix
+> with the changes reflected in hdspmixer ? :). This is the prerequisite
+> of some work I want to do with jack and ardour to handle hardware
+> monitoring in a better way. I could indeed add a master volume control
+> at this occasion.
 
+I hear what you are saying.  Would it be possible to have a very badly
+behaved master mixer control which possibly has a rather confused view of
+min and max levels even?
 
-Here's some more info:
+The situation I would rather like to get to is that I could use the output
+mixers on each channel to set a maximum amplitude for that channel.  The
+physical analogue outputs are then likely to feed directly into power amps
+with no preamp (perhaps an attenuator in the way though).  The master
+control (lets call it a fader) will operate on all channels individually,
+and adjust them equally (in dB, not linearly), so that I effectively have a
+home theatre 5.1 output directly into the power amps.  The master fader
+control is effectively applying a 0-100% scaling on the output mixer,
+bearing in mind that each output channel may well have different absolute
+levels (depends how close each speaker is).
 
-tapas@mango:~$ cat /proc/asound/cards 
-0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
-                     Sound Fusion CS46xx at 0xcffef000/0xcfe00000, irq 5
-1 [VirMIDI        ]: VirMIDI - VirMIDI
-                     Virtual MIDI Card 1
+Does this sound easier?  Is it feasible?
 
-tapas@mango:~$ cat /proc/asound/devices 
-  1:       : sequencer
-  0: [0- 0]: ctl
-  8: [0- 0]: raw midi
- 18: [0- 2]: digital audio playback
- 17: [0- 1]: digital audio playback
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
- 33:       : timer
- 32: [1- 0]: ctl
- 43: [1- 3]: raw midi
- 42: [1- 2]: raw midi
- 41: [1- 1]: raw midi
- 40: [1- 0]: raw midi
+It would be very exciting if this could be made to work.  I suspect this
+feature alone would sell RME some sound cards... (not that you care, just an
+aside!)
 
+For what it is worth, the card will likely be fed by JACK via a Brutefir
+filter to do room correction based on a filter designed using Brutefir. (A
+very interesting project that is well worth experimenting with...)
 
-tapas@mango:~$ cat /proc/asound/version 
-Advanced Linux Sound Architecture Driver Version 1.0.1.
-Compiled on Jan 22 2004 for kernel 2.4.22 (SMP) with versioned symbols.
+Thanks so much for taking the time to listen - much appreciated
 
-tapas@mango:~$ grep "VERSION_STR" /usr/include/alsa/version.h
-#define SND_LIB_VERSION_STR     "1.0.1"
+Ed W
 
-tapas@mango:~$ lspci 
-00:00.0 Host bridge: Silicon Integrated Systems [SiS] 735 Host (rev 01)
-00:01.0 PCI bridge: Silicon Integrated Systems [SiS] SiS 530 Virtual
-PCI-to-PCI bridge (AGP)
-00:02.0 ISA bridge: Silicon Integrated Systems [SiS] 85C503/5513
-00:02.5 IDE interface: Silicon Integrated Systems [SiS] 5513 [IDE] (rev
-d0)
-00:03.0 Ethernet controller: Silicon Integrated Systems [SiS] SiS900
-10/100 Ethernet (rev 90)
-00:09.0 SCSI storage controller: Advanced Micro Devices [AMD] 53c974
-[PCscsi] (rev 10)
-00:11.0 Multimedia audio controller: Cirrus Logic CS 4614/22/24
-[CrystalClear SoundFusion Audio Accelerator] (rev 01)
-01:00.0 VGA compatible controller: nVidia Corporation NV20 [GeForce3 Ti
-200] (rev a3)
-
-
-
-tapas@mango:~$ sudo lspci -vn    
-Password:
-00:00.0 Class 0600: 1039:0735 (rev 01)
-        Flags: bus master, medium devsel, latency 32
-        Memory at d0000000 (32-bit, non-prefetchable) [size=64M]
-        Capabilities: [c0] AGP version 2.0
-
-00:01.0 Class 0604: 1039:0001
-        Flags: bus master, fast devsel, latency 64
-        Bus: primary=00, secondary=01, subordinate=01, sec-latency=64
-        Memory behind bridge: cdc00000-cfcfffff
-        Prefetchable memory behind bridge: bd900000-cdafffff
-
-00:02.0 Class 0601: 1039:0008
-        Flags: bus master, medium devsel, latency 0
-
-00:02.5 Class 0101: 1039:5513 (rev d0) (prog-if 80 [Master])
-        Subsystem: 1039:5513
-        Flags: bus master, fast devsel, latency 128
-        I/O ports at ff00 [size=16]
-
-00:03.0 Class 0200: 1039:0900 (rev 90)
-        Subsystem: 1019:0a14
-        Flags: bus master, medium devsel, latency 64, IRQ 10
-        I/O ports at d800 [size=256]
-        Memory at cffed000 (32-bit, non-prefetchable) [size=4K]
-        Expansion ROM at cffc0000 [disabled] [size=128K]
-        Capabilities: [40] Power Management version 2
-
-00:09.0 Class 0100: 1022:2020 (rev 10)
-        Flags: bus master, stepping, medium devsel, latency 64, IRQ 11
-        I/O ports at dc00 [size=128]
-        Expansion ROM at cfff0000 [disabled] [size=64K]
-
-00:11.0 Class 0401: 1013:6003 (rev 01)
-        Subsystem: 153b:112e
-        Flags: bus master, medium devsel, latency 64, IRQ 5
-        Memory at cffef000 (32-bit, non-prefetchable) [size=4K]
-        Memory at cfe00000 (32-bit, non-prefetchable) [size=1M]
-        Capabilities: [40] Power Management version 2
-
-01:00.0 Class 0300: 10de:0201 (rev a3)
-        Subsystem: 1462:8503
-        Flags: bus master, 66Mhz, medium devsel, latency 248, IRQ 11
-        Memory at ce000000 (32-bit, non-prefetchable) [size=16M]
-        Memory at c0000000 (32-bit, prefetchable) [size=128M]
-        Memory at cda80000 (32-bit, prefetchable) [size=512K]
-        Expansion ROM at cfcf0000 [disabled] [size=64K]
-        Capabilities: [60] Power Management version 2
-        Capabilities: [44] AGP version 2.0
-
-
-
-tapas@mango:~$ lsmod
-Module                  Size  Used by    Tainted: P  
-nvidia               1971456  14 (autoclean)
-snd-virmidi             1408   0
-snd-seq-virmidi         3480   0 [snd-virmidi]
-snd-seq-midi-event      4096   0 [snd-seq-virmidi]
-snd-pcm-oss            38180   0 (unused)
-snd-cs46xx             72808   1
-snd-pcm                66784   1 [snd-pcm-oss snd-cs46xx]
-snd-page-alloc          6676   0 [snd-cs46xx snd-pcm]
-snd-ac97-codec         48620   0 [snd-cs46xx]
-snd-rawmidi            15328   0 [snd-seq-virmidi snd-cs46xx]
-mousedev                4376   1
-keybdev                 2084   0 (unused)
-input                   3648   0 [mousedev keybdev]
-snd-seq-dummy           1836   0 (unused)
-snd-seq                41904   0 [snd-seq-virmidi snd-seq-midi-event
-snd-seq-dummy]
-snd-timer              16996   0 [snd-pcm snd-seq]
-snd-seq-device          4404   0 [snd-rawmidi snd-seq]
-sound                  61504   0 (unused)
-snd-mixer-oss          13136   0 [snd-pcm-oss]
-snd                    35588   0 [snd-virmidi snd-seq-virmidi
-snd-seq-midi-event snd-pcm-oss snd-cs46xx snd-pcm snd-ac97-codec
-snd-rawmidi snd-seq-dummy snd-seq snd-timer snd-seq-device
-snd-mixer-oss]
-
-TIA, flo
--- 
-http://www.soundclick.com/bands/9/florianschmidt.htm
-http://www.arted.biz/mista.tapas
 
 
 -------------------------------------------------------
