@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000984]: No Sound
-Date: Thu, 17 Mar 2005 18:49:27 +0100
-Message-ID: <a508928282049aadbcab0101c95150cc@bugtrack.alsa-project.org>
+Date: Thu, 17 Mar 2005 18:50:29 +0100
+Message-ID: <3be00a5354be06e91b553c3e22b27555@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE8D123B
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 18:49:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E50DC23B
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 18:50:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,12 +21,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been REOPENED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
 ======================================================================
 Reported By:                mailavj
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   984
@@ -39,7 +39,7 @@ Distribution:               Debian
 Kernel Version:             2.6.7-2
 ======================================================================
 Date Submitted:             03-12-2005 19:09 CET
-Last Modified:              03-17-2005 18:49 CET
+Last Modified:              03-17-2005 18:50 CET
 ======================================================================
 Summary:                    No Sound
 Description: 
@@ -57,20 +57,16 @@ duplicate of        0000970 No Sound
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-16-05 13:00 
-----------------------------------------------------------------------
-Please elaborate your hardware: driver, codec chip.
-Make sure that you set up the mixer properly.
-
-Above all, try the later version of ALSA.  1.0.6 is way too old for
-debugging.
-
-----------------------------------------------------------------------
  mailavj - 03-17-05 18:49 
 ----------------------------------------------------------------------
 my soundchip is AD1985 frm Analog Devices. and Motherboard is Intel
 D865GBF.. and ALSA Driver is 1.0.6-a
 no sound is comin frm my box
+
+----------------------------------------------------------------------
+ mailavj - 03-17-05 18:50 
+----------------------------------------------------------------------
+My chipset is AD1985 from Analogdevices and my motherboard is Intel D865GBF
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +84,8 @@ Date Modified  Username       Field                    Change
 03-17-05 18:49 mailavj        Status                   resolved => feedback
 03-17-05 18:49 mailavj        Resolution               duplicate => reopened
 03-17-05 18:49 mailavj        Note Added: 0003981                          
+03-17-05 18:49 mailavj        Assigned To               => tiwai           
+03-17-05 18:50 mailavj        Note Added: 0003982                          
 ======================================================================
 
 
