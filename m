@@ -1,14 +1,11 @@
-From: Rodrigo Anderson <halfmreef@cs.com>
-Subject: Impress her with a Rolex   84352819
-Date: Tue, 21 Dec 2004 00:17:48 -0800
-Message-ID: <1693552617676787345203024@cs.com>
+From: Music Download Newsletter <support@indiacraftsemporium.com>
+Subject: Downl0ad Oceans 12 Movie
+Date: Tue, 21 Dec 2004 14:18:18 +0000 (UTC)
+Message-ID: <3370192982.23250@morefreaky.com>
 Mime-Version: 1.0
-Content-Type: text/html; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from host80-48-112-108.cable.wsm.wielun.pl (host80-48-112-108.cable.wsm.wielun.pl [80.48.112.108])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 0F92726C
-	for <alsa-devel@alsa-project.org>; Tue, 21 Dec 2004 15:11:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,94 +15,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Date: Wed, 22 Dec 2004 20:53:57 +0300
+To: alsa-announce@alsa-project.org
+Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<body>
-<P align=3Dcenter><FONT color=3D#ff0000>Thank you for expressing interest=
- in Replicas watches Bazaar. </FONT>
+Hello,
 
-</P>
-<P align=3Dcenter>We would like to take this opportunity to offer you our=
- fine
-selection of Italian crafted Rolex Timepieces. </P>
-<P align=3Dcenter><FONT color=3D#ff0000>You can view our large
-selection of Rolexes (including Breitling, Tag Heuer, Cartier etc) at:
-</FONT>
-</P>
-<P align=3Dcenter>
-<a href=3D"http://wkgjhmf.gficndan.info/?ykAAAD3Tz6Fgimyfywturr"> Replica=
- watches Bazaar</a> </P>
-<P align=3Dcenter>
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
 
-As we are the direct manufacturers, you are guaranteed of
-lowest prices and highest quality each and every time you purchase from u=
-s.
+http://www.downloadsupercenter.com/xmas.html
 
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
 
-You may also be interested to know
-that we have the following brands available in our wide selection as well=
-:</P>
-<P align=3Dcenter></P>
+More  Bonuses
 
-<table cellSpacing=3D"0" cellPadding=3D"3" border=3D"0" align=3Dcenter st=
-yle=3D"WIDTH: 184px;">
-<tr>
-<td width=3D"100%">
-<li>
-Vip Rolex
-<li>
-Eberhard
-<li>
-A. Lange
-<li>
-Panerai
-<li>
-Iwc
-<li>
-A.lange Sohne
-<li>
-Roger Dubuis
-<li>
-Longines
-<li>
-Blancpain
-<li>
-etc...
-</li>
-</td>
-</tr>
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
 
-</table>
-<P align=3Dcenter><FONT color=3D#ff0000>
-If you see anything that might interest you, or if you have
-any questions, please don't hesitate to visit our website at:<br style=3D=
-"mso-special-character: line-break">
-<br style=3D"mso-special-character: line-break"></FONT></P>
-<P align=3Dcenter>
+http://www.downloadsupercenter.com/xmas.html
 
-<a href=3D"http://mqtvw.kmlcmhlj.info/?ascIIfbvHeNoquGzndzcxxs">Replica w=
-atches Bazaar</a> </P>
-<P></P>
-<br>
-<br>
-<br>
-<span style=3D"FONT-SIZE: 3.5pt; FONT-FAMILY: Arial">
-connote cage refugee ussr monadic honest arden orchis zen amanita distant=
- agriculture coercion <br>
-certiorari tablecloth downfall actinium kate eagle festive broadway givea=
-way <br>
-cromwell chalcedony degrease nanking brocade numerate herdsman cocktail p=
-ubescent edwardine emphysematous substrate snotty wicket lawsuit foley ho=
-urglass <br>
-mealy regimentation northeastern invasive gosh broil <br>
-</body>
+Even More Benefits : 
 
-</html>
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+Check out to Join Now and Start Downloading in Minutes
+
+http://www.downloadsupercenter.com/xmas.html
 
 
+thanks and regards
+Dwight Miranda
+Affilate Manager
+Multimedia Download Center
 
 
 -------------------------------------------------------
