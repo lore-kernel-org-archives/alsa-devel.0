@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: 2.5.50: sleeping function called from illegal context
-Date: Tue, 03 Dec 2002 13:34:52 -0500
+From: Thomas Fjellstrom <tfjellstrom@telusplanet.net>
+Subject: Re: rawmidi && cpu usage
+Date: Tue, 3 Dec 2002 11:39:08 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18JHnw-0002ME-00@sc8-sf-list1.sourceforge.net>
-References: <200212030657.45283.baldrick@wanadoo.fr>
+Message-ID: <200212031139.08792.tfjellstrom@telusplanet.net>
+References: <200211251148.29245.tfjellstrom@telusplanet.net>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 03 Dec 2002 06:57:45 +0100."
-             <200212030657.45283.baldrick@wanadoo.fr>
+In-Reply-To: <200211251148.29245.tfjellstrom@telusplanet.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,21 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Duncan Sands <baldrick@wanadoo.fr>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I guess another way of dealing with this kind of problem is to use a
->semaphore rather than a spinlock, and a workqueue: when the interrupt
->comes in, the call to snd_ctl_notify is put on the queue, where it will later
->be run in process context, and can safely take the semaphore.
+On November 25, 2002 11:48 am, Thomas Fjellstrom wrote:
+> Hi again,
+>
+> Its been a while since I was subscribed (I moved and didn't have internet
+> access), and last mentioned my rawmidi problem.
+>
+> It seems that after a few seconds (30->60 ish) cpu usage seems to go way up
+> and notes are dropped. I was hoping that this was fixed, maybe it was, I
+> couldn't find anything new on the archives...
+>
+> Just an update, It still happenes.
+>
+> I have a SBLive! Value,
+> on an MSI K7T Turbo w/RAID
+> running Linux 2.4.19 + preempt patch
+>
+> thanks!
+>
+> p.s. sorry for bugging you all so much about this rawmidi stuff ;)
 
-can i get a pointer to some code that does this? we need to do this
-for handling MIDI I/O in the hammerfall dsp driver. doing it from
-the interrupt handler causes audio dropouts because the midi i/o is so
-much slower.
+Hello again,
 
---p
+I looked a bit at the alsa code, and I can't figure out anything.. so yeah. 
+I'd appreceate someone looking into this.
+
+Thanks.
+
+-- 
+Thomas Fjellstrom
+tfjellstrom@telusplanet.net
+http://strangesoft.net
 
 
 -------------------------------------------------------
