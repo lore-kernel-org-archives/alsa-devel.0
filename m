@@ -1,14 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: easy way to query device capabilities
-Date: Sat, 31 Jan 2004 12:24:43 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Docu:: Alsa Audio API:: A minimal capture program
+Date: Sat, 31 Jan 2004 14:57:17 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040131122443.4cd65f1c.mista.tapas@gmx.net>
-References: <20040130231137.22745fc9.mista.tapas@gmx.net>
+Message-ID: <Pine.LNX.4.58.0401311456180.1876@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0401281614420.11576-100000@studcom.urz.uni-halle.de>
+ <200401282338.25438.tmohr@s.netic.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040130231137.22745fc9.mista.tapas@gmx.net>
+In-Reply-To: <200401282338.25438.tmohr@s.netic.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,27 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
+To: Torsten Mohr <tmohr@s.netic.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 30 Jan 2004 23:11:37 +0100
-Florian Schmidt <mista.tapas@gmx.net> wrote:
+On Wed, 28 Jan 2004, Torsten Mohr wrote:
 
-> 
 > Hi,
 > 
-> i wondered if there was a tool that searched the configuration space
-> of a pcm device for valid combinations of format, samplerate, channel
-> count, etc..
+> thanks for that hint.
 > 
-> This would be very very useful..
+> But sadly, the attached program doesn't work, though
+> i set stop_threshold to 0.  I didn't find any functions
 
-I mean, i could write something that just 
+This is wrong. You need to set this value to sw_params->boundary or 
+greater value to eliminate the stop detection, otherwise with zero,
+the stream is immediately stopped.
 
--- 
-signature :)
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
