@@ -1,9 +1,10 @@
-From: Bob Ham <node@users.sourceforge.net>
-Subject: [announce] ALSA Patch Bay 0.1
-Date: 01 Mar 2002 22:11:58 +0000
-Message-ID: <1015020718.970.4.camel@insanity>
+From: Peter Enderborg <pme@ufh.se>
+Subject: Re: Rawmidi bug or missed feature?
+Date: Fri, 01 Mar 2002 23:18:18 +0100
+Message-ID: <3C7FFE29.698B64E1@ufh.se>
+References: <200203012131.QAA26852@renoir.op.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -13,28 +14,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Linux Audio Development Mailing List <linux-audio-dev@music.columbia.edu>, linux-audio-user@music.columbia.edu
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all
+Paul Davis wrote:
 
-I just completed version 0.1 of a very scrappy but functional gui midi
-patch bay for alsa's seq api.  It's essentially just a graphical version
-of aconnect.  It's available from:
+> >Yes! And the device that is using running status is alsa rawmidi device.
+>
+> What makes you think that? AFAIK, the raw MIDI device code does no
+> parsing of MIDI data at all ...
 
-http://pkl.net/~node/software/alsa-patch-bay-0.1.tar.gz
+Parsing? It sends raw midi on a stream. That stream is _from_ alsa seq. It is
+doing
+the bandwith optimize by it self. I do the parsing.
 
-Bob
+>
+>
+> >It's not the roland device since I
+> >get them correct to the user_code.  And how do I force the rawmidi device
+> >to stop sending running status,
+> >and that is the original question!
+>
+> I would have thought that if its not the Roland that is doing it, then
+> its the sequencer.
+>
+> --p
 
--- 
-Bob Ham: bob@ham.org
+--
+foo!
 
-My music: http://mp3.com/obelisk_uk
-GNU Hurd: http://hurd.gnu.org/
 
-A pessimist expects the weather to get worse.
-An optimist hopes it will improve.
-A realist adjusts the sails.
 
 
 _______________________________________________
