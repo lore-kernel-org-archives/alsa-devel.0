@@ -1,17 +1,13 @@
-From: "Thomas Charbonnel" <thomas@undata.org>
-Subject: Re: future ALSA development
-Date: Thu, 3 Jul 2003 18:05:08 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: hdsp driver status
+Date: Fri, 04 Jul 2003 01:15:33 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32900.81.50.18.84.1057248308.squirrel@www.undata.org>
-References: <Pine.LNX.4.44.0306222010030.1838-100000@pnote.perex-int.cz>
+Message-ID: <3F0456A5.9000600@boosthardware.com>
+References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org> <3F044FF5.2010602@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from undata.org (12-186-106-62.kaptech.net [62.106.186.12])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA24591
-	for <alsa-devel@alsa-project.org>; Thu, 3 Jul 2003 17:58:09 +0200
-In-Reply-To: <Pine.LNX.4.44.0306222010030.1838-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,48 +16,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org
+Cc: Thomas Charbonnel <thomas@undata.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Hello all,
->
-> 	here are my next goals for the ALSA library development (short
-> term). I invite all developers to comment these directions.
->
+Patrick Shirkey wrote:
+> Thomas Charbonnel wrote:
+> 
+>>
+>> Remaining:
+>> * HDSP9652: the matrix mixer isn't yet handled right.
+>> * Rev11 + Multiface: either the firmware file is wrong or the io-box
+>> firmware upload scenario has changed for this card revision. Has anyone
+>> ever had success with this combination (or rev11 + Digiface) ?
+>>
+> 
+> I am using multiface which hasn't been flashed. I have upgraded to a 
+> newer kernel (2.4.21) (0.9.4 tarball) and now I don't get the error 
+> about finding hwdep when I run hdsploader but there is still no sound 
+> coming from the device.
+> 
+> My friend tells me that in windows it will always have the WC button on 
+> when it is working correctly.
+> 
+> In this case after running hdsploader the box flashes and then all the 
+> lights turn off.
+> 
+> This device has worked with older versions of the alsa drivers.
+> 
 
-[...]
+following the above I decided to check I was setting the correct params 
+in the matrix and it turns out that line out has been moved to numid 22 
+(before it was 5).
 
-> * initiate a development of a graphical tool which will manage
->   the alsa configuration files (~/.asoundrc)
->   - we need a rapid development tool; I slowly became a fan of python
-> and
->     Qt has rich number of widgets; python + PyQt seems to me a good idea
->   - using python requires to write a GPLed ALSA 0.9 -> python wrapper
->
+amixer -D hw:1 cset numid=22 0,0,16384
 
-One point I would like to bring to focus is how sound hardware state
-persistance is dealt with. The limits of alsactl are showing up with
-hardware like the hdsp, were the card might not be fully initialized (or
-not even present yet, e.g. cardbus) at boot time. We're more and more
-likely to have to deal with such external hotpluggable devices (pcmcia,
-firewire, usb), where full initialization can happen any time after the
-boot process, and we can't expect the average user to be scripting around.
+"And out of the box came a burbling noise, white noise that is, RME gold..."
 
-IMHO state restoration could be :
-* triggered by the driver, at the appropriate time, depending maybe on
-some system configuration options.
-* initiated by the user, through the configuration GUI.
+So Jed wasn't rich yet but he was almost there. At least we know that 
+the latest revisions are almost functional. I tried playing a very loud 
+tune and I can just make it out if I listen carefully. I also tried 
+using a volume of 32768 but there was no change in the levels I could hear.
 
-We could have a default configuration restored by the driver at
-initialization time, and a set of named configurations the user could
-save/restore/set as default using the GUI.
+Am I right to use alsamixer to set the volume for outputs 1-8?
 
-There are probably other ways to handle this, I'm waiting for your comments.
-
-Thomas
+I'll also try with amixer just incase.
 
 
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
