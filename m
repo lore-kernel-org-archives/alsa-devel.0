@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Thu, 23 Sep 2004 18:25:54 +0200 (CEST)
+Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
+Date: Thu, 23 Sep 2004 18:34:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040923162554.5E8C74500F@server.perex-int.cz>
+Message-ID: <20040923163418.8806B4500F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A5E2322
-	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 18:28:30 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0584032A
+	for <alsa-devel@alsa-project.org>; Thu, 23 Sep 2004 18:34:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,51 +22,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000506
 ======================================================================
-Reported By:                pharm
+Reported By:                bekker
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     523
-Category:                   PCI - via82xx
+Bug ID:                     506
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
+Distribution:               Gentoo Linux
+Kernel Version:             kernel 2.6.8-gentoo-r3.
 ======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-23-2004 18:25 CEST
+Date Submitted:             09-19-2004 13:40 CEST
+Last Modified:              09-23-2004 18:34 CEST
 ======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
+Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
 Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
+the Fortissimo II card has seperate outputs for front, rear speakers and
+headphone. I cannot get sound on the headphone. 
 
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
+Front (HW:0,0) and rear speakers (HW:0,1) work.IEC958 (HW:0,2) is also
+available but I have not tested it.
+
+The slider marked as headphone in the mixer actually controls the rear
+speaker volume. 
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-23-2004 18:25 CEST 
+ bekker - 09-19-2004 13:41 CEST 
 ----------------------------------------------------------------------
-Could you try the attached patch?
-(Note that it's totally untested.)
+I had the same issue on Mandrake 9.2, Mandrake 10.
+
+----------------------------------------------------------------------
+ tiwai - 09-20-2004 17:39 CEST 
+----------------------------------------------------------------------
+So far, only 4.0 output is supported on cs46xx driver.
+
+----------------------------------------------------------------------
+ bekker - 09-21-2004 20:01 CEST 
+----------------------------------------------------------------------
+Fair enough. Is 5.1 support planned?
+
+----------------------------------------------------------------------
+ tiwai - 09-23-2004 18:34 CEST 
+----------------------------------------------------------------------
+Sorry, no plan AFAIK.
+Benny might help for further development of 5.1 support (see
+cs46xx source codes for his address).
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-22-04 22:48 pharm          New Bug                                      
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
+09-19-04 13:40 bekker         New Bug                                      
+09-19-04 13:40 bekker         Distribution              => Gentoo Linux    
+09-19-04 13:40 bekker         Kernel Version            => kernel 2.6.8-gentoo-r3.
+09-19-04 13:41 bekker         Bugnote Added: 0001784                       
+09-20-04 17:39 tiwai          Bugnote Added: 0001789                       
+09-21-04 20:01 bekker         Bugnote Added: 0001808                       
+09-23-04 18:34 tiwai          Bugnote Added: 0001830                       
 ======================================================================
 
 
