@@ -1,15 +1,15 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
-Date: Tue, 13 Jul 2004 13:51:32 +0200
+Date: Tue, 13 Jul 2004 13:59:17 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8fa5bf946f0bfa07fb7e70f6e4b14f8e@bugtrack.alsa-project.org>
+Message-ID: <1737346043ec7430db3b54abd41168c4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7373120C
-	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 13:51:32 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 470C5224
+	for <alsa-devel@alsa-project.org>; Tue, 13 Jul 2004 13:59:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -49,7 +49,7 @@ Kernel Version:             2.4.26
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-13-2004 13:51 CEST
-Last Modified:              07-13-2004 13:51 CEST
+Last Modified:              07-13-2004 13:59 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -63,6 +63,11 @@ was able to get stereo sound from line in by using "H/W In 0" and "H/W IN
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
+----------------------------------------------------------------------
+ labra - 07-13-2004 13:59 CEST=20
+----------------------------------------------------------------------
+The alsa-driver version with this feature/bug is 1.0.5a.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -75,6 +80,8 @@ Date Modified  Username       Field                    Change            =
    =20
 07-13-04 13:51 labra          Kernel Version            =3D> 2.4.26      =
    =20
+07-13-04 13:59 labra          Bugnote Added: 0001413                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
