@@ -1,11 +1,14 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: fedora core alsaconf patch
-Date: 21 Nov 2003 15:40:51 -0800
+From: Lars Heineken <Lars.Heineken@gmx.de>
+Subject: Re: fedora core alsaconf patch
+Date: Sat, 22 Nov 2003 11:18:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1069458051.11875.5.camel@cmn37.stanford.edu>
+Message-ID: <3FBF3808.1060104@gmx.de>
+References: <1069458051.11875.5.camel@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-nAVKmAiEy63tX0+Xv4mc"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1069458051.11875.5.camel@cmn37.stanford.edu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,59 +17,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I think we need a similar extension to support Mandrake, after 
+installation from the sources all modules in modules.conf where gone, 
+except the ones from alsa.. :-)
 
---=-nAVKmAiEy63tX0+Xv4mc
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-
-Included is a patch that fixes alsaconf to work correctly under fedora
-core 1. Otherwise alsaconf happily creates a modules.conf file that only
-contains the alsa configuration and nothing else (a path in the if's
-that does not create a $TMP file before the alsa configuration process
-starts). 
-
-Please apply!
-Thanks...
--- Fernando
-
-
---=-nAVKmAiEy63tX0+Xv4mc
-Content-Disposition: attachment; filename=alsa-utils-0.9.8-alsaconf.patch
-Content-Type: text/plain; name=alsa-utils-0.9.8-alsaconf.patch; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
---- alsa-utils-0.9.8/alsaconf/alsaconf.in~	2003-10-30 04:00:38.000000000 -0800
-+++ alsa-utils-0.9.8/alsaconf/alsaconf.in	2003-11-21 15:28:35.000000000 -0800
-@@ -30,8 +30,10 @@
-   distribution="suse"
- elif [ -f /etc/debian_version ]; then
-   distribution="debian"
--elif [ -f /etc/redhat-release ]; then
-+elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release 2>/dev/null` != 0 ]; then
-   distribution="redhat"
-+elif [ -f /etc/fedora-release -a `grep -c "Fedora" /etc/fedora-release 2>/dev/null` != 0 ]; then
-+  distribution="fedora"
- else
-   distribution="unknown"
- fi
-@@ -532,10 +534,8 @@
- 	SOUND_CORE="snd"
-     fi
- 
--    if [ "$distribution" = "redhat" ] ; then
--        if grep -q "Red Hat" /etc/redhat-release >/dev/null 2>&1 ; then
--	    remove_ac_block < $cfgfile | remove_sndconfig_block | uniq > $TMP
--        fi
-+    if [ "$distribution" = "redhat" -o "$distribution" = "fedora" ] ; then
-+        remove_ac_block < $cfgfile | remove_sndconfig_block | uniq > $TMP
-     else
- 	remove_ac_block < $cfgfile | remove_y2_block | uniq > $TMP
-     fi
-
---=-nAVKmAiEy63tX0+Xv4mc--
+>Included is a patch that fixes alsaconf to work correctly under fedora
+>core 1. Otherwise alsaconf happily creates a modules.conf file that only
+>contains the alsa configuration and nothing else (a path in the if's
+>that does not create a $TMP file before the alsa configuration process
+>starts). 
+>
 
 
 
