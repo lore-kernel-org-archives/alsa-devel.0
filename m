@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000692]: Possible ALSA support the EMU 0404 or other EMU card in the future?
-Date: Mon, 29 Nov 2004 14:03:48 +0100
-Message-ID: <e99ad3ed31385964be158e7b61bf3c61@bugtrack.alsa-project.org>
+Date: Mon, 29 Nov 2004 14:15:39 +0100
+Message-ID: <0f4c596698defd7a7dad88b224fa72a6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5286F2AD
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:03:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3C402C7
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 14:15:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=692> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             11-29-2004 14:03 CET
-Last Modified:              11-29-2004 14:03 CET
+Last Modified:              11-29-2004 14:15 CET
 ======================================================================
 Summary:                    Possible ALSA support the EMU 0404 or other EMU card
 in the future?
@@ -49,10 +49,21 @@ It is possible that ALSA supports EMU cards in the future?
 
 ======================================================================
 
+----------------------------------------------------------------------
+ pzad - 11-29-04 14:15 
+----------------------------------------------------------------------
+Probably main chips on these cards are supported (mostly they are Audigy
+based), but developpers need additional information from creative. These
+cards are expensive and there is no developper who will buy it and play
+with it (and card can be damaged by this play).
+
+I think these cards will be never supported under linux.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-29-04 14:03 comp           New Issue                                    
+11-29-04 14:15 pzad           Note Added: 0002632                          
 ======================================================================
 
 
