@@ -1,14 +1,12 @@
-From: alsa-devel@robdye.net
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: HDSP 9652: Input channel corruption
-Date: Wed, 15 Oct 2003 15:01:01 -0700
+Date: Wed, 15 Oct 2003 20:18:05 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1066255261.3f8dc39da8799@scorpio.lunarpages.com>
-References: <20031009111238.B5188@nautronix.com.au>  <1065672448.3693.12.camel@Wizard.knechthome.com>  <20031010165526.A10106@nautronix.com.au> <1065814483.2164.23.camel@Wizard.knechthome.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Message-ID: <200310160018.h9G0I5UW002143@oud>
+References: <1066255261.3f8dc39da8799@scorpio.lunarpages.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1065814483.2164.23.camel@Wizard.knechthome.com>
+In-reply-to: Your message of "Wed, 15 Oct 2003 15:01:01 PDT."
+             <1066255261.3f8dc39da8799@scorpio.lunarpages.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,36 +15,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@robdye.net
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+>It sounds to me that the problem Nick Arnold is describing is that in
+>single-speed (48kS/s) mode, channels 0, 8, and 16 have a 1-sample delay
+>with respect to all the other channels (using 0-based indexing for
+>channel numbers here).  This is irrelevant when recording uncorrelated
+>signals, and subtle when dealing with time-coherent signals
+>(single-point stereo or Ambisonic for example).  When splitting one
+>signal across two channels, it is deadly.
 
-It sounds to me that the problem Nick Arnold is describing is that in
-single-speed (48kS/s) mode, channels 0, 8, and 16 have a 1-sample delay
-with respect to all the other channels (using 0-based indexing for
-channel numbers here).  This is irrelevant when recording uncorrelated
-signals, and subtle when dealing with time-coherent signals
-(single-point stereo or Ambisonic for example).  When splitting one
-signal across two channels, it is deadly.
+i just want to mention the possibility that this is caused by hdsp
+firmware. and if it is, and you tried to ask RME about it, and told
+them that you were emulating their emulation of 96kHz in your own
+software, i doubt you'd get much help from them.
 
-The easiest way to check this is to digitally generate a high frequency
-sine wave (say 10kHz), and patch it (digitially) to channels 0 and 1 or
-8 and 9 (or just go ahead and send it to all the channels).  Make sure
-that there are no mismatched delays in whatever tool(s) you use to make
-the patches.  Record this signal -- even a few milliseconds is enough.
+i cannot think of *anything* in the hdsp driver that would have any
+effect on this, and i can easily imagine a situation where there was a
+1 sample delay between ADAT connectors written into the
+(hard|firm)ware (though it does seem unlikely). one thing, for
+example, is that i know on the old digi9652, the hardware cannot
+guarantee that all channels are operating at the same point in the DMA
+buffer, although this should not cause the effect nick has seen.
 
-Then look at it in a waveform editor and zoom way in so you can see the
-individual samples.  Check the temporal alignment between track 1 and
-track 2 (using 1-based indexing here).  Better yet, subtract the two
-tracks.  If all is well the result will be zero; if they are misaligned,
-you'll get another 10k sine wave with lower amplitude.
+i really encourage nick to drop (even if its only for testing) his own
+double speed operation and try out RME's own stuff (implemented in
+their firmware).
 
-I don't have digital generator in the same setup as my HDSP (independent
-of the HDSP that is).  So, I can't do this test without a lot of moving
-around.  I am interested in seeing this (possible) problem taken care of.
-
---Rob
-
+--p
 
 
 -------------------------------------------------------
