@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000506]: Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
-Date: Fri,  8 Oct 2004 14:38:05 +0200 (CEST)
+Date: Fri,  8 Oct 2004 15:22:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008123805.E83F42C014@server.perex-int.cz>
+Message-ID: <20041008132256.1A1402D0BF@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 524F81E2
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 14:38:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1917F235
+	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 15:22:57 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             kernel 2.6.8-gentoo-r3.
 ======================================================================
 Date Submitted:             09-19-2004 13:40 CEST
-Last Modified:              10-08-2004 14:38 CEST
+Last Modified:              10-08-2004 15:22 CEST
 ======================================================================
 Summary:                    Hercules Fortissimo II (Gamesurround 5.1 digital edition) has no sound on headphone output
 Description: 
@@ -195,6 +195,11 @@ ac97#0-0+regs
 0:7c = 4352
 0:7e = 592d
 
+----------------------------------------------------------------------
+ tiwai - 10-08-2004 15:22 CEST 
+----------------------------------------------------------------------
+What happens if you apply the patch below?
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -209,6 +214,7 @@ Date Modified  Username       Field                    Change
 10-07-04 22:25 bekker         Bugnote Added: 0002040                       
 10-08-04 12:15 tiwai          Bugnote Added: 0002046                       
 10-08-04 14:38 bekker         Bugnote Added: 0002051                       
+10-08-04 15:22 tiwai          Bugnote Added: 0002052                       
 ======================================================================
 
 
