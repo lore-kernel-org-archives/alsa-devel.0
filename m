@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000266]: I receive pages of unresolved symbols when I attempt to load the intel8x0 module.
-Date: Tue, 9 Nov 2004 16:16:07 +0100
-Message-ID: <740f781c57d2d84fb6b1189ed58a7a66@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000265]: Error building [hwdep.o] for alsa-driver
+Date: Tue, 9 Nov 2004 16:18:08 +0100
+Message-ID: <75f21ed36391825a0d3b414bf0455cf1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C018F244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:16:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 06C15244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:18:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,112 +24,256 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=266> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=265> 
 ======================================================================
-Reported By:                malkuth
+Reported By:                umka27
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   266
+Issue ID:                   265
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Fedora Core 1
-Kernel Version:             2.4.22-1.2115.nptl
+Distribution:               Gentoo
+Kernel Version:             2.4.26-vanilla
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             05-10-2004 05:36 CEST
-Last Modified:              11-09-2004 16:16 CET
+Date Submitted:             05-09-2004 02:28 CEST
+Last Modified:              11-09-2004 16:18 CET
 ======================================================================
-Summary:                    I receive pages of unresolved symbols when I attempt
-to load the intel8x0 module.
+Summary:                    Error building [hwdep.o] for alsa-driver
 Description: 
-I had version 0.9.8 and had the problem, so I downloaded and built the
-1.0.4 version. The following is the output from the load of the module.
-Starting sound driver: snd-card-intel8x0 Warning: ignoring snd_major=116,
-no such parameter in this module
-Warning: ignoring snd_cards_limit=1, no such parameter in this module
-Warning: ignoring snd_device_mode=0666, no such parameter in this module
-Warning: ignoring snd_device_gid=0, no such parameter in this module
-Warning: ignoring snd_device_uid=0, no such parameter in this module
-Module snd loaded, with warnings
-Module gameport loaded, with warnings
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_suspend_all_R43c50b57
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_mixer_Rf5b599af
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_set_rate_R1be27d60
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_new_Rd565b6d2
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_new_Rc2b77688
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_free_pages_Re8dafa0a
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_verbose_printk_R49d4e4d1
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_hw_constraint_integer_R5eb3e8f8
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_tune_hardware_R94360210
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_resume_Re12d8194
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_period_elapsed_Re6e6b098
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_preallocate_pci_pages_for_all_Rd644d0aa
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_ioctl_R8482811c
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_register_R492d494a
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_free_pci_pages_Ra2184231
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_device_new_R371c74fc
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_set_ops_Rad3c274a
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_malloc_pci_pages_R516d0d40
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_hw_constraint_list_R74cb7c63
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_proc_new_Ra82b74c6
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_pcm_lib_malloc_pages_R0407e1db
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_mpu401_uart_new_Ra520c930
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_ac97_update_bits_R2f6d9192
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-unresolved symbol snd_card_free_Rf8b77bec
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-insmod
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o
-failed
-/lib/modules/2.4.22-1.2115.nptl/kernel/drivers/sound/pci/snd-card-intel8x0.o:
-insmod snd-card-intel8x0 failed
+
+When compiling alsa-driver I get an error while trying to
+build [hwdep.o]. I have trouble figuring out what the error is. Below is
+the output that I get. This problem occurs when
+I try to compile any of these:
+
+ - alsa-driver-1.0.2c.ebuild  
+ - alsa-driver-1.0.3.ebuild      
+ - alsa-driver-1.0.4.ebuild
+ - alsa-driver-1.0.4-r1.ebuild
+
+
+
+
+gcc -D__KERNEL__ -DMODULE=1
+-I/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include 
+-I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=i686
+-DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include  -E -D__GENKSYMS__ vx_entry.c
+| /sbin/genksyms -k 2.4.26  >
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/modules/pcmcia-vx__vx_entry.ver.tmp
+mv
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/modules/pcmcia-vx__vx_entry.ver.tmp
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/modules/pcmcia-vx__vx_entry.ver
+make[3]: Leaving directory
+`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/pcmcia/vx'
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sndversions.h
+was updated
+make[2]: Leaving directory
+`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/pcmcia'
+make[1]: Leaving directory
+`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c'
+make[1]: Entering directory
+`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/acore'
+gcc -D__KERNEL__ -DMODULE=1
+-I/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include 
+-I/usr/src/linux/include -O2 -mpreferred-stack-boundary=2 -march=i686
+-DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
+include   -DEXPORT_SYMTAB -c hwdep.c
+In file included from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:134:
+redefinition of `PDE'
+/usr/src/linux/include/linux/proc_fs.h:213: `PDE' previously defined here
+In file included from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:189:1:
+warning: "snprintf" redefined
+In file included from /usr/src/linux/include/linux/modversions.h:176,
+                 from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:42,
+                 from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/usr/src/linux/include/linux/modules/ksyms.ver:676:1: warning: this is the
+location of the previous definition
+In file included from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:190:1:
+warning: "vsnprintf" redefined
+In file included from /usr/src/linux/include/linux/modversions.h:176,
+                 from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:42,
+                 from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/usr/src/linux/include/linux/modules/ksyms.ver:682:1: warning: this is the
+location of the previous definition
+In file included from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:395:1:
+warning: "vmalloc_to_page" redefined
+In file included from /usr/src/linux/include/linux/modversions.h:176,
+                 from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/adriver.h:42,
+                 from
+/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/include/sound/driver.h:42,
+                 from hwdep.c:22:
+/usr/src/linux/include/linux/modules/ksyms.ver:68:1: warning: this is the
+location of the previous definition
+make[1]: *** [hwdep.o] Error 1
+make[1]: Leaving directory
+`/var/tmp/portage/alsa-driver-1.0.2c/work/alsa-driver-1.0.2c/acore'
+make: *** [compile] Error 1
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 09-07-04 16:36 
+ umka27 - 05-25-04 19:53 
 ----------------------------------------------------------------------
-Too old, please, try latest ALSA version.
+So, I went to the directory
+/var/tmp/portage/alsa-driver-1.0.3/work/alsa-driver-1.0.3/acore
+
+Then use make file to compile stuff within the directory:
+
+Iceberg acore # make
+gcc -D__KERNEL__ -DMODULE=1 -I/tmp/alsa-driver-1.0.4/include
+-I/lib/modules/2.4.26/build/include -O2 -mpreferred-stack-boundary=2
+-march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc -iwithprefix include -DEXPORT_SYMTAB -c hwdep.c
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:134: redefinition of `PDE'
+/lib/modules/2.4.26/build/include/linux/proc_fs.h:213: `PDE' previously
+defined here
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:191:1: warning: "snprintf"
+redefined
+In file included from
+/lib/modules/2.4.26/build/include/linux/modversions.h:176,
+from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
+from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:676:1: warning:
+this is the location of the previous definition
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:192:1: warning: "vsnprintf"
+redefined
+In file included from
+/lib/modules/2.4.26/build/include/linux/modversions.h:176,
+from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
+from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:682:1: warning:
+this is the location of the previous definition
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:434:1: warning: "vmalloc_to_page"
+redefined
+In file included from
+/lib/modules/2.4.26/build/include/linux/modversions.h:176,
+from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
+from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:68:1: warning:
+this is the location of the previous definition
+make: *** [hwdep.o] Error 1
+Iceberg acore #
+
+
+
+
+Then I tried to run gcc command separately and I didn't get any errors
+but no .o files were created.
+
+
+
+
+Iceberg acore # gcc -D__KERNEL__ -DMODULE=1
+-I/tmp/alsa-driver-1.0.4/include -I/lib/modules/2.4.26/build/include -O2
+-mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall -Wstrict-prototypes
+-fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common
+-pipe -DALSA_BUILD -nostdinc -iwithprefix include -DEXPORT_SYMTAB -c
+hwdep.c
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:134: redefinition of `PDE'
+/lib/modules/2.4.26/build/include/linux/proc_fs.h:213: `PDE' previously
+defined here
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:191:1: warning: "snprintf"
+redefined
+In file included from
+/lib/modules/2.4.26/build/include/linux/modversions.h:176,
+from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
+from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:676:1: warning:
+this is the location of the previous definition
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:192:1: warning: "vsnprintf"
+redefined
+In file included from
+/lib/modules/2.4.26/build/include/linux/modversions.h:176,
+from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
+from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:682:1: warning:
+this is the location of the previous definition
+In file included from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/tmp/alsa-driver-1.0.4/include/adriver.h:434:1: warning: "vmalloc_to_page"
+redefined
+In file included from
+/lib/modules/2.4.26/build/include/linux/modversions.h:176,
+from /tmp/alsa-driver-1.0.4/include/adriver.h:42,
+from /tmp/alsa-driver-1.0.4/include/sound/driver.h:42,
+from hwdep.c:22:
+/lib/modules/2.4.26/build/include/linux/modules/ksyms.ver:68:1: warning:
+this is the location of the previous definition
+Iceberg acore # ls *.o
+ls: *.o: No such file or directory
+Iceberg acore #
+
+
+
+I also tried using the tarball directrly from alsa-project.org, but I get
+the
+same exact problems.
+
+----------------------------------------------------------------------
+ perex - 09-07-04 16:43 
+----------------------------------------------------------------------
+The problem is fixed in recent ALSA releases.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-10-04 05:36 malkuth        New Issue                                    
-05-10-04 05:36 malkuth        Distribution              => Fedora Core 1   
-05-10-04 05:36 malkuth        Kernel Version            => 2.4.22-1.2115.nptl
-05-10-04 05:38 malkuth        Issue Monitored: malkuth                     
-09-07-04 16:36 perex          Status                   assigned => resolved
-09-07-04 16:36 perex          Resolution               open => fixed       
-09-07-04 16:36 perex          Note Added: 0001710                          
-11-09-04 16:16 tiwai          Status                   resolved => closed  
+05-09-04 02:28 umka27         New Issue                                    
+05-09-04 02:28 umka27         Distribution              => Gentoo          
+05-09-04 02:28 umka27         Kernel Version            => 2.4.26-vanilla  
+05-25-04 19:53 umka27         Note Added: 0001236                          
+09-07-04 16:43 perex          Status                   assigned => resolved
+09-07-04 16:43 perex          Resolution               open => fixed       
+09-07-04 16:43 perex          Note Added: 0001714                          
+11-09-04 16:18 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
