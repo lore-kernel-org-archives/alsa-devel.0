@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 2.5.5-pre1 kernel - compile as modules?
-Date: Fri, 15 Feb 2002 13:14:52 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202151314050.608-200000@pnote.perex-int.cz>
+From: Jos Hulzink <josh@stack.nl>
+Subject: Re: 2.5.5-pre1: Deadlocks and ALSA driver problems
+Date: Fri, 15 Feb 2002 13:53:39 +0100
+Message-ID: <20020215124929.XEKK19167.amsfep16-int.chello.nl@there>
+References: <Pine.LNX.4.31.0202151311120.608-200000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-822478606-1013775292=:608"
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA27119
-	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 13:15:10 +0100
-In-Reply-To: <E16bdgB-0001eP-00@baldrick>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Received: from amsfep16-int.chello.nl (amsfep16-int.chello.nl [213.46.243.25])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA27951
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 13:53:52 +0100
+In-Reply-To: <Pine.LNX.4.31.0202151311120.608-200000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,78 +19,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Duncan Sands <duncan.sands@math.u-psud.fr>
-Cc: "curtisv@lineo.com" <curtisv@lineo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-  Send mail to mime@docserver.cac.washington.edu for more info.
+On Friday 15 February 2002 13:12, Jaroslav Kysela wrote:
+>
+> Attached patch for linux/sound/core/info.c fixes the problem with /proc
+> entries.
+>
 
---8323584-822478606-1013775292=:608
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Confirmed.  /proc interface seems working as expected. 
 
-On Fri, 15 Feb 2002, Duncan Sands wrote:
+Jos
+ 
 
-> Actually, the problem is deeper: even if I compile everything as
-> modules, I still get "no such device" when trying to read from
-> /proc/asound entries.  I will look into this further myself.
-
-It's problem with recent 2.5 kernel. Try the attached patch.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
-
---8323584-822478606-1013775292=:608
-Content-Type: TEXT/plain; name="out.txt"
-Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.31.0202151314520.608@pnote.perex-int.cz>
-Content-Description: 
-Content-Disposition: attachment; filename="out.txt"
-
-SW5kZXg6IGluZm8uYw0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KUkNTIGZp
-bGU6IC9jdnNyb290L2Fsc2EvYWxzYS1rZXJuZWwvY29yZS9pbmZvLmMsdg0K
-cmV0cmlldmluZyByZXZpc2lvbiAxLjcNCnJldHJpZXZpbmcgcmV2aXNpb24g
-MS44DQpkaWZmIC11IC1yMS43IC1yMS44DQotLS0gaW5mby5jCTE0IEZlYiAy
-MDAyIDE3OjQwOjMwIC0wMDAwCTEuNw0KKysrIGluZm8uYwkxNSBGZWIgMjAw
-MiAxMjoxMDoyNiAtMDAwMAkxLjgNCkBAIC0yNzgsNyArMjc4LDcgQEANCiAJ
-aW50IG1vZGUsIGVycjsNCiANCiAJZG93bigmaW5mb19tdXRleCk7DQotCXAg
-PSAoc3RydWN0IHByb2NfZGlyX2VudHJ5ICopIGlub2RlLT51LmdlbmVyaWNf
-aXA7DQorCXAgPSBQREUoaW5vZGUpOw0KIAllbnRyeSA9IHAgPT0gTlVMTCA/
-IE5VTEwgOiAoc25kX2luZm9fZW50cnlfdCAqKXAtPmRhdGE7DQogCWlmIChl
-bnRyeSA9PSBOVUxMKSB7DQogCQl1cCgmaW5mb19tdXRleCk7DQpAQCAtNTQx
-LDcgKzU0MSw3IEBADQogc3RhdGljIGludCBzbmRfaW5mb19jYXJkX3JlYWRs
-aW5rKHN0cnVjdCBkZW50cnkgKmRlbnRyeSwNCiAJCQkJICBjaGFyICpidWZm
-ZXIsIGludCBidWZsZW4pDQogew0KLSAgICAgICAgY2hhciAqcyA9ICgoc3Ry
-dWN0IHByb2NfZGlyX2VudHJ5ICopIGRlbnRyeS0+ZF9pbm9kZS0+dS5nZW5l
-cmljX2lwKS0+ZGF0YTsNCisgICAgICAgIGNoYXIgKnMgPSBQREUoZGVudHJ5
-LT5kX2lub2RlKS0+ZGF0YTsNCiAjaWZuZGVmIExJTlVYXzJfMg0KIAlyZXR1
-cm4gdmZzX3JlYWRsaW5rKGRlbnRyeSwgYnVmZmVyLCBidWZsZW4sIHMpOw0K
-ICNlbHNlDQpAQCAtNTYyLDcgKzU2Miw3IEBADQogc3RhdGljIGludCBzbmRf
-aW5mb19jYXJkX2ZvbGxvd2xpbmsoc3RydWN0IGRlbnRyeSAqZGVudHJ5LA0K
-IAkJCQkgICAgc3RydWN0IG5hbWVpZGF0YSAqbmQpDQogew0KLSAgICAgICAg
-Y2hhciAqcyA9ICgoc3RydWN0IHByb2NfZGlyX2VudHJ5ICopIGRlbnRyeS0+
-ZF9pbm9kZS0+dS5nZW5lcmljX2lwKS0+ZGF0YTsNCisgICAgICAgIGNoYXIg
-KnMgPSBQREUoZGVudHJ5LT5kX2lub2RlKS0+ZGF0YTsNCiAgICAgICAgIHJl
-dHVybiB2ZnNfZm9sbG93X2xpbmsobmQsIHMpOw0KIH0NCiAjZWxzZQ0KQEAg
-LTU3MCw3ICs1NzAsNyBAQA0KIAkJCQkJICAgICAgIHN0cnVjdCBkZW50cnkg
-KmJhc2UsDQogCQkJCQkgICAgICAgdW5zaWduZWQgaW50IGZvbGxvdykNCiB7
-DQotCWNoYXIgKnMgPSAoKHN0cnVjdCBwcm9jX2Rpcl9lbnRyeSAqKSBkZW50
-cnktPmRfaW5vZGUtPnUuZ2VuZXJpY19pcCktPmRhdGE7DQorCWNoYXIgKnMg
-PSBQREUoZGVudHJ5LT5kX2lub2RlKS0+ZGF0YTsNCiAJcmV0dXJuIGxvb2t1
-cF9kZW50cnkocywgYmFzZSwgZm9sbG93KTsNCiB9DQogI2VuZGlmDQpAQCAt
-ODQ1LDcgKzg0NSw3IEBADQogCQlyZXR1cm47DQogCX0NCiAJTU9EX0lOQ19V
-U0VfQ09VTlQ7DQotCWRlID0gKHN0cnVjdCBwcm9jX2Rpcl9lbnRyeSAqKSBp
-bm9kZS0+dS5nZW5lcmljX2lwOw0KKwlkZSA9IFBERShpbm9kZSk7DQogCWlm
-IChkZSA9PSBOVUxMKQ0KIAkJcmV0dXJuOw0KIAllbnRyeSA9IChzbmRfaW5m
-b19lbnRyeV90ICopIGRlLT5kYXRhOw0K
---8323584-822478606-1013775292=:608--
 
 _______________________________________________
 Alsa-devel mailing list
