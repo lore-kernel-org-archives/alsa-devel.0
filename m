@@ -1,8 +1,8 @@
 From: Mario Loritz <loritz@fh-furtwangen.de>
-Subject: alsa-driver-1.0.6a unresolved symbol
-Date: Sat, 9 Oct 2004 11:13:32 +0200
+Subject: alsa-driver-1.0.7rc1 unresolved symbol
+Date: Sat, 9 Oct 2004 11:22:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410091113.32047.loritz@fh-furtwangen.de>
+Message-ID: <200410091122.25593.loritz@fh-furtwangen.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -22,13 +22,12 @@ List-Id: alsa-devel@alsa-project.org
 
 Hello everyone,
 
-On my system, alsa-driver-1.0.6a and alsa-lib-1.0.6 compile and
+On my system, alsa-driver-1.0.7rc1 and alsa-lib-1.0.7rc1 compile and
 install fine, but when the soung server is restarted (by rcalsasound restart)
-the new compiled driver cant be loaded. 
+the new compiled driver cant be loaded.
 
 Error message:
 
-Shutting down sound driver: done
 Starting sound driver: snd-intel8x0 /lib/modules/2.4.21-243-athlon/kernel/
 sound/acore/snd.o: unresolved symbol snd_compat_strlcpy_Rb4409a1e
 /lib/modules/2.4.21-243-athlon/kernel/sound/acore/snd.o: insmod /lib/
@@ -37,10 +36,11 @@ modules/2.4.21-243-athlon/kernel/sound/acore/snd.o failed
 failed
 done
 
-I think I've seen this error before in an earlier version of alsa.
-There, it could be fixed...
 
-Greetings, 
+It's exactly the same error as in alsa-1.0.6a
+BTW: alsa-1.0.5a works fine...
+
+Greetings,
 Mario Loritz
 
 System Information:
