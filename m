@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000324]: Audigy2 Platinum: very low volume (both in and out)
-Date: Thu, 16 Sep 2004 10:16:39 +0200 (CEST)
+Subject: [ALSA - driver 0000469]: volume of sblive mic recording too low
+Date: Thu, 16 Sep 2004 10:22:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040916081639.D7AFE3F01A@server.perex-int.cz>
+Message-ID: <20040916082237.40BB63F018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 595942A2
-	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 10:16:40 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98BE21E9
+	for <alsa-devel@alsa-project.org>; Thu, 16 Sep 2004 10:22:37 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,63 +22,92 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000324
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000469
 ======================================================================
-Reported By:                garden
+Reported By:                wouter
 Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     324
+Bug ID:                     469
 Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Debian sid
-Kernel Version:             2.6.5
+Distribution:               Debian
+Kernel Version:             2.6.8
 ======================================================================
-Date Submitted:             06-06-2004 13:17 CEST
-Last Modified:              09-16-2004 10:16 CEST
+Date Submitted:             08-28-2004 01:36 CEST
+Last Modified:              09-16-2004 10:22 CEST
 ======================================================================
-Summary:                    Audigy2 Platinum: very low volume (both in and out)
+Summary:                    volume of sblive mic recording too low
 Description: 
-Both the input and output levels of my Audigy2 Platinum seem to be very low
-if compared to the same card with Windows (win98se). For example, I
-connected an external source (a MD player with very loud music in the
-disc) to the optical input, then to the aux input, then to the aux2 input.
-With the mixer settings to 100% the input level still does not go over
-20-25% of the maximum amplitude (while with Windows I have to lower the
-input level or it will be too high). The same thing applies to the output
-level of my analog speakers. [I must be *very* careful when I reboot with
-Windows and must not forget to turn the volume knob from 10 to 2]. I had
-exactly the same problem when I used the emu10k1 drivers from sourceforge.
+The recordings made with the Mic input on my sblive (5.1) are substantially
+lower in volume than direct playback output. If fact, they are too low to
+be really useful in for instance video conferencing, barely reaching 1/4
+in the VU meter of the gnomemeeting voip program - with Mic boost on.
+
+Setting "Capture" to anything but zero stops any sound from being
+captured.
+
+"AC97 Capture" seems to be controlling the volume of the recording, but it
+is too low even with the slider on 100%.
+
+People on the users mailinglist seem to indicate that "Capture" actually
+should work, which it doesn't.
 ======================================================================
 
 ----------------------------------------------------------------------
- garden - 09-14-2004 15:24 CEST 
+ pzad - 09-07-2004 09:40 CEST 
 ----------------------------------------------------------------------
-Just to keep things updated: the problem stays there also with 2.6.8.1 and
-ALSA 1.0.7rc1 (not compiled with the kernel).
+What ac97 uses your sb live ???
+Check /proc/asound/card*/codec97#*/ac97#?-? file for your card.
 
 ----------------------------------------------------------------------
- pzad - 09-16-2004 10:16 CEST 
+ wouter - 09-07-2004 16:47 CEST 
 ----------------------------------------------------------------------
-Driver only attenuate signals. If you set volumes of inputs and output to
-100, then you get what is exactly on input.
-Windows drivers probably amplify inputs or outputs. 
+[senta:~] cat /proc/asound/card0/codec97#0/ac97#0-0
+0-0/0: SigmaTel STAC9708/11
 
-Could you attach output of amixer ????
+Capabilities     :
+DAC resolution   : 18-bit
+ADC resolution   : 18-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=0 SDAC DSA=0
+Extended status  : SDAC
+
+----------------------------------------------------------------------
+ pzad - 09-16-2004 10:22 CEST 
+----------------------------------------------------------------------
+On my audigy "capture" control works as expected.
+
+Could you attach content of (ac97 codec register dump)
+/proc/asound/card*/codec97#*/ac97#?-?+reg
+when "capture" is 0 and capture works
+and
+/proc/asound/card*/codec97#*/ac97#?-?+reg
+when "capture" is not 0 and capture doesn't work ???
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-06-04 13:17 garden         New Bug                                      
-06-06-04 13:17 garden         Distribution              => Debian sid      
-06-06-04 13:17 garden         Kernel Version            => 2.6.5           
-06-28-04 09:17 pzad           Assigned To               => pzad            
-06-28-04 09:17 pzad           Status                   new => assigned     
-09-14-04 15:24 garden         Bugnote Added: 0001758                       
-09-16-04 10:16 pzad           Bugnote Added: 0001766                       
+08-28-04 01:36 wouter         New Bug                                      
+08-28-04 01:36 wouter         File Added: amixer.txt                       
+08-28-04 01:36 wouter         Distribution              => Debian          
+08-28-04 01:36 wouter         Kernel Version            => 2.6.8           
+09-07-04 09:40 pzad           Bugnote Added: 0001704                       
+09-07-04 16:47 wouter         Bugnote Added: 0001716                       
+09-16-04 10:22 pzad           Bugnote Added: 0001767                       
 ======================================================================
 
 
