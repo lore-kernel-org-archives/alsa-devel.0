@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000539]: Problem with changing size of etram
-Date: Mon, 27 Dec 2004 15:47:30 +0100
-Message-ID: <849067be23db7fda7c06afe29e2b19de@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
+Date: Mon, 27 Dec 2004 15:47:58 +0100
+Message-ID: <84d6af75e2a8f9efc56b79dbc298d50a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ACE51244
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:47:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BBF7244
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:47:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,60 +24,483 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=539> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
 ======================================================================
-Reported By:                mikma
-Assigned To:                pzad
+Reported By:                olivier55
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   539
-Category:                   PCI - emu10k1
+Issue ID:                   659
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.5
-Resolution:                 fixed
+Distribution:               mandrake 10.1
+Kernel Version:             2.6.8.1-10
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 23:55 CEST
+Date Submitted:             11-20-2004 22:25 CET
 Last Modified:              12-27-2004 15:47 CET
 ======================================================================
-Summary:                    Problem with changing size of etram
+Summary:                    configure: error: Unsupported soundcard cs4236
 Description: 
-It doesn't work to double the etram size, because of a bad comparison
-statement.
+when i do : 
+./configure --with-cards=cs4236 --with-sequencer=yes
 
-patch of emufx.c:
--       if (emu->fx8010.etram_pages.bytes == size)
-+       if ((emu->fx8010.etram_pages.bytes / 2) == size)
+i've this error : 
+configure: error: Unsupported soundcard cs4236
 
+my soundcard is a Crystal Audio CS4237 (cirrus logic)
+i have a laptop dell inspiron 8200
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-22-04 22:09 
+ olivier55 - 11-22-04 19:13 
 ----------------------------------------------------------------------
-Can be this aplied to CVS, please ???
+with the default install of mandrake 10.1, my sound card is detected. 
+if i start "alsamixer", i have this : 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org
+ /alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;[A
+ lsaMixer
+v1.0.6 (Press Escape to
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-p
+ roject.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?
+ id=9488;
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Card: Intel
+82801CA-ICH3                                          
+          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Chip: Cirrus Logic
+CS4205 rev 3                                   
+          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Item: Master
+
+But the cd CS4205 is not the properly sound card. However, with this
+configuration, i've no midi device in Kmidi. My trouble is, how to do for
+having a midi device  ?
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 16:12 
+ tiwai - 11-23-04 16:17 
 ----------------------------------------------------------------------
-Applied to CVS.  Thanks.
+CS4205 is AC97 codec chip.  Your driver should be snd-intel8x0.
+
+Simply build all drivers without --with-cards option, and run alsaconf to
+detect/configure the card.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 23:55 mikma          New Issue                                    
-09-24-04 23:55 mikma          Distribution              => Debian          
-09-24-04 23:55 mikma          Kernel Version            => 2.6.5           
-11-13-04 21:51 pzad           Note Added: 0002402                          
-11-18-04 17:44 pzad           Note Added: 0002450                          
-11-22-04 21:31 mikma          Note Added: 0002512                          
-11-22-04 22:09 pzad           Note Added: 0002513                          
-11-23-04 16:12 tiwai          Status                   assigned => resolved
-11-23-04 16:12 tiwai          Resolution               open => fixed       
-11-23-04 16:12 tiwai          Note Added: 0002519                          
+11-20-04 22:25 olivier55      New Issue                                    
+11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
+11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
+11-20-04 22:30 olivier55      Issue Monitored: olivier55                    
+11-20-04 22:30 olivier55      Issue End Monitor: olivier55                    
+11-22-04 14:42 tiwai          Note Added: 0002502                          
+11-22-04 19:13 olivier55      Note Added: 0002511                          
+11-23-04 16:17 tiwai          Status                   assigned => resolved
+11-23-04 16:17 tiwai          Resolution               open => not an issue
+11-23-04 16:17 tiwai          Note Added: 0002521                          
 12-27-04 15:47 tiwai          Status                   resolved => closed  
 ======================================================================
 
