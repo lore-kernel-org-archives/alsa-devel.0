@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Wed, 24 Nov 2004 23:31:05 +0100
-Message-ID: <27f779f7b4006bbe50fb5d21ca6e0b6f@bugtrack.alsa-project.org>
+Date: Thu, 25 Nov 2004 12:22:58 +0100
+Message-ID: <1a808f480e55a27d8cd1857be1abcd8d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D40702A2
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 23:31:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0AB3427F
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 12:22:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-24-2004 23:31 CET
+Last Modified:              11-25-2004 12:22 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,12 +60,6 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
- eradicator - 11-24-04 23:24 
-----------------------------------------------------------------------
-You should leave out the defined(CONFIG_SPARC64) as no architecture exports
-that symbol in 2.6.7... I'm testing it out now...
-
-----------------------------------------------------------------------
  eradicator - 11-24-04 23:31 
 ----------------------------------------------------------------------
 Nope, your patch isn't working unfortunately...
@@ -82,6 +76,15 @@ No mixer elems found
 1 [AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
                      Ensoniq AudioPCI ENS1371 at 0x1fe02000800, irq
 7172352
+
+----------------------------------------------------------------------
+ tiwai - 11-25-04 12:22 
+----------------------------------------------------------------------
+copy_in_user() is available on other architectures (at least x86-64 and
+ppc64) with 2.6.7, either exported or inlined.
+
+I found some thinkos in the last patch.  The new patch is attached.
+If this still doesn't work, please check via strace which ioctl fails.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -134,6 +137,7 @@ Date Modified  Username       Field                    Change
          
 11-24-04 23:24 eradicator     Note Added: 0002582                          
 11-24-04 23:31 eradicator     Note Added: 0002583                          
+11-25-04 12:22 tiwai          Note Added: 0002588                          
 ======================================================================
 
 
