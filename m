@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000559]: 64 Bit Drivers for Analog Devices SoundMax
-Date: Fri, 22 Oct 2004 16:55:45 +0200
+Subject: [ALSA - WWW server 0000593]: Echoaudio generic drivers available
+Date: Fri, 22 Oct 2004 16:53:01 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a202cd67e173a4efb7b546edf65e28b2@bugtrack.alsa-project.org>
+Message-ID: <8700caba38262e3efc8299ecd60ae02a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2761D29D
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:55:46 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC49F29D
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:53:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,60 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been ASSIGNED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=559> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=593> 
 ======================================================================
-Reported By:                sandy bodell
+Reported By:                oxiroxt
 Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   559
-Category:                   OTHERS
-Reproducibility:            N/A
+Project:                    ALSA - WWW server
+Issue ID:                   593
+Category:                   soundcard matrix
+Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     resolved
-Distribution:               Suse
-Kernel Version:             2.6.5-7.108
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
 ======================================================================
-Date Submitted:             10-02-2004 13:46 CEST
-Last Modified:              10-22-2004 16:55 CEST
+Date Submitted:             10-21-2004 13:43 CEST
+Last Modified:              10-22-2004 16:53 CEST
 ======================================================================
-Summary:                    64 Bit Drivers for Analog Devices SoundMax
+Summary:                    Echoaudio generic drivers available
 Description: 
-Are there any 64 bit drivers available anywhere for this chipset?
+In:
+http://www.alsa-project.org/alsa-doc/index.php?vendor=vendor-Echo_Corporation#matrix
+its said there's no support for Echo cards, while in:
+http://www.echoaudio.com/Downloads/Developer.php
+there is a generic driver code available.
 
-Thanks
+Also, there are already drivers in:
+http://xoomer.virgilio.it/g_pochini/ea.html
+thou I couldnt make it work, maybe because im a newbie.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 10-02-04 15:08 
-----------------------------------------------------------------------
-When compiled with a 64 bit kernel, the drivers are 64 bit, too.
-
-The driver for your device is snd-intel8x0 or snd-via82xx or snd-atiixp,
-depending on your chipset.
-
-----------------------------------------------------------------------
- perex - 10-22-04 16:55 
-----------------------------------------------------------------------
-Yes, there is no difference between source code for 32-bit and 64-bit
-drivers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-02-04 13:46 sandy bodell   New Issue                                    
-10-02-04 13:46 sandy bodell   Distribution              => Suse            
-10-02-04 13:46 sandy bodell   Kernel Version            => 2.6.5-7.108     
-10-02-04 15:08 Clemens LadischNote Added: 0002006                          
-10-22-04 16:55 perex          Status                   new => resolved     
-10-22-04 16:55 perex          Resolution               open => fixed       
-10-22-04 16:55 perex          Assigned To               => perex           
-10-22-04 16:55 perex          Note Added: 0002250                          
+10-21-04 13:43 oxiroxt        New Issue                                    
+10-22-04 16:53 perex          Status                   new => assigned     
+10-22-04 16:53 perex          Assigned To               => perex           
 ======================================================================
 
 
