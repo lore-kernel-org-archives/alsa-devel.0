@@ -1,16 +1,12 @@
-From: Chris Smith <chris@realcomputerguy.com>
-Subject: Re: RME HDSP 9632 driver
-Date: Mon, 11 Aug 2003 14:57:52 -0400
+From: Harold Martin <cocoadev@earthlink.net>
+Subject: ALSA module will not load into kernel
+Date: Mon, 11 Aug 2003 11:52:25 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308111457.52291.chris@realcomputerguy.com>
-References: <NDBBLGIKBJENLAMOLFHGGECOCPAB.mknecht@controlnet.com>
+Message-ID: <1060627945.4453.3238.camel@silver>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGGECOCPAB.mknecht@controlnet.com>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,50 +15,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <mknecht@controlnet.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 11 August 2003 14:14, Mark Knecht wrote:
+Hello,
+I'm trying to install the snd-cs46xx module for my Turtle Beach  Santa
+Cruz. As per the instructions I compile everything successfully. But
+when I attempt to load the module (modprobe snd-cs46xx) I get the
+errors:
+/lib/modules/2.4.20-19.9/kernel/sound/pci/cs46xx/snd-cs46xx.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.20-19.9/kernel/sound/pci/cs46xx/snd-cs46xx.o: insmod
+/lib/modules/2.4.20-19.9/kernel/sound/pci/cs46xx/snd-cs46xx.o failed
+/lib/modules/2.4.20-19.9/kernel/sound/pci/cs46xx/snd-cs46xx.o: insmod
+snd-cs46xx failed
 
-> Thomas has made great headway in just the last week. He
-> codes, I test. It's gone for 0% operation to quite a lot of functionality. A
-> little support from RME and I'm pretty sure we'll be there soon.
+I know this might be OT, but I asked on the users mailing list and got
+no answer,
 
-Ahh, great.
- 
-> I do not know of any other Linux-based HDSP 9652 users right now. Paul Davis
-> has one, but I do not think he's using it much. Other than that I do not
-> know right now. I think that when we get this solved we will find more
-> interested people. It's a great card under Windows.
+Thanks,
+Harold
 
-There are a few great cards for the Windows crowd. The RME stuff is the one 
-line that really seems to assist and support the open-source Alsa development 
-and so I like to support them in return. I like the Lynx Studio line as well 
-and have used them in the past but without Alsa support I had to decide 
-against them for my new personal device.
-
-> Oh, I thought you actually had the HDSP 9632. I guess you were just checking
-> for support? Or do you have the HDSP 9632 AND the MultiFace?
-
-I do actually have an HDSP 9632 installed in my personal system (which doesn't 
-currently have a Windows installation). The Digiface (I was mistaken on the 
-Multiface - posted an oops earlier) is awaiting installation in a client's 
-system.
- 
-> Are you a dealer? (The 'in stock' comment.)
-
-Yes, but I don't normally sell "loose kit". Most such products are delivered 
-as part of a fully built custom DAW. Been building them for professionals 
-since the 386 was the fastest Intel processor around.
-
-> I do not think these problems affect the MultiFace or DigiFace products.
-> Just the HDSP 9652.
-
-It sounds like Thomas is on the scent and we should have some sweet drivers 
-soon!
-
-Chris
 
 
 -------------------------------------------------------
