@@ -1,12 +1,16 @@
-From: "np" <np@f-matic.net>
-Subject: usb audio problems
-Date: Fri, 29 Aug 2003 15:25:44 -0400
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: [usb-midi-fw-devel] proposal concerning cooperation of snd-usb-usx2x.o and rbtload
+Date: Fri, 29 Aug 2003 21:59:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030829192544.24790.qmail@mail1.qwknetllc.com>
+Message-ID: <200308292159.13652.plcl@telefonica.net>
+References: <200308282352.54486.annabellesgarden@yahoo.de> <200308291734.20533.plcl@telefonica.net> <200308292012.06078.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200308292012.06078.annabellesgarden@yahoo.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,64 +19,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Karsten Wiese <annabellesgarden@yahoo.de>, usb-midi-fw-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net, "'us428@drehmoment.org'" <us428@drehmoment.org>
 List-Id: alsa-devel@alsa-project.org
 
+El Viernes, 29 de Agosto de 2003 20:12, Karsten Wiese escribió:
+> Just received an email from Takashi. He asks why not do it like he
+> did it before for the vx interfaces.
 
-hello list, 
+Another idea, after a closer look on the vxloader utility... Why not to forget 
+hotplug for rbtload? using modutils instead, like vxloader does. 
 
-i'm crossposting this problem because it looks like it may be something more 
-suited to the developers list. i'm having some problems getting sound to 
-play through my emagic emi 2|6 usb soundcard. i've set up my internal sound 
-card on slot 0, and the emi on slot 1. modules are loaded fine according to 
-lsmod, and alsamixer seems to recognize the card fine. playing sound through 
-the internal soundcard works fine, but when i attempt to use the emi card 
-(with pd -alsadev 2) i get the following error messages: 
+quoting vxloader's README:
+For loading the firmware automatically after the module is loaded, use
+the post-install command.  For example, add the following entry to
+/etc/modules.conf for VX222 driver:
+        post-install snd-vx222 /usr/bin/vxloader
 
-couldn't open MIDI input device 1
-couldn't open MIDI output device 1
-opened 0 MIDI input device(s) and 0 MIDI output device(s).
-snd_pcm_hw_params_set_format (input): Invalid argument
-snd_pcm_hw_params_set_format (input): Invalid argument
-ALSA lib pcm_hw.c:466:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed: 
-Invalid argument
-snd_pcm_hw_params (input): Invalid argument
-ALSA lib pcm_hw.c:466:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE failed: 
-Invalid argument
-ALSA lib pcm.c:1146:(snd_pcm_link) SNDRV_PCM_IOCTL_LINK failed: File 
-descriptor in bad state
-ALSA lib pcm_hw.c:494:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed: File 
-descriptor in bad state
-snd_pcm_start: File descriptor in bad state
-Using ALSA interface
-audio I/O stuck... closing audio 
+We can use something like this for Tascam USB devices:
+	pre-install snd-usb-us428 /usr/sbin/rbtload [...]
 
- 
+In this way we can be sure that rbtload is executed *before* the module is 
+installed. Of course, we still need to modify rbtload a bit, but it's not a 
+big change. It is not necessary to use the hwdep infrastructure at all.
 
-could anyone here help diagnose what the problem is? i'm running debian sid 
-on a 2.4.22 kernel, latest version of alsa. for the record, my lsmod shows: 
+Regards,
+Pedro
 
-snd-usb-audio          44176   0
-snd-rawmidi            15952   0  [snd-usb-audio]
-snd-seq-device          5000   0  [snd-rawmidi]
-snd-powermac           34996   0
-i2c-core               14324   0  [snd-powermac]
-snd-pcm                66180   0  [snd-usb-audio snd-powermac]
-snd-timer              16580   0  [snd-pcm]
-snd-page-alloc          4964   0  [snd-pcm]
-snd                    35416   0  [snd-usb-audio snd-rawmidi snd-seq-device 
-snd-powermac snd-pcm snd-timer]
-soundcore               4168   0  [snd]
-ds                      8268   1
-yenta_socket           11792   1
-pcmcia_core            44232   0  [ds yenta_socket]
-ieee1394               49920   0  (unused)
-emi26                 162192   0  (unused) 
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
-any help would be appreciated! 
-
-thanks,
-nick
 
 
 -------------------------------------------------------
