@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Sun, 19 Dec 2004 22:46:13 +0100
-Message-ID: <f837cfa25bbe2164aa72ebb84bc19073@bugtrack.alsa-project.org>
+Date: Sun, 19 Dec 2004 22:46:37 +0100
+Message-ID: <54895e72f09c02e16c1fadc3b4700750@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73488289
-	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 22:46:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E3042A5
+	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 22:46:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -60,20 +60,15 @@ version of the code?
 ======================================================================
 
 ----------------------------------------------------------------------
- Eric Valette - 12-19-04 22:41 
-----------------------------------------------------------------------
-I manually reverted all the changes contained in 2.6.10-rc3 related to
-emu10k1 directory and unfortunately it does not change the behavior. Could
-it be a problem with userland tools or other part of the generic code
-change?
-
-dpkg -s alsa-utils | grep Version
-Version: 1.0.7-2
-
-----------------------------------------------------------------------
  Eric Valette - 12-19-04 22:46 
 ----------------------------------------------------------------------
 See also 0000730 that describes similar problems...
+
+----------------------------------------------------------------------
+ rlrevell - 12-19-04 22:46 
+----------------------------------------------------------------------
+What in the hell does "If PCM is set to norma to mt Sound Blaster Live"
+mean?  Your bug report is incomprehensible.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -83,6 +78,7 @@ Date Modified  Username       Field                    Change
 12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
 12-19-04 22:41 Eric Valette   Note Added: 0002851                          
 12-19-04 22:46 Eric Valette   Note Added: 0002852                          
+12-19-04 22:46 rlrevell       Note Added: 0002853                          
 ======================================================================
 
 
