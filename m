@@ -1,15 +1,16 @@
-From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Subject: Re: rawmidi problems
-Date: Fri, 5 Jul 2002 18:57:32 +0200
+From: John covici <covici@ccs.covici.com>
+Subject: Re: controls for the ice1712
+Date: Fri, 5 Jul 2002 12:56:04 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207051857.32862.plcl@telefonica.net>
-References: <E17QW10-0005DE-00@bitone.upf.es>
+Message-ID: <15653.53156.683885.482594@ccs.covici.com>
+References: <m37kka5j0w.fsf@ccs.covici.com>
+	<87bs9mql1s.fsf@anima.lensflare.org>
+Reply-To: covici@ccs.covici.com
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E17QW10-0005DE-00@bitone.upf.es>
+In-Reply-To: <87bs9mql1s.fsf@anima.lensflare.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,36 +19,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Maarten de Boer <mdeboer@iua.upf.es>
+To: Andrew Nesbit <alnesbit@optushome.com.au>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-El Vie 05 Jul 2002 18:33, Maarten de Boer escribió:
-> add the flag -v to get verbose output and see what events you receive (this
-> should be default behaviour i guess...)
+What is this package -- I never heard of it whatsoever  alsa-tools.
+Its nnot on the normal ftp site maybe its in cvs or something?
 
-It works! (and also with snd-usb-midi)
-And I agree with you, -v option should be the default :)
+And what does envy24 do?
 
-$ ./rawmidi  -i hw:0,0 -v
-Using:
-Input: device hw:0,0
-Output: NONE
-Read midi in
-Press ctrl-c to stop
-read fe
-read fe
-read fe
-read fe
-read fe
-read fe
-read fe
-read fe
-read fe
-Closing
+Thanks.
 
-Thanks,
-Pedro
+
+on  07/06/2002 Andrew Nesbit(alnesbit@optushome.com.au) wrote
+ > John Covici <covici@ccs.covici.com> writes:
+ > 
+ > > Could some kind person answer a few questions about the controls of
+ > > the ice1712. 
+ > > 
+ > >  I cannot figure out how the alsa controls
+ > > correspond.
+ > 
+ > Have you compiled the envy24control tool from the alsa-tools package?
+ > 
+ > Andrew.
+
+-- 
+         John Covici
+         covici@ccs.covici.com
 
 
 -------------------------------------------------------
