@@ -1,217 +1,109 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: [JACK-PATCH] Tascam US-X2Y hwdep pcm (aka rawusb) backend driver
-Date: Thu, 23 Dec 2004 14:02:33 -0000 (WET)
-Message-ID: <8526.195.245.190.93.1103810553.squirrel@195.245.190.93>
-References: <64648.195.245.190.93.1103017646.squirrel@195.245.190.93>      
-    <200412151532.35006.annabellesgarden@yahoo.de>      
-    <s5hr7lrr5hf.wl@alsa2.suse.de>      
-    <200412152354.06616.annabellesgarden@yahoo.de>   
-    <33037.192.168.1.5.1103157669.squirrel@192.168.1.5>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
+Date: Thu, 23 Dec 2004 16:08:54 +0100
+Message-ID: <e1add687176c5377894d306851c74ead@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;boundary="----=_20041223140233_42429"
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <33037.192.168.1.5.1103157669.squirrel@192.168.1.5>
-Sender: jackit-devel-admin@lists.sourceforge.net
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: alsa-devel@lists.sourceforge.net, jackit-devel@lists.sourceforge.net
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 042F325C
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 16:08:54 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-------=_20041223140233_42429
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
 
-Hi,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
+======================================================================
+Reported By:                linus
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   667
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-23-2004 15:27 CET
+Last Modified:              12-23-2004 16:08 CET
+======================================================================
+Summary:                    How to integrate turning on and off LED:s on laptops
+Description: 
+This machine, an HP Compaq NC6000 (also on other models
+such as NC8000) has a mute LED that
+turns on and off when mute is activated/deactivated.
+It is accomplished by way of the "External Amplifier"
+setting - this has been wired to a LED instead of an
+amplifier, so the "mute" function should (theoretically)
+activate/deactivate the "External Amplifier" when muting
+is selected for the device. The chip used is AD1981B.
 
-Just in time for Xmas! here goes my initial proposal to merge the once
-outsider USX2Y driver into the mainstrem JACK's ALSA backend. This is
-specific to all you Tascam US-122/224/428 owners, and thanks goes most to
-Karsten Wiese for the original experimental code.
+This script shows how it is done:
 
-I strongly hope this is now ready for official approval, as the changes to
-alsa_driver.{h,c} code are rather minimal and almost innocuous. All new
-stuff is really introduced on the usx2y.{h,c} files. Check it out.
+if ( amixer sget "External Amplifier"|grep off > /dev/null )
+then
+           # Toggles the LED, no actual volume change
+           amixer set "External Amplifier" unmute > /dev/null
+           # Toggles the audio level
+           amixer set "Master" unmute > /dev/null
+else
+           amixer set "External Amplifier" mute > /dev/null
+           amixer set "Master" mute > /dev/null
+fi
 
-So, for you to use this thingie, you just plug your US-x2y as ever before,
-for example:
+The question of how this is to be implemented remains. Is
+this an issue for ALSA or shall it be handled on a higher,
+user-space level? I also have a bug open in GNOME for the
+same thing, I need to decide how to finally resolve this
+and need input from the ALSA team on the best solution.
 
-    jackd -dalsa -dhw:1 -r44100 -p1024 -n2 -S
+(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
+======================================================================
 
-will make use of the default alsa backend code path *exactly* as it is. No
-overhead but no low-latency joy either ;)
+----------------------------------------------------------------------
+ tiwai - 12-02-04 19:36 
+----------------------------------------------------------------------
+Well, if Clemens's neat program does enough job, the change of the driver
+wouldn't be necessary?
 
-However, you better rejoice if you've snd-usb-usx2y >= 0.8.7 already on
-your kernel; you can take advantage from the so-called "rawusb" mode, by
-using its new hwdep pcm interface:
+----------------------------------------------------------------------
+ tiwai - 12-23-04 16:08 
+----------------------------------------------------------------------
+OK, here is a test patch.  Could you try it wheter it works?
 
-    jackd -dalsa -dhw:1,2 -r44100 -p64 -n2 -S
-
-Note that you *must* specify hw:n,2 in the device name (n=soundcard index)
-for the new alsa/usx2y backend driver take control and override the
-generic default one.
-
-Ah, and -p64 is no typo at all ;)
-
-Attached patch applies to current jack-0.99.37 CVS HEAD.
-
-Happy holiday.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
-
-------=_20041223140233_42429
-Content-Type: application/x-gzip-compressed;
-      name="jack-0.99.37-alsa-usx2y-9.patch.gz"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-      filename="jack-0.99.37-alsa-usx2y-9.patch.gz"
-
-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
-e1pTdfAFDSK8EeOHAAA=
-------=_20041223140233_42429--
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-23-04 15:27 linus          New Issue                                    
+11-23-04 15:27 linus          Distribution              => Fedora Core 3   
+11-23-04 15:27 linus          Kernel Version            => 2.6.9           
+11-23-04 15:41 tiwai          Note Added: 0002516                          
+11-23-04 21:28 linus          Note Added: 0002528                          
+11-24-04 12:22 tiwai          Note Added: 0002549                          
+11-24-04 13:00 IceRAM         Note Added: 0002555                          
+11-24-04 13:07 tiwai          Note Added: 0002558                          
+11-24-04 14:27 linus          Note Added: 0002562                          
+11-24-04 15:07 linus          Note Added: 0002567                          
+11-24-04 18:47 Clemens LadischFile Added: muteled.c                        
+11-24-04 18:47 Clemens LadischNote Added: 0002580                          
+12-02-04 19:36 tiwai          Note Added: 0002695                          
+12-23-04 16:08 tiwai          Note Added: 0002923                          
+======================================================================
 
 
 
