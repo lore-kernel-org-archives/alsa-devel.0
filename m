@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000434]: System hang after playing
-Date: Thu, 19 Aug 2004 19:19:50 +0200 (CEST)
+Date: Thu, 19 Aug 2004 22:01:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040819171950.AAC8930006@server.perex-int.cz>
+Message-ID: <20040819200110.A608C1102E@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E2862214
-	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 19:19:50 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 022821DF
+	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 22:01:10 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Fedora core 2
 Kernel Version:             2.6.7-1.494.2.2custom
 ======================================================================
 Date Submitted:             08-11-2004 10:56 CEST
-Last Modified:              08-19-2004 19:19 CEST
+Last Modified:              08-19-2004 22:01 CEST
 ======================================================================
 Summary:                    System hang after playing
 Description: 
@@ -52,6 +52,12 @@ file
 ----------------------------------------------------------------------
 Can you get a trace via magic sysrq?
 
+----------------------------------------------------------------------
+ crsw - 08-19-2004 22:01 CEST 
+----------------------------------------------------------------------
+I'v just installed alsa-lib 1.0.6.rc1.
+The problem is solved now.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -61,6 +67,7 @@ Date Modified  Username       Field                    Change
 08-11-04 10:56 crsw           Bug Monitored: crsw                          
 08-11-04 10:56 crsw           Bug End Monitor: crsw                        
 08-19-04 19:19 tiwai          Bugnote Added: 0001594                       
+08-19-04 22:01 crsw           Bugnote Added: 0001596                       
 ======================================================================
 
 
