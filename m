@@ -1,12 +1,10 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] emu10k1: fix efx_voices_mask setting for
-	SBLive
-Date: Sat, 26 Feb 2005 19:29:59 -0500
-Message-ID: <1109464199.1814.23.camel@krustophenia.net>
-References: <1109463592.1814.12.camel@krustophenia.net>
+From: Ian Forde <ian@duckland.org>
+Subject: Broken nforce3 support in ALSA on amd64?
+Date: Sat, 26 Feb 2005 17:45:45 -0800
+Message-ID: <1109468746.11523.20.camel@colgate3.iforde.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-pkbO8rofYA42F2mmAc9A"
-In-Reply-To: <1109463592.1814.12.camel@krustophenia.net>
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,66 +14,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
-Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi -
 
---=-pkbO8rofYA42F2mmAc9A
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+I've posted to alsa-devel about a problem I'm having in getting PCM and
+AC3 working on FC3-x86_64.
 
-On Sat, 2005-02-26 at 19:19 -0500, Lee Revell wrote:
-> Also, the "EFX Voices Mask" control is renamed to "Captured FX8010
-> Outputs".  This is a trick to ensure the default mixer settings are
-> loaded when users upgrade from 1.0.8.  Otherwise, the upgrade process
-> will probably restore the old settings which results in the
-> "multichannel" capture device only having two channels.  I could not
-> think of a better way to get around this issue, and the alternative
-> seems to be a slew of bug reports.  Half the testers reported this to me
-> as a bug already.
-> 
-> Anyway, I think the new name is clearer anyway, because there's no
-> reason to tell userspace the hardware stores this value as a mask, and
-> "voices" is confusing because it implies some relation to the 64
-> wavetable/PCM voices.
+My motherboard is a DFI Lanparty UT 250GB nforce3.  I can get PCM audio
+to route through the spdif correctly with ALSA.  But with AC3
+audio, the blue light on my Sony receiver lights up but plays no sound.
 
-Sorry, wrong patch.
+lspci -v output from the chip:
 
-Lee
+00:06.0 Multimedia audio controller: nVidia Corporation nForce3 250Gb
+AC'97 Audio Controller (rev a1)
+        Subsystem: nVidia Corporation: Unknown device 0c11
+        Flags: bus master, 66Mhz, fast devsel, latency 0, IRQ 177
+        I/O ports at d300 [size=256]
+        I/O ports at d400 [size=128]
+        Memory at e9000000 (32-bit, non-prefetchable) [size=4K]
+        Capabilities: [44] Power Management version 2
 
---=-pkbO8rofYA42F2mmAc9A
-Content-Disposition: attachment; filename=sblive-fix-default-voices-mask.patch
-Content-Type: text/x-patch; name=sblive-fix-default-voices-mask.patch; charset=ANSI_X3.4-1968
-Content-Transfer-Encoding: 7bit
+Here's the weird bit:  Following these steps in order allows me to play
+AC3 through the SPDIF but no longer PCM audio:
 
-Index: alsa/alsa-kernel/pci/emu10k1/emupcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
-retrieving revision 1.40
-diff -u -r1.40 emupcm.c
---- alsa/alsa-kernel/pci/emu10k1/emupcm.c	17 Feb 2005 14:49:50 -0000	1.40
-+++ alsa/alsa-kernel/pci/emu10k1/emupcm.c	27 Feb 2005 00:07:57 -0000
-@@ -1405,7 +1405,7 @@
- 
- static snd_kcontrol_new_t snd_emu10k1_pcm_efx_voices_mask = {
- 	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
--	.name = "EFX voices mask",
-+	.name = "Captured FX8010 Outputs",
- 	.info = snd_emu10k1_pcm_efx_voices_mask_info,
- 	.get = snd_emu10k1_pcm_efx_voices_mask_get,
- 	.put = snd_emu10k1_pcm_efx_voices_mask_put
-@@ -1690,7 +1690,7 @@
- 		emu->efx_voices_mask[0] = 0;
- 		emu->efx_voices_mask[1] = 0xffff;
- 	} else {
--		emu->efx_voices_mask[0] = 0xffff;
-+		emu->efx_voices_mask[0] = 0xffff0000;
- 		emu->efx_voices_mask[1] = 0;
- 	}
- 	snd_ctl_add(emu->card, snd_ctl_new1(&snd_emu10k1_pcm_efx_voices_mask, emu));
+1. Load ALSA modules
+2. Play (successfully) PCM audio via:
+        /usr/bin/mplayer -vo null -ao alsa:device=hw=0.2
+somemoviefile.avi
+3. Unload ALSA modules
+4. Load nvsound module
+5. Play (successfully) AC3-enabled audio via:
+        /usr/bin/mplayer -vo null -ao oss -ac hwac3, someothermovie.vob
+6. Unload nvsound module
+7. Load ALSA modules
+8. Play (successfully) AC3-enabled audio via:
+        /usr/bin/mplayer -vo null -ao alsa:device=hw=0.2 -ac hwac3,
+someothermovie.vob
 
---=-pkbO8rofYA42F2mmAc9A--
+And no - at this point, redoing step 2 at this point does *NOT* work.
+Unless I unload alsa, load oss, play something PCM, unload oss, and load
+alsa again... just tested that.
+
+Kernel is FC3 2.6.10-1.760_FC3 with ALSA 1.0.8 from atrpms on a x86_64
+platform.
+
+Note - in alsamixer, the only IEC958-related controls I see are "IEC958"
+and "IEC958 Playback AC97-SP5A", neither of which allow themselves to be
+muted...
+
+It seems that because there's already a binary driver out there that can
+set the control bits correctly, all I should need to do is dump the
+registers after loading nvsound and playing both PCM and AC3 audio
+streams, then comparing them to what they look like when the
+corresponding ALSA module (snd-intel8x0) is loaded.  How would I go
+about doing that in a way that would be useful to get this driver
+working for me and included in the next ALSA release?
+
+	-Ian
 
 
 
