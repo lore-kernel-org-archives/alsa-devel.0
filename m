@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000422]: snd-atiixp-modem driver: No CARRIER/DIALTONE.
-Date: Fri, 27 Aug 2004 19:41:54 +0200 (CEST)
+Date: Fri, 27 Aug 2004 19:42:05 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827174154.B04D22C003@server.perex-int.cz>
+Message-ID: <20040827174205.64FA92C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 064AE1E5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:41:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98C251E5
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:42:05 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,7 +25,7 @@ The following bug has been ASSIGNED.
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
 ======================================================================
 Reported By:                netstar
-Assigned To:                
+Assigned To:                sashak
 ======================================================================
 Project:                    ALSA - driver
 Bug ID:                     422
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             08-04-2004 01:13 CEST
-Last Modified:              08-27-2004 19:41 CEST
+Last Modified:              08-27-2004 19:42 CEST
 ======================================================================
 Summary:                    snd-atiixp-modem driver: No CARRIER/DIALTONE.
 Description: 
@@ -77,6 +77,7 @@ Date Modified  Username       Field                    Change
 08-04-04 01:16 netstar        File Added: slmodem.log.modem                    
 08-04-04 01:17 netstar        File Added: slmodem-2.9.9-fix.patch                    
 08-27-04 19:41 tiwai          Assigned To              tiwai =>            
+08-27-04 19:42 tiwai          Assigned To               => sashak          
 ======================================================================
 
 
