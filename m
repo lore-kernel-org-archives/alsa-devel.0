@@ -1,22 +1,14 @@
-From: Nishanth Aravamudan <nacc@us.ibm.com>
-Subject: [PATCH 56/63] sound/usX2Yhwdep: change parameters of usb_{control,bulk}_msg() to msecs
-Date: Tue, 8 Feb 2005 22:42:56 -0800
-Message-ID: <20050209064256.GA1419@us.ibm.com>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: External PCM plugin SDK
+Date: Wed, 09 Feb 2005 18:27:16 +0100
+Message-ID: <1107970036.13863.77.camel@pegasus>
+References: <s5hd5vau4c3.wl@alsa2.suse.de>
+	 <1107958458.13863.43.camel@pegasus> <s5hvf91stls.wl@alsa2.suse.de>
+	 <1107959869.13863.62.camel@pegasus>  <s5hoeetsqua.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from e34.co.us.ibm.com (e34.co.us.ibm.com [32.97.110.132])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5168726D
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 18:15:12 +0100 (MET)
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com [9.17.195.106])
-	by e34.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j19HF6Bu176414
-	for <alsa-devel@alsa-project.org>; Wed, 9 Feb 2005 12:15:07 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j19HEoTm299732
-	for <alsa-devel@alsa-project.org>; Wed, 9 Feb 2005 10:14:51 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id j19HEnv5005089
-	for <alsa-devel@alsa-project.org>; Wed, 9 Feb 2005 10:14:49 -0700
-Content-Disposition: inline
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <s5hoeetsqua.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -26,28 +18,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, greg@kroah.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi Takashi,
 
-Description: Change units of parameters being passed to
-usb_{control,bulk}_msg() to milliseconds. Patch is compile-tested.
+> > it is putting the PCM data into the SBC encoder and then sending it to
+> > the RFCOMM socket. This is not the standard for high quality audio over
+> > Bluetooth, but my Aiptek headphone supports this stuff. For now this is
+> > easier than dealing with A2DP and AVDTP.
+> > 
+> > The SCO support for the headsets is another story.
+> 
+> ... and we'll need control plugin for mixers, too.
 
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+and I need full duplex IO and volume control inside the same plugin for
+the headset/handsfree support.
 
---- 2.6.11-rc3-kj-v/sound/usb/usx2y/usX2Yhwdep.c	2005-02-03 16:57:41.000000000 -0800
-+++ 2.6.11-rc3-kj/sound/usb/usx2y/usX2Yhwdep.c	2005-02-08 14:24:09.000000000 -0800
-@@ -226,7 +226,7 @@ static int snd_usX2Y_hwdep_dsp_load(snd_
- 		if (err)
- 			snd_printk("usb_set_interface error \n");
- 		else
--			err = usb_bulk_msg(dev, usb_sndbulkpipe(dev, 2), buf, dsp->length, &lret, 6*HZ);
-+			err = usb_bulk_msg(dev, usb_sndbulkpipe(dev, 2), buf, dsp->length, &lret, 6000);
- 		kfree(buf);
- 	}
- 	if (err)
+> > The XMMS is version 1.2.10 and BMP is version 0.9.7. In what versions
+> > are the ALSA plugins fixed. I will build it from source.
+> 
+> The patch isn't in the released version.  IIRC, they were applied to
+> CVS, though.
+
+I checked the latest XMMS CVS and even it segfaults or I get an error:
+
+xmms: pcm_params.c:2294: sndrv_pcm_hw_params: Assertion `err >= 0' failed.
+
+Looks like a problem on my side.
+
+> > > Do you have buffer or period size constraints?
+> > 
+> > Oh yes, that is the point where I am not sure what I am doing. The SBC
+> > is a codec like MP3 and actually I have no idea what are the best values
+> > here. These are software soundcards.
+> 
+> You don't have to set them if the hardware has no restriction.
+> Usually, the period size defines the interrupt period.  In the case of
+> user-space driver, it corresponds to the expected poll period, etc.
+
+I can skip IOPLUG_HW_PERIOD_BYTES and IOPLUG_HW_PERIODS, but I must set
+IOPLUG_HW_BUFFER_BYTES, because otherwise it segfaults even with aplay.
+
+> > > > We also talked about making these IO plugins visible when ALSA is
+> > > > listing its hardware devices. Is this possible now?
+> > > 
+> > > No, it's still in planning.
+> > > We'll need to define a usable API first...
+> > 
+> > What about a flags variable in snd_pcm_ioplug for activating it. This is
+> > generic and for me this is enough, because both Bluetooth IO plugins are
+> > virtual soundcards and they should always be listed. Or maybe list IO
+> > plugins in general.
+> 
+> This sounds good.  I'll add like the following:
+
+Let's take an unsigned long to handle more than 32 flags ;)
+
+Regards
+
+Marcel
+
+
 
 
 -------------------------------------------------------
