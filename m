@@ -1,13 +1,15 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: RE:[PATCH] emufx: reduce stack usage
-Date: Tue, 1 Jul 2003 11:54:47 +0200
+From: s864@ii.uib.no (Ronny V. Vindenes)
+Subject: Re: Hercules Gamesurround Fortissimo III 7.1
+Date: 01 Jul 2003 12:01:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307010954.LAA26175@www3.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <vh38yri5zvt.fsf@rovflue.ii.uib.no>
+References: <200306271848.20758.gtdev@spearhead.de>
+	<3EFD89F2.5000609@cucumelo.org>
+	<200306281504.24313.gtdev@spearhead.de>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200306281504.24313.gtdev@spearhead.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,28 +18,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: clemens@ladisch.de
+To: Nicos Gollan <gtdev@spearhead.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-And ones more:
+Nicos Gollan <gtdev@spearhead.de> writes:
 
-IOCTL SNDRV_EMU10K1_IOCTL_PCM_PEEK in snd_emu10k1_fx8010_ioctl=20
-allocate structure to ipcm which is then passed to=20
-snd_emu10k1_ipcm_peek which then uses one of member (ipcm->substream)=20
-which is not initialized (may come from user space ???).
+> On Saturday 28 June 2003 14:28, Benny Sjostrand wrote:
+> > But, amp_hercules(...) and hercules_mixer_init(...) function have only
+> > been implemented to do some specific initializations to the Game Theater XP
+> > card, which probably is very similar to the Fortissimo card, but my guess is
+> > that something slight diferenent is needed on the initialization phase.
+> > [...]
+> > If you say that it works better with the external_amp=1, then this card
+> > must have some similarity with the Santa Cruz card ... the amp_voyectra(...)
+> > function will also  set some GPIO's on the seconary cs4294 codec, who knows
+> > if this is good or bad for the Fortissimo card ....
+> 
+> It worked for some time (with the mentioned distortion and crackling but seems 
+> to have stopped working now. Sound now dies after about a minute from module 
+> load, even after a cold reboot. Behaviour now is the same independent from 
+> external_amp. I don't have the slightest idea why this is so. I had the 
+> machine switched off for a week, turned it on and it was like this. The only 
+> thing that changed is the VGA card, but it does the same thing even in pure 
+> text mode, without DRM drivers or AGPGART modules loaded.
+> 
+> So in conclusion, I can only say that external_amp was good for the card but 
+> only for some time :-/
+> 
+> Also, the problems now seem to be somewhat independent from Windows drivers 
+> having seen the card before. In the past, I had all kinds of different side 
+> effects, ranging from the card running better after a reboot from Windows to 
+> complete inactivity.
+> 
+> > What about the other functions on the card:
+> > Have you tested the SPDIF output/input AC3 pass-through?
+> >  the different outputs, center, rear, surround speakers ?
+> 
+> Sorry, I don't have any hardware that knows SPDIF. The analog speaker outputs 
+> all seemed to be dead.
+> 
 
-Peter Zubaj
+Are you sure it's not just the card that is dead/dying? I've been
+running the card since last year without any problems, except the
+"distortion at full pcm volume" problem.
 
-
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
- Fire V210 server v cenach uz od 125.000,- Sk bez DPH=0ANavstivte nas na ad=
-rese http://www.somi.sk/sun/lowend_servery.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=0A
+-- 
+Ronny V. Vindenes <s864@ii.uib.no>
 
 
 -------------------------------------------------------
