@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000975]: snd-hda-intel, no sound, no master control
-Date: Wed, 9 Mar 2005 17:13:09 +0100
-Message-ID: <b262811e5b77d34a3b567589a7f5d179@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000963]: Sounc card is mute
+Date: Thu, 10 Mar 2005 00:21:16 +0100
+Message-ID: <4e3ea8a8e0c8d452d823ab01c096e73a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB86E188
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 17:13:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC8AC1A7
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 00:21:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,89 +21,55 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=975> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
 ======================================================================
-Reported By:                dirk-loesche
-Assigned To:                tiwai
+Reported By:                jnilles
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   975
-Category:                   PCI - azx
+Issue ID:                   963
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Suse 9.2
-Kernel Version:             2.6.11.1
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               SuSE
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-08-2005 21:57 CET
-Last Modified:              03-09-2005 17:13 CET
+Date Submitted:             03-04-2005 19:07 CET
+Last Modified:              03-10-2005 00:21 CET
 ======================================================================
-Summary:                    snd-hda-intel, no sound, no master control
+Summary:                    Sounc card is mute
 Description: 
-No sound.
-
-alsaconf:
-I cant hear test sound.
-
-alsamixer:
-Card: HDA Intel                                                           
-                                                         
-Chip: Realtek ALC260                                                      
-                                                         View: Playback   
-                                                                          
-                                       Item: Headphone
-
-Headphon PCM Line CD Mic PC Speak Capture to 100 and unmutem
-Master not presend!
+I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
+and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
+the sound card is inoperative, mute, lifeless, sound-free. The only advice
+I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
+without going thgrough 9.1 on the way. That sounds like pretty stupid
+advice.
+I have spent weeks twiddling with settings  recommended by member sof the
+alsa users group, to no avail.
 ======================================================================
 
 ----------------------------------------------------------------------
- dirk-loesche - 03-09-05 15:44 
+ tiwai - 03-09-05 18:53 
 ----------------------------------------------------------------------
-Soundmixer by WindowsXP
-Master 
-Wave 
-SW Synt 
-SPDIF 
-CD Player
-PC Speaker
-Microphon
-
-By Alsamixer no Master
-
-xmms play sound - i cant hear
-CD and Mic silent
-
-
+Remove /etc/asound.state once, and run alsaconf script.
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 17:13 
+ jnilles - 03-10-05 00:21 
 ----------------------------------------------------------------------
-Some bugs have been already fixed on CVS.
-
-This controller has no real "Master" volume.  The volume for headphone and
-front line-out are separate.  This is not a bug.
+I did remove /etc/asound.state, ran alsaconf. No joy, just silence.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-08-05 21:57 dirk-loesche   New Issue                                    
-03-08-05 21:57 dirk-loesche   Distribution              => Suse 9.2        
-03-08-05 21:57 dirk-loesche   Kernel Version            => 2.6.11.1        
-03-08-05 22:08 dirk-loesche   Issue Monitored: dirk-loesche                    
-03-08-05 22:45 dirk-loesche   Issue End Monitor: dirk-loesche                   
-
-03-09-05 15:42 dirk-loesche   Note Added: 0003827                          
-03-09-05 15:44 dirk-loesche   Note Edited: 0003827                         
-03-09-05 17:13 tiwai          Status                   new => resolved     
-03-09-05 17:13 tiwai          Resolution               open => fixed       
-03-09-05 17:13 tiwai          Assigned To               => tiwai           
-03-09-05 17:13 tiwai          Note Added: 0003828                          
+03-04-05 19:07 jnilles        New Issue                                    
+03-04-05 19:07 jnilles        Distribution              => SuSE            
+03-09-05 18:53 tiwai          Note Added: 0003840                          
+03-10-05 00:21 jnilles        Note Added: 0003846                          
 ======================================================================
 
 
