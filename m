@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000993]: Please provide asound_fm.h
-Date: Tue, 15 Mar 2005 22:51:35 +0100
-Message-ID: <e050d513b502242de8d9d4773f001abb@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000990]: Failure to build "make: *** src/pcm/ext: No such file or directory."
+Date: Tue, 15 Mar 2005 22:55:28 +0100
+Message-ID: <af59431d874bc915fa67e5685bf5dc26@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A2A8E215
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 22:51:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48B96215
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 22:55:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,45 +23,89 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=993> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=990> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                
 ======================================================================
 Project:                    ALSA - lib
-Issue ID:                   993
+Issue ID:                   990
 Category:                   general
 Reproducibility:            always
-Severity:                   feature
+Severity:                   block
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             03-14-2005 22:28 CET
-Last Modified:              03-15-2005 22:51 CET
+Date Submitted:             03-14-2005 07:44 CET
+Last Modified:              03-15-2005 22:55 CET
 ======================================================================
-Summary:                    Please provide asound_fm.h
+Summary:                    Failure to build "make: *** src/pcm/ext: No such
+file or directory."
 Description: 
-The submitter of Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299423 says:
+Build of alsa-lib 1.0.9rc1 ends like this:
 
-> Please include the header asound_fm.h  This is required to use the
-> OSS compatibility Direct-FM interface (or ALSA DMFM device directly via
-> ioctls, as opposed to using through alsa-lib as normal).
+Making all in utils
+make[2]: Entering directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
+make[2]: Nothing to be done for `all'.
+make[2]: Leaving directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
+make[2]: Entering directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
+cd . && /bin/sh ./config.status Makefile
+config.status: creating Makefile
+make[2]: Leaving directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
+make[2]: Entering directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
+make[2]: Nothing to be done for `all-am'.
+make[2]: Leaving directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
+make[1]: Leaving directory
+`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
+/usr/bin/make -C src/pcm/ext jack CFLAGS="-g -Wall -O2"
+make: *** src/pcm/ext: No such file or directory.  Stop.
+make: *** [build-arch-stamp] Error 2
+build command failed in
+/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1
+Aborting.
+W: build directory not purged!
 
-See http://bugs.debian.org/299423 for the full request.
+The src/pcm/ext subdirectory does not exist.
+
+I attach the full build log.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-15-05 22:51 
+ jdthood - 03-15-05 22:41 
 ----------------------------------------------------------------------
-Here is the manual page which mentions that header:
-http://www.alsa-project.org/~iwai/writing-an-alsa-driver/c1192.htm
+OK, now that I have had a chance to look into this ...
+The src/pcm/ext directory, containing
+
+   Makefile.am  Makefile.in  pcm_jack.c
+
+is gone.  Where is it?
+
+----------------------------------------------------------------------
+ rlrevell - 03-15-05 22:55 
+----------------------------------------------------------------------
+I submitted a patch to fix this a few weeks ago.  IIRC it was committed to
+CVS.  Maybe not.
+
+The fix is to remove the reference to "src/pcm/ext" from configure.in.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 22:28 jdthood        New Issue                                    
-03-15-05 22:51 jdthood        Note Added: 0003920                          
+03-14-05 07:44 jdthood        New Issue                                    
+03-14-05 07:44 jdthood        File Added: alsa-lib_20050313jdth1.buildlog       
+            
+03-14-05 07:46 jdthood        File Added: 01_alpha_versioned_symbols.dpatch     
+              
+03-14-05 07:47 jdthood        File Added: 02_aclocal_libs_fix.dpatch            
+       
+03-15-05 22:41 jdthood        Note Added: 0003919                          
+03-15-05 22:55 rlrevell       Note Added: 0003921                          
 ======================================================================
 
 
