@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000696]: Doom 3 crashes when using alsa
-Date: Sat, 19 Mar 2005 16:32:42 +0100
-Message-ID: <28d29f8e19d76632c6e648c8bb0e74cd@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
+Date: Sat, 19 Mar 2005 16:34:07 +0100
+Message-ID: <76508f785b883e8124bfa5296ee1fa15@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 628911D5
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:32:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0824C1D5
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:34:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,54 +23,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=696> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
 ======================================================================
-Reported By:                Mo6eB
+Reported By:                darkbrain
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   696
-Category:                   PCI - intel8x0
+Issue ID:                   712
+Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-01-2004 20:18 CET
-Last Modified:              03-19-2005 16:32 CET
+Date Submitted:             12-07-2004 18:36 CET
+Last Modified:              03-19-2005 16:34 CET
 ======================================================================
-Summary:                    Doom 3 crashes when using alsa
+Summary:                    Setting <4 channels in surround40 fails
 Description: 
-Doom 3 crashes with the following error message:
-snd_pcm_writei short write: 4095 out of 4096
-snd_pcm_writei short write: 4095 out of 4096
-doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
-snd_pcm_mmap_avail(pcm)' failed.
-signal caught: Aborted
-
+If you try
+alsa-lib/test/pcm -D surround40:0
+You obtain: Channels count (1) not available for playbacks: Invalid
+argument
+But we have 4 channels!
+I've tried to find the problem into the sources without luck :(
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-01-04 23:26 
+ tiwai - 12-07-04 18:42 
 ----------------------------------------------------------------------
-I guess your AC97 doesn't support VRA?  Check
-/proc/asound/card0/codec97#0/ac97#0-0 file.
+This is not a bug.
+surround40 is for 4 seprated channels.
+
+If you want to duplicate 2-channel stereo signal to 4-channels, try the
+CVS version.  It can have a new mixer control 'Duplicate Front'. 
+Otherwise, you can do it via asoundrc (see bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617).
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 16:32 
+ darkbrain - 12-07-04 18:51 
 ----------------------------------------------------------------------
-Submitter: Any progress with this problem?
+BTW with cmipci driver it's possible. There is an incompatibility with
+openal witch try to open 2 channels without luck.
+
+----------------------------------------------------------------------
+ tiwai - 12-07-04 18:54 
+----------------------------------------------------------------------
+No, cmipci driver doesn't do it, too.
+
+----------------------------------------------------------------------
+ darkbrain - 12-07-04 18:59 
+----------------------------------------------------------------------
+I'll investigate better into openal source tree.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 16:34 
+----------------------------------------------------------------------
+Submitter: Is there still an issue here or can this report be closed?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-01-04 20:18 Mo6eB          New Issue                                    
-12-01-04 20:18 Mo6eB          Distribution              => Gentoo          
-12-01-04 20:18 Mo6eB          Kernel Version            => 2.6.9           
-12-01-04 23:26 tiwai          Note Added: 0002671                          
-03-19-05 16:32 jdthood        Note Added: 0004055                          
+12-07-04 18:36 darkbrain      New Issue                                    
+12-07-04 18:42 tiwai          Note Added: 0002757                          
+12-07-04 18:51 darkbrain      Note Added: 0002759                          
+12-07-04 18:54 tiwai          Note Added: 0002761                          
+12-07-04 18:59 darkbrain      Note Added: 0002762                          
+03-19-05 16:34 jdthood        Note Added: 0004056                          
 ======================================================================
 
 
