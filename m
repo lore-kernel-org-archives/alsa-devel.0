@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Wed, 22 Dec 2004 16:24:14 +0100
-Message-ID: <b7c0bca6d64c00cd00e1851578157f4a@bugtrack.alsa-project.org>
+Date: Wed, 22 Dec 2004 16:59:52 +0100
+Message-ID: <79a9898ca1cc260dbd4d88bcd0bcafa1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 254091F7
-	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2004 16:24:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 997EB23C
+	for <alsa-devel@alsa-project.org>; Wed, 22 Dec 2004 16:59:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=742> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-22-2004 16:24 CET
+Last Modified:              12-22-2004 16:59 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -78,10 +78,16 @@ ci/cs46xx/cs46xx_lib.c:413:
 Thomas Hood
 ======================================================================
 
+----------------------------------------------------------------------
+ tiwai - 12-22-04 16:59 
+----------------------------------------------------------------------
+Try the attached patch.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-22-04 16:24 jdthood        New Issue                                    
+12-22-04 16:59 tiwai          Note Added: 0002909                          
 ======================================================================
 
 
