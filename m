@@ -1,12 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: ALSA-CVS: Unbreakable "sfxload" process
-Date: Sat, 15 Feb 2003 00:08:15 +0000 (GMT)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: digital fx support for cs4205
+Date: Sat, 15 Feb 2003 16:04:13 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030215000815.36420.qmail@web40612.mail.yahoo.com>
+Message-ID: <Pine.LNX.4.44.0302151602490.1282-100000@pnote.perex-int.cz>
+References: <20030212113747.GB4745@valsheda.taprogge.wh>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <20030212113747.GB4745@valsheda.taprogge.wh>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,46 +16,42 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: Jens Taprogge <ln@idg.rwth-aachen.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 12 Feb 2003, Jens Taprogge wrote:
 
-I have just tried loading a sound-font file into my SB
-Live! and ended up needing to reboot my machine when
-the sfxload program grabbed hold of the CPU and
-wouldn't give it back! Fortunately the machine is SMP,
-and so I was able to shutdown cleanly using the other
-one.
+> I sent this a while ago. Since I did not get any replies yet I am
+> resending it.
 
-I think the problem happened because I was trying to
-play a MID file at the time using:
+It would be better to create mixer controls. It's bad to enable some cool 
+feature without having possibility to disable it.
 
-$ pmidi -p 65:0 <file>
+						Jaroslav
 
-and didn't break this process before trying to load
-the sound-font. Note also that the sfxload program
-uses /dev/sequencer and so the OSS emulation modules
-are also implicated.
+> On Sat, Feb 01, 2003 at 02:21:34AM +0100, Jens Taprogge wrote:
+> > I read through the specs for the cs4205 and created a small patch to
+> > enable the digital fx engine (bass, treble, 3d) for pcm output.
+> > 
+> > It would be possible to first digitize analog input (cd, speaker, etc.)
+> > and run it through the fx engine as well. That would requiere changes to
+> > mixer code though. (Would hva to use extra mixers that are not available
+> > through the ac97 interface.)
+> > 
+> > Jens
+> > 
+> > ps: I am not subscribed to the list.
+> > -- 
 
-And the reason I think that this is a kernel problem
-is that the sfxload process survived repeated "kill
--9" attempts by root... ;-).
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-Cheers,
-Chris
-
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
-This SF.NET email is sponsored by: FREE  SSL Guide from Thawte
-are you planning your Web Server Security? Click here to get a FREE
-Thawte SSL guide and find the answers to all your  SSL security issues.
-http://ads.sourceforge.net/cgi-bin/redirect.pl?thaw0026en
+This sf.net email is sponsored by:ThinkGeek
+Welcome to geek heaven.
+http://thinkgeek.com/sf
