@@ -1,14 +1,14 @@
-From: Tim Hollingsworth <tim@hollingsworth.com.au>
-Subject: Re: period size
-Date: Fri, 2 Apr 2004 20:30:25 +0800
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: USB224_usbsnoop1.log captured on WinXP
+Date: Fri, 2 Apr 2004 14:34:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <8436B8CE-84A1-11D8-B350-000A95AB8A40@hollingsworth.com.au>
-References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de> <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0403301729380.1835@pnote.perex-int.cz> <A521B1A8-838A-11D8-89F0-000A95AB8A40@hollingsworth.com.au> <Pine.LNX.4.58.0404011051250.1843@pnote.perex-int.cz>
-Mime-Version: 1.0 (Apple Message framework v613)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-ID: <200404021434.26528.annabellesgarden@yahoo.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0404011051250.1843@pnote.perex-int.cz>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,45 +17,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
+To: Rui Nuno Capela <rncbc@rncbc.org>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for your help so far Jaroslav.
+It shows the same light switching as is already implemented:
+	grep -n ": 19" USB224_usbsnoop1.log 
+gives us pre INPUT MONITOR pressed
+	21501:    00000000: 19 00 1a 00 1b 00 1c 00 1d 11 1e 00 1f 00
+and post
+	21941:    00000000: 19 00 1a 00 1b 00 1c 02 1d 01 1e 00 1f 00
+the 8th byte changing from 0 to 2 is the actual INPUT MONITOR Led switch on.
 
-I have taken another look at my project and now it's behaving 
-differently!  It still won't go down to a period size of 128.
+see us428control:
+	void us428_lights::init_us428_lights()
+	void us428_lights::LightSet(eLight L, bool Value)
+with
+	enum eLight{
+		eL_InputMonitor = 25
+	};
+the same urb as in the log should be sent to the us224 on linux.
+for the us428 it works. not for the us224.
 
-I have downloaded the example sine wave generator.  It works with the 
-default settings, which give a period size of 4410.  If I change the 
-period time using the command line, it will successfully go down to 
-441/10000us.  Any further and I get this error:
+So please try the following patch:
+>>>
+--- alsa-driver/usb/usx2y/usbusx2yaudio.c	30 Mar 2004 08:27:16 -0000	1.9
++++ alsa-driver/usb/usx2y/usbusx2yaudio.c	2 Apr 2004 11:55:21 -0000
+@@ -1245,7 +1245,7 @@
+ 	    					     snd_dma_continuous_data(GFP_KERNEL),
+ 						     usX2Y_capt_substream->endpoints * 64*1024,
+ 						     usX2Y_capt_substream->endpoints * 128*1024)) ||
+-	    (usX2Y(card)->chip.dev->descriptor.idProduct == USB_ID_US428 &&
++	    (usX2Y(card)->chip.dev->descriptor.idProduct != USB_ID_US122 &&
+ 	     0 > (err = usX2Y_rate_set(usX2Y_stream, 44100)))) {	// Lets us428 
+recognize output-volume settings, disturbs us122.
+ 		snd_usX2Y_audio_stream_free(usX2Y_stream);
+ 		return err;
+<<<
 
-ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params: 
-params->avail_min problem for start_threshold
-Unable to set sw params for playback: Invalid argument
-Setting of swparams failed: Invalid argument
+if the us428 doesn't get the "usX2Y_rate_set(usX2Y_stream, 44100)" at startup, 
+it later behaves ignorant to light & volume setting. like us224 behaves now.
+
+If we get the INPUT MONITOR Led enlightened, the Volume settings should also 
+work with respect to direct monitoring at least. 
+US224 Master Fader seams to b where US428's Fader5 is. That needs adjustment 
+in us428control.
+
+The data sent to set us224 internal mixers is filtered out with
+	grep -n "00: 0[0123456789] .. .. .. ..$" USB224_usbsnoop1.log
+it gives i. e.:
+	11721:    00000000: 00 00 25 00 25
+	11732:    00000000: 01 00 25 00 25
+	11743:    00000000: 02 00 25 00 25
+	11754:    00000000: 03 00 25 00 25
+	11831:    00000000: 04 00 42 00 42
+
+look at struct usX2Y_volume and its methods. it should fit the us224.
+But lets get that Leds enlighted first :-)
 
 
-On 01/04/2004, at 4:52 PM, Jaroslav Kysela wrote:
+Cheers,
+Karsten
 
-> On Thu, 1 Apr 2004, Tim Hollingsworth wrote:
->
->>> You can read/write any size.
->>
->> well I can't write at 128.  the question is, do I need to buffer the
->> periods myself and sequence them into larger periods or will alsa do
->> this for me?
->
-> The you have wrong sw_params settings. Check xfer_align.
->
-> 						Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
->
 
 
 
