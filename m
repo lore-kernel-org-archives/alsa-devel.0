@@ -1,14 +1,11 @@
-From: thomas charbonnel <thomas@undata.org>
-Subject: Re: hdsp fixes
-Date: Thu, 27 Jan 2005 22:42:28 +0100
-Message-ID: <1106862148.11014.17.camel@localhost>
-References: <1106761331.11426.17.camel@localhost>
-	 <s5hekg6oiel.wl@alsa2.suse.de>
+From: Amaury Jacquot <sxpert@esitcom.org>
+Subject: Just got this new sound card
+Date: Thu, 27 Jan 2005 22:44:35 +0100
+Message-ID: <41F960C3.8040608@esitcom.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekg6oiel.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +15,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote :
-> Hi,
-> 
-> the following are some things I noticed in the patch:
-> 
-> 
-> > +#define HDSP_PRECISE_POINTER(xname, xindex) \
-> >  { .iface = SNDRV_CTL_ELEM_IFACE_HWDEP, \
-> >    .name = xname, \
-> >    .index = xindex, \
-> > -  .info = snd_hdsp_info_line_out, \
-> > -  .get = snd_hdsp_get_line_out, \
-> > -  .put = snd_hdsp_put_line_out \
-> > +  .info = snd_hdsp_info_precise_pointer, \
-> > +  .get = snd_hdsp_get_precise_pointer, \
-> > +  .put = snd_hdsp_put_precise_pointer \
-> 
-> Do we need this as a control?
-> Isn't preceise_ptr reliable?
-> 
+seems that we have yet another breed of emu10k1...
 
-It should be reliable now. It was not for the rme9652, and the hdsp code
-forked from there. It was badly broken until recently (Ed Wildgoose's
-patch, IIRC), and I think few people tried it (it defaulted to off). We
-don't really need it as a control, but I thought it would be easier for
-people to test this way. If it proves reliable, I'll eventually remove
-the alternative code.
-Incidentally, I just sent a new patch without seeing your mail... I'm
-affraid you won't be fond of the new "use midi tasklet" ctl :)
+label says "Creative live! 5.1 digital"
 
-> > +	if (!is_9652 && !is_9632) {
-> > +		/* we wait 2 seconds to let freshly inserted cardbus cards do their hardware init */
-> > + 		if ((1000 / HZ) < 2000) {
-> > +			set_current_state(TASK_UNINTERRUPTIBLE);
-> > +			schedule_timeout((2000 * HZ + 999) / 1000);
-> > +		} else {
-> > +			mdelay(2000);
-> > +		}
-> 
-> You can use ssleep(2) here.
-> 
+00:07.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1 (rev 0a)
+         Subsystem: Creative Labs: Unknown device 8066
+         Flags: bus master, medium devsel, latency 32, IRQ 5
+         I/O ports at e400 [size=32]
+         Capabilities: [dc] Power Management version 1
 
-Sure, I didn't know about it.
-There is another instance in the code that could use ssleep also.
+I can't seem to make heads and tails of this thing, I end up with tons 
+of controls in gnome-volume-control, and can't seem to figure out how to 
+capture from line in (which is somewhat embarassing)
 
-Thanks,
-Thomas
-
-
+Amaury
 
 
 -------------------------------------------------------
