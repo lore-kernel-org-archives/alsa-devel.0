@@ -1,106 +1,75 @@
 From: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Subject: Re: [PATCH] deprecate (un)register_ioctl32_conversion
-Date: Thu, 6 Jan 2005 17:56:48 +0200
-Message-ID: <20050106155648.GD25955@mellanox.co.il>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050105144043.GB19434@mellanox.co.il> <20050105144603.GA1419@infradead.org> <20050105150310.GA19758@mellanox.co.il> <20050105133358.16ce6891.akpm@osdl.org> <20050106144116.GA25898@mellanox.co.il> <20050106145527.GB18725@infradead.org> <20050106152248.GA25955@mellanox.co.il> <20050106153016.GA19324@infradead.org>
+Subject: [PATCH] fget_light/fput_light for ioctls (fixed)
+Date: Thu, 6 Jan 2005 18:18:10 +0200
+Message-ID: <20050106161810.GE25955@mellanox.co.il>
+References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050103011113.6f6c8f44.akpm@osdl.org> <20050105144043.GB19434@mellanox.co.il> <s5hd5wjybt8.wl@alsa2.suse.de> <20050105133448.59345b04.akpm@osdl.org> <20050106145103.GB25898@mellanox.co.il>
 Reply-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262876AbVAFPzn@vger.kernel.org>
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262891AbVAFQQf@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20050106153016.GA19324@infradead.org>
+In-Reply-To: <20050106145103.GB25898@mellanox.co.il>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@osdl.org>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+To: Andrew Morton <akpm@osdl.org>
+Cc: Takashi Iwai <tiwai@suse.de>, ak@suse.de, mingo@elte.hu, rlrevell@joe-job.com, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
 List-Id: alsa-devel@alsa-project.org
 
 Hello!
-Quoting r. Christoph Hellwig (hch@infradead.org) "Re: [PATCH] deprecate (un)register_ioctl32_conversion":
-> On Thu, Jan 06, 2005 at 05:22:48PM +0200, Michael S. Tsirkin wrote:
-> > > +	if (!filp->f_op || !filp->f_op->ioctl)
-> > > +		goto do_ioctl;
-> > > +
-> > > +	if (filp->f_op || filp->f_op->compat_ioctl) {
-> > >  		error = filp->f_op->compat_ioctl(filp, cmd, arg);
-> > >  		goto out_fput;
-> > >  	}
-> > 
-> > So now if I dont have ->ioctl the ioctl_compat wont be called.
-> > What if I only have unlocked_ioctl?
-> 
-> Indeed.  In my test setup I didn't have a driver using both.  So let's
-> think a little more what checks we want.
-> 
-> The original intention (pre-patch) was that without an ioctl entry
-> we'd skip the hash table lookup and skip right to trying the few standard
-> ioctls.
-> 
-> So with ->compat_ioctl we should try that one first, then checking
-> for either ->ioctl or ->unlocked_ioctl beeing there.  Like the patch
-> below (this time it's actually untested because all my 64bit machines
-> are in use):
-> 
-> 
-> --- linux-2.6.10-mm2.orig/fs/compat.c	2005-01-06 11:40:18.831900000 +0100
-> +++ linux-2.6.10-mm2/fs/compat.c	2005-01-06 16:36:17.340977664 +0100
-> @@ -436,14 +436,15 @@
->  	if (!filp)
->  		goto out;
->  
-> -	if (!filp->f_op) {
-> -		if (!filp->f_op->ioctl)
-> -			goto do_ioctl;
-> -	} else if (filp->f_op->compat_ioctl) {
-> +	if (filp->f_op && filp->f_op->compat_ioctl) {
->  		error = filp->f_op->compat_ioctl(filp, cmd, arg);
->  		goto out_fput;
->  	}
->  
-> +	if (!filp->f_op ||
-> +	    (!filp->f_op->ioctl && !filp->f_op->unlocked_ioctl))
-> +		goto do_ioctl;
-> +
->  	down_read(&ioctl32_sem);
->  	for (t = ioctl32_hash_table[ioctl32_hash(cmd)]; t; t = t->next) {
->  		if (t->cmd == cmd)
-> 
-> > 
-> > 
-> > MST
-> ---end quoted text---
+Sorry, that patch had a typo. Here's an updated version.
 
+>>> Quoting r. Michael S. Tsirkin (mst@mellanox.co.il)
 
-Amen to that. Since it conflicts with this change, here again is my patch
-to make it possible for the compat_ioctl to drop back on the standard
-conversions.
-Applied on top of Christoph's last patch (above).
+With new unlocked_ioctl and ioctl_compat, ioctls can now
+be as fast as read/write.  So lets use fget_light/fput_light there,
+to get some speedup in common case on SMP.
 
-Signed-off-by: Michael S. Tsirkn <mst@mellanox.co.il>
+mst
 
-diff -rup linux-2.6.10-mm2/fs/compat.c linux-2.6.10-ioctls/fs/compat.c
---- linux-2.6.10-mm2/fs/compat.c	2005-01-06 21:30:57.485167280 +0200
-+++ linux-2.6.10-ioctls/fs/compat.c	2005-01-06 21:33:17.608865240 +0200
-@@ -431,9 +431,10 @@ asmlinkage long compat_sys_ioctl(unsigne
+Signed-off-by: Michael s. Tsirkin <mst@mellanox.co.il>
+
+diff -rup linux-2.6.10/fs/compat.c linux-2.6.10-ioctls/fs/compat.c
+--- linux-2.6.10/fs/compat.c	2005-01-06 17:54:13.000000000 +0200
++++ linux-2.6.10-ioctls/fs/compat.c	2005-01-06 20:15:44.407259408 +0200
+@@ -431,8 +431,9 @@ asmlinkage long compat_sys_ioctl(unsigne
+ 	struct file *filp;
+ 	int error = -EBADF;
+ 	struct ioctl_trans *t;
++	int fput_needed;
+ 
+-	filp = fget(fd);
++	filp = fget_light(fd, &fput_needed);
  	if (!filp)
  		goto out;
  
- 	if (filp->f_op && filp->f_op->compat_ioctl) {
- 		error = filp->f_op->compat_ioctl(filp, cmd, arg);
--		goto out_fput;
-+		if (error != -ENOIOCTLCMD)
-+			goto out_fput;
- 	}
- 
- 	if (!filp->f_op ||
-diff -rup linux-2.6.10-mm2/fs/ioctl.c linux-2.6.10-ioctls/fs/ioctl.c
---- linux-2.6.10-mm2/fs/ioctl.c	2005-01-06 17:54:13.000000000 +0200
+@@ -476,7 +479,7 @@ asmlinkage long compat_sys_ioctl(unsigne
+  do_ioctl:
+ 	error = sys_ioctl(fd, cmd, arg);
+  out_fput:
+-	fput(filp);
++	fput_light(filp, fput_needed);
+  out:
+ 	return error;
+ }
+diff -rup linux-2.6.10/fs/ioctl.c linux-2.6.10-ioctls/fs/ioctl.c
+--- linux-2.6.10/fs/ioctl.c	2005-01-06 17:54:13.000000000 +0200
 +++ linux-2.6.10-ioctls/fs/ioctl.c	2005-01-06 20:34:09.329285728 +0200
-@@ -26,6 +26,9 @@ static long do_ioctl(struct file *filp, 
+@@ -80,8 +83,9 @@ asmlinkage long sys_ioctl(unsigned int f
+ 	struct file * filp;
+ 	unsigned int flag;
+ 	int on, error = -EBADF;
++	int fput_needed;
  
- 	if (filp->f_op->unlocked_ioctl) {
- 		error = filp->f_op->unlocked_ioctl(filp, cmd, arg);
-+		if (error == -ENOIOCTLCMD)
-+			error = -EINVAL;
-+		goto out;
- 	} else if (filp->f_op->ioctl) {
- 		lock_kernel();
- 		error = filp->f_op->ioctl(filp->f_dentry->d_inode,
+-	filp = fget(fd);
++	filp = fget_light(fd, &fput_needed);
+ 	if (!filp)
+ 		goto out;
+ 
+@@ -154,7 +158,7 @@ asmlinkage long sys_ioctl(unsigned int f
+ 			break;
+ 	}
+  out_fput:
+-	fput(filp);
++	fput_light(filp, fput_needed);
+  out:
+ 	return error;
+ }
