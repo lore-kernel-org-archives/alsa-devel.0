@@ -1,14 +1,15 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [PATCH]snd-usb-usx2y
-Date: Thu, 4 Dec 2003 20:30:09 +0100
+From: Mark Knecht <markknecht@comcast.net>
+Subject: Re: aoss failures under Alsa-1.0.0rc1
+Date: Thu, 04 Dec 2003 12:28:27 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031204193009.GA678@tuba.home>
-References: <200311271544.21367.annabellesgarden@yahoo.de>
+Message-ID: <1070569707.2228.7.camel@Wizard.knechthome.com>
+References: <1070543197.2081.30.camel@Wizard.knechthome.com>
+	 <Pine.LNX.4.56-Maildir.0312041413510.17423@yme.midgardsormen.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <200311271544.21367.annabellesgarden@yahoo.de>
+In-Reply-To: <Pine.LNX.4.56-Maildir.0312041413510.17423@yme.midgardsormen.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,25 +18,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Karsten Wiese <annabellesgarden@yahoo.de>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Erik Inge =?ISO-8859-1?Q?Bols=F8?= <knan@mo.himolde.no>
+Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-diff -u -r1.1 usbusx2yaudio.c
---- alsa-driver/usb/usx2y/usbusx2yaudio.c	25 Nov 2003 11:21:49 -0000	1.1
-+++ alsa-driver/usb/usx2y/usbusx2yaudio.c	27 Nov 2003 14:32:25 -0000
-@@ -1225,7 +1225,8 @@
- 	sprintf(pcm->name, NAME_ALLCAPS" Audio #%d", usX2Y(card)->chip.pcm_devs);
- 
- 	if (0 > (err = snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream,  64*1024, 128*1024, GFP_ATOMIC))
--	    || 0 > (err = snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream ,  usX2Y_capt_substream->endpoints * 64*1024, usX2Y_capt_substream->endpoints * 128*1024, GFP_ATOMIC))) {
-+	    || 0 > (err = snd_pcm_lib_preallocate_pages(pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream ,  usX2Y_capt_substream->endpoints * 64*1024, usX2Y_capt_substream->endpoints * 128*1024, GFP_ATOMIC))
-+	    || 0 > (err = usX2Y_rate_set(usX2Y_stream, 44100))) {  // needed to make us428 recognize output-volume settings for direct-monitoring and master-pcm. shouldn't disturb other usx2y.
+On Thu, 2003-12-04 at 05:15, Erik Inge Bolsø wrote:
+> On Thu, 4 Dec 2003, Mark Knecht wrote:
+> >pcm.playback_5_6 {
+> >          type dshare
+> >          slave hdsp
 
-Karsten, your us428 fix breaks us122 support.
-usX2Y_rate_set(usX2Y_stream, 44100)) isn't possible on us122. 
 
-martin
+> Uhmm... for _playback_, shouldn't that be "type dmix"? Or am I confused
+> again?
+> 
+
+I tried dmix instead of dshare but get the same results. I guess I hope
+that Clemens or possibly Thomas jumps in with some ideas. I don't know
+if this is an Alsa problem, a driver problem, or just something that
+will never work because of my card's capabilities?
+
+If the later is the case, then is this something that should/could be
+better spelled out so that well meaning but uneducated folks like me
+don;t keep bothering you guys?
+
+Thanks,
+Mark
 
 
 
