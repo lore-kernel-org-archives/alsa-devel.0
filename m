@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Mon, 20 Dec 2004 00:10:33 +0100
-Message-ID: <eeaf39dbf42889cfe06ee0cbc905fc36@bugtrack.alsa-project.org>
+Date: Mon, 20 Dec 2004 00:15:55 +0100
+Message-ID: <b63d66b6c76300b23cb7e7d85fa3f13d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 50B2327F
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 00:10:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EF4A27F
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 00:15:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.10-rc3
 ======================================================================
 Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-20-2004 00:10 CET
+Last Modified:              12-20-2004 00:15 CET
 ======================================================================
 Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
 emit a very high frequency sound damaging ears
@@ -60,24 +60,6 @@ version of the code?
 ======================================================================
 
 ----------------------------------------------------------------------
- Eric Valette - 12-20-04 00:04 
-----------------------------------------------------------------------
-So after recompiling stock 2.6.9 : problem is still the same. So I purely
-removed /var/lib/alsa/asound.state (created by a manual alsactl store)
-from a previous version and used alsamixer to put all level to a really
-minimalistic settings => works on 2.6.9. In can put PCM to 100%
-
-So, I really do not know what went wrong as I teached debian alsa init
-script to always restore /var/lib/alsa/asound.state without storing a
-fresh version when shutting down long time ago so that it remain unchanged
-across sessions.
-
-I guess there as been an inconsistency between /var/lib/alsa/asound.state,
-the alsactl and the kernel driver at some point in time that caused this
-problem. By chance, level was low enough when it occured so that I did not
-really damaged my ears.
-
-----------------------------------------------------------------------
  rlrevell - 12-20-04 00:10 
 ----------------------------------------------------------------------
 OK great let's close this one.
@@ -90,6 +72,13 @@ cause physical injury.  Just my $0.02.
 
 This might be as simple as turning down the speakers before booting a new
 kernel for the first time ;-)
+
+----------------------------------------------------------------------
+ Eric Valette - 12-20-04 00:15 
+----------------------------------------------------------------------
+Thanks for your support. Could you also close 138 BTW.
+
+-- eric
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,6 +98,7 @@ Date Modified  Username       Field                    Change
 12-19-04 23:16 Eric Valette   Note Added: 0002860                          
 12-20-04 00:04 Eric Valette   Note Added: 0002861                          
 12-20-04 00:10 rlrevell       Note Added: 0002862                          
+12-20-04 00:15 Eric Valette   Note Added: 0002863                          
 ======================================================================
 
 
