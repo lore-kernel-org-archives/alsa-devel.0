@@ -1,16 +1,17 @@
-From: Michel =?ISO-8859-1?Q?D=E4nzer?= <michel@daenzer.net>
-Subject: Re: xine with dmix
-Date: Tue, 20 Jan 2004 18:39:33 +0100
+From: Klaus-Peter Schrage <kpschrage@gmx.de>
+Subject: Re: ALSA doesn't work with XMMS
+Date: Tue, 20 Jan 2004 19:55:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074620372.9697.480.camel@thor.asgaard.local>
-References: <1074607760.9700.453.camel@thor.asgaard.local>
-	 <Pine.LNX.4.58.0401201628140.2010@pnote.perex-int.cz>
-	 <1074614789.9699.464.camel@thor.asgaard.local>
+Message-ID: <400D7987.3030702@gmx.de>
+References: <1074549141.22882.71.camel@moria.arnor.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1074614789.9699.464.camel@thor.asgaard.local>
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id TAA26896
+	for <alsa-devel@alsa-project.org>; Tue, 20 Jan 2004 19:56:42 +0100
+In-Reply-To: <1074549141.22882.71.camel@moria.arnor.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,33 +20,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Torrey Hoffman <thoffman@arnor.net>
+Cc: ALSA Development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-01-20 at 17:06, Michel Dänzer wrote:
-> On Tue, 2004-01-20 at 16:29, Jaroslav Kysela wrote:
-> > On Tue, 20 Jan 2004, Michel Dänzer wrote:
-> > 
-> > Could you try the attached patch? If you add a line 'slowptr yes' to your 
-> > dmix pcm definition, the snd_pcm_delay() function should be more precise.
-> 
-> It seems to work perfectly, thank you very much!
+Torrey Hoffman wrote:
 
-I have to take that back. :(
+> If I configure the XMMS ALSA plugin to use the "plughw:0:0" device, it
+> opens the device and begins playback, but I just get noise... a
+> repetitive burst like a stuck CD player.
 
-I had put the slowptr in the wrong place (in the dmixer slave pcm
-block), and xine silently fell back to using /dev/dsp (alsa-oss doesn't
-seem to work with it). With the slowptr in the right place, I have now
-verified that xine uses ALSA with it enabled, but it doesn't seem to
-enhance sound quality much if at all.
-
-Sorry for the false confirmation. Any other ideas?
-
-
--- 
-Earthling Michel Dänzer      |     Debian (powerpc), X and DRI developer
-Libre software enthusiast    |   http://svcs.affero.net/rm.php?r=daenzer
+Others (and me) on the alsa-user list have reported this noise too with 
+alsa 1.0.1, a 2.6 kernel and the ice1712 driver.
+What about you when using the old driver that's inside the vanilla 2.6.1 
+kernel (0.9.7)? I don't have this noise then.
+Klaus
 
 
 
