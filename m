@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000685]: Doom3 doesn't work with alsa backend
-Date: Sat, 19 Mar 2005 16:30:21 +0100
-Message-ID: <ec33c525d345ddb5c2abcfa8bffbccd8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000696]: Doom 3 crashes when using alsa
+Date: Sat, 19 Mar 2005 16:32:42 +0100
+Message-ID: <28d29f8e19d76632c6e648c8bb0e74cd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7524A1D5
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:30:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 628911D5
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 16:32:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,76 +23,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=685> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=696> 
 ======================================================================
-Reported By:                darkbrain
+Reported By:                Mo6eB
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   685
-Category:                   PCI - cs46xx
+Issue ID:                   696
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.9-nitro4
+Distribution:               Gentoo
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-28-2004 14:55 CET
-Last Modified:              03-19-2005 16:30 CET
+Date Submitted:             12-01-2004 20:18 CET
+Last Modified:              03-19-2005 16:32 CET
 ======================================================================
-Summary:                    Doom3 doesn't work with alsa backend
+Summary:                    Doom 3 crashes when using alsa
 Description: 
-Latest doom3 client for linux has alsa support built in but doesn't work
-with my Hercules Fortissimo II (cs4624).
-
-The game show me this error:
-idAudioHardwareALSA::Write: 4096 frames overflowed and dropped
-
-dmesg output:
-ALSA sound/pci/cs46xx/cs46xx_lib.c:1355: open front channel
-ALSA sound/pci/cs46xx/cs46xx_lib.c:897: snd_cs46xx_playback_hw_params
-start
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1312: dsp_spos: creating SRC
-"SrcTask_SCB1"
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:603: dsp_spos: setting
-SrcTask_SCB1 rate to 44100
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<SrcTask_SCB1>
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:1337: dsp_spos: creating PCM
-"PCMReader_SCB2" (1)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:296: dsp_spos: creating SCB
-<PCMReader_SCB2>
-ALSA sound/pci/cs46xx/cs46xx_lib.c:933: period_size (32), periods (1024)
-buffer_size(32768)
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing PCMReader_SCB2
-ALSA sound/pci/cs46xx/dsp_spos_scb_lib.c:226:
-cs46xx_dsp_proc_free_scb_desc: freeing SrcTask_SCB1
-
+Doom 3 crashes with the following error message:
+snd_pcm_writei short write: 4095 out of 4096
+snd_pcm_writei short write: 4095 out of 4096
+doom.x86: pcm.c:5957: snd_pcm_mmap_commit: Assertion `frames <=
+snd_pcm_mmap_avail(pcm)' failed.
+signal caught: Aborted
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-02-04 19:27 
+ tiwai - 12-01-04 23:26 
 ----------------------------------------------------------------------
-Any test case program to reproduce this bug?
-Otherwise it's hard to debug.  Sorry, it's too little information.
+I guess your AC97 doesn't support VRA?  Check
+/proc/asound/card0/codec97#0/ac97#0-0 file.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 16:30 
+ jdthood - 03-19-05 16:32 
 ----------------------------------------------------------------------
-This can probably be closed.
+Submitter: Any progress with this problem?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 14:55 darkbrain      New Issue                                    
-11-28-04 14:55 darkbrain      Distribution              => debian          
-11-28-04 14:55 darkbrain      Kernel Version            => 2.6.9-nitro4    
-11-28-04 14:56 darkbrain      Issue Monitored: darkbrain                    
-12-02-04 19:27 tiwai          Note Added: 0002692                          
-03-19-05 16:30 jdthood        Note Added: 0004054                          
+12-01-04 20:18 Mo6eB          New Issue                                    
+12-01-04 20:18 Mo6eB          Distribution              => Gentoo          
+12-01-04 20:18 Mo6eB          Kernel Version            => 2.6.9           
+12-01-04 23:26 tiwai          Note Added: 0002671                          
+03-19-05 16:32 jdthood        Note Added: 0004055                          
 ======================================================================
 
 
