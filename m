@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Support for the Bluetooth subband codec (SBC)
-Date: Mon, 8 Nov 2004 11:56:38 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411081155020.2162@pnote.perex-int.cz>
-References: <1099878354.6896.80.camel@pegasus>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re:Audigy 24 bits?
+Date: Mon, 8 Nov 2004 12:03:53 +0100
+Message-ID: <200411081103.iA8B3qi7025197@www7.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1099878354.6896.80.camel@pegasus>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,37 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcel Holtmann <marcel@holtmann.org>
+To: carlosjosepita@yahoo.com.ar
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 8 Nov 2004, Marcel Holtmann wrote:
+Hi,
 
-> Hi guys,
-> 
-> besides the Bluetooth headset/handsfree support there is another type of
-> audio support. It is the high quality audio (A2DP) for headphones and so
-> on. To include a native support for these devices with every Bluetooth
-> adapter (for example the ones built into your notebook) it is necessary
-> to support the subband codec (SBC) from Philips. The codec description
-> is in the Advanced Audio Distribution Profile (A2DP).
-> 
-> I am not an audio expert and far away from doing any codec specific
-> things, but from my understanding the ALSA kernel part should be
-> extended with the SBC type for PCM devices and the library should know
-> how to convert any PCM data into the SBC format so we can use it inside
-> the kernel in a A2DP driver.
+Audigy 1 is 16 bit card - has 24 bit ADC and DAC, internaly works on
+24 bit, but only 16 bit playback/recording is posible
 
-Any datasheet for this format? Anyway, if SBC format only encapsulates 
-linear PCM samples to packets, then it should be handled in the driver 
-like the USB driver does.
+Audigy 2, 2 ZS - is 24 /96 kHz card, but under linux works as Audigy 1
+-  24/96 kHz playback/recording is not supported due documentation lack.
 
-						Jaroslav
+Peter Zubaj
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
+bte radost svojmu telefonu=0A
 
 
 -------------------------------------------------------
