@@ -1,16 +1,14 @@
-From: Andrew Gaydenko <a@etver.com>
-Subject: Re: ice1724 controls meaning
-Date: Thu, 19 Feb 2004 22:02:33 +0300
+From: Johan Bilien <jobi@via.ecp.fr>
+Subject: Re: nforce2 audio problem on 2.6.3
+Date: Thu, 19 Feb 2004 21:06:13 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402192202.33147@goldspace.net>
-References: <200402162232.38240@goldspace.net> <200402181539.13804@goldspace.net> <1077141802.30615.9.camel@localhost>
+Message-ID: <20040219200613.GA6597@via.ecp.fr>
+References: <20040219080352.GA7375@via.ecp.fr> <s5hvfm3uyoj.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1077141802.30615.9.camel@localhost>
 Content-Disposition: inline
+In-Reply-To: <s5hvfm3uyoj.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,35 +20,37 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Gabriel,
+On Thu, Feb 19, 2004, Takashi Iwai wrote:
+> > Since I moved from linux-2.6.2 to linux-2.6.3-rc2, and then 2.6.3, I am
+> > experiencing a strange problem with all the GStreamer applications: as
+> > soon as GStreamer tries to play out a sound, the system gets extremely
+> > slow, and no sound comes out (although the GStreamer applications do not
+> > complain and seem to be playing the sound find). I have only noticed
+> > this behaviour with GStreamer, xmms, mpg321, VLC  etc. play sounds out,
+> > but the sound suffers small interuptions now and then.
+> > 
+> > I am using a nforce2 motherboard, and the snd_intel8x0 ALSA driver. I
+> > saw the recent thread regarding this driver being broken in the 1.0
+> > serie, so I apply the patch given in the thread, but still get my
+> > problem.
+> 
+> it likely has nothing to do with the problem of that thread.
+> it seems that some nforce2 boards generate the unknown interrupts.
+> i'm not sure whether it's in the ALSA side or in other kernel part.
+> please try to copy the old ALSA tree from 2.6.2 to 2.6.3 (linux/sound
+> and include/sound) and try the old driver on 2.6.3.
 
-Full the card controls list contains two ADC only (one stereo channel,
-if you want). So, I doubt it is possible to have more than one stereo
-analogue inputes. OTOH, the card has a digital CD input, which, if
-I understand well, is routed independantely from ADC source routing.
+Going back to the old ALSA tree from 2.6.2 'solves' the problem. I am
+not experiencing the gstreamer lock, nor the interuptions in other
+programs' playout.
 
-Andrew
-
-======= On Thursday 19 February 2004 04:03, Gabriel Ebner wrote: =======
-...
-BTW, is there any way to get both CD and line mixed together at the same
-time or are they exlusive?
-
-	Gabriel.
-
-
-
--------------------------------------------------------
-SF.Net is sponsored by: Speed Start Your Linux Apps Now.
-Build and deploy apps & Web services for Linux with
-a free DVD software kit from IBM. Click Now!
-http://ads.osdn.com/?ad_id=1356&alloc_id=3438&op=click
-_______________________________________________
-Alsa-devel mailing list
-Alsa-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-
+Regarding the nforce interupts problem you mention, I only get it when
+APIC is turned on, which is not the case here.
+                                                                                
+Tell me if I can provide more information,
+thanks,
+--
+Johan
 
 
 
