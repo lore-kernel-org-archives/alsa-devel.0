@@ -1,12 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: New ALSA Driver
-Date: Tue, 08 Mar 2005 21:26:09 +0000
-Message-ID: <422E1871.6030406@superbug.co.uk>
-References: <200503082146.24634.k.fetscher@fetron.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000971]: Compilation Errors - Cannot find specific files during compilation
+Date: Wed, 9 Mar 2005 02:10:16 +0100
+Message-ID: <a42581dca4ea53a65663a4a0cd7304a3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <200503082146.24634.k.fetscher@fetron.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49D9B19D
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 02:10:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,51 +17,90 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: K.Fetscher@t-online.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-K.Fetscher@t-online.de wrote:
-> Hi,
-> 
-> I wan't to program an ALSA driver for my custom ARM based Cirrus-EP9312 board.
-> 
-> The driver starts with the initialisation of the hardware, with 
-> snd_card_new(...), snd_pcm_new(...), the request for the DMA-Controller, 
-> programming snd_pcm_set_ops(...) and 
-> snd_pcm_lib_preallocate_pages_for_all(...).
-> 
-> After that, I can see the card in the /proc/asound/card0/... filesystem.
-> 
-> 
-> When I start playing a song with aplay, ALSA calls hw_params(..), prepare(..)  
-> and trigger(..) with command SNDRV_PCM_TRIGGER_START. After that, all stops 
-> until I make a CTRL C (after that, it terminates with hw_free and close). Is 
-> it correct, that runtime->dma_addr is 0 (runtime->size is 1000 and 
-> runtime->period is 400) ?
-> 
-> 
-> I have looked into some drivers for the parameters of 
-> snd_pcm_lib_preallocate_pages_for_all(...). There are different types for the 
-> DMA type and I don't know, which is the correct type (at the moment, I use 
-> SNDRV_DMA_TYPE_CONTINUOUS).
-> 
-> Thanks
-> 
-> Klaus  
-> 
 
-It is difficult to answer your questions without seeing the source code 
-itself.
-One thing to note is that the DMA has two different addresses:
-runtime->dma_addr is the physical memory address. i.e. the address to 
-give to the sound card hardware.
-runtime->dma_area is the virtual address. i.e. the address the kernel 
-CPU writes to.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=971> 
+======================================================================
+Reported By:                rbechard1
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   971
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             03-08-2005 01:50 CET
+Last Modified:              03-09-2005 02:10 CET
+======================================================================
+Summary:                    Compilation Errors - Cannot find specific files
+during compilation
+Description: 
+When installing the application using the method described in this link:
 
-I only know how x86 CPUs work, so ARM might be different in this respect.
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI+X+%28Dell+OEM%29.&chip=SB0200&module=emu10k1x
 
-James
+I get error messages during the compilation, yet the process tells me it
+has completed successfully. When I go to configure my sound card it has
+the correct driver loaded but yet there is no sound. When I checked the
+mixer settings nothing is muted. 
+
+There is no option within the sound configuration panel to switch to the
+correct driver.
+======================================================================
+
+----------------------------------------------------------------------
+ rbechard1 - 03-08-05 09:52 
+----------------------------------------------------------------------
+After reading the /etc/modules.conf file I used the following line in the
+install instructions rather than the default line:
+
+./configure --with-sound-slot-0=emu1ok1x --with-sequencer=yes;make;make
+install
+
+I was able to get the new ALSA version to automatically load on startup.
+When I went to load the modules into the kernal I got similar error
+messages as before.
+
+Once again alsaconf recognizes and attempts to load the proper driver but
+it does not do anything. Now when I try to open a mixer:
+
+Sound server informational message:
+Error while initializing the sound driver:
+device: default can't be opened for playback (No such device)
+The sound server will continue, using the null output device.
+
+But I thought it was a start to at least get the proper ALSA version to
+load at the startup!  lol
+
+----------------------------------------------------------------------
+ fmoraes - 03-09-05 02:10 
+----------------------------------------------------------------------
+What compilation errors do you receive? Are they on the emu10k1x module or
+on other parts of ALSA? Also, the module is not loaded above, so you will
+get no sound.
+
+Also, what Linux are you using?
+
+Francisco
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 01:50 rbechard1      New Issue                                    
+03-08-05 01:51 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:52 rbechard1      Note Added: 0003812                          
+03-09-05 02:10 fmoraes        Note Added: 0003819                          
+======================================================================
+
 
 
 
