@@ -1,13 +1,13 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: Bug in OSS simulation (ALSA 0.9.4)
-Date: Fri, 11 Jul 2003 03:44:34 +0300 (EEST)
+From: <jfm3@ouroboros-complex.org>
+Subject: Re: hdsploader 1.1
+Date: Thu, 10 Jul 2003 17:42:21 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307110334250.5612-100000@ecabase.localdomain>
-References: <20030711002824.GB21433@alinoe.com>
+Message-ID: <32898.24.225.156.130.1057884141.squirrel@webmail.ouroboros-complex.org>
+References: <45125.81.51.162.201.1057777378.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/mixed; boundary="----=_20030710174221_17619"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030711002824.GB21433@alinoe.com>
+In-Reply-To: <45125.81.51.162.201.1057777378.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,59 +16,85 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Carlo Wood <carlo@alinoe.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-One more post - I'll promise this is the last one. :)
+------=_20030710174221_17619
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 
-On Fri, 11 Jul 2003, Carlo Wood wrote:
+> You can find the new version of hdsploader here:
+> http://www.undata.org/~thomas/
 
-> That gives rather strange output:
+This seems to break if you have other sound cards in /etc/modules.conf
+that are not loaded yet. Probably my modules.conf is not correct. It is
+attached.
 
-But it's not stopping...? That's at least different behaviour...
 
-> It doesn't feel right to read bytes when it says
-> that there are no fragments/bytes available.
 
-That's true, but as the read() is blocking it will wait 
-until there is data available before returning.
+I start the system. The red light on the Multiface is on. No sound drivers
+are loaded yet. My modules.conf is as you see it.
 
-> Is the average bytes/second correct though?
-[...]
-> Number of channels: 1
-> Sample rate: 22050
-> and AFMT_S16_LE, what should it be?  I am not so good
-> at calculating things without knowing the unity of the
-> 'rate' ;)... bits/s?  Byte/s?  (16-bit)Words/sec?
+[jfm3@localhost jfm3]$ sudo hdsploader
+hdsploader - firmware loader for RME Hammerfall DSP cards
+Looking for HDSP + Multiface or Digiface cards :
+Card 0 : RME Hammerfall DSP at 0xe9020000, irq 12
+Upload firmware for card hw:0
+Firmware uploaded for card hw:0
+Card 1 :
 
-Hmm, not quite - you are reading 16bit samples at a rate of 22050 per sec, 
-so the data rate should be 22050*16/8=44100 bytes per second.
+The red light goes out. I can get sound if I mess around with gamix and
+amixer enough, although I still haven't figured out what all the numbers
+mean.
 
-But the rate actually is 8000 (you can check this by catting
-/proc/asound/card0/pcm0c/sub0/hw_params). In your  code:
+Shouldn't that be card 3 as the hdsp? In modules.conf I have the hdsp at
+index 3. I don't understand exactly what the card "index" means.
 
-res = 22050;
-if (ioctl(fd, SOUND_PCM_READ_RATE, 0xbfffdcfc) == -1)
-{
-   perror("ioctl");
-   exit(1);
-}
-printf("Sample rate: %d\n", res);
+If I have snd-virmidi not commented out and follow the above procedure, I
+get a kernel oops when I run hdsploader but otherwise the same results.
 
-... 'res' is always 22050 no matter what the device reports.
-So with 8000, the date rate should be 16000 bytes/sec.
+Thank you very much everyone for all your hard work. I only hope I get the
+chance to return the favor one day.
 
-> Anyway, it seems too low or too high.
-> When I add back the "if (info.fragments > 0)" test
-> and decrease the naptime drastically, I get:
+(jfm3)
 
-Try my other change to the test code - i.e. only sleep for
-naptime when info.fragments is zero.
 
--- 
- http://www.eca.cx
- Audio software for Linux!
+
+------=_20030710174221_17619
+Content-Type: application/octet-stream; name="modules.conf"
+Content-Disposition: attachment; filename="modules.conf"
+Content-Transfer-Encoding: base64
+
+IyBQQ0kgZXRoZXJuZXQgY2FyZCwgbm90IHRoZSBuZm9yY2Ugb25lCmFsaWFzIGV0aDAgdHVsaXAK
+CmFsaWFzIHVzYi1jb250cm9sbGVyIHVzYi1vaGNpCgphbGlhcyBpZWVlMTM5NC1jb250cm9sbGVy
+IG9oY2kxMzk0CgojIFBBWSBDTE9TRSBBVFRFTlRJT04gdG8gY2FyZHNfbGltaXQKYWxpYXMgY2hh
+ci1tYWpvci0xMTYgc25kCm9wdGlvbnMgc25kIG1ham9yPTExNiBjYXJkc19saW1pdD0xMSBkZXZp
+Y2VfbW9kZT0wNjY2CmFsaWFzIGNoYXItbWFqb3ItMTQgc291bmRjb3JlCiMgUENJIGNvbnN1bWVy
+IGF1ZGlvIGNhcmQsIG5vdCB0aGUgbmZvcmNlIG9uZQphbGlhcyBzbmQtY2FyZC0wIHNuZC10cmlk
+ZW50CmFsaWFzIHNuZC1zbG90LTAgc25kLWNhcmQtMAphbGlhcyBzb3VuZC1zZXJ2aWNlLTAtMCBz
+bmQtbWl4ZXItb3NzCmFsaWFzIHNvdW5kLXNlcnZpY2UtMC0xIHNuZC1zZXEtb3NzCmFsaWFzIHNv
+dW5kLXNlcnZpY2UtMC0zIHNuZC1wY20tb3NzCmFsaWFzIHNvdW5kLXNlcnZpY2UtMC04IHNuZC1z
+ZXEtb3NzCmFsaWFzIHNvdW5kLXNlcnZpY2UtMC0xMiBzbmQtcGNtLW9zcwpvcHRpb25zIC1rIHNu
+ZC10cmlkZW50IGluZGV4PTAKIyBzb21laG93IHdlIGhhdmUgdG8gdW5sb2FkIHBhcnBvcnQgbW9k
+dWxlcyBmaXJzdAojIGNhbGxpbmcgL3NiaW4vbW9kcHJvYmUgZnJvbSBtb2R1bGVzLmNvbmYgb3Vn
+aHQgdG8gYmUgaWxsZWdhbAphbGlhcyBzbmQtY2FyZC0xIHNuZC1tdHBhdgphbGlhcyBzbmQtc2xv
+dC0xIHNuZC1jYXJkLTEKb3B0aW9ucyAtayBzbmQtbXRwYXYgaW5kZXg9MSBpcnE9NyBwb3J0PTB4
+Mzc4CnByZS1pbnN0YWxsIHNuZC1tdHBhdiAvc2Jpbi9tb2Rwcm9iZSAtciBscCBwYXJwb3J0X3Bj
+IHBhcnBvcnQKIyBtdWx0aWZhY2UgaGRzcAphbGlhcyBzbmQtY2FyZC0yIHNuZC1oZHNwCmFsaWFz
+IHNuZC1zbG90LTIgc25kLWNhcmQtMgojIGdhemlsbGlvbiAoZWlnaHQpIHNuZC12aXJtaWRpIGRl
+dmljZXMgdG8gT1NTaXplIHRoZSBtdHBhdgojYWxpYXMgc25kLWNhcmQtMyBzbmQtdmlybWlkaQoj
+YWxpYXMgc25kLXNsb3QtMyBzbmQtY2FyZC0zCiNhbGlhcyBzbmQtY2FyZC00IHNuZC12aXJtaWRp
+CiNhbGlhcyBzbmQtc2xvdC00IHNuZC1jYXJkLTQKI2FsaWFzIHNuZC1jYXJkLTUgc25kLXZpcm1p
+ZGkKI2FsaWFzIHNuZC1zbG90LTUgc25kLWNhcmQtNQojYWxpYXMgc25kLWNhcmQtNiBzbmQtdmly
+bWlkaQojYWxpYXMgc25kLXNsb3QtNiBzbmQtY2FyZC02CiNhbGlhcyBzbmQtY2FyZC03IHNuZC12
+aXJtaWRpCiNhbGlhcyBzbmQtc2xvdC03IHNuZC1jYXJkLTcKI2FsaWFzIHNuZC1jYXJkLTggc25k
+LXZpcm1pZGkKI2FsaWFzIHNuZC1zbG90LTggc25kLWNhcmQtOAojYWxpYXMgc25kLWNhcmQtOSBz
+bmQtdmlybWlkaQojYWxpYXMgc25kLXNsb3QtOSBzbmQtY2FyZC05CiNhbGlhcyBzbmQtY2FyZC0x
+MCBzbmQtdmlybWlkaQojYWxpYXMgc25kLXNsb3QtMTAgc25kLXZpcm1pZGkKIyB3aG8ga25vd3Mg
+d2hhdCB0aGlzIGRvZXM/CiNvcHRpb25zIC1rIHNuZC12aXJtaWRpIGluZGV4PTMsNCw1LDYsNyw4
+LDksMTAgZW5hYmxlPTEsMSwxLDEsMSwxLDEsMSBtaWRpX2RldnM9MiwyLDIsMiwyLDIsMiwyCg==
+
+------=_20030710174221_17619--
 
 
 
