@@ -1,17 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: m-audio uc33?
-Date: Mon, 22 Dec 2003 21:09:43 +0100
+From: Andre Batista de Oliveira <abo@netvisao.pt>
+Subject: card_id() in initval.h
+Date: 23 Dec 2003 20:00:37 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031222200943.GA1009@tuba.home>
-References: <Pine.LNX.4.58.0312221548530.532@autumn> <20031222163400.GA826@tuba.home> <Pine.LNX.4.58.0312221918000.532@autumn>
+Message-ID: <x7k74nuwwq.fsf@dorian.home.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id VAA05180
-	for <alsa-devel@alsa-project.org>; Mon, 22 Dec 2003 21:05:16 +0100
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.0312221918000.532@autumn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,35 +15,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tim Goetze <tim@quitte.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Dec 22, 2003 at 08:03:39PM +0100, Tim Goetze wrote:
-> Martin Langer wrote:
-> 
-> >http://www.evolution.co.uk/products/evo_uc33e.htm
-> >
-> >BTW: The controller knobs of my Evolution MK-249C are working fine
-> >and ALSA has no evolution quirks inside. I don't know a device of
-> >them which wasn't class compliant until now.
-> 
-> good to hear. i've dug up a document which i think is the one you are
-> referring to, http://www.djcj.org/LAU/guide/evolution-usb-midi.php --
-> it talks about *all* evolution keyboards, and the uc-33 looks just
-> like a mk-449c without the keys.
-> 
+I'm facing some problems passing the ALSA drivers'
+parameters from the kernel command line.
 
-Yes, it's written here:
-http://www.evolution.co.uk/products/evo_mk449c.htm
+When I try to specify the ID string for the card
+(snd-sgalaxy=3D1,0,Waverider,0x220,0x530,10,3),
+the kernel just reboots immediately, even before printing anything!
 
-[...]
-As with all Evolution controllers, the MK-449C is Class compliant, so no
-drivers are required when using Windows XP or Mac OSX.
-[...]
+But when I leave the ID string unspecified
+(snd-sgalaxy=3D1,0,,0x220,0x530,10,3), it boots and works fine,
+and the card gets the default "Galaxy" ID.
+
+I believe this has something to do with the kmalloc() call
+in the get_id() function in the initval.h include file.
+Perhaps kmalloc() can not be used at this early boot stage?!?
+I fixed it by replacing kmalloc() with alloc_bootmem(),
+and now it works, but there's probably a better way to do it!
+
+Does this make any sense? Is this a known bug? Is this a bug, at all?
+Thanks.
+
+Here's the diff:
+
+--- initval.h.orig      Tue Dec 23 16:56:26 2003
++++ initval.h   Tue Dec 23 18:00:10 2003
+@@ -136,25 +136,23 @@
+ #if defined(SNDRV_GET_ID) && !defined(MODULE)
+ #include <linux/ctype.h>
+ #include <linux/init.h>
++#include <linux/bootmem.h>
+ static int __init get_id(char **str, char **dst)
+ {
+-       char *s, *d;
++       char *s;
+=20
+        if (!(*str) || !(**str))
+                return 0;
+        for (s =3D *str; isalpha(*s) || isdigit(*s) || *s =3D=3D '_'; s++);
+        if (s !=3D *str) {
+-               *dst =3D (char *)kmalloc((s - *str) + 1, GFP_KERNEL);
+-               s =3D *str; d =3D *dst;
+-               while (isalpha(*s) || isdigit(*s) || *s =3D=3D '_') {
+-                       if (d !=3D NULL)
+-                               *d++ =3D *s;
+-                       s++;
+-               }
+-               if (d !=3D NULL)
++               char *d =3D alloc_bootmem(s - *str + 1);
++               if (d !=3D NULL) {
++                       *dst =3D d;
++                       while (s !=3D *str) *d++ =3D *(*str)++;
+                        *d =3D '\0';
++               } else
++                       *str =3D s;
+        }
+-       *str =3D s;
+        if (*s =3D=3D ',') {
+                (*str)++;
+                return 2;
 
 
-martin
+
+--=20
+Andr=E9 Batista de Oliveira
+http://mega.ist.utl.pt/~abo
 
 
 -------------------------------------------------------
