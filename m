@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Fri, 4 Mar 2005 19:07:54 +0100
-Message-ID: <d8e0c8b987627ebb3cd5fdf65a89c8e1@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH] remove emu10k1 pops/clicks at the
+	beginning and end of playback (fwd)
+Date: Fri, 04 Mar 2005 13:17:14 -0500
+Message-ID: <1109960235.6442.9.camel@mindpipe>
+References: <Pine.LNX.4.58.0503040932460.1739@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DF89197
-	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 19:07:55 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id D2F6B197
+	for <alsa-devel@alsa-project.org>; Fri,  4 Mar 2005 19:17:19 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0503040932460.1739@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,49 +20,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>, Jindrich Makovicka <makovick@kmlinux.fjfi.cvut.cz>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2005-03-04 at 09:33 +0100, Jaroslav Kysela wrote:
+> Hi,
+> 
+> 	could emu10k1 hackers review this patch?
+> 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
-======================================================================
-Reported By:                jnilles
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   963
-Category:                   PCI - cs46xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               SuSE
-Kernel Version:             
-======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-04-2005 19:07 CET
-======================================================================
-Summary:                    Sounc card is mute
-Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
-======================================================================
+Excellent!  Seems correct to me.  I have experienced the problem too,
+and noticed a while back that we didn't clear the cache properly.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-======================================================================
-
+Lee
 
 
 
