@@ -1,18 +1,12 @@
-From: Frans Ketelaars <ketelaars@wanadoo.nl>
-Subject: Re: new alsa docs.
-Date: Sat, 10 Aug 2002 20:51:07 +0200
+From: Graham Stoney <greyhams@optusnet.com.au>
+Subject: Problems building latest cvs snapshot
+Date: Sun, 11 Aug 2002 12:52:40 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020810205107.431ad249.ketelaars@wanadoo.nl>
-References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no>
-	<3D52949C.6030706@boosthardware.com>
-	<3D53606D.3020201@mindcom.fi>
-	<3D5366C4.9050101@boosthardware.com>
-	<3D536FD2.1030307@boosthardware.com>
+Message-ID: <20020811025240.GB4844@optusnet.com.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D536FD2.1030307@boosthardware.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,30 +18,30 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 09 Aug 2002 16:31:30 +0900
-Patrick Shirkey <pshirkey@boosthardware.com> wrote:
+Hi gang,
 
-> To make the module options complete I need someone to send me the output of
-> 
->      modinfo $(modprobe -l snd-*) | cat > modules
-> 
-> when run on PPC and an ARM and a computer with old PnP cards/slots.
-> 
-> Run it as root user. It will write a file called modules to the 
-> directory you run it from.
-> 
-> -- 
-> Patrick Shirkey - Boost Hardware Ltd.
-> For the discerning hardware connoisseur
-> Http://www.boosthardware.com
-> Http://www.boosthardware.com/LAU/guide/
-> ========================================
+I had problems compiling alsa-driver-0.9.0rc2: multiple definitions of
+__module_kernel_version & __module_using_checksums linking snd-emu8000-synth.
+So I thought I'd try building the latest cvs snapshot, to see if the problem
+has been fixed before I waste people's time reporting it. Ran into trouble
+though:
 
-This is with rc2 on ia32 with all (ISA card) modules. The 64K file is only 
-attached to the message sent to Patrick. HTH, 
+I did:
+% cvs -... co alsa-driver alsa-kernel alsa-lib alsa-tools alsa-utils
+% cd alsa-driver
+% autoconf
+% ./configure
+...
+./configure: ALSA_TOPLEVEL_INIT: command not found
+./configure: ALSA_TOPLEVEL_SELECT: command not found
+...
 
-    -Frans
+Anyone know what might be going on here?
 
+Is there a "getting started" document for ALSA developers?
+
+Thanks,
+Graham
 
 
 -------------------------------------------------------
