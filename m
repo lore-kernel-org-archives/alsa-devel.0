@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem in alsaconf
-Date: Fri, 5 Dec 2003 09:35:29 +0100 (CET)
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: Re: Problem in alsaconf
+Date: Fri, 5 Dec 2003 11:46:19 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312050934240.12693@pnote.perex-int.cz>
-References: <20031204234839.GB4760@steinchen.winterberg.local>
+Message-ID: <20031205084619.GD1844@sirius.home>
+References: <20031204234839.GB4760@steinchen.winterberg.local> <Pine.LNX.4.58.0312050934240.12693@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="rz+pwK2yUstbofK6"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031204234839.GB4760@steinchen.winterberg.local>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0312050934240.12693@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,40 +18,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sebastian Stein <seb.stein@hpfsc.de>
-Cc: Takashi Iwai <tiwai@suse.de>, ondrejj@salstar.sk, Bernd Kaindl <bk@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 5 Dec 2003, Sebastian Stein wrote:
 
-> I'm not sure who is the current maintainer of the alsaconf shell script in
-> the alsa-utils-1.0.0rc1 package, so I'm sending this mail to all of you!
+--rz+pwK2yUstbofK6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Dec 05, 2003 at 09:35:29AM +0100, Jaroslav Kysela wrote:
+> On Fri, 5 Dec 2003, Sebastian Stein wrote:
+> > Also, there is another problem with finding the alsasound script
+> > ($rcalsasound). On my distro it can be found under
+> > /etc/rc.d/inet.d/alsasound. Maybe a better approach then fixed path would
 > 
-> On startup I can see a message saying:
-> 
-> /usr/bin/alsaconf: line 29: [: too many arguments
-> /usr/bin/alsaconf: line 31: [: too many arguments
+> Added new path. Thanks.
 
-It does not happen with:
+Hmm, this looks like a typo - the correct path should probably be
+/etc/rc.d/init.d/alsasound.
 
-GNU bash, version 2.05b.0(1)-release (i586-suse-linux)
-and
-grep (GNU grep) 2.5.1
+--rz+pwK2yUstbofK6
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-Perhaps, you don't have grep installed?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-> Also, there is another problem with finding the alsasound script
-> ($rcalsasound). On my distro it can be found under
-> /etc/rc.d/inet.d/alsasound. Maybe a better approach then fixed path would
+iD8DBQE/0EXbW82GfkQfsqIRAloNAJ9ueMhHH9HGmOVQyLWZRqMdZq0IZgCaAmEe
+Mq4oPNoTVQtkNC4xiq0f60s=
+=3F5X
+-----END PGP SIGNATURE-----
 
-Added new path. Thanks.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+--rz+pwK2yUstbofK6--
 
 
 -------------------------------------------------------
