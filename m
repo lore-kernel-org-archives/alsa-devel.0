@@ -1,12 +1,14 @@
-From: "Mihai T. Lazarescu" <mihai@email.it>
-Subject: Help fix driver for YMF-744B on Toshiba Tecra 8100?
-Date: Wed, 18 Feb 2004 11:47:02 +0100 (CET)
+From: Francisco Moraes <fmoraes74@netzero.net>
+Subject: Re: Help with supporting Emu10k1x  and question
+Date: Wed, 18 Feb 2004 07:04:09 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402181132500.19312@laptop.localdomain>
-Reply-To: "Mihai T. Lazarescu" <mihai@email.it>
+Message-ID: <403354B9.8000305@netzero.net>
+References: <403154C2.3020701@netzero.net> <s5h3c99yb00.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h3c99yb00.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,28 +17,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello developers,
+Takashi Iwai wrote:
 
-I would like to try to fix the long standing bug of the ALSA
-driver for the Toshiba Tecra 8100 YMF-744B card.
+>it already sounds like you're accessing a wrong register...
+>  
+>
 
-My experiences until now led, in the best of the cases,
-to sound with cracks and distortions, no matter the mixer
-settings (mostly if at boot time the OSS drivers are loaded,
-then rmmod them and insmod ALSA).  In the worst, only high
-pitch whistles with some cracks here and there (mostly if ALSA
-is loaded directly at boot).
+I removed all the writes and left only mine and I can now trace the PTR 
+writes. I have not been able to get interrupts working, so it seems like 
+alsa keeps calling the PCM trigger function with a start and then 
+followed by a stop. And the process goes on.
 
-I am quite familiar with C, but not with ALSA internals.
-I'd like to try and debug this if someone is willing to direct
-me to what to look for.
+Any way I can avoid this or change how things work internally a bit?
 
-Thanks in advance!
+Francisco
 
-Mihai
 
 
 -------------------------------------------------------
