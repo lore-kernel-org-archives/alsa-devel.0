@@ -1,14 +1,12 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Re: Mailing list archive??
-Date: Wed, 13 Aug 2003 21:59:04 -0700 (PDT)
+From: Dave Phillips <dlphilp@bright.net>
+Subject: PDAudioCF questions
+Date: Thu, 14 Aug 2003 07:54:23 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030814045904.69857.qmail@web21506.mail.yahoo.com>
-References: <E19n9jO-0004CP-00@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
+Message-ID: <3F3B867E.D0D41B46@bright.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19n9jO-0004CP-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,59 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Warren Turkal <wturkal@cbu.edu>
+To: ALSA Dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Wonderful idea, only problem is that my version of netscape (6.2) that
-I use on this particular computer doesn't like "nntp:" URL's.  I was
-hoping for a web interface, which doesn't appear to be available at the
-site mentioned.  As for searching, ..... never mind.
+Greetings:
 
-Oh well.....  I thought the lists might be archived at sorceforge or
-something like that.
+  I'm testing the Core Sound PDAudioCF card on a laptop, an Omnibook
+4150, using a CF-to-PCMCIA adapter. The card appears to initialize
+correctly, and 'cat /proc/asound/cards' tells me this:
 
-Warren Turkal wrote:
-> Tom Watson wrote:
+	0 [PDAudioCF      ]: PDAudio-CF - Core Sound PDAudio-CF
+        	             Core Sound PDAudio-CF at 0x100, irq 11
 
-> > Off of a "sound card" subject, but is there an archive of this
-mailing
-> > list, and is it searchable??
-> > 
-> > I just changed to the digest version, and in changing didn't see
-any
-> > thing like either of these.
-> > 
-> > Of course, if not, could someone??
-> > 
-> > Thanks.
-> > 
-> > =====
-> 
-> http://www.gmane.org/
+'ls /proc/asound/card0' yields this information:
 
-A nicer reply might be a more specific pointer, but then I'm hoping for
-too much...
-a look at the "lists" button yielded some stuff, then a "nntp:" URL. 
-Nice if you happen to have a news reader handy, and up and running...
+	dlphilp@localhost:~$ ls /proc/asound/card0/
+	id  oss_mixer  pcm0c
 
-> 
-> -- 
-> Treasurer, GOLUM, Inc.
-> http://www.golum.org
+where 'pcm0c' is a subdirectory and oss_mixer simply lists mixer
+elements. However, I've been unable to invoke a mixer for the card. That
+might be why I receive the following error trying to use arecord:
 
+	dlphilp@localhost:~$ arecord -Dhw:PDAudioCF -f cd
+	RIFF$=FF=FFWAVEfmt o`aD=ACo=B1acodata=FF=FFRecording WAVE 'stdout' : Sig=
+ned 16 bit
+Little Endian, Rate 44100 Hz, Stereo
+	arecord: pcm_read:1110: read error: Input/output error
 
+  The test is done with ALSA 0.9.6 under kernel 2.4.18. If anyone else
+is working with this card I'd like to hear about your success/failure,
+particularly if you've used it on a laptop (not a PDA). I'll also check
+the archives for previous messages about this card. TIA!
 
+Best regards,
 
-=====
--- 
-Tom Watson
-tsw@johana.com
+=3D=3D Dave Phillips
 
-__________________________________
-Do you Yahoo!?
-Yahoo! SiteBuilder - Free, easy-to-use web site design software
-http://sitebuilder.yahoo.com
+	The Book Of Linux Music & Sound at http://www.nostarch.com/lms.htm
+	The Linux Soundapps Site at http://linux-sound.org
 
 
 -------------------------------------------------------
