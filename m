@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Problem with RME 9632 and Plug
-Date: Wed, 4 Aug 2004 09:39:08 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: aureon7.1(alsa ice1724)-opticalIn-jackServer recording
+Date: Wed, 4 Aug 2004 13:38:16 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408040935080.1857@pnote.perex-int.cz>
-References: <200408040018.i740ITg5017942@localhost.localdomain>
+Message-ID: <200408041338.16164@goldspace.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408040018.i740ITg5017942@localhost.localdomain>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +17,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: Ed Wildgoose <lists@wildgooses.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Aug 2004, Paul Davis wrote:
+Hi,
 
-> >However, quick question.  Is it possible to create a virtual device 
-> >which will effectively change the default for period size if the app 
-> >doesn't specifically ask for something different (some asound.conf 
-> >magic?).  
-> 
-> as i mentioned, try using the pcm device name "plughw:N" where N
-> appropriate. 
+Will anybody be so kind to point me how to configure alsa/jack for subj?
+I have tried to get answer at linux-audi/alsa user list without any success.
 
-It won't help. We don't convert count of periods in the plug plugin.
-The only one solution is that the application will start using
-an external timing source for PCM (see set/get_tick_time functions)
-- or another timer available for applications - in this case when 
-hardware has this constraint.
+I'm able to select any of analogue input for capturing, but the aim is to use
+spdif input. I can not realise which alsa device must be used for jack
+server, and which additional alsa-related settings must be done.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+With hope,
+Andrew
 
 
 -------------------------------------------------------
