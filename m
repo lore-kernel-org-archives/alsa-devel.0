@@ -1,13 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Click after draining
-Date: Tue, 09 Nov 2004 11:00:28 +0100 (CET)
-Message-ID: <XFMail.20041109110028.pochini@shiny.it>
-References: <s5hzn1rqsj9.wl@alsa2.suse.de>
+From: Marcel Holtmann <marcel@holtmann.org>
+Subject: Re: Hardware interface constant for Bluetooth
+Date: Tue, 09 Nov 2004 13:16:47 +0100
+Message-ID: <1100002607.29330.58.camel@pegasus>
+References: <1099877050.6896.70.camel@pegasus>
+	 <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
+	 <1099915428.6896.107.camel@pegasus>
+	 <Pine.LNX.4.58.0411081305260.2162@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hzn1rqsj9.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.58.0411081305260.2162@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,40 +20,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Jaroslav,
 
-On 09-Nov-2004 Takashi Iwai wrote:
-> At Mon, 1 Nov 2004 20:29:49 +0100,
-> Giuliano Pochini wrote:
->>
->> The patch below is mostly the one you wrote, with these changes: it handles
->> the case when the period to be silences crosses the buffer boundary and it
->> fills with silence the last played period while draining. It's not the right
->> thing of course but it work for me. Actually, it should fill only the first
->> x frames of the period following the last one, but I need another variable.
->
-> The first is the right fix
+> The SNDRV_HWDEP_IFACE_BLUETOOTH definition was added to the ALSA CVS tree.
 
-It's the part you wrote, with some minor tweaks.
+I checked the CVS HEAD version of the ALSA library and I think it must
+be added there too. Is this correct or is there another way you keep
+these in sync between the kernel and the userspace? Looking at the file
+"include/hwdep.h", I realized that the previous entry for the "EmuX
+wavetable" is also missing.
 
+Regards
 
-> but how about the latter one (filling silence at the last position
-> in snd_pcm_update_hw_ptr_interrupt()) ?  Does it fix something?
-
-Yes, it fixes the remaining small click. It happens because
-the card does not stop immediately when the last interrupt is
-delivered. In my case it plays the first 32 frames of the
-next period that still contains old data. It's a very small
-problem compared to the big click you fixed.
-My patch fills way too much data than needed of course. It's
-a just a test and it's not supposed to be applied.
+Marcel
 
 
---
-Giuliano.
 
 
 -------------------------------------------------------
