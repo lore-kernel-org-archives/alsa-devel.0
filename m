@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
-Date: Mon, 17 Jan 2005 09:30:34 +0100
-Message-ID: <65b6c5fca6b469539f89971ae209dfad@bugtrack.alsa-project.org>
+Date: Mon, 17 Jan 2005 09:21:01 +0100
+Message-ID: <1aa25e9b3f32ecb25aa72b3b3f306b3a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C4CA1BD
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 09:30:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 37D9B2AB
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 09:21:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
 ======================================================================
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             01-17-2005 09:21 CET
-Last Modified:              01-17-2005 09:30 CET
+Last Modified:              01-17-2005 09:21 CET
 ======================================================================
 Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
 `snd_config_get_pointer' from incompatible pointer type"
@@ -64,26 +64,10 @@ confmisc.c -o confmisc.o >/dev/null 2>&1
 
 ======================================================================
 
-----------------------------------------------------------------------
- jdthood - 01-17-05 09:30 
-----------------------------------------------------------------------
-This warning appears on alpha, ia64, hppa, sparc and powerpc too.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=alpha&stamp=1105907568&file=log&as=raw
-for the full alpha build log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=ia64&stamp=1105907385&file=log&as=raw
-for the full ia64 buld log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=hppa&stamp=1105909875&file=log&as=raw
-for the full hppa build log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=sparc&stamp=1105912213&file=log&as=raw
-for the full sparc build log.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=powerpc&stamp=1105933411&file=log&as=raw
-for the full powerpc build log.
-
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-17-05 09:21 jdthood        New Issue                                    
-01-17-05 09:30 jdthood        Note Added: 0003224                          
 ======================================================================
 
 
