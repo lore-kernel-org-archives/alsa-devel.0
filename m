@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: The ALSA Situation
-Date: Wed, 10 Nov 2004 23:22:24 +0000
-Message-ID: <4192A2B0.6090503@superbug.co.uk>
-References: <200411100150.iAA1okCE029069@localhost.localdomain>	 <001e01c4c6ce$77672eb0$0a00000a@eugenia> <1100066393.3137.4.camel@krustophenia.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000632]: The recordings doesnt work properly
+Date: Wed, 10 Nov 2004 23:30:35 +0100
+Message-ID: <28c029ab1e9c3cae7318032b31f1719d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1100066393.3137.4.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA2A923B
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 23:30:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,46 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Eugenia Loli-Queru <eloli@eugenia.co.uk>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net, torvalds@osdl.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Tue, 2004-11-09 at 18:38 -0800, Eugenia Loli-Queru wrote:
-> 
->>2. This: http://www.osnews.com/img/6443/audio.png Check the clean and 
->>logical OSS options and then check the endless alsa ones (my monitor was not 
->>wide enough to fit them all). Why things like that are not cleaned up? (it's 
->>not gnome's volume control fault btw, I asked the developer, he said it's 
->>Alsa's)
-> 
-> 
-> Bullshit.  If ALSA provides too many controls then GNOME volume control
-> should abstract them a bit.  For example, use separate tabs for playback
-> and capture, like alsamixer, or leave some elements out, instead of
-> blithely cramming every mixer element into one tab without regard to
-> whether it will fit on screen or whether that mixer control SHOULD be
-> user visible.  Sorry, this is not ALSA's job. 
-> 
-> Lee
-> 
 
-alsamixer only has separate tabs for playback and capture because 
-someone spent time implementing it.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=632> 
+======================================================================
+Reported By:                littlewing
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   632
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian SID
+Kernel Version:             2.6.9
+======================================================================
+Date Submitted:             11-05-2004 23:28 CET
+Last Modified:              11-10-2004 23:30 CET
+======================================================================
+Summary:                    The recordings doesnt work properly
+Description: 
+Hi,
+when I am trying to recording music which are on a external player (cf
+Mini disc), every recording are ugly. I can record music, but, after, when
+I m play the front recorded tracks, there are a lot of "jumps", "sratchs"
+or the music speeds or slown down randomly.
 
-ALSA has a very good API for PCM audio. The plans are ready for creating 
-a very good API for mixer. While the plans have been there for some time 
-now, developer's time has not been available. Unluckily, the current 
-underdevelopment of the mixer parts of ALSA are very much apparent to 
-all users.
+These problems were decreased when I was upgraded the kernel on the
+version 2.6.9, but are still presents.
 
-The work required to support so many different sound cards has been 
-considerable.
+I test the same recording on windows, and worked perfectly:-(
+======================================================================
 
-So, if you ignore the current well understood problems with the mixer, 
-the rest of ALSA is very good.
+----------------------------------------------------------------------
+ littlewing - 11-05-04 23:31 
+----------------------------------------------------------------------
+Another informations. 
+Thanks for helping and sorry for my english
 
-James
+Soundcard: Creative Sound blaster audigy 2 ZS 
+Platinium pro
+ALSA : 1.0.6 - Debian packages
+More:udev, hotplug,cups,sane
+
+----------------------------------------------------------------------
+ pzad - 11-10-04 23:30 
+----------------------------------------------------------------------
+What app do you use for reording ??? Try to use 
+arecord -f dat -t wav some.wav
+are problems in some.wav still there ????
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-04 23:28 littlewing     New Issue                                    
+11-05-04 23:28 littlewing     Distribution              => Debian SID      
+11-05-04 23:28 littlewing     Kernel Version            => 2.6.9           
+11-05-04 23:31 littlewing     Note Added: 0002307                          
+11-10-04 23:30 pzad           Note Added: 0002381                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
