@@ -1,15 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 15:30:30 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000450]: Line In only gives left channel - no stereo recording/listening
+Date: Thu, 19 Aug 2004 19:08:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408191530040.1779@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
-      <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
- <2891.192.168.0.30.1092922413.squirrel@dev.datamax.co.in>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <20040819170854.3F34F1102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <2891.192.168.0.30.1092922413.squirrel@dev.datamax.co.in>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A25C2214
+	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 19:08:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,30 +16,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Vrihad Shoonya <vrihad@softhome.net>
-Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 19 Aug 2004, Vrihad Shoonya wrote:
 
-> 
-> >> Google finds a NetBSD patch at
-> >> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
-> >
-> > It looks that the driver must be written from scratch, because hardware is
-> > different from SI7018 and SI7012.
-> 
-> That would be pretty big work isn't it? :-( Any estimation of scope and
-> time?
+The following bug has been RESOLVED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000450
+======================================================================
+Reported By:                ZaphodB
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     450
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     resolved
+Distribution:               Debian unstable/testing/experimental
+Kernel Version:             2.6.8.1
+Resolution:                 duplicate
+Duplicate:                  382
+======================================================================
+Date Submitted:             08-18-2004 02:04 CEST
+Last Modified:              08-19-2004 19:08 CEST
+======================================================================
+Summary:                    Line In only gives left channel - no stereo recording/listening
+Description: 
+Whatever stunts i do with alsamixer, selecting Line IN as capture source
+leaves me with one channel (left) on output hw/0 - hw/1 does neither
+contains the right channel nor does setting the hw/1 output to hw/0
+provide me with a stereo signal. Same with recording from Line, audacity
+shows good input signal (waveform pattern) for the left channel but
+absolutely nothing for right.
+======================================================================
 
-One or two weeks for basic functionality.
+----------------------------------------------------------------------
+ ZaphodB - 08-18-2004 02:08 CEST 
+----------------------------------------------------------------------
+forgot: stereo-recording from Line In with audacity works with WindowsXP
+;-)
 
-						Jaroslav
+----------------------------------------------------------------------
+ ZaphodB - 08-18-2004 02:17 CEST 
+----------------------------------------------------------------------
+sorry, overlooked BugID 0000382 reporting basically same bug.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 02:04 ZaphodB        New Bug                                      
+08-18-04 02:04 ZaphodB        Distribution              => Debian unstable/testing/experimental
+08-18-04 02:04 ZaphodB        Kernel Version            => 2.6.8.1         
+08-18-04 02:08 ZaphodB        Bugnote Added: 0001573                       
+08-18-04 02:17 ZaphodB        Bugnote Added: 0001574                       
+08-19-04 19:08 tiwai          duplicate_id             0 => 382            
+08-19-04 19:08 tiwai          Assigned To               => tiwai           
+08-19-04 19:08 tiwai          Resolution               open => duplicate   
+08-19-04 19:08 tiwai          Status                   new => resolved     
+======================================================================
 
 
 -------------------------------------------------------
