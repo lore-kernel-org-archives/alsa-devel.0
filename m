@@ -1,12 +1,10 @@
-From: Caleb Crome <alsa@crome.org>
-Subject: How do create a dummy device for recording audio?  Does it exist
- already?
-Date: Thu, 22 Apr 2004 06:44:43 -0700
+From: barat@medien.uni-weimar.de
+Subject: migrating from old to new alsa-api
+Date: Thu, 22 Apr 2004 15:57:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4087CC4B.80402@crome.org>
+Message-ID: <Pine.LNX.4.56.0404221556500.4307@spring>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +17,20 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-      I've looked through the archives and I couldn't find what I'm 
-looking for, so here goes:
+Hi,
+i need some clarifying about how the defines ALSA_PCM_OLD_HW_PARAMS_API 
+etc. behaves.
+for alsa-1.x its clear that if the app uses the new api i have to define 
+ALSA_PCM_NEW_HW_PARAMS_API, but what is for the case if i have an app with 
+the new api and the user uses only alsa9? is alsa1.x then backwards 
+compatible?
 
-I'd like to create a dummy audio device that can record the PCM data 
-written to it into a file.  So, the dummy device would appear as a sound 
-card to the audio program (Real Player for example), and start dumping 
-audio into a file, or maybe it would create another device that could be 
-read simply by 'dd' or some custom command.  Then I'd pipe the data into 
-an MP3 or OGG encoder, split into 1/2 hour chunks, or whatever length 
-chunks I like.
+regards
 
-Once the system is running, I'd do something like this:
+Zsolt Barat
 
-1) Open my Player, tune to my favorite station. Use my new device for 
-audio output.
-2) do something like:  dd if=/dev/audiocapturepcmout count=xxx | lame 
---output myfile.mp3
-
-What would it take to make a alsa drive that captures the PCM data into 
-a file?
-How about one that captures it, then pumps it into a new /dev/ device 
-for reading?
-
-Thanks,
-  -Caleb
-
+________________________________________
+do interactive tv on www.remote-tv.de
 
 
 -------------------------------------------------------
