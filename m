@@ -1,15 +1,12 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Re: [PATCH] cs46xx, SPDIF output fixes, AC3 through IEC958 should work OK
-Date: Wed, 5 Mar 2003 01:58:22 +0100
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: incomplete type?!?
+Date: 06 Mar 2003 22:46:45 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303050153.10471.c.esken@cityweb.de>
-References: <3E62AEEF.7090109@cucumelo.org> <s5hof4slm55.wl@alsa2.suse.de>
+Message-ID: <1046990806.895.59.camel@Jay>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hof4slm55.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,36 +18,15 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Montag, 3. M=E4rz 2003 12:33 schrieb Takashi Iwai:
-> At Mon, 03 Mar 2003 02:25:03 +0100,
->
-> Benny Sjostrand wrote:
-> > - Added the cwcdma DSP firmware module
-> > - Fixed a minor bug in cs46xx_iec958_pre_open(...)
-> > - in cs46xx_dsp_enable_spdif_hw(...), disable SPDIF hw
-> >  before enabling, this seems to help solving the synchronization issu=
-e
-> > - Some changes in cs46xx_dsp_create_pcm_channel(...)  and
-> > cs46xx_dsp_create_src_task_scb(...) to adapt to the new DSP firmware.
-> >
-> > Well, with the new firmware module I would consider this patch a litt=
-le
-> > bit experimental ;)
->
-> thanks, applied to cvs.
-> it's working fine on my DMX x-fire 1024.
+I can't compile spin_lockxxxx(lock):
 
-Confirmed. It works with my Hercules GameTheater XP7.1
-I tried it with xine and option "a52 passthrough". Nice work.
+echoaudio.c:237: dereferencing pointer to incomplete type
 
-Chris
+I try to compile my module with the same args, defines and includes of
+azt3328.c. Spinlock operations expands to exactly the same stuff
+according cpp, but azt3328 compiles fine. What am I missing ?
 
-PS: The only small issue is when pausing the playback. After resuming I h=
-ear
-scratching noises (the typical ugly SPDIF-out-of-sync noises).
-The good news is that the digital out is automatically resynced shortly a=
-fter
-(about 200ms).
+Bye.
 
 
 
