@@ -1,17 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: alsa error /dev/snd/pcmC1D1c failed: No such
- file or directory
-Date: Sat, 20 Jul 2002 09:14:05 +0200 (CEST)
+Subject: Re: double speed (ADAT), and hw params ordering
+Date: Sat, 20 Jul 2002 08:54:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0207200913450.809-100000@pnote.perex-int.cz>
-References: <Pine.LNX.4.44.0207191534050.32511-100000@cmn24.stanford.edu>
+Message-ID: <Pine.LNX.4.33.0207200851280.809-100000@pnote.perex-int.cz>
+References: <s5hlm88q9u1.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA07504
-	for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2002 09:14:22 +0200
-In-Reply-To: <Pine.LNX.4.44.0207191534050.32511-100000@cmn24.stanford.edu>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA07308
+	for <alsa-devel@alsa-project.org>; Sat, 20 Jul 2002 08:54:32 +0200
+In-Reply-To: <s5hlm88q9u1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,28 +19,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Gary Scavone <gary@ccrma.Stanford.EDU>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paul Davis <pbd@op.net>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Jul 2002, Gary Scavone wrote:
+On Fri, 19 Jul 2002, Takashi Iwai wrote:
 
-> 
-> ALSA lib pcm_hw.c:797:(snd_pcm_hw_open) open /dev/snd/pcmC1D1c failed:
-> No such file or directory
-> 
-> 
-> This message automatically gets output by the alsa library when you
-> call snd_pcm_open with SND_PCM_STREAM_CAPTURE on a device which can
-> only provide output (such as the second device of the ensoniq 1370).  
-> Since you cannot probe a device's capabilities without opening it, it
-> seems to me that the library should not automatically print this
-> message to stderr (or stdout).  Rather, the user can check the return
-> value of the call and get an error string if desired.
-> 
-> The current behavior is very confusing.
+> At Thu, 18 Jul 2002 14:58:07 -0400,
+> Paul Davis wrote:
+> > 
+> > i've been wondering what to do about setting sample rates in the
+> > hammerfall and h-dsp drivers. fernando and gary from CCRMA have made
+> > the excellent suggestion that rather than have the driver pretend that
+> > all rates are available all the time, as it currently does, that we
+> > have a control switch to go between regular rates and the "double
+> > speed" or "bitsplit" rates (64kHz-96kHz) which reduce the channel
+> > count.  i think this is an excellent idea. you would not be able to
+> > use the switch while the device was open. when you opened it, you
+> > would find (for example) a device with 14 channels (12 ADAT plus 2
+> > SPDIF) at 64-96kHz or 26 channels (24 ADAT+2 SPDIF) at 32-48kHz.
+>  
+> i vote for this idea.
 
-You can determine the number of PCM devices via the CTL interface.
+Paul, what's wrong to offer all possible configurations? Could
+
+> > if anyone objects to this model, please let me know. right now, its
+> > more or less impossible to get access to the higher rates.
+> > 
+> > on a related note, although the above suggestion will fix this
+> > particular problem, it seems that it might be wise to consider adding
+> > a parameter order information field to the driver API, so that drivers
+> > can say "you have to set param P first, then param N, then param
+> > O". the default would obviously be "don't care", but for devices that
+> > lose certain capabilities when certain parameters are set, it would
+> > make things very much easier.
+> 
+> agreed that it's good to have such one.
+> but how to implement this?
+> from the design of hw_constraint, i don't think it's so easy...
+> 
+> 
+> Takashi
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
 						Jaroslav
 
