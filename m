@@ -1,12 +1,13 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: Delay channel X by one sample
-Date: Fri, 25 Mar 2005 14:05:41 +0000
-Message-ID: <42441AB5.7030005@superbug.co.uk>
-References: <4243FFFC.9040907@ybb.ne.jp>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
+Date: Fri, 25 Mar 2005 15:27:21 +0100
+Message-ID: <d8f51ca80b7ffe55a4ad07a49347147c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <4243FFFC.9040907@ybb.ne.jp>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4D22246
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:27:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,44 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Edson Pereira <ewp_jp@ybb.ne.jp>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Edson Pereira wrote:
-> 
-> Greetings,
-> 
-> I am in the process of implementing a small software defined radio 
-> receiver using the PCM2903 codec and have a question for the 
-> alsa-developers.
-> 
-> The ALSA USB-Audio interface is working very well. The audio quality of 
-> the chip is quite good, but the chip has a bug! The audio stream of one 
-> channel is delayed by one sample in respect to the other channel. This 
-> is drastic for the mentioned application since the phase correlation 
-> between channels is critical. I have contacted Burr Brown technical 
-> support and they have acknowledged the problem. The error is in the FIFO 
-> addressing hardware and is present in the ADC as well in the DAC (but in 
-> reversed channels).
-> 
-> The problem is quite easy to get around in the application, but this 
-> prevents the hardware interface being used with other programs (testing 
-> software for example). My question is: Where in the system software 
-> chain could a work around be implemented? In the ALSA snd-usb-audio? Or 
-> is there any other more appropriate place?
-> 
-> Thanks and best regards,
-> 
-> -- Edson
-> 
 
-I think adding this "delay channel X by one sample" feature would be a 
-nice feature to add to alsa-lib. We are going to need it in order to 
-support 96khz SPDIF out on the Audigy 2 cards via the P16V chip.
-So, if other cards also need it, it would be good to add.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=395> 
+======================================================================
+Reported By:                thorstenl
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   395
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 2
+Kernel Version:             2.6.6-1.435.2.3
+======================================================================
+Date Submitted:             07-17-2004 11:32 CEST
+Last Modified:              03-25-2005 15:27 CET
+======================================================================
+Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
+from Kenrel works)
+Description: 
+On my Fujitsu Siemens D1219 Mainboard the snd-intel8x0 from alsa 1.05a
+(compiled by myself) or the version that comes with the Fedora Core 2
+Kernel (2.6.6-1.435.2.3; alsa 1.04a) are not able to output any sound.
+Trying to experiment with the different volume settings in alsamixer did
+not help. With the oss-free module i810_audio (compiled from the Fedora
+Core 2 kernel-sourcecode) it works fine.  
+======================================================================
 
-James
+----------------------------------------------------------------------
+ jdthood - 03-23-05 16:11 
+----------------------------------------------------------------------
+Try switching 'External Amplifier' off.   Or on.
+
+----------------------------------------------------------------------
+ thorstenl - 03-25-05 15:27 
+----------------------------------------------------------------------
+jdthood, thanks for the tip. I removed the system/boards two weeks ago, so
+I can't try it anymore.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-17-04 11:32 thorstenl      New Issue                                    
+07-17-04 11:32 thorstenl      File Added: fsc_d1219                        
+07-17-04 11:32 thorstenl      Distribution              => Fedora Core 2   
+07-17-04 11:32 thorstenl      Kernel Version            => 2.6.6-1.435.2.3 
+07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
+03-23-05 16:11 jdthood        Note Added: 0004176                          
+03-25-05 15:27 thorstenl      Note Added: 0004208                          
+======================================================================
+
 
 
 
