@@ -1,15 +1,15 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: ALSA Hammerfall DSP driver
-Date: Sun, 26 May 2002 08:05:41 -0400
+Subject: Re: HDSP -- snd-hdsp.o: init_module: No such device
+Date: Sun, 26 May 2002 07:54:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200205261202.OAA03338@alsa.alsa-project.org>
-References: <3CEFE01E.AE1D59A6@telia.com>
+Message-ID: <200205261151.g4QBpcn03679@post2.fast.net>
+References: <E178Ifc-0001pW-00@satellite>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from newmx1.fast.net (newmx1.fast.net [209.92.1.31])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA03338
-	for <alsa-devel@alsa-project.org>; Sun, 26 May 2002 14:02:56 +0200
-In-Reply-To: Your message of "Sat, 25 May 2002 21:03:58 +0200."
-             <3CEFE01E.AE1D59A6@telia.com>
+Received: from post2.fast.net (post2.fast.net [209.92.1.22])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA03182
+	for <alsa-devel@alsa-project.org>; Sun, 26 May 2002 13:51:56 +0200
+In-Reply-To: Your message of "Thu, 16 May 2002 12:37:52 +0200."
+             <E178Ifc-0001pW-00@satellite>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,38 +18,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Marcus Andersson <054185595@telia.com>
+To: thomas@undata.org
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->> i know its mundane, but are you sure you have the cables hooked up
->> correctly?
+>Hi,
+>I was very excited and pleased to see hdsp driver had reached cvs (thank you 
+>Paul !) , so I gave it a try. Here are the results.
+>I manage to insmod everything needed except the snd-hdsp module. I get the 
+>following in syslog:
+>May 16 12:11:18 satellite kernel: RME Hammerfall-DSP: no cards found
+>May 16 12:15:36 satellite kernel: ALSA 
+>../../alsa-kernel/pci/rme9652/hdsp.c:455: Hammerfall-DSP: no Digiface or 
+>Multiface connected!
+>May 16 12:15:36 satellite kernel: RME Hammerfall-DSP: no cards found
 >
->I booted windows to check the setup, and it works.
->
-> you can set the passthru control
->> 
->>            amixer cset name=Passthru 1
->> 
->> and check that passthru is working OK.
->
->This doesn't work either.
+>I'm using a cardbus hdsp + multiface on a toshiba satellite notebook, with 
+>kernel 2.4.18. The computer fails to boot with the card inserted, but accepts 
+>the card afterwards, and the host led on the multiface switches down.
 
-OK, thats useful information. I wish I knew what it meant :) My best
-guess right now is that its something to do with the channel mapping;
-since the i/o configuration on the multiface is different, it may be
-that i need to change something about how we address certain channels.
+there are problems with the kernel's support for pcmcia cards. i am
+still (slowly) tracking them down. the problem is *not* in ALSA or the
+H-DSP driver. we need the PCI side of the kernel to know what to do,
+and right now, it apparently does not.
 
-># alsactl store 1
->alsactl: get_control:359: Unknown control type: 6
-
-have you updated your alsa-utils and alsa-lib? there was a new control
-type (64 bit integer) introduced for the H-DSP.
-
->At some point the 'MIDI STATE out' is lit and stays lit. I don't use
->MIDI. (I think, if not aplay tries to play a wav as midi.)
-
-Do you have any idea at what point this happens?
+the PCI interface works just fine.
 
 --p
 
