@@ -1,13 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: potential emu10k1 bug/issue for Audigy2 ZS Platinum Pro
-Date: Thu, 10 Feb 2005 17:12:42 -0500
-Message-ID: <1108073563.11177.1.camel@krustophenia.net>
-References: <420B8B23.2090404@vt.edu>
-	 <1108067206.10310.7.camel@krustophenia.net>  <420BD024.8040602@vt.edu>
+Subject: Re: Bug in emu10k1 multichannel support
+Date: Thu, 10 Feb 2005 17:17:45 -0500
+Message-ID: <1108073865.11177.6.camel@krustophenia.net>
+References: <1106091073.24484.60.camel@krustophenia.net>
+	 <s5hpt01tler.wl@alsa2.suse.de> <1106970885.3051.88.camel@krustophenia.net>
+	 <41FE5838.4060907@glocalnet.net>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <420BD024.8040602@vt.edu>
+In-Reply-To: <41FE5838.4060907@glocalnet.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +18,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Rick Wright <riwright@vt.edu>
+To: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2005-02-10 at 16:20 -0500, Rick Wright wrote:
-> > > The real problem is that the PCM output volume control sliders are 
-> > > backwards (or perhaps the remapping the channels to L/R, rather than R/L 
-> > > will fix this).  For example: PCM Front L slider controls the volume of 
-> > > playback_9 which is the RIGHT Front signal, PCM Front R slider controls 
-> > > playback_10 which is the LEFT Front signal.  This is true for all of the 
-> > > Stereo Output channel pairs.  If you think about it, the PCM sliders are 
-> > > actually controlling the correct physical L & R outputs on the card, but 
-> > > the alsa_pcm:playback signals being routed to those physical channels 
-> > > are reversed, make sense?
-> > > 
-> > > Is this a bug?  If so, what is the proper place/way to report it so that 
-> > > I don't use any more of your time?  Has it already been fixed?  I know 
-> > > you mentioned v008 still had problems...
-> > > 
-> > >     
+On Mon, 2005-01-31 at 17:09 +0100, Mikael Magnusson wrote:
+> Lee Revell wrote:
+> ...
+> > OK, I have posted the latest version:
 > > 
-> > ISTR that this is a hardware bug, and the kX driver works around it.  I
-> > will look into it.
+> > http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v007.patch
 > > 
-> > Are the channels reversed if you use JACK with the default stereo PCM,
-> > hw:0,0?
+> > All the known bugs I mentioned have been fixed.  I would like to test
+> > this version a while before signing off on it, then it should be ready
+> > to merge.  Since this patch touches almost every file in the driver, I
+> > can split it up and post it as a series of patches if necessary.
 > > 
-> >   
-> Using hw:0,0 for BOTH the Input & Output devices in QJackCtl:
-> (actually, input probably doesn't matter, huh?)
-> playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
-> the PCM LEFT slider
-> playback_2 maps to Stereo Output #1 LEFT and volume is controlled by
-> the PCM RIGHT slider
+> > The mixer controls for multichannel PCM have been fixed and moved to
+> > IFACE_PCM.  My solution was to use the same emu10k1_pcm_mixer_t
+> > structure internally as for regular PCM substreams, but only the "mono"
+> > component is exposed to userspace.
+> > 
+> ...
 > 
-> In this case, it seems that slider is controlling the correct
-> playback_x stream, but the stream is mapped to the wrong stereo
-> channel of the soundcard.
+> I'm having problems with emu10k1-multichannel-v008.patch. I have made a 
+> test program that demonstrates the bug. The program works alone, but the 
+> bug is triggered when I play a song in xmms, and at the same time run 
+> the test program.
+> 
 
-This does look like an upstream bug.  Can you verify that the channels
-are still reversed without my patch?
+Thanks, I have found and fixed the bug.
+
+http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v009.patch
+
+I believe the patch should now be mergeable.  All known bugs have been
+fixed, and since I announced it on LAU and LAD the patch has had fairly
+widespread testing.
+
+I will break the patch up and post one patch per file in the next few
+days.
 
 Lee
 
