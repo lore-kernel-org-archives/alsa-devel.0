@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000727]: segmentation fault when running modprobe & alsaconf, no sound, no mixer on D915GAV
-Date: Fri, 17 Dec 2004 10:36:58 +0100
-Message-ID: <5fba6ce32bb76461e320521902cbcc71@bugtrack.alsa-project.org>
+From: AKIK Frankfurt <info@akik-ffm.de>
+Subject: SiS 7012 / 963L chipset
+Date: Fri, 17 Dec 2004 11:32:33 +0100
+Message-ID: <41C2B5C1.8030305@akik-ffm.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+ boundary="------------090100020208020704000106"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 14D522B9
-	for <alsa-devel@alsa-project.org>; Fri, 17 Dec 2004 10:36:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,116 +15,82 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------090100020208020704000106
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-The following issue has been REOPENED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=727> 
-======================================================================
-Reported By:                IMAMUDDIN AKBAR
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   727
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     feedback
-Distribution:               FEDORA CORE 3
-Kernel Version:             2.6.9-1.667
-======================================================================
-Date Submitted:             12-16-2004 09:09 CET
-Last Modified:              12-17-2004 10:36 CET
-======================================================================
-Summary:                    segmentation fault when running modprobe & alsaconf,
-no sound, no mixer on D915GAV
-Description: 
+I'm having huge problems with getting a SiS 7012 on-board sound 
+controller up and running. I've tracked the problem down to an apparent 
+mismatch between the ICHx specification as issued by Intel and the 
+behaviour of the controller itself. The environment
+is a Fujitsu-Siemens Scaleo 600 with a SiS 648FX northbridge and an 
+apparent SiS 963L southbridge.
 
-i have compiled alsa-driver-1.0.7 alsa-lib-1.0.7 alsa-utils-1.0.7
-but thereis still no sound, and nomiser appear when running alsamixer
+There seems to be a difference regarding the specification of register 
+access and contents. The specification I have is Intel's ICH2 document; 
+the PCI subsystem as reported by the bus is 1734:1030. More 
+specifically, the contents of the global status register (dword at 
+offset 0x30) apparently doesn't contain the codecs' status information 
+as defined by Intel. Thus, ALSA can't init the primary AC 97 codec and 
+refuses to drive the soundchip. BTW: Am I right in assuming that ALSA 
+uses ICHx by default to drive 7012s?
 
-i use Intel D915GAV with lspci -v:
-00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Intel Corp.: Unknown device e203
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at ffa3c000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70] Express Unknown type IRQ 0
-        Capabilities: [100] Virtual Channel
-        Capabilities: [130] Unknown (5)
+Does anybody by any chance have a spec. for the 963L? I've asked FSC and 
+SiS, but needless to say without much luck. I'm quite happy to give ALSA 
+a hand here & modify the driver accordingly so that owners of said 
+computer can use the on-board audio facility without having to buy new 
+audio hardware.
 
-when i run 
-# modprobe snd-azx
-Segmentation fault
-#lsmod
-snd_azx                31094  6
-snd_pcm_oss            51752  0
-snd_mixer_oss          21760  1 snd_pcm_oss
-snd_pcm                89860  2 snd_azx,snd_pcm_oss
-snd_timer              27524  1 snd_pcm
+Any comments, clues or hints welcome.
 
-when i run amixer
-no mixer appear on screen
+      Cheers, Christoph
 
-and when i reboot my computer it cannot boot and just hang...
-so i have to uninstall all alsa from rescue to boot again.
+--------------090100020208020704000106
+Content-Type: text/html; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Help me to make mysound work fine...
- 
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <meta content="text/html;charset=ISO-8859-1" http-equiv="Content-Type">
+  <title></title>
+</head>
+<body bgcolor="#ffffff" text="#000000">
+<small><font face="Helvetica, Arial, sans-serif">I&#8217;m having huge
+problems with getting a SiS 7012 on-board sound controller up and
+running. I&#8217;ve tracked the problem down to an apparent mismatch between
+the ICHx specification as issued by Intel and the behaviour of the
+controller itself. The environment<br>
+is a Fujitsu-Siemens Scaleo 600 with a SiS 648FX northbridge and an
+apparent SiS 963L southbridge. <br>
+<br>
+There seems to be a difference regarding the specification of register
+access and contents. The specification I have is Intel&#8217;s ICH2 document;
+the PCI subsystem as reported by the bus is 1734:1030. More
+specifically, the contents of the global status register (dword at
+offset 0x30) apparently doesn&#8217;t contain the codecs&#8217; status information
+as defined by Intel. Thus, ALSA can&#8217;t init the primary AC 97 codec and
+refuses to drive the soundchip. BTW: Am I right in assuming that ALSA
+uses ICHx by default to drive 7012s?<br>
+<br>
+Does anybody by any chance have a spec. for the 963L? I've asked FSC
+and SiS, but needless to say without much luck. I'm quite happy to give
+ALSA a hand here &amp; modify the driver accordingly so that owners of
+said computer can use the on-board audio facility without having to buy
+new audio hardware.<br>
+<br>
+Any comments, clues or hints welcome.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Cheers, Christoph<br>
+</font></small>
+</body>
+</html>
 
-
-
-
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-16-04 17:21 
-----------------------------------------------------------------------
-Fixed in the cvs version.
-
-----------------------------------------------------------------------
- IMAMUDDIN AKBAR - 12-17-04 10:36 
-----------------------------------------------------------------------
-I have download the latest cvs version and try to 
-install it. actually i cant find the configure file on
-alsa-driver/ and when i run ./cvscompile it's said
-that  there is no configure file so i just copy the
-configure  file from alsa-driver-1.0.7rc2 that i'd
-download before.
-then i run ./cvscompile it worked but suddenly exit
-after this ..:
-make[1]: Entering directory `/lib/modules/2.6.9-1.667/build'
-Makefile:500: /lib/modules/2.6.9-1.667/build/arch/@ARCH@/Makefile: No such
-file or directory
-make[1]: *** No rule to make target 
-'/lib/modules/2.6.9-1.667/build/arch/@ARCH@/Makefile'.
- Stop.
-make[1]: Leaving directory `/lib/modules/2.6.9-1.667/build'
-make: *** [compile] Error 2
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-16-04 09:09 IMAMUDDIN AKBARNew Issue                                    
-12-16-04 17:21 tiwai          Status                   new => resolved     
-12-16-04 17:21 tiwai          Resolution               open => fixed       
-12-16-04 17:21 tiwai          Assigned To               => tiwai           
-12-16-04 17:21 tiwai          Note Added: 0002829                          
-12-16-04 17:21 tiwai          Assigned To              tiwai =>            
-12-17-04 10:36 IMAMUDDIN AKBARDistribution              => FEDORA CORE 3   
-12-17-04 10:36 IMAMUDDIN AKBARKernel Version            => 2.6.9-1.667     
-12-17-04 10:36 IMAMUDDIN AKBARStatus                   resolved => feedback
-12-17-04 10:36 IMAMUDDIN AKBARResolution               fixed => reopened   
-12-17-04 10:36 IMAMUDDIN AKBARNote Added: 0002848                          
-======================================================================
-
-
+--------------090100020208020704000106--
 
 
 -------------------------------------------------------
