@@ -1,72 +1,49 @@
-From: Christian Kujau <evil@g-house.de>
-Subject: Re: [Alsa-devel] Oops in 2.6.10-rc1
-Date: Thu, 04 Nov 2004 16:16:11 +0100
-Message-ID: <418A47BB.5010305@g-house.de>
-References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Float sample format
+Date: Thu, 4 Nov 2004 15:52:46 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0411041550420.25979-100000@studcom.urz.uni-halle.de>
+References: <E1CPfq9-0006EQ-UC@mailer.emlix.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262265AbUKDPTY@vger.kernel.org>
-In-Reply-To: <4180FDB3.8080305@g-house.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: alsa-devel@lists.sourceforge.net
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D3A8228
+	for <alsa-devel@alsa-project.org>; Thu,  4 Nov 2004 15:52:47 +0100 (MET)
+In-Reply-To: <E1CPfq9-0006EQ-UC@mailer.emlix.com>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Nicolas H=FCppelsh=E4user wrote:
+> What are the sample value ranges used when having sample format float(l=
+e) or
+> double(le)?
 
-hm,
+Between -1 and 1. (LE/BE doesn't make any difference.)
 
-still no sound with snd_ens1371 but now i spend some time to find out how
-to revert a patch with bk. while compiling is still ongoing, let me tell
-you how i tried to revert the patch with bk, because i am not entirely
-sure if i do the right thing here:
+> When playing, the sound is loudest when using the whole range the type =
+offers.
 
-bk changes > ../changes-04-11-2004.txt
+Really?  What sound card lets you play inifinitely loud samples? :-)
 
-as written before, i suspect (!) two changes here:
 
-> [...]
-> <rddunlap@osdl.org>
->     [PATCH] i386/io_apic init section fixups
-> 
-> <wli@holomorphy.com>
->     [PATCH] vm: convert users of remap_page_range() under sound/ to
->     use remap_pfn_range()
-> [...]
-> 
-> so i'll revert the patches and see what it gives.
+HTH
+Clemens
 
-in ../changes-04-11-2004.txt i found out the ChnageSet numbers:
-1.1988.72.76 + 1.2000.5.77. then i did
 
-bk undo -a1.1988.72.76
 
-only to find out that i misread the manual and 1.1988.72.76 is still in
-place. i did
-
-bk changes > ../changes-1.1988.72.76.txt
-
-and the very patch has a different ChangeSet now: 1.2202. so i did
-
-bk undo -a1.2201
-
-is this the right way to revert patches when subsequent patches might not
-allow to simply "bk undo -r<vers>" (because subsequent patches rely on
-this single ChangeSet).
-
-thank you for your assistance,
-Christian
-- --
-BOFH excuse #182:
-
-endothermal recalibration
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBike6+A7rjkF8z0wRAl/DAKDAMP31cXrzjBnnl+713F1zJ5ShQQCdFYRr
-TpRkMTwdhZq9SvoZEPR2Plw=
-=sm2q
------END PGP SIGNATURE-----
+-------------------------------------------------------
+This SF.Net email is sponsored by:
+Sybase ASE Linux Express Edition - download now for FREE
+LinuxWorld Reader's Choice Award Winner for best database on Linux.
+http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
