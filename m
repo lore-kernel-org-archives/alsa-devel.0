@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: matrix mixer control (Re: Complex mixer questio
-Date: Wed, 02 Apr 2003 11:47:35 -0500
+Date: Wed, 2 Apr 2003 19:06:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E190lKN-0001jp-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.44.0304021859390.3649-100000@pnote.perex-int.cz>
 References: <3E8B119E.40600@libero.it>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 02 Apr 2003 18:36:46 +0200."
-             <3E8B119E.40600@libero.it>
+In-Reply-To: <3E8B119E.40600@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,21 +17,57 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Abramo Bagnara <abramo.bagnara@libero.it>
-Cc: Jaroslav Kysela <perex@suse.cz>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Giuliano Pochini <pochini@shiny.it>, alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
->Ortogonally to that, IMO the increasing numbers of controls in modern 
->professional hardware justify the choice of hash table access to 
->controls (try to imagine a 26 channel hardware level meter that need to 
->be polled 50 times per second).
+On Wed, 2 Apr 2003, Abramo Bagnara wrote:
 
-TotalMix for the HDSP will not do that. Thomas is working on mapping
-the meters into user space. Its not reasonable to do this via system
-calls if you want to access them in an RT thread. As a fill-in measure
-until that is done, I think he created a control that gets all the
-values in a single system call.
+> Jaroslav Kysela ha scritto:
+> > 
+> > I feel we are still thinking in a different way. The separating of
+> > volatile data is only access and memory optimization. The code in the
+> > control interface uses still linear lookups. Note that there is no
+> > restriction to use this "multi" element for matrix only. Then address in
+> 
+> I realized that.
+> 
+> > matrix is always mapped to linear one. If you want a gap inside matrix,
+> > then set the INACTIVE flag to the access field (volatile data). It's quite
+> 
+> It's not inactive, it does not exists.
+> 
+> > complicated to describe such incomplete matrixes in a generic way. Note
+> 
+> ? Why complicated?
+> 
+> What about snd_ctl_add_index(ctl, index) (then you can use data tables, 
+> loops, wrappers, etc.)
 
---p
+It breaks the linearity and makes lookups much slower.
+
+> > that the whole matrix is still represented as one multi element inside the
+> > kernel space (except that volatile data are separate for each value inside
+> > matrix).
+> 
+> This is true only for non sparse matrix.
+> 
+> Ortogonally to that, IMO the increasing numbers of controls in modern 
+> professional hardware justify the choice of hash table access to 
+> controls (try to imagine a 26 channel hardware level meter that need to 
+> be polled 50 times per second).
+
+I don't mind if I have only one lookup for this set of controls as present 
+in the current code. Actually, the most of cards have around tenths of 
+controls (including HDSP driver after ported to use multi controls) so 
+adding a hash lookup is not a big win in my eyes. Yes, we can do it in 
+future, when we will have hundreds or thousands controls per card.
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
