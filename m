@@ -1,12 +1,16 @@
-From: K.Fetscher@t-online.de (Klaus Fetscher)
-Subject: ALSA Driver for ARM-Linux 2.6
-Date: Wed, 11 Aug 2004 22:11:33 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
+Date: Thu, 12 Aug 2004 02:50:10 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <411A7D75.3080701@fetron.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040812005010.E72F61102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43260173
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 02:50:11 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 0220717378
+	for <alsa-devel@alsa-project.org>; Thu, 12 Aug 2004 02:50:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,25 +19,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-we want to program an ALSA driver for a Codec which communicates over an 
-I2S interface with an ARM9 processor.
-I have read several messages regarding ALSA-Drivers, Linux 2.6 and ARM 
-and know I am a little bit confused.
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
+======================================================================
+Reported By:                snaketails
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     435
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             08-12-2004 02:50 CEST
+Last Modified:              08-12-2004 02:50 CEST
+======================================================================
+Summary:                    No current support for the ICH6R & ALC880 devices
+Description: 
+As this is a new mobo, there is no driver configuration that supports this
+newer buss interface devices, so there is no sound from the mobo.
+The inability for the mobo to run SATA under Linux is not an issue here,
+as I am using the SiS SATA driver, only issue is sound
+======================================================================
 
-Is it possible to use ALSA with ARM or need we some patches for the ARM 
-CPU ?
-
-I have read, that the sa11xx-uda1341 driver is not a good starting point 
-for implementing a driver. Which is a better solution ?
-
-Thanks,
-
-Klaus
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-12-04 02:50 snaketails     New Bug                                      
+08-12-04 02:50 snaketails     Distribution              => Gentoo          
+08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
+======================================================================
 
 
 -------------------------------------------------------
