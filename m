@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Wed, 16 Mar 2005 11:23:46 +0100
-Message-ID: <38c6ded15b854f5c3703e40bf784d1e2@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
+Date: Wed, 16 Mar 2005 11:26:20 +0100
+Message-ID: <e902ef82fb8fa122bd9faf055aee237c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 82D58227
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 11:23:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 530BE227
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 11:26:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,96 +23,150 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
 ======================================================================
-Reported By:                eradicator
-Assigned To:                
+Reported By:                Jean-Louis Crouzet
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   731
-Category:                   CORE - pcm
+Issue ID:                   875
+Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   block
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
+Status:                     assigned
+Distribution:               
+Kernel Version:             # uname -a<br />
+Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 ======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              03-16-2005 11:23 CET
+Date Submitted:             02-01-2005 16:17 CET
+Last Modified:              03-16-2005 11:26 CET
 ======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
+Summary:                    Can't get nm256 up & running
 Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
+I trying since ages to get this nm256 up & running with ALSA, w/o any
+sucess.
+
+PC Omnibook 900 (not a 900B)
+
+# uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 
 
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
+#lspci  -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-04.0  Texas Instruments PCI1225
+      +-04.1  Texas Instruments PCI1225
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
+	
+# modinfo snd_nm256
+filename:      
+/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    NeoMagic NM256AV/ZX
+license:        GPL
+vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
+depends:        snd-pcm,snd,snd-ac97-codec
+alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
+parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
+parm:           use_cache:Enable the cache for coefficient table access.
+parm:           buffer_top:Set the top address of audio buffer for
+NeoMagic 256AV/ZX soundcard.
+parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
+soundcard.
+parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
+soundcard.
+parm:           playback_bufsize:DAC frame size in kB for NeoMagic
+256AV/ZX soundcard.
+parm:           enable:Enable this soundcard.
+parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
+parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
 
-The strace can be found in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
-mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
+# alsaconf
+Unloading sound driver modules...done.
+Building card database..
 
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
 
+Running update-modules...
+Loading driver...
+FATAL: Error running install command for snd_nm256
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1061: No soundcards found...
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+
+???????????????????????????,,
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-22-04 11:58 
+ Jean-Louis Crouzet - 03-16-05 08:50 
 ----------------------------------------------------------------------
-All these codes aren't reached when you use aoss.
+Hi,
 
-The set_fs() in pcm_native.c is used only for kernel OSS emulation,
-ditto for pcm_oss.c, of course.  seq_clientmgr.c is for only ALSA
-sequencer.
+hoping your still fine and life is treating you well. On my dark side I
+made a last and catastrophic test, see just below.
+
+I decided to work on the module itself and used modconf
+
+I disabled and reenabled the module to change the args passed to it.
+
+index=0 force_ac97=1
+
+Then rebooted mu boat anchor and of course get a great lockup after the
+following messages.
+
+PCI: Found IRQ 10 for device 0000:01:00.1
+PCI: Sharing IRQ 10 with 0000:00:04.1
+nm256: found card signature in video RAM: 0x27ec00
+nm256: Mapping port 1 from 0x2709a0 - 0x27ec00
+
+Well now I do not how to restore a working machine (even w/o sound ;-)
+
+Loocking towards your answer.
+
+Best regards,
+JL
 
 ----------------------------------------------------------------------
- eradicator - 03-16-05 11:23 
+ Jean-Louis Crouzet - 03-16-05 11:26 
 ----------------------------------------------------------------------
-Ok, I haven't been able to play much with sound on sparc64 for a while
-until recently...  xmms provides another test case here...
-
-OSS output plays nicely via the oss emulation in-kernel
-ALSA output results in the following out to the console (no sound
-obviously):
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-** WARNING **: alsa_mmap_audio(): snd_pcm_start() failed: Broken pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-<this is repeated until canceled>
-
-This is with linux-2.6.11's in-kernel drivers and alsa-lib-1.0.7
+just fixed the nm256 lockup when force_ac97 was enabled. But still can't
+get anything working.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
-12-22-04 07:39 eradicator     Note Added: 0002907                          
-12-22-04 11:58 tiwai          Note Added: 0002908                          
-03-16-05 11:23 eradicator     Note Added: 0003936                          
+02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
+02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+02-02-05 11:18 tiwai          Note Added: 0003483                          
+02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
+02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
+02-09-05 12:09 tiwai          Note Added: 0003547                          
+02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
+02-14-05 19:46 tiwai          Note Added: 0003605                          
+02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
+02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
+03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
+03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
 ======================================================================
 
 
