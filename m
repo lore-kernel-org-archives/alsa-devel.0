@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Wed, 12 Jan 2005 14:13:15 +0100
-Message-ID: <57c73aedcba94453ca3013ef407f0f05@bugtrack.alsa-project.org>
+Date: Wed, 12 Jan 2005 15:04:41 +0100
+Message-ID: <56467b516c7fe5f6ee9b84955680dcaf@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16BF4214
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 14:13:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D70E416F
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:04:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Arch Linux
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              01-12-2005 14:13 CET
+Last Modified:              01-12-2005 15:04 CET
 ======================================================================
 Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
 chipset choppy, plays to fast
@@ -56,21 +56,15 @@ the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- pcmcginty - 12-27-04 19:28 
+ tiwai - 01-12-05 15:03 
 ----------------------------------------------------------------------
-Hi, I uploaded the information you requested. I wasn't able to find a 48Khz
-WAV sample. Do you know where I could download one?
+Ah, ok, this happens also on CVS version...
 
 ----------------------------------------------------------------------
- JonathanL - 01-12-05 14:13 
+ tiwai - 01-12-05 15:04 
 ----------------------------------------------------------------------
-I have the same problem, with one ALI 5455 (integrated to my ALI
-motherboard) All work fine with alsa-driver-1.0.5 but sound seems to go
-too fast with alsa >= 1.0.6 (cvs included). All programs are  repporting
-messages like "alsa-space: xrun of at least 0,187 msecs. resetting
-stream1,8% 8 0 99%" (this one is from mplayer) even for a 48 kHz sampled
-file.
-I join my codec97#0 files.
+Please recreate the file attached there.  It contains all zero-size files. 
+You can't create tar from proc files...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -85,6 +79,11 @@ Date Modified  Username       Field                    Change
 12-27-04 19:28 pcmcginty      Note Added: 0002973                          
 01-12-05 13:57 JonathanL      Issue Monitored: JonathanL                    
 01-12-05 14:13 JonathanL      Note Added: 0003163                          
+01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
+    
+01-12-05 15:02 tiwai          Note Added: 0003164                          
+01-12-05 15:03 tiwai          Note Added: 0003165                          
+01-12-05 15:04 tiwai          Note Added: 0003166                          
 ======================================================================
 
 
