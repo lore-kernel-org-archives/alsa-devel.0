@@ -1,11 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: should i be able to abort in the middle of
- snd_pcm_mmap_{begin,commit} ?
-Date: Tue, 19 Feb 2002 08:15:56 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202190812250.535-100000@pnote.perex-int.cz>
+Subject: RE: Sequencer events not arriving guaranteed
+Date: Tue, 19 Feb 2002 09:11:42 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202190909040.535-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.LNX.4.44.0202190354560.3739-100000@ecabase.localdomain>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA22096
+	for <alsa-devel@alsa-project.org>; Tue, 19 Feb 2002 09:12:32 +0100
+In-Reply-To: <XFMail.020219070036.guenther.sohler@newlogic.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,48 +16,64 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Guenther Sohler <guenther.sohler@newlogic.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Feb 2002, Kai Vehmanen wrote:
+On Tue, 19 Feb 2002, Guenther Sohler wrote:
 
-> I think we can close this problem at least for now. The cause for the
-> garbled audio problem was found from JACK's side.
 >
-> I'm still a bit puzzled why I didn't get xruns in the test case quoted
-> below, but until I can reproduce the problem, there's not much to discuss
-> about. But for the readers of alsa-devel archives, if you are having xrun
-> detection problems with ALSA mmap pcm API, do post a message about it. :)
+> On 18-Feb-02 Guenther Sohler wrote:
+> > Hello ALSA Gang,
+> >
+> > In my system i have primarily two important alsa ports for me
+> >
+> > 64:0 is the external midi keyboard
+> > 65:0 is the wavetable synth of my creative audixy
+> >
+> > I have written following code:
+> >
+> >
+> >#include<alsa/asoundlib.h>
+> >#include <stdio.h>
+> >#include <stdlib.h>
+> >#include <string.h>
+> >#include <errno.h>
+> >#include <ctype.h>
+> >#include <getopt.h>
+> >
+> >
+> >
+> >
+> >
+> > int main(int argc, char *argv[])
+> > {
+> >         int xxx;
+> >         snd_seq_event_t ev;
+> >         snd_seq_t *handle;
+> >         sscanf(argv[1],"%d",&xxx);
+> >         snd_seq_open(&handle,"hw",SND_SEQ_OPEN_DUPLEX,0);
+> >         bzero(&ev, sizeof(ev));
+> >         ev.queue=SND_SEQ_QUEUE_DIRECT;
+> >         ev.dest.client=xxx;
+> >         ev.dest.port=0;
+> >         ev.type = SND_SEQ_EVENT_NOTEON;
+> >         ev.data.note.channel = 0;
+> >         ev.data.note.note = 64;
+> >         ev.data.note.velocity = 127;
+> >         snd_seq_event_output_direct(handle, &ev);
+> this also causes the same error
+> >         sleep(1);
+> >         ev.type = SND_SEQ_EVENT_NOTEOFF;
+> >         snd_seq_event_output_direct(handle, &ev);
+> Now I have found, that this command causes an error Nr 28
+> "No Space left on device" But I dont have an idea, why ?
 
-You posted this sw params on alsa-devel a few days ago:
-
-sw_params:
-
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 1024
-xfer_align: 1024
-start_threshold: 4294967295
-stop_threshold: 4294967295
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
---cut--
-
-As you can see, the stop_threshold is set to UMAX_INT. In case when
-stop_threshold is above ring buffer size, then it means for drivers: I
-don't care about xruns, don't report them. The stop threshold must be
-equal to ring buffer size to get xruns when no more frames are in ring
-buffer.
-
-> On Thu, 14 Feb 2002, Kai Vehmanen wrote:
->
-> > - no xruns are detected even though after the timeout
-> >   alsa_driver_wait() took 56.4msec which is more than
-> >   period_size * number_of_periods (1024*2/44100*1000=46msec);
-> >   in other words there should have been an xrun
+It's not an error but written bytes. I found a few implementation bugs for
+direct event handling. The CVS code returns -ENODEV for your events. You
+have to subscribe the MIDI port to your port before sending events,
+otherwise the output rawmidi device is not opened, thus it can't accept
+any events.
 
 						Jaroslav
 
