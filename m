@@ -1,8 +1,8 @@
 From: Clemens Ladisch <clemens@ladisch.de>
 Subject: Re: MIDI getting killed by Jack?
-Date: Thu, 11 Sep 2003 17:02:48 +0200 (METDST)
+Date: Thu, 11 Sep 2003 17:42:21 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0309111623030.20181-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.HPX.4.33n.0309111736240.24243-100000@studcom.urz.uni-halle.de>
 References: <200309111306.h8BD6Tfv007234@oud>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -24,26 +24,12 @@ List-Id: alsa-devel@alsa-project.org
 Paul Davis wrote:
 > >When an interrupt for MIDI input occurs, the hdsp driver disables all
 > >further MIDI interrupts until the current input data has been read.
->
-> the hdsp driver is one of the first alsa drivers to use tasklets to
-> handle MIDI without impacting audio latency (that is, we can continue
-> processing audio i/o even while MIDI i/o is pending). once we have
-> launched a tasklet to handle MIDI input, there is no point handling
-> more interrupts that tell us the same thing.
->
-> the tasklet stuff relies on the kernel scheduler, but AFAIK, the
-> tasklet effectively runs like the kernel equivalent of a SCHED_FIFO
-> thread. i don't know at what priority, however.
 
-AFAIK tasklets have higher priority than any user thread.
+... and midi_input_trigger flushes the input FIFO if the interrupt bit
+isn't set.
 
->From the error description I diagnose that either MIDI interrupts or
-the MIDI tasklet are suppressed while jack is running. It shouldn't be
-possible to prevent a tasklet from running unless the CPU usage is
-100%, so I think it's somehow related to interrupts.
-
-Maybe the hardware doesn't set (or clears) the MIDI bit when too many
-PCM interrupts occur, but I'm just guessing here.
+Unfortunately, this does not seem to be the bug we're searching for.
+:)
 
 
 Regards,
