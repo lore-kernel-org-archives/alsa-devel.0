@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000523]: Unable to get SPDIF output on Biostar IDEQ minipc
-Date: Fri, 24 Sep 2004 15:57:52 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [PATCH] emu10k1: add interval timer support
+Date: Fri, 24 Sep 2004 15:56:52 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924135752.162593E01A@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0409241546570.2289@pnote.perex-int.cz>
+References: <1095405566.19045.35.camel@krustophenia.net>
+ <Pine.LNX.4.58.0409171052300.1774@pnote.perex-int.cz>
+ <1095795402.13220.21.camel@krustophenia.net> <s5hacvizjzv.wl@alsa2.suse.de>
+ <1095865270.498.20.camel@krustophenia.net> <s5hpt4b3hq5.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6B1C829F
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 15:57:52 +0200 (MEST)
+In-Reply-To: <s5hpt4b3hq5.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,137 +19,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 24 Sep 2004, Takashi Iwai wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000523
-======================================================================
-Reported By:                pharm
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     523
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian unstable
-Kernel Version:             2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-======================================================================
-Date Submitted:             09-22-2004 22:48 CEST
-Last Modified:              09-24-2004 15:57 CEST
-======================================================================
-Summary:                    Unable to get SPDIF output on Biostar IDEQ minipc
-Description: 
-I have a Biostar IDEQ 210V minipc. As well as 6 channel analog out (which
-appears to work, at least stereo analog out does for certain) there are
-two digital (optical) SPDIF outputs. Unfortunately I can't get anything to
-recognise these -- mplayer complains about the lack of IEC958 mixer
-entries if I try to use the hwac3 output, and if I point the 
-alsa output at any of the list of hardware outputs I get nothing from the
-digital amp -- it doesn't appear to get any signal.
+> > How would I open only channels 10 and 11 with one app and 1-6 with
+> > another using a single 16 channel device?  
+> 
+> It's doable to implement the multi-channel non-interleaved PCM with
+> multi open.  But even in this case, we provide eventually 16
+> substreams, so perhaps providing 16 mono substreams would be easier to
+> implement (at least for the kernel driver).
+> 
+> Regarding the efficiency (latency), there will be no difference
+> between the multi-channel and multi-substream implementations.
+> In the latter case, we can use linked substreams, as you already
+> mentioned.
 
-Assuming I'm not doing something dumb, is there anything else I should
-try? I've tried all the ac97_quirk options.
-======================================================================
+I don't understand much the requirement. If you want to use other ALSA 
+(legacy) applications, you can reroute them to appropriate FX bus only.
+The controls are already available.
 
-----------------------------------------------------------------------
- tiwai - 09-23-2004 18:25 CEST 
-----------------------------------------------------------------------
-Could you try the attached patch?
-(Note that it's totally untested.)
+The multichannel PCM should be best only for multichannel recording /
+playback. You're trying to desing a new API which does not make much
+sense.
 
-----------------------------------------------------------------------
- pharm - 09-23-2004 22:09 CEST 
-----------------------------------------------------------------------
-What am I looking for? It seems to detect OK:
-/proc/asound/card0/codec97#0/ac97#0-0 contains the new ID string.
+						Jaroslav
 
-but there's no sound output :( (unless I've fouled up the mixer -- will
-check again)
-
-Is there stuff I can twiddle to see what works? I'll have a spelunk
-through the patch, but I'm not familiar with the alsa internals
-unfortunately...
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 12:03 CEST 
-----------------------------------------------------------------------
-What about th spdif output with the patch?
-(make sure to use 1.0.7rc, not 1.0.6a)
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 12:28 CEST 
-----------------------------------------------------------------------
-Ah. Think I may have applied it to 1.0.6a. Will retest!
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 13:34 CEST 
-----------------------------------------------------------------------
-Ah ha. With patch applied to 1.0.7rc1 the rear SPDIF now lights up.
-Still no sound out of analogue or digital outputs as far as I can hear
-though.
-
-cheers, Phil
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 14:33 CEST 
-----------------------------------------------------------------------
-Can you try ac3dec in alsa-utils package for testing SPDIF output?
-Run with -C option so that it works in the ac3 passthru mode.
-
-----------------------------------------------------------------------
- tiwai - 09-24-2004 15:29 CEST 
-----------------------------------------------------------------------
-Could you try the second patch?  Revert the last patch before applying the
-new one.
-Reboot your machine after installing the new driver to be sure.
-
-Also, if this still doesn't work, try to remove lines in
-alsa-kernel/pci/ac97/ac97_patch.c:1910,
-
-	/* FIXME: set up GPIO */
-	snd_ac97_write_cache(ac97, 0x70, 0x0100);
-	snd_ac97_write_cache(ac97, 0x72, 0x0020);
-
-----------------------------------------------------------------------
- pharm - 09-24-2004 15:57 CEST 
-----------------------------------------------------------------------
-$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C
-Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
-ALSA lib setup.c:548:(add_elem) Cannot obtain info for CTL elem
-(MIXER,'IEC958 Playback AC97-SPSA',0,0,0): No such file or directory
-snd_pcm_open: No such file or directory
-Output open failed
-
-$ ./tools/extract_ac3 dolby-aurora.vob | ./ac3dec -C -D hw:0,0
-Using PCM device 'hw:0,0'
-AC3 Stream 48.0 KHz 448 kbps
-
-but no sound from the latter with either hw:0,0 or hw:0,1
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-22-04 22:48 pharm          New Bug                                      
-09-22-04 22:48 pharm          Distribution              => Debian unstable 
-09-22-04 22:48 pharm          Kernel Version            => 2.4.27-1-k7 with alsa 1.0.6a (1.0.7rc1 doesn't work either)
-09-23-04 18:25 tiwai          Bugnote Added: 0001829                       
-09-23-04 18:26 tiwai          File Added: cm9761-add.dif                    
-09-23-04 22:09 pharm          Bugnote Added: 0001851                       
-09-24-04 09:28 pharm          Bug Monitored: pharm                         
-09-24-04 12:03 tiwai          Bugnote Added: 0001869                       
-09-24-04 12:28 pharm          Bugnote Added: 0001877                       
-09-24-04 13:34 pharm          Bugnote Added: 0001882                       
-09-24-04 14:33 tiwai          Bugnote Added: 0001886                       
-09-24-04 15:29 tiwai          Bugnote Added: 0001890                       
-09-24-04 15:29 tiwai          File Added: cm9761-add-take2.dif                    
-09-24-04 15:57 pharm          Bugnote Added: 0001892                       
-======================================================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
