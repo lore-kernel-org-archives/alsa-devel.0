@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
-Date: Wed,  8 Sep 2004 17:55:04 +0200 (CEST)
+Subject: [ALSA - utils 0000451]: Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
+Date: Wed,  8 Sep 2004 18:44:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040908155504.0AE8B13001@server.perex-int.cz>
+Message-ID: <20040908164419.6F01B13001@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A91A2CE
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 17:55:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D18CC280
+	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 18:44:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,114 +20,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000451
 ======================================================================
-Reported By:                Andrew
-Assigned To:                
+Reported By:                cuardin
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     453
-Category:                   PCI - ice1724
+Project:                    ALSA - utils
+Bug ID:                     451
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             08-18-2004 13:16 CEST
-Last Modified:              09-08-2004 17:55 CEST
+Date Submitted:             08-18-2004 10:00 CEST
+Last Modified:              09-08-2004 18:44 CEST
 ======================================================================
-Summary:                    it is impossible to select spdif as capture source
+Summary:                    Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
 Description: 
-There are no anything spdif-input-related among
-capture source enumeration.
+If the file /etc/asound.state is corrupted, for example due to a
+file-system corruption after a hard-reboot, the boot process will halt
+when attempting to restore the mixer settings. Pressing Ctrl-C will resume
+the boot process. 
+
+Upon shutdown, the process will halt when attempting to store mixer
+settings requiring a hard reboot.
+
+A work-around is to delete the offending file. 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 08-25-2004 19:55 CEST 
+ perex - 09-08-2004 18:44 CEST 
 ----------------------------------------------------------------------
-Did you use 'iec958' pcm?
+This patch (included in CVS) fixes your problem:
 
-    % arecord -Diec958 -fdat foo.wav
-
-----------------------------------------------------------------------
- Andrew - 08-25-2004 23:47 CEST 
-----------------------------------------------------------------------
-A dat fromat doesn't work: "Sample format non available"
-I have tried
-
-arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
-
-Format/rate are accepted, but the resulted file is empty.
-I use aureon 7.1.
-
-While filing the isuue, I have thought about capture selecting via
-mixer Capture Source control. Does this (others?) control influence
-to shown above command working?
-
-----------------------------------------------------------------------
- tiwai - 08-27-2004 19:39 CEST 
-----------------------------------------------------------------------
-You can use'plug:iec958' for 16bit conversion.
-
-"Capture Source" shouldn't affect the digital input.
-It might be a wrong CS8415 initialization sequence in the driver...
-
-----------------------------------------------------------------------
- Andrew - 09-07-2004 10:33 CEST 
-----------------------------------------------------------------------
-I have tried with plug:iec958 with the same silent file. Is there any way
-to be sure spdif input is receiving some signal?
-
-----------------------------------------------------------------------
- tiwai - 09-08-2004 17:16 CEST 
-----------------------------------------------------------------------
-Could you elaborate more?
-Is the DMA working?  Or did you get the short-cut output?
-Is it all zero or any signals in the output?
-
-Also, as I wrote, the CS8415 init sequence might be wrong.
-Compare the CS8415 init data in aureon.c with the datasheet
-whether it's correct for your setting.
-
-----------------------------------------------------------------------
- Andrew - 09-08-2004 17:55 CEST 
-----------------------------------------------------------------------
-Takashi,
-
-You think I'm more clever than I am :-)
-
-OK, the aim is simple: to be able to record from FM tuner. Last one is an
-"onboard" tuner of AV receiver. Last one is the only source I can try as
-source
-with spdif output. All this is the reason of my last question about a way
-to be
-sure spdif input is receiving some signal: my sound card is the only
-device I
-can use to receive something via spdif.
-
-All my attempts of capturing from spdif input lead to silent wav file.
-
-I will be happy to answer to your question about DMA and init data, but
-I don't understand these things. I see, the issue is not of high
-priority,
-so I'm ready to wait for the moment you will find a minute to clarify
-starting point(s) for my next attempts to bugnote in more informative
-manner :-)
+Index: conf.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/conf.c,v
+retrieving revision 1.69
+diff -u -r1.69 conf.c
+--- conf.c      25 Feb 2004 11:24:29 -0000      1.69
++++ conf.c      8 Sep 2004 16:41:59 -0000
+@@ -813,6 +813,7 @@
+        case '}':
+        case '[':
+        case ']':
++       case '\\':
+                return LOCAL_UNEXPECTED_CHAR;
+        case '\'':
+        case '"':
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 13:16 Andrew         New Bug                                      
-08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
-08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
-08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
-09-07-04 10:33 Andrew         Bugnote Added: 0001706                       
-09-08-04 17:16 tiwai          Bugnote Added: 0001734                       
-09-08-04 17:55 Andrew         Bugnote Added: 0001737                       
+08-18-04 10:00 cuardin        New Bug                                      
+08-18-04 10:00 cuardin        File Added: asound.state                     
+08-19-04 04:54 eradicator     Bug Monitored: eradicator                    
+09-08-04 18:44 perex          Bugnote Added: 0001739                       
+09-08-04 18:44 perex          Assigned To               => perex           
+09-08-04 18:44 perex          Resolution               open => fixed       
+09-08-04 18:44 perex          Status                   new => resolved     
 ======================================================================
 
 
