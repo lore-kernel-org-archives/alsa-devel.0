@@ -1,8 +1,8 @@
 From: Art Haas <ahaas@airmail.net>
-Subject: [PATCH] Replace obsolete GCC initializer syntax [2/3]
-Date: Thu, 17 Jul 2003 07:46:24 -0500
+Subject: [PATCH] Replace obsolete GCC initializer syntax [3/3]
+Date: Thu, 17 Jul 2003 07:47:14 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030717124624.GD3788@artsapartment.org>
+Message-ID: <20030717124714.GE3788@artsapartment.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -20,300 +20,117 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi.
 
-Here's the second patch.
+Here's the third patch.
 
-Index: alsa-lib/src/pcm/pcm_file.c
+Index: alsa-lib/src/pcm/pcm_plug.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_file.c,v
-retrieving revision 1.59
-diff -u -u -r1.59 pcm_file.c
---- alsa-lib/src/pcm/pcm_file.c	7 Mar 2003 18:46:25 -0000	1.59
-+++ alsa-lib/src/pcm/pcm_file.c	16 Jul 2003 15:21:17 -0000
-@@ -413,40 +413,39 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_plug.c,v
+retrieving revision 1.122
+diff -u -u -r1.122 pcm_plug.c
+--- alsa-lib/src/pcm/pcm_plug.c	12 Feb 2003 21:57:51 -0000	1.122
++++ alsa-lib/src/pcm/pcm_plug.c	16 Jul 2003 15:21:41 -0000
+@@ -955,19 +955,18 @@
  }
  
- static snd_pcm_ops_t snd_pcm_file_ops = {
--	close: snd_pcm_file_close,
--	info: snd_pcm_file_info,
--	hw_refine: snd_pcm_file_hw_refine,
--	hw_params: snd_pcm_file_hw_params,
--	hw_free: snd_pcm_file_hw_free,
--	sw_params: snd_pcm_file_sw_params,
--	channel_info: snd_pcm_file_channel_info,
--	dump: snd_pcm_file_dump,
--	nonblock: snd_pcm_file_nonblock,
--	async: snd_pcm_file_async,
--	mmap: snd_pcm_file_mmap,
--	munmap: snd_pcm_file_munmap,
-+	.close 		= snd_pcm_file_close,
-+	.info 		= snd_pcm_file_info,
-+	.hw_refine 	= snd_pcm_file_hw_refine,
-+	.hw_params 	= snd_pcm_file_hw_params,
-+	.hw_free 	= snd_pcm_file_hw_free,
-+	.sw_params 	= snd_pcm_file_sw_params,
-+	.channel_info 	= snd_pcm_file_channel_info,
-+	.dump 		= snd_pcm_file_dump,
-+	.nonblock 	= snd_pcm_file_nonblock,
-+	.async 		= snd_pcm_file_async,
-+	.mmap 		= snd_pcm_file_mmap,
-+	.munmap 	= snd_pcm_file_munmap,
- };
- 
- static snd_pcm_fast_ops_t snd_pcm_file_fast_ops = {
--	status: snd_pcm_file_status,
--	state: snd_pcm_file_state,
--	hwsync: snd_pcm_file_hwsync,
--	delay: snd_pcm_file_delay,
--	prepare: snd_pcm_file_prepare,
--	reset: snd_pcm_file_reset,
--	start: snd_pcm_file_start,
--	drop: snd_pcm_file_drop,
--	drain: snd_pcm_file_drain,
--	pause: snd_pcm_file_pause,
--	rewind: snd_pcm_file_rewind,
--	forward: snd_pcm_file_forward,
--	resume: snd_pcm_file_resume,
--	writei: snd_pcm_file_writei,
--	writen: snd_pcm_file_writen,
--	readi: snd_pcm_file_readi,
--	readn: snd_pcm_file_readn,
--	avail_update: snd_pcm_file_avail_update,
--	mmap_commit: snd_pcm_file_mmap_commit,
-+	.status 	= snd_pcm_file_status,
-+	.state 		= snd_pcm_file_state,
-+	.hwsync 	= snd_pcm_file_hwsync,
-+	.delay 		= snd_pcm_file_delay,
-+	.prepare 	= snd_pcm_file_prepare,
-+	.reset 		= snd_pcm_file_reset,
-+	.start 		= snd_pcm_file_start,
-+	.drop 		= snd_pcm_file_drop,
-+	.drain 		= snd_pcm_file_drain,
-+	.pause 		= snd_pcm_file_pause,
-+	.rewind 	= snd_pcm_file_rewind,
-+	.resume 	= snd_pcm_file_resume,
-+	.writei 	= snd_pcm_file_writei,
-+	.writen 	= snd_pcm_file_writen,
-+	.readi 		= snd_pcm_file_readi,
-+	.readn 		= snd_pcm_file_readn,
-+	.avail_update 	= snd_pcm_file_avail_update,
-+	.mmap_commit 	= snd_pcm_file_mmap_commit,
+ static snd_pcm_ops_t snd_pcm_plug_ops = {
+-	close: snd_pcm_plug_close,
+-	info: snd_pcm_plug_info,
+-	hw_refine: snd_pcm_plug_hw_refine,
+-	hw_params: snd_pcm_plug_hw_params,
+-	hw_free: snd_pcm_plug_hw_free,
+-	sw_params: snd_pcm_plug_sw_params,
+-	channel_info: snd_pcm_plug_channel_info,
+-	dump: snd_pcm_plug_dump,
+-	nonblock: snd_pcm_plug_nonblock,
+-	async: snd_pcm_plug_async,
+-	poll_revents: snd_pcm_plug_poll_revents,
+-	mmap: snd_pcm_plug_mmap,
+-	munmap: snd_pcm_plug_munmap,
++	.close 		= snd_pcm_plug_close,
++	.info 		= snd_pcm_plug_info,
++	.hw_refine 	= snd_pcm_plug_hw_refine,
++	.hw_params 	= snd_pcm_plug_hw_params,
++	.hw_free 	= snd_pcm_plug_hw_free,
++	.sw_params 	= snd_pcm_plug_sw_params,
++	.channel_info 	= snd_pcm_plug_channel_info,
++	.dump 		= snd_pcm_plug_dump,
++	.nonblock 	= snd_pcm_plug_nonblock,
++	.async 		= snd_pcm_plug_async,
++	.mmap 		= snd_pcm_plug_mmap,
++	.munmap 	= snd_pcm_plug_munmap,
  };
  
  /**
-Index: alsa-lib/src/pcm/pcm_hooks.c
+Index: alsa-lib/src/pcm/pcm_plugin.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_hooks.c,v
-retrieving revision 1.29
-diff -u -u -r1.29 pcm_hooks.c
---- alsa-lib/src/pcm/pcm_hooks.c	7 Mar 2003 18:46:26 -0000	1.29
-+++ alsa-lib/src/pcm/pcm_hooks.c	16 Jul 2003 15:21:17 -0000
-@@ -287,40 +287,39 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_plugin.c,v
+retrieving revision 1.90
+diff -u -u -r1.90 pcm_plugin.c
+--- alsa-lib/src/pcm/pcm_plugin.c	8 Mar 2003 16:35:20 -0000	1.90
++++ alsa-lib/src/pcm/pcm_plugin.c	16 Jul 2003 15:21:42 -0000
+@@ -646,25 +646,24 @@
  }
  
- static snd_pcm_ops_t snd_pcm_hooks_ops = {
--	close: snd_pcm_hooks_close,
--	info: snd_pcm_hooks_info,
--	hw_refine: snd_pcm_hooks_hw_refine,
--	hw_params: snd_pcm_hooks_hw_params,
--	hw_free: snd_pcm_hooks_hw_free,
--	sw_params: snd_pcm_hooks_sw_params,
--	channel_info: snd_pcm_hooks_channel_info,
--	dump: snd_pcm_hooks_dump,
--	nonblock: snd_pcm_hooks_nonblock,
--	async: snd_pcm_hooks_async,
--	mmap: snd_pcm_hooks_mmap,
--	munmap: snd_pcm_hooks_munmap,
-+	.close 		= snd_pcm_hooks_close,
-+	.info 		= snd_pcm_hooks_info,
-+	.hw_refine 	= snd_pcm_hooks_hw_refine,
-+	.hw_params 	= snd_pcm_hooks_hw_params,
-+	.hw_free 	= snd_pcm_hooks_hw_free,
-+	.sw_params 	= snd_pcm_hooks_sw_params,
-+	.channel_info 	= snd_pcm_hooks_channel_info,
-+	.dump 		= snd_pcm_hooks_dump,
-+	.nonblock 	= snd_pcm_hooks_nonblock,
-+	.async 		= snd_pcm_hooks_async,
-+	.mmap 		= snd_pcm_hooks_mmap,
-+	.munmap 	= snd_pcm_hooks_munmap,
+ snd_pcm_fast_ops_t snd_pcm_plugin_fast_ops = {
+-	status: snd_pcm_plugin_status,
+-	state: snd_pcm_plugin_state,
+-	hwsync: snd_pcm_plugin_hwsync,
+-	delay: snd_pcm_plugin_delay,
+-	prepare: snd_pcm_plugin_prepare,
+-	reset: snd_pcm_plugin_reset,
+-	start: snd_pcm_plugin_start,
+-	drop: snd_pcm_plugin_drop,
+-	drain: snd_pcm_plugin_drain,
+-	pause: snd_pcm_plugin_pause,
+-	rewind: snd_pcm_plugin_rewind,
+-	forward: snd_pcm_plugin_forward,
+-	resume: snd_pcm_plugin_resume,
+-	writei: snd_pcm_plugin_writei,
+-	writen: snd_pcm_plugin_writen,
+-	readi: snd_pcm_plugin_readi,
+-	readn: snd_pcm_plugin_readn,
+-	avail_update: snd_pcm_plugin_avail_update,
+-	mmap_commit: snd_pcm_plugin_mmap_commit,
++	.status 	= snd_pcm_plugin_status,
++	.state 		= snd_pcm_plugin_state,
++	.hwsync 	= snd_pcm_plugin_hwsync,
++	.delay 		= snd_pcm_plugin_delay,
++	.prepare 	= snd_pcm_plugin_prepare,
++	.reset 		= snd_pcm_plugin_reset,
++	.start 		= snd_pcm_plugin_start,
++	.drop 		= snd_pcm_plugin_drop,
++	.drain 		= snd_pcm_plugin_drain,
++	.pause 		= snd_pcm_plugin_pause,
++	.rewind 	= snd_pcm_plugin_rewind,
++	.resume 	= snd_pcm_plugin_resume,
++	.writei 	= snd_pcm_plugin_writei,
++	.writen 	= snd_pcm_plugin_writen,
++	.readi 		= snd_pcm_plugin_readi,
++	.readn 		= snd_pcm_plugin_readn,
++	.avail_update 	= snd_pcm_plugin_avail_update,
++	.mmap_commit 	= snd_pcm_plugin_mmap_commit,
  };
  
- static snd_pcm_fast_ops_t snd_pcm_hooks_fast_ops = {
--	status: snd_pcm_hooks_status,
--	state: snd_pcm_hooks_state,
--	hwsync: snd_pcm_hooks_hwsync,
--	delay: snd_pcm_hooks_delay,
--	prepare: snd_pcm_hooks_prepare,
--	reset: snd_pcm_hooks_reset,
--	start: snd_pcm_hooks_start,
--	drop: snd_pcm_hooks_drop,
--	drain: snd_pcm_hooks_drain,
--	pause: snd_pcm_hooks_pause,
--	rewind: snd_pcm_hooks_rewind,
--	forward: snd_pcm_hooks_forward,
--	resume: snd_pcm_hooks_resume,
--	writei: snd_pcm_hooks_writei,
--	writen: snd_pcm_hooks_writen,
--	readi: snd_pcm_hooks_readi,
--	readn: snd_pcm_hooks_readn,
--	avail_update: snd_pcm_hooks_avail_update,
--	mmap_commit: snd_pcm_hooks_mmap_commit,
-+	.status 	= snd_pcm_hooks_status,
-+	.state 		= snd_pcm_hooks_state,
-+	.hwsync 	= snd_pcm_hooks_hwsync,
-+	.delay 		= snd_pcm_hooks_delay,
-+	.prepare 	= snd_pcm_hooks_prepare,
-+	.reset 		= snd_pcm_hooks_reset,
-+	.start 		= snd_pcm_hooks_start,
-+	.drop 		= snd_pcm_hooks_drop,
-+	.drain 		= snd_pcm_hooks_drain,
-+	.pause 		= snd_pcm_hooks_pause,
-+	.rewind 	= snd_pcm_hooks_rewind,
-+	.resume 	= snd_pcm_hooks_resume,
-+	.writei 	= snd_pcm_hooks_writei,
-+	.writen 	= snd_pcm_hooks_writen,
-+	.readi 		= snd_pcm_hooks_readi,
-+	.readn 		= snd_pcm_hooks_readn,
-+	.avail_update 	= snd_pcm_hooks_avail_update,
-+	.mmap_commit 	= snd_pcm_hooks_mmap_commit,
- };
  
- /**
-Index: alsa-lib/src/pcm/pcm_hw.c
+Index: alsa-lib/src/pcm/pcm_rate.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_hw.c,v
-retrieving revision 1.120
-diff -u -u -r1.120 pcm_hw.c
---- alsa-lib/src/pcm/pcm_hw.c	4 May 2003 20:07:30 -0000	1.120
-+++ alsa-lib/src/pcm/pcm_hw.c	16 Jul 2003 15:21:17 -0000
-@@ -843,40 +843,39 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_rate.c,v
+retrieving revision 1.71
+diff -u -u -r1.71 pcm_rate.c
+--- alsa-lib/src/pcm/pcm_rate.c	8 Mar 2003 16:35:20 -0000	1.71
++++ alsa-lib/src/pcm/pcm_rate.c	16 Jul 2003 15:21:46 -0000
+@@ -568,19 +568,18 @@
  }
  
- static snd_pcm_ops_t snd_pcm_hw_ops = {
--	close: snd_pcm_hw_close,
--	info: snd_pcm_hw_info,
--	hw_refine: snd_pcm_hw_hw_refine,
--	hw_params: snd_pcm_hw_hw_params,
--	hw_free: snd_pcm_hw_hw_free,
--	sw_params: snd_pcm_hw_sw_params,
--	channel_info: snd_pcm_hw_channel_info,
--	dump: snd_pcm_hw_dump,
--	nonblock: snd_pcm_hw_nonblock,
--	async: snd_pcm_hw_async,
--	mmap: snd_pcm_hw_mmap,
--	munmap: snd_pcm_hw_munmap,
-+	.close 			= snd_pcm_hw_close,
-+	.info 			= snd_pcm_hw_info,
-+	.hw_refine 		= snd_pcm_hw_hw_refine,
-+	.hw_params 		= snd_pcm_hw_hw_params,
-+	.hw_free 		= snd_pcm_hw_hw_free,
-+	.sw_params 		= snd_pcm_hw_sw_params,
-+	.channel_info 		= snd_pcm_hw_channel_info,
-+	.dump 			= snd_pcm_hw_dump,
-+	.nonblock 		= snd_pcm_hw_nonblock,
-+	.async 			= snd_pcm_hw_async,
-+	.mmap 			= snd_pcm_hw_mmap,
-+	.munmap 		= snd_pcm_hw_munmap,
- };
- 
- static snd_pcm_fast_ops_t snd_pcm_hw_fast_ops = {
--	status: snd_pcm_hw_status,
--	state: snd_pcm_hw_state,
--	hwsync: snd_pcm_hw_hwsync,
--	delay: snd_pcm_hw_delay,
--	prepare: snd_pcm_hw_prepare,
--	reset: snd_pcm_hw_reset,
--	start: snd_pcm_hw_start,
--	drop: snd_pcm_hw_drop,
--	drain: snd_pcm_hw_drain,
--	pause: snd_pcm_hw_pause,
--	rewind: snd_pcm_hw_rewind,
--	forward: snd_pcm_hw_forward,
--	resume: snd_pcm_hw_resume,
--	writei: snd_pcm_hw_writei,
--	writen: snd_pcm_hw_writen,
--	readi: snd_pcm_hw_readi,
--	readn: snd_pcm_hw_readn,
--	avail_update: snd_pcm_hw_avail_update,
--	mmap_commit: snd_pcm_hw_mmap_commit,
-+	.status 		= snd_pcm_hw_status,
-+	.state 			= snd_pcm_hw_state,
-+	.hwsync 		= snd_pcm_hw_hwsync,
-+	.delay 			= snd_pcm_hw_delay,
-+	.prepare 		= snd_pcm_hw_prepare,
-+	.reset 			= snd_pcm_hw_reset,
-+	.start 			= snd_pcm_hw_start,
-+	.drop 			= snd_pcm_hw_drop,
-+	.drain 			= snd_pcm_hw_drain,
-+	.pause 			= snd_pcm_hw_pause,
-+	.rewind 		= snd_pcm_hw_rewind,
-+	.resume 		= snd_pcm_hw_resume,
-+	.writei 		= snd_pcm_hw_writei,
-+	.writen 		= snd_pcm_hw_writen,
-+	.readi 			= snd_pcm_hw_readi,
-+	.readn 			= snd_pcm_hw_readn,
-+	.avail_update 		= snd_pcm_hw_avail_update,
-+	.mmap_commit 		= snd_pcm_hw_mmap_commit,
- };
- 
- /**
-Index: alsa-lib/src/pcm/pcm_ladspa.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_ladspa.c,v
-retrieving revision 1.14
-diff -u -u -r1.14 pcm_ladspa.c
---- alsa-lib/src/pcm/pcm_ladspa.c	14 Jun 2003 07:38:28 -0000	1.14
-+++ alsa-lib/src/pcm/pcm_ladspa.c	16 Jul 2003 15:21:25 -0000
-@@ -697,19 +697,18 @@
- }
- 
- static snd_pcm_ops_t snd_pcm_ladspa_ops = {
--	close: snd_pcm_ladspa_close,
--	info: snd_pcm_plugin_info,
--	hw_refine: snd_pcm_ladspa_hw_refine,
--	hw_params: snd_pcm_ladspa_hw_params,
--	hw_free: snd_pcm_ladspa_hw_free,
--	sw_params: snd_pcm_plugin_sw_params,
--	channel_info: snd_pcm_plugin_channel_info,
--	dump: snd_pcm_ladspa_dump,
--	nonblock: snd_pcm_plugin_nonblock,
--	async: snd_pcm_plugin_async,
--	poll_revents: snd_pcm_plugin_poll_revents,
--	mmap: snd_pcm_plugin_mmap,
--	munmap: snd_pcm_plugin_munmap,
-+	.close 		= snd_pcm_ladspa_close,
-+	.info 		= snd_pcm_plugin_info,
-+	.hw_refine 	= snd_pcm_ladspa_hw_refine,
-+	.hw_params 	= snd_pcm_ladspa_hw_params,
-+	.hw_free 	= snd_pcm_ladspa_hw_free,
-+	.sw_params 	= snd_pcm_plugin_sw_params,
-+	.channel_info 	= snd_pcm_plugin_channel_info,
-+	.dump 		= snd_pcm_ladspa_dump,
-+	.nonblock 	= snd_pcm_plugin_nonblock,
-+	.async 		= snd_pcm_plugin_async,
-+	.mmap 		= snd_pcm_plugin_mmap,
-+	.munmap 	= snd_pcm_plugin_munmap,
- };
- 
- static int snd_pcm_ladspa_check_file(snd_pcm_ladspa_plugin_t * const plugin,
-Index: alsa-lib/src/pcm/pcm_lfloat.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_lfloat.c,v
-retrieving revision 1.13
-diff -u -u -r1.13 pcm_lfloat.c
---- alsa-lib/src/pcm/pcm_lfloat.c	11 Feb 2003 18:14:47 -0000	1.13
-+++ alsa-lib/src/pcm/pcm_lfloat.c	16 Jul 2003 15:21:25 -0000
-@@ -350,19 +350,18 @@
- }
- 
- static snd_pcm_ops_t snd_pcm_lfloat_ops = {
+ static snd_pcm_ops_t snd_pcm_rate_ops = {
 -	close: snd_pcm_plugin_close,
 -	info: snd_pcm_plugin_info,
--	hw_refine: snd_pcm_lfloat_hw_refine,
--	hw_params: snd_pcm_lfloat_hw_params,
--	hw_free: snd_pcm_plugin_hw_free,
--	sw_params: snd_pcm_plugin_sw_params,
+-	hw_refine: snd_pcm_rate_hw_refine,
+-	hw_params: snd_pcm_rate_hw_params,
+-	hw_free: snd_pcm_rate_hw_free,
+-	sw_params: snd_pcm_rate_sw_params,
 -	channel_info: snd_pcm_plugin_channel_info,
--	dump: snd_pcm_lfloat_dump,
+-	dump: snd_pcm_rate_dump,
 -	nonblock: snd_pcm_plugin_nonblock,
 -	async: snd_pcm_plugin_async,
 -	poll_revents: snd_pcm_plugin_poll_revents,
@@ -321,675 +138,409 @@ diff -u -u -r1.13 pcm_lfloat.c
 -	munmap: snd_pcm_plugin_munmap,
 +	.close 		= snd_pcm_plugin_close,
 +	.info 		= snd_pcm_plugin_info,
-+	.hw_refine 	= snd_pcm_lfloat_hw_refine,
-+	.hw_params 	= snd_pcm_lfloat_hw_params,
-+	.hw_free 	= snd_pcm_plugin_hw_free,
-+	.sw_params 	= snd_pcm_plugin_sw_params,
++	.hw_refine 	= snd_pcm_rate_hw_refine,
++	.hw_params 	= snd_pcm_rate_hw_params,
++	.hw_free 	= snd_pcm_rate_hw_free,
++	.sw_params 	= snd_pcm_rate_sw_params,
 +	.channel_info 	= snd_pcm_plugin_channel_info,
-+	.dump 		= snd_pcm_lfloat_dump,
++	.dump 		= snd_pcm_rate_dump,
 +	.nonblock 	= snd_pcm_plugin_nonblock,
 +	.async 		= snd_pcm_plugin_async,
 +	.mmap 		= snd_pcm_plugin_mmap,
 +	.munmap 	= snd_pcm_plugin_munmap,
  };
  
- /**
-Index: alsa-lib/src/pcm/pcm_linear.c
+ 
+Index: alsa-lib/src/pcm/pcm_route.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_linear.c,v
-retrieving revision 1.55
-diff -u -u -r1.55 pcm_linear.c
---- alsa-lib/src/pcm/pcm_linear.c	11 Feb 2003 18:14:47 -0000	1.55
-+++ alsa-lib/src/pcm/pcm_linear.c	16 Jul 2003 15:21:25 -0000
-@@ -406,19 +406,18 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_route.c,v
+retrieving revision 1.72
+diff -u -u -r1.72 pcm_route.c
+--- alsa-lib/src/pcm/pcm_route.c	16 May 2003 14:36:26 -0000	1.72
++++ alsa-lib/src/pcm/pcm_route.c	16 Jul 2003 15:21:46 -0000
+@@ -722,19 +722,18 @@
  }
  
- static snd_pcm_ops_t snd_pcm_linear_ops = {
--	close: snd_pcm_plugin_close,
+ static snd_pcm_ops_t snd_pcm_route_ops = {
+-	close: snd_pcm_route_close,
 -	info: snd_pcm_plugin_info,
--	hw_refine: snd_pcm_linear_hw_refine,
--	hw_params: snd_pcm_linear_hw_params,
+-	hw_refine: snd_pcm_route_hw_refine,
+-	hw_params: snd_pcm_route_hw_params,
 -	hw_free: snd_pcm_plugin_hw_free,
 -	sw_params: snd_pcm_plugin_sw_params,
 -	channel_info: snd_pcm_plugin_channel_info,
--	dump: snd_pcm_linear_dump,
+-	dump: snd_pcm_route_dump,
 -	nonblock: snd_pcm_plugin_nonblock,
 -	async: snd_pcm_plugin_async,
 -	poll_revents: snd_pcm_plugin_poll_revents,
 -	mmap: snd_pcm_plugin_mmap,
 -	munmap: snd_pcm_plugin_munmap,
-+	.close 		= snd_pcm_plugin_close,
++	.close 		= snd_pcm_route_close,
 +	.info 		= snd_pcm_plugin_info,
-+	.hw_refine 	= snd_pcm_linear_hw_refine,
-+	.hw_params 	= snd_pcm_linear_hw_params,
++	.hw_refine 	= snd_pcm_route_hw_refine,
++	.hw_params 	= snd_pcm_route_hw_params,
 +	.hw_free 	= snd_pcm_plugin_hw_free,
 +	.sw_params 	= snd_pcm_plugin_sw_params,
 +	.channel_info 	= snd_pcm_plugin_channel_info,
-+	.dump 		= snd_pcm_linear_dump,
++	.dump 		= snd_pcm_route_dump,
 +	.nonblock 	= snd_pcm_plugin_nonblock,
 +	.async 		= snd_pcm_plugin_async,
 +	.mmap 		= snd_pcm_plugin_mmap,
 +	.munmap 	= snd_pcm_plugin_munmap,
  };
  
- 
-Index: alsa-lib/src/pcm/pcm_meter.c
+ static int route_load_ttable(snd_pcm_route_params_t *params, snd_pcm_stream_t stream,
+Index: alsa-lib/src/pcm/pcm_share.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_meter.c,v
-retrieving revision 1.42
-diff -u -u -r1.42 pcm_meter.c
---- alsa-lib/src/pcm/pcm_meter.c	7 Mar 2003 18:46:26 -0000	1.42
-+++ alsa-lib/src/pcm/pcm_meter.c	16 Jul 2003 15:21:30 -0000
-@@ -591,40 +591,39 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_share.c,v
+retrieving revision 1.75
+diff -u -u -r1.75 pcm_share.c
+--- alsa-lib/src/pcm/pcm_share.c	1 Jul 2003 09:24:30 -0000	1.75
++++ alsa-lib/src/pcm/pcm_share.c	16 Jul 2003 15:21:51 -0000
+@@ -1264,40 +1264,39 @@
  }
  
- static snd_pcm_ops_t snd_pcm_meter_ops = {
--	close: snd_pcm_meter_close,
--	info: snd_pcm_meter_info,
--	hw_refine: snd_pcm_meter_hw_refine,
--	hw_params: snd_pcm_meter_hw_params,
--	hw_free: snd_pcm_meter_hw_free,
--	sw_params: snd_pcm_meter_sw_params,
--	channel_info: snd_pcm_meter_channel_info,
--	dump: snd_pcm_meter_dump,
--	nonblock: snd_pcm_meter_nonblock,
--	async: snd_pcm_meter_async,
--	mmap: snd_pcm_meter_mmap,
--	munmap: snd_pcm_meter_munmap,
-+	.close 		= snd_pcm_meter_close,
-+	.info 		= snd_pcm_meter_info,
-+	.hw_refine 	= snd_pcm_meter_hw_refine,
-+	.hw_params 	= snd_pcm_meter_hw_params,
-+	.hw_free 	= snd_pcm_meter_hw_free,
-+	.sw_params 	= snd_pcm_meter_sw_params,
-+	.channel_info 	= snd_pcm_meter_channel_info,
-+	.dump 		= snd_pcm_meter_dump,
-+	.nonblock 	= snd_pcm_meter_nonblock,
-+	.async 		= snd_pcm_meter_async,
-+	.mmap 		= snd_pcm_meter_mmap,
-+	.munmap 	= snd_pcm_meter_munmap,
+ static snd_pcm_ops_t snd_pcm_share_ops = {
+-	close: snd_pcm_share_close,
+-	info: snd_pcm_share_info,
+-	hw_refine: snd_pcm_share_hw_refine,
+-	hw_params: snd_pcm_share_hw_params,
+-	hw_free: snd_pcm_share_hw_free,
+-	sw_params: snd_pcm_share_sw_params,
+-	channel_info: snd_pcm_share_channel_info,
+-	dump: snd_pcm_share_dump,
+-	nonblock: snd_pcm_share_nonblock,
+-	async: snd_pcm_share_async,
+-	mmap: snd_pcm_share_mmap,
+-	munmap: snd_pcm_share_munmap,
++	.close 		= snd_pcm_share_close,
++	.info 		= snd_pcm_share_info,
++	.hw_refine 	= snd_pcm_share_hw_refine,
++	.hw_params 	= snd_pcm_share_hw_params,
++	.hw_free 	= snd_pcm_share_hw_free,
++	.sw_params 	= snd_pcm_share_sw_params,
++	.channel_info 	= snd_pcm_share_channel_info,
++	.dump 		= snd_pcm_share_dump,
++	.nonblock 	= snd_pcm_share_nonblock,
++	.async 		= snd_pcm_share_async,
++	.mmap 		= snd_pcm_share_mmap,
++	.munmap 	= snd_pcm_share_munmap,
  };
  
- static snd_pcm_fast_ops_t snd_pcm_meter_fast_ops = {
--	status: snd_pcm_meter_status,
--	state: snd_pcm_meter_state,
--	hwsync: snd_pcm_meter_hwsync,
--	delay: snd_pcm_meter_delay,
--	prepare: snd_pcm_meter_prepare,
--	reset: snd_pcm_meter_reset,
--	start: snd_pcm_meter_start,
--	drop: snd_pcm_meter_drop,
--	drain: snd_pcm_meter_drain,
--	pause: snd_pcm_meter_pause,
--	rewind: snd_pcm_meter_rewind,
--	forward: snd_pcm_meter_forward,
--	resume: snd_pcm_meter_resume,
+ static snd_pcm_fast_ops_t snd_pcm_share_fast_ops = {
+-	status: snd_pcm_share_status,
+-	state: snd_pcm_share_state,
+-	hwsync: snd_pcm_share_hwsync,
+-	delay: snd_pcm_share_delay,
+-	prepare: snd_pcm_share_prepare,
+-	reset: snd_pcm_share_reset,
+-	start: snd_pcm_share_start,
+-	drop: snd_pcm_share_drop,
+-	drain: snd_pcm_share_drain,
+-	pause: snd_pcm_share_pause,
 -	writei: snd_pcm_mmap_writei,
 -	writen: snd_pcm_mmap_writen,
 -	readi: snd_pcm_mmap_readi,
 -	readn: snd_pcm_mmap_readn,
--	avail_update: snd_pcm_meter_avail_update,
--	mmap_commit: snd_pcm_meter_mmap_commit,
-+	.status 	= snd_pcm_meter_status,
-+	.state 		= snd_pcm_meter_state,
-+	.hwsync 	= snd_pcm_meter_hwsync,
-+	.delay 		= snd_pcm_meter_delay,
-+	.prepare 	= snd_pcm_meter_prepare,
-+	.reset 		= snd_pcm_meter_reset,
-+	.start 		= snd_pcm_meter_start,
-+	.drop 		= snd_pcm_meter_drop,
-+	.drain 		= snd_pcm_meter_drain,
-+	.pause 		= snd_pcm_meter_pause,
-+	.rewind 	= snd_pcm_meter_rewind,
-+	.resume 	= snd_pcm_meter_resume,
+-	rewind: snd_pcm_share_rewind,
+-	forward: snd_pcm_share_forward,
+-	resume: snd_pcm_share_resume,
+-	avail_update: snd_pcm_share_avail_update,
+-	mmap_commit: snd_pcm_share_mmap_commit,
++	.status 	= snd_pcm_share_status,
++	.state 		= snd_pcm_share_state,
++	.hwsync 	= snd_pcm_share_hwsync,
++	.delay 		= snd_pcm_share_delay,
++	.prepare 	= snd_pcm_share_prepare,
++	.reset 		= snd_pcm_share_reset,
++	.start 		= snd_pcm_share_start,
++	.drop 		= snd_pcm_share_drop,
++	.drain 		= snd_pcm_share_drain,
++	.pause 		= snd_pcm_share_pause,
 +	.writei 	= snd_pcm_mmap_writei,
 +	.writen 	= snd_pcm_mmap_writen,
 +	.readi 		= snd_pcm_mmap_readi,
 +	.readn 		= snd_pcm_mmap_readn,
-+	.avail_update 	= snd_pcm_meter_avail_update,
-+	.mmap_commit 	= snd_pcm_meter_mmap_commit,
++	.rewind 	= snd_pcm_share_rewind,
++	.resume 	= snd_pcm_share_resume,
++	.avail_update 	= snd_pcm_share_avail_update,
++	.mmap_commit 	= snd_pcm_share_mmap_commit,
  };
  
  /**
-@@ -1220,13 +1219,13 @@
- }
- 
- snd_pcm_scope_ops_t s16_ops = {
--	enable: s16_enable,
--	disable: s16_disable,
--	close: s16_close,
--	start: s16_start,
--	stop: s16_stop,
--	update: s16_update,
--	reset: s16_reset,
-+	.enable 	= s16_enable,
-+	.disable 	= s16_disable,
-+	.close 		= s16_close,
-+	.start 		= s16_start,
-+	.stop 		= s16_stop,
-+	.update 	= s16_update,
-+	.reset 		= s16_reset,
- };
- 
- #endif
-Index: alsa-lib/src/pcm/pcm_mulaw.c
+Index: alsa-lib/src/pcm/pcm_shm.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_mulaw.c,v
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_shm.c,v
 retrieving revision 1.57
-diff -u -u -r1.57 pcm_mulaw.c
---- alsa-lib/src/pcm/pcm_mulaw.c	11 Feb 2003 18:14:48 -0000	1.57
-+++ alsa-lib/src/pcm/pcm_mulaw.c	16 Jul 2003 15:21:30 -0000
-@@ -405,19 +405,18 @@
+diff -u -u -r1.57 pcm_shm.c
+--- alsa-lib/src/pcm/pcm_shm.c	18 Mar 2003 18:00:21 -0000	1.57
++++ alsa-lib/src/pcm/pcm_shm.c	16 Jul 2003 15:21:55 -0000
+@@ -574,40 +574,39 @@
  }
  
- static snd_pcm_ops_t snd_pcm_mulaw_ops = {
--	close: snd_pcm_plugin_close,
--	info: snd_pcm_plugin_info,
--	hw_refine: snd_pcm_mulaw_hw_refine,
--	hw_params: snd_pcm_mulaw_hw_params,
--	hw_free: snd_pcm_plugin_hw_free,
--	sw_params: snd_pcm_plugin_sw_params,
--	channel_info: snd_pcm_plugin_channel_info,
--	dump: snd_pcm_mulaw_dump,
--	nonblock: snd_pcm_plugin_nonblock,
--	async: snd_pcm_plugin_async,
--	poll_revents: snd_pcm_plugin_poll_revents,
--	mmap: snd_pcm_plugin_mmap,
--	munmap: snd_pcm_plugin_munmap,
-+	.close 		= snd_pcm_plugin_close,
-+	.info 		= snd_pcm_plugin_info,
-+	.hw_refine 	= snd_pcm_mulaw_hw_refine,
-+	.hw_params 	= snd_pcm_mulaw_hw_params,
-+	.hw_free 	= snd_pcm_plugin_hw_free,
-+	.sw_params 	= snd_pcm_plugin_sw_params,
-+	.channel_info 	= snd_pcm_plugin_channel_info,
-+	.dump 		= snd_pcm_mulaw_dump,
-+	.nonblock 	= snd_pcm_plugin_nonblock,
-+	.async 		= snd_pcm_plugin_async,
-+	.mmap 		= snd_pcm_plugin_mmap,
-+	.munmap 	= snd_pcm_plugin_munmap,
+ static snd_pcm_ops_t snd_pcm_shm_ops = {
+-	close: snd_pcm_shm_close,
+-	info: snd_pcm_shm_info,
+-	hw_refine: snd_pcm_shm_hw_refine,
+-	hw_params: snd_pcm_shm_hw_params,
+-	hw_free: snd_pcm_shm_hw_free,
+-	sw_params: snd_pcm_shm_sw_params,
+-	channel_info: snd_pcm_shm_channel_info,
+-	dump: snd_pcm_shm_dump,
+-	nonblock: snd_pcm_shm_nonblock,
+-	async: snd_pcm_shm_async,
+-	mmap: snd_pcm_shm_mmap,
+-	munmap: snd_pcm_shm_munmap,
++	.close 		= snd_pcm_shm_close,
++	.info 		= snd_pcm_shm_info,
++	.hw_refine 	= snd_pcm_shm_hw_refine,
++	.hw_params 	= snd_pcm_shm_hw_params,
++	.hw_free 	= snd_pcm_shm_hw_free,
++	.sw_params 	= snd_pcm_shm_sw_params,
++	.channel_info 	= snd_pcm_shm_channel_info,
++	.dump 		= snd_pcm_shm_dump,
++	.nonblock 	= snd_pcm_shm_nonblock,
++	.async 		= snd_pcm_shm_async,
++	.mmap 		= snd_pcm_shm_mmap,
++	.munmap 	= snd_pcm_shm_munmap,
  };
  
- /**
-Index: alsa-lib/src/pcm/pcm_multi.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_multi.c,v
-retrieving revision 1.83
-diff -u -u -r1.83 pcm_multi.c
---- alsa-lib/src/pcm/pcm_multi.c	7 Mar 2003 18:46:27 -0000	1.83
-+++ alsa-lib/src/pcm/pcm_multi.c	16 Jul 2003 15:21:31 -0000
-@@ -614,40 +614,39 @@
- }
- 
- static snd_pcm_ops_t snd_pcm_multi_ops = {
--	close: snd_pcm_multi_close,
--	info: snd_pcm_multi_info,
--	hw_refine: snd_pcm_multi_hw_refine,
--	hw_params: snd_pcm_multi_hw_params,
--	hw_free: snd_pcm_multi_hw_free,
--	sw_params: snd_pcm_multi_sw_params,
--	channel_info: snd_pcm_multi_channel_info,
--	dump: snd_pcm_multi_dump,
--	nonblock: snd_pcm_multi_nonblock,
--	async: snd_pcm_multi_async,
--	mmap: snd_pcm_multi_mmap,
--	munmap: snd_pcm_multi_munmap,
-+	.close 		= snd_pcm_multi_close,
-+	.info 		= snd_pcm_multi_info,
-+	.hw_refine 	= snd_pcm_multi_hw_refine,
-+	.hw_params 	= snd_pcm_multi_hw_params,
-+	.hw_free 	= snd_pcm_multi_hw_free,
-+	.sw_params 	= snd_pcm_multi_sw_params,
-+	.channel_info 	= snd_pcm_multi_channel_info,
-+	.dump 		= snd_pcm_multi_dump,
-+	.nonblock 	= snd_pcm_multi_nonblock,
-+	.async 		= snd_pcm_multi_async,
-+	.mmap 		= snd_pcm_multi_mmap,
-+	.munmap 	= snd_pcm_multi_munmap,
- };
- 
- static snd_pcm_fast_ops_t snd_pcm_multi_fast_ops = {
--	status: snd_pcm_multi_status,
--	state: snd_pcm_multi_state,
--	hwsync: snd_pcm_multi_hwsync,
--	delay: snd_pcm_multi_delay,
--	prepare: snd_pcm_multi_prepare,
--	reset: snd_pcm_multi_reset,
--	start: snd_pcm_multi_start,
--	drop: snd_pcm_multi_drop,
--	drain: snd_pcm_multi_drain,
--	pause: snd_pcm_multi_pause,
+ static snd_pcm_fast_ops_t snd_pcm_shm_fast_ops = {
+-	status: snd_pcm_shm_status,
+-	state: snd_pcm_shm_state,
+-	hwsync: snd_pcm_shm_hwsync,
+-	delay: snd_pcm_shm_delay,
+-	prepare: snd_pcm_shm_prepare,
+-	reset: snd_pcm_shm_reset,
+-	start: snd_pcm_shm_start,
+-	drop: snd_pcm_shm_drop,
+-	drain: snd_pcm_shm_drain,
+-	pause: snd_pcm_shm_pause,
+-	rewind: snd_pcm_shm_rewind,
+-	forward: snd_pcm_shm_forward,
+-	resume: snd_pcm_shm_resume,
 -	writei: snd_pcm_mmap_writei,
 -	writen: snd_pcm_mmap_writen,
 -	readi: snd_pcm_mmap_readi,
 -	readn: snd_pcm_mmap_readn,
--	rewind: snd_pcm_multi_rewind,
--	forward: snd_pcm_multi_forward,
--	resume: snd_pcm_multi_resume,
--	avail_update: snd_pcm_multi_avail_update,
--	mmap_commit: snd_pcm_multi_mmap_commit,
-+	.status 	= snd_pcm_multi_status,
-+	.state 		= snd_pcm_multi_state,
-+	.hwsync 	= snd_pcm_multi_hwsync,
-+	.delay 		= snd_pcm_multi_delay,
-+	.prepare 	= snd_pcm_multi_prepare,
-+	.reset 		= snd_pcm_multi_reset,
-+	.start 		= snd_pcm_multi_start,
-+	.drop 		= snd_pcm_multi_drop,
-+	.drain 		= snd_pcm_multi_drain,
-+	.pause 		= snd_pcm_multi_pause,
+-	avail_update: snd_pcm_shm_avail_update,
+-	mmap_commit: snd_pcm_shm_mmap_commit,
++	.status 	= snd_pcm_shm_status,
++	.state 		= snd_pcm_shm_state,
++	.hwsync 	= snd_pcm_shm_hwsync,
++	.delay 		= snd_pcm_shm_delay,
++	.prepare 	= snd_pcm_shm_prepare,
++	.reset 		= snd_pcm_shm_reset,
++	.start 		= snd_pcm_shm_start,
++	.drop 		= snd_pcm_shm_drop,
++	.drain 		= snd_pcm_shm_drain,
++	.pause 		= snd_pcm_shm_pause,
++	.rewind 	= snd_pcm_shm_rewind,
++	.resume 	= snd_pcm_shm_resume,
 +	.writei 	= snd_pcm_mmap_writei,
 +	.writen 	= snd_pcm_mmap_writen,
 +	.readi 		= snd_pcm_mmap_readi,
 +	.readn 		= snd_pcm_mmap_readn,
-+	.rewind 	= snd_pcm_multi_rewind,
-+	.resume 	= snd_pcm_multi_resume,
-+	.avail_update 	= snd_pcm_multi_avail_update,
-+	.mmap_commit 	= snd_pcm_multi_mmap_commit,
++	.avail_update 	= snd_pcm_shm_avail_update,
++	.mmap_commit 	= snd_pcm_shm_mmap_commit,
  };
  
- /**
-Index: alsa-lib/src/pcm/pcm_null.c
+ static int make_local_socket(const char *filename)
+Index: alsa-lib/src/pcm/scopes/level.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_null.c,v
-retrieving revision 1.47
-diff -u -u -r1.47 pcm_null.c
---- alsa-lib/src/pcm/pcm_null.c	28 Feb 2003 17:23:34 -0000	1.47
-+++ alsa-lib/src/pcm/pcm_null.c	16 Jul 2003 15:21:33 -0000
-@@ -312,40 +312,39 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/pcm/scopes/level.c,v
+retrieving revision 1.5
+diff -u -u -r1.5 level.c
+--- alsa-lib/src/pcm/scopes/level.c	12 Jun 2002 16:44:01 -0000	1.5
++++ alsa-lib/src/pcm/scopes/level.c	16 Jul 2003 15:21:56 -0000
+@@ -170,13 +170,13 @@
  }
  
- static snd_pcm_ops_t snd_pcm_null_ops = {
--	close: snd_pcm_null_close,
--	info: snd_pcm_null_info,
--	hw_refine: snd_pcm_null_hw_refine,
--	hw_params: snd_pcm_null_hw_params,
--	hw_free: snd_pcm_null_hw_free,
--	sw_params: snd_pcm_null_sw_params,
--	channel_info: snd_pcm_null_channel_info,
--	dump: snd_pcm_null_dump,
--	nonblock: snd_pcm_null_nonblock,
--	async: snd_pcm_null_async,
--	mmap: snd_pcm_null_mmap,
--	munmap: snd_pcm_null_munmap,
-+	.close 		= snd_pcm_null_close,
-+	.info 		= snd_pcm_null_info,
-+	.hw_refine 	= snd_pcm_null_hw_refine,
-+	.hw_params 	= snd_pcm_null_hw_params,
-+	.hw_free 	= snd_pcm_null_hw_free,
-+	.sw_params 	= snd_pcm_null_sw_params,
-+	.channel_info 	= snd_pcm_null_channel_info,
-+	.dump 		= snd_pcm_null_dump,
-+	.nonblock 	= snd_pcm_null_nonblock,
-+	.async 		= snd_pcm_null_async,
-+	.mmap 		= snd_pcm_null_mmap,
-+	.munmap 	= snd_pcm_null_munmap,
+ snd_pcm_scope_ops_t level_ops = {
+-	enable: level_enable,
+-	disable: level_disable,
+-	close: level_close,
+-	start: level_start,
+-	stop: level_stop,
+-	update: level_update,
+-	reset: level_reset,
++	.enable 	= level_enable,
++	.disable 	= level_disable,
++	.close 		= level_close,
++	.start 		= level_start,
++	.stop 		= level_stop,
++	.update 	= level_update,
++	.reset 		= level_reset,
  };
  
- static snd_pcm_fast_ops_t snd_pcm_null_fast_ops = {
--	status: snd_pcm_null_status,
--	state: snd_pcm_null_state,
--	hwsync: snd_pcm_null_hwsync,
--	delay: snd_pcm_null_delay,
--	prepare: snd_pcm_null_prepare,
--	reset: snd_pcm_null_reset,
--	start: snd_pcm_null_start,
--	drop: snd_pcm_null_drop,
--	drain: snd_pcm_null_drain,
--	pause: snd_pcm_null_pause,
--	rewind: snd_pcm_null_rewind,
--	forward: snd_pcm_null_forward,
--	resume: snd_pcm_null_resume,
--	writei: snd_pcm_null_writei,
--	writen: snd_pcm_null_writen,
--	readi: snd_pcm_null_readi,
--	readn: snd_pcm_null_readn,
--	avail_update: snd_pcm_null_avail_update,
--	mmap_commit: snd_pcm_null_mmap_commit,
-+	.status 	= snd_pcm_null_status,
-+	.state 		= snd_pcm_null_state,
-+	.hwsync 	= snd_pcm_null_hwsync,
-+	.delay 		= snd_pcm_null_delay,
-+	.prepare 	= snd_pcm_null_prepare,
-+	.reset 		= snd_pcm_null_reset,
-+	.start 		= snd_pcm_null_start,
-+	.drop 		= snd_pcm_null_drop,
-+	.drain 		= snd_pcm_null_drain,
-+	.pause 		= snd_pcm_null_pause,
-+	.rewind 	= snd_pcm_null_rewind,
-+	.resume 	= snd_pcm_null_resume,
-+	.writei 	= snd_pcm_null_writei,
-+	.writen 	= snd_pcm_null_writen,
-+	.readi 		= snd_pcm_null_readi,
-+	.readn 		= snd_pcm_null_readn,
-+	.avail_update 	= snd_pcm_null_avail_update,
-+	.mmap_commit 	= snd_pcm_null_mmap_commit,
- };
- 
- /**
-Index: alsa-lib/src/pcm/pcm_params.c
+ int snd_pcm_scope_level_open(snd_pcm_t *pcm, const char *name,
+Index: alsa-lib/src/rawmidi/rawmidi_hw.c
 ===================================================================
-RCS file: /cvsroot/alsa/alsa-lib/src/pcm/pcm_params.c,v
-retrieving revision 1.53
-diff -u -u -r1.53 pcm_params.c
---- alsa-lib/src/pcm/pcm_params.c	28 May 2003 18:49:15 -0000	1.53
-+++ alsa-lib/src/pcm/pcm_params.c	16 Jul 2003 15:21:37 -0000
-@@ -1731,143 +1731,143 @@
+RCS file: /cvsroot/alsa/alsa-lib/src/rawmidi/rawmidi_hw.c,v
+retrieving revision 1.26
+diff -u -u -r1.26 rawmidi_hw.c
+--- alsa-lib/src/rawmidi/rawmidi_hw.c	5 Feb 2003 11:00:24 -0000	1.26
++++ alsa-lib/src/rawmidi/rawmidi_hw.c	16 Jul 2003 15:21:58 -0000
+@@ -153,15 +153,15 @@
+ }
  
- static snd_pcm_hw_rule_t refine_rules[] = {
- 	{
--		var: SND_PCM_HW_PARAM_FORMAT,
--		func: snd_pcm_hw_rule_format,
--		deps: { SND_PCM_HW_PARAM_SAMPLE_BITS, -1 },
--		private_data: 0,
-+		.var = SND_PCM_HW_PARAM_FORMAT,
-+		.func = snd_pcm_hw_rule_format,
-+		.deps = { SND_PCM_HW_PARAM_SAMPLE_BITS, -1 },
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_SAMPLE_BITS, 
--		func: snd_pcm_hw_rule_sample_bits,
--		deps: { SND_PCM_HW_PARAM_FORMAT, 
-+		.var = SND_PCM_HW_PARAM_SAMPLE_BITS, 
-+		.func = snd_pcm_hw_rule_sample_bits,
-+		.deps = { SND_PCM_HW_PARAM_FORMAT, 
- 			SND_PCM_HW_PARAM_SAMPLE_BITS, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_SAMPLE_BITS, 
--		func: snd_pcm_hw_rule_div,
--		deps: { SND_PCM_HW_PARAM_FRAME_BITS,
-+		.var = SND_PCM_HW_PARAM_SAMPLE_BITS, 
-+		.func = snd_pcm_hw_rule_div,
-+		.deps = { SND_PCM_HW_PARAM_FRAME_BITS,
- 			SND_PCM_HW_PARAM_CHANNELS, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_FRAME_BITS, 
--		func: snd_pcm_hw_rule_mul,
--		deps: { SND_PCM_HW_PARAM_SAMPLE_BITS,
-+		.var = SND_PCM_HW_PARAM_FRAME_BITS, 
-+		.func = snd_pcm_hw_rule_mul,
-+		.deps = { SND_PCM_HW_PARAM_SAMPLE_BITS,
- 			SND_PCM_HW_PARAM_CHANNELS, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_FRAME_BITS, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_PERIOD_BYTES,
-+		.var = SND_PCM_HW_PARAM_FRAME_BITS, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_BYTES,
- 			SND_PCM_HW_PARAM_PERIOD_SIZE, -1 },
--		private_data: (void*) 8,
-+		.private_data = (void*) 8,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_FRAME_BITS, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_BUFFER_BYTES,
-+		.var = SND_PCM_HW_PARAM_FRAME_BITS, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_BYTES,
- 			SND_PCM_HW_PARAM_BUFFER_SIZE, -1 },
--		private_data: (void*) 8,
-+		.private_data = (void*) 8,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_CHANNELS, 
--		func: snd_pcm_hw_rule_div,
--		deps: { SND_PCM_HW_PARAM_FRAME_BITS,
-+		.var = SND_PCM_HW_PARAM_CHANNELS, 
-+		.func = snd_pcm_hw_rule_div,
-+		.deps = { SND_PCM_HW_PARAM_FRAME_BITS,
- 			SND_PCM_HW_PARAM_SAMPLE_BITS, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_RATE, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_PERIOD_SIZE,
-+		.var = SND_PCM_HW_PARAM_RATE, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_SIZE,
- 			SND_PCM_HW_PARAM_PERIOD_TIME, -1 },
--		private_data: (void*) 1000000,
-+		.private_data = (void*) 1000000,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_RATE, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_BUFFER_SIZE,
-+		.var = SND_PCM_HW_PARAM_RATE, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_SIZE,
- 			SND_PCM_HW_PARAM_BUFFER_TIME, -1 },
--		private_data: (void*) 1000000,
-+		.private_data = (void*) 1000000,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_PERIODS, 
--		func: snd_pcm_hw_rule_div,
--		deps: { SND_PCM_HW_PARAM_BUFFER_SIZE,
-+		.var = SND_PCM_HW_PARAM_PERIODS, 
-+		.func = snd_pcm_hw_rule_div,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_SIZE,
- 			SND_PCM_HW_PARAM_PERIOD_SIZE, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_PERIOD_SIZE, 
--		func: snd_pcm_hw_rule_div,
--		deps: { SND_PCM_HW_PARAM_BUFFER_SIZE,
-+		.var = SND_PCM_HW_PARAM_PERIOD_SIZE, 
-+		.func = snd_pcm_hw_rule_div,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_SIZE,
- 			SND_PCM_HW_PARAM_PERIODS, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_PERIOD_SIZE, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_PERIOD_BYTES,
-+		.var = SND_PCM_HW_PARAM_PERIOD_SIZE, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_BYTES,
- 			SND_PCM_HW_PARAM_FRAME_BITS, -1 },
--		private_data: (void*) 8,
-+		.private_data = (void*) 8,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_PERIOD_SIZE, 
--		func: snd_pcm_hw_rule_muldivk,
--		deps: { SND_PCM_HW_PARAM_PERIOD_TIME,
-+		.var = SND_PCM_HW_PARAM_PERIOD_SIZE, 
-+		.func = snd_pcm_hw_rule_muldivk,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_TIME,
- 			SND_PCM_HW_PARAM_RATE, -1 },
--		private_data: (void*) 1000000,
-+		.private_data = (void*) 1000000,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_BUFFER_SIZE, 
--		func: snd_pcm_hw_rule_mul,
--		deps: { SND_PCM_HW_PARAM_PERIOD_SIZE,
-+		.var = SND_PCM_HW_PARAM_BUFFER_SIZE, 
-+		.func = snd_pcm_hw_rule_mul,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_SIZE,
- 			SND_PCM_HW_PARAM_PERIODS, -1 },
--		private_data: 0,
-+		.private_data = 0,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_BUFFER_SIZE, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_BUFFER_BYTES,
-+		.var = SND_PCM_HW_PARAM_BUFFER_SIZE, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_BYTES,
- 			SND_PCM_HW_PARAM_FRAME_BITS, -1 },
--		private_data: (void*) 8,
-+		.private_data = (void*) 8,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_BUFFER_SIZE, 
--		func: snd_pcm_hw_rule_muldivk,
--		deps: { SND_PCM_HW_PARAM_BUFFER_TIME,
-+		.var = SND_PCM_HW_PARAM_BUFFER_SIZE, 
-+		.func = snd_pcm_hw_rule_muldivk,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_TIME,
- 			SND_PCM_HW_PARAM_RATE, -1 },
--		private_data: (void*) 1000000,
-+		.private_data = (void*) 1000000,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_PERIOD_BYTES, 
--		func: snd_pcm_hw_rule_muldivk,
--		deps: { SND_PCM_HW_PARAM_PERIOD_SIZE,
-+		.var = SND_PCM_HW_PARAM_PERIOD_BYTES, 
-+		.func = snd_pcm_hw_rule_muldivk,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_SIZE,
- 			SND_PCM_HW_PARAM_FRAME_BITS, -1 },
--		private_data: (void*) 8,
-+		.private_data = (void*) 8,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_BUFFER_BYTES, 
--		func: snd_pcm_hw_rule_muldivk,
--		deps: { SND_PCM_HW_PARAM_BUFFER_SIZE,
-+		.var = SND_PCM_HW_PARAM_BUFFER_BYTES, 
-+		.func = snd_pcm_hw_rule_muldivk,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_SIZE,
- 			SND_PCM_HW_PARAM_FRAME_BITS, -1 },
--		private_data: (void*) 8,
-+		.private_data = (void*) 8,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_PERIOD_TIME, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_PERIOD_SIZE,
-+		.var = SND_PCM_HW_PARAM_PERIOD_TIME, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_PERIOD_SIZE,
- 			SND_PCM_HW_PARAM_RATE, -1 },
--		private_data: (void*) 1000000,
-+		.private_data = (void*) 1000000,
- 	},
- 	{
--		var: SND_PCM_HW_PARAM_BUFFER_TIME, 
--		func: snd_pcm_hw_rule_mulkdiv,
--		deps: { SND_PCM_HW_PARAM_BUFFER_SIZE,
-+		.var = SND_PCM_HW_PARAM_BUFFER_TIME, 
-+		.func = snd_pcm_hw_rule_mulkdiv,
-+		.deps = { SND_PCM_HW_PARAM_BUFFER_SIZE,
- 			SND_PCM_HW_PARAM_RATE, -1 },
--		private_data: (void*) 1000000,
-+		.private_data = (void*) 1000000,
- 	},
+ snd_rawmidi_ops_t snd_rawmidi_hw_ops = {
+-	close: snd_rawmidi_hw_close,
+-	nonblock: snd_rawmidi_hw_nonblock,
+-	info: snd_rawmidi_hw_info,
+-	params: snd_rawmidi_hw_params,
+-	status: snd_rawmidi_hw_status,
+-	drop: snd_rawmidi_hw_drop,
+-	drain: snd_rawmidi_hw_drain,
+-	write: snd_rawmidi_hw_write,
+-	read: snd_rawmidi_hw_read,
++	.close 		= snd_rawmidi_hw_close,
++	.nonblock 	= snd_rawmidi_hw_nonblock,
++	.info 		= snd_rawmidi_hw_info,
++	.params 	= snd_rawmidi_hw_params,
++	.status 	= snd_rawmidi_hw_status,
++	.drop 		= snd_rawmidi_hw_drop,
++	.drain 		= snd_rawmidi_hw_drain,
++	.write 		= snd_rawmidi_hw_write,
++	.read 		= snd_rawmidi_hw_read,
  };
  
-@@ -1875,64 +1875,64 @@
  
- static snd_mask_t refine_masks[SND_PCM_HW_PARAM_LAST_MASK - SND_PCM_HW_PARAM_FIRST_MASK + 1] = {
- 	[SND_PCM_HW_PARAM_ACCESS - SND_PCM_HW_PARAM_FIRST_MASK] = {
--		bits: { 0x1f },
-+		.bits = { 0x1f },
- 	},
- 	[SND_PCM_HW_PARAM_FORMAT - SND_PCM_HW_PARAM_FIRST_MASK] = {
--		bits: { 0x81ffffff, 0xfff},
-+		.bits = { 0x81ffffff, 0xfff},
- 	},
- 	[SND_PCM_HW_PARAM_SUBFORMAT - SND_PCM_HW_PARAM_FIRST_MASK] = {
--		bits: { 0x1 },
-+		.bits = { 0x1 },
- 	},
- };
-   
- static snd_interval_t refine_intervals[SND_PCM_HW_PARAM_LAST_INTERVAL - SND_PCM_HW_PARAM_FIRST_INTERVAL + 1] = {
- 	[SND_PCM_HW_PARAM_SAMPLE_BITS - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 1, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 1, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_FRAME_BITS - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 1, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 1, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_CHANNELS - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 1, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 1, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_RATE - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_PERIOD_TIME - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 0, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 0, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_PERIOD_SIZE - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 0, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 0, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_PERIOD_BYTES - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 0, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 0, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_PERIODS - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 0, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 0, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_BUFFER_TIME - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_BUFFER_SIZE - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 1, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 1, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_BUFFER_BYTES - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 1, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 1, empty: 0,
-+		.min = 1, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 1, .empty = 0,
- 	},
- 	[SND_PCM_HW_PARAM_TICK_TIME - SND_PCM_HW_PARAM_FIRST_INTERVAL] = {
--		min: 0, max: UINT_MAX,
--		openmin: 0, openmax: 0, integer: 0, empty: 0,
-+		.min = 0, .max = UINT_MAX,
-+		.openmin = 0, .openmax = 0, .integer = 0, .empty = 0,
- 	},
+Index: alsa-lib/src/seq/seq_hw.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/seq/seq_hw.c,v
+retrieving revision 1.20
+diff -u -u -r1.20 seq_hw.c
+--- alsa-lib/src/seq/seq_hw.c	5 Feb 2003 11:00:26 -0000	1.20
++++ alsa-lib/src/seq/seq_hw.c	16 Jul 2003 15:21:58 -0000
+@@ -378,38 +378,38 @@
+ }
+ 
+ snd_seq_ops_t snd_seq_hw_ops = {
+-	close: snd_seq_hw_close,
+-	nonblock: snd_seq_hw_nonblock,
+-	system_info: snd_seq_hw_system_info,
+-	get_client_info: snd_seq_hw_get_client_info,
+-	set_client_info: snd_seq_hw_set_client_info,
+-	create_port: snd_seq_hw_create_port,
+-	delete_port: snd_seq_hw_delete_port,
+-	get_port_info: snd_seq_hw_get_port_info,
+-	set_port_info: snd_seq_hw_set_port_info,
+-	get_port_subscription: snd_seq_hw_get_port_subscription,
+-	subscribe_port: snd_seq_hw_subscribe_port,
+-	unsubscribe_port: snd_seq_hw_unsubscribe_port,
+-	query_port_subscribers: snd_seq_hw_query_port_subscribers,
+-	get_queue_status: snd_seq_hw_get_queue_status,
+-	get_queue_tempo: snd_seq_hw_get_queue_tempo,
+-	set_queue_tempo: snd_seq_hw_set_queue_tempo,
+-	get_queue_timer: snd_seq_hw_get_queue_timer,
+-	set_queue_timer: snd_seq_hw_set_queue_timer,
+-	get_queue_client: snd_seq_hw_get_queue_client,
+-	set_queue_client: snd_seq_hw_set_queue_client,
+-	create_queue: snd_seq_hw_create_queue,
+-	delete_queue: snd_seq_hw_delete_queue,
+-	get_queue_info: snd_seq_hw_get_queue_info,
+-	set_queue_info: snd_seq_hw_set_queue_info,
+-	get_named_queue: snd_seq_hw_get_named_queue,
+-	write: snd_seq_hw_write,
+-	read: snd_seq_hw_read,
+-	remove_events: snd_seq_hw_remove_events,
+-	get_client_pool: snd_seq_hw_get_client_pool,
+-	set_client_pool: snd_seq_hw_set_client_pool,
+-	query_next_client: snd_seq_hw_query_next_client,
+-	query_next_port: snd_seq_hw_query_next_port,
++	.close 			= snd_seq_hw_close,
++	.nonblock 		= snd_seq_hw_nonblock,
++	.system_info 		= snd_seq_hw_system_info,
++	.get_client_info 	= snd_seq_hw_get_client_info,
++	.set_client_info 	= snd_seq_hw_set_client_info,
++	.create_port 		= snd_seq_hw_create_port,
++	.delete_port 		= snd_seq_hw_delete_port,
++	.get_port_info 		= snd_seq_hw_get_port_info,
++	.set_port_info 		= snd_seq_hw_set_port_info,
++	.get_port_subscription 	= snd_seq_hw_get_port_subscription,
++	.subscribe_port 	= snd_seq_hw_subscribe_port,
++	.unsubscribe_port 	= snd_seq_hw_unsubscribe_port,
++	.query_port_subscribers = snd_seq_hw_query_port_subscribers,
++	.get_queue_status 	= snd_seq_hw_get_queue_status,
++	.get_queue_tempo 	= snd_seq_hw_get_queue_tempo,
++	.set_queue_tempo 	= snd_seq_hw_set_queue_tempo,
++	.get_queue_timer 	= snd_seq_hw_get_queue_timer,
++	.set_queue_timer 	= snd_seq_hw_set_queue_timer,
++	.get_queue_client 	= snd_seq_hw_get_queue_client,
++	.set_queue_client 	= snd_seq_hw_set_queue_client,
++	.create_queue 		= snd_seq_hw_create_queue,
++	.delete_queue 		= snd_seq_hw_delete_queue,
++	.get_queue_info 	= snd_seq_hw_get_queue_info,
++	.set_queue_info 	= snd_seq_hw_set_queue_info,
++	.get_named_queue 	= snd_seq_hw_get_named_queue,
++	.write 			= snd_seq_hw_write,
++	.read 			= snd_seq_hw_read,
++	.remove_events 		= snd_seq_hw_remove_events,
++	.get_client_pool 	= snd_seq_hw_get_client_pool,
++	.set_client_pool 	= snd_seq_hw_set_client_pool,
++	.query_next_client 	= snd_seq_hw_query_next_client,
++	.query_next_port 	= snd_seq_hw_query_next_port,
  };
  
+ int snd_seq_hw_open(snd_seq_t **handle, const char *name, int streams, int mode)
+Index: alsa-lib/src/timer/timer_hw.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/timer/timer_hw.c,v
+retrieving revision 1.11
+diff -u -u -r1.11 timer_hw.c
+--- alsa-lib/src/timer/timer_hw.c	4 Mar 2003 20:01:09 -0000	1.11
++++ alsa-lib/src/timer/timer_hw.c	16 Jul 2003 15:21:58 -0000
+@@ -188,16 +188,15 @@
+ }
+ 
+ static snd_timer_ops_t snd_timer_hw_ops = {
+-	.close = snd_timer_hw_close,
+-	.nonblock = snd_timer_hw_nonblock,
+-	.async = snd_timer_hw_async,
+-	.info = snd_timer_hw_info,
+-	.params = snd_timer_hw_params,
+-	.status = snd_timer_hw_status,
+-	.rt_start = snd_timer_hw_start,
+-	.rt_stop = snd_timer_hw_stop,
+-	.rt_continue = snd_timer_hw_continue,
+-	.read = snd_timer_hw_read,
++	.close 		= snd_timer_hw_close,
++	.nonblock 	= snd_timer_hw_nonblock,
++	.info 		= snd_timer_hw_info,
++	.params 	= snd_timer_hw_params,
++	.status 	= snd_timer_hw_status,
++	.rt_start 	= snd_timer_hw_start,
++	.rt_stop 	= snd_timer_hw_stop,
++	.rt_continue 	= snd_timer_hw_continue,
++	.read 		= snd_timer_hw_read,
+ };
+ 
+ int snd_timer_hw_open(snd_timer_t **handle, const char *name, int dev_class, int dev_sclass, int card, int device, int subdevice, int mode)
+Index: alsa-lib/src/timer/timer_query_hw.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-lib/src/timer/timer_query_hw.c,v
+retrieving revision 1.6
+diff -u -u -r1.6 timer_query_hw.c
+--- alsa-lib/src/timer/timer_query_hw.c	4 Mar 2003 20:01:10 -0000	1.6
++++ alsa-lib/src/timer/timer_query_hw.c	16 Jul 2003 15:21:58 -0000
+@@ -82,11 +82,11 @@
+ }
+ 
+ static snd_timer_query_ops_t snd_timer_query_hw_ops = {
+-	close: snd_timer_query_hw_close,
+-	next_device: snd_timer_query_hw_next_device,
+-	info: snd_timer_query_hw_info,
+-	params: snd_timer_query_hw_params,
+-	status: snd_timer_query_hw_status
++	.close		= snd_timer_query_hw_close,
++	.next_device	= snd_timer_query_hw_next_device,
++	.info		= snd_timer_query_hw_info,
++	.params		= snd_timer_query_hw_params,
++	.status		= snd_timer_query_hw_status,
+ };
+ 
+ int snd_timer_query_hw_open(snd_timer_query_t **handle, const char *name, int mode)
 -- 
 Man once surrendering his reason, has no remaining guard against absurdities
 the most monstrous, and like a ship without rudder, is the sport of every wind.
