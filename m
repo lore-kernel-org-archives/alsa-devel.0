@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Missing support for via VT8237 and ALC655
-Date: Tue, 3 Feb 2004 09:59:38 +0100 (CET)
+From: Frank Barknecht <fbar@footils.org>
+Subject: Re: Edirol UA-1X
+Date: Tue, 3 Feb 2004 09:45:45 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0402030959210.2309@pnote.perex-int.cz>
-References: <200402030000.59929.niccolo@rigacci.org>
- <Pine.LNX.4.58.0402030922170.2309@pnote.perex-int.cz>
+Message-ID: <20040203084545.GB4229@fliwatut.scifi>
+References: <20040201163131.GA1549@fliwatut.scifi> <003301c3e8e5$d5454f70$a501a8c0@computer2>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0402030922170.2309@pnote.perex-int.cz>
+Content-Disposition: inline
+In-Reply-To: <003301c3e8e5$d5454f70$a501a8c0@computer2>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Niccolo Rigacci <niccolo@rigacci.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 3 Feb 2004, Jaroslav Kysela wrote:
+Hallo,
+Andreas Kuckartz hat gesagt: // Andreas Kuckartz wrote:
 
-> Make a report to your bug-tracking system.
+> I am using an Edirol UA-1X with the standard Demudi-kernel (version 2.4.22
+> with ALSA 0.9.8). While I also see the "default" id I do not have the
+> problems which you describe. I have also successfully used the UA-1X with
+> SuSE 8.2.
+> 
+> I have not yet really tried to use it with a 2.6 kernel and a newer version
+> of ALSA.
 
-Of course, to our bug-tracking system. Sorry for typo :-)
+You're right: I could get it to work fine with 2.6 on my laptop. Still
+my main machine using a VIA chipset doesn't play nicely with it. 
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+ciao
+-- 
+ Frank Barknecht                               _ ______footils.org__
 
 
 -------------------------------------------------------
