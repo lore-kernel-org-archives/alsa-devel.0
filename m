@@ -1,19 +1,20 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: usx2y jack driver
-Date: Sat, 25 Sep 2004 20:56:15 +0100 (WEST)
+Date: Sat, 25 Sep 2004 16:01:02 -0400
 Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <32823.192.168.1.5.1096142175.squirrel@192.168.1.5>
+Message-ID: <1096142461.3504.23.camel@krustophenia.net>
 References: <200409222228.38243.annabellesgarden@yahoo.de>
-    <32827.192.168.1.5.1096065064.squirrel@192.168.1.5>
-    <1096078552.1407.1.camel@krustophenia.net>
-    <200409251555.59384.annabellesgarden@yahoo.de>
-    <32983.192.168.1.5.1096125029.squirrel@192.168.1.5>
-    <1096140809.3504.13.camel@krustophenia.net>
+	 <32827.192.168.1.5.1096065064.squirrel@192.168.1.5>
+	 <1096078552.1407.1.camel@krustophenia.net>
+	 <200409251555.59384.annabellesgarden@yahoo.de>
+	 <32983.192.168.1.5.1096125029.squirrel@192.168.1.5>
+	 <1096140809.3504.13.camel@krustophenia.net>
+	 <32823.192.168.1.5.1096142175.squirrel@192.168.1.5>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1096140809.3504.13.camel@krustophenia.net>
+In-Reply-To: <32823.192.168.1.5.1096142175.squirrel@192.168.1.5>
 Errors-To: jackit-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
 	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,30 +23,31 @@ List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
 	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Lee Revell <rlrevell@joe-job.com>
+To: Rui Nuno Capela <rncbc@rncbc.org>
 Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Werner Schweer <ws@seh.de>, alsa-devel <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
->
-> For now you have to get by with magic sysrq.
->
+On Sat, 2004-09-25 at 15:56, Rui Nuno Capela wrote:
+> Lee Revell wrote:
+> >
+> > For now you have to get by with magic sysrq.
+> >
+> 
+> That would be real magic to get SysRq+T to show up anything. It doesn't.
+> Nor any other SysRq key comination. And just in case you'll ask next, I do
+> have that magic included by kernel config, rest assured ;)
+> 
+> I guess the only chance I have right now, as kindly suggested by Karsten,
+> is about taking a photo of the kernel oops screens (which I have done
+> already, a couple of times), feeding it into some ocr, and disassemble
+> that with ksymoops. Just thinking about it makes me feel the creeps.... 
+> :)
+> 
 
-That would be real magic to get SysRq+T to show up anything. It doesn't.
-Nor any other SysRq key comination. And just in case you'll ask next, I do
-have that magic included by kernel config, rest assured ;)
+You tried Ingo's suggestion of making the keyboard aka i8042 IRQ
+non-threaded, and still sysrq is not magic?
 
-I guess the only chance I have right now, as kindly suggested by Karsten,
-is about taking a photo of the kernel oops screens (which I have done
-already, a couple of times), feeding it into some ocr, and disassemble
-that with ksymoops. Just thinking about it makes me feel the creeps.... 
-:)
-
-Oh my!
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
+Lee
 
 
 
