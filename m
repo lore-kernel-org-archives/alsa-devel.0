@@ -1,20 +1,14 @@
-From: Markus Plail <plail@web.de>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: [alsa-cvslog] CVS: alsa-kernel/pci/emu10k1
  emu10k1_main.c,1.12,1.13
-Date: Wed, 17 Apr 2002 10:12:30 +0200
+Date: Wed, 17 Apr 2002 10:33:59 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <87sn5ukakx.fsf@www.gitteundmarkus.de>
-References: <873cxxmmjt.fsf@www.gitteundmarkus.de>
-	<Pine.LNX.4.33.0204160911040.509-100000@pnote.perex-int.cz>
-	<s5h7kn729d9.wl@alsa2.suse.de> <87sn5vn72w.fsf@www.gitteundmarkus.de>
-	<s5hads3vhph.wl@alsa2.suse.de> <87elhfn1rd.fsf@www.gitteundmarkus.de>
-	<s5h3cxvvd8h.wl@alsa2.suse.de> <87lmbnli6r.fsf@www.gitteundmarkus.de>
-	<3CBCA523.8030802@superbug.demon.co.uk>
+Message-ID: <Pine.LNX.4.33.0204171032000.512-100000@pnote.perex-int.cz>
+References: <87it6qk9ra.fsf@www.gitteundmarkus.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3CBCA523.8030802@superbug.demon.co.uk> (James
- Courtier-Dutton's message of "Tue, 16 Apr 2002 23:26:43 +0100")
+In-Reply-To: <87it6qk9ra.fsf@www.gitteundmarkus.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,25 +17,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: James@superbug.demon.co.uk
-Cc: Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Markus Plail <plail@web.de>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi James!
+On Wed, 17 Apr 2002, Markus Plail wrote:
 
-* James Courtier-Dutton writes:
+> Hi Takashi!
+> 
+> * Takashi Iwai writes:
+> > At Tue, 16 Apr 2002 16:42:30 +0200,
+> > Markus Plail wrote:
+> 
+> >> Doesn't change anything really. I did an 'alsasound stop', edited
+> >> EMU10K1.conf and then 'alsasound start'. Was that right?
+> 
+> I am very sorry, I must have missed something yesterday. It DOES indeed
+> work with the change made in EMU10K1.conf
+> 
+> > yes.  now please check the state of this switch by alsamixer.
+> > try to play raw data once, and check whether the switch is changed.
+> > alsamixer will show the current status (and change the status if any
+> > notified).
+> 
+> As I wrote in another mail: While playing in passthrough mode (xine) the
+> switch doesn't do anything, while it works properly with normal (xmms
+> mp3 for example) digital mode.
 
-> I think what Takashi is saying is that when xine attempts to do
-> passthru, it should change the switch automatically. It will in fact
-> override whatever you entered in alsamixer. So maybe before it was
-> overriding it to "analogue" instead of overriding it to "digital".
-> I think that is what Takashi was trying to say.
+This behaviour is ok. When the raw S/PDIF device is used (passthough for 
+EMU10K1), the switch is locked and can't be modified by another 
+application.
 
-OK, but then again xine didn't change, but alsa, but then again I
-propbably just do not have the knowledge to really judge what is going
-on.
+So, we know, at least, that for your card this switch must be off. 
+Perhaps, it's only inverted? Can somebody with shared s/pdif, line-out 
+confirm this?
 
-Regards
-Markus
+						Jaroslav
 
-BTW: Does your rev06 card work with the 'wrong' patch from Takashi?
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
