@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: tarballs
-Date: Sat, 16 Feb 2002 11:56:17 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202161154060.521-100000@pnote.perex-int.cz>
+From: Guenther Sohler <guenther.sohler@newlogic.com>
+Subject: mixer problem with creative audixy - was most simple alsa seq application
+Date: Sat, 16 Feb 2002 16:13:01 +0100 (MET)
+Message-ID: <XFMail.020216161301.guenther.sohler@newlogic.com>
+Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA19597
-	for <alsa-devel@alsa-project.org>; Sat, 16 Feb 2002 11:57:13 +0100
-In-Reply-To: <20020215221839.NZDI1147.rwcrmhc52.attbi.com@there>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <s5hlmdud7u2.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Chuck Busby <scarecrow.143@attbi.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 15 Feb 2002, Chuck Busby wrote:
+Thank you very much for the advice.
+I dont need thr queue any more
+Now almost all midi works again in my application - but now for alsa(instead of
+oss)
+But there is another problem now. I use an audixy card in my pc connected to an
+external amplifier. 
+Even the amplifier is set to the maximal volume, midi synth is quite silent
+whereas pcm is very loud.
 
->
-> Now that ALSA is in the dev-kernel, will the site tarballs be updated past
-> 0.9.0beta10 and 0.9.0beta10a any time soon, or ever?
+Obviously the problem is in the mixer
 
-Yes, we'll release ALSA tarballs for 2.2, 2.4 kernels and development
-usage as obvious. The long delay was caused that I don't want to confuse
-users with many directory structure changes. Now, when the ALSA drivers
-are in kernel (thus directory structure is somewhat fixed), I'll release
-new tarballs ASAP.
+alsmixer shows me a lot of volumes to adjust, but actually just the volume of
+"music" show en effect. maximum volume on music makes me hear a silent tune.
+but "master" and all other volumes do not show(sound) a change in the volume.
 
-						Jaroslav
+In my application i can now select where the output goes to
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+64:0 is the external midi and 65:0-3 is the awe synth
+64:0 does not work all the time. but directly piping midi date to the
+respective /dev/snd/midixxxx always works(i hear a tune on the external
+keyboard).
+whats the problem here ?
 
 
 _______________________________________________
