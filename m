@@ -1,12 +1,24 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Re: [PATCH] alsamixer
-Date: Wed, 28 May 2003 01:26:34 -0700 (PDT)
+From: Matt Flax <flatmax@ieee.org>
+Subject: Changing BIOS IRQs and I/O addresses
+Date: Wed, 28 May 2003 20:00:42 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030528012634.3430.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030528100042.GA7426@ee.unsw.edu.au>
+Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA14907
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2003 11:15:28 +0200
+Received: from smtp.unsw.edu.au (antivirus-01.services.comms.unsw.EDU.AU [149.171.193.80])
+	by smtp3.unsw.edu.au (8.11.2/8.11.2) with ESMTP id h4S93vu08655
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2003 19:03:57 +1000 (EST)
+Received: from maillationax ([149.171.36.140])
+	by smtp.unsw.edu.au (8.11.2/8.11.2) with ESMTP id h4S93tL08641
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2003 19:03:57 +1000 (EST)
+Received: from flatmax by maillationax with local (Exim 3.36 #1 (Debian))
+	id 19Kxjf-0001wP-00
+	for <alsa-devel@alsa-project.org>; Wed, 28 May 2003 20:00:43 +1000
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,48 +28,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz, alsa-devel@lists.sourceforge.net
+To: core sound <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 28 May 2003 at 9:25, Jaroslav Kysela wrote:
+Hello,
 
-> On Tue, 27 May 2003, Eliot Blennerhassett wrote:
-> 
-> > this patch enables alsamixer to adjust controls correctly where the min
-value is
-> > negative (non-zero?)
-> > 
-> > I have tested with my controls that have ranges of -100,0 and -10,22 and it
-> > seems to work OK.
-> 
-> It seems that only removal of condition 'if volume >= 0' is sufficient.
-Jaroslav,
+I have traced my problem with my sound card to the function 
+'request_irq' in the intel8x0 module.
 
-I think the other change is necessary too.
+Unfortunatly the IRQ is set up by the BIOS to be 0.
+This bios does not let the user alter the IRQs.
 
-Mixer conv returns a value between min and max.  Input vol1 is the percentage
-step.  In existing code returned vol1 is assumed to be that step converted into
-the units of the control.  When min is non-zero this is not true.\
-For example mixer_conv(2,0,100,-100,0) returns -98
-Subtracting min==-100 gives the correct result of (-98 -(-100))=+2
-I suspect that every control except mine has min==0
- 
-       vol1 = mixer_conv(vol1, 0, 100, min, max);
-+    vol1 -= min; // convert value to a delta in units of the volume control.
-      if (vol1 <= 0)
+Can anyone tell me how to change the IRQ manually ?
 
-regards
+Here is some extended info about the card :
+00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] 
+SiS7012 PCI Audio Accelerator (rev a0)
+        Subsystem: CLEVO/KAPOK Computer: Unknown device 0400
+        Control: I/O- Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- 
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 0
+        Region 0: I/O ports at 1c00 [disabled] [size=256]
+        Region 1: I/O ports at 1800 [disabled] [size=128]
+        Capabilities: [48] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=55mA 
+PME(D0-,D1-,D2-,D3hot+,D3cold+)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
 
-Eliot
+thanks
+Matt
+-- 
+http://mffm.ee.unsw.edu.au
 
-Eliot Blennerhassett
-AudioScience Inc.
---
-Junk footer beyond this point. Read at your own risk.
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
+WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
+FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
+Vector Bass                : http://mffmvectorbass.sourceforge.net/
+Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
