@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Wed, 30 Jun 2004 16:55:53 +0200
+Subject: [ALSA - driver 0000338]: intel8x0 driver is not able to find sound card
+Date: Wed, 30 Jun 2004 16:46:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7849af4110bc78af324421657d53a138@bugtrack.alsa-project.org>
+Message-ID: <7950e7559f6f1bf7275a0601357eb42e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,48 +24,59 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0328
+0338
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                aaronkaplan
-Assigned To:                tiwai
+Reported By:                jrh
+Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     328
-Category:                   PCI - nm256
+Bug ID:                     338
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Status:                     new
+Distribution:              =20
+Kernel Version:             2.6.6 (vanilla)
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              06-30-2004 16:55 CEST
+Date Submitted:             06-17-2004 17:55 CEST
+Last Modified:              06-30-2004 16:46 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    intel8x0 driver is not able to find sound car=
+d
 Description:=20
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
+Hi folks,=20
 
-The OSS driver works fine.
+  I've been using the intel8x0 alsa driver since kernel 2.6 without any
+problems upto kernel 2.6.5 (compile from vanilla). However, since 2.6.6
+and 2.6.7 came out I'm not able to listen to any audio as the driver does
+not seem to recognice my card. I've made NO changes to the configuration
+files of the kernel and to any other setup. Simple start 2.6.5 alsa works=
+,
+reboot with 2.6.6/7 and sound is not working.
+
+ The modules are loaded (same modules). "alsaconf" (1.0.5) reports the
+right card and loads it but for instance "alsactl restore" fails...
+
 
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 16:55 CEST=20
+ tiwai - 06-30-2004 16:46 CEST=20
 ----------------------------------------------------------------------
-Does the attached patch have any effect?
-If not, please show the output of lspci -nv.
+See /proc/asound/cards whether the driver is correctly initialized
+after snd-intel8x0 module is loaded.  If no card is found there,
+show the output of lsmod and check the relevant kernel messages.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -73,15 +84,13 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-08-04 23:13 aaronkaplan    New Bug                                    =
+06-17-04 17:55 jrh            New Bug                                    =
  =20
-06-08-04 23:13 aaronkaplan    Distribution              =3D> Fedora Core =
-2  =20
-06-08-04 23:13 aaronkaplan    Kernel Version            =3D> 2.6.5-1.358 =
-   =20
-06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                 =
-  =20
-06-30-04 16:55 tiwai          Bugnote Added: 0001362                     =
+06-17-04 17:55 jrh            Kernel Version            =3D> 2.6.6 (vanil=
+la)=20
+06-18-04 08:58 jrh            Bug Monitored: jrh                         =
+ =20
+06-30-04 16:46 tiwai          Bugnote Added: 0001361                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
