@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Re: [Jackit-devel] alsa_driver_wait -> libasound?
-Date: Tue, 14 Jan 2003 20:35:45 +0100 (CET)
+Date: Tue, 14 Jan 2003 15:23:10 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0301142029220.541-100000@pnote.perex-int.cz>
-References: <200301141642.h0EGgKCg018516@spider.tela.com>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <200301142022.h0EKMmCg025158@spider.tela.com>
+References: <Pine.LNX.4.33.0301142029220.541-100000@pnote.perex-int.cz>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301141642.h0EGgKCg018516@spider.tela.com>
+In-reply-to: Your message of "Tue, 14 Jan 2003 20:35:45 +0100."
+             <Pine.LNX.4.33.0301142029220.541-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,51 +15,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Jaroslav Kysela <perex@perex.cz>
 Cc: Josh Haberman <joshua@haberman.com>, "jackit-devel@lists.sourceforge.net" <jackit-devel@lists.sourceforge.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 14 Jan 2003, Paul Davis wrote:
+>So resume:
+>
+>1) use snd_pcm_link to link all streams
 
-> >> that said, i think it would be great if this found its way into libasound.
-> >
-> >I wonder why to implement this function when one can link more pcm streams
-> >with "snd_pcm_link()" together? Then polling one stream is sufficient when
-> >streams are hardware synchronized.
-> 
-> why don't you go read the function in question and then consider
-> whether that would actually accomplish anything like what it does? i
-> say that because i don't think its even close. 
+we already have hardware that doesn't support linkage between
+playback+capture. 
 
-Why not? In the perfect world, when the hardware supports paralel start of 
-multiple streams and application sets all equal parameters for all 
-streams, the pointers to ring buffer are equal. Thus checking of only one 
-stream is quite sufficient before r/w operation.
+>2) start first linked stream (thus all in paralel or serial or combination 
+>   sequence)
+>3) poll the last stream handle for valid position
+>
+>And you don't need your complicate function.
 
-When hardware does not support paralel start, but the parts are running at 
-same clock, then you can expect that last started stream in serialized 
-start sequence (as ALSA driver does) has valid position and all other
-streams, too.
+i just can't agree with that. on return from JACK's alsa_driver_wait, the
+caller knows:
 
-And if clock are not synced, you cannot expect nothing and your code will 
-fail later (when you don't do clock corrections), too.
+       * how many frames are available (rounded to whole periods)
+       * what delay was encountered in waiting for the data/space
+       * whether an xrun occured
+       * if some other error occured 
 
-So resume:
+your proposed snd_pcm_wait_many() doesn't do any of that.
 
-1) use snd_pcm_link to link all streams
-2) start first linked stream (thus all in paralel or serial or combination 
-   sequence)
-3) poll the last stream handle for valid position
+i think that josh's point was perhaps a little different than you are
+thinking. i don't think he was suggesting a version of snd_pcm_wait()
+that waited on multiple handles instead of just one. i think he was
+suggesting a function that does something that most applications need:
 
-And you don't need your complicate function.
+to wait until a known-sized chunk of data/space (or multiple thereof)
+is ready on *all* handles being used. since doing this involves much
+more than just calling poll(), which is fundamentally all that
+snd_pcm_wait() does, so would the multi-handle version.
 
-						Jaroslav
+--p
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
+       
 
 
 -------------------------------------------------------
