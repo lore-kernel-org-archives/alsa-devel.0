@@ -1,15 +1,18 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - WWW server 0000330]: Is Audigy 2 supported by ALSA?
-Date: Thu, 10 Jun 2004 01:40:18 +0200
+From: <fmoraes74@netzero.net>
+Subject: Cracks during capture
+Date: Thu, 10 Jun 2004 00:17:05 GMT
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <fcce70d6dbe464e4a25a98051334afaa@bugtrack.alsa-project.org>
+Message-ID: <20040609.171735.24877.22607@webmail11.nyc.untd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7A90C1E0
-	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2004 01:40:18 +0200 (MEST)
+Received: from outbound20-2.nyc.untd.com (outbound20-2.nyc.untd.com [64.136.20.160])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id F1A451EC
+	for <alsa-devel@alsa-project.org>; Thu, 10 Jun 2004 02:18:29 +0200 (MEST)
+Received: from outbound21-sr.nyc.untd.com (webmail11.nyc.untd.com [10.140.30.153])
+	by smtpout03.nyc.untd.com with SMTP id AABANRLGCATJK8PA
+	for <alsa-devel@alsa-project.org> (sender <fmoraes74@netzero.net>);
+	Wed,  9 Jun 2004 17:18:10 -0700 (PDT)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,67 +21,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: James@superbug.demon.co.uk
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0330
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                digthemdeep
-Assigned To:               =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - WWW server
-Bug ID:                     330
-Category:                   soundcard matrix
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             06-10-2004 01:40 CEST
-Last Modified:              06-10-2004 01:40 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    Is Audigy 2 supported by ALSA?
-Description:=20
-Audigy 2 is not listed in the soundcard matrix, however it is claimed by
-opensource.creative.com that ALSA supports these cards (almost all of
-them). (Also I find it hard to believe that Audigy 2 is not in the
-matrix... perhaps the matrix is just out of date?)
+I am trying to add capture to the emu10k1x driver based on the Audigy LS driver. It seems to be working, but when I use arecord to capture at the defaults (8Khz mono), I get some cracking sound in the capture. 
 
-I wonder if there might also be some Terratec (like Phase 88) products no=
-t
-listed which are, in fact, supported. Is E-Mu entirely unsupported? It's
-too bad, I've heard good things about E-Mu.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+If I capture at 48Khz, the sound seems better. Any ideas/suggestions?
 
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-06-10-04 01:40 digthemdeep    New Bug                                    =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I am going to clean up the code a bit so that I can submit the patch with the current support.
 
+Francisco
 
+________________________________________________________________
+The best thing to hit the Internet in years - NetZero HiSpeed!
+Surf the Web up to FIVE TIMES FASTER!
+Only $14.95/ month -visit www.netzero.com to sign up today!
 
 
 -------------------------------------------------------
