@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000669]: Creative SB Live! 24-bit External (USB) works only at a minimal level.
-Date: Tue, 23 Nov 2004 21:09:54 +0100
-Message-ID: <be9038fb5d310e9a1e4b4e74bbfe4deb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000667]: How to integrate turning on and off LED:s on laptops
+Date: Tue, 23 Nov 2004 21:28:08 +0100
+Message-ID: <280d5530550525c8c70d38a55eacc90a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C6EA2BF
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:09:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8CBB2275
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 21:28:08 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=669> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=667> 
 ======================================================================
-Reported By:                Henni
-Assigned To:                Clemens Ladisch
+Reported By:                linus
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   669
-Category:                   USB - usb-audio
+Issue ID:                   667
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.6.9-cko3
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-23-2004 19:23 CET
-Last Modified:              11-23-2004 21:09 CET
+Date Submitted:             11-23-2004 15:27 CET
+Last Modified:              11-23-2004 21:28 CET
 ======================================================================
-Summary:                    Creative SB Live! 24-bit External (USB) works only
-at a minimal level.
+Summary:                    How to integrate turning on and off LED:s on laptops
 Description: 
-The Creative SB Live! 24-bit External is a "card" similar to the Audigy 2
-NX (probably its litte brother).
+This machine, an HP Compaq NC6000 (also on other models
+such as NC8000) has a mute LED that
+turns on and off when mute is activated/deactivated.
+It is accomplished by way of the "External Amplifier"
+setting - this has been wired to a LED instead of an
+amplifier, so the "mute" function should (theoretically)
+activate/deactivate the "External Amplifier" when muting
+is selected for the device. The chip used is AD1981B.
 
-With the snd-usb-audio the ''only'' thing working is the stereo output. I
-read that the Audigy 2 NX works far better with the snd-usb-audio.
-Probably there is a way to get the SB Live! 24-bit on a similar lvl?
+This script shows how it is done:
 
-PS: I added some informations about it as an attachment.
+if ( amixer sget "External Amplifier"|grep off > /dev/null )
+then
+           # Toggles the LED, no actual volume change
+           amixer set "External Amplifier" unmute > /dev/null
+           # Toggles the audio level
+           amixer set "Master" unmute > /dev/null
+else
+           amixer set "External Amplifier" mute > /dev/null
+           amixer set "Master" mute > /dev/null
+fi
 
+The question of how this is to be implemented remains. Is
+this an issue for ALSA or shall it be handled on a higher,
+user-space level? I also have a bug open in GNOME for the
+same thing, I need to decide how to finally resolve this
+and need input from the ALSA team on the best solution.
+
+(See http://bugzilla.gnome.org/show_bug.cgi?id=157748)
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 11-23-04 21:09 
+ tiwai - 11-23-04 15:41 
 ----------------------------------------------------------------------
-Hmm, did you tryed alsamixer ??? because there is capture volume too.
+I feel that the implementation in the driver is better if the LED is
+printed as "mute" symbol.  In theory, we can provide a LED control element
+and manage it in the user-space, though.
+
+----------------------------------------------------------------------
+ linus - 11-23-04 21:28 
+----------------------------------------------------------------------
+OK sounds reasonable, but given that it will only affect some specific
+platforms using this chip, how do you reasonably distinguish between
+them?
+The one way I found (as illustrated in the GNOME bug) was to query the
+ASPI
+DSDT for the model name and brand. Is this a reasonable thing for an ALSA
+
+module to do or do you suggest some other approach? (E.g. do you know
+some
+other "magic numbers" closer to ALSA that could be queried?)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 19:23 Henni          New Issue                                    
-11-23-04 19:23 Henni          File Added: output.txt                       
-11-23-04 19:23 Henni          Distribution              => Gentoo 2004.3   
-11-23-04 19:23 Henni          Kernel Version            => 2.6.9-cko3      
-11-23-04 19:58 Henni          Issue Monitored: Henni                       
-11-23-04 21:09 pzad           Note Added: 0002527                          
+11-23-04 15:27 linus          New Issue                                    
+11-23-04 15:27 linus          Distribution              => Fedora Core 3   
+11-23-04 15:27 linus          Kernel Version            => 2.6.9           
+11-23-04 15:41 tiwai          Note Added: 0002516                          
+11-23-04 21:28 linus          Note Added: 0002528                          
 ======================================================================
 
 
