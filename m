@@ -1,10 +1,11 @@
-From: Napster Equivalent <operations@trinetcanada.com>
-Subject: Download Unlimited Music & More Online - We Show You How. - extant
-Date: Fri, 3 Dec 2004 15:01:50 +0000 (UTC)
-Message-ID: <09961868948643603548547$5fe6cb467@midsouth.com>
+From: "Lynn Haywood" <yyzpsqwtdb@ppams.com>
+Subject: Your mrtgage approval
+Date: Fri, 03 Dec 2004 12:45:02 -0600
+Message-ID: <xggsfeofkq@eurasia>
+Reply-To: "Lynn Haywood" <mcensgrcwq@ppams.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="11976168757804798183"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,66 +16,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Sun, 05 Dec 2004 00:31:49 +0600
-To: alsa-announce@alsa-project.org
-Cc: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-conf@alsa-project.org
+Cc: alsa-devel-request@alsa-project.org, alsa-howto@alsa-project.org, alsa-devel-request-old@alsa-project.org, alsa-user-request-old@alsa-project.org, alsa-announce1@alsa-project.org, alsa-doc@alsa-project.org, alsa-devel@alsa-project.org, abramo@alsa-project.org, alsa-announce-request-old@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+--11976168757804798183
+Content-Type: text/plain; charset=%CHARSET
+Content-Transfer-Encoding: quoted-printable
 
-Un limited
-Music and MP 3 songs
-Movies
-Games
-Software
-TV Shows
-Song Lyrics
-Audio Books
+burke injudicious fallen harris watchmen 
+police altar counteract macedonia nco discordant bastard tend 
+bolshevik c cursive thule davies 
 
-Download anything you could possibly want 
-in three simple, fast, and easy steps
-START DOWNLOADING NOW
-This service is Safe, Secure and Legal
+--11976168757804798183
+Content-Type: text/html; charset=%CHARSET
+Content-Transfer-Encoding: quoted-printable
 
-http://www.yahoohut.com/133.html
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+You have been approved for $441K You will recieve a fixed rate of 2.68=
+%
+<br>
+We need your input to complete the last step.
+<br>
+After doing so you will be contacted by 4 lenders.
+<br>
+Please visit our Iink below which does not ask for any sensitive informati=
+on
+<br>
+<br>
+<a href=3D"http://www.m0rtgage-free.com/index2.php?refid=3Dpop=20">60 Seco=
+nd Form</a>
+<br>
+<br>
+<br>
+<br>
+<a href=3D"http://www.ez-lenderz.com/remove.php?alsa-conf@alsa-project.org=
+">No Thanks</a>
+</html>
 
-If you are a beginner, no need to worry,
-we will show you how to do it from start to finish
-We have made it so easy, you will be downloading anything 
-you could possibly want  
-This Service Comes with
+--11976168757804798183--
 
-More  Bonuses
-
-DVD Copying Software
-MP3 Burning Software
-Anti-Virus Software
-Game Copying Software
-Pop-Up, Spyware, Adware Killer Software
-
-http://www.yahoohut.com/133.html
-
-Even More Benefits : 
-
-Latest FileSharing Software
-In-Depth Visual Tutorials
-Internet History Cleaner
-Privacy Protection Software
-Access to 90000000 Songs
-Unlimited Technical Support
-Stay Legal  Do not Get Sued
-
-
-Lifetime Membership is $34.95
-Check out to Join Now and Start Downloading in Minutess
-
-http://www.yahoohut.com/133.html
-
-
-Regards
-Loyd Dooley
-Affilate Manager
-Multimedia Download Center
 
 
 -------------------------------------------------------
