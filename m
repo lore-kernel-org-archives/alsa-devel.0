@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000382]: line in doesn't give stereo sound
-Date: Fri, 24 Sep 2004 13:45:54 +0200 (CEST)
+Subject: [ALSA - driver 0000434]: System hang after playing
+Date: Fri, 24 Sep 2004 13:45:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040924114554.8030B101DF@server.perex-int.cz>
+Message-ID: <20040924114511.45DB1101DB@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CAD6A288
-	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:45:54 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9B354288
+	for <alsa-devel@alsa-project.org>; Fri, 24 Sep 2004 13:45:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,71 +22,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been CLOSED
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000382
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000434
 ======================================================================
-Reported By:                labra
-Assigned To:                perex
+Reported By:                crsw
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     382
-Category:                   PCI - ice1724
+Bug ID:                     434
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     closed
-Distribution:               Gentoo
-Kernel Version:             2.4.26
+Distribution:               Fedora core 2
+Kernel Version:             2.6.7-1.494.2.2custom
 ======================================================================
-Date Submitted:             07-13-2004 13:51 CEST
+Date Submitted:             08-11-2004 10:56 CEST
 Last Modified:              09-24-2004 13:45 CEST
 ======================================================================
-Summary:                    line in doesn't give stereo sound
+Summary:                    System hang after playing
 Description: 
-The line in-plug doesn't give stereo sound anymore. Before with alsamixer I
-was able to get stereo sound from line in by using "H/W In 0" and "H/W IN
-1". Now only "H/W In 0" gives sound.
+After playing a sound file the system hang whitout any message. It hang
+even if you send a kill -1 signal to the process reproducing the sound
+file
 ======================================================================
 
 ----------------------------------------------------------------------
- labra - 07-13-2004 13:59 CEST 
+ tiwai - 08-19-2004 19:19 CEST 
 ----------------------------------------------------------------------
-The alsa-driver version with this feature/bug is 1.0.5a.
+Can you get a trace via magic sysrq?
 
 ----------------------------------------------------------------------
- tiwai - 08-19-2004 19:10 CEST 
+ crsw - 08-19-2004 22:01 CEST 
 ----------------------------------------------------------------------
-Try 1.0.6a.  The capture source is chosen via 'Capture Source' control.
-There are two controls for left and right, index 0 and 1, respectively.
-
-Note that aureon on 1.0.6a has a bug that the master volume is
-inverted.  Set master 0 to get the max volume.
-(Already fixed on CVS version)
-
-----------------------------------------------------------------------
- labra - 08-30-2004 10:20 CEST 
-----------------------------------------------------------------------
-Thank you! Updating to 1.0.6a helped to the problem! This bug can be closed
-now...
-
-----------------------------------------------------------------------
- perex - 08-30-2004 11:47 CEST 
-----------------------------------------------------------------------
-Fixed in recent ALSA driver.
+I'v just installed alsa-lib 1.0.6.rc1.
+The problem is solved now.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-13-04 13:51 labra          New Bug                                      
-07-13-04 13:51 labra          Distribution              => Gentoo          
-07-13-04 13:51 labra          Kernel Version            => 2.4.26          
-07-13-04 13:59 labra          Bugnote Added: 0001413                       
-07-13-04 13:59 labra          Bug Monitored: labra                         
-08-19-04 19:10 tiwai          Bugnote Added: 0001591                       
-08-30-04 10:20 labra          Bugnote Added: 0001665                       
-08-30-04 11:47 perex          Bugnote Added: 0001666                       
-08-30-04 11:47 perex          Assigned To               => perex           
-08-30-04 11:47 perex          Resolution               open => fixed       
-08-30-04 11:47 perex          Status                   new => resolved     
+08-11-04 10:56 crsw           New Bug                                      
+08-11-04 10:56 crsw           Distribution              => Fedora core 2   
+08-11-04 10:56 crsw           Kernel Version            => 2.6.7-1.494.2.2custom
+08-11-04 10:56 crsw           Bug Monitored: crsw                          
+08-11-04 10:56 crsw           Bug End Monitor: crsw                        
+08-19-04 19:19 tiwai          Bugnote Added: 0001594                       
+08-19-04 22:01 crsw           Bugnote Added: 0001596                       
+08-20-04 12:38 tiwai          Resolution               open => fixed       
+08-20-04 12:38 tiwai          Status                   assigned => resolved
 09-24-04 13:45 tiwai          Status                   resolved => closed  
 ======================================================================
 
