@@ -1,15 +1,9 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: hdsploader causes Ooops in kernel 2.6.8.1 and
-	AMD64
-Date: Fri, 10 Sep 2004 22:32:10 -0400
+From: "thewade" <pdman@aproximation.org>
+Subject: Re: hdsploader causes Ooops in kernel 2.6.8.1 and AMD64
+Date: Fri, 10 Sep 2004 21:19:51 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094869930.1306.3.camel@krustophenia.net>
-References: <200409110151.i8B1pDfb003976@sanctuary.aproximation.org>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <200409110319.i8B3JpaP004175@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200409110151.i8B1pDfb003976@sanctuary.aproximation.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,30 +12,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: thewade <pdman@aproximation.org>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-09-10 at 21:51, thewade wrote:
-> Hello,
+> On Fri, 2004-09-10 at 21:51, thewade wrote:
+> > Hello,
+> > 
+> > Im trying to solve my own problem, which is getting the hammerfall to 
+> > work on my AMD64 laptop running Fedora Core 3 test 1 and the standard 
+> > kernel 2.6.8.1.
+> > 
+> > On boot I get Found hammerfall dsp: no multiface or digiface
+> connected: 
+> > waiting for firmware even when the multiface is connected.
 > 
-> Im trying to solve my own problem, which is getting the hammerfall to 
-> work on my AMD64 laptop running Fedora Core 3 test 1 and the standard 
-> kernel 2.6.8.1.
+> Are you sure Linux sees the hammerfall (1394 support enabld, etc)?  What
+> does dmesg say about it?
 > 
-> On boot I get Found hammerfall dsp: no multiface or digiface connected: 
-> waiting for firmware even when the multiface is connected.
+> The Oops is certainly a bug and should be fixed.
+> 
+> Lee
 
-Are you sure Linux sees the hammerfall (1394 support enabld, etc)?  What
-does dmesg say about it?
+Linux Kernel Card Services
+  options:  [pci] [cardbus] [pm]
+ACPI: PCI interrupt 0000:00:09.0[A] -> GSI 17 (level, low) -> IRQ 17
+Yenta: CardBus bridge found at 0000:00:09.0 [1584:3005]
+Yenta: ISA IRQ mask 0x02b8, PCI irq 17
+Socket status: 30000820
+ACPI: PCI interrupt 0000:00:09.1[A] -> GSI 17 (level, low) -> IRQ 17
+Yenta: CardBus bridge found at 0000:00:09.1 [1584:3005]
+Yenta: ISA IRQ mask 0x02b8, PCI irq 17
+Socket status: 30000006
+PCI: Enabling device 0000:02:00.0 (0080 -> 0082)
+ACPI: PCI interrupt 0000:02:00.0[A] -> GSI 17 (level, low) -> IRQ 17
+Hammerfall-DSP: no Digiface or Multiface connected!
+card initialization pending : waiting for firmware
 
-The Oops is certainly a bug and should be fixed.
-
-Lee
-
-
-
-
+I figure this pertains to the cardbus. If you need more let me know.
+Thanks for the help!
+-thewade
 
 
 -------------------------------------------------------
