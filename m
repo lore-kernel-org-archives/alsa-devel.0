@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000625]: ISA - 4232 has no CD sound
-Date: Thu, 11 Nov 2004 13:47:11 +0100
-Message-ID: <b665c0b7eade08574b96c6e2ffe15255@bugtrack.alsa-project.org>
+From: Ed Wildgoose <lists@wildgooses.com>
+Subject: Re: patch: RME9632 precise_ptr fix (9652 owners please
+ read)
+Date: Thu, 11 Nov 2004 12:50:56 +0000
+Message-ID: <41936030.2050205@wildgooses.com>
+References: <4163FCCA.1090909@wildgooses.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 329D2261
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 13:47:12 +0100 (MET)
+In-Reply-To: <4163FCCA.1090909@wildgooses.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,208 +18,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: tiwai@suse.de, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi Takashi,
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=625> 
-======================================================================
-Reported By:                hugovanwoerkom
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   625
-Category:                   ISA - cs4236
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian Sarge
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             11-03-2004 13:49 CET
-Last Modified:              11-11-2004 13:47 CET
-======================================================================
-Summary:                    ISA - 4232 has no CD sound
-Description: 
-Switched from OSS to Alsa. Enabled sound, alsa, OSS emulation and cs4232
-isa card in kernel. Tried with modules and without. Has sound but not from
-the CD. System ran OSS module  with sound from the CD previous to kernel
-compile, so everything that OSS needed is still there.
-======================================================================
+I was just checking the hdsp driver code for a new kernel build and I 
+notice that my patch was committed incorrectly.  Notice that the 
+"position /= 4;" line has been removed inadvertently in that commit:
+http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/pci/rme9652/hdsp.c?r1=1.71&r2=1.72
 
-----------------------------------------------------------------------
- tiwai - 11-09-04 18:49 
-----------------------------------------------------------------------
-Please attach /etc/asound.state for debugging.
-I guess you didn't turn on "CD Playback Switch".
+See below for original patch as sent to the list:
 
-----------------------------------------------------------------------
- hugovanwoerkom - 11-11-04 13:47 
-----------------------------------------------------------------------
-On Debian systems:
-/var/lib/alsa/asound.state
-follows:
+Summary: Fix accurate_ptr in hdsp driver
+Signoff: Ed Wildgoose (lists (at) wildgooses.com)
 
-state.CS4236 {
-	control.1 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'PCM Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.2 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'PCM Playback Volume'
-		value.0 52
-		value.1 52
-	}
-	control.3 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Line Playback Switch'
-		value.0 true
-		value.1 true
-	}
-	control.4 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Line Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.5 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		value.0 false
-		value.1 false
-	}
-	control.6 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		value.0 31
-		value.1 31
-	}
-	control.7 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Aux Playback Switch'
-		index 1
-		value.0 false
-		value.1 false
-	}
-	control.8 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 31'
-		iface MIXER
-		name 'Aux Playback Volume'
-		index 1
-		value.0 31
-		value.1 31
-	}
-	control.9 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Playback Switch'
-		value false
-	}
-	control.10 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Mono Playback Volume'
-		value 15
-	}
-	control.11 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Output Playback Switch'
-		value false
-	}
-	control.12 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mono Output Playback Bypass'
-		value false
-	}
-	control.13 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 15'
-		iface MIXER
-		name 'Capture Volume'
-		value.0 11
-		value.1 11
-	}
-	control.14 {
-		comment.access 'read write'
-		comment.type ENUMERATED
-		comment.item.0 Line
-		comment.item.1 Aux
-		comment.item.2 Mic
-		comment.item.3 Mix
-		iface MIXER
-		name 'Capture Source'
-		value.0 Mic
-		value.1 Mic
-	}
-	control.15 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Mic Boost'
-		value.0 false
-		value.1 false
-	}
-	control.16 {
-		comment.access 'read write'
-		comment.type BOOLEAN
-		iface MIXER
-		name 'Loopback Capture Switch'
-		value false
-	}
-	control.17 {
-		comment.access 'read write'
-		comment.type INTEGER
-		comment.range '0 - 63'
-		iface MIXER
-		name 'Loopback Capture Volume'
-		value 63
-	}
-}
+Thanks
 
-I would turn on CD Playback Switch if I knew how.
+Ed W
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-03-04 13:49 hugovanwoerkom New Issue                                    
-11-03-04 13:49 hugovanwoerkom Distribution              => Debian Sarge    
-11-03-04 13:49 hugovanwoerkom Kernel Version            => 2.6.9           
-11-09-04 18:49 tiwai          Note Added: 0002333                          
-11-11-04 13:47 hugovanwoerkom Note Added: 0002384                          
-======================================================================
+
+> --- hdsp.c.orig 2004-10-06 14:58:37.052866070 +0100
+> +++ hdsp.c      2004-10-06 14:59:15.034213752 +0100
+> @@ -969,8 +969,7 @@
+>
+>        position &= HDSP_BufferPositionMask;
+>        position /= 4;
+> -       position -= 32;
+> -       position &= (HDSP_CHANNEL_BUFFER_SAMPLES-1);
+> +        position &= ((hdsp->period_bytes/2)-1);
+>        return position;
+> }
 
 
 
