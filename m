@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
-Date: Fri, 27 Aug 2004 20:14:48 +0200 (CEST)
+Date: Fri, 27 Aug 2004 20:15:29 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827181448.44B7F2C008@server.perex-int.cz>
+Message-ID: <20040827181529.A60032C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85E811EF
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:14:48 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D92BA1ED
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:15:29 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,7 +20,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been RESOLVED.
+The following bug has been CLOSED
 ======================================================================
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000383
 ======================================================================
@@ -33,13 +33,12 @@ Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
+Status:                     closed
 Distribution:               
 Kernel Version:             
-Resolution:                 fixed
 ======================================================================
 Date Submitted:             07-13-2004 17:45 CEST
-Last Modified:              08-27-2004 20:14 CEST
+Last Modified:              08-27-2004 20:15 CEST
 ======================================================================
 Summary:                    Audigy LS - Capturing from Mic and kernel oops
 Description: 
@@ -82,6 +81,11 @@ Thx for your quick support and double-thumbs-up!
 ----------------------------------------------------------------------
 Fixed in cvs.
 
+----------------------------------------------------------------------
+ jcdutton - 08-27-2004 20:15 CEST 
+----------------------------------------------------------------------
+Fixed
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -93,6 +97,8 @@ Date Modified  Username       Field                    Change
 08-27-04 20:14 jcdutton       Bugnote Added: 0001651                       
 08-27-04 20:14 jcdutton       Resolution               open => fixed       
 08-27-04 20:14 jcdutton       Status                   assigned => resolved
+08-27-04 20:15 jcdutton       Bugnote Added: 0001652                       
+08-27-04 20:15 jcdutton       Status                   resolved => closed  
 ======================================================================
 
 
