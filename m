@@ -1,18 +1,15 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Re: More CS4630, secondary CODEC output.
-Date: Fri, 2 Aug 2002 08:47:53 -0700
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: MIDI+USB - one way?
+Date: Fri, 2 Aug 2002 18:17:07 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020802154753.GA718@porky>
-References: <3D41D4DC.60004@cucumelo.org> <s5h1y9ic3xs.wl@alsa2.suse.de> <3D4901D9.7040409@cucumelo.org> <s5hwuraalt8.wl@alsa2.suse.de> <s5hptx2agxp.wl@alsa2.suse.de> <3D4A1DDF.2090404@cucumelo.org>
+Message-ID: <200208021817.08060.plcl@telefonica.net>
+References: <20020802001554.48f2f13a.mis@creazone.com> <3D4A67B8.730CE3F@ladisch.de> <20020802083548.5ff93902.mis@creazone.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
+Content-Type: text/plain;
+  charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gotnet.net (mail.gotnet.net [207.173.88.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA05744
-	for <alsa-devel@alsa-project.org>; Fri, 2 Aug 2002 17:56:21 +0200
-Content-Disposition: inline
-In-Reply-To: <3D4A1DDF.2090404@cucumelo.org>; from gorm@cucumelo.org on Thu, Aug 01, 2002 at 22:51:27 -0700
+In-Reply-To: <20020802083548.5ff93902.mis@creazone.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,32 +18,79 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Benny Sjostrand <gorm@cucumelo.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+To: Michal Seta <mis@creazone.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 2002.08.01 22:51 Benny Sjostrand wrote:
-> On the "Turtle Beach Santa Cruz" now i know that GPIO7/GPIO8 on sec. 
-> codec controls back speakers, that's not done yet,
-> But I would like to know if current code at least detects the secondary 
-> CODEC successfully. In theory it should.
-[...]
-> Turtle Beach Santa Cruz
-> dsp: cs4630
-> primary codec: cs4294
-> secondary codec: cs4297A
-> GPIO7/GPIO8 on secondary codec controls back speakers support
+El Vie 02 Ago 2002 15:35, Michal Seta escribió:
+> On Fri, 02 Aug 2002 13:06:32 +0200
+> Clemens Ladisch <clemens@ladisch.de> wrote:
+> > I tested the snd-usb-midi driver with the ALSA rawmidi test programs
+> > (rawmidi and midiloop in alsa-lib/test), and it worked.
+>
+> It didn't work for me.
+>
+> when called with -i option it is silent (and I am unable to ctrl-c it to
+> exit - I have to kill the proces).  With the -o option it sends note
+> on/note off properly.  And yes, I used the -v option as well.
 
+I have a Midiman Midisport 2x2 too, and is working with snd-usb-midi and Lars 
+Doelle's ezusbmidi firmware. I have tested it just now, with current cvs's  
+alsa-lib/test/rawmidi program and it works for me.
 
-    Actually, the codecs are reversed. The CS4297A is the primary codec, 
-and
-the CS4294 is the secondary. And yes, your driver detects them both just
-fine and I can manipulate both with alsamixer and confirm the changes to
-the CS4294 with the changes in the "ac97#0-1regs" file in 
-/proc/asound/card0.
+And yes, ctrl-c does not work well with this program. It only works after some 
+events received from the MIDI device. If there is no MIDI input for some 
+reason (cable disconnected, wrong parameters) you have to kill it.
 
--- Peter Heatwole
-"Murphy was just a well known pessimist."
+$ ./rawmidi -v -i hw:2,0
+Using:
+Input: device hw:2,0
+Output: NONE
+Read midi in
+Press ctrl-c to stop
+read fe
+read fe
+read fe
+read fe
+read fe
+read fe
+read fe
+Closing
+
+>
+> > I've already heard rumors that the OSS-compatible rawmidi input doesn't
+> > work. Try to use /dev/snd/midiC?D? instead.
+
+It also works for me with OSS emulation:
+
+$ ./rawmidi -v -I /dev/midi02
+Using:
+Input: /dev/midi02
+Output: NONE
+Read midi in
+Press ctrl-c to stop
+read fe
+read fe
+read fe
+read fe
+read fe
+read fe
+read fe
+Closing
+
+But something as simple as:
+$ cat /dev/midi02 | od -x
+Doesn't work. Nothing received. ?!
+
+>
+> I used that, too.  And at all times I get MIDI output working fine but no
+> input.  The funny thing is that it _did_ work and then it stopped working
+> just like that...
+
+A broken MIDI cable, perhaps? Also, keep watch over hotplug and the usb-oss 
+modules/usb-audio modules. Sorry, I can't think of any more suggestions.
+
+Regards,
+Pedro
 
 
 
