@@ -1,13 +1,12 @@
-From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: [ANN] AudioScience HPK version 2.88 released
-Date: Thu, 05 Aug 2004 16:56:01 -0700 (PDT)
+From: Jeff Muizelaar <muizelaar@rogers.com>
+Subject: [PATCH 1/2] au88x0 eq cleanups
+Date: Thu, 05 Aug 2004 21:58:41 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040805165606.19381.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <4112E5D1.6050308@rogers.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +16,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: eblennerhassett@audioscience.com
 List-Id: alsa-devel@alsa-project.org
 
-See the release notes and get the tarball from here
-http://www.audioscience.com/internet/download/linux.htm
+Cleans up the equalizer code by converting some loops to proper for
+loops and fixes the conditions for looping.
 
-Many updates to specific card features, plus support for Linux kernel 2.6.x.
+Approved by Manuel Jander.
 
+-Jeff
 
-Also on the same page can be found the patch for alsa 1.0.5a 
-(I know, I'm lagging behind)
-
-regards
-
-Eliot Blennerhassett
-AudioScience Inc.
-
-
-
-
--------------------------------------------------------------
-Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
