@@ -1,17 +1,15 @@
-From: Sebastian Droege <sebastian.droege@gmx.de>
-Subject: Re: Questions regarding cs46xx support
-Date: Fri, 3 May 2002 20:50:00 +0200
+From: Andy Wingo <wingo@pobox.com>
+Subject: Re: Re: Yamaha 754 question...
+Date: Fri, 10 May 2002 13:10:03 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020503205000.4fa799a2.sebastian.droege@gmx.de>
-References: <HAEOIKGLLLDPLCHFOMMOMEBPCAAA.jordan.breeding@inet.com>
+Message-ID: <20020510171003.GA711@jesus>
+References: <Pine.LNX.4.10.10205081858500.6735-100000@sorrow.ashke.com> <Pine.LNX.4.10.10205101245090.3651-100000@sorrow.ashke.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- boundary="=.dd8RXhc,hEydaQ"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id UAA04328
-	for <alsa-devel@alsa-project.org>; Fri, 3 May 2002 20:51:49 +0200
-In-Reply-To: <HAEOIKGLLLDPLCHFOMMOMEBPCAAA.jordan.breeding@inet.com>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.10.10205101245090.3651-100000@sorrow.ashke.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,61 +18,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jordan Breeding <jordan.breeding@inet.com>
-Cc: alsa-devel@alsa-project.org, jordan.breeding@attbi.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---=.dd8RXhc,hEydaQ
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+I'm not an expert, but this sounds like something out of a default asoundrc
+that involves ttables. To me that means that you would need to use
+LD_PRELOAD, etc. For what it's worth, anyway...
 
-On Fri, 3 May 2002 12:04:50 -0500
-"Jordan Breeding" <jordan.breeding@inet.com> wrote:
+regards,
 
-> Hello,
+wingo.
+
+On Fri, 10 May 2002, Adam K Kirchhoff wrote:
+
 > 
->   I have a SBLive! currently and love the support in for it in alsa
-> including the fact that it has multi open on /dev/dsp so that if I run esd
-> for an app that needs it I can still run xmms in regular oss mode or with
-> alsa drivers and not worry about the fact that esd is also using /dev/dsp.
-> I do not like however the actual sound that my SBLive! produces (I never
-> have) and am thinking of going back to using a Turtle Beach Santa Cruz
-> (based on the cs46xx).  At one point I got to use one of these cards and was
-> very impressed with the sound quality in Windows and Linux, but at the time
-> alsa wasn't available as an in kernel driver (2.5.x) and the oss drivers in
-> the kernel didn't support multi open on /dev/dsp for the cs46xx, so my
-> question is do the newest alsa drivers for this card (Santa Cruz - cs46xx)
-> support multi open through both alsa and oss emulation on /dev/dsp?  Thanks
-> for any information.  Please Cc: me as I am not on the list.
-Hi,
-the current driver does not support multichannel output (quote from the sources):
-
-> *    We need a DSP code to support multichannel outputs and S/PDIF.
-> *    Unfortunately, it seems that Cirrus Logic, Inc. is not willing
-> *    to provide us sufficient information about the DSP processor,
-> *    so we can't update the driver.
-
-There was an experimental DSP image out there but there's nothing left on the FTP (read here: http://www.ussg.iu.edu/hypermail/linux/kernel/0203.0/1304.html)
-Anyone out there who has these files?
-
-Maybe Cirrus wakes up when enough people sends them mails regarding this topic? (They haven't answered mine :()
-Or maybe somebody is working on encrypting the windows drivers?
-I don't know... :(
-
-Bye
---=.dd8RXhc,hEydaQ
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-
-iD8DBQE80tvbe9FFpVVDScsRAlwfAKC4mvUghSvXS1nfBMGPr5lkLXjtsACgmb2B
-tze48tHI1omF7vCMkkGtCik=
-=AohL
------END PGP SIGNATURE-----
-
---=.dd8RXhc,hEydaQ--
-
+> No comment on this one? :-(
+> 
+> Adam
+> 
+> On Wed, 8 May 2002, Adam K Kirchhoff wrote:
+> 
+> > 
+> > A number of months ago, the possibility of having the rear speakers on the
+> > yamaha 754 duplicate the front speakers by default (instead of having to
+> > setup .asoundrc to handle the duplication).  
+> > 
+> > I have a couple quick questions :-)  Would this duplication carry over
+> > when using the OSS emualation from Alsa?  And has this development
+> > happened yet? 
+> > 
+> > Adam
+> 
+> 
+> 
+> 
+> _______________________________________________________________
+> 
+> Have big pipes? SourceForge.net is looking for download mirrors. We supply
+> the hardware. You get the recognition. Email Us: bandwidth@sourceforge.net
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 _______________________________________________________________
 
