@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:39:30 +0100
-Message-ID: <602c21984c62041160b60f779caecce1@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:46:34 +0100
+Message-ID: <3957126765956f232a965812ec43f6be@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69FE3209
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:39:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1CB09225
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:46:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
@@ -35,12 +35,14 @@ Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
-Status:                     feedback
+Status:                     resolved
 Distribution:               FC3
 Kernel Version:             2.6.10-ac8
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:39 CET
+Last Modified:              01-21-2005 21:46 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,21 +53,15 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:38 
+ 1g0R - 01-21-05 21:40 
 ----------------------------------------------------------------------
-aham, next
-
-[root@skynet cmi9880]# aplay accessed.wav
-Playing WAVE 'accessed.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
-[root@skynet cmi9880]#
+oops, im in Hungary.....
 
 ----------------------------------------------------------------------
- 1g0R - 01-21-05 21:39 
+ tiwai - 01-21-05 21:46 
 ----------------------------------------------------------------------
-ITS WORKING NOW!!!
-
-YUPPPI. THANKS ALOT TIWAI.
-BE MY GUEST FOR A BEER ;-))
+Glad to hear it's not a bug ;)
+Let's close this one.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -117,6 +113,10 @@ Date Modified  Username       Field                    Change
 01-21-05 21:36 1g0R           Note Added: 0003365                          
 01-21-05 21:38 1g0R           Note Added: 0003366                          
 01-21-05 21:39 1g0R           Note Added: 0003367                          
+01-21-05 21:40 1g0R           Note Added: 0003368                          
+01-21-05 21:46 tiwai          Status                   feedback => resolved
+01-21-05 21:46 tiwai          Resolution               reopened => fixed   
+01-21-05 21:46 tiwai          Note Added: 0003369                          
 ======================================================================
 
 
