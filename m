@@ -1,13 +1,17 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: fatal oops in current CVS confirmed
-Date: Mon, 10 Mar 2003 01:06:59 +0100 (CET)
+Subject: final release - Tuesday
+Date: Mon, 10 Mar 2003 01:13:13 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0303100102190.5732-100000@pnote.perex-int.cz>
-References: <200303071353.h27DrnJ01476@linuxaudiosystems.com>
+Message-ID: <Pine.LNX.4.44.0303100108560.5732-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200303071353.h27DrnJ01476@linuxaudiosystems.com>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA19053
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2003 01:13:10 +0100
+Received: from pnote.perex-int.cz ([192.168.105.2])
+	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA05365
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2003 02:13:12 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,33 +20,16 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 7 Mar 2003, Paul Davis wrote:
+Hi all,
 
->    in the trident case
-> 	* smp-related code 
+	I have just released the 0.9.0rc8d version of the ALSA driver for
+tests. It should fix the trident problems as Paul noticed. If no major bug 
+is reported until Tuesday, I will release the final packages.
 
-Fixed. The problem was in Takashi's Scatter-Gather DMA update. The 
-driver package 0.9.0rc8d should fix this problem.
-
->    in the wavefront case
-> 	* code within the module
-
-I cannot fix above problem, until I know the place of this bug. The best 
-way is to determine this problem is commenting/uncommenting of the 
-initialization code.
-
-> i would strongly advise against releasing 0.9.0 final when its so
-> trivial to crash a system with it. and incidentally, its precisely
-> this kind of waste of 3 days that explains why i haven't updated from
-> ALSA CVS in a long time :)
-
-Because it appears that all your reported problems are "local" (driver 
-specific), I don't think that it's a showstoper for the final release.
-
+					Have fun,
 						Jaroslav
 
 -----
