@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000157]: Integration of Matrix Mixer (a GPL stereo --> 5.1/Dolby Surround/ProLogic upmixing filter)
-Date: Thu, 25 Nov 2004 14:05:47 +0100
-Message-ID: <cc52083565b85ff7e62863cf609af5ed@bugtrack.alsa-project.org>
+From: "Mindy Sheffield" <UCWUD@chmai.loxinfo.co.th>
+Subject: medical, pediatrics, doctors american directory.
+Date: Thu, 25 Nov 2004 09:06:51 -0500
+Message-ID: <1C852F3C5191C.7ED4C@220.61.196.9>
+Reply-To: "Mindy Sheffield" <UCWUD@chmai.loxinfo.co.th>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="--9037EBAB05A147844"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B4612166
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 14:05:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,78 +16,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: 39a4be3f.c4f69ea9@alsa-project.org, 3aed7b1c.37ba44b0@alsa-project.org, abramo@alsa-project.org, alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+----9037EBAB05A147844
+Content-Type: text/plain;
+	charset="iso-9B98-3"
+Content-Transfer-Encoding: quoted-printable
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=157> 
-======================================================================
-Reported By:                djtm
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   157
-Category:                   mixer
-Reproducibility:            sometimes
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-24-2004 16:04 CET
-Last Modified:              11-25-2004 14:05 CET
-======================================================================
-Summary:                    Integration of Matrix Mixer (a GPL stereo -->
-5.1/Dolby Surround/ProLogic upmixing filter)
-Description: 
-"MatrixMixer - is a DirectShow filter to upmix any stereo source to
-multiple speakers." It is published under the GPL2 and written in C++.
+The New 2005 United States Healthcare Database.
 
-Homepage: http://matrix-mixer.sourceforge.net. 
-Source Download:
-http://belnet.dl.sourceforge.net/sourceforge/matrix-mixer/matrix_mixer_0_30b_src.zip
+This complete database includes all hospitals, nursing homes, 
+and physicians in the country.
 
-It does a really good job on windows systems for movies as well as music.
-I think this is a big improvement for ALSA, as all people with any kind of
-surround sound or good headphones will love this.
-======================================================================
+In a rapidly-changing industry, current healthcare information is an 
+invaluable resource to businesses and organizations.  The United States 
+Healthcare Database includes comprehensive information on more than 
+7,000 hospitals, 25,000 nursing homes and 400,000 doctors.  It is the 
+most extensive and reliable mailing list and database of key decision 
+makers in the health care market.
+ 
+Each record is indexed by such features as name, address, phone and 
+fax. The database is available in Excel format on CD Rom.  It is 
+designed for mailing lists and merges.  The data can be selected by 
+state or other criteria such as type of practice. It can be used on 
+an unlimited basis.
 
-----------------------------------------------------------------------
- djtm - 03-28-04 20:14 
-----------------------------------------------------------------------
-There should be no license problem, as the main part doesn't correlate with
-AC3 and it's all pubished under GPL and developed without using patented
-knowledge.
+For the past 14 years, MedCom has maintained the most comprehensive 
+healthcare lists.  Our directories are 100% telephone verified and 
+updated every quarter. MedCom continues to hold the nation's most 
+extensive and reliable databases of key decision-makers in the health 
+care market.
+ 
+Available exclusively on CD-Rom (Excel), the data can be used on an 
+unlimited basis. It is easily exportable to other programs for 
+mailing or faxing purposes.
 
-The main part is upmixing any stereo source to 5.1 surround. And that
-means for example a stereo MP3 is upmixed to have 5.1 sound by cleverly
-distributing the sound over the 6 speakers. It also works for stereo AC3s
-but they are not decoded by the matrix mixer. 
-
-tiwai - You probably confused it with AC3filter by the same author.
-
-----------------------------------------------------------------------
- djtm - 11-25-04 14:05 
-----------------------------------------------------------------------
-It has no correlations with AC3.
-
-Has someone found interest in porting it?
-
-If you need a motivation try it out on a windows system and see how well
-it works - both with good headphones or with a surround system.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-24-04 16:04 djtm           New Issue                                    
-03-24-04 20:10 djtm           Issue Monitored: djtm                        
-03-28-04 17:43 tiwai          Note Added: 0000713                          
-03-28-04 20:14 djtm           Note Added: 0000714                          
-11-25-04 14:05 djtm           Note Added: 0002589                          
-======================================================================
+For a limited time, this extensive database is offered at an introductory =
 
 
+Price of $195 (reg. $745).
+
+To order, please print this e-mail, complete the information below and 
+fax it to 416-765-0029 (tel: 416-765-0028).
+
+NAME:
+    
+TITLE:
+
+ORGANIZATION:
+
+ADDRESS:
+
+CITY:
+
+STATE:
+
+POSTAL:
+
+TEL:
+
+FAX:
+
+EMAIL:
+ 
+
+
+
+----9037EBAB05A147844--
 
 
 -------------------------------------------------------
