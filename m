@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000818]: Web browsing in Mozilla causes ADAT clocks on HDSP 9652 to be invalid
-Date: Tue, 1 Feb 2005 21:46:46 +0100
-Message-ID: <1fa438ea590ee9e460db0a5030323541@bugtrack.alsa-project.org>
+Date: Tue, 1 Feb 2005 22:03:10 +0100
+Message-ID: <95c4b570c0c2e69bf49f73ae217d3113@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49BA81E7
-	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 21:46:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C19F11E8
+	for <alsa-devel@alsa-project.org>; Tue,  1 Feb 2005 22:03:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               FC2
 Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
 Date Submitted:             01-14-2005 18:35 CET
-Last Modified:              02-01-2005 21:46 CET
+Last Modified:              02-01-2005 22:03 CET
 ======================================================================
 Summary:                    Web browsing in Mozilla causes ADAT clocks on HDSP
 9652 to be invalid
@@ -75,22 +75,6 @@ either XP box and I do not corrupt the clocks.
 ======================================================================
 
 ----------------------------------------------------------------------
- charbonnel - 02-01-05 21:35 
-----------------------------------------------------------------------
-Hi Mark,
-
->From what I understand, the card is not in use from the alsa point of
-view, you just use the matrix routing. Then it may happen when mozilla
-encounters a page using flash that wants to output audio, if it's setup to
-do so through the hdsp, that it sets a different audio clock (e.g 44100
-vs. 48000). This is normal, and happens also under windows from what I
-read on the RME forums. The anwser from the support team is invariably
-'disable system sounds' or 'don't use the hdsp as the system default audio
-device'.
-
-Thomas
-
-----------------------------------------------------------------------
  Mark Knecht - 02-01-05 21:46 
 ----------------------------------------------------------------------
 Hi Thomas,
@@ -116,6 +100,28 @@ improvements.
 Cheers,
 Mark
 
+----------------------------------------------------------------------
+ rlrevell - 02-01-05 22:03 
+----------------------------------------------------------------------
+Mark,
+
+Your problem is not Mozilla per se but the Flash player plugin.  It uses
+ALSA's OSS emulation.
+
+A guaranteed workaround is to uninstall the Flash plugin.  Then mozilla
+will *never* touch your audio device.  You could set up two browser
+configs, one with Flash and one without, and use the Flash free config for
+safe browsing while doing audio work.
+
+Or, you could disable ALSA's OSS emulation.  You could even map /dev/dsp
+to /dev/null, and configure "well behaved" OSS apps use /dev/dsp1.  Then
+you could browse Flash pages, but Flash would not be able to make sounds
+at all.
+
+A side benefit is that you get less annoying ads with Flash removed.
+
+Lee
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -125,6 +131,7 @@ Date Modified  Username       Field                    Change
 2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 02-01-05 21:35 charbonnel     Note Added: 0003466                          
 02-01-05 21:46 Mark Knecht    Note Added: 0003470                          
+02-01-05 22:03 rlrevell       Note Added: 0003471                          
 ======================================================================
 
 
