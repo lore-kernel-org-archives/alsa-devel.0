@@ -1,18 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Possible bug in alsa-lib. snd_pcm_hw_params_get_periods_max()
- returning 512 instead of 2.
-Date: Fri, 11 Jun 2004 16:07:10 +0100
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: dmix is equivalent to /dev/null on my system [cs46xx]
+Date: Fri, 11 Jun 2004 17:46:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40C9CA9E.4030207@superbug.demon.co.uk>
-References: <Pine.HPX.4.33n.0406111651150.18177-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040611174611.1b33b034@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-32.mail.demon.net (anchor-post-32.mail.demon.net [194.217.242.90])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F9AE1E5
-	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 17:07:13 +0200 (MEST)
-In-Reply-To: <Pine.HPX.4.33n.0406111651150.18177-100000@studcom.urz.uni-halle.de>
+Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 62110285
+	for <alsa-devel@alsa-project.org>; Fri, 11 Jun 2004 17:41:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,40 +18,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> James Courtier-Dutton wrote:
-> 
->>I cannot think of any circumstances where doing sample rate conversion
->>(using the "plug:" plugin) would change the amount of periods.
->>Is this a bug in the "plug:" plugin ?
-> 
-> 
-> Works as designed, I guess.  It's the job of the plug plugin to remove
-> hardware limitations, just in case an application wants to use 42
-> periods.
-> 
-> 
-> Regards,
-> Clemens
-> 
 
-Ok, well the "design" is not working, because with the "plug:", I still 
-can only ever get 2 periods. i.e. If I set period_size to 1024, the 
-buffer_size can only be set to 2048, when in fact I wanted to set the 
-buffer_size to 8192. i.e. I wanted 8 periods, but "plug:" forced me to 
-have 2, just like the hardware can do.
+Hi,
 
-So, I conclude from this that the "plug:front" cannot handle a different 
-amount of periods than "front".
+a while back i reporte this problem before. On my system [debian unstable, kernel 2.6.6] the dmix plugin behaves like a black hole. Means: no sound coming out of my speakers at all..
 
-I think that "plug:" works fine for sample rate and sample format 
-conversions, but seems to fail on the number of periods adaptions.
+aplay -D plug:dmix file.wav  
 
-James
+-> silence
+
+aplay -D plughw:0,0 file.wav
+
+-> sound
+
+dsnoop on the other hand doesn't work as expected either: When i start a recording with
+
+arecord -D plughw:0,0 -f cd file.wav
+
+-> records nicely
+
+arecord -D plug:dsnoop -f cd file.wav
+
+-> noise - seems to be the first captured buffer repeated endlessly..
+
+Other pcm stuff like the ladspa pcm plugin work flawlessly..
+
+Florian Schmidt
+
+-- 
+Palimm Palimm!
+
 
 
 -------------------------------------------------------
