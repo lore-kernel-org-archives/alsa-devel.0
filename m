@@ -1,13 +1,14 @@
-From: James Courtier-Dutton <James@superbug.co.uk>
-Subject: Re: [PATCH] emu10k1 multichannel support
-Date: Sun, 23 Jan 2005 00:49:05 +0000
-Message-ID: <41F2F481.2000304@superbug.co.uk>
-References: <1106091073.24484.60.camel@krustophenia.net>	 <s5hpt01tler.wl@alsa2.suse.de> <1106343921.3232.50.camel@krustophenia.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Sun, 23 Jan 2005 02:43:48 +0100
+Message-ID: <6dc3c85d7d7928b118f5dfec820794f2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1106343921.3232.50.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 605C625D
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2005 02:43:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,50 +18,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Wed, 2005-01-19 at 17:48 +0100, Takashi Iwai wrote:
-> 
->>At Tue, 18 Jan 2005 18:31:12 -0500,
->>Lee Revell wrote:
->>
->>>As promised, here's an updated patch to add real multichannel playback
->>>support (and improved multichannel capture) to the emu10k1 driver.
->>>
->>>http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v001.patch
->>>
->>>Please test it and report any problems.  I am especially interested in
->>>any regressions that impact regular PCM playback (the hw:0,0 device).
->>
->>The new function looks great.
->>Let me know if you think the patch is mature enough to be merged.
->>
-> 
-> 
-> OK, I have really fixed the voice allocator.  Synth, regular PCM, and
-> multichannel PCM all tested and working.
-> 
-> http://www.alsa-project.org/~rlrevell/emu10k1-multichannel-v003.patch
-> 
-> Some users report they get massive xruns using the regular hw:0,0
-> device.  I cannot reproduce the problem, but I will update the patch to
-> make regular PCM playback work the old way.
-> 
-> Lee
-> 
 
-I am currently doing work on the P16V chip that is on the Audigy 2 sound 
-cards. It will be able to capture and playback 4 stereo channels at the 
-same time, at anything from 44.1 khz up to 192khz. It can also pass 
-samples to and from the EMU10K2 DSP, but it transfers them in blocks of 
-8 mono channels. e.g. DSP fxchannel 0-7 or 8-15 or 16-23 etc.
-So, I think it would be better if the multichannel patch you are doing 
-uses those groupings of channels for multichannel play/capture.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+======================================================================
+Reported By:                jbrsubscribe
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   836
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
+======================================================================
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              01-23-2005 02:43 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
+Description: 
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
+======================================================================
 
-James
+----------------------------------------------------------------------
+ mab - 01-22-05 21:43 
+----------------------------------------------------------------------
+Hi 1Gor
+
+"works" was a little premature I have sound... the PCM slider works,
+Surround,Center, and LFE aren't. As happen to you was the
+/lib/libasound.so.2 (from FC3 installation ?) however, I cant play a CD in
+my driver... also, testing with "speaker-test -Dsurround51 -c6" only  the
+front left and front rigth (lower) works. I have not digital devices to
+test the output/inputs
+
+
+
+----------------------------------------------------------------------
+ 1g0R - 01-23-05 02:43 
+----------------------------------------------------------------------
+Thanks mab, then i need to call tiwai the guru.
+Dear Tiwai,
+
+Can you help me? What is it mean model=full_dig option?
+How can i set up spdif out?
+
+Thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
+01-19-05 18:36 tiwai          Assigned To              tiwai =>            
+01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
+01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
+01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
+01-20-05 11:52 1g0R           Note Added: 0003325                          
+01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+01-20-05 19:11 tiwai          Note Added: 0003331                          
+01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
+01-21-05 05:56 1g0R           Note Added: 0003338                          
+01-21-05 08:16 mab            Note Added: 0003339                          
+01-21-05 11:08 1g0R           Note Added: 0003340                          
+01-21-05 12:04 tiwai          Note Added: 0003343                          
+01-21-05 12:05 tiwai          Note Added: 0003344                          
+01-21-05 16:55 mab            Note Added: 0003348                          
+01-21-05 17:26 tiwai          Note Added: 0003349                          
+01-21-05 22:08 1g0R           Note Added: 0003370                          
+01-22-05 09:04 mab            Note Added: 0003373                          
+01-22-05 09:06 mab            Note Edited: 0003373                         
+01-22-05 12:33 1g0R           Note Added: 0003374                          
+01-22-05 21:30 mab            Note Added: 0003378                          
+01-22-05 21:43 mab            Note Edited: 0003378                         
+01-23-05 02:43 1g0R           Note Added: 0003385                          
+======================================================================
+
 
 
 
