@@ -1,13 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: What does underrun mean with aplay ?
-Date: Fri, 9 Apr 2004 12:51:21 +0200 (CEST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: snd_trident in 2.6.5 doesn't work after suspending
+ to disk.
+Date: Fri, 9 Apr 2004 13:18:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0404091243350.13421@denise.shiny.it>
-References: <004d01c41e0e$6cfa1280$fbf7a8c0@Lapitopi>
+Message-ID: <Pine.LNX.4.58.0404091318200.3733@pnote.perex-int.cz>
+References: <20040409094649.GA19170@localhost>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <004d01c41e0e$6cfa1280$fbf7a8c0@Lapitopi>
+In-Reply-To: <20040409094649.GA19170@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,29 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Robert Rozman <rozman@fri.uni-lj.si>
+To: Jakob Lell <jlell@jakoblell.de>
 Cc: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 9 Apr 2004, Jakob Lell wrote:
 
+> Hi,
+> I'm using Linux 2.6.5 and the driver snd_trident. When I suspend to
+> disk (echo -n 4 > /proc/acpi/sleep) and resume again, the sound driver
+> won't work any more. It will work again after running rmmod
+> snd_trident;modprobe snd_trident. However, to do so I have to kill all
+> programs using sound (i.e. artsd, mplayer,...). Is there any way to
+> make sound work again after suspending without terminating all
+> this programs?
 
-> I have some problems with 6 channel sis 7012 device - I'm using it as 3
-> stereo channels. I trigger 3 different instances of aplay at once and I get
-> underrun messages from aplay.
->
-> What does this mean ?
+The trident driver does not have suspend/resume code yet.
 
-It happens because aplay can't send audio data as fast as the card needs it.
+						Jaroslav
 
-> How to solve this  (bigger buffer? ) ?
-
-Yes, or reduce system load, or run aplay at higher priority (very
-recommended, since it requires very little cpu time and low latency), or
-buy a faster disk.
-
-
---
-Giuliano.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
