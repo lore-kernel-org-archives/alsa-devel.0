@@ -1,13 +1,13 @@
-From: Tom Prado <tprado@charter.net>
-Subject: Re: [PATCH] configure prob with MDK82 kernel
-Date: Wed, 24 Apr 2002 16:47:53 -0400 (EDT)
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: more info
+Date: Wed, 24 Apr 2002 17:05:20 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0204241639410.10208-100000@volamar.theswamp.priv>
-References: <m2it6h3p1m.fsf@vador.mandrakesoft.com>
+Message-ID: <20020425000520.44054.qmail@web11503.mail.yahoo.com>
+References: <s5h8z7dghjn.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m2it6h3p1m.fsf@vador.mandrakesoft.com>
+In-Reply-To: <s5h8z7dghjn.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,34 +19,24 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks!  I try to run the release versions of the kernel so third party 
-apps (like vmware for instance) will be sure to work.  I've 
-attached the patch inline this time.  It's only one line to be added to 
-configure.in.  alsa 0.5.12 had this in it, it's gone from 0.9.0rc1.
+Hi all,
 
---- alsa-driver-0.9.0rc1/configure.in	Wed Apr 24 11:29:55 2002
-+++ alsa-driver-0.9.0rc1.tom/configure.in	Wed Apr 24 14:16:31 2002
-@@ -82,6 +82,7 @@ EOF
-   exit 1
- fi
- AC_CACHE_VAL(kaversion,
-+CFLAGS="$CFLAGS -I$CONFIG_SND_KERNELDIR/include"
- [AC_TRY_RUN([
- #include <stdio.h>
- #include <ctype.h>
+Could anyone point to me a reference for the following (or explain to me
+directly what is the purpose of each of those functions) in the PCM module:
 
-On Wed, 24 Apr 2002, Thierry Vignaud wrote:
+	prepare:	snd_xxxx_capture_prepare,
+	trigger:	snd_xxxx_trigger,
+	pointer:	snd_xxxx_pointer,
+	copy:		snd_xxxx_capture_copy,
+	silence:	snd_xxxx_capture_silence,
 
-> Tom Prado <tprado@charter.net> writes:
-> 
-> > I had a problem running configure against the Linux Mandrake 8.2 UP
-> > kernel.  It would fail when trying to determine the kernel version.
-> > This patch for rc1 adds the needed includes so that linux/rhconfig.h
-> > can be found when configure checks for the kernel version.
-> 
-> use a 2.4.18-10mdk kernel and above: we've updated alsa from 0.5 upto
-> 0.9 in 10mdk.
-> note that this is a cooker kernel, not a mdk8.2 release kernel.
-> 
+Plus, what is the fifo size (e.g. on the card)?
 
--- 
+Thanks,
+Guilhem.
+
+
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Games - play chess, backgammon, pool and more
+http://games.yahoo.com/
