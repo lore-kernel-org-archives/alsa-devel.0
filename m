@@ -1,15 +1,15 @@
-From: Gorm David Lai <lai@daimi.au.dk>
-Subject: Re: problems with rme digi96/8
-Date: 11 Jun 2003 16:03:18 +0200
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: Hammerfall DSP System Problems
+Date: Wed, 11 Jun 2003 07:15:34 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1055340198.1390.58.camel@duff>
-References: <1054808252.7022.8.camel@duff> <20030609172302.GA498@tuba.home>
-	<1055337460.1392.45.camel@duff>  <200306111548.19324.torger@ludd.luth.se>
+Message-ID: <NDBBLGIKBJENLAMOLFHGAEEHCHAB.mknecht@controlnet.com>
+References: <20030611064511.GA551@always.joy.eth.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200306111548.19324.torger@ludd.luth.se>
+In-Reply-To: <20030611064511.GA551@always.joy.eth.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,63 +18,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Anders Torger <torger@ludd.luth.se>
-Cc: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
+To: Joshua N Pritikin <vishnu@pobox.com>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, frankgaetano@collegeclub.com, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the advice, though it still doesn't work. 
-It seems to play, and sets the right sync on the mixing console. The
-console just doesn't get any input.
-Do I have to unmute the card anywhere?
+> > so I think
+> > I'm almost set to be able to try this stuff out again.
+>
+> For what it's worth, i had problems with alsa 0.9.4 & SMP.  i think
+> there are some spinlock changes that aren't very well debugged yet.
+> On the other hand, alsa 0.9rc7 seems fairly stable.  i've gotten
+> some lockups, but i've also used jack for 4-5 hours without any
+> problem.
 
-/Gorm
+Well, I found last night that if I removed Alsa and then rebuilt it, that as
+long as I didn't power down 0.9.4-rc1 stayed up and I could see my card even
+after a warm boot, but again, after a cold boot Alsa no longer recognized
+the card.
 
+So, my new strategy is that every morning, as I brew my tea, I now do:
 
-On Wed, 2003-06-11 at 15:48, Anders Torger wrote:
-> 
-> Test this:
-> 
-> aplay -D hw:0,1 -r 44100 -f S16_LE -c 8 /dev/zero
-> 
-> it should work. It works on my card.
-> 
-> The problem in your 
-> 
-> aplay -D hw:0,1 -c 8 ~/cavi/sound/01/01\ Track\ \ 1.wav
-> 
-> is that aplay seems to ignore your -c 8, and reads the wav header 
-> instead, and sets it to stereo, as you can see in the aplay output, 
-> where it cleary says that it plays in "Stereo".
-> 
-> /Anders Torger
-> 
-> On Wednesday 11 June 2003 15.17, Gorm David Lai wrote:
-> > I also have problems with aplay. Maybe this is related?
-> >
-> > The following command:
-> >
-> > aplay -D hw:0,1 -c 8 ~/cavi/sound/01/01\ Track\ \ 1.wav
-> >
-> > Which gives the following output:
-> >
-> > Playing WAVE '/users/lai/cavi/sound/01/01 Track  1.wav' : Signed 16
-> > bit Little Endian, Rate 44100 Hz, Stereo
-> > aplay: set_params:810: Channels count non available
-> >
-> >
-> > /Gorm
-> >
-> >
-> >
-> > -------------------------------------------------------
-> > This SF.net email is sponsored by:  Etnus, makers of TotalView, The
-> > best thread debugger on the planet. Designed with thread debugging
-> > features you've never dreamed of, try TotalView 6 free at
-> > www.etnus.com. _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+emerge -C alsa-driver alsa-utils alsa-tools
+ACCEPT_KEYWORDS="~x86" emerge alsa-driver alsa-utils alsa-tools
+
+and then warm boot to get the driver to find the card. I still don't get
+sound, but at least my CPU knows the card is there.
+
+I guess life is good when you finally know how to cope with it! ;-)
+
+Mark
 
 
 
