@@ -1,19 +1,13 @@
-From: Roland Stigge <stigge@antcom.de>
-Subject: Re: Re: Bug#245668: kernel-source-2.6.5:
-	intel8x0:	IEC958 output not working anymore
-Date: Fri, 03 Sep 2004 18:39:40 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000475]: multiple input streams
+Date: Fri,  3 Sep 2004 19:18:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094229580.4140.7.camel__42316.089946735$1094231457$gmane$org@atari.stigge.org>
-References: <Pine.HPX.4.33n.0409031438540.16124-100000@studcom.urz.uni-halle.de>
-	 <1094220009.4139.3.camel@atari.stigge.org>  <s5hzn47whwn.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040903171836.F159C2D0C0@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from stigge.org (pD9E7EEC6.dip.t-dialin.net [217.231.238.198])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A51A2CD
-	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 18:39:42 +0200 (MEST)
-In-Reply-To: <s5hzn47whwn.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4717A284
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 19:18:37 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,124 +16,121 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Clemens Ladisch <clemens@ladisch.de>, maks attems <debian@sternwelten.at>, 245668@bugs.debian.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-09-03 at 16:23, Takashi Iwai wrote:
-> > > Does "aplay something.wav" work?
-> > > Does "aplay -D spdif something.wav" work?
-> > > If not, what happens?
-> > 
-> > $ aplay pub/mi1.wav
-> > Playing WAVE 'pub/mi1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-> > Mono
-> > $ aplay -D spdif pub/mi1.wav
-> > Playing WAVE 'pub/mi1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
-> > Mono
-> > aplay: set_params:837: Channels count non available
-> 
-> use -D plug:spdif
 
-It's nearly like the very first version. Digital output is like muted.
-When I played around I noticed that gnome-alsamixer segfaults when I
-_uncheck_ "IEC958" during the playback:
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000475
+======================================================================
+Reported By:                omes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     475
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-30-2004 22:24 CEST
+Last Modified:              09-03-2004 19:18 CEST
+======================================================================
+Summary:                    multiple input streams
+Description: 
+Why isnt ALSA handle multiple input streams by default?
+======================================================================
 
-Thread 1 (Thread 1088226208 (LWP 4234)):
-#0  0x408ebf1f in snd_mixer_elem_get_type () from
-/usr/lib/libasound.so.2
-#1  0x08050175 in gam_toggle_set_state ()
-#2  0x0804ff50 in gam_toggle_get_type ()
-#3  0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
-#4  0x407fdc20 in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
-#5  0x40811c25 in g_signal_emit_by_name () from
-/usr/lib/libgobject-2.0.so.0
-#6  0x40810be7 in g_signal_emit_valist () from
-/usr/lib/libgobject-2.0.so.0
-#7  0x40810ee4 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
-#8  0x404b3665 in gtk_toggle_button_toggled ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#9  0x404b3a12 in gtk_toggle_button_get_inconsistent ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#10 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
-#11 0x407fdfb7 in g_cclosure_new_swap () from
-/usr/lib/libgobject-2.0.so.0
-#12 0x407fdc20 in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
-#13 0x4081144e in g_signal_emit_by_name () from
-/usr/lib/libgobject-2.0.so.0
-#14 0x40810be7 in g_signal_emit_valist () from
-/usr/lib/libgobject-2.0.so.0
-#15 0x40810ee4 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
-#16 0x4034e215 in gtk_button_clicked () from
-/usr/lib/libgtk-x11-2.0.so.0
-#17 0x404b350e in gtk_toggle_button_set_active ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#18 0x0804ff50 in gam_toggle_get_type ()
-#19 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
-#20 0x407fdc20 in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
-#21 0x40811c25 in g_signal_emit_by_name () from
-/usr/lib/libgobject-2.0.so.0
-#22 0x40810be7 in g_signal_emit_valist () from
-/usr/lib/libgobject-2.0.so.0
-#23 0x40810ee4 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
-#24 0x404b3665 in gtk_toggle_button_toggled ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#25 0x404b3a12 in gtk_toggle_button_get_inconsistent ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#26 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
+----------------------------------------------------------------------
+ tiwai - 08-31-2004 12:29 CEST 
+----------------------------------------------------------------------
+Please describe your problem more specifically.
+Which sound card, etc?
 
-[...]
+----------------------------------------------------------------------
+ omes - 09-03-2004 19:18 CEST 
+----------------------------------------------------------------------
+Sorry that i havent returned your post until now, ive been away this week.
 
-   from /usr/lib/libgtk-x11-2.0.so.0
-#14698 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
-#14699 0x407fdfb7 in g_cclosure_new_swap () from /usr/lib/libgobject-2.0.so.0
-#14700 0x407fdc20 in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
----Type <return> to continue, or q <return> to quit---
-#14701 0x4081144e in g_signal_emit_by_name () from /usr/lib/libgobject-2.0.so.0
-#14702 0x40810be7 in g_signal_emit_valist () from /usr/lib/libgobject-2.0.so.0
-#14703 0x40810ee4 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
-#14704 0x4034e215 in gtk_button_clicked () from /usr/lib/libgtk-x11-2.0.so.0
-#14705 0x404b350e in gtk_toggle_button_set_active ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#14706 0x0804ff50 in gam_toggle_get_type ()
-#14707 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
-#14708 0x407fdc20 in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
-#14709 0x40811c25 in g_signal_emit_by_name () from /usr/lib/libgobject-2.0.so.0
-#14710 0x40810be7 in g_signal_emit_valist () from /usr/lib/libgobject-2.0.so.0
-#14711 0x40810ee4 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
-#14712 0x404b3665 in gtk_toggle_button_toggled ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#14713 0x404b3a12 in gtk_toggle_button_get_inconsistent ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#14714 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
-#14715 0x407fdfb7 in g_cclosure_new_swap () from /usr/lib/libgobject-2.0.so.0
-#14716 0x407fdc20 in g_closure_invoke () from /usr/lib/libgobject-2.0.so.0
-#14717 0x4081144e in g_signal_emit_by_name () from /usr/lib/libgobject-2.0.so.0
-#14718 0x40810be7 in g_signal_emit_valist () from /usr/lib/libgobject-2.0.so.0
----Type <return> to continue, or q <return> to quit---
-#14719 0x40810ee4 in g_signal_emit () from /usr/lib/libgobject-2.0.so.0
-#14720 0x4034e215 in gtk_button_clicked () from /usr/lib/libgtk-x11-2.0.so.0
-#14721 0x404b350e in gtk_toggle_button_set_active ()
-   from /usr/lib/libgtk-x11-2.0.so.0
-#14722 0x0804ff50 in gam_toggle_get_type ()
-#14723 0x40812121 in g_cclosure_marshal_VOID__VOID ()
-   from /usr/lib/libgobject-2.0.so.0
+Im currently using alsa-lib-1.0.6.
 
-Stack overflow?
+Im using an integrated sound card (came with an Asus motherboard):
+00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER (ICH5/ICH5R)
+AC'97 Audio Controller (rev 02)
 
-This doesn't occur without the "-D [...]" option.
+An example:
+If I play audio in xmms, then load xine to play a movie or so, this is
+what it says in the shell;
 
-bye,
-  Roland
+bash-2.05b$ xine
+This is xine (X11 gui) - a free video player v0.99.2.
+(c) 2000-2004 The xine Team.
+ALSA lib pcm_hw.c:1155:(snd_pcm_hw_open) open /dev/snd/pcmC0D0p failed:
+Device or resource busy
 
+mplayer gives this result:
+==========================================================================
+Opening audio decoder: [mp3lib] MPEG layer-2, layer-3
+MP3lib: init layer2&3 finished, tables done
+AUDIO: 44100 Hz, 2 ch, 16 bit (0x10), ratio: 24000->176400 (192.0 kbit)
+Selected audio codec: [mp3] afm:mp3lib (mp3lib MPEG layer-2, layer-3)
+==========================================================================
+Checking audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
+AF_pre: af format: 2 bps, 2 ch, 44100 hz, little endian signed int
+AF_pre: 44100Hz 2ch Signed 16-bit (Little-Endian)
+audio_setup: Can't open audio device /dev/dsp: Device or resource busy
+alsa-init: got device=0, subdevice=0
+alsa-init: 1 soundcard found, using: default
 
+(. gmplayer freeze .)
+
+(. Closing xmms .)
+
+alsa: 44100 Hz/2 channels/4 bpf/65536 bytes buffer/Signed 16 bit Little
+Endian
+AO: [alsa] 44100Hz 2ch Signed 16-bit (Little-Endian) (2 bps)
+Building audio filter chain for 44100Hz/2ch/16bit -> 44100Hz/2ch/16bit...
+Video: no video
+Starting playback...
+ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
+alsa-control: mixer attach /dev/mixer error: No such file or directory
+ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
+alsa-control: mixer attach /dev/mixer error: No such file or directory
+ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
+alsa-control: mixer attach /dev/mixer error: No such file or directory
+
+(...)
+
+(. Terminating .)
+
+ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
+alsa-control: mixer attach /dev/mixer error: No such file or directory
+ALSA lib control.c:654:(snd_ctl_open_noupdate) Invalid CTL /dev/mixer
+alsa-control: mixer attach /dev/mixer error: No such file or directory
+[ws] Error in display.
+[ws]  Error code: 17 ( BadImplementation (server does not implement
+operation) )[ws]  Request code: 20
+[ws]  Minor code: 0
+[ws]  Modules: key_events
+Xlib: sequence lost (0x1406c > 0x407b) in reply type 0x11!
+
+so mplayer complaines about control.c, and xine complaines about pcm_hw.c,
+both in the alsa-lib.
+
+Hope this helped a bit.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-30-04 22:24 omes           New Bug                                      
+08-31-04 12:29 tiwai          Bugnote Added: 0001671                       
+09-03-04 18:47 omes           Bug Monitored: omes                          
+09-03-04 19:18 omes           Bugnote Added: 0001696                       
+======================================================================
 
 
 -------------------------------------------------------
