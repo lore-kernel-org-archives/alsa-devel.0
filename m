@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000166]: strange high-pitched noise
-Date: Sat, 19 Mar 2005 13:05:42 +0100
-Message-ID: <3d5482e7aff314f6d72ce24eff076cb4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Sat, 19 Mar 2005 13:01:21 +0100
+Message-ID: <6bc6650e10aea7c2efa51de84272689c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 16DCC10E
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 13:05:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5509713E
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 13:01:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,57 +23,79 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=166> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
 ======================================================================
-Reported By:                lichentrope
+Reported By:                davidsrsb
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   166
-Category:                   alsamixer
+Project:                    ALSA - driver
+Issue ID:                   359
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             03-29-2004 22:45 CEST
-Last Modified:              03-19-2005 13:05 CET
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              03-19-2005 13:01 CET
 ======================================================================
-Summary:                    strange high-pitched noise
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
 Description: 
-My HW: MSI K7N2 Delta-L with integrated AC97 soundcard (intel-8x0 with
-ac97_codec drivers used).
-
-I could always hear some high-pitched noise. It is quite low in volume,
-altough quite annoying when playing silent music/videos; the noise could
-be best described as "wind", there is some random static audible in it.
-The noise is independent from CPU load, whether some sound is being played
-or not. At first I thought it was caused by heat noise from the
-motherboard. Once I noticed it disappeared after reboot and reappeared
-after running alsamixer to restore previous mixer settings. I played a bit
-with the sound controls and found out what was the cause: the "Video"
-control caused this. I had to unmute it and put it at full volume, then
-the noise disappeared (strange though, I'd understand it if it were other
-way round).
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 13:05 
+ tiwai - 01-28-05 18:02 
 ----------------------------------------------------------------------
-It seems that there are two problems here:
+The default index of modem and bt87x drivers are now -2.
 
-* Video slider operates in reverse
+I didn't change it for usb-audio, though.
 
-* alsamixer sets Video mixer level to an inappropriate value
-  without the user touching the control itself
-
-Is that right?  Do both problems still exist in the current ALSA release?
+----------------------------------------------------------------------
+ jdthood - 03-19-05 13:01 
+----------------------------------------------------------------------
+I think that this report can be closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-29-04 22:45 lichentrope    New Issue                                    
-03-19-05 13:05 jdthood        Note Added: 0004045                          
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+01-07-05 18:10 tiwai          Note Added: 0003108                          
+01-07-05 18:28 jdthood        Note Added: 0003112                          
+01-07-05 18:59 jdthood        Note Added: 0003114                          
+01-07-05 18:59 jdthood        Note Added: 0003115                          
+01-07-05 18:59 jdthood        Note Deleted: 0003115                        
+01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
+                 
+01-07-05 19:03 jdthood        Note Edited: 0003114                         
+01-07-05 19:18 tiwai          Note Added: 0003116                          
+01-07-05 21:51 jdthood        Note Added: 0003122                          
+01-07-05 21:51 jdthood        Note Edited: 0003114                         
+01-19-05 17:22 tiwai          Note Added: 0003303                          
+01-19-05 17:22 tiwai          Note Added: 0003304                          
+01-19-05 17:28 jdthood        Note Added: 0003305                          
+01-19-05 17:32 tiwai          Note Added: 0003306                          
+01-27-05 15:47 jdthood        Note Added: 0003419                          
+01-27-05 15:48 jdthood        File Added:
+ALSA-Configuration.txt_jdth20050127-1.patch                    
+01-27-05 15:54 jdthood        Note Added: 0003420                          
+01-27-05 15:55 jdthood        File Added:
+ALSA-Configuration.txt_jdth20050127-2.patch                    
+01-27-05 15:55 jdthood        Note Edited: 0003420                         
+01-28-05 17:55 tiwai          Note Added: 0003431                          
+01-28-05 18:02 tiwai          Note Added: 0003432                          
+03-19-05 13:01 jdthood        Note Added: 0004044                          
 ======================================================================
 
 
