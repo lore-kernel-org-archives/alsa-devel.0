@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Tue, 7 Sep 2004 11:05:05 +0200 (CEST)
+From: "Mogens Elneff" <me@netguardians.dk>
+Subject: Output from configure
+Date: Tue, 7 Sep 2004 11:22:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409071050020.1723@linux.local>
-References: <200408310852.i7V8qSKk023731@www4.pobox.sk>
- <Pine.LNX.4.58.0408311131310.1762@pnote.perex-int.cz>
- <20040906204559.GA4584@sunrise.pg.gda.pl>
+Message-ID: <95D76FF714D87E4A8BC88A0A2957E48B1440A0@tseappl.tseintern.dk>
+Reply-To: "Mogens Elneff (elneff) (E-mail)" <mogens@elneff.dk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1890E2A5
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 11:06:26 +0200 (MEST)
-In-Reply-To: <20040906204559.GA4584@sunrise.pg.gda.pl>
+Received: from tseappl.tseintern.dk (mail.netguardians.dk [194.239.230.24])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E6E52A5
+	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 11:15:54 +0200 (MEST)
+Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,57 +21,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 6 Sep 2004, Adam Tla/lka wrote:
+Hi.=20
 
-> IMHO DMA mmaped mode in ALSA is not as easy to use as OSS DMA mode.
-> All we need is theoretically only the hw pointer position in DMA ring buffer 
-> to properly mix data from different events. But in ALSA we must
-> calculate it doing additional calls. Some functions like snd_pcm_delay
-> in normal DMA mode seems to be not needed. An app needs only ring buffer
-> hw position. Doing normal system call it can obtain current system time
-> so it can calculate the delay and correct sample position to mix.
+I have downloaded the source by means of cvs and then ran the command: =
+"./cvscompile --with-cards=3Dcmipci --with-sequencer=3Dyes". Here below =
+are the output.
 
-There is always a drift between system and card's timing.
+My kernel is compiled just before this (with the same compiler) and =
+running on this new kernel. Is the compiler to new?=20
 
-> In ALSA we should move appl pointer using mmap_begin and then mmap_commit
+For info:=20
+        I'm running vdr on this PC and need alsa to compile the =
+bitstreamout plugin.=20
+        I'm a Windows Specialist - but a Linux Newbee - sorry :-)=20
 
-The appl_ptr is not moved in mmap_begin. The mmap_begin function only 
-returns the actual position to ring buffer based on appl_ptr.
+Kind regards=20
+Mogens Elneff=20
 
-> functions to avoid buffer underrun and calculate hw pointer manually
-> to know where mix the new data. So I think there is more to do then in
-> OSS case and more to do in the wrong way. I will send my sources
-> after more testing.
+PS.: "Ingenting at g=F8re for" is danish for "Nothing to do for" ;-)=20
 
-We need the intelligent mmap transport for additional functionality 
-(conversions, resampling etc.). I think it's the proper way and nobody 
-(except OSS emulation) has the useability problem. You can still move 
-backwards (although it is problematic when you have a mixing on the path).
 
-> I have some questions. If I get delay < 0 and then do
-> err = snd_pcm_forward(pcm,-delay) what err returned value really means
-> (I am using dmix and of course rate plugins)?
-> How interpret err <= 0 value?
+make: Ingenting at g=F8re for 'all-deps'.=20
+./configure --with-cards=3Dcmipci --with-sequencer=3Dyes=20
+checking for gcc... gcc=20
+checking for C compiler default output file name... a.out=20
+checking whether the C compiler works... yes=20
+checking whether we are cross compiling... no=20
+checking for suffix of executables...=20
+checking for suffix of object files... o=20
+checking whether we are using the GNU C compiler... yes=20
+checking whether gcc accepts -g... yes=20
+checking for gcc option to accept ANSI C... none needed=20
+checking for ranlib... ranlib=20
+checking for a BSD-compatible install... /usr/bin/install -c=20
+checking how to run the C preprocessor... gcc -E=20
+checking for egrep... grep -E=20
+checking for ANSI C header files... yes=20
+checking for an ANSI C-conforming const... yes=20
+checking for inline... inline=20
+checking whether time.h and sys/time.h may both be included... yes=20
+checking whether gcc needs -traditional... no=20
+checking for current directory... /usr/local/src/alsa/alsa-driver=20
+checking cross compile...=20
+checking for directory with kernel source... =
+/lib/modules/2.4.27.vdr2/build=20
+checking for kernel version... 2.4.27.vdr2=20
+checking for GCC version... Kernel compiler: GCC 3.3.4 (Debian =
+1:3.3.4-6sarge1) Used compiler: gcc (GCC) 3.3.4 (Debian 1:3.3.4-6sarge1)
 
-err < 0 -> error code
-err == 0 -> no action (appl_ptr was unchanged in case when you're already 
-behind hw_ptr)
+Fatal error: Compiler type does not match=20
+Decoded kernel compiler: type=3D version=3D3.3.4=20
+Decoded used compiler: type=3Dgcc version=3D3.3.4=20
+Please, send ./configure output to <alsa-devel@alsa-project.org>=20
 
-> Also what is the meaning of snd_pcm_available > alsa.buffer_size?
 
-You're too late, so you need to fill (or better skip via forward) some 
-more samples to synchronize appl_ptr.
+  _____ =20
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Min mail er beskyttet af SPAMfighter
+1513 spam mails er blokeret indtil videre.
+Hent gratis SPAMfighter =
+<http://www.spamfighter.com/Lang_DA/Product_Info.asp>  i dag!=20
 
 
 -------------------------------------------------------
