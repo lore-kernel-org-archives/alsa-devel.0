@@ -1,14 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
+From: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
 Subject: Re: direct midi event dispatching
-Date: Mon, 24 May 2004 14:35:36 +0200 (METDST)
+Date: Mon, 24 May 2004 15:04:48 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405241434260.10397-100000@studcom.urz.uni-halle.de>
-References: <200405241424.18604.gilles.degottex@net2000.ch>
+Message-ID: <200405241504.48676.gilles.degottex@net2000.ch>
+References: <Pine.HPX.4.33n.0405241434260.10397-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200405241424.18604.gilles.degottex@net2000.ch>
+In-Reply-To: <Pine.HPX.4.33n.0405241434260.10397-100000@studcom.urz.uni-halle.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +19,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Clemens Ladisch <clemens@ladisch.de>
 List-Id: alsa-devel@alsa-project.org
 
-Gilles D=E9gottex wrote:
-> I'm trying to dispatch midi event directly without queue.
-> I did every thing I read in the alsa doc (for
-> me: /usr/share/doc/libalsa2-docs-1.0.2/seq.html)
+On Monday 24 May 2004 14:35, you wrote:
+> Gilles D=E9gottex wrote:
+> > I'm trying to dispatch midi event directly without queue.
+> > I did every thing I read in the alsa doc (for
+> > me: /usr/share/doc/libalsa2-docs-1.0.2/seq.html)
+> >
+> > but when I flush the output, I got an error: "Invalid argument"
+> > (when calling snd_seq_drain_output)
 >
-> but when I flush the output, I got an error: "Invalid argument"
-> (when calling snd_seq_drain_output)
+> This may indicate that some of the event's fields have invalid values.
+>
+> What does your code to initialize the event structure look like?
 
-This may indicate that some of the event's fields have invalid values=
-.
+Here is my code:
 
-What does your code to initialize the event structure look like?
+    snd_seq_event_t ev;
+    snd_seq_ev_clear(&ev);
+    snd_seq_ev_set_source(&ev, g_port);
+    snd_seq_ev_set_subs(&ev);
+    snd_seq_ev_set_direct(&ev);
+    ev.type =3D SND_SEQ_EVENT_NOTE;
+    ev.flags =3D SND_SEQ_EVENT_LENGTH_FIXED|SND_SEQ_PRIORITY_NORMAL;
+    ev.tag =3D 'a';
+    ev.data.note.channel =3D 1;
+    ev.data.note.note =3D n;
+    ev.data.note.velocity =3D 64;
+    ev.data.note.off_velocity =3D 64;
+    ev.data.note.duration =3D 1000;
 
-
-Regards,
-Clemens
-
-
-
+P.S. Thanks for your fast answer ! :)
 
 
 -------------------------------------------------------
