@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - liboss 0000196]: full duplex doesn't work any more
-Date: Mon, 21 Mar 2005 16:15:35 +0100
-Message-ID: <9d5b96f2bec16b74d91e17eb0d3d4af4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Mon, 21 Mar 2005 17:13:24 +0100
+Message-ID: <356ea3ed046669e40bb9d25e28fee57f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6E12826B
-	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 16:15:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5EBE279
+	for <alsa-devel@alsa-project.org>; Mon, 21 Mar 2005 17:13:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,60 +23,58 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=196> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                nathanel
-Assigned To:                
+Reported By:                rav0r
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - liboss
-Issue ID:                   196
-Category:                   
+Project:                    ALSA - driver
+Issue ID:                   992
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             04-08-2004 20:59 CEST
-Last Modified:              03-21-2005 16:15 CET
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              03-21-2005 17:13 CET
 ======================================================================
-Summary:                    full duplex doesn't work any more
+Summary:                    no supported card
 Description: 
-I'm using the attached .asoundrc to separate front an rear speakers of my
-Soundblaster Live! to dsp and dsp1 respectively. I have my headphones
-connected to the rear speaker output and running gnomemeeting with
-alsa-oss on dsp1. Unfortunately this setup stopped working with alsa-oss
-version 1.0.3 or higher (Different versions of alsa-libs didn't make any
-difference). Playing music solely on dsp1 still works (tried with xmms
-OSS) and recording also works (other people can hear me in gnomemeeting),
-but both at the same time is no longer functioning (read: I can't hear my
-dialog partner). As gnomemeering opens the audio device for recording
-first, i suspect that full duplex support got broken somewhere between
-1.0.2 and 1.0.3.
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-20-05 23:59 
+ mikma - 03-21-05 15:44 
 ----------------------------------------------------------------------
-It has been a long time since you filed this bug.  You neven
-got a reply.  Have you managed to make any progress on it on
-your own?
+It looks like you don't have the kernel source or kernel-headers package
+for your kernel.
 
 ----------------------------------------------------------------------
- nathanel - 03-21-05 16:15 
+ rav0r - 03-21-05 17:13 
 ----------------------------------------------------------------------
-Unfortunately no. Meanwhile I had some look at the changes between alsa-oss
-1.0.2 and 1.0.3 and it seems to me that some major rewrite/refactoring was
-going on at that time, making it quite hard to spot any differences that
-could be the cause. I eventually gave up and for now I'm still sticking to
-the old version.
+so, what should I do?
+should I recompile my kernel?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-08-04 20:59 nathanel       New Issue                                    
-04-08-04 20:59 nathanel       File Added: .asoundrc                        
-03-20-05 23:59 jdthood        Note Added: 0004104                          
-03-21-05 16:15 nathanel       Note Added: 0004119                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
+03-15-05 23:13 rav0r          Note Added: 0003925                          
+03-16-05 11:05 mikma          Note Added: 0003935                          
+03-17-05 00:51 rav0r          Note Added: 0003974                          
+03-20-05 19:14 rav0r          Note Added: 0004096                          
+03-20-05 20:28 mikma          Note Added: 0004099                          
+03-21-05 03:32 rav0r          File Added: config.log                       
+03-21-05 03:33 rav0r          Note Added: 0004112                          
+03-21-05 03:33 rav0r          Note Added: 0004113                          
+03-21-05 15:44 mikma          Note Added: 0004118                          
+03-21-05 17:13 rav0r          Note Added: 0004120                          
 ======================================================================
 
 
