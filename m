@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sat, 19 Mar 2005 18:17:54 +0100
-Message-ID: <21e48debe453472e81b3ea2f95c76ba3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000987]: new chipset
+Date: Sat, 19 Mar 2005 18:17:53 +0100
+Message-ID: <ffc7afab5ad9961571543cdaca827b17@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAAEF1EE
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:17:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 620DC1E9
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:17:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,131 +21,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The issue 0000987 has been set as DUPLICATE OF the following issue.
+The following issue has been set as DUPLICATE OF issue 0000901.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=987> 
 ======================================================================
-Reported By:                kiksen
+Reported By:                mitchix
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   901
+Issue ID:                   987
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               debian useing pure64 sid
+Kernel Version:             2.6.10-9-amd64-k8
 ======================================================================
-Date Submitted:             02-11-2005 23:49 CET
-Last Modified:              02-13-2005 01:27 CET
+Date Submitted:             03-12-2005 22:49 CET
+Last Modified:              03-19-2005 18:17 CET
 ======================================================================
-Summary:                    The onboard audigyls chip on msi k8 diamond
-motherboard not recognized. Path supplied.
+Summary:                    new chipset
 Description: 
-We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
+Vendor 1462: Micro-Star International Co., Ltd.
+Card model K8N Neo4 Platinum/SLI
 
-Have made a path.
+On Board Audio
+ 	
+Creative sound Bluster Live 24-bit H/W audio
+24-bit / 96KHz audio quality
+100db SNR clarity
+Up to 7.1 CH Surround Sound, Dolby Digital ready
+
+modprobe snd_ca0106
+Model 1009 Rev 00000000 Serial 10091462
+
+
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000987 new chipset
+duplicate of        0000901 The onboard audigyls chip on msi k8 dia...
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 02-12-05 00:56 
+ mitchix - 03-12-05 22:55 
 ----------------------------------------------------------------------
-Please post the output of:
-lspci -vn | grep -1 0401
-
-----------------------------------------------------------------------
- kiksen - 02-12-05 14:36 
-----------------------------------------------------------------------
-Found out the serial in the names section should be 0x10091462 for
-detection of correct name.
-
-Here's the output of lspci -vn | grep -1 0401:
-
-00000:01:0d.0 Class 0401: 1102:0007
-        Subsystem: 1462:1009
-
-By the way. The chip is named SB0438
-
-----------------------------------------------------------------------
- sHINOBI - 02-12-05 22:47 
-----------------------------------------------------------------------
-I have the same board, so including it to the future versions of ALSA will
-be highly appreciated :-). I'll try the patch and let you know, if it
-works.
-
-----------------------------------------------------------------------
- jcdutton - 02-13-05 00:18 
-----------------------------------------------------------------------
-cat /proc/asound/cards
-Does it say: "AudigyLS [Unknown]" after your patch?
-
-----------------------------------------------------------------------
- sHINOBI - 02-13-05 00:54 
-----------------------------------------------------------------------
-After the patch  cat /proc/asound/cards shows:
-
-0 [CA0106         ]: CA0106 - CA0106
-                     AudigyLS [Unknown] at 0xde00 irq 233
-
-The soundcard seems to be working, although the sound is choppy when
-playing sound  recorded at 44100 Hz. 48000 Hz audio like the one at DVD's
-is played correctly.
-
-----------------------------------------------------------------------
- jcdutton - 02-13-05 01:08 
-----------------------------------------------------------------------
-In you patch change:
-+	 { 0x00071102, "Live! by MSI [SB0000]"}, /* MSI SB Audigy2LS without
-AC97 */
-
-to
-+	 { 0x10091462, "Live! by MSI [SB0438]"}, /* MSI SB Audigy2LS without
-AC97 */
-
-then see if "cat /proc/asound/cards" displays better info.
-
-----------------------------------------------------------------------
- sHINOBI - 02-13-05 01:21 
-----------------------------------------------------------------------
-*nods*, seems to be better:
-
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! by MSI [SB0438] at 0xde00 irq 233
-
-----------------------------------------------------------------------
- jcdutton - 02-13-05 01:27 
-----------------------------------------------------------------------
-Thank you. A modified patch will be added to alsa cvs.
+Sorry this is Dup of 901
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-11-05 23:49 kiksen         New Issue                                    
-02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
-     
-02-11-05 23:49 kiksen         Distribution              => Gentoo          
-02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
-02-12-05 00:56 jcdutton       Note Added: 0003569                          
-02-12-05 14:36 kiksen         Note Added: 0003571                          
-02-12-05 22:43 sHINOBI        Issue Monitored: sHINOBI                     
-02-12-05 22:47 sHINOBI        Note Added: 0003572                          
-02-13-05 00:18 jcdutton       Note Added: 0003574                          
-02-13-05 00:54 sHINOBI        Note Added: 0003575                          
-02-13-05 01:08 jcdutton       Note Added: 0003576                          
-02-13-05 01:21 sHINOBI        Note Added: 0003577                          
-02-13-05 01:27 jcdutton       Status                   assigned => resolved
-02-13-05 01:27 jcdutton       Resolution               open => fixed       
-02-13-05 01:27 jcdutton       Note Added: 0003578                          
-02-22-05 19:22 sHINOBI        Issue End Monitor: sHINOBI                    
-03-19-05 18:17 jcdutton       Relationship added       has duplicate 0000987
+03-12-05 22:49 mitchix        New Issue                                    
+03-12-05 22:49 mitchix        Distribution              => debian useing pure64
+sid
+03-12-05 22:49 mitchix        Kernel Version            => 2.6.10-9-amd64-k8
+03-12-05 22:55 mitchix        Note Added: 0003899                          
+03-19-05 18:17 jcdutton       Relationship added       duplicate of 0000901
 ======================================================================
 
 
