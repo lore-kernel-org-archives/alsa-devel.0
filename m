@@ -1,12 +1,14 @@
-From: frankgaetano@collegeclub.com
-Subject: Re: Hammerfall DSP System Problems
-Date: Thu, 5 Jun 2003 19:56:23 -0400 (EDT)
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: ALSA skipping samples
+Date: Fri, 6 Jun 2003 00:54:23 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <7658093.1054857383640.JavaMail.java@localhost>
+Message-ID: <20030606005423.B27256@flint.arm.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_Part_11_7788130.1054857383629"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+Resent-To: alsa-devel@lists.sourceforge.net
+Resent-Message-Id: <E19O54e-0007bG-L0@flint.arm.linux.org.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,84 +17,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: PaulDavis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-------=_Part_11_7788130.1054857383629
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Hi,
 
-Paul,
- Thanks for responding. I am using the current CVS of Alsa version 0.9.4. 
+I'm working on some drivers for some custom AC'97 hardware on a
+development platform, and am seeing some weird behaviour.
 
-Frank
+The development platform is mostly FPGA-based, so it isn't the worlds
+most fastest machine.  However, running madplay against the OSS
+emulation results in the following:
 
-Paul Davis <paul@linuxaudiosystems.com> wrote:
+# time madplay sample.mp3
+...
+8670 frames decoded (0:03:46.4), +2.2 dB peak amplitude, 3882 clipped samples
+133.99user 19.92system 2:33.95elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (1498major+69minor)pagefaults 0swaps
 
->> I recently purchased a Hammerfall DSP system to use on Windows and 
->>especially LINUX for use on Ardour. I have the multiface system. I 
->>must say I am confused on the support of the newest version of this 
->>pci card (I know that I have firmware version 11). I downloaded the 
->>current CVS on alsa-dev and compiled it fine. However when I run 
->>modprobe I get the following error: 
->
->there are a number problems with the hdsp driver at present. fixing
->
->them is mostly a matter of at least 1 of 3 people finding time to work
->
->on it. however, your initial problems are different:
->
-> 
->>Using /lib/modules/2.4.18-3/kernel/sound/pci/rme9652/snd-hdsp.o 
->>/lib/modules/2.4.18-3/kernel/sound/pci/rme9652/snd-hdsp.o: unresolved 
->>symbol snd_hammerfall_get_buffer_R5bab1fdf 
->
->you don't have a version of the ALSA drivers compiled in a way that
->
->will allow the kernel module system to work. you need to fix this
->
->first. someone else will have to comment on how to do that. you should
->
->probably specify which version of ALSA you are using since there are
->
->many changes to ALSA all the time. it appears to me that you may have
->
->a version of ALSA that doesn't build the rawmidi module that the hdsp
->
->requires to support it. 
->
->--p
->
->
->
->-------------------------------------------------------
->
->This SF.net email is sponsored by: Etnus, makers of TotalView, The best
->
->thread debugger on the planet. Designed with thread debugging features
->
->you've never dreamed of, try TotalView 6 free at www.etnus.com.
->
->_______________________________________________
->
->Alsa-devel mailing list
->
->Alsa-devel@lists.sourceforge.net
->
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
->
+Note that the mp3 is 3mins46 long, but we took only 2mins33 to play it!
 
+When listening to the output, it appears that we're randomly missing
+chunks of samples; when I added a printk into my PCM's trigger function,
+I noticed that we were frequently calling it with TRIGGER_START/
+TRIGGER_STOP.  I suspect this is because the mp3 player can't keep
+ALSAs buffers full.
 
+The driver source can be found at:
 
--------------------------------------------------------------------------- 
-Looking for a roommate? Let CollegeClub.com help you out!
-<http://navisite.collegeclub.com/channels/college/>
+  http://patches.arm.linux.org.uk/alsa/aaci.c
 
-CollegeClub.com makes college life even better.
-------=_Part_11_7788130.1054857383629--
+(its not ready for release yet tho.  oh, and yes, dma is missing off
+the hardware implementation so its currently using PIO, but it is
+expected that in real CPUs the device will have DMA available.)
+
+The contents of /proc/asound/AACI/pcm0p/sub0/ while "playing":
+
+hw_params:access: RW_INTERLEAVED
+hw_params:format: S16_LE
+hw_params:subformat: STD
+hw_params:channels: 2
+hw_params:rate: 44100 (44100/1)
+hw_params:period_size: 1024
+hw_params:buffer_size: 16384
+hw_params:tick_time: 10000
+hw_params:OSS format: S16_LE
+hw_params:OSS channels: 2
+hw_params:OSS rate: 44100
+hw_params:OSS period bytes: 4096
+hw_params:OSS periods: 16
+info:card: 0
+info:device: 0
+info:subdevice: 0
+info:stream: PLAYBACK
+info:id: PCM0
+info:name:
+info:subname: subdevice #0
+info:class: 0
+info:subclass: 0
+info:subdevices_count: 1
+info:subdevices_avail: 0
+prealloc:64
+status:state: XRUN
+status:trigger_time: 5365.000116784
+status:tstamp      : 5365.000119486
+status:delay       : 0
+status:avail       : 16384
+status:avail_max   : 16384
+status:-----
+status:hw_ptr      : 1024
+status:appl_ptr    : 1024
+sw_params:tstamp_mode: NONE
+sw_params:period_step: 1
+sw_params:sleep_min: 0
+sw_params:avail_min: 1024
+sw_params:xfer_align: 1
+sw_params:start_threshold: 1
+sw_params:stop_threshold: 16384
+sw_params:silence_threshold: 0
+sw_params:silence_size: 0
+sw_params:boundary: 1073741824
+
+(PS, playing the same mp3 using the same mp3 player binary on a
+faster system using real OSS drivers but different hardware has
+the expected results.)
+
+-- 
+Russell King (rmk@arm.linux.org.uk)                The developer of ARM Linux
+             http://www.arm.linux.org.uk/personal/aboutme.html
+
 
 
 
