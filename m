@@ -1,39 +1,43 @@
-From: Pilo <pilo.c@wanadoo.fr>
-Subject: sb live multiple in and outs...
-Date: Mon, 4 Aug 2003 10:37:56 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308041037.56521.pilo.c@wanadoo.fr>
-Reply-To: pilo.c@wanadoo.fr
+From: =?iso-8859-1?q?Leandro_Guimar=E3es_Faria_Corsetti_Dutra?= <lgcdutra@terra.com.br>
+Subject: Re: Poll: Distro for audio and MIDI development
+Date: Mon, 04 Aug 2003 13:11:32 +0200
+Sender: news <news@main.gmane.org>
+Message-ID: <pan.2003.08.04.11.11.30.375989@terra.com.br>
+References: <3F1EC6D2.5010600@sambara.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <bounce-debian-powerpc=debian-powerpc=m.gmane.org@lists.debian.org>
+Resent-Message-ID: <YMZ2j.A.jXC.GZkL_@murphy>
+List-Post: <mailto:debian-powerpc@lists.debian.org>
+List-Help: <mailto:debian-powerpc-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-powerpc-request@lists.debian.org?subject=unsubscribe>
+List-Archive: <http://lists.debian.org/debian-powerpc/>
+To: debian-powerpc@lists.debian.org
+Cc: alsa-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-I read in SB-live-mixer.txt that it would be easy to add multi track supp=
-ort=20
-for the SB live... Under windows there is the KX Driver which make it=20
-possible (and a lot of more stuff). Making all the I2S inputs avalaible i=
-s=20
-not very hard, and I'm going to make this soon... but I wish I could used=
-=20
-this under linux with ardour... so if someone could help me! I've got C=20
-programming skill, but never worked on driver before.
-thanks!
+On Wed, 23 Jul 2003 19:33:06 +0200, Ismael Valladolid Torres wrote:
+
+> I dream about a development setup as stable but also as updated as posible.
+
+	That's it, a dream.
+
+	Remember, proprietary platforms achieve stability with
+updatedness by sacrificing other stuff: security updates,
+leanness... theoretically free software should be able to offer all
+this, but it is not mature enough yet.
+
+	I have a suspicion we are actually in the middle of another
+software crisis, this time masked by the whole MS monopoly &
+proprietariness vs free software debate.  And perhaps the solution
+would be something like the Hurd, relational software, functional
+programming or ErOS.  But for now, cool down...
 
 
--------------------------------------------------------
-This SF.Net email sponsored by: Free pre-built ASP.NET sites including
-Data Reports, E-commerce, Portals, and Forums are available now.
-Download today and enter to win an XBOX or Visual Studio .NET.
-http://aspnet.click-url.com/go/psa00100003ave/direct;at.aspnet_072303_01/01
+-- 
+ _   Leandro Guimarães Faria Corsetti Dutra     +41 (21) 648 11 34
+/ \  http://br.geocities.com./lgcdutra/         +41 (78) 778 11 34
+\ /  Answer to the list, not to me directly!    +55 (11) 5686 2219
+/ \  Rate this if helpful: http://svcs.affero.net/rm.php?r=leandro
