@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+From: Florian Bomers <Florian.Bomers@sun.com>
 Subject: Re: snd_ prefix for module options
-Date: Tue, 8 Oct 2002 23:44:46 +0100 (BST)
+Date: Tue, 08 Oct 2002 17:48:33 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021008224446.26961.qmail@web40611.mail.yahoo.com>
-References: <s5hfzvh2fid.wl@alsa2.suse.de>
+Message-ID: <3DA37CE1.760C32F5@sun.com>
+References: <s5hfzvh2fid.wl@alsa2.suse.de> <3DA33394.A7C5D9AE@sun.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfzvh2fid.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,46 +19,77 @@ List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> wrote: > Hi,
-> so, i'd like to ask you how do you think to remove
-> this snd_ prefix.
-> of course, there is one and only big problem -
-> compatibility!
+Sorry guys, I thought you were talking about the snd_ prefix of the module NAMES
+:) for the option names, dropping seems the right thing to do - an error message
+should be printed when a snd_* option is used.
 
-I think it's a worthy goal. It's just noise in
-modules.conf, of course. Irritating, but no more than
-that. What concerns me more is when you compile ALSA
-directly into the kernel. To pass the options NOW
-requires a boot-time parameter list:
-
-alsa-module-name=snd_this=x,snd_that=y,snd_the_other=z
-
-Every "snd_" here wastes 4 precious bytes on the
-kernel's command line. Now I don't know what the
-maximum length of the command line is, but I'm sure
-I've reached it before. (And had the trailing options
-silently ignored.) I think economy is only polite with
-such a limited resource.
-
-As for "when", I'd say that the longer you wait, the
-greater the pain. I have a fairly complicated setup,
-and the extent of my pain would be here:
-
-options snd snd_cards_limit=2
-options snd-card-0 snd_index=0
-options snd-card-1 snd_index=1 snd_mpu_port=0x330
-
-(Aren't PCI devices nice :-)?) I guess the worst hit
-would be people with ISA sound cards.
-
-Chris
+Florian
 
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+Florian Bomers wrote:
+> 
+> I like it a lot. Due to the prefix I was able to cleanly remove 0.5.x from my
+> system, and we might want to do that later on with 0.9, too :)
+> 
+> And since I don't see any benefit in removing the prefix - other than cosmetic -
+> keeping it will save time for distribution's programmers, sysadmins, writers,
+> etc. to update their setup routines, configs, howtos, etc. :)
+> 
+> Florian
+> 
+> Takashi Iwai wrote:
+> >
+> > Hi,
+> >
+> > so far, all alsa modules use snd_ prefix for each module option.
+> > iirc, there was a problem regarding namespace at the time of 2.0
+> > kernel, and this was some workaround to avoid confliction.
+> > but 2.2 and later kernels have no such a problem at all.
+> >
+> > so, i'd like to ask you how do you think to remove this snd_ prefix.
+> > of course, there is one and only big problem - compatibility!
+> >
+> > the questions are
+> >
+> > - whether we should really do it or not?  is it worthy?
+> >
+> > and
+> >
+> > - when? now or after 0.9.0-final release?
+> >
+> > opinions, please?
+> >
+> > Takashi
+> >
+> > -------------------------------------------------------
+> > This sf.net email is sponsored by:ThinkGeek
+> > Welcome to geek heaven.
+> > http://thinkgeek.com/sf
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
+> --
+> Florian Bomers
+> Java Sound
+> Java Software/Sun Microsystems, Inc.
+> http://java.sun.com/products/java-media/sound/
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+-- 
+Florian Bomers
+Java Sound
+Java Software/Sun Microsystems, Inc.
+http://java.sun.com/products/java-media/sound/
 
 
 -------------------------------------------------------
