@@ -1,14 +1,11 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000811]: 1.0.8-rc2 base/treble adjustment does not work with "tone" button enabled
-Date: Wed, 12 Jan 2005 18:58:54 +0100
-Message-ID: <25a2121b988e0399f9f48a9c3b271f79@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Subject: [ALSA - lib 0000812]: SNDRV_PCM_IOCTL_DELAY failed:
+Date: Wed, 12 Jan 2005 19:06:11 +0100
+Message-ID: <20050112180611.F1CC8295@alsa.alsa-project.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6AF06295
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 18:58:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F1CC8295
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 19:06:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +18,65 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
+Message-ID: <02d6466871732d2c2bbe846941b6e403@bugtrack.alsa-project.org>
+X-Priority: 3
+X-Mailer: PHPMailer [version 1.72]
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=811> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=812> 
 ======================================================================
-Reported By:                vinyvat
+Reported By:                jdthood
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   811
-Category:                   PCI - emu10k1
+Project:                    ALSA - lib
+Issue ID:                   812
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             01-12-2005 18:58 CET
-Last Modified:              01-12-2005 18:58 CET
+Date Submitted:             01-12-2005 19:06 CET
+Last Modified:              01-12-2005 19:06 CET
 ======================================================================
-Summary:                    1.0.8-rc2 base/treble adjustment does not work with
-"tone" button enabled
+Summary:                    SNDRV_PCM_IOCTL_DELAY failed: 
+SNDRV_PCM_IOCTL_DELAY failed: File descriptor in bad state
 Description: 
-With 1.8.0-rc2, using any alsa mixer apps (alsamixer, kmix,
-gnome-alsa-mixer), the base/treble adjustment does nothing even when I
-make sure the "Tone" button is clicked.
+This is Debian bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=287583: please see
+http://bugs.debian.org/287583
+for the full report.
 
-Reproduce:
-/etc/init.d/alsa start
-alsaplayer # to play some music
-alsamixer
+Summary: The user runs xmms with the ALSA output plugin and gets huge
+numbers of error messages:
 
-adjust base/treble - no difference in sound, even when "tone" is enabled.
+..
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+ALSA lib pcm_hw.c:490:(snd_pcm_hw_delay) SNDRV_PCM_IOCTL_DELAY failed:
+File descriptor in bad state
+..
+
+
+The problem disappeared when the user reverted to libasound2 1.0.6-5.
+Indeed, it seems that the error message in question was only added to
+libasound2 in 1.0.7.
+
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 18:58 vinyvat        New Issue                                    
-01-12-05 18:58 vinyvat        Kernel Version            => 2.6.8.1         
+01-12-05 19:06 jdthood        New Issue                                    
 ======================================================================
 
 
