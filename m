@@ -1,8 +1,8 @@
 From: "Derek D. Martin" <ddm@pizzashack.org>
 Subject: Re: alsa configure/install bug
-Date: Wed, 26 Jun 2002 15:46:16 -0400
+Date: Wed, 26 Jun 2002 15:58:17 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020626154616.A1295@pizzashack.org>
+Message-ID: <20020626155817.B1295@pizzashack.org>
 References: <20020624143111.B1332@pizzashack.org> <s5hit477jta.wl@alsa2.suse.de> <20020625140206.B13917@pizzashack.org> <s5hwusm5pfi.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -24,68 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-Ok, I moved my misc directory aside, and reinstalled them in the
-kernel/sound directories.  Here's some more info:
-
-
 At some point hitherto, Takashi Iwai hath spake thusly:
-> > > what happens if you run "depmod -ae"?
-> > 
-> > Well, I set the command line for configure to place them in the misc
-> > directory, so everything is working now.  There is no output from
-> > depmod -ae, but presumably there would be had I allowed the drivers to
-> > be installed in the kernel/sound directories?
-
-It turns out there's still no output to this command.
-
 > kernel/sound directory must be checked by modprobe.
 > all normal kernel modules are installed under kernel directory.
 
-It seems like it's checking, partially.  After starting my X session,
-gnome complains that it's unable to open /dev/mixer.  I looked at the
-output of lsmod, and the only sound-related modules that got loaded
-were these:
+Hi Takashi,
 
-  $ lsmod
-  Module                  Size  Used by    Tainted: P  
-  snd-mixer-oss           8800   0 (autoclean) (unused)
-  snd                    24200   0 (autoclean) [snd-mixer-oss]
-  soundcore               3588   0 (autoclean) [snd]
+It occured to me that you're probably going to ask me what my
+modules.conf file looks like, so I'll save you the trouble:
 
-Note the 'P' flag in the Tainted header.  I don't know what this
-means, but it wasn't there when the modules were located in misc.  The
-man page for lsmod is remarkably unhelpful in determining the meaning
-of the 'P' that's there.  I have a vague idea that this has to do with
-GPL issues, but beyond that no clue...
+  # ALSA Sound stuff
+  alias char-major-116 snd
+  options snd snd_major=116 snd_cards_limit=1
+  alias snd-card-0 snd-card-ymfpci
+  options snd-card-ymfpci snd_index=0 snd_id="YMFPCI"
+  
+  alias char-major-14 soundcore
+  alias sound-slot-0 snd-card-0
+  post-install sound-slot-0 /bin/aumix-minimal -f /etc/.aumixrc -L >/dev/null 2>&1 || :
+  pre-remove sound-slot-0 /bin/aumix-minimal -f /etc/.aumixrc -S >/dev/null 2>&1 || :
+  alias sound-service-0-0 snd-mixer-oss
+  alias sound-service-0-1 snd-seq-oss
+  alias sound-service-0-3 snd-pcm-oss
+  alias sound-service-0-12 snd-pcm-oss
 
-Also, in my logs, I see these messages:
+Now, looking at this, and matching it up against the modules that
+actually exist, I notice that the alias for snd-card-0 refers to a
+module that doesn't appear to exist.  I suspect this is the culprate.
+However, this is the exact same configuration that I'm using when the
+modules are in the misc directory, and everything works fine.
 
-  Jun 26 15:30:49 mercury modprobe: modprobe: Can't locate module char-major-81
-  Jun 26 15:30:52 mercury modprobe: modprobe: Can't locate module sound-slot-0
+Looking back at the documentation, I think I understand what happened.
+The howto shows this in the modprobe section:
 
-Apparently, it's not loading any of the drivers in the
-kernel/sound/pci directory...  Oddly, if I manually modprobe
-snd-ymfpci, it loads, along with the rest of the modules.
+  # ALSA portion
+  alias snd-card-0 snd-interwave
+  alias snd-card-1 snd-card-es1370
 
-All I can say is, WTF?
+I copied the form of the second entry, but that's not the name of the
+module for the ymfpci chipset.  I've modified the alias, but I don't
+actually have time to test it to see if that fixed the problem.  I
+believe it will...
 
-  Module                  Size  Used by    Tainted: P  
-  snd-ymfpci             41444   0  (unused)
-  snd-pcm                48768   0  [snd-ymfpci]
-  snd-opl3-lib            5312   0  [snd-ymfpci]
-  snd-timer               9760   0  [snd-pcm snd-opl3-lib]
-  snd-hwdep               3456   0  [snd-opl3-lib]
-  snd-mpu401-uart         2800   0  [snd-ymfpci]
-  snd-rawmidi            12352   0  [snd-mpu401-uart]
-  snd-seq-device          3840   0  [snd-opl3-lib snd-rawmidi]
-  snd-ac97-codec         23620   0  [snd-ymfpci]
-  snd-mixer-oss           8800   0  (autoclean) (unused)
-  snd                    24200   0  (autoclean) [snd-ymfpci snd-pcm snd-opl3-lib s
-  nd-timer snd-hwdep snd-mpu401-uart snd-rawmidi snd-seq-device snd-ac97-codec snd
-  -mixer-oss]
-  soundcore               3588   4  (autoclean) [snd]
-
-
+Gotta run.  Thanks for your help.
 
 - -- 
 Derek Martin               ddm@pizzashack.org    
@@ -98,9 +79,9 @@ Learn more about it at http://www.gnupg.org
 Version: GnuPG v1.0.6 (GNU/Linux)
 Comment: For info see http://www.gnupg.org
 
-iD8DBQE9GhoIdjdlQoHP510RAovgAJ97OLEPtEiCvABX6b3vzI2KUTbunACeLDaL
-8tuWo7cttdSmb7o7bqkBD40=
-=+Pp9
+iD8DBQE9GhzZdjdlQoHP510RAkjlAKCrPcxJerxEHRhHZloUAse2MFI+4wCggHUs
+IFXlX2+9RamhqjRwXXFUQU0=
+=b9NM
 -----END PGP SIGNATURE-----
 
 
