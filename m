@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: SB Live - hwdep
-Date: Mon, 9 Jun 2003 10:56:51 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: make dep
+Date: Mon, 09 Jun 2003 12:04:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306091056340.1323-100000@pnote.perex-int.cz>
-References: <200306090634.IAA13865@www1.pobox.sk>
+Message-ID: <XFMail.20030609120455.pochini@shiny.it>
+References: <Pine.LNX.4.44.0306091046250.1323-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200306090634.IAA13865@www1.pobox.sk>
+In-Reply-To: <Pine.LNX.4.44.0306091046250.1323-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,29 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: p z oooo <pzad@pobox.sk>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 9 Jun 2003, p z oooo wrote:
 
-> Hi,
-> 
-> I am working on SB Live dsp patch loader an found, that driver will 
-> segfault when I try to delete control in function
-> snd_emu10k1_del_controls in emufx.c on line
-> list_del(&ctl->list); 
-> this is because control is removed from list in function before
-> snd_emu10k1_ctl_private_free in emufx.c
+On 09-Jun-2003 Jaroslav Kysela wrote:
+>
+>> How can I tell "make dep" to ignore some of the files listed in
+>> "snd-mychip-objs" ?
+>
+> It is not possible. Could you send me your code? I will try to look what
+> is wrong.
 
-Fixed. Thanks.
+There's nothing wrong. The driver is based on the C++ code written by the
+manufacturer. That code should be compiled indipendently from ALSA and
+then linked to the main driver. "make dep" looks for .c files that don't
+exist. As workaround, I defined a set of rules like this:
 
-						Jaroslav
+file.c:
+        touch file.c
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+It works, but it's ugly. I was looking for a better solution.
+
+Bye.
 
 
 
