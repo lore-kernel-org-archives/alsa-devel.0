@@ -1,11 +1,11 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Ctl events problem
-Date: Mon, 7 Mar 2005 14:56:32 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503071451440.1751@pnote.perex-int.cz>
-References: <20050306180252.22b03da3.pochini@shiny.it>
+From: "=?gb2312?B?wO69qMCk?=" <li_jiankun@hotmail.com>
+Subject: I want to dmix for my MIPS board, how can I do?
+Date: Mon, 7 Mar 2005 22:24:52 +0800
+Message-ID: <BAY16-DAV3AADC75FFB21EB73AE296E95F0@phx.gbl>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <20050306180252.22b03da3.pochini@shiny.it>
+Content-Type: text/plain;
+	charset="gb2312"
+Content-Transfer-Encoding: base64
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,43 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 6 Mar 2005, Giuliano Pochini wrote:
-
-> I'm updating echomixer to make it take into account control events. It
-> works well, but I have a problem with a "virtual" control. Some cards
-> work this way:
-> 
-> Inputs ----> monitor mixer ----
->                                \
->                                 >----> line-out volume ----> Outputs
->                                /
-> PCM -------> PCM volume -------
-> 
-> But some cards do not have the line-out volume control and since it's a
-> very handy feature echomixer emulates it by changing both PCM playback
-> volume and monitor mixers according to the setting of the virtual
-> line-out control. The problem is ALSA does not deliver events of that
-> non-existent control... because it doesn't exist. It delivers events of
-> PCM vol and mmixer instead, which is exactly the opposite of what I
-> need. One possible solution is to move all that emulation stuff into the
-> driver :-6 Otherwise is it possible to write a plugin for alsa-lib that
-> does the emulation for cards that require it ?  (docs ?)  Other ideas ?
-
-You can create a new "user space" control in your application. Then the
-driver will notify about changes the other apps, too. See the pcm_softvol.c
-code for more details...
-
-But yes, it's something to be resolved in alsa-lib, unfortunately, my work 
-on alisp is slow due to various maintenance..
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@perex.cz>
+YWxzYS1kZXZlbKOsDQoNCiAgSSdtIGFuIGRldmljZSBkcml2ZXIgZGV2ZWxvcGVyIGZvciBNSVBT
+IGJvYXJkLiBOb3csIEknbSBpbiB1cmdlbnQgbmVlZCBvZiBkbWl4IHNvdXJjZSBjb2RlIGZvciBt
+eSBBY2hlbXkgYm9hcmQuDQogIEkgd2FudCB0byBkbWl4IG9uIG15IE1JUFMgQXUxeDAwIGJvYXJk
+LCBTZWdtZW50YXRpb24gRmF1bHQgb2NjdXJzLiBJIGxvb2sgdXAgdGhlIGNvZGUgb2YgcGNtX2Rt
+aXguYyBmb3IgcG9zc2libGUgcmVhc29uLCANCiAgaXQgc2F5cywNCiAgICAjd2FybmluZyBQbGVh
+c2UsIHJlY29kZSBtaXhfYXJlYXMxKCkgcm91dGluZSB0byB5b3VyIGFyY2hpdGVjdHVyZS4uLg0K
+CXdhcm5pbmcgUGxlYXNlLCByZWNvZGUgbWl4X2FyZWFzMigpIHJvdXRpbmUgdG8geW91ciBhcmNo
+aXRlY3R1cmUuLi4NCiAgRG9lcyBpdCBtZWFuIHRoZSBkbWl4IGNhbiBvbmx5IGJlIHVzZWQgb24g
+WDg2IGFyY2hpdGVjdHVyZSBub3c/DQogIGlmIEkgd2FudCB0byB1c2UgaXQgb24gbXkgTUlQUyBi
+b2FyZCwgaG93IGNhbiBJIGRvPyANCiAgDQogIExvb2tpbmcgZm9yd2FyZCB0byBhbnlvbmUncyBy
+ZXBseSEgVGFua3MgaW4gYWR2YW5jZSENCg0KICBDaGVyZXMsDQogIExpIEppYW4ta3VuDQoNCqGh
+oaGhoaGhoaGhoaGhoaFsaV9qaWFua3VuQGhvdG1haWwuY29tDQqhoaGhoaGhoaGhoaGhoaGhoaGh
+oTIwMDUtMDMtMDcNCg==
 
 
 -------------------------------------------------------
