@@ -1,13 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000820]: Mic (and probably other inputs) recording does not work
-Date: Sun, 27 Feb 2005 01:12:26 +0100
-Message-ID: <287b1fd4f30cf1e44fb56c36abbfa5eb@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] emu10k1: fix efx_voices_mask setting for SBLive
+Date: Sat, 26 Feb 2005 19:19:52 -0500
+Message-ID: <1109463592.1814.12.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 08A2326E
-	for <alsa-devel@alsa-project.org>; Sun, 27 Feb 2005 01:12:26 +0100 (MET)
+Content-Type: multipart/mixed; boundary="=-bST/XQbROUgGB/YCSHxH"
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,83 +13,61 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: Takashi Iwai <tiwai@suse.de>, James Courtier-Dutton <James@superbug.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=820> 
-======================================================================
-Reported By:                gadkadosh
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   820
-Category:                   PCI - atiixp
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo Linux
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-15-2005 12:49 CET
-Last Modified:              02-27-2005 01:12 CET
-======================================================================
-Summary:                    Mic (and probably other inputs) recording does not
-work
-Description: 
-I'm running gentoo linux with kernel 2.6.10, though it's the same with
-2.6.9 too. The alsa driver is compiled from the official kernel sources,
-version 1.0.6 according to /proc/asoumd/version.
-I'm trying to use a mic through the mic jack, and use it in GnomeMeeting.
-Mic is the Capture device and volume is at max. I can hear the sounds from
-the mic trough the sound card's speakers (laptop), but no sound gets
-recorded. Tried also with Gnome's Sound Recorder, and with arecord, with
-no success. The apps look as though they record and everything is fine,
-but the output file is just silence.
-I also tried setting Capture to CD, play a cd-audio and record it with
-arecord and got the same results. I suppose it's related. 
-The important point is that I have had the mic working already some time
-ago, with GnomeMeeting, but I can't recall what has changed since then.
-Kernel-2.6.9 has the same results. With kernel-2.6.8.1 the atiixp driver
-does not work at all. Also had an upgrade of alsa-headers lately to 1.0.8
-which I'm not sure is related or not.
-======================================================================
+--=-bST/XQbROUgGB/YCSHxH
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-----------------------------------------------------------------------
- tiwai - 01-17-05 15:10 
-----------------------------------------------------------------------
-I guess it's a mixer configuration problem.
-Make sure that you turned on 'Capture', raised 'Capture Volume', and chose
-the proper Capture Source.
-E.g. on alsamixer, choose "Capture" and press space to turn on the capture
-switch.  Then raise the capture volume with a cursor up key.  And, press
-space on "Mic" to choose it as the capture source.
+This patch fixes a stupid thinko where we set the low 16 bits of the
+FXWC register, which correspond to the 16 physical outs.  We should be
+setting the high 16 bits, which correspond to the physical inputs
+(connected in emufx.c).  The Audigy was not affected by this bug.
 
-(You can go to capture view mode via F4 key on alsamixer -- see man page.)
+Also, the "EFX Voices Mask" control is renamed to "Captured FX8010
+Outputs".  This is a trick to ensure the default mixer settings are
+loaded when users upgrade from 1.0.8.  Otherwise, the upgrade process
+will probably restore the old settings which results in the
+"multichannel" capture device only having two channels.  I could not
+think of a better way to get around this issue, and the alternative
+seems to be a slew of bug reports.  Half the testers reported this to me
+as a bug already.
 
-----------------------------------------------------------------------
- EPOdata - 02-27-05 01:12 
-----------------------------------------------------------------------
-I have the same problem with alsa 1.0.6 on Fedora Core 3 with AW320
-soundcard. The hardware is OK, I can both record and playback on Windows
-2000 on the same HW. wav-files can be played correctly but the wav files
-created by arecord are all silent, also when they are played back on
-Windows.
+Anyway, I think the new name is clearer anyway, because there's no
+reason to tell userspace the hardware stores this value as a mask, and
+"voices" is confusing because it implies some relation to the 64
+wavetable/PCM voices.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-15-05 12:49 gadkadosh      New Issue                                    
-01-15-05 12:49 gadkadosh      Distribution              => Gentoo Linux    
-01-15-05 12:49 gadkadosh      Kernel Version            => 2.6.10          
-01-16-05 13:19 gadkadosh      Note Added: 0003215                          
-01-17-05 15:10 tiwai          Note Added: 0003237                          
-02-27-05 01:12 EPOdata        Note Added: 0003741                          
-======================================================================
+Signed-Off-By: <rlrevell@joe-job.com>
 
+
+
+--=-bST/XQbROUgGB/YCSHxH
+Content-Disposition: attachment; filename=sblive-fix-default-voices-mask.patch
+Content-Type: text/x-patch; name=sblive-fix-default-voices-mask.patch; charset=ANSI_X3.4-1968
+Content-Transfer-Encoding: 7bit
+
+Index: alsa/alsa-kernel/pci/emu10k1/emupcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
+retrieving revision 1.40
+diff -u -r1.40 emupcm.c
+--- alsa/alsa-kernel/pci/emu10k1/emupcm.c	17 Feb 2005 14:49:50 -0000	1.40
++++ alsa/alsa-kernel/pci/emu10k1/emupcm.c	26 Feb 2005 23:34:53 -0000
+@@ -1690,7 +1690,7 @@
+ 		emu->efx_voices_mask[0] = 0;
+ 		emu->efx_voices_mask[1] = 0xffff;
+ 	} else {
+-		emu->efx_voices_mask[0] = 0xffff;
++		emu->efx_voices_mask[0] = 0xffff0000;
+ 		emu->efx_voices_mask[1] = 0;
+ 	}
+ 	snd_ctl_add(emu->card, snd_ctl_new1(&snd_emu10k1_pcm_efx_voices_mask, emu));
+
+--=-bST/XQbROUgGB/YCSHxH--
 
 
 
