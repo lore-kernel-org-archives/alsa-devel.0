@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - WWW server 0000431]: Wrong driver & docs link for Terratec EWS88D
-Date: Wed, 20 Oct 2004 11:16:38 +0200
+Date: Wed, 20 Oct 2004 11:20:38 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <dccd311f893657c225754a1cefc93101@bugtrack.alsa-project.org>
+Message-ID: <cdcb5197995b7f2492d649f35b9c103a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A3DC4345
-	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 11:16:38 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD2F7298
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 11:20:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -46,7 +46,7 @@ Status:                     new
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             08-08-2004 14:14 CEST
-Last Modified:              10-20-2004 11:16 CEST
+Last Modified:              10-20-2004 11:20 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -75,6 +75,11 @@ driver can handle all of these for the EWS88D yet.
 ----------------------------------------------------------------------
 Just test - please, ignore.
 
+----------------------------------------------------------------------
+ perex - 10-20-04 11:20=20
+----------------------------------------------------------------------
+Just test https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D2.
+
 Issue History
 Date Modified  Username       Field                    Change            =
  =20
@@ -84,6 +89,8 @@ Date Modified  Username       Field                    Change            =
 08-08-04 14:14 ajw213         New Issue                                  =
  =20
 10-20-04 11:16 perex          Note Added: 0002211                        =
+ =20
+10-20-04 11:20 perex          Note Added: 0002212                        =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
