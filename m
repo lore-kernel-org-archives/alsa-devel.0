@@ -1,16 +1,16 @@
 From: Werner Schweer <ws@seh.de>
 Subject: Re: tascam us-122 : invalid synch pipe
-Date: Thu, 25 Sep 2003 22:46:37 +0200
+Date: Thu, 25 Sep 2003 22:53:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309252246.37688.ws@seh.de>
-References: <200309251806.20116.ws@seh.de> <s5hfzikkcvm.wl@alsa2.suse.de>
+Message-ID: <200309252253.27995.ws@seh.de>
+References: <20030925171228.11219.qmail@web12207.mail.yahoo.com>
 Reply-To: ws@seh.de
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfzikkcvm.wl@alsa2.suse.de>
+In-Reply-To: <20030925171228.11219.qmail@web12207.mail.yahoo.com>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -20,45 +20,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: karsten wiese <annabellesgarden@yahoo.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 25 September 2003 19:15, Takashi Iwai wrote:
-> At Thu, 25 Sep 2003 18:06:19 +0200,
->
-> Werner Schweer wrote:
+On Thursday 25 September 2003 19:12, karsten wiese wrote:
+>  --- Werner Schweer <ws@seh.de> schrieb:
 > > Hello,
 > >
-> > i'm unable to get a tascam us-122 usb audio/midi box working.
+> > i'm unable to get a tascam us-122 usb audio/midi box
+> > working.
 > > This device is supported by ALSA us428 driver.
->
-> it seems you're using snd-usb-audio driver instead of snd-usb-us428
-> driver.  the error above should happen only on snd-usb-audio.
-
-you are right, i found the message in snd-usb-audio.c
-
->
-> > Trying alsaplayer and MusE both return an error on setting
+> >
+> > Trying alsaplayer and MusE both return an error on
+> > setting
 > > the pcm hw params:
 > >
-> > ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS
-> > failed: Invalid argument
+> > ALSA lib pcm_hw.c:324:(snd_pcm_hw_hw_params)
+> > SNDRV_PCM_IOCTL_HW_PARAMS failed: Invalid argument
 > >
 > > The kernel log says:
-> > Sep 25 16:40:58 t10 vmunix: ALSA usbaudio.c:1108: 7:0:1 : invalid synch
-> > pipe
+> > Sep 25 16:40:58 t10 vmunix: ALSA usbaudio.c:1108: 7:0:1 :
+> > invalid synch pipe
 > >
-> > I am using current (todays) ALSA cvs and linux 2.4.23pre4.
+> > I am using current (todays) ALSA cvs and linux
+> > 2.4.23pre4.
 > > What i'm doing wrong?
 >
-> please check whether you have usbaudio.c cvs rev.1.65, which i fixed
-> yesterday.  there is a delay between the main cvs and anon.cvs...
+> nothing, except snd-usb-us428 is not yet capable of
+> handling the us122. You are shure it was loaded?
+> Would wonder how that would happen.
+> I'd need hands on an us122 to support it in snd-usb-us428.
 
-yes, i'm using rev 1.65 from cvs.
-
-Meanwhile i checked the us122 alsa patch from martin-langer
-(http://www.langerland.de/us122/driver.html) with no effect.
+ok, i saw the "us122" string in the snd-usb-us428 source and
+assumed it would handle the device. snd-usb-us428 was loaded but
+the above error message was produced by snd-usb-audio.
 
 Regards,
 Werner
