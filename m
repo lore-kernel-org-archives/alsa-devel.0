@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Fri, 15 Oct 2004 01:30:56 +0200 (CEST)
+Date: Fri, 15 Oct 2004 01:40:42 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041014233056.3456F2D0C1@server.perex-int.cz>
+Message-ID: <20041014234042.821932D0C1@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8FA062EE
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 01:30:56 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E06FC2EE
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 01:40:42 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              10-15-2004 01:30 CEST
+Last Modified:              10-15-2004 01:40 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -690,6 +690,19 @@ alias:          usb:v1604p8005dl*dh*dc*dsc*dp*ic*isc*ip*
 behapppy_:
 you run it on ohci or uhci?
 
+----------------------------------------------------------------------
+ karsten - 10-15-2004 01:40 CEST 
+----------------------------------------------------------------------
+usx2y_linux-2.6.9-rc2-mm4-S7_041014.tar.gz
+has NRPACKS configurable from 1 to 4.
+tested ok here @uhci.
+Bigger values == worse latency but more error tolerant
+
+AND:
+a changed, untested (don't have ohci chip) ohci-hcd.c!!!
+Please check it out, especially with this ohci-hcd.c. If things work on
+ohci, I'll get back to the rawusb thing ;-)
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -761,6 +774,8 @@ Date Modified  Username       Field                    Change
 10-14-04 11:25 rncbc          Bugnote Edited: 0002138                      
 10-14-04 15:26 behappy_       Bugnote Added: 0002150                       
 10-15-04 01:30 karsten        Bugnote Added: 0002162                       
+10-15-04 01:32 karsten        File Added: usx2y_linux-2.6.9-rc2-mm4-S7_041014.tar.gz                    
+10-15-04 01:40 karsten        Bugnote Added: 0002163                       
 ======================================================================
 
 
