@@ -1,10 +1,12 @@
-From: Peter Heatwole <peter599@gotnet.net>
-Subject: Beta11 Release - PM Required?
-Date: Tue, 19 Feb 2002 13:53:52 -0800
-Message-ID: <20020219135352.A777@localhost>
+From: jhall@UU.NET (Jeremy Hall)
+Subject: Re: when did the rme9652 driver break?
+Date: Wed, 20 Feb 2002 02:49:22 -0500 (EST)
+Message-ID: <QQmczn03614.200202200749@neserve0.corp.us.uu.net>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <QQmcxa10325.200202191538@neserve0.corp.us.uu.net> from Jeremy Hall
+ at "Feb 19, 2002 10:38:22 am"
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -13,30 +15,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Alsa-devel@lists.sourceforge.net
+To: Jeremy Hall <jhall@UU.NET>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-    I downloaded the beta11 tarball and attempted to compile. The compile
-quitted with errors from alsa-kernel/core/pcm_native.c, stating that
-the macros `snd_power_lock' and `snd_power_wait' had two arguments,
-and pcm_native.c was passing only one. I didn't completely search out
-the problem, but I did notice that core.h defines snd_power_* as either
-functions or macros, depending on whether the kernel had been compiled
-with power management support (CONFIG_PM). I enabled power management
-and recompiled my kernel, and alsa-driver built without further
-problems.
+Hi,
 
-(I think there may have been other macros affected, but I haven't
-reverted to a non PM-enabled kernel to check.)
+Actually there appear to be some wierd cases where the driver can still
+cause XRUNS, but these may not be alsa-related things.  Do you have an
+idea where this might be coming from if in alsa? (but don't spend flocks
+of time on it, just a quick think over it)
 
+_J
 
-RedHat 7.2
-Kernel 2.4.17
-gcc 2.96
+In the new year, Jeremy Hall wrote:
+> ah yes, now works GREAT! operating with 1.12 of the rme9652.c
+> 
+> _J
+> 
+> In the new year, Takashi Iwai wrote:
+> > At Tue, 19 Feb 2002 10:03:42 -0500 (EST),
+> > Jeremy Hall wrote:
+> > > 
+> > > Hi,
+> > > 
+> > > What is going on? my computer goes on vacation for a week and when it
+> > > returns and updates its CVS, alsa now locks the kernel when I try to use
+> > > the rme9652 card.  Jack whines about loads of xruns, which get larger as
+> > > time goes by, resulting in a system crash that must be hard-reset.
+> > > 
+> > > When were these unstable changes introduced so I may revert back to a more
+> > > stable build?
+> > > 
+> > > Other apps besides jack can cause the computer to lock as well.
+> > 
+> > oops, sorry, perhaps my fault.  a typo was introduced in fixes for
+> > non-intel architectures.
+> > 
+> > now fixed on cvs.  please give a try.
+> > 
+> > 
+> > Takashi
+> > 
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@lists.sourceforge.net
+> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> > 
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
-
--- Peter Heatwole
-"Murphy was just a well known pessimist."
 
 _______________________________________________
 Alsa-devel mailing list
