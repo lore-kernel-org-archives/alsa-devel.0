@@ -1,8 +1,8 @@
 From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: Re: The obsolence of OSS, Was: big smiley
-Date: Wed, 25 Feb 2004 11:10:06 -0500
+Date: Wed, 25 Feb 2004 11:12:58 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402251610.i1PGA6qe026956@dhin.linuxaudiosystems.com>
+Message-ID: <200402251612.i1PGCwGJ026975@dhin.linuxaudiosystems.com>
 References: <403CC75C.5070409@superbug.demon.co.uk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 In-reply-to: Your message of "Wed, 25 Feb 2004 16:03:40 GMT."
@@ -23,19 +23,16 @@ List-Id: alsa-devel@alsa-project.org
 >applications that require activity at specific intervals, but are not to 
 >do with sound or video.
 
-i'd be interested to see a realistic usage case. its mostly related to
-RT devices of some kind, most of which provide their own interrupt,
-and they expect to be serviced ASAP wrt the interrupt.
+have any actual use cases?
 
 >An audio hardware interrupt can interrupt any process at any time.
 >Is there already a procedure in linux so that the interrupt_handler can 
 >cause the scheduler to select a particular process to run immeadiately 
 >after this interrupt_handler has finished?
 
-of course. this is what SCHED_FIFO is all about, plus the lowlat
-patches. conditional_reschedule() checks to see if a highpri process
-has been marked runnable, and if so, switches to it (or rather, makes
-sure that the return to user space returns to the new process).
+of course. that's what conditional_reschedule() is all about. it
+checks to see if any process of higher priority than the current one
+has been marked runnable, and switches to it if so.
 
 >I can see problems with the following setup: -
 >Audio interrupt occurs
@@ -47,13 +44,11 @@ sure that the return to user space returns to the new process).
 >Which process should be run next?
 >Continue with the audio user space process, or start the new xyz process?
 
-its all about sched priority. SCHED_FIFO is top of the pile, and
-within that, highest priority wins. SCHED_RR is next (sort of), and
-then regular scheduling (SCHED_OTHER) after that.
+its all about scheduler priority. SCHED_FIFO is top dog, ranked by
+priority within that. SCHED_RR is sort-of-next, again by priority, and
+then finally SCHED_OTHER. 
 
-if you run audio apps with JACK, the right thing will happen 99.9999%
-of the time. the tiny percentage that it doesn't is caused by kernel
-bugs (if it happens at all).
+if you run apps under JACK with the -R option, the right thing will happen.
 
 --p
 
