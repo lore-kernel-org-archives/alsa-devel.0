@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
-Date: Wed, 19 Jan 2005 15:17:21 +0100
-Message-ID: <4160e414dd8e1d97f4890ecd8b66b33e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000699]: [PATCH] Document --config option on alsaconf man page
+Date: Wed, 19 Jan 2005 15:19:55 +0100
+Message-ID: <9bc9677d68dce82c2f0d3c563dc05ffe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DF57926D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:17:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A900726D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:19:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,93 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=699> 
 ======================================================================
-Reported By:                feixm
-Assigned To:                tiwai
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   490
-Category:                   PCI - atiixp
+Project:                    ALSA - utils
+Issue ID:                   699
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               linuxfromscratch, everything compiled from original
-sources
-Kernel Version:             2.6.8.1
+Status:                     new
 ======================================================================
-Date Submitted:             09-08-2004 21:16 CEST
-Last Modified:              01-19-2005 15:17 CET
+Date Submitted:             12-02-2004 08:57 CET
+Last Modified:              01-19-2005 15:19 CET
 ======================================================================
-Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Summary:                    [PATCH] Document --config option on alsaconf man
+page
 Description: 
-Hello,
+The alsaconf man page fails to mention alsaconf's --config option.  Here is
+a patch to fix this.
 
-when playing any audio file from my new Acer TravelMate 2000, the sound is
-very choppy. I tried playing using xmms, mplayer and others. From lspci I
-see, it is an ATI IXP 150. I understand that this bugreport alone won't
-help you guys, so if I can give any more info, pls let me know.
-
-When playing movies with mplayer, I see lots of messages like:
-
-alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
-0%
-alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
-0%
-
-These appear even more where skipping back and forward in the movie.
-
-I found, that playing movies through SDL helps a little, but sound is
-still choppy and cannot be listened to.
+Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 ======================================================================
 
 ----------------------------------------------------------------------
- feixm - 01-18-05 22:47 
+ tiwai - 12-02-04 12:15 
 ----------------------------------------------------------------------
-I don't think that MPlayer is to be blamed, as I've tested this behaviour
-with XMMS and others. I'll test with latest 1.0.8 release and post an
-update.
+A new patch? ;-)
 
 ----------------------------------------------------------------------
- feixm - 01-19-05 15:17 
+ jdthood - 01-19-05 15:19 
 ----------------------------------------------------------------------
-Today I recompiled my Alsa-driver installation with latest 1.0.8. Now
-mplayer can play movies with no problems for few minutes and then sound
-stops for about a second with almost 100 of lines like:
+>  A new patch? ;-)
 
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,019 msecs. resetting stream
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,016 msecs. resetting stream
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-alsa-play: xrun of at least 0,016 msecs. resetting stream
-
-Last two lines are always something like:
-
-alsa-space: xrun of at least 1,753 msecs. resetting stream
-alsa-space: xrun of at least 1,169 msecs. resetting stream
-
-Then it continues to play normally, just after next few minutes exactly
-the same thing happens again.
+Putting the options in alphabetical order should be trivially easy
+for anyone who has learned the alphabet.  ;)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-08-04 21:16 feixm          New Issue                                    
-09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
-everything compiled from original sources
-09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
-01-18-05 07:56 rounin         Note Added: 0003242                          
-01-18-05 07:59 rounin         Issue Monitored: rounin                      
-01-18-05 08:09 rounin         Note Added: 0003245                          
-01-18-05 11:32 tiwai          Note Added: 0003247                          
-01-18-05 21:25 rlrevell       Note Added: 0003260                          
-01-18-05 22:47 feixm          Note Added: 0003261                          
-01-19-05 15:17 feixm          Note Added: 0003282                          
+12-02-04 08:57 jdthood        New Issue                                    
+12-02-04 08:57 jdthood        File Added:
+alsaconf_doc_config_20041202jdth1.patch                    
+12-02-04 08:58 jdthood        Note Added: 0002675                          
+12-02-04 09:03 jdthood        Note Added: 0002676                          
+12-02-04 12:15 tiwai          Note Added: 0002677                          
+01-19-05 15:19 jdthood        Note Added: 0003284                          
 ======================================================================
 
 
