@@ -1,12 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] amidi output file permissions
-Date: Mon, 12 Jan 2004 18:03:05 +0100 (MET)
+From: Chris Cannam <cannam@all-day-breakfast.com>
+Subject: Re: non-running sequencer queues
+Date: Mon, 12 Jan 2004 17:31:15 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0401121758340.23817-100000@studcom.urz.uni-halle.de>
+Message-ID: <200401121731.15808.cannam@all-day-breakfast.com>
+References: <200401121719.56879.cannam@all-day-breakfast.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200401121719.56879.cannam@all-day-breakfast.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +20,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: andreas@huennebeck-online.de
 List-Id: alsa-devel@alsa-project.org
 
+On Monday 12 Jan 2004 5:19 pm, Chris Cannam wrote:
+> I notice that if you send to a non-running sequencer queue an event
+> scheduled for exactly the current time of the queue, then the event
+> is delivered immediately: the queue doesn't wait to be started
+> first.
+>
+> Is this intentional?
 
-set file permission bits for output file
+OK, my description was a little incomplete and now that I've refined 
+my search on the ALSA list archives it seems the question may be 
+obvious and perhaps moot.  I was queueing my events on the stopped 
+queue (using RT timestamps rather than ticks) and then draining the 
+alsa-lib buffer via snd_seq_drain_output; of course, in practice I 
+can simply defer the latter until I actually want to start the queue.
 
-
-Index: alsa-utils/amidi/amidi.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-utils/amidi/amidi.c,v
-retrieving revision 1.2
-diff -u -r1.2 amidi.c
---- alsa-utils/amidi/amidi.c	5 Nov 2003 11:08:25 -0000	1.2
-+++ alsa-utils/amidi/amidi.c	12 Jan 2004 16:57:42 -0000
-@@ -450,7 +450,7 @@
- 		return 1;
-
- 	if (receive_file_name) {
--		receive_file = creat(receive_file_name, 0);
-+		receive_file = creat(receive_file_name, 0666);
- 		if (receive_file == -1) {
- 			error("cannot create %s: %s", receive_file_name, strerror(errno));
- 			return -1;
+I do find the stopped queue's behaviour a bit perplexing though.
 
 
-
+Chris
 
 
 
