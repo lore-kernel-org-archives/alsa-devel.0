@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Assert error
-Date: Sun, 23 May 2004 19:44:37 +0200 (CEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: USB audio kernel panic
+Date: Mon, 24 May 2004 11:23:42 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0405231941520.2139@pnote.perex-int.cz>
-References: <20040523235035.48c8c3cf.erikd-alsa@mega-nerd.com>
+Message-ID: <40B15CAE.1000108@boosthardware.com>
+References: <Pine.HPX.4.33n.0405210935120.1699-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040523235035.48c8c3cf.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,32 +16,57 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+To: Clemens Ladisch <clemens@ladisch.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 23 May 2004, Erik de Castro Lopo wrote:
-
-> Hi all,
+Clemens Ladisch wrote:
+> Patrick Shirkey wrote:
 > 
-> I'm getting an assert error:
+>>>>Using the latest usb-audio code from cvs I get a kernel panic when
+>>>>loading the drivers.
+>>>>
+>>>>I'm running kernel-2.2.21 with gcc-2.95.4
+>>>
+>>Unable to handle kernel paging request at virtual address 28302e63
+>>EIP:    0010:[<e08eafc0>]    Tainted: PF
+>>
+>>e08e7060 __insmod_snd-usb-audio_S.text_L29104   [snd-usb-audio]
+>>e08eb02c snd_hack_usb_set_interface     [snd-usb-audio]
 > 
->     ALSA lib pcm.c:824:(snd_pcm_sw_params) snd_pcm_sw_params: params->avail_min 
->          problem for start_threshold
->     sndfile-play: pcm.c:2084: snd_pcm_wait: Assertion `err == 1' failed.
 > 
-> Surely it would be better to fail a little more gracefully than this.
+> The 2.6.5-rc2 kernel introduced some API changes to work around
+> devices with broken descriptors.  The resulting changes in the ALSA
+> code broke ALSA's workaround for the same problem.
+> 
+> The fix below is now in CVS.
+>
 
-The assert has nothing to do with the start_threshold problem. Can you
-list the plugin chain? - snd_pcm_dump() - and perhaps, upgrade to latest 
-ALSA code (I have mentioned assert on line 2094).
+Tested and working.
 
-						Jaroslav
+Thanks.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org/LAU/guide/ - The Linux Audio Users guide
+Http://www.djcj.org/gigs/ - Gigs guide Korea
+Http://www.nana7.net - Bar Nana - Itaewon, Seoul, Sth Corea
+========================================
+
+
+Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
