@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
+From: asbjs@stud.ntnu.no (Asbjørn Sæbø)
 Subject: Re: Q: Periodsize for capture, SBLive
-Date: Tue, 19 Oct 2004 10:07:23 +0200
+Date: Tue, 19 Oct 2004 10:19:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410190807.i9J87NmG000466@www6.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <20041019081918.GB24099@stud.ntnu.no>
+References: <200410190807.i9J87NmG000466@www6.pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <200410190807.i9J87NmG000466@www6.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,19 +17,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: asbjs@stud.ntnu.no
+To: Peter Zubaj <pzad@pobox.sk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> OK.  Any idea why I get 384?
-I think hardware can't do less. If you need less latency use hw:0,2
-and set more channel count (1, 2, 4, 8, 16, 32)
+On Tue, Oct 19, 2004 at 10:07:23AM +0200, Peter Zubaj wrote:
+> > OK.  Any idea why I get 384?
+> I think hardware can't do less. If you need less latency use hw:0,2
+> and set more channel count (1, 2, 4, 8, 16, 32)
 
-Peter Zubaj
+Thanks for your advice.  I do however not think I understand this fully.
+Why will increasing the channel count give lower latency?
 
-
-=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
- a bezpecna prevadzka=0A=0A=0A
+Asbj.S.
 
 
 -------------------------------------------------------
