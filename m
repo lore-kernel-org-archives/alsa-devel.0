@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000784]: CMI 9739A PCM does not allow volume control only on/off (when on starts with full volume)
-Date: Tue, 4 Jan 2005 20:34:12 +0100
-Message-ID: <ddebb6337798729288c7a0b6e4c1a41b@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
+Date: Tue, 4 Jan 2005 21:01:04 +0100
+Message-ID: <dc9804c7554011c7990cd6c2e135276c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EEE90294
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 20:34:12 +0100 (MET)
+Received: from bugtrack.alsa-project.org (194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C91FF297
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 21:01:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,39 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=784> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
 ======================================================================
-Reported By:                ajir
-Assigned To:                
+Reported By:                wzzrd
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   784
-Category:                   PCI - intel8x0
+Project:                    ALSA - lib
+Issue ID:                   154
+Category:                   mixer
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
+Status:                     assigned
 ======================================================================
-Date Submitted:             01-04-2005 20:34 CET
-Last Modified:              01-04-2005 20:34 CET
+Date Submitted:             03-23-2004 17:31 CET
+Last Modified:              01-04-2005 21:01 CET
 ======================================================================
-Summary:                    CMI 9739A PCM does not allow volume control only
-on/off (when on starts with full volume)
+Summary:                    Master volume only controls front output (emu10k1)
 Description: 
-This issue was studied before but without any effect. Some says that this
-codec has different hadrware and it can not be controled.BUT WINDOWS
-DRIVER CAN CONTROL damn VOLUME. Please can it be fixed?
+Setting the alsamixer Master Volume slider only controls the front two
+speakers. The rear speakers have to be controlled with the Wave Surround
+setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
+bug. If I'm wrong putting it here, sorry.
+
+It would be very convenient to be able to control all four speakers with
+the Master Volume setting and to have a Front and Rear slider to control
+the front and rear speakers individually.
 ======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+has duplicate       0000176 Master volume does not alters center, L...
+related to          0000172 Master volume control only controls fro...
+======================================================================
+
+----------------------------------------------------------------------
+ djtm - 10-23-04 01:10 
+----------------------------------------------------------------------
+An improved script based on delmonico's but with function and variable
+channel names. PCM volume restriction does not yet work though. I'd
+appreciate if someone finds the bug. and thanks to delmonico!
+
+see alsavol.sh!!
+
+edited on: 10-23-04 01:10
+
+----------------------------------------------------------------------
+ Miwer - 01-04-05 21:01 
+----------------------------------------------------------------------
+Any news on this one?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-04-05 20:34 ajir           New Issue                                    
-01-04-05 20:34 ajir           Kernel Version            => 2.6.8.1         
+03-23-04 17:31 wzzrd          New Issue                                    
+03-23-04 18:42 perex          View Status              @0@ => public       
+03-23-04 18:42 perex          Description Updated                          
+03-23-04 18:42 perex          Additional Information Updated                    
+03-23-04 18:43 perex          Status                   new => assigned     
+03-23-04 18:43 perex          Assigned To               => perex           
+03-26-04 20:21 djtm           Note Added: 0000708                          
+04-19-04 02:47 tarball        Issue Monitored: tarball                     
+04-19-04 21:23 perex          Relationship added       has duplicate 0000176
+05-24-04 22:51 delmonico      Note Added: 0001199                          
+10-22-04 16:44 perex          Relationship added       related to 0000172  
+10-23-04 01:09 djtm           Note Added: 0002253                          
+10-23-04 01:09 djtm           File Added: alsavol.sh                       
+10-23-04 01:10 djtm           Note Edited: 0002253                         
+11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
+01-04-05 21:01 Miwer          Note Added: 0003081                          
 ======================================================================
 
 
