@@ -1,21 +1,16 @@
-From: Remi Bernhard <rgbmlist2@free.fr>
-Subject: Re: Xruns with Audiophile 2496 M-audio
-Date: Sun, 30 May 2004 16:55:07 +0200
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: ALSA 1.0.5
+Date: Sun, 30 May 2004 18:29:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040530165507.21384cd3@pentium233.krystal.net>
-References: <20040529114908.2118135c@pentium233.krystal.net>
-	<Pine.LNX.4.58.0405291234350.566@autumn>
-	<20040529131601.641aa202@pentium233.krystal.net>
-	<Pine.LNX.4.58.0405291329280.566@autumn>
-	<20040529160048.27d74531@pentium233.krystal.net>
-	<Pine.LNX.4.58.0405291631440.566@autumn>
-	<20040530110923.5ce0172f@pentium233.krystal.net>
-	<1085924121.4235.21.camel@eviltwin>
+Message-ID: <200405301829.27071.plcl@telefonica.net>
+References: <E1BU51D-0005C3-Cx@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1085924121.4235.21.camel@eviltwin>
+In-Reply-To: <E1BU51D-0005C3-Cx@sc8-sf-list2.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,37 +22,54 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 30 May 2004 08:35:21 -0500
-Jan Depner <eviltwin69@cableone.net> wrote:
+On Saturday 29 May 2004 16:40, Jaroslav Kysela wrote:
+> Changes:
+>
+> * alsa-driver
+[...]
+>   - via82xx
+>     - added dxs_support and ac97_quirk entries for Amira notebook
+>     - added DXS whitelist for (eMachines) m680x
+>     - added the DXS entry for ECS K7VTA3 v8.0
+>     - fixed the DXS entry for ASUS A7V8X to NO_VRA
+>     - added the DXS entry for Mitac/Vobis/Yakumo laptop
 
-> On Sun, 2004-05-30 at 04:09, Remi Bernhard wrote:
-> > Hi Tim and all,
-> >=20
-> >=20
-> > On Sat, 29 May 2004 16:34:49 +0200 (CEST)
-> > Tim Goetze <tim@quitte.de> wrote:
-> >=20
-> > > [Remi Bernhard]
-> > > >I tried with kernel 2.4.25 + lowlatency patch.
-> > > >I have the same xruns :-/
-> > > >
-> > > >Any other idea ?
-> > >=20
-> > > checklist:
-> > >=20
-> > > * running jackd as root? with -R option?
-> >=20
-> > Tried -> failed.
->=20
-> 	If this failed, you're not running real-time.  What error
-> 	message did
-> you get?
+My Gigabyte motherboard's integrated sound interface used to work with this 
+driver, but it doesn't with 1.0.5
 
-Oops, sorry, my mistake. **This** worked.
+Any program (amixer info, alsactl restore, alsamixer ...) trying to use the 
+control interface hardly hangs, and it is impossible to kill it at all.  
+Modprobe/rmmod works, and doesn't report any problem. No error or debug 
+messages at syslog.
+
+I would like to help to debug this problem, but if anybody cares, here are 
+some details of my hardware environment:
+
+Mobo: Gigabyte 7VT600 with chipset VIA KT600
+Sound: Integrated Realtek ALC655 AC97 codec
+http://tw.giga-byte.com/MotherBoard/Products/Products_Spec_GA-7VT600.htm
+
+lspci -vv reports:
+00:11.5 Multimedia audio controller: VIA Technologies, Inc. VT8233/A/8235 AC97 
+Audio Controller (rev 60)
+        Subsystem: Giga-byte Technology GA-7VAX Onboard Audio (Realtek ALC650)
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- 
+Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=medium >TAbort- 
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 22
+        Region 0: I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA 
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+
+lspci -nv reports:
+00:11.5 Class 0401: 1106:3059 (rev 60)
+        Subsystem: 1458:a002
 
 Regards,
-	R=E9mi Bernhard.
-
+Pedro
 
 
 
