@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000440]: Gateway Solo 250 nma2 - no soundcard detected
-Date: Fri, 20 Aug 2004 15:03:03 +0200 (CEST)
+Date: Fri, 20 Aug 2004 15:09:33 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040820130303.B364B1102E@server.perex-int.cz>
+Message-ID: <20040820130933.898461102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 08B171F5
-	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2004 15:03:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E348D2A1
+	for <alsa-devel@alsa-project.org>; Fri, 20 Aug 2004 15:09:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
 Date Submitted:             08-14-2004 19:38 CEST
-Last Modified:              08-20-2004 15:03 CEST
+Last Modified:              08-20-2004 15:09 CEST
 ======================================================================
 Summary:                    Gateway Solo 250 nma2 - no soundcard detected
 Description: 
@@ -263,6 +263,12 @@ lspci -nv:
 [root@citrus /]# ls -a /sys/bus/pnp/devices
 .  ..
 
+----------------------------------------------------------------------
+ tiwai - 08-20-2004 15:09 CEST 
+----------------------------------------------------------------------
+Then try alsaconf and probe legacy cards.
+It may detect and set up your device.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -273,6 +279,7 @@ Date Modified  Username       Field                    Change
 08-18-04 15:37 thelight       Bugnote Added: 0001582                       
 08-18-04 15:45 tiwai          Bugnote Added: 0001584                       
 08-20-04 15:03 thelight       Bugnote Added: 0001599                       
+08-20-04 15:09 tiwai          Bugnote Added: 0001600                       
 ======================================================================
 
 
