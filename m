@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Envy24-VT1712 Interrupt by Input Lines
-Date: Thu, 24 Apr 2003 10:32:29 +0200 (CEST)
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: rme9652: possible deadlock
+Date: Thu, 24 Apr 2003 12:03:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304241027180.1351-100000@pnote.perex-int.cz>
-References: <3EA6DA36.77BD0E0D@masirv.com>
+Message-ID: <3EA7B654.2090108@libero.it>
+References: <Pine.LNX.4.44.0304232101560.18005-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3EA6DA36.77BD0E0D@masirv.com>
+In-Reply-To: <Pine.LNX.4.44.0304232101560.18005-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,43 +17,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chien Lee <Chien.Lee@mascorp.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 23 Apr 2003, Chien Lee wrote:
-
-> Hi,
+Jaroslav Kysela ha scritto:
 > 
-> I have a question regarding to how to find out which input line
-> (PSDIN0-PSDIN3)
-> is interrupting Envy24-VT1712 PCI Audio Controller.
 > 
-> VT1712's Professional Multi-Track Control Register MT00 provides bit 1
-> for
-> Multi-track record interrupt status. It only shows that there is an
-> interrupt occurred
-> for recording. It does not indentify which input line is the source. If
-> I am recording
-> PSDIN1audio signal and there is signal present at PSDIN0, I would get
-> interrupted
-> and record a wrong signal from PSDIN0.
+> Bingo, I got it. You mean this scenario (linked two streams):
 > 
-> Is there any way that I can find out which input line is interrupting
-> the chip?
+> CPU0: stream1 interrupt: stream1 locked -> snd_pcm_stop()
+> CPU1: stream2 interrupt: stream2 locked -> snd_pcm_stop()
+> CPU0: try to lock stream2 (in ACTION macro)
+> CPU1: try to lock stream1 (in ACTION macro)
+> 
+> Yes, this is next deadlock issue.
+> 
+> I have probably only one solution in my brain: Separate snd_pcm_stop() to 
+> two steps:
+> 
+> 1) stop only the locked stream and unlock it
+> 2) stop all other linked streams
 
-All input lines are captured at once in interleaved sample frames.
-There is 12 capture channels. Hardware vendors usually connects 0-7 
-channels as analog, 8-9 as S/PDIF and 10-11 is the digital stereo mixer 
-which contains result of playback and captured channels controlled with
-a matrix mixer.
+My proposal is to have a per "linked PCM group" lock and to use it for 
+proper locking (with also some side benefits substituting some use of 
+snd_pcm_link_lock).
 
-						Jaroslav
+This mean also we need to change the linked list struct from
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+struct _snd_pcm_substream {
+	...
+         /* -- linked substreams -- */
+         snd_pcm_substream_t *link_next;
+         snd_pcm_substream_t *link_prev;
+
+to
+	struct list_head link_list;
+	snd_pcm_link_t *link;	/* 0 for non linked stream */
+
+typedef struct _snd_pcm_link {
+	spinlock_t lock;
+	struct list_head substreams;
+};
+
+Of course creation and destruction of a snd_pcm_link_t need to be 
+protected by snd_pcm_link_lock.
+
+
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 
