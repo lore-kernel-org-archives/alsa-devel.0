@@ -1,13 +1,16 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]snd-usb-usx2y 0.8.3 against alsa-kernel cvshead: OHCI doesn't crash anymore
-Date: Mon, 4 Oct 2004 13:05:31 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000565]: Bug reported to gnomemeeting team
+Date: Mon,  4 Oct 2004 14:35:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410041305.31886.annabellesgarden@yahoo.de>
-Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_75SYB2lbW2lrRcI"
+Message-ID: <20041004123523.AA52738052@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 049F8293
+	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 14:35:23 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id BAA2229F47
+	for <alsa-devel@alsa-project.org>; Mon,  4 Oct 2004 14:35:23 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,186 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_75SYB2lbW2lrRcI
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000565
+======================================================================
+Reported By:                mirko
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Bug ID:                     565
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             10-04-2004 14:35 CEST
+Last Modified:              10-04-2004 14:35 CEST
+======================================================================
+Summary:                    Bug reported to gnomemeeting team
+Description: 
+http://bugzilla.gnome.org/show_bug.cgi?id=153770
 
-please ignore the snd-usb-usx2y.patch.0.8.1 and 0.8.2 patches.
-snd-usb-usx2y.patch.0.8.2 is better by two lines and 0.8.3 cares for an ohci 
-usb-frame number oddness, where numbers roll from 1 to 0x10000 instead of 
-from 0 to 0xFFFF.
-Text still applies:
-----------------------------------------------------------------------------------------
-Am Freitag 01 Oktober 2004 15:50 schrieben Sie:
-> What is the purpose of the replacement with USX2Y_STATIC?
+D. Sandras says it's a big-endian/little-endian problem and suggested to
+report it here.
 
-gone now. 
->
-> One thing I'm not sure is that the possible race of usX2Y_urbs_start()
-> and usX2Y_subs_startup_finish().  Better to use complete handler?
 
-did I care for any possible racing now?
 
-Best,
-Karsten
+======================================================================
 
-patch header:
->>>>
-Summary: Prevents crashes when communicating over ohci usb-hcds.
-
-Work on this started, when rumors spread that ohci equipped machines would 
-crash.
-This was due to me missing two facts:
-1) Ohci has a bigger usb frame number wrap around.
-2) It only supports URB_ISO_ASAP when submitting iso urbs.
-Fixed now.
-Usb-traffic for playback starts now in the prepare callback, like it 
-previously only did for capture.
-As a side effect code became simpler and smaller.
-
-Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
-<<<<
-
---Boundary-00=_75SYB2lbW2lrRcI
-Content-Type: application/x-bzip2;
-  name="snd-usb-usx2y.patch.0.8.3.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="snd-usb-usx2y.patch.0.8.3.bz2"
-
-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
-
---Boundary-00=_75SYB2lbW2lrRcI--
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-04-04 14:35 mirko          New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
