@@ -1,13 +1,14 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: PCM format restrict dilema
-Date: Wed, 17 Sep 2003 16:16:41 +0200 (CEST)
+Date: Wed, 17 Sep 2003 16:20:45 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0309171615190.5983@pnote.perex-int.cz>
-References: <200309171422.h8HEMUVi016116@oud>
+Message-ID: <Pine.LNX.4.53.0309171617010.5983@pnote.perex-int.cz>
+References: <200309161847.h8GIlKtn014678@oud> <3F676332.1000503@superbug.demon.co.uk>
+ <Pine.LNX.4.53.0309170903550.5983@pnote.perex-int.cz> <3F68663C.4050401@superbug.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200309171422.h8HEMUVi016116@oud>
+In-Reply-To: <3F68663C.4050401@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,31 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, Takashi Iwai <tiwai@suse.de>, manuel.jander@mat.utfsm.cl, alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Takashi Iwai <tiwai@suse.de>, manuel.jander@mat.utfsm.cl, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 17 Sep 2003, Paul Davis wrote:
+On Wed, 17 Sep 2003, James Courtier-Dutton wrote:
 
-> >So, the application does the following: -
-> >1) I want there to be 8 periods or less, with a minimum of 2.
-> >2) I want the buffer to be about 500ms long or less, with a minimum or 100ms
-> >3) I want the period size to have a min value of x, and a max value or y.
-> >4) Now calculate the actual sizes based on all the above information.
-> >(i.e. The buffer_size, and period_size values are not set until stage (4).
-> >At this point, alsa-lib would use the contrains above, and calculate the
-> >best values for buffer_size and period size based on the above, and also
-> >what the hardware can do.
-> >
-> >The reason I think it might help this way, is because period_size and
-> >buffer_size and number of periods are all closely linked, so we should
-> >not have to set them one at a time, but set them as a group.
->
-> given that buffer_size = period_size * nperiods, why try to set the
-> buffer size at all? i've never set the buffer size in any ALSA app - i
-> always set nperiods first, then the period size.
+> The reason I think it might help this way, is because period_size and
+> buffer_size and number of periods are all closely linked, so we should
+> not have to set them one at a time, but set them as a group.
 
-Good point. This algorithm sounds robust.
+Yes, but it's violation of the current "refine" algorithm. When I talked
+with Takashi, I would like to come with some preset values in alsa-lib
+which describes the basic configurations for player applications etc.
+These preset values will be hardware specific.
 
 						Jaroslav
 
