@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000088]: rounding errors in increasing/decreasing volume?
-Date: Tue, 22 Mar 2005 14:59:37 +0100
-Message-ID: <59f3842dd1268ded36cbd0f1b59faca1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Tue, 22 Mar 2005 15:07:06 +0100
+Message-ID: <1d1d7b24b4fbf750915a717bc2b54d7c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4836F1BD
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 14:59:37 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1942128B
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:07:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,56 +23,83 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=88> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
 ======================================================================
-Reported By:                cbm
+Reported By:                davidsrsb
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   88
-Category:                   OTHERS
+Issue ID:                   359
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   tweak
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Gentoo GNU Linux
-Kernel Version:             2.4.24
-Resolution:                 open
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             02-26-2004 08:33 CET
-Last Modified:              03-22-2005 14:59 CET
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              03-22-2005 15:07 CET
 ======================================================================
-Summary:                    rounding errors in increasing/decreasing volume?
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
 Description: 
-See this gnome bug report:
-
-http://bugs.gnome.org/show_bug.cgi?id=124741
-
-Someone commented that its caused in the drivers?  I assume they meant
-ALSA.  If its not at your end, I'll poke the gnome folk some more ;-)
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:23 
+ tiwai - 01-28-05 18:02 
 ----------------------------------------------------------------------
-Submitter: Do you still think that there is a bug in ALSA?
+The default index of modem and bt87x drivers are now -2.
+
+I didn't change it for usb-audio, though.
 
 ----------------------------------------------------------------------
- cbm - 03-20-05 01:10 
+ jdthood - 03-19-05 13:01 
 ----------------------------------------------------------------------
-I just tested with gnome 2.8 and the problem I'd been seeing is not evident
-anymore.  Feel free to close this bug.
+I think that this report can be closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-26-04 08:33 cbm            New Issue                                    
-02-26-04 11:12 tiwai          Note Added: 0000334                          
-02-26-04 11:35 cbm            Note Added: 0000337                          
-03-19-05 09:23 jdthood        Note Added: 0004015                          
-03-20-05 01:10 cbm            Note Added: 0004070                          
-03-22-05 14:59 jdthood        Status                   new => resolved     
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+01-07-05 18:10 tiwai          Note Added: 0003108                          
+01-07-05 18:28 jdthood        Note Added: 0003112                          
+01-07-05 18:59 jdthood        Note Added: 0003114                          
+01-07-05 18:59 jdthood        Note Added: 0003115                          
+01-07-05 18:59 jdthood        Note Deleted: 0003115                        
+01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
+                 
+01-07-05 19:03 jdthood        Note Edited: 0003114                         
+01-07-05 19:18 tiwai          Note Added: 0003116                          
+01-07-05 21:51 jdthood        Note Added: 0003122                          
+01-07-05 21:51 jdthood        Note Edited: 0003114                         
+01-19-05 17:22 tiwai          Note Added: 0003303                          
+01-19-05 17:22 tiwai          Note Added: 0003304                          
+01-19-05 17:28 jdthood        Note Added: 0003305                          
+01-19-05 17:32 tiwai          Note Added: 0003306                          
+01-27-05 15:47 jdthood        Note Added: 0003419                          
+01-27-05 15:48 jdthood        File Added:
+ALSA-Configuration.txt_jdth20050127-1.patch                    
+01-27-05 15:54 jdthood        Note Added: 0003420                          
+01-27-05 15:55 jdthood        File Added:
+ALSA-Configuration.txt_jdth20050127-2.patch                    
+01-27-05 15:55 jdthood        Note Edited: 0003420                         
+01-28-05 17:55 tiwai          Note Added: 0003431                          
+01-28-05 18:02 tiwai          Note Added: 0003432                          
+03-19-05 13:01 jdthood        Note Added: 0004044                          
+03-22-05 15:07 jdthood        Status                   new => resolved     
+03-22-05 15:07 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
