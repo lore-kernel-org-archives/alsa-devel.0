@@ -1,11 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: should i be able to abort in the middle of
- snd_pcm_mmap_{begin,commit} ?
-Date: Thu, 21 Feb 2002 09:50:37 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202210949060.578-100000@pnote.perex-int.cz>
+From: Abramo Bagnara <abramo@alsa-project.org>
+Subject: Re: Re: should i be able to abort in the middle
+ ofsnd_pcm_mmap_{begin,commit} ?
+Date: Thu, 21 Feb 2002 10:02:58 +0100
+Message-ID: <3C74B7C2.2CA47B86@alsa-project.org>
+References: <Pine.LNX.4.31.0202210913180.578-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <Pine.LNX.4.31.0202210913180.578-100000@pnote.perex-int.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,14 +15,14 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Kai Vehmanen <kai.vehmanen@wakkanet.fi>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 21 Feb 2002, Jaroslav Kysela wrote:
-
+Jaroslav Kysela wrote:
+> 
 > On Thu, 21 Feb 2002, Kai Vehmanen wrote:
->
+> 
 > > On Tue, 19 Feb 2002, Jaroslav Kysela wrote:
 > >
 > > >> I'm still a bit puzzled why I didn't get xruns in the test case quoted
@@ -60,29 +61,38 @@ On Thu, 21 Feb 2002, Jaroslav Kysela wrote:
 > >
 > > --cut--
 > > if (avail > pcm->buffer_size)
-> > 	return -EPIPE;
+> >       return -EPIPE;
 > > --cut--
 > >
 > > This would trigger jackd's xrun handling code, but leave state to RUNNING.
 > > Am I on the right track here?
->
+> 
 > Yes, this condition is faulty. It should be 'avail >= pcm->stop_threshold'.
 > Fixed in CVS and thanks for verbose error detection.
 
-My initial fix wasn't very good. Although the corrected condition fixes
-the XRUN detection, XRUN must be also propagated to the kernel space
-allowing driver code to update the PCM state to XRUN. I've added a new
-XRUN ioctl to the PCM kernel API, so everything should behave as expected
-now.
+Perhaps I'm missing something, but I strongly disagree with your recent
+changes on CVS:
 
-						Jaroslav
+- if avail > buffer_size this means either played garbage (playback) or
+overwritten samples (capture). The return of an error is perfectly
+sensible (also because the value returned would not have any sensible
+meaning).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+- the insertion of SND_PCM_IOCTL_XRUN is a nonsense, as the application
+has explicitly asked to not stop the stream when xrun happens.
 
+As a side note (and as a broken record :-( ), I'd like you don't change
+the API without peer review. I hope you fully undertstand why...
+
+-- 
+Abramo Bagnara                       mailto:abramo@alsa-project.org
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
+
+ALSA project               http://www.alsa-project.org
+It sounds good!
 
 _______________________________________________
 Alsa-devel mailing list
