@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000813]: Terratec USB surround broken
-Date: Wed, 26 Jan 2005 09:02:43 +0100
-Message-ID: <e5aecaf5d28b25aed9a25e9225de10de@bugtrack.alsa-project.org>
+Date: Wed, 26 Jan 2005 11:11:16 +0100
+Message-ID: <c89c72b6d833e18d78c4d095afee303b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 27E691E9
-	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 09:02:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 17EBB212
+	for <alsa-devel@alsa-project.org>; Wed, 26 Jan 2005 11:11:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.10 (ALSA compiled in)
 ======================================================================
 Date Submitted:             01-12-2005 19:41 CET
-Last Modified:              01-26-2005 09:02 CET
+Last Modified:              01-26-2005 11:11 CET
 ======================================================================
 Summary:                    Terratec USB surround broken
 Description: 
@@ -57,11 +57,61 @@ stereo audio, even when configured to use 5.1 channel sound.
 ======================================================================
 
 ----------------------------------------------------------------------
- ilikejam - 01-26-05 09:02 
+ Clemens Ladisch - 01-26-05 10:40 
 ----------------------------------------------------------------------
-Also, when recording, I have to record at 48000Hz, then change the sample
-rate in Audacity to 44100Hz (without resampling) in order to get the
-correct speed.
+The "surround51" device is used to configure some cards for 5.1 output, but
+this special configuration is not possible for USB devices because there
+are so many different models.
+
+However, USB devices don't need to be separately configured for 5.1
+output, so just use a standard device name (like "default" or "plughw" or
+"hw").
+
+
+As for the sample rate:  what are the contents of
+/proc/asound/cardX/stream0 while you are recording?
+
+----------------------------------------------------------------------
+ ilikejam - 01-26-05 11:11 
+----------------------------------------------------------------------
+The contents of /proc/asound/card0/stream0 are:
+USB Audio at usb-0000:00:10.2-1, full speed : USB Audio
+
+Playback:
+  Status: Stop
+  Interface 1
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 1 OUT (ADAPTIVE)
+    Rates: 48000
+  Interface 1
+    Altset 2
+    Format: S16_LE
+    Channels: 6
+    Endpoint: 1 OUT (ADAPTIVE)
+    Rates: 48000
+
+Capture:
+  Status: Running
+    Interface = 2
+    Altset = 1
+    URBs = 5 [ 4 4 4 4 4 ]
+    Packet Size = 200
+    Momentary freq = 48000 Hz
+  Interface 2
+    Altset 1
+    Format: S16_LE
+    Channels: 2
+    Endpoint: 2 IN (ASYNC)
+    Rates: 48000
+
+Audio from, say, downloaded MP3s sounds fine, but any audio I've recorded
+(in whatever program) has to have its sample rate changed, or it sounds
+too fast.
+
+I just tried 'default' in the configuration for 5.1 channel sound in Xine,
+and it works just fine. Yay.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -71,6 +121,8 @@ Date Modified  Username       Field                    Change
 01-12-05 19:41 ilikejam       Kernel Version            => 2.6.10 (ALSA compiled
 in)
 01-26-05 09:02 ilikejam       Note Added: 0003413                          
+01-26-05 10:40 Clemens LadischNote Added: 0003414                          
+01-26-05 11:11 ilikejam       Note Added: 0003415                          
 ======================================================================
 
 
