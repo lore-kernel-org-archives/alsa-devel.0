@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: listing devices.
-Date: Mon, 15 Dec 2003 00:12:39 +0900
+Subject: Re: listing devices.
+Date: Mon, 15 Dec 2003 00:55:10 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FDC7DE7.1040003@boosthardware.com>
-References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin> <200312141434.59757.cannam@all-day-breakfast.com> <200312141448.21384.cannam@all-day-breakfast.com>
+Message-ID: <3FDC87DE.60408@boosthardware.com>
+References: <200312141335.00239.cannam@all-day-breakfast.com> <1071410558.10990.3.camel@eviltwin> <200312141434.59757.cannam@all-day-breakfast.com> <200312141448.21384.cannam@all-day-breakfast.com> <3FDC7DE7.1040003@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -19,12 +19,21 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I'm looking but I can't find a way to get the list of all available 
-devices including virtual devices defined in the .asoundrc
+Patrick Shirkey wrote:
+> I'm looking but I can't find a way to get the list of all available 
+> devices including virtual devices defined in the .asoundrc
+> 
+> Is there any function that provides this?
+> 
+> If not has there been any thought put into how it can be accomplished?
+> 
 
-Is there any function that provides this?
+Sorry missed the thread on "query devices in a non blcking way" from a 
+few days ago. I'll pick it up there.
+	
 
-If not has there been any thought put into how it can be accomplished?
+
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
