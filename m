@@ -1,20 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: mantis e-mail's are ok now
-Date: Fri, 22 Oct 2004 16:19:22 +0200 (CEST)
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000385]: Rate conversion plugin generates noise on frequency reduction
+Date: Fri, 22 Oct 2004 16:20:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0410221613290.1774@pnote.perex-int.cz>
+Message-ID: <79f9090a5066b0e3c59d54a1fa26208b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C1FB02A4
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:16:36 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9F3013430F
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:16:36 +0200 (MEST)
-Received: from pnote.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 75F3F1102F
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:16:36 +0200 (CEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3D2052A4
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:20:34 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,46 +18,89 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-	bugtrack e-mails are ok now (see bellow). It was also not a
-phpMailer bug - it produces correct 8bit text/plain messages. It appears
-that something at SourceForge (exim?) converts 8bit e-mails in some cases
-to quoted-printable. When I changed encoding to 7bit, everything is ok
-now.
-	Also, only last two bugnotes are visible now to strip the huge 
-e-mails with tenths of bugnotes.
+The following issue has been UPDATED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=385> 
+======================================================================
+Reported By:                fmoraes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   385
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+======================================================================
+Date Submitted:             07-13-2004 19:46 CEST
+Last Modified:              10-22-2004 16:20 CEST
+======================================================================
+Summary:                    Rate conversion plugin generates noise on frequency
+reduction
+Description: 
+When reducing the frequency, the pcm_rate plugin causes noise on the output
+data. This has been tested with both the snd-cs46xx and snd-emu10k1x
+drivers and the following .asoundrc can be used to recreate the output in
+a file:
 
-			Enjoy new mantis,
-					Jaroslav
+pcm.CS46xx {
+	type hw
+	card 0
+}
 
-P.S. We can finaly move reports among projects! Very nice.
+pcm.filetest {
+	type file
+	slave {
+		pcm "CS46xx"
+	}
+	file "/home/fmoraes/test-out.raw"
+	format "raw"
+}
 
-...
+pcm.test {
+	type rate
+	slave {
+		pcm "filetest"
+		format "S16_LE"
+		rate 8000
+	}
+}
 
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
-
-....
+Playing a 48Khz file will cause noticeable noise on the output (noise is
+more noticeable the lower the target frequency is).
+======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-22-04 15:52 
+ Tobias Diedrich - 10-21-04 17:01 
 ----------------------------------------------------------------------
-Note 15.
+I second that.  Downsampling even from 48000Hz to 44100Hz produces very
+noticable artifacts, which sound very much like nearest neighbour
+resampling artifacts and are especially evident in high pitched vocals. 
+It would also be nice to implement better resampling methods than just
+linear resampling, AFAICS from the source polyphase and bandlimited
+resampling are planned but not yet implemented.
 
-----------------------------------------------------------------------
- perex - 10-22-04 15:55 
-----------------------------------------------------------------------
-Note 16
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-13-04 19:46 fmoraes        New Issue                                    
+07-15-04 14:07 perex          Status                   new => assigned     
+07-15-04 14:07 perex          Assigned To               => perex           
+10-21-04 16:57 Tobias DiedrichIssue Monitored: Tobias Diedrich                  
+ 
+10-21-04 17:01 Tobias DiedrichNote Added: 0002223                          
+10-22-04 16:19 perex          Project                  ALSA - driver => ALSA -
+lib
+10-22-04 16:20 perex          Category                 OTHERS => pcm - digital
+audio
+======================================================================
 
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
