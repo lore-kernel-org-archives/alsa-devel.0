@@ -1,11 +1,13 @@
-From: Perry Scott <perry@ezlink.com>
-Subject: cs46xx capture dropout on busy systems
-Date: Tue, 27 Jan 2004 23:14:53 -0700
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000005]: alsa-driver-1.0.2: unresolved symbols in snd.o
+Date: Wed, 28 Jan 2004 07:57:03 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <5.2.1.1.0.20040127224801.00a8b6b0@pop3.fone.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format=flowed
+Message-ID: <20040128065703.C8D6A2D050@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA01557
+	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 07:57:06 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -14,49 +16,117 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-[2.4.23]
 
-I've been chasing a capture dropout in the old OSS cs46xx driver 
-(drivers/sound/cs46xx.c) for the past two months (evenings and weekends), 
-and I finally nailed it.  I looked over at the ALSA driver, and I think I 
-see the same problem there as well.  I traced the peek/poke(PD1_CBA) from 
-the update_ptr routine to the read routine, so I'm pretty confident the bug 
-is there.
+The following bug has been CLOSED
+======================================================================
+http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000005
+======================================================================
+Reporter:                   ZlatkO
+Handler:                    perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     5
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   immediate
+Status:                     closed
+Distribution:               Slackware 8.1
+Kernel Version:             2.4.24
+======================================================================
+Date Submitted:             01-27-2004 21:31 CET
+Last Modified:              01-28-2004 07:57 CET
+======================================================================
+Summary:                    alsa-driver-1.0.2: unresolved symbols in snd.o
+Description: 
+snd.o fails to load due to an unresolved symbol ("sound_class") on a
+Slackware 8.1 system, kernel 2.4.24 (plain vanilla from kernel.org),
+modutils-2.4.16.
 
-Briefly, I'm doing 8-channel recording, using 4 TB Santa Cruz 
-cards.  Occasionally, one of the cards loses a chunk of data.  I traced the 
-problem to the 4k dma buffer size.  The IRQ updates the capture pointer, 
-but it only has a 1/44th second real-time latency before it loses data.  If 
-the read doesn't get reposted by the application within that time, data 
-will be lost.  All it really takes is a busy system - either an IRQ from 
-another card, or another thread getting in the way.
+There is no "sound_class" in the kernel's own
+/usr/src/linux-2.4.24/drivers/sound/sound_core.c - am I supposed to
+replace it with alsa-kernel/sound_core.c? This was not necessary in
+previous ALSA versions.
+======================================================================
 
-I fixed the problem in the OSS driver by copying the 4k ping-pong into a 
-larger buffer, which is then drained by read().  Essentially, I implemented 
-the Scatter/Gather in the ISR.  It's not pretty, but it 
-works.  (Incidentally, if anyone has found the Cirrus documentation on 
-cs46xx capture S/G, I'd be most appreciative.  The only document I found in 
-the ALSA documentation archive glibly said that S/G is "complicated" and 
-that 1/44th second should be OK - yeah, right.)
+----------------------------------------------------------------------
+ perex - 01-27-2004 22:08 CET 
+----------------------------------------------------------------------
+I cannot reproduce this bug, but it might be possible that removing
+of line 'extern struct class_simple *sound_class;' in
+alsa-driver/alsa-kernel/core/sound.c solves this bug.
 
-This problem is likely to affect *any* sound card with a 4k dma 
-ping-pong.  I'm not sure if the cs46xx is the only pathological case out 
-there, but I wouldn't be surprised if there are others.  The really 
-disturbing thought is that ALSA itself has real-time issues because 4k is a 
-common dma size (say it isn't so!)
+Can you confirm?
 
-I'm a couple weeks away from porting my application to ALSA, so if someone 
-else wants to load up a bunch of sound cards, feel free.  I'm finding the 
-bug injecting a sine wave into the four cards, then looking for large 
-deltas from one sample to the next.
+I've recreated new alsa-driver package with date:
 
-Comments?
+Jan 27 22:02 alsa-driver-1.0.2.tar.bz2
 
-Perry Scott
+----------------------------------------------------------------------
+ khali - 01-27-2004 22:18 CET 
+----------------------------------------------------------------------
+Doesn't work for me. Even worse, alsa-driver doesn't compile anymore after
+I commented the line out:
 
+sound.c: In function `snd_register_device_R1f4c5f07':
+sound.c:239: `sound_class' undeclared (first use in this function)
+sound.c:239: (Each undeclared identifier is reported only once
+sound.c:239: for each function it appears in.)
+sound.c: In function `alsa_sound_init':
+sound.c:376: `sound_class' undeclared (first use in this function)
+sound.c: At top level:
+sound.c:41: warning: `device_mode' defined but not used
+make[1]: *** [sound.o] Error 1
+make[1]: Leaving directory `/usr/src/alsa-driver-1.0.2/acore'
+make: *** [compile] Error 1
+
+----------------------------------------------------------------------
+ perex - 01-27-2004 22:39 CET 
+----------------------------------------------------------------------
+Ok, can you add '#define sound_class NULL' after removing of suggested line
+(on the same place)? Note that the rebuilt alsa-driver package has this
+fix included.
+
+edited on: 01-27-04 22:39
+
+----------------------------------------------------------------------
+ khali - 01-27-2004 22:48 CET 
+----------------------------------------------------------------------
+OK, works fine for me.
+Thanks.
+
+----------------------------------------------------------------------
+ ZlatkO - 01-27-2004 22:48 CET 
+----------------------------------------------------------------------
+Works fine here after the second fix (same problem after the first one).
+Thanks! :-)
+
+----------------------------------------------------------------------
+ perex - 01-28-2004 07:57 CET 
+----------------------------------------------------------------------
+Please, get the alsa-driver package v1.0.2 again from the ALSA FTP site, if
+you encouter the same problem.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-27-04 21:31 ZlatkO         New Bug                                      
+01-27-04 22:08 perex          Bugnote Added: 0000005                       
+01-27-04 22:08 perex          Assigned To               => perex           
+01-27-04 22:08 perex          Status                   new => assigned     
+01-27-04 22:08 perex          Priority                 normal => immediate 
+01-27-04 22:15 perex          Category                 CORE - control => 0_compilation problem_!!!
+01-27-04 22:18 khali          Bugnote Added: 0000007                       
+01-27-04 22:37 perex          Bugnote Added: 0000008                       
+01-27-04 22:39 perex          Bugnote Edited: 0000008                      
+01-27-04 22:48 khali          Bugnote Added: 0000009                       
+01-27-04 22:48 ZlatkO         Bugnote Added: 0000010                       
+01-28-04 07:57 perex          Bugnote Added: 0000013                       
+01-28-04 07:57 perex          Status                   assigned => closed  
+======================================================================
 
 
 -------------------------------------------------------
