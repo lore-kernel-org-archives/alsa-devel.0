@@ -1,11 +1,12 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: Memory leaks in alsa-lib
-Date: Mon, 25 Aug 2003 18:07:45 +0200
+From: p z oooo <pzad@pobox.sk>
+Subject: AC3 passthrough on Audigy
+Date: Tue, 26 Aug 2003 10:47:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xznhxpvou.fsf@users.sourceforge.net>
+Message-ID: <200308260847.KAA24438@www3.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783256-1804289383-1061887646=:24436"
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,182 +19,202 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+--97783256-1804289383-1061887646=:24436
+Content-Type: TEXT/plain; CHARSET=US-ASCII
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Is there a memory leak in alsa-lib?  When playing music with a player
-I'm writing (TCVP, http://tcvp.sf.net), the memory usage reported by
-top grows for each file I play, but only if I use ALSA for sound
-playback.  If I use OSS the memory usage varies around 1.5 MB, but if
-I use ALSA, it starts at 1.9 MB (OK, libasound takes some space) and
-grows by 30-40 kB for each played file.  Running the whole thing under
-valgrind gives me this, which is all alsa-related.  When using OSS,
-valgrind reports no leaks.
+Hi,
 
-=3D=3D3078=3D=3D 8 bytes in 1 blocks are still reachable in loss record 1=
- of 20
-=3D=3D3078=3D=3D    at 0x4002AC23: calloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:273)
-=3D=3D3078=3D=3D    by 0x4377069D: snd_config_update_r (conf.c:2953)
-=3D=3D3078=3D=3D    by 0x43770D67: snd_config_update (conf.c:3095)
-=3D=3D3078=3D=3D    by 0x43789CC6: snd_pcm_open (pcm.c:1929)
-=3D=3D3078=3D=3D    by 0x4373C262: alsa_open (../../../../../tcvp/src/out=
-put/alsa/alsa.c:355)
-=3D=3D3078=3D=3D    by 0x424D6E13: new_pipe (../../../../tcvp/src/tcvp/tc=
-vp.c:328)
-=3D=3D3078=3D=3D    by 0x424D76B9: t_open (../../../../tcvp/src/tcvp/tcvp=
-.c:453)
-=3D=3D3078=3D=3D    by 0x424D7AC9: t_event (../../../../tcvp/src/tcvp/tcv=
-p.c:581)
-=3D=3D3078=3D=3D    by 0x402737B3: thread_wrapper (../../../valgrind/core=
-grind/vg_libpthread.c:667)
-=3D=3D3078=3D=3D    by 0x40175153: do__quit (../../../valgrind/coregrind/=
-vg_scheduler.c:2146)
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D 20 bytes in 1 blocks are still reachable in loss record =
-6 of 20
-=3D=3D3078=3D=3D    at 0x4002AC23: calloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:273)
-=3D=3D3078=3D=3D    by 0x437706DC: snd_config_update_r (conf.c:2957)
-=3D=3D3078=3D=3D    by 0x43770D67: snd_config_update (conf.c:3095)
-=3D=3D3078=3D=3D    by 0x43789CC6: snd_pcm_open (pcm.c:1929)
-=3D=3D3078=3D=3D    by 0x4373C262: alsa_open (../../../../../tcvp/src/out=
-put/alsa/alsa.c:355)
-=3D=3D3078=3D=3D    by 0x424D6E13: new_pipe (../../../../tcvp/src/tcvp/tc=
-vp.c:328)
-=3D=3D3078=3D=3D    by 0x424D76B9: t_open (../../../../tcvp/src/tcvp/tcvp=
-.c:453)
-=3D=3D3078=3D=3D    by 0x424D7AC9: t_event (../../../../tcvp/src/tcvp/tcv=
-p.c:581)
-=3D=3D3078=3D=3D    by 0x402737B3: thread_wrapper (../../../valgrind/core=
-grind/vg_libpthread.c:667)
-=3D=3D3078=3D=3D    by 0x40175153: do__quit (../../../valgrind/coregrind/=
-vg_scheduler.c:2146)
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D 48 bytes in 5 blocks are still reachable in loss record =
-8 of 20
-=3D=3D3078=3D=3D    at 0x4002A745: malloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:153)
-=3D=3D3078=3D=3D    by 0x4376C5E2: get_delimstring (conf.c:769)
-=3D=3D3078=3D=3D    by 0x4376C6BF: get_string (conf.c:819)
-=3D=3D3078=3D=3D    by 0x4376C968: parse_value (conf.c:896)
-=3D=3D3078=3D=3D    by 0x4376CCB7: parse_array_def (conf.c:1029)
-=3D=3D3078=3D=3D    by 0x4376CE7B: parse_array_defs (conf.c:1051)
-=3D=3D3078=3D=3D    by 0x4376D16F: parse_def (conf.c:1170)
-=3D=3D3078=3D=3D    by 0x4376D34D: parse_defs (conf.c:1213)
-=3D=3D3078=3D=3D    by 0x4376CD90: parse_array_def (conf.c:1008)
-=3D=3D3078=3D=3D    by 0x4376CE7B: parse_array_defs (conf.c:1051)
-=3D=3D3078=3D=3D    by 0x4376D16F: parse_def (conf.c:1170)
-=3D=3D3078=3D=3D    by 0x4376D34D: parse_defs (conf.c:1213)
-=3D=3D3078=3D=3D    by 0x4376CD90: parse_array_def (conf.c:1008)
-=3D=3D3078=3D=3D    by 0x4376CE7B: parse_array_defs (conf.c:1051)
-=3D=3D3078=3D=3D    by 0x4376D16F: parse_def (conf.c:1170)
-=3D=3D3078=3D=3D    by 0x4376D34D: parse_defs (conf.c:1213)
-=3D=3D3078=3D=3D    by 0x4376DE43: snd_config_load1 (conf.c:1544)
-=3D=3D3078=3D=3D    by 0x4376DFDF: snd_config_load (conf.c:1593)
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D 173 bytes in 69 blocks are still reachable in loss recor=
-d 10 of 20
-=3D=3D3078=3D=3D    at 0x4002A745: malloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:153)
-=3D=3D3078=3D=3D    by 0x4030B0CF: __GI___strdup (in /lib/libc-2.3.1.so)
-=3D=3D3078=3D=3D    by 0x437707DC: snd_config_update_r (conf.c:2979)
-=3D=3D3078=3D=3D    by 0x43770D67: snd_config_update (conf.c:3095)
-=3D=3D3078=3D=3D    by 0x43789CC6: snd_pcm_open (pcm.c:1929)
-=3D=3D3078=3D=3D    by 0x4373C262: alsa_open (../../../../../tcvp/src/out=
-put/alsa/alsa.c:355)
-=3D=3D3078=3D=3D    by 0x424D6E13: new_pipe (../../../../tcvp/src/tcvp/tc=
-vp.c:328)
-=3D=3D3078=3D=3D    by 0x424D76B9: t_open (../../../../tcvp/src/tcvp/tcvp=
-.c:453)
-=3D=3D3078=3D=3D    by 0x424D7AC9: t_event (../../../../tcvp/src/tcvp/tcv=
-p.c:581)
-=3D=3D3078=3D=3D    by 0x402737B3: thread_wrapper (../../../valgrind/core=
-grind/vg_libpthread.c:667)
-=3D=3D3078=3D=3D    by 0x40175153: do__quit (../../../valgrind/coregrind/=
-vg_scheduler.c:2146)
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D 4820 bytes in 643 blocks are still reachable in loss rec=
-ord 16 of 20
-=3D=3D3078=3D=3D    at 0x4002A745: malloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:153)
-=3D=3D3078=3D=3D    by 0x4376C45B: get_freestring (conf.c:711)
-=3D=3D3078=3D=3D    by 0x4376C6EE: get_string (conf.c:825)
-=3D=3D3078=3D=3D    by 0x4376CF1F: parse_def (conf.c:1086)
-=3D=3D3078=3D=3D    by 0x4376D34D: parse_defs (conf.c:1213)
-=3D=3D3078=3D=3D    by 0x4376DE43: snd_config_load1 (conf.c:1544)
-=3D=3D3078=3D=3D    by 0x4376DFDF: snd_config_load (conf.c:1593)
-=3D=3D3078=3D=3D    by 0x437709C5: snd_config_update_r (conf.c:3054)
-=3D=3D3078=3D=3D    by 0x43770D67: snd_config_update (conf.c:3095)
-=3D=3D3078=3D=3D    by 0x43789CC6: snd_pcm_open (pcm.c:1929)
-=3D=3D3078=3D=3D    by 0x4373C262: alsa_open (../../../../../tcvp/src/out=
-put/alsa/alsa.c:355)
-=3D=3D3078=3D=3D    by 0x424D6E13: new_pipe (../../../../tcvp/src/tcvp/tc=
-vp.c:328)
-=3D=3D3078=3D=3D    by 0x424D76B9: t_open (../../../../tcvp/src/tcvp/tcvp=
-.c:453)
-=3D=3D3078=3D=3D    by 0x424D7AC9: t_event (../../../../tcvp/src/tcvp/tcv=
-p.c:581)
-=3D=3D3078=3D=3D    by 0x402737B3: thread_wrapper (../../../valgrind/core=
-grind/vg_libpthread.c:667)
-=3D=3D3078=3D=3D    by 0x40175153: do__quit (../../../valgrind/coregrind/=
-vg_scheduler.c:2146)
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D 5504 bytes in 172 blocks are still reachable in loss rec=
-ord 17 of 20
-=3D=3D3078=3D=3D    at 0x4002AC23: calloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:273)
-=3D=3D3078=3D=3D    by 0x4376C73A: _snd_config_make (conf.c:836)
-=3D=3D3078=3D=3D    by 0x4376DD52: snd_config_top (conf.c:1525)
-=3D=3D3078=3D=3D    by 0x43770927: snd_config_update_r (conf.c:3045)
-=3D=3D3078=3D=3D    by 0x43770D67: snd_config_update (conf.c:3095)
-=3D=3D3078=3D=3D    by 0x43789CC6: snd_pcm_open (pcm.c:1929)
-=3D=3D3078=3D=3D    by 0x4373C262: alsa_open (../../../../../tcvp/src/out=
-put/alsa/alsa.c:355)
-=3D=3D3078=3D=3D    by 0x424D6E13: new_pipe (../../../../tcvp/src/tcvp/tc=
-vp.c:328)
-=3D=3D3078=3D=3D    by 0x424D76B9: t_open (../../../../tcvp/src/tcvp/tcvp=
-.c:453)
-=3D=3D3078=3D=3D    by 0x424D7AC9: t_event (../../../../tcvp/src/tcvp/tcv=
-p.c:581)
-=3D=3D3078=3D=3D    by 0x402737B3: thread_wrapper (../../../valgrind/core=
-grind/vg_libpthread.c:667)
-=3D=3D3078=3D=3D    by 0x40175153: do__quit (../../../valgrind/coregrind/=
-vg_scheduler.c:2146)
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D=20
-=3D=3D3078=3D=3D 9024 bytes in 282 blocks are possibly lost in loss recor=
-d 19 of 20
-=3D=3D3078=3D=3D    at 0x4002AC23: calloc (../../../valgrind/coregrind/vg=
-_replace_malloc.c:273)
-=3D=3D3078=3D=3D    by 0x4376C73A: _snd_config_make (conf.c:836)
-=3D=3D3078=3D=3D    by 0x4376C80B: _snd_config_make_add (conf.c:862)
-=3D=3D3078=3D=3D    by 0x4376CA4D: parse_value (conf.c:956)
-=3D=3D3078=3D=3D    by 0x4376D0F3: parse_def (conf.c:1184)
-=3D=3D3078=3D=3D    by 0x4376D34D: parse_defs (conf.c:1213)
-=3D=3D3078=3D=3D    by 0x4376CD90: parse_array_def (conf.c:1008)
-=3D=3D3078=3D=3D    by 0x4376CE7B: parse_array_defs (conf.c:1051)
-=3D=3D3078=3D=3D    by 0x4376D16F: parse_def (conf.c:1170)
-=3D=3D3078=3D=3D    by 0x4376D34D: parse_defs (conf.c:1213)
-=3D=3D3078=3D=3D    by 0x4376DE43: snd_config_load1 (conf.c:1544)
-=3D=3D3078=3D=3D    by 0x4376DFDF: snd_config_load (conf.c:1593)
-=3D=3D3078=3D=3D    by 0x437709C5: snd_config_update_r (conf.c:3054)
-=3D=3D3078=3D=3D    by 0x43770D67: snd_config_update (conf.c:3095)
-=3D=3D3078=3D=3D    by 0x43789CC6: snd_pcm_open (pcm.c:1929)
-=3D=3D3078=3D=3D    by 0x4373C262: alsa_open (../../../../../tcvp/src/out=
-put/alsa/alsa.c:355)
-=3D=3D3078=3D=3D    by 0x424D6E13: new_pipe (../../../../tcvp/src/tcvp/tc=
-vp.c:328)
-=3D=3D3078=3D=3D    by 0x424D76B9: t_open (../../../../tcvp/src/tcvp/tcvp=
-.c:453)
+This is taken from oss driver. It is not tested (I don't own=20
+receiver). Can someone try it, maybe this works, I don't know.
 
+Audigy.conf - copy this to /usr/share/alsa/cards/ and overwrite old=20
+one (make backup).
 
---=20
-M=E5ns Rullg=E5rd
-mru@users.sf.net
+emu10k1.h.patch - patch for file alsa-driver/alsa-
+kernel/include/emu10k1.h
+
+emufx.c.patch - patch for file alsa-driver/alsa-
+kernel/pci/emu10k1/emufx.c
+
+If this doesn't work try to comment out lines
+A_OP(icode, &ptr, iSKIP, A_GPR_COND, A_GPR_COND, A_GPR(gpr - 2),=20
+A_C_00000001);
+A_OP(icode, &ptr, iACC3, A_GPR(tmp + 2), A_C_00000000, A_C_00010000,=20
+A_GPR(tmp + 2));
+
+And if this doesn't work too, then delete this mail.
+
+Peter Zubaj
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
+ Fire V210 server v cenach uz od 125.000,- Sk bez DPH=0ANavstivte nas na ad=
+rese http://www.somi.sk/sun/lowend_servery.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=0A
+--97783256-1804289383-1061887646=:24436
+Content-Type: APPLICATION/octet-stream; name="C:\\pt\\Audigy.conf"
+Content-Transfer-Encoding: BASE64
+
+IwojIENvbmZpZ3VyYXRpb24gZm9yIHRoZSBBdWRpZ3kgY2hpcAojCgo8Y29u
+ZmRpcjpwY20vZnJvbnQuY29uZj4KCkF1ZGlneS5wY20uZnJvbnQuMCB7CglA
+YXJncyBbIENBUkQgIF0KCUBhcmdzLkNBUkQgewoJCXR5cGUgc3RyaW5nCgl9
+Cgl0eXBlIGh3CgljYXJkICRDQVJECglkZXZpY2UgMAp9CQoKPGNvbmZkaXI6
+cGNtL3JlYXIuY29uZj4KCkF1ZGlneS5wY20ucmVhci4wIHsKCUBhcmdzIFsg
+Q0FSRCBdCglAYXJncy5DQVJEIHsKCQl0eXBlIHN0cmluZwoJfQoJdHlwZSBo
+b29rcwoJc2xhdmUucGNtIHsKCQl0eXBlIGh3CgkJY2FyZCAkQ0FSRAoJCWRl
+dmljZSAwCgl9Cglob29rcy4wIHsKCQl0eXBlIGN0bF9lbGVtcwoJCWhvb2tf
+YXJncyBbCgkJCXsKCQkJCW5hbWUgIldhdmUgU3Vycm91bmQgUGxheWJhY2sg
+Vm9sdW1lIgoJCQkJcHJlc2VydmUgdHJ1ZQoJCQkJbG9jayB0cnVlCgkJCQl2
+YWx1ZSBbIDAgMCBdCgkJCX0KCQkJewoJCQkJbmFtZSAiRU1VMTBLMSBQQ00g
+U2VuZCBWb2x1bWUiCgkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1
+YmRldmljZSB9CgkJCQlsb2NrIHRydWUKCQkJCXZhbHVlIFsgMCAwIDAgMCAw
+IDAgMCAwICAwIDAgMjU1IDAgMCAwIDAgMCAgMCAwIDAgMjU1IDAgMCAwIDAg
+XQoJCQl9CgkJXQoJfQp9CQoKPGNvbmZkaXI6cGNtL2NlbnRlcl9sZmUuY29u
+Zj4KCkF1ZGlneS5wY20uY2VudGVyX2xmZS4wIHsKCUBhcmdzIFsgQ0FSRCBd
+CglAYXJncy5DQVJEIHsKCQl0eXBlIHN0cmluZwoJfQoJdHlwZSBob29rcwoJ
+c2xhdmUucGNtIHsKCQl0eXBlIGh3CgkJY2FyZCAkQ0FSRAoJCWRldmljZSAw
+Cgl9Cglob29rcy4wIHsKCQl0eXBlIGN0bF9lbGVtcwoJCWhvb2tfYXJncyBb
+CgkJCXsKCQkJCW5hbWUgIldhdmUgQ2VudGVyIFBsYXliYWNrIFZvbHVtZSIK
+CQkJCXByZXNlcnZlIHRydWUKCQkJCWxvY2sgdHJ1ZQoJCQkJdmFsdWUgMAoJ
+CQl9CgkJCXsKCQkJCW5hbWUgIldhdmUgTEZFIFBsYXliYWNrIFZvbHVtZSIK
+CQkJCXByZXNlcnZlIHRydWUKCQkJCWxvY2sgdHJ1ZQoJCQkJdmFsdWUgMAoJ
+CQl9CgkJCXsKCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgVm9sdW1lIgoJ
+CQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQoJCQkJ
+bG9jayB0cnVlCgkJCQl2YWx1ZSBbIDAgMCAwIDAgMCAwIDAgMCAgMjU1IDAg
+MCAwIDAgMCAwIDAgIDAgMjU1IDAgMCAwIDAgMCAwIF0KCQkJfQoJCQl7CgkJ
+CQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFJvdXRpbmciCgkJCQlpbmRleCB7
+IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CgkJCQlsb2NrIHRydWUK
+CQkJCXZhbHVlIFsgMCAxIDIgMyAwIDAgMCAwICA2IDcgMCAxIDAgMCAwIDAg
+IDYgNyAwIDEgMCAwIDAgMCBdCgkJCX0KCQldCgl9Cn0JCgo8Y29uZmRpcjpw
+Y20vc3Vycm91bmQ0MC5jb25mPgoKQXVkaWd5LnBjbS5zdXJyb3VuZDQwLjAg
+ewoJQGFyZ3MgWyBDQVJEIF0KCUBhcmdzLkNBUkQgewoJCXR5cGUgc3RyaW5n
+Cgl9Cgl0eXBlIG11bHRpCglzbGF2ZXMgWwoJCXsKCQkJcGNtIHsKCQkJCUBm
+dW5jIGNvbmNhdAoJCQkJc3RyaW5ncyBbCgkJCQkJImNhcmRzLkF1ZGlneS5w
+Y20uZnJvbnQuMDpDQVJEPSIgJENBUkQKCQkJCV0KCQkJfQoJCQljaGFubmVs
+cyAyCgkJfQoJCXsKCQkJcGNtIHsKCQkJCUBmdW5jIGNvbmNhdAoJCQkJc3Ry
+aW5ncyBbCgkJCQkJImNhcmRzLkF1ZGlneS5wY20ucmVhci4wOkNBUkQ9IiAk
+Q0FSRAoJCQkJXQoJCQl9CgkJCWNoYW5uZWxzIDIKCQl9CgldCgliaW5kaW5n
+cyBbCgkJeyBzbGF2ZSAwIGNoYW5uZWwgMCB9CgkJeyBzbGF2ZSAwIGNoYW5u
+ZWwgMSB9CgkJeyBzbGF2ZSAxIGNoYW5uZWwgMCB9CgkJeyBzbGF2ZSAxIGNo
+YW5uZWwgMSB9CgldCn0KCjxjb25mZGlyOnBjbS9zdXJyb3VuZDUxLmNvbmY+
+CgpBdWRpZ3kucGNtLnN1cnJvdW5kNTEuMCB7CglAYXJncyBbIENBUkQgXQoJ
+QGFyZ3MuQ0FSRCB7CgkJdHlwZSBzdHJpbmcKCX0KCXR5cGUgbXVsdGkKCXNs
+YXZlcyBbCgkJewoJCQlwY20gewoJCQkJQGZ1bmMgY29uY2F0CgkJCQlzdHJp
+bmdzIFsKCQkJCQkiY2FyZHMuQXVkaWd5LnBjbS5mcm9udC4wOkNBUkQ9IiAk
+Q0FSRAoJCQkJXQoJCQl9CgkJCWNoYW5uZWxzIDIKCQl9CgkJewoJCQlwY20g
+ewoJCQkJQGZ1bmMgY29uY2F0CgkJCQlzdHJpbmdzIFsKCQkJCQkiY2FyZHMu
+QXVkaWd5LnBjbS5yZWFyLjA6Q0FSRD0iICRDQVJECgkJCQldCgkJCX0KCQkJ
+Y2hhbm5lbHMgMgoJCX0KCQl7CgkJCXBjbSB7CgkJCQlAZnVuYyBjb25jYXQK
+CQkJCXN0cmluZ3MgWwoJCQkJCSJjYXJkcy5BdWRpZ3kucGNtLmNlbnRlcl9s
+ZmUuMDpDQVJEPSIgJENBUkQKCQkJCV0KCQkJfQoJCQljaGFubmVscyAyCgkJ
+fQoJXQoJYmluZGluZ3MgWwoJCXsgc2xhdmUgMCBjaGFubmVsIDAgfQoJCXsg
+c2xhdmUgMCBjaGFubmVsIDEgfQoJCXsgc2xhdmUgMSBjaGFubmVsIDAgfQoJ
+CXsgc2xhdmUgMSBjaGFubmVsIDEgfQoJCXsgc2xhdmUgMiBjaGFubmVsIDAg
+fQoJCXsgc2xhdmUgMiBjaGFubmVsIDEgfQoJXQp9Cgo8Y29uZmRpcjpwY20v
+aWVjOTU4LmNvbmY+CgpBdWRpZ3kucGNtLmllYzk1OC4wIHsKCUBhcmdzIFsg
+Q0FSRCBBRVMwIEFFUzEgQUVTMiBBRVMzIF0KCUBhcmdzLkNBUkQgewoJCXR5
+cGUgc3RyaW5nCgl9CglAYXJncy5BRVMwIHsKCQl0eXBlIGludGVnZXIKCX0K
+CUBhcmdzLkFFUzEgewoJCXR5cGUgaW50ZWdlcgoJfQoJQGFyZ3MuQUVTMiB7
+CgkJdHlwZSBpbnRlZ2VyCgl9CglAYXJncy5BRVMzIHsKCQl0eXBlIGludGVn
+ZXIKCX0KCXR5cGUgaG9va3MKCXNsYXZlLnBjbSB7CgkJdHlwZSBodwoJCWNh
+cmQgJENBUkQKCQlkZXZpY2UgMAoJfQoKCWhvb2tzLjAgewoJCXR5cGUgY3Rs
+X2VsZW1zCgkJaG9va19hcmdzIFsKCQkJewoJCQkJbmFtZSAiSUVDOTU4IFBs
+YXliYWNrIERlZmF1bHQiCgkJCQlsb2NrIHRydWUKCQkJCXByZXNlcnZlIHRy
+dWUKCQkJCXZhbHVlIFsgJEFFUzAgJEFFUzEgJEFFUzIgJEFFUzMgXQoJCQl9
+CgkJCXsKCQkJCW5hbWUgIklFQzk1OCBPcHRpY2FsIFJhdyBQbGF5YmFjayBT
+d2l0Y2giCgkJCQlsb2NrIHRydWUKCQkJCXByZXNlcnZlIHRydWUKCQkJCXZh
+bHVlIFsgMSAxIF0KCQkJfQoJCQl7CgkJCQluYW1lICJFTVUxMEsxIFBDTSBT
+ZW5kIFZvbHVtZSIKCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3Vi
+ZGV2aWNlIH0KCQkJCWxvY2sgdHJ1ZQoJCQkJdmFsdWUgWyAwIDAgMCAwIDAg
+MCAwIDAgIDI1NSAwIDAgMCAwIDAgMCAwICAwIDI1NSAwIDAgMCAwIDAgMCBd
+CgkJCX0KCQkJewoJCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2VuZCBSb3V0aW5n
+IgoJCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQoJ
+CQkJbG9jayB0cnVlCgkJCQl2YWx1ZSBbIDAgMSAyIDMgMCAwIDAgMCAgMjAg
+MjEgMCAxIDAgMCAwIDAgICAyMCAyMSAwIDEgMCAwIDAgMCBdCgkJCX0KCQkJ
+ewoJCQkJbmFtZSAiQXVkaWd5IEFuYWxvZy9EaWdpdGFsIE91dHB1dCBKYWNr
+IgoJCQkJbG9jayB0cnVlCgkJCQlwcmVzZXJ2ZSB0cnVlCgkJCQl2YWx1ZSAx
+CgkJCX0KCQldCgl9Cn0K
+
+--97783256-1804289383-1061887646=:24436
+Content-Type: APPLICATION/octet-stream; name="C:\\pt\\emu10k1.h.patch"
+Content-Transfer-Encoding: BASE64
+
+LS0tIGVtdTEwazEuaC5vbGQJMjAwMy0wNy0yNSAxMjozNzozOS4wMDAwMDAw
+MDAgKzAyMDAKKysrIGVtdTEwazEuaAkyMDAzLTA4LTI1IDIxOjE1OjQ2LjAw
+MDAwMDAwMCArMDIwMApAQCAtMTE1Miw2ICsxMTUyLDggQEAKICNkZWZpbmUg
+RlhCVVNfTUlESV9SSUdIVAkweDA1CiAjZGVmaW5lIEZYQlVTX1BDTV9DRU5U
+RVIJMHgwNgogI2RlZmluZSBGWEJVU19QQ01fTEZFCQkweDA3CisjZGVmaW5l
+IEZYQlVTX1BUX0xFRlQJCTIwCisjZGVmaW5lIEZYQlVTX1BUX1JJR0hUCQky
+MQogI2RlZmluZSBGWEJVU19NSURJX1JFVkVSQgkweDBjCiAjZGVmaW5lIEZY
+QlVTX01JRElfQ0hPUlVTCTB4MGQKIAo=
+
+--97783256-1804289383-1061887646=:24436
+Content-Type: APPLICATION/octet-stream; name="C:\\pt\\emufx.c.patch"
+Content-Transfer-Encoding: BASE64
+
+LS0tIGVtdWZ4LmMub2xkCTIwMDMtMDctMjUgMTI6Mzk6MzguMDAwMDAwMDAw
+ICswMjAwCisrKyBlbXVmeC5jCTIwMDMtMDgtMjUgMjI6MTk6MDIuMDAwMDAw
+MDAwICswMjAwCkBAIC0xMjM1LDYgKzEyMzUsNyBAQAogICovCiAKICNkZWZp
+bmUgQV9HUFJfQUNDVSAweGQ2CisjZGVmaW5lIEFfR1BSX0NPTkQgMHhkNwog
+CiBzdGF0aWMgaW50IF9fZGV2aW5pdCBfc25kX2VtdTEwazFfYXVkaWd5X2lu
+aXRfZWZ4KGVtdTEwazFfdCAqZW11KQogewpAQCAtMTUwMiwxMyArMTUwMyw3
+IEBACiAJCUFfT1AoaWNvZGUsICZwdHIsIGlNQUMwLCBBX0dQUihwbGF5YmFj
+aysxK1NORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxTKSwgQV9DXzAwMDAw
+MDAwLCBBX0dQUihncHIrMSksIEFfR1BSKHBsYXliYWNrKzErU05EX0VNVTEw
+SzFfUExBWUJBQ0tfQ0hBTk5FTFMpKTsKIAkJc25kX2VtdTEwazFfaW5pdF9z
+dGVyZW9fY29udHJvbCgmY29udHJvbHNbbmN0bCsrXSwgIldhdmUgTWFzdGVy
+IFBsYXliYWNrIFZvbHVtZSIsIGdwciwgMCk7CiAJCWdwciArPSAyOwotCX0K
+LQotCS8qIGRpZ2l0YWwgb3V0cHV0cyAqLwotCUFfUFVUX1NURVJFT19PVVRQ
+VVQoQV9FWFRPVVRfRlJPTlRfTCwgQV9FWFRPVVRfRlJPTlRfUiwgcGxheWJh
+Y2sgKyBTTkRfRU1VMTBLMV9QTEFZQkFDS19DSEFOTkVMUyk7Ci0JQV9QVVRf
+U1RFUkVPX09VVFBVVChBX0VYVE9VVF9SRUFSX0wsIEFfRVhUT1VUX1JFQVJf
+UiwgcGxheWJhY2srMiArIFNORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxT
+KTsKLQlBX1BVVF9PVVRQVVQoQV9FWFRPVVRfQ0VOVEVSLCBwbGF5YmFjays0
+ICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMpOwotCUFfUFVUX09V
+VFBVVChBX0VYVE9VVF9MRkUsIHBsYXliYWNrKzUgKyBTTkRfRU1VMTBLMV9Q
+TEFZQkFDS19DSEFOTkVMUyk7CisJfQkKIAogCS8qIGFuYWxvZyBzcGVha2Vy
+cyAqLwogCWlmIChlbXUtPnJldmlzaW9uID09IDQpIHsgLyogYXVkaWd5MiAq
+LwpAQCAtMTUyMyw2ICsxNTE4LDI5IEBACiAJLyogaGVhZHBob25lICovCiAJ
+QV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9IRUFEUEhPTkVfTCwgQV9F
+WFRPVVRfSEVBRFBIT05FX1IsIHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExB
+WUJBQ0tfQ0hBTk5FTFMpOwogCisJLyogZGlnaXRhbCBvdXRwdXRzICovCisv
+LwlBX1BVVF9TVEVSRU9fT1VUUFVUKEFfRVhUT1VUX0ZST05UX0wsIEFfRVhU
+T1VUX0ZST05UX1IsIHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tf
+Q0hBTk5FTFMpOworCisJLyogSUVDOTU4IE9wdGljYWwgUmF3IFBsYXliYWNr
+IFN3aXRjaCAqLyAKKwlpY29kZS0+Z3ByX21hcFtncHIrK10gPSAweDEwMDg7
+CisJaWNvZGUtPmdwcl9tYXBbZ3ByKytdID0gMHhmZmZmMDAwMDsKKwlmb3Ig
+KHogPSAwOyB6IDwgMjsgeisrKSB7CisJCUFfT1AoaWNvZGUsICZwdHIsIGlN
+QUMwLCBBX0dQUih0bXAgKyAyKSwgQV9GWEJVUyhGWEJVU19QVF9MRUZUICsg
+eiksIEFfQ18wMDAwMDAwMCwgQV9DXzAwMDAwMDAwKTsKKwkJQV9PUChpY29k
+ZSwgJnB0ciwgaVNLSVAsIEFfR1BSX0NPTkQsIEFfR1BSX0NPTkQsIEFfR1BS
+KGdwciAtIDIpLCBBX0NfMDAwMDAwMDEpOworCQlBX09QKGljb2RlLCAmcHRy
+LCBpQUNDMywgQV9HUFIodG1wICsgMiksIEFfQ18wMDAwMDAwMCwgQV9DXzAw
+MDEwMDAwLCBBX0dQUih0bXAgKyAyKSk7CisJCUFfT1AoaWNvZGUsICZwdHIs
+IGlBTkRYT1IsIEFfR1BSKHRtcCArIDIpLCBBX0dQUih0bXAgKyAyKSwgQV9H
+UFIoZ3ByIC0gMSksIEFfQ18wMDAwMDAwMCk7CisJCUFfU1dJVENIKGljb2Rl
+LCAmcHRyLCB0bXAgKyAwLCB0bXAgKyAyLCBncHIgKyB6KTsKKwkJQV9TV0lU
+Q0hfTkVHKGljb2RlLCAmcHRyLCB0bXAgKyAxLCBncHIgKyB6KTsKKwkJQV9T
+V0lUQ0goaWNvZGUsICZwdHIsIHRtcCArIDEsIHBsYXliYWNrICsgU05EX0VN
+VTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMgKyB6LCB0bXAgKyAxKTsKKwkJQV9P
+UChpY29kZSwgJnB0ciwgaUFDQzMsIEFfRVhUT1VUKEFfRVhUT1VUX0ZST05U
+X0wgKyB6KSwgQV9HUFIodG1wICsgMCksIEFfR1BSKHRtcCArIDEpLCBBX0Nf
+MDAwMDAwMDApOworCX0KKwlzbmRfZW11MTBrMV9pbml0X3N0ZXJlb19vbm9m
+Zl9jb250cm9sKGNvbnRyb2xzICsgbmN0bCsrLCAiSUVDOTU4IE9wdGljYWwg
+UmF3IFBsYXliYWNrIFN3aXRjaCIsIGdwciwgMCk7CisJZ3ByICs9IDI7CisJ
+CisJQV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9SRUFSX0wsIEFfRVhU
+T1VUX1JFQVJfUiwgcGxheWJhY2srMiArIFNORF9FTVUxMEsxX1BMQVlCQUNL
+X0NIQU5ORUxTKTsKKwlBX1BVVF9PVVRQVVQoQV9FWFRPVVRfQ0VOVEVSLCBw
+bGF5YmFjays0ICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMpOwor
+CUFfUFVUX09VVFBVVChBX0VYVE9VVF9MRkUsIHBsYXliYWNrKzUgKyBTTkRf
+RU1VMTBLMV9QTEFZQkFDS19DSEFOTkVMUyk7CisKIAkvKiBBREMgYnVmZmVy
+ICovCiAJQV9QVVRfT1VUUFVUKEFfRVhUT1VUX0FEQ19DQVBfTCwgY2FwdHVy
+ZSk7CiAJQV9QVVRfT1VUUFVUKEFfRVhUT1VUX0FEQ19DQVBfUiwgY2FwdHVy
+ZSsxKTsK
+
+--97783256-1804289383-1061887646=:24436--
 
 
 -------------------------------------------------------
