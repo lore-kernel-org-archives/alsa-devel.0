@@ -1,13 +1,17 @@
-From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
-Subject: Re: alsa5 API and alsa9 API
-Date: Fri, 15 Mar 2002 17:37:34 +0100 (CET)
+From: Fredrik Lingvall <fl@signal.uu.se>
+Subject: Zoomed Video on Maestro 2E
+Date: Fri, 15 Mar 2002 20:36:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0203151731020.21004-100000@yme.mo.himolde.no>
-References: <02031511152800.00895@mdube.usine.8D.com>
+Message-ID: <3C924D50.2050902@signal.uu.se>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <02031511152800.00895@mdube.usine.8D.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Received: from signal.uu.se (IDENT:3izOpZ7rnnEnO4As2OGkygduyGdQFdYm@signserv.Signal.Uu.Se [130.238.47.210])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA22073
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2002 20:46:02 +0100
+Received: from signal.uu.se (fllap.signal.uu.se [192.168.200.29])
+	by signal.uu.se (8.11.6/8.11.6) with ESMTP id g2FJjsc18276
+	for <alsa-devel@alsa-project.org>; Fri, 15 Mar 2002 20:45:55 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,40 +20,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Mathieu Dube <mdube@8d.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 15 Mar 2002, Mathieu Dube wrote:
->The wave.c example and the API's doc doesnt work with alsa 0.9 right?
->
->is there any doc anywhere about the alsa 0.9 api?
+  Hi!
 
-http://www.alsa-project.org/
+I'm trying to switch on ZV audio on a Maestro 2E chip. According to the
+Maestro data sheet it is  Bit 15  in ESM_RING_BUS_CONTR_A
+register (=0x36) that controls the I2S input which contain the ZV data 
+(I think).
+However, I had no luck so far, I can see the ZV video (in xawtv) but
+there is no audio. I added a module option for ZV to  the
+snd-card-es1968module and added this code to the  snd_es1968_probe(...)
+function in card-es1968.c:
 
-Click on Documentation on the left.
 
-A little down the page, there's a heading "ALSA 0.9.x Developer
-documentation". Click on "on-line documentation".
+    /* Switch on ZV if module option snd_es1968_zvport = 1
+       Should really put this stuff in a funtion. Even better -
+       add a setting in the mixer for switching on ZV.
+    */
+   
+    if (snd_es1968_zvport[dev] != 0) {
+      u16 reg;
+   
+      reg = inw(chip->io_port + 0x36);
+      snd_printk("Switching on ZV audio (Ring Bus Control Reg, before = 
+%x",reg);
+      reg |= 0x8000; /* Set bit 15 = I2S on, which should switch on ZV 
+audio ?!*/
+      outw(reg, chip->io_port + 0x36);
+      reg = inw(chip->io_port + 0x36);
+      printk(", after = %x\n",reg);
+    }
 
-You're probably interested in the normal digital audio interface?
 
-Heading "API Links" =3D> "PCM (digital audio) interface"
+Are there any other registers controlling the ZV input?
 
-There's a quite detailed page. At the bottom is links to full examples
-with cross-links to the API.
+I'm using a Margi DVD to-go mpeg card as ZV source and
+the laptop is equipped with a ATI  3D Rage LT Pro graphics
+chip. Drivers can be found at www.linuxtv.org and GATOS.
 
-That's a start, right?
-
-Yes, the "API" link on the front page is outdated. Could someone please
-update it to point to the same place as "ALSA 0.9.x Developer
-documentation" =3D> "on-line documentation" ?
-
---
-Erik I. Bols=F8 | email: <knan at mo.himolde.no>
-The UNIX philosophy basically involves giving you enough rope to
-hang yourself.  And then a couple of feet more, just to be sure.
-
+Fredrik
 
 
 _______________________________________________
