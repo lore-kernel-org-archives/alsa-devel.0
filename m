@@ -1,16 +1,14 @@
-From: Nicos Gollan <gtdev@spearhead.de>
-Subject: Re: Hercules Gamesurround Fortissimo III 7.1
-Date: Tue, 1 Jul 2003 14:11:22 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: problem with  MU -LAW
+Date: Tue, 01 Jul 2003 13:50:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307011411.24645.gtdev@spearhead.de>
-References: <200306271848.20758.gtdev@spearhead.de> <200306281504.24313.gtdev@spearhead.de> <vh38yri5zvt.fsf@rovflue.ii.uib.no>
+Message-ID: <3F0183A8.3070906@superbug.demon.co.uk>
+References: <20030701032432.30106.qmail@webmail26.rediffmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <vh38yri5zvt.fsf@rovflue.ii.uib.no>
-Content-Disposition: inline
+In-Reply-To: <20030701032432.30106.qmail@webmail26.rediffmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,24 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: mahendra sp <mahendra_sp@rediffmail.com>
+Cc: alsa-user-request@lists.sourceforge, alsa-devel@lists.sourceforge.net, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 01 July 2003 12:01, Ronny V. Vindenes wrote:
-> Are you sure it's not just the card that is dead/dying? I've been
-> running the card since last year without any problems, except the
-> "distortion at full pcm volume" problem.
+mahendra sp wrote:
+> 
+> hi, alsa  people,
+> 
+>   I have wriiten the application which realises full duplex.But there is 
+> playback buffer underrun proble. The buffer tries to read the value but 
+> -ve value. After writink the -ve value for some timesay 3 minutes, it 
+> becomes alright. again after some time buffer under run occurs. whts 
+> the  problem . how to over come it. is it dependednt on periodsize and 
+> buffersize?
+> 
+>   and  also i want to implement G711. does it happen automatically by 
+> using snd_pcm_format_mulaw? if not how to do it?
+> 
+> thanks, regards,
+> mahendra
+> ___________________________________________________
+G.711 uses two audio formats. A-Law (Europe), and mu-Law(USA).
 
-The card is working perfectly in Windows, no matter what I do (music, games, 
-...). The only time that I saw similar problemis in Windows was when I had 
-the card running with the stock drivers (Win2k, SP3) where sound was dying 
-after a short time, but that was solved with the drivers on the CD. So I 
-don't think it's a hardware problem.
+So, if one talks about A-Law and mu-Law, one is talking about G.711
 
-Or perhaps it is a known problem that the drivers can work around.
+Cheers
+James
 
--- 
-Got Backup?
 
 
 
