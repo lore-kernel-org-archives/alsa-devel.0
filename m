@@ -1,11 +1,14 @@
-From: =?Windows-1251?B?0PPs/+325eIgzy7KLg==?= <jordy@lmi.org>
-Subject: =?Windows-1251?B?4PLy5fHy4PI=?=
-Date: Tue, 09 Nov 2004 20:27:05 +0000
-Message-ID: <E1CRchT-0006cT-Uz@externalmx-1.sourceforge.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - utils 0000627]: alsactl store doesn't work
+Date: Tue, 9 Nov 2004 21:47:22 +0100
+Message-ID: <be4ec02073daa29c9a8599d9c8e739d8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html; charset=Windows-1251
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C23FB2BE
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 21:47:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,62 +18,59 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<head>
-<title>Untitled Document</title>
-<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
-</head>
 
-<body bgcolor="#FFFFFF" text="#000000">
-<table width="650" border="0" align="center">
-  <tr>
-    <td> уважаемые господа! 
-      <p>Вам нужен диплом для устройства на более высокооплачиваемую 
-        работу<br>
-        или для продвижения вверх по служебной лестнице ?<br>
-        Вы хотите поступить в ВУЗ, на базе первого высшего образования 
-        и обучаться<br>
-        в нем в три раза меньше (и дешевле)? Вы хотите получить MBA образование?<br>
-        Вам требуются различного рода лицензии, свидетельства, сертификаты, а 
-        их не<br>
-        выдают без диплома о высшем образовании?<br>
-        Вы хотите получить эмиграционную визу, а в посольствах предпочтение отдают<br>
-        лицам с высшим образованием?<br>
-        Вы не доучились в ВУЗе, а родители требуют показать диплом?</p>
-      <p>Можно 
-        привести много примеров в необходимости диплома...</p>
-      <p>Мы рады помочь Вам!!!!</p>
-      <p>Предлагаем:<br>
-        Дипломы о высшем образовании ВУЗов России и бывшего СССР (как нового так 
-        и<br>
-        старого образца - любой год выпуска)<br>
-        Дипломы техникумов, колледжей (как нового так и старого образца)<br>
-        Аттестаты<br>
-        Академические справки<br>
-        и т.п.</p>
-      <p>100 % надежность и конфиденциальность<br>
-        Короткие сроки оформления.<br>
-        Доставка в любой регион, без предоплаты.</p>
-      <p>По всем вопросам и за дополнительной информацией можете<br>
-        обращаться<a href="mailto:dipvuz@altern.org"> dipvuz@altern.org</a><br>
-        (можно и на <a href="mailto:diplomvuz@post.com">diplomvuz@post.com</a>).</p>
-      <p>НЕ ОТВЕЧАЙТЕ НА АДРЕС С КОТОРОГО ПРИШЛО ЭТО ПИСЬМО - ОН НЕ ДЕЙСТВИТЕЛЕН.<br>
-        ПИШИТЕ НА <a href="mailto:dipvuz@altern.org">dipvuz@altern.org </a>(можно 
-        и на <a href="mailto:diplomvuz@post.com">diplomvuz@post.com</a>).</p>
-      <p>--------------------------------------------------------------------------</p>
-      <p>*Ваш адрес взят из открытых источников.<br>
-        Приносим извинения, если наше предложение для Вас в настоящее время не 
-        актуально.<br>
-      </p>
-    </td>
-  </tr>
-</table>
-</body>
-</html>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=627> 
+======================================================================
+Reported By:                deglog
+Assigned To:                
+======================================================================
+Project:                    ALSA - utils
+Issue ID:                   627
+Category:                   alsactl
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-03-2004 17:05 CET
+Last Modified:              11-09-2004 21:47 CET
+======================================================================
+Summary:                    alsactl store doesn't work
+Description: 
+"alsactl store" outputs "Terminated" after about 30 seconds.
 
+The file asound.state is full of garbage.
+
+Apart from that sounds work OK, although I do see
+
+ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
+Broken pipe
+
+in .xsession_errors.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 15:49 
+----------------------------------------------------------------------
+Try to remove /etc/asound.state once before running alsactl?
+
+----------------------------------------------------------------------
+ deglog - 11-09-04 21:47 
+----------------------------------------------------------------------
+Yes that fixed it. Thanks.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-03-04 17:05 deglog         New Issue                                    
+11-09-04 15:49 tiwai          Note Added: 0002324                          
+11-09-04 21:47 deglog         Note Added: 0002353                          
+======================================================================
 
 
 
