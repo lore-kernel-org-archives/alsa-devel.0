@@ -1,14 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Typo in Writing-an-ALSA-Driver
-Date: Sun, 21 Dec 2003 19:29:25 +0100
+From: Manuel Jander <manuel.jander@mat.utfsm.cl>
+Subject: OpenAL- ALSA advanced features hardware support update.
+Date: Sun, 21 Dec 2003 23:24:00 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031221182925.GB13971@tuba.home>
-References: <20031221181117.GA13971@tuba.home>
+Message-ID: <1072063439.1803.31.camel@localhost>
+Reply-To: manuel.jander@mat.utfsm.cl
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20031221181117.GA13971@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,33 +16,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, Dec 21, 2003 at 07:11:17PM +0100, Martin Langer wrote:
-> 
-> Hi,
-> 
-> two small typos in the docs on
-> http://www.alsa-project.org/~iwai/writing-an-alsa-driver/x494.htm
-> 
-> There are *playback* labeled functions for open and close:
-> 
-> static snd_pcm_ops_t snd_mychip_playback_ops = {
->        .open =        snd_mychip_playback_open,
->        .close =       snd_mychip_playback_close,
->        [...]
-> };
-> 
-> But OTOH they were called *pcm* instead of *playback*:
-> 
-> static int snd_mychip_pcm_open(snd_pcm_substream_t *subs) {}
+Hi,
 
-another typo: subs has to be substream.
+I updated my ALSA- OpenAL interface proposal, taking into account some
+suggestions i have received, and some further investigations, specially
+on the side of OpenAL.
+
+Take a look at:
+http://galadriel.mat.utfsm.cl/~mjander/aureal/alsa/OpenAL-ALSA.txt
+
+AFAIK, the linux OpenAL port was not designed taken any hardware support
+into account. 
+
+Things that go against my goals are:
+
+- OpenAL only uses one single ALSA substream. There is no substream
+management (must be added).
+- OpenAL is not hardware mixing aware.
+- OpenAL ALSA structs must be changed to integrate hardware context
+data.
+
+Things that are favorable:
+
+- As far as i dug into OpenAL, it seems that all source buffer
+processing is done in one single place (_alMixSources). Replacing this
+call for hardware assisted sources seems feasible.
 
 
-martin
+The same as for the first iteration of this proposal, please take some
+minutes and give some comments/suggestions back. I need feedback.
+
+Best Regards
+
+-- 
+Manuel Jander
+mjander(at)users(dot)sourceforge(dot)net
 
 
 
