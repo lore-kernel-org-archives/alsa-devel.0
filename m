@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: [PATCH] Audigy + FX8010 capture (hw:x,2)
-Date: Wed, 23 Jun 2004 10:16:28 +0200
+From: Tom Watson <sdc695@yahoo.com>
+Subject: Re: Question Regarding Simple ALSA Stereo Output
+Date: Wed, 23 Jun 2004 15:11:10 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200406230816.i5N8GSZK016852@www6.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <20040623221110.55360.qmail@web60807.mail.yahoo.com>
+References: <E1Bd8zp-00028B-03@sc8-sf-list2.sourceforge.net>
+Reply-To: tsw@johana.com
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E1Bd8zp-00028B-03@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,17 +17,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK, I will send it at monday (I will be not online for four next days)
+James Courtier-Dutton <James@superbug.demon.co.uk> Wrote:
+<<<deletia>>>
 
-Peter Zubaj
+> Alternatively, look at the sample code in
+> ../alsa-lib/test/pcm.c
+> or
+> ../alsa-utils/speaker-test/speaker-test.c
+
+> Cheers
+> James
+
+While I have seen .../test/pcm.c I have not seen 'speaker-test.c'.  A
+quick 'find' did not yield it either.  Is this something new??
+
+Inquiring minds.......
+
+I think it would be welcome in any event to be part of the ALSA tree.
 
 
-=0A____________________________________=0Ahttp://www.pobox.sk/ - spolahliva=
- a bezpecna prevadzka=0A=0A=0A
+
+=====
+-- 
+Tom Watson
+tsw@johana.com
+
+
+	
+		
+__________________________________
+Do you Yahoo!?
+New and Improved Yahoo! Mail - 100MB free storage!
+http://promotions.yahoo.com/new_mail 
 
 
 -------------------------------------------------------
