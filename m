@@ -1,12 +1,12 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: HDSP 9652 MIDI - A timing disaster?
-Date: 11 Jan 2003 07:49:16 -0800
+From: Brian Victor <bhv1@psu.edu>
+Subject: General Guidelines?  (MIDI)
+Date: Sat, 11 Jan 2003 13:31:21 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042300157.1986.15.camel@Godzilla>
+Message-ID: <20030111183121.GA12653@bhv1.adelphia.net>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,42 +15,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-List <linux-audio-user@music.columbia.edu>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-   I asked about this two weeks ago but got no responses. I'm hoping
-this time I hear something back from other owners of the same hardware.
+Are there any documented guidelines on how to make use of ALSA
+(especially MIDI) functions?  They seem to be designed with attention to
+nomenclature, but I don't have a clear idea of when they're needed.
 
-   I recently purchased an RME HDSP 9652 card. The card is working fine
-for audio, but the MIDI interface is a timing disaster. The interface
-works, but won't keep time. A 2 minute song is Rosegarden takes abut
-2:45 to play every time. You can hear how the HDSP isn't delivering
-closely spaced MIDI events together, but is sort of smearing them out.
+For example, when using ALSA data type foo, the standard seems to be to
+call snd_seq_alloc_foo, manipulate foo as desired, then call
+snd_seq_free_foo.  This is easy enough, but sometimes (as in the case of
+queue), there is also a create function; how does this differ from
+alloc, and is it necessary?
 
-   My machine is set up using the PlanetCCRMA system. According to
-Synaptic my Alsa driver is from CVS:20021216. Jack is 0.44. This machine
-works just fine with the MidiMan 2x2 interface. No timing problems at
-all.
+Also, what is the relationship between buffers and queues?  Is a queue
+needed prior to buffering output?  Or do they serve completely different
+functions?
 
-   Has anyone else purchased this card? Used the MIDI interface on this
-card? Gotten better results with this card?
+Thanks in advance to anyone who can clear these things up for me.
 
-   Can anyone suggest how I could go about fixing this myself? I'm not a
-programmer, so really hacking the code is doubtful, but this driver is
-acting like there is just a basic mistake somewhere. Possibly I could
-find it if I knew where to look.
-
-   I hope someone will respond to this email so we can get something
-going to get this fixed. I really need this interface to operate soon.
-
-Thanks in advance,
-Mark
-
-   
-
-
-
+-- 
+Brian
 
 
 -------------------------------------------------------
