@@ -1,11 +1,13 @@
-From: =?utf-8?q?Pawe=C5=82_Sikora?= <pluto@pld-linux.org>
-Subject: [ppc/alsa-1.0.8] rme9625/hdsp.c fix.
-Date: Wed, 26 Jan 2005 23:04:54 +0100
-Message-ID: <200501262304.54521.pluto@pld-linux.org>
+From: Nicolas Pitre <nico@cam.org>
+Subject: Re: new ALSA driver for audio on the ARM PXA2xx platform
+Date: Wed, 26 Jan 2005 10:50:31 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0501261046370.16341@localhost.localdomain>
+References: <Pine.LNX.4.61.0501251624470.16341@localhost.localdomain>
+ <1106754206.3998.1680.camel@cearnarfon>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_GQB+BGBqj+Fa45A"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1106754206.3998.1680.camel@cearnarfon>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,53 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Liam Girdwood <Liam.Girdwood@wolfsonmicro.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---Boundary-00=_GQB+BGBqj+Fa45A
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
+On Wed, 26 Jan 2005, Liam Girdwood wrote:
 
-Hi,
+> Hi Nicolas,
+> 
+> On Tue, 2005-01-25 at 21:33, Nicolas Pitre wrote:
+> > This patch adds two modules: one for generic PCM support on PXA2xx and 
+> > another to interface with the AC97 link on the PXA2xx.  Eventually 
+> > additional modules could be written to use the PCM module with SSP or 
+> > I2S audio ports.
+> 
+> Patch applied cleanly to 2.6.11-rc2, but is missing
+> include/asm-arm/arch-pxa/audio.h
 
-Attached patch fixes compilation error.
-Could You look at this?
+It is pending in RMK's patch queue for inclusion into mainline along 
+with the platform data to enable audio on Mainstone, see:
+http://www.arm.linux.org.uk/developer/patches/viewpatch.php?id=2435/1
 
-Regards,
-Pawe=C5=82.
 
---Boundary-00=_GQB+BGBqj+Fa45A
-Content-Type: text/x-diff;
-  charset="utf-8";
-  name="rme9625-hdsp.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
-	filename="rme9625-hdsp.patch"
-
-  This patch fixes compilation error:
- 
-  CC [M]  sound/pci/rme9652/hdsp.o
-  sound/pci/rme9652/hdsp.c: In function `hdsp_request_fw_loader':
-  sound/pci/rme9652/hdsp.c:4961: error: structure has no member named `data'
-  
- hdsp.c |    2 +-
- 1 files changed, 1 insertion(+), 1 deletion(-)
- 
---- a/sound/pci/rme9652/hdsp.c	2005-01-25 16:15:24.000000000 +0100
-+++ b/sound/pci/rme9652/hdsp.c	2005-01-26 22:54:49.297771824 +0100
-@@ -4958,7 +4958,7 @@
- #ifdef SNDRV_BIG_ENDIAN
- 	{
- 		int i;
--		u32 *src = hdsp->data;
-+		u32 *src = fw->data;
- 		for (i = 0; i < ARRAY_SIZE(hdsp->firmware_cache); i++, src++)
- 			hdsp->firmware_cache[i] = ((*src & 0x000000ff) << 16) |
- 				((*src & 0x0000ff00) << 8)  |
-
---Boundary-00=_GQB+BGBqj+Fa45A--
+Nicolas
 
 
 -------------------------------------------------------
