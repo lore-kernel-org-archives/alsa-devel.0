@@ -1,44 +1,39 @@
-From: "Mirabella, Mathew J" <Mathew.Mirabella@team.telstra.com>
-Subject: Audigy 2 support.
-Date: Thu, 20 Mar 2003 16:53:25 +1000
-Sender: sound-list-admin@redhat.com
-Message-ID: <73388857A695D31197EF00508B08F2980A00EE6B@ntmsg0131.corpmail.telstra.com.au>
-Reply-To: sound-list@redhat.com
+From: Andrei Boros <andrei@srr.ro>
+Subject: Typo in configure.in : dummy sequencer
+Date: Thu, 20 Mar 2003 10:17:37 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <3E797921.410C8222@srr.ro>
+References: <3E784A3C.133F177B@srr.ro> <s5h7kavtwzs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Return-path: <sound-list-admin@redhat.com>
-content-class: urn:content-classes:message
-Errors-To: sound-list-admin@redhat.com
-List-Help: <mailto:sound-list-request@redhat.com?subject=help>
-List-Post: <mailto:sound-list@redhat.com>
-List-Subscribe: <https://listman.redhat.com/mailman/listinfo/sound-list>,
-	<mailto:sound-list-request@redhat.com?subject=subscribe>
-List-Unsubscribe: <https://listman.redhat.com/mailman/listinfo/sound-list>,
-	<mailto:sound-list-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://listman.redhat.com/mailman/private/sound-list/>
-To: alsa-devel list <alsa-devel@lists.sourceforge.net>, alsa-user list <alsa-user@lists.sourceforge.net>, sound-list list <sound-list@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-All.
+make: Nothing to be done for `all-deps'.
+autoconf: Undefined macros:
+configure.in:797:  AC_DEFINE_CONFIG_SND_SEQ_DUMMY)
 
-Could someone please let me know the status of Audigy 2 support with the alsa drivers?
+Should read : AC_DEFINE(CONFIG_SND_SEQ_DUMMY)
 
-Audigy 2 is not yet shown in the supported sound cards matrix.
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
-However, I am aware that the latest emu10k1 source from cvs (this year, 2003) now has Audigy 2 support, whereas the latest compiled version does not (from late last year, 2002).
 
-I would like to know what version of the emu10k1 source is used in the latest release of the alsa drivers, and also what version is used in the latest alsa stuff from cvs.
-
-Support for modern creative cards requires the emu10k1 stuff (as mentioned on the sound cards matrix pages for alsa.  So essentially I want to know if alsa has availed itself of the newest cvs emu10k1 drivers, or if alsa developers are working on audigy 2 support themselves.
-
-Further, could someone please tell me the modulename for the cvs version of alsa?
-I have the following:
-  cvs -d:pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa login
-  cvs -z3 -d:pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa co MODULENAME
-but when i try putting alsa or alsa-project in for MODULENAME, i get an error that suggest there is no such module etc.
-
-btw:  the cvs instructions on the cvs page for alsa did not work either, so you will notice i have altered the commands shown above somewhat so at least i can log in.
-
-Mat.
+-------------------------------------------------------
+This SF.net email is sponsored by: Does your code think in ink? 
+You could win a Tablet PC. Get a free Tablet PC hat just for playing. 
+What are you waiting for?
+http://ads.sourceforge.net/cgi-bin/redirect.pl?micr5043en
