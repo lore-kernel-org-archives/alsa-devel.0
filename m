@@ -1,14 +1,14 @@
-From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
-Subject: Re: [Survey] headphone <-> master volume swap -- which
- codec chip?
-Date: Fri, 24 Jan 2003 13:41:29 +0100
+From: "Tais M. Hansen" <tais.hansen@osd.dk>
+Subject: Re: Re: [Alsa-user] Upgrade problems -addendum
+Date: Fri, 24 Jan 2003 13:41:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E313479.5080501@student.kuleuven.ac.be>
-References: <s5hu1fyyi9a.wl@alsa2.suse.de>	<Pine.LNX.4.44.0301241213200.1448-100000@pnote.perex-int.cz> <s5hn0lqyeh9.wl@alsa2.suse.de>
+Message-ID: <200301241341.09518.tais.hansen@osd.dk>
+References: <200301221234.33054.tais.hansen@osd.dk> <200301231944.01306.tais.hansen@osd.dk> <s5hwukuykqs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Multipart/Mixed;
+  boundary="------------Boundary-00=_IWX7I9MPH4GIB003V272"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hwukuykqs.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,154 +18,217 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@suse.cz>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I took a look at the Intel AC97 2.2 specs. It seems that the behaviour
-described here is a AC97 2.2 recommendation. take a look at 1 & 2 of 5.2.1.
 
-Pieter
+--------------Boundary-00=_IWX7I9MPH4GIB003V272
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
---------------------------------------------
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-AC `97 Component Specification  Revision 2.2   September 2000
+On Friday 24 January 2003 10:12, Takashi Iwai wrote:
+> > Ok, log output attached, 3 files with loads of gibberish ;). Same
+> > behavior btw.
+> thanks.  sigh, this chip is really weird.
+> perhaps in the last patch, the recoverd pointer overtook the actual
+> pointer and got the driver confused.
+> take 6:  the calculation of recovered pointer is changed.
+>          and the register value of CURRPTR is shown as reference.
+>          if it's more acculate, we can refer to it instead...
+> as usual, debug messages appear by enabling DEBUG_POITNER.
 
-5.2 LINE_OUT and AUX_OUT
+Same deal as before, another 3 files filled with debug output. Good luck.=
+ :)
 
-AC `97 audio Codecs support two independently controlled stereo outputs:
-     1. The master output, labeled LINE_OUT, uses pins 35, 36 for L and R
-(48 pin QFP package) and is controlled by the Master Volume Register
-02h.  No changes have been made to LINE_OUT definitions.
-     2. A second output, originally defined as HP_OUT, uses pins 39, 40,
-and 41 for L, Common, and R (48-pin QFP  package) was re-defined as
-LNLVL_OUT for AC `97 2.1, and is controlled by optional volume Register
-04h.  In addition to the HP and LNLVL definitions, 4-channel Codecs
-typically utilize pins 39 and 41 for the  additional (i.e. L & R
-Surround) outputs.
+- --=20
+Regards,
+Tais M. Hansen
+OSD
 
-5.2.1 AUX_OUT Options
-As identified in the previous section, there are three common uses for
-AC `97's second output.  AC `97 2.2  addresses all three uses by
-renaming the second output as AUX_OUT, Register 04h as Aux Out Volume,
-and the pins as AUX_OUT_L, AUX_OUT_C, and AUX_OUT_R.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.0 (GNU/Linux)
 
-Driver developers should be aware that the AC `97 AUX_OUT may be
-implemented in one of three ways:
+iQIVAwUBPjE0ZIIvLOJqwYc4AQLLFg/+NmqJA1HIeSmt6ukM/aw9v8n3fwLpK61k
+eGdakXrtZpao+T5EJG9aDsRoCJ6I5qRzw7s8KPFxx0AHLbDNMohLegTTxTB/KltT
+IFxRTW6JiAxwcRoR/nX/rFTZGEogXx8lTLIFALx8KD7jv/nudC0jWwFYeYKG9ky1
+Q7zkbmdfcsivp2j7PUJVFGVQvYRYbrXvbaGD3BIfa7zPHWAaBK2tHWUZZ2TJFXT3
+ZKoKtPnlzgxFXF9YP//OqE/Y5Qjjvs1SCk9hR4jL1yKmr9VeSCOySh+c8gAFOFaj
+hLICqz4fbtFkLurRk4B/puu8q/R4ftvC+z2cSUtvdLrVONzgYBwhsPibqKiI1hv5
+wd6auUmMTxwar95iuiRNKdHPTId9FOZY0jEEJi4njOjZmUKSaZqa5g53OQ8rf63W
+GeupoL9DoGtewOpf4uvR6hvq5QjO2MGO0VyY5752LFyk7hIX1ryEvsuOsChMhOvl
+Akh+JVYXNSU+lgcnQCnrB45a9bH2MIIc0WnT8dlBi2o1oiyZTbp99n2GIt6y0ey4
+L/ECWRoK0Wrd4yesPwNnl6S3AmmWKmZc8WurdDQcc5clOwTyZwXR67BSjXFTxTb8
+oP6Q6zLMfFxcFReR1HCXWLbQGaw4oJbLuUh6zkGLnTxmizCc7uGZGnDpA/O6gWSq
+fsT3lXLYi60=3D
+=3DeiiU
+-----END PGP SIGNATURE-----
 
-     1.True line level out.Support for a true consumer
-equipment-compatible (10 k\Omega ) line level output that does not
-change with master volume settings. Either fixed or fixable via the
-independent volume controls in Register 04h, the output level provides a
-1V RMS (2.8 V peak-to-peak) output level for a 0 dB gain PCM output
-stream. When implemented this way, AUX_OUT is equivalent to AC `97 2.1's
-LNLVL_OUT definitions.
+--------------Boundary-00=_IWX7I9MPH4GIB003V272
+Content-Type: application/x-gzip;
+  name="alsa-aplay-test6.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-aplay-test6.txt.gz"
 
-     2.Headphone out.  AUX_OUT can be implemented to support integrated
-headphone amplifier with 32 \Omega  drive capability and independent
-volume control via Register 04h.  When implemented this way, AUX_OUT is
-equivalent to AC `97 1.03 original HP_OUT definitions
+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
 
-     3. 4-Channel out.  In Codecs that support 4-channel operation,
-AUX_OUT can be implemented to support the  additional (i.e. L&R
-Surround) outputs. When implemented this way, AUX_OUT will be referred
-to 4CH_OUT.  In 4CH_OUT implementations, L and R Surround output is
-controlled via Surround Volume  Register 38h, not Aux Out Volume 04h,
-and powered down via the PRJ (SDAC) bit in Register 2Ah.
+--------------Boundary-00=_IWX7I9MPH4GIB003V272
+Content-Type: application/x-gzip;
+  name="alsa-artsd-test6.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-artsd-test6.txt.gz"
 
-AUX_OUT defaults to be LNLVL_OUT unless HP_OUT or 4CH_OUT support is
-detected.  Unless the specific  Codec configuration is indicated via INF
-file, driver writers should use the following methods for detecting a
-specialized Codec with HP_OUT or 4CH_OUT capabilities:
+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
 
-* HP_OUT capability can be detected via Reset/ID Register 00h, ID bit 4
-and the Aux Out Volume Register 04h default value reads "8000h" (i.e.
-implemented). ID4 is no longer used to indicate LNLVL support.
-* 4CH output capability can be detected via the Extended Audio ID
-Register 28h, SDAC ID bit 7, and a Surround Volume Register 38h default
-of "8080h" (i.e. implemented).
+--------------Boundary-00=_IWX7I9MPH4GIB003V272
+Content-Type: application/x-gzip;
+  name="alsa-ogg123-test6.txt.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="alsa-ogg123-test6.txt.gz"
 
-HP and LNLVL implementations of AUX_OUT external output are powered down
-via bit PR6 in Register 26h.
+H4sICEoyMT4AA2Fsc2Etb2dnMTIzLXRlc3Q2LnR4dADt10FvU1cexuH9fIq7BImC7SQQIlUItRuq
+qTRtNWtknAvj1okj24Hw7cdAFy13VF0f+RxN3j4rSoTOP/zyhj75YX7dzU676cnFyeRictbdbNZv
+l4vluvut31z3q4vuX9+9uuh+6Xe75fW7bjXf9deLj91uedVvuvXb7rJ/v1z03WRyMZ0+Put26+7p
+6T9++OObs//x5st//vKye/z4yXy1nX/z5YNPbhbLJ++X8/PZ3d3jxcXT8/OLbnl5133bTR51i/Xt
+9e7Tf969ne9/e7PbfP5N3Uvn4y6t5ttdd9Vvt/N3fbfpb/p9osvu5HOibdVPcNYsRbtLk2NfOjs9
+uehu+s1yfdn1q/nNtr+s+RdoFqr/w6XF/Q5V+Okv1pt+f+zq9Wr5Zn9oOtt//v++7u9u+sWn78D/
+fHh9s15e7/b/Tr2fr2777sF2t+nnV18+kct+tZtfdN9MJ7PTR93V/K77dbn79Ge/7U4nz58+vOg+
+bNb7f/A+P7C5vdl188Vv1+sPq/7yXf/ifveeFi5T8NLgFt42+MzCGwe38LbBTyy8cXALvxd81pvC
+70VvCqfw7OAUTuHZwSmcwrODGziFJ/emcArPDk7hFJ4dnMIpPDu4gVN4cm8Kp/Ds4BRO4dnBKZzC
+s4MbOIUn96ZwCs8OTuEUnh38/iv8aZ3gRc+WKHzkIcGPpHC96/a277a9BwoXvHJwC28bfKBwwSsH
+t/DGKLRwCo8ObuAUntybwik8OziFU3h2cAqn8OzgBk7hyb0pnMKzg1M4hWcHp3AKzw5u4BSe3JvC
+KTw7OIVTeHZwCqfw7OAGTuHJvSmcwrODUziFZwencArPDm7gFH5Q72d1ehc9W6LwkYcEP5bCBa8b
+fKBwwSsHt/C2wQcKF7xycAtvG9zA2/a2bwrPDm7hFJ4d3MIpPDu4hVN4cm/7pvDs4BZO4dnBLZzC
+s4NbOIUn97ZvCs8ObuEUnh3cwik8O7iFU3hyb/um8OzgFk7h2cEtnMKzg1s4hSf3tm8Kzw5u4RR+
+WPDzOsGLni1R+MhDgh9L4YJXDm7hbYMbeNve9t2290DhglcObuGNUWjhFB4dnMIpPDu4gVN4cm8K
+p/Ds4BRO4dnBKZzCs4MbOIUn96ZwCs8OTuEUnh2cwik8O7iBU3hybwqn8OzgFE7h2cEpnMKzgxs4
+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
 
---------------------------------------
-
-
-
-Takashi Iwai wrote:
-
- >At Fri, 24 Jan 2003 12:16:00 +0100 (CET),
- >Jaroslav wrote:
- >
- >
- >>On Fri, 24 Jan 2003, Takashi Iwai wrote:
- >>
- >>
- >>
- >>>Hi all,
- >>>
- >>>there have been bug-reports regarding to the swapping of headphone
- >>>and master volumes.
- >>>i'd like to ask you to check which AC97 codec chip is used on which
- >>>board (or laptop) if you have such a problem.  if this happens only on
- >>>a certain chip model, we can add a quirk for that.
- >>>
- >>>
- >>Takashi, this quirk can be done only by detection of subvendor and
- >>subsystem from the PCI ID space.
- >>
- >>
- >
- >yeah, the lspci output is on the query list.
- >
- >
- >
- >>It's absolutely irrelevant which AC97
- >>chip is used.
- >>
- >>
- >
- >really?  i believe this happens only on certain ac97 chips.
- >for example, ALC202 spec says that ALC202A uses the headphone volume
- >as the "true line out" volume.  so, apparently, some ac97 chips
- >"recommend" this behavior.  let's see...
- >
- >
- >
- >>Vendor might wire codec in any way. Also, some codecs may
- >>swap line-out / headphone out via registers.
- >>
- >>
- >
- >this is a different case, imo.
- >the problem is that we have no chance to detect/switch them, either
- >manually or automatically.
- >
- >a general solution would be to add an ac97 control switch to swap
- >them.  then the accssed registers are exchanged internally according
- >to this control.
- >
- >but it isn't bad to know which chips and which machines have this
- >problem, so that we can add quirks to turn on this switch
- >automatically.
- >
- >
- >Takashi
- >
- >
- >-------------------------------------------------------
- >This SF.NET email is sponsored by:
- >SourceForge Enterprise Edition + IBM + LinuxWorld = Something 2 See!
- >http://www.vasoftware.com
- >_______________________________________________
- >Alsa-devel mailing list
- >Alsa-devel@lists.sourceforge.net
- >https://lists.sourceforge.net/lists/listinfo/alsa-devel
- >
- >
- >
-
-
-
+--------------Boundary-00=_IWX7I9MPH4GIB003V272--
 
 
 
