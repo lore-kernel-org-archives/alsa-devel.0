@@ -1,14 +1,17 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Trying to get alsa-driver to build on a 2.6.x kernel.
-Date: Fri, 30 Jan 2004 15:50:41 +0000
+From: Justin Cormack <justin@street-vision.com>
+Subject: Re: Questions to HDSP users
+Date: 29 Jan 2004 14:34:08 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <401A7D51.9020307@superbug.demon.co.uk>
-References: <401963AC.8080603@superbug.demon.co.uk>	<s5hekthsnlx.wl@alsa2.suse.de>	<401A6488.9060108@superbug.demon.co.uk>	<s5h7jz9sewo.wl@alsa2.suse.de>	<401A6E54.5010605@superbug.demon.co.uk> <s5h4qudscmd.wl@alsa2.suse.de>
+Message-ID: <1075386849.31352.38.camel@lotte.street-vision.com>
+References: <4017D54D.2020502@undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4qudscmd.wl@alsa2.suse.de>
+Received: from tench.street-vision.com (tench.street-vision.com [212.18.235.100])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA22154
+	for <alsa-devel@alsa-project.org>; Thu, 29 Jan 2004 15:34:20 +0100
+In-Reply-To: <4017D54D.2020502@undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +20,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Fri, 30 Jan 2004 14:46:44 +0000,
-> James Courtier-Dutton wrote:
+On Wed, 2004-01-28 at 15:29, Thomas Charbonnel wrote:
+> Hi,
 > 
->>configure:2962: gcc -o conftest -g -O2 -I/lib/modules/2.6.2-rc2/build/include -I$(CONFIG_SND_KERNELDIR)/include/asm-i386/mach-default   conftest.c  1>&5
-> 
-> 
-> doh...  my bad.
-> try the attached additional patch.
-> 
-> 
-> Takashi
+> In the process of debuging the problems some hdsp users are 
+> experiencing, I reviewed almost every single line of code in the hdsp 
+> driver, and there are things in there that were inherited from the old 
+> rme9652 driver and that don't seem relevant anymore for the hdsp 
+> (particularly now that hdspmixer is there).
+> * Does anyone use the passthru control ? If not I would gladly remove it 
+> as it interferes with hdspmixer. Anyway everything it did can be done 
+> with hdspmixer or the Mixer control using a shell script.
+> * The current behaviour is that the driver cancels any 1:1 input to 
+> output routing when playback or capture is enabled. Not only this 
+> interferes with hdspmixer, but I find it rather confusing. Any objection 
+> to a change here also ?
 
-That has done it.
-I have now managed to install alsa-driver into my 2.6.2 kernel.
+I have never used it. ANything that simplifies the driver is good.
 
-Thank you
+> I also realized communicating with RME that the firmware files we use in 
+> linux are not the same as those used in current versions of the windows 
+> and mac drivers. As a consequence people using dual boot systems should 
+> always power cycle their iobox when switching operating systems to 
+> prevent any problem (this is of particular importance to rev 0xa users).
+> This minor issue will be resolved shortly as I'm working on switching to 
+> those files for the linux driver. The new firmware files seem to be 
+> revision independant (but they do require a driver modification) and add 
+> support for disconnect mode (standalone operation of the iobox - I have 
+> it working here, it's awesome !)
 
-James
+How does that work? You just set up the routing and it stays there while
+the box has power?
+
+justin
+
+
 
 
 -------------------------------------------------------
