@@ -1,13 +1,14 @@
-From: Benno Senoner <sbenno@gardena.net>
-Subject: Re: Event Based time synchronization with ALSA
-Date: Tue, 18 Jan 2005 14:46:16 +0100
-Message-ID: <41ED1328.4070802@gardena.net>
-References: <41EB9874.4060407@hypersonic.it> <41EBEB8F.9030009@gardena.net> <41ECF73F.7070404@hypersonic.it>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Tue, 18 Jan 2005 14:01:26 +0100
+Message-ID: <3729ef11d2139cebde7fefb932f266ec@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <41ECF73F.7070404@hypersonic.it>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E803B25E
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 14:01:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,153 +18,102 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paolo Losi wrote:
 
-> Hi Benno,
->
->     thank you very much for you response.
->     
-> Benno Senoner wrote:
->  > The above routine has the advantage that you can use any kind of
->
->> periodsize (fragment size) in ALSA
->> and the send_rtp packet() always gets 20msec worth of data.
->> But you must ensure that the ALSA period size must be <20msec , 
->> otherwise too much jitter is introduced.
->
->
-> I see your point.... but I would have two objections:
-> - I don't want/can't use threads
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   822
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
+======================================================================
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-18-2005 14:01 CET
+======================================================================
+Summary:                    CMI9880 (IHDA) alsamixer no controll
+Description: 
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
+======================================================================
 
+----------------------------------------------------------------------
+ 1g0R - 01-17-05 16:43 
+----------------------------------------------------------------------
+Hi Tiwai,
 
-you can use a single thread as described in my previous mail.
-you just write to a ringbuffer and afterwards read from the same 
-ringbuffer to have an easy method
-to queue up samples until you have at least 20msec worth of audio data 
-(160 samples at 8kHz).
-But as said you need to write(and read) to the ringbuffer with a 
-granularity greater than 20msec otherwise
-weird things do happen.
-The same can be done on the receiving side. Assume you read/write audio 
-samples with eg 8msec frequency
-(period size 64 samples).
-At each iteration you check if an RTP packet arrived (using nonblocking 
-recv() ) and if it arrived you insert it into
-the receiving buffer (check ordering etc).
+Thank you for the answer, but please write more detail about softvol.
+What should i need to do ?
 
-> - I get too much jitter
+Thanks
 
-this is not true. Jitter will always be here on a RTP data stream and 
-that's why the receiver must use a receiving
-buffer that is at least 2-3 times bigger than the payload of the RTP 
-packet (eg 20msec).
-For example if the receive buffer is 40msec you can have up to 40msec 
-jitter (eg a packet can come up to 40msec late)
-without any audio degradation. Keep in mind that an oversea SIP call can 
-often have hundreds of msec of latency
-and thus the jitter could be in the range of 100msec or more.
-This means you have to use an adequately sized buffer, otherwise you get 
-lots of late packets and therefore grabled audio.
+Best regards
 
-Anyway why not use jack as the API for your application ? It's easier to 
-program and you don't have to mess with
-setting up the soundcard, deal with different characterstics of 
-soundcards (like sample rate, sample size etc, ... ok
-ALSA plughw can ease some pain too).
+1g0R
 
-Jaroslav, while you are right about that periodsize can be != power of 
-two on many cards, I agree with Takashi about
-trying to use a power of two periodsize if possible.
-Anyway the algorithm I proposed in my former mail does not impose 
-restrictions on the period size except that
-it must be < than RTP audio period size.
-So if you use  RTP audio sizes of 20msec, you can use anything from  19 
-down to 1msec.
-But when choosing the capture size it is better to not go too low 
-otherwise you could get XRUNs and you load up
-the CPU more. Probably around 8-10msec is an ideal size because the 
-introduced jitter is < 10msec (which
-is not a problem for the receiver size which will have a receive buffer 
-of N*20msec) plus  you can probably run
-the app without SCHED_FIFO without getting significant xrun problems 
-(except in high load situations).
+----------------------------------------------------------------------
+ 1g0R - 01-18-05 14:01 
+----------------------------------------------------------------------
+Something like that:
+
+pcm.!default {
+type plug
+slave.pcm "dmixer"
+    }
+
  
+    pcm.dmixer  {
+type dmix
+ipc_key 1024
+slave {
+    pcm "hw:1,0"
+    period_time 0
+    period_size 1024
+    buffer_size 4096
+    rate 44100
+}
+bindings {
+    0 0
+    1 1
+}
+    }
+ 
+    ctl.dmixer {
+type hw
+card 0
+    }
 
->
-> If I make poll timeout every 20ms in the main loop,
-> I'm sure I get 20ms worth of data
-> so I can busy loop to reading (in blocking mode) all samples
-> (If I would want to enforced that period is power of two, I could
-> choose the max power of two number of samples that is divider of the 
-> required number of samples)
-> That would be 8000HZ sampling for 20ms => 160 sample per packet
-> => 5 32samples reads
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+======================================================================
 
-
-5 x 32 sample reads means you must wake up the thread each 4msec, 
-perhaps a bit of a waste.
-Plus I would not trust the OS that you get woken up at the right time, 
-but since I don't know ALSA's internals
-well it could be that it does not matter since ALSA might queue up the 
-samples in an internal ringbuffer for you
-which could make my proposed external ringbuffer redundant.
-The advantage of my proposal is that it works with any kind of audio 
-interface and with any period size.
-When coding apps I tend to make as little as possible assumptions about 
-underlying APIs and subsystems
-because if at a later time you want to switch to other APIs or hardware 
-changing the app gets very messy.
-
->
-> But I'd rather tell ALSA: "please wake up poll as soon as you have
-> 160 samples available". Is that feaseble? Can I expect to be always
-> woken up?
->
-> How
->
-> snd_pcm_sw_params_set_avail_min
-> snd_pcm_sw_params_set_sleep_min
-> snd_pcm_sw_params_set_start_threshold     
->
-> relates to my problem?
->
-> I tried to read the API doc but, since I've no experience with audio
-> programming, I didn't get all the points...
-
-> Can anyone point to a good poll based read example?
-
-On the http://www.alsa-project.org site there should be some examples, 
-otherwise try to check
-out the source of aplay.
-And if ALSA is too complex for you there's always jack  :) 
-http://jackit.sf.net
-What I prefer of jack is the ability to route audio from/to any app, use 
-many apps at the same
-time sharing the same soundcard etc.
-For example a SIP phone with jack support could easily record the 
-conversation into a HDR app
-(like eca, ardour etc), or you could feed music into it by simply 
-connecting the output from any app
-into the SIP phone. (eg connect the softsynth to the SIP phone and then 
-play a piece live for your
-party on the other side :) )
-
->     thanks again benno!
-
-no problem :)
-I wish you luck with your audio programming. It's sometimes very 
-frustrating until you get things
-running smoothly but the gratification is big and you can learn lots of 
-things when implementing
-real time audio/networking apps. (synchronization, buffering, 
-multithreading, jitter handling, scheduling etc).
-
-cheers,
-Benno
-http://www.linuxsampler.org
 
 
 
