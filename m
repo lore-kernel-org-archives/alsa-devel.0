@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000990]: Failure to build "make: *** src/pcm/ext: No such file or directory."
-Date: Tue, 15 Mar 2005 23:03:00 +0100
-Message-ID: <3ff406a8ce8263aab33b8548fd1c9683@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000992]: no supported card
+Date: Tue, 15 Mar 2005 23:13:30 +0100
+Message-ID: <9c3fc5e51cbbec7ee49477fabee6e306@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F15E8217
-	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 23:03:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1B5EC217
+	for <alsa-devel@alsa-project.org>; Tue, 15 Mar 2005 23:13:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,89 +23,57 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=990> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                
+Reported By:                rav0r
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   990
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   992
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4
 ======================================================================
-Date Submitted:             03-14-2005 07:44 CET
-Last Modified:              03-15-2005 23:03 CET
+Date Submitted:             03-14-2005 21:52 CET
+Last Modified:              03-15-2005 23:13 CET
 ======================================================================
-Summary:                    Failure to build "make: *** src/pcm/ext: No such
-file or directory."
+Summary:                    no supported card
 Description: 
-Build of alsa-lib 1.0.9rc1 ends like this:
-
-Making all in utils
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
-make[2]: Nothing to be done for `all'.
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1/utils'
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-cd . && /bin/sh ./config.status Makefile
-config.status: creating Makefile
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[2]: Entering directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[2]: Nothing to be done for `all-am'.
-make[2]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-make[1]: Leaving directory
-`/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1'
-/usr/bin/make -C src/pcm/ext jack CFLAGS="-g -Wall -O2"
-make: *** src/pcm/ext: No such file or directory.  Stop.
-make: *** [build-arch-stamp] Error 2
-build command failed in
-/home/jdthood/src/pkg-alsa/pkg-alsa/trunk/build-area/alsa-lib-1.0.9rc1
-Aborting.
-W: build directory not purged!
-
-The src/pcm/ext subdirectory does not exist.
-
-I attach the full build log.
+I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
+this model ever be supported?
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-15-05 23:01 
+ mikma - 03-14-05 22:57 
 ----------------------------------------------------------------------
-It may have been committed to CVS but Debian's build script runs
+CT4830 is a "Creative SBLive! Value 2" according to
+http://www.dearhoney.idv.tw/MUSEUM/soundcard-02.php
 
-   make -C src/pcm/ext jack CFLAGS="-g -Wall -O2"
-
-I guess it shouldn't, but the question remains: Where has the jack
-plugin gone?
+Have you tried the snd-emu10k1 module?
+http://alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+Live+Value.&chip=emu10k1&module=emu10k1
 
 ----------------------------------------------------------------------
- rlrevell - 03-15-05 23:03 
+ rav0r - 03-15-05 23:13 
 ----------------------------------------------------------------------
-rlrevell@mindpipe:~/cvs/alsa$ find -name pcm_jack.c
-./alsa-plugins/pcm/jack/pcm_jack.c
+checking for which soundcards to compile driver for... configure: error:
+Unsupported soundcard emu10k1
+
+That is the error I get.
+And yes, that really is my soundcard.
+Btw. Are there any chances that I could use 2 soundcards of the same type
+at the same moment?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 07:44 jdthood        New Issue                                    
-03-14-05 07:44 jdthood        File Added: alsa-lib_20050313jdth1.buildlog       
-            
-03-14-05 07:46 jdthood        File Added: 01_alpha_versioned_symbols.dpatch     
-              
-03-14-05 07:47 jdthood        File Added: 02_aclocal_libs_fix.dpatch            
-       
-03-15-05 22:41 jdthood        Note Added: 0003919                          
-03-15-05 22:55 rlrevell       Note Added: 0003921                          
-03-15-05 23:01 jdthood        Note Added: 0003922                          
-03-15-05 23:03 rlrevell       Note Added: 0003923                          
+03-14-05 21:52 rav0r          New Issue                                    
+03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:57 mikma          Note Added: 0003910                          
+03-15-05 23:13 rav0r          Note Added: 0003925                          
 ======================================================================
 
 
