@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000421]: Support for SiS 7013 based AC97 modems in intel8x0m
-Date: Tue, 10 Aug 2004 12:11:26 +0200 (CEST)
+From: jean@schurger.org
+Subject: Bugged ES1978 Maestro 2E (rev 10) ? make it works
+Date: Tue, 10 Aug 2004 12:38:09 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040810101126.0BD401102E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <20040810103809.GB6622@schurger.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7BD661F2
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 12:11:26 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,52 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+	I have an (old) laptop with an ESS Technology ES1978 Maestro 2E
+	(rev 10), that seems to have an "STAC9721/23" inside (id =
+	0x83847609).
 
-The following bug has been RESOLVED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000421
-======================================================================
-Reported By:                sashak
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     421
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-======================================================================
-Date Submitted:             08-03-2004 13:55 CEST
-Last Modified:              08-10-2004 12:11 CEST
-======================================================================
-Summary:                    Support for SiS 7013 based AC97 modems in intel8x0m
-Description: 
-Support for SiS 7013 based AC97 modems is needed. The patch is uploaded
-(tested with kernel 2.6.7).
-======================================================================
+	0000:00:08.0 Multimedia audio controller: ESS Technology ES1978 Maestro
+	2E (rev 10)
+	Subsystem: Dell: Unknown device 00aa
+	Flags: bus master, medium devsel, latency 32, IRQ 5
+	I/O ports at d800 [size=256]
+	Capabilities: [c0] Power Management
+	version 2
 
-----------------------------------------------------------------------
- perex - 08-10-2004 12:11 CEST 
-----------------------------------------------------------------------
-Applied to CVS.
+	in the snd_ac97_mixer() function,  the ac97 driver test the
+	AC97_REC_GAIN register by writing 0x8a06 on it, and if it read
+	well the same value, it enable the AC97_SCAP_AUDIO.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-03-04 13:55 sashak         New Bug                                      
-08-03-04 13:55 sashak         File Added: sis.patch                        
-08-10-04 12:11 perex          Bugnote Added: 0001550                       
-08-10-04 12:11 perex          Assigned To               => perex           
-08-10-04 12:11 perex          Resolution               open => fixed       
-08-10-04 12:11 perex          Status                   new => resolved     
-======================================================================
+	But, on my board, the last quartet of AC97_REC_GAIN, is always
+	readen as 0, then when the AC97_REC_GAIN is tested, it return
+	0x0a06 instead of 0x8a06, and the ac97 driver tell "(not audio
+	or modem codec)", then no sound card.
+
+	I simply added a test of 0x83847609 to |= 0x8000 to the test
+	value, and all works fine.
+
+
+--
+	Jean Schurger <jean@schurger.org>
 
 
 -------------------------------------------------------
