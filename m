@@ -1,13 +1,12 @@
-From: Oliver Schrempf <un1q@stud.uni-karlsruhe.de>
-Subject: Re: asoundrc problem
-Date: Mon, 3 Feb 2003 14:40:26 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: patch for hammerfall driver
+Date: Mon, 03 Feb 2003 09:49:59 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302031434160.17295-100000@rzstud2.stud.uni-karlsruhe.de>
-References: <s5h4r7lioor.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E18fhrT-0007US-00@sc8-sf-list1.sourceforge.net>
+References: <s5hznpdh6zv.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h4r7lioor.wl@alsa2.suse.de>
+In-reply-to: Your message of "Mon, 03 Feb 2003 13:40:52 +0100."
+             <s5hznpdh6zv.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,27 +16,45 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: "John S. Denker" <jsd@monmouth.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> it's the expected behavior, because the hardware doesn't support this
-> format.  it suppors only S32_LE.
+>> To be explicit:  whenever you see a bug, don't just
+>> ask how to fix this instance of the bug;  ask what
+>> it would take to make sure no bug of this ilk ever
+>> occurs again.
+>> 
+>> In this case:
+>>   a) It would help to have some comments in the code
+>> saying where the constants are coming from, so that
+>> misconceptions can be more easily spotted.
+>>   b) It would help to use correctly computed constants
+>> such as
 
-OK, I understand this, but when I use
-% arecord -Dhw:0,0 -fS32_LE -r48000 foo.wav
-I get
-arecord: set_params:792: Channels count non available
+actually, neither would have really helped very much here. i don't
+know who set the values to those that were here before. the values
+were clearly wrong on any reading of the code, and i've thought about
+them on previous readings. the values that were there before were not
+"buggy" - they were completely wrong.
 
-Is this expected, too?
+the problem here was social rather than technical: i never had a
+reason or the time to do anything to answer my questions about the
+values that were there.
 
-> but it seems that this is an alsa-lib bug although i can play
-> 4-channel wav file using two consumer cards...
-Hmm? Can I help here? I'm no expert in alsa-lib, but I can test on my
-hardware. Let me know if you need something.
-Thanks
+the last few days have seen me trying to debug some rather deep
+problems with a specific hdsp configuration, and i wanted to run JACK
+with 8192 frame periods. i couldn't do it, and ended up having to go
+back and deal with those numbers so that i could. 
 
-Oli
+>>   c) When applying the sizeof() operator, don't
+>> apply it to general-purpose types such as int, but
+>> rather apply it to an object that is provably
+>> of the type you care about, in this case something
 
+agreed. i had meant to remove the sizeof() from the patch before i
+posted it. 
+
+--p
 
 
 -------------------------------------------------------
