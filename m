@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Fri, 15 Oct 2004 18:43:02 +0200 (CEST)
+Date: Fri, 15 Oct 2004 18:51:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015164302.F16053B007@server.perex-int.cz>
+Message-ID: <20041015165116.EFD4E3B007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 903BC30C
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 18:43:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 45BDB30C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 18:51:17 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-15-2004 18:43 CEST
+Last Modified:              10-15-2004 18:51 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -58,6 +58,14 @@ softdevice plugin - using alsa).
 This is a kernel issue, not an ALSA bug.  If you want xrun-free operation
 you HAVE to use a kernel patched for low latency.  Please close this bug.
 
+----------------------------------------------------------------------
+ KAtiOS - 10-15-2004 18:51 CEST 
+----------------------------------------------------------------------
+Since when a low latency [so.. patched] kernel is needed to listen to music
+and play video correctly?
+Given that the processor isn't particulary weak and that's the only task
+of the system, it shouldn't be hard to keep pace.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -65,6 +73,7 @@ Date Modified  Username       Field                    Change
 10-15-04 16:27 KAtiOS         Distribution              => Gentoo Linux    
 10-15-04 16:27 KAtiOS         Kernel Version            => 2.6.9_rc4       
 10-15-04 18:43 lee            Bugnote Added: 0002168                       
+10-15-04 18:51 KAtiOS         Bugnote Added: 0002169                       
 ======================================================================
 
 
