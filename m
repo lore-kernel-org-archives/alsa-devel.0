@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: aplay playback-pointer
-Date: Tue, 13 Apr 2004 18:25:29 +0200 (METDST)
+Subject: Re: Adding a Mute Switch to snd-tvmixer
+Date: Tue, 13 Apr 2004 18:39:08 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0404131825060.10741-100000@studcom.urz.uni-halle.de>
-References: <000901c4204e$6f0b3580$0403a8c0@win2K>
+Message-ID: <Pine.HPX.4.33n.0404131832410.10741-100000@studcom.urz.uni-halle.de>
+References: <407ABE33.8030505@linuxmail.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <000901c4204e$6f0b3580$0403a8c0@win2K>
+In-reply-to: <407ABE33.8030505@linuxmail.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,24 +17,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
-Cc: alsa-devel@lists.sourceforge.net
+To: perrye@gilfillan.org
+Cc: alsa-list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Mathieu Rondonneau wrote:
-> I'm writting an audio driver and i have some trouble.
->
-> when i use:
->  dd if=file.wav of=/dev/audio0
-> the oss part of the ALSA driver seams to be used and some sound (not good
-> sound but noise) are coming out. (the playback_pointer operator is called)
->
-> but when i use aplay:
->  aplay file.wav
-> nothing coming out, and the playback_pointer operator is not called.
-> nothing is called between the start and the stop trigger.
+Perry Gilfillan wrote:
+> I've a couple of people using my snd-tvmixer module with success now,
+> and would appreciate comments/critcism/abuse (any thing is better than
+> the deathly silence my first announcement yeilded) from people more
+> experienced than myself.
 
-Do you call snd_pcm_period_elapes() in your interrupt routine?
+Looks nice.  (Not that I actually have used it :)
+
+> In particular, I'd like to know what I may have missed in getting a Mute
+> Switch to show up in gnome-alsa-mixer.
+
+Does it show up in alsamixer?
+In /etc/asound.state after running "alsactl store"?
 
 
 Regards,
