@@ -1,19 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: New mixer api.
-Date: Sat, 08 Nov 2003 23:20:19 +0000
+From: "Ryan Cassidy" <rcassidy@stanford.edu>
+Subject: Interrupt-driven (or callback/handler?), Full-duplex (simultaneous capture/playback) without using JACK
+Date: Sat, 8 Nov 2003 16:18:46 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FAD7A33.3020106@superbug.demon.co.uk>
+Message-ID: <000b01c3a657$0b150b80$264440ab@roboserv1>
+Reply-To: <rcassidy@stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-31.mail.demon.net (anchor-post-31.mail.demon.net [194.217.242.89])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id AAA10216
-	for <alsa-devel@alsa-project.org>; Sun, 9 Nov 2003 00:20:31 +0100
-Received: from superbug.demon.co.uk ([158.152.58.16])
-	by anchor-post-31.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1AIcNX-000B0A-0V
-	for alsa-devel@alsa-project.org; Sat, 08 Nov 2003 23:20:28 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,16 +17,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@lists.sourceforge.net
+Cc: ryanc@ieee.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi all,
 
-I saw cvs checkins for a mixer interface with dB levels. Is this useable 
-yet?
+I am trying to write an application that uses ALSA interrupt-driven
+(which I guess is obtained by adding PCM handler(s) in ALSA?),
+full-duplex (simultaneous capture/playback) using the ALSA PCM API
+directly (i.e. not using JACK).
 
-Cheers
-James
+My question: do I only need to register one callback/handler function to
+take care of both capture and playback?  My hope is that when I link the
+capture and playback streams, and register a single handler with either
+capture or playback, this handler will be called whenever there is BOTH
+capture data to be read and a free playback buffer to be written (?).
+Is this the case?
+
+Any help, info., or advice GREATLY appreciated.
+
+Cheers, rjc.
+--
+Ryan Cassidy
+Electrical Engineering Graduate Student, CCRMA Researcher
+Stanford University
+E-mail: ryanc@ieee.org
+ 
+
 
 
 
