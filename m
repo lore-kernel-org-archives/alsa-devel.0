@@ -1,9 +1,12 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: Status of ALSA documentation?
-Date: Fri, 15 Feb 2002 00:03:00 -0500
-Message-ID: <200202150507.AAA05873@renoir.op.net>
-In-reply-to: Your message of "Fri, 15 Feb 2002 14:56:11 +1000."
-             <E16baPy-0005d8-00@usw-sf-list1.sourceforge.net>
+From: Paul Davis <pbd@op.net>
+Subject: Re: MPU401 and native ALSA sequencer device?
+Date: Fri, 15 Feb 2002 00:05:24 -0500
+Message-ID: <200202150509.AAA06147@renoir.op.net>
+Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id GAA19051
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 06:09:53 +0100
+In-reply-to: Your message of "Thu, 14 Feb 2002 22:52:54 GMT."
+             <20020214225254.38324.qmail@web13102.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,42 +15,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Mark Constable <markc@renta.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->I recently showed a Mac user interested in using Linux
->for live stage work (no gui needed) the ALSA site so they
->could get some idea of progress... they just laughed and
->said there was _nothing_ there to help them evaluate whether
->ALSA (therefor Linux) was going to be useful to them... well,
->not within a 5 minute perusal anyway.
+>Hi,
+>
+>My ALSA sound driver uses an MPU401 for MIDI support,
+>and the OSS emulation module snd-seq-oss works well
+>with the snd-mpu401-uart module. However, there are no
+>native ALSA sequencer devices:
+>
+>[root@wittsend src]# cat /proc/asound/seq/clients
+>Client info
+>  cur  clients : 3
+>  peak clients : 3
+>  max  clients : 192
 
-i think this is an excellent, critical point.
+you've just demonstrated the existence of the ALSA sequencer.
 
-with ALSA's adoption into the kernel, we have both (1) a chance that
-more people will write HOWTOs and code but also (2) more people saying
-"what is it?" and "how do i ....?" the current web site fails
-completely at both tasks.
+>Client   0 : "System" [Kernel]
+>  Port   0 : "Timer" (Rwe-)
+>  Port   1 : "Announce" (R-e-)
+>    Connecting To: 63:0
+>Client  63 : "OSS sequencer" [Kernel]
+>  Port   0 : "Receiver" (-we-)
+>    Connected From: 0:1
+>  Output pool :
+>    Pool size          : 1024
+>    Cells in use       : 0
+>    Peak cells in use  : 1024
+>    Alloc success      : 12370
+>    Alloc failures     : 0
+>Client  64 : "External MIDI 0" [Kernel]
+>  Port   0 : "MIDI 0-0" (RWeX)
+>
 
-as much as i think we are still aiming for uniform operation for all
-cards (i.e. they just work), i think a good place to start with
-interface HOWTOs would be to take Dan's soundcard matrix, and add
-links from each card name to a HOWTO. The default set of HOWTOs can be
-empty, and we can add to them as time goes on. By empty, what I really
-mean is a boilerplate document that says "if you have this type of
-soundcard, just do X, Y, and Z and it will work". 
+there is no "ALSA Sequencer" as a specific client. each client listed
+is a client of the ALSA sequencer. client 63 is a special client that
+handles OSS sequencer data.
 
-there should also be a way to collect card-specific bug reports and
-accessing them all from the HOWTO page. 
+>Since the OSS layer plays music, it seems logical to
+>assume that all the hardware bit-twiddling has been
+>done already. I am therefore assuming that I just need
+>to register some native ALSA sequencer device. Could
+>someone point me towards a simple example somewhere,
+>please? I have tried looking at the opl3_seq.c file
+>but it seems to be doing a LOT more than just
+>registering a device.
 
-of course a wiki would be an even better way of collecting card/setup
-specific quirks, but that seems a bit much to ask for right now.
-
-of course, it becomes critical that the matrix be kept up to date,
-which could also use a wiki-style input system.
+what is it that you want to do? if you want to send midi out of the
+MPU401 external midi port, just connect up a program like pmidi to
+client 64, port 0.
 
 --p
+
 
 _______________________________________________
 Alsa-devel mailing list
