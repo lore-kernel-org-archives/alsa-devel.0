@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000190]: Compilation Error 2.6.4 /usr/src/linux/include/linux/pci.h
-Date: Sat, 19 Mar 2005 09:48:05 +0100
-Message-ID: <7a2f5f43fcefadee494f44d027f297b4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000235]: The alsa bug tracking system cannot add bugnote.
+Date: Sat, 19 Mar 2005 09:46:44 +0100
+Message-ID: <7219e6973fde54a6a00d2204a97a13ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D655D18A
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:48:05 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D0F215C
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 09:46:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,73 +23,56 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=190> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=235> 
 ======================================================================
-Reported By:                Sean
-Assigned To:                tiwai
+Reported By:                jcdutton
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   190
-Category:                   0_compilation problem_!!!
+Issue ID:                   235
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     feedback
+Status:                     new
 Distribution:               
-Kernel Version:             2.6.5
+Kernel Version:             
 ======================================================================
-Date Submitted:             04-06-2004 01:52 CEST
-Last Modified:              03-19-2005 09:48 CET
+Date Submitted:             04-26-2004 13:44 CEST
+Last Modified:              03-19-2005 09:46 CET
 ======================================================================
-Summary:                    Compilation Error 2.6.4
-/usr/src/linux/include/linux/pci.h
+Summary:                    The alsa bug tracking system cannot add bugnote.
 Description: 
-Building Alsa driver 1.0.4 failed on Linux 2.6.5 building memory.o with the
-following error:
-In file included from
-/root/alsa/alsa-driver-1.0.4/alsa-kernel/core/memory.c:29,                
-from /root/alsa/alsa-driver-1.0.4/acore/memory.c:2:
-include/linux/pci.h:654: error: parse error before numeric constant
-
+There is a link when viewing any bug that has a
+"[ Add Bugnote ]" link.
+If a bug has been closed, this link does not work.
+How is one supposed to re-open a bug, if it has been incorrectly closed,
+or even add a bugnote to any existing bug, if one has more information
+that might help.
+E.g. bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=232 It was
+incorrectly closed, because it is not a duplicate to
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=202. The problem still
+persists even after using the latest alsa cvs.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 04-25-04 10:15 
+ perex - 04-26-04 15:03 
 ----------------------------------------------------------------------
-Note that you have to way one day until anonymous CVS is synced on
-SourceForge.
-Please try again.
+Only reporter or developer can reopen a closed bug. You may still do a new
+report
+which will refer to the previous bug-report.
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:48 
+ jdthood - 03-19-05 09:46 
 ----------------------------------------------------------------------
-This one can be closed.
+This can be closed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-06-04 01:52 Sean           New Issue                                    
-04-06-04 01:52 Sean           Kernel Version            => 2.6.5           
-04-13-04 19:39 tiwai          Note Added: 0000794                          
-04-13-04 23:21 Sean           File Added: .config                          
-04-13-04 23:22 Sean           Note Added: 0000800                          
-04-16-04 12:02 tiwai          Note Added: 0000834                          
-04-16-04 22:32 Sean           Note Added: 0000845                          
-04-20-04 12:50 tiwai          Note Added: 0000875                          
-04-20-04 19:12 Sean           Note Added: 0000888                          
-04-23-04 17:19 tiwai          Note Added: 0000901                          
-04-23-04 21:47 Sean           Note Added: 0000919                          
-04-23-04 21:48 Sean           File Added: config.log                       
-04-24-04 21:58 tiwai          Status                   assigned => resolved
-04-24-04 21:58 tiwai          Resolution               open => fixed       
-04-24-04 21:58 tiwai          Assigned To              perex => tiwai      
-04-24-04 21:58 tiwai          Note Added: 0000929                          
-04-25-04 01:28 Sean           Status                   resolved => feedback
-04-25-04 01:28 Sean           Resolution               fixed => reopened   
-04-25-04 01:28 Sean           Note Added: 0000930                          
-04-25-04 01:29 Sean           File Added: config.log                       
-04-25-04 10:15 perex          Note Added: 0000936                          
-03-19-05 09:48 jdthood        Note Added: 0004027                          
+04-26-04 13:44 jcdutton       New Issue                                    
+04-26-04 15:03 perex          Note Added: 0000951                          
+03-19-05 09:46 jdthood        Note Added: 0004026                          
 ======================================================================
 
 
