@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000704]: low input levels
-Date: Mon, 28 Mar 2005 03:58:32 +0200
-Message-ID: <eb4faea9866585ce407e4aec28f1ce53@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000601]: Getting error while trying to insert the modules into the kernel>>cannot proceede further
+Date: Mon, 28 Mar 2005 04:03:47 +0200
+Message-ID: <a30f3cfcdcf46b1b7e52e31968d50ae9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A693C253
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 03:58:33 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0A1DD253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:03:48 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,60 +21,88 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=601> 
 ======================================================================
-Reported By:                spamatica
+Reported By:                djcobra
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   704
-Category:                   PCI - ice1712
+Project:                    ALSA - utils
+Issue ID:                   601
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
+Status:                     closed
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-03-2004 21:46 CET
-Last Modified:              03-28-2005 03:58 CEST
+Date Submitted:             10-24-2004 21:16 CEST
+Last Modified:              03-28-2005 04:03 CEST
 ======================================================================
-Summary:                    low input levels
+Summary:                    Getting error while trying to insert the modules
+into the kernel>>cannot proceede further
 Description: 
-As was noted recently on Linx audio user. It seems atleast the DELTA cards
-(I've got a Delta 44) have too low input level. Others reported that it
-differs when running the same card in windows. Myself I run it exclusively
-in Linux and have found that recording external signals I have to turn the
-volume for the external (pro) equipment, to max to get a reasonably high
-signal.
+sir,
+i have followed the installation instructions of the above mentioned
+driver to the letter according to what is given in the link :
+http://www.alsa-project.org/alsa-doc/doc-php/template.php?company=Creative+Labs&card=Sound+Blaster+PCI128+%28earlier+model+CT4700%29.&chip=ES1370&module=ens1370
+but unfortunatly>>i am not able to proceed further after the step where i
+am supposed to insert the modules into the keranl>>as when i try to run
+the given comand :
+
+modprobe snd-ens1370;modprobe snd-pcm-oss;modprobe snd-mixer-oss;modprobe
+snd-seq-oss
+
+i get an error : 
+
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o:
+init_module: No such device
+Hint: insmod errors can be caused by incorrect module parameters,
+including invalid IO or IRQ parameters.
+      You may find more information in syslog or the output from dmesg
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o failed
+/lib/modules/2.4.22-1.2115.nptl/kernel/sound/pci/snd-ens1370.o: insmod
+snd-ens1370 failed
+
+
+Kindly help me solve this problem so that i too can listen to wonderful
+music in the eccelent quality provided by this awesome driver that u have
+created
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 15:20 
+ jdthood - 03-20-05 13:30 
 ----------------------------------------------------------------------
-Submitter:  Are "IPGA Analog Capture Volume" adjusted properly?
+This can be closed.
 
 ----------------------------------------------------------------------
- spamatica - 03-27-05 22:59 
+ djcobra - 03-20-05 15:37 
 ----------------------------------------------------------------------
-Sorry, was meaning to follow up on this one, this seems to have been the
-problem. 
-I don't know if there's a way for me to close this bug, I'd suggest doing
-so anyway.
+thank you for the suggestion tiwai
+im sorri for not responding earlier as i was unwelll >> hospitalised
+will check up immedeatly about the driver u mentioned and reply once
+again
+sorri once again for my delay in replying
+
+Cobra.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 21:46 spamatica      New Issue                                    
-12-06-04 20:56 tiwai          Note Added: 0002734                          
-03-23-05 15:20 jdthood        Note Added: 0004157                          
-03-27-05 22:59 spamatica      Note Added: 0004225                          
-03-28-05 03:58 jdthood        Status                   new => resolved     
-03-28-05 03:58 jdthood        Resolution               open => fixed       
+10-24-04 21:16 djcobra        New Issue                                    
+10-26-04 22:19 djcobra        Issue Monitored: djcobra                     
+11-09-04 19:24 tiwai          Note Added: 0002347                          
+03-20-05 13:30 jdthood        Note Added: 0004086                          
+03-20-05 13:34 perex          Status                   new => resolved     
+03-20-05 13:34 perex          Resolution               open => suspended   
+03-20-05 15:37 djcobra        Status                   resolved => feedback
+03-20-05 15:37 djcobra        Resolution               suspended => reopened
+03-20-05 15:37 djcobra        Note Added: 0004092                          
+03-28-05 04:03 jdthood        Status                   feedback => closed  
+03-28-05 04:03 jdthood        Resolution               reopened => not an issue
 ======================================================================
 
 
