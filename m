@@ -1,13 +1,16 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000231]: ALSA plays only one sound at a time
-Date: Fri, 16 Jul 2004 12:41:32 +0200 (CEST)
+From: Andrew Gaydenko <a@etver.com>
+Subject: Re: build error in pcm_native.c
+Date: Fri, 16 Jul 2004 14:41:40 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716104132.24F4626008@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200407161441.40443@goldspace.net>
+References: <200407161357.56902@goldspace.net> <200407161414.54729@goldspace.net> <s5hn0206yaq.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 58BB0255
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:41:32 +0200 (MEST)
+In-Reply-To: <s5hn0206yaq.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,288 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+Have applied the patch. Unfortunately, the same: 
 
-The following bug has been CLOSED
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000231
-======================================================================
-Reported By:                macdonalder
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     231
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     closed
-Distribution:               Slackware
-Kernel Version:             2.6.5
-======================================================================
-Date Submitted:             04-25-2004 04:00 CEST
-Last Modified:              07-16-2004 12:41 CEST
-======================================================================
-Summary:                    ALSA plays only one sound at a time
-Description: 
-Upon installing Slackware then Dropline Gnome I removed any old ALSA
-installs and installed 1.0.4 from sources. Opening one application to play
-music works, but sound from a second opened app doesn't start playing
-uptil the first app is closed or the sound is stopped.
+gcc -D__KERNEL__ -DMODULE=1 -I/wrk/cvs/alsa/alsa-driver/include  -I/lib/modules/2.4.26-lck1/build/include -O2 -mpreferred-stack-boundary=2 -march=i686 -D__SMP__ -DCONFIG_SMP -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix include  -DKBUILD_BASENAME=pcm_native   -c -o pcm_native.o pcm_native.c
+pcm_native.c: In function `snd_pcm_mmap_data_Rsmp_c77fab7a':
+pcm_native.c:3157: warning: passing arg 1 of `remap_page_range_Rsmp_69d01e73' makes integer from pointer without a cast
+pcm_native.c:3157: error: incompatible type for argument 4 of `remap_page_range_Rsmp_69d01e73'
+pcm_native.c:3157: error: too many arguments to function `remap_page_range_Rsmp_69d01e73'
+make[1]: *** [pcm_native.o] Error 1
 
-As an example, I can open up Rhythmbox, stream music from di.fm, open up
-BMP to play an MP3, and BMP will just wait at 0:00 on the MP3 until I exit
-Rhythmbox. Once Rhythmbox closes, BMP starts playing as it normally would.
-Nothing crashes or faults as it patiently waits its turn. This problem
-isn't isloated to Rhythmbox and BMP, as it is reproducible with Gaim,
-Totem, etc.
-======================================================================
+Andrew
 
-----------------------------------------------------------------------
- macdonalder - 04-25-2004 04:59 CEST 
-----------------------------------------------------------------------
-Sorry... it would seem as though this problem has already been addressed
-and dismissed as a support request rather than an actual bug. I'll post
-here anyways what I've been trying any if anyone feels like posting input
-please feel free.
+======= On Friday 16 July 2004 14:28, you wrote: =======
+At Fri, 16 Jul 2004 14:14:54 +0400,
+Andrew Gaydenko wrote:
+> 
+> There are no uncommented strings for this macro. The only is:
+> 
+> /* #undef CONFIG_OLD_REMAP_PAGE_RANGE */
 
-After looking though the steps that were taken there, I've tried running
-two instances of aplay and I still get the same results; one sound is
-queued and doesn't start until the first instance runs though.
+Well then configure script couldn't detect it.
+Please try the attached patch.
 
-Here is the output from one instance of aplay:
 
-macdonalder@bellerophon:~$ aplay -v 2.wav
-Playing WAVE '2.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
-Plug PCM: Route conversion PCM (sformat=S16_LE)
-Transformation table:
-0 <- 0
-1 <- 0
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : U8
-subformat    : STD
-channels     : 1
-rate         : 11025
-exact rate   : 11025 (11025/1)
-msbits       : 8
-buffer_size  : 5512
-period_size  : 1378
-period_time  : 124988
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1378
-xfer_align   : 1378
-start_threshold  : 5512
-stop_threshold   : 5512
-silence_threshold: 0
-silence_size : 0
-boundary     : 1444937728
-Slave: Hardware PCM card 0 'NVidia nForce2' device 0 subdevice 0
- 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 11025
-exact rate   : 11025 (11025/1)
-msbits       : 16
-buffer_size  : 5512
-period_size  : 1378
-period_time  : 124988
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1378
-xfer_align   : 1378
-start_threshold  : 5512
-stop_threshold   : 5512
-silence_threshold: 0
-silence_size : 0
-boundary     : 1444937728
+> Andrew
+> 
+> P.S. Must I reply to tiwai@suse.de or alsa-devel@lists.sourceforge.net
+>      or both?
 
-After adding the following .asoundrc to /home/macdonalder/:
+Both please.  Otherwise the information won't go outside.
+I don't like to keep such things secret :)
 
-pcm.nforce-hw {
-type hw
-card 0
-}
-                                                                          
-    
-pcm.!default {
-type plug
-slave.pcm "nforce"
-}
-                                                                          
-    
-pcm.nforce {
-type dmix
-ipc_key 1234
-slave {
-pcm "hw:0,0"
-period_time 0
-period_size 1024
-buffer_size 4096
-rate 44100
-}
-}
-                                                                          
-    
-ctl.nforce-hw {
-type hw
-card 0
-}
 
-Running two instances of aplay does work, however if I start with an
-instance of BMP or Rhythmbox aplay doesn't start until BMP or Rhythmbox
-are finished. This is the output from aplay the second time around with
-the addition of the .asoundrc.
+Takashi
 
-macdonalder@bellerophon:~$ aplay -v 1.wav
-Playing WAVE '1.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
-Plug PCM: Rate conversion PCM (44100, sformat=U8)
-Its setup is:
-stream       : PLAYBACK
-access       : RW_INTERLEAVED
-format       : U8
-subformat    : STD
-channels     : 1
-rate         : 11025
-exact rate   : 11025 (11025/1)
-msbits       : 8
-buffer_size  : 1024
-period_size  : 256
-period_time  : 23219
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 256
-xfer_align   : 256
-start_threshold  : 1024
-stop_threshold   : 1024
-silence_threshold: 0
-silence_size : 0
-boundary     : 268435456
-Slave: Route conversion PCM (sformat=S16_LE)
-Transformation table:
-0 <- 0
-1 <- 0
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : U8
-subformat    : STD
-channels     : 1
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 8
-buffer_size  : 4096
-period_size  : 1024
-period_time  : 23219
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1024
-xfer_align   : 1024
-start_threshold  : 4096
-stop_threshold   : 4096
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Slave: Direct Stream Mixing PCM
- 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 4096
-period_size  : 1024
-period_time  : 23219
-tick_time    : 0
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1024
-xfer_align   : 1024
-start_threshold  : 4096
-stop_threshold   : 4096
-silence_threshold: 0
-silence_size : 0
-boundary     : 1073741824
-Hardware PCM card 0 'NVidia nForce2' device 0 subdevice 0
- 
-Its setup is:
-stream       : PLAYBACK
-access       : MMAP_INTERLEAVED
-format       : S16_LE
-subformat    : STD
-channels     : 2
-rate         : 44100
-exact rate   : 44100 (44100/1)
-msbits       : 16
-buffer_size  : 4096
-period_size  : 1024
-period_time  : 23219
-tick_time    : 1000
-tstamp_mode  : NONE
-period_step  : 1
-sleep_min    : 0
-avail_min    : 1024
-xfer_align   : 1024
-start_threshold  : 1
-stop_threshold   : 1073741824
-silence_threshold: 0
-silence_size : 1073741824
-boundary     : 1073741824
-
-edited on: 04-25-04 04:59
-
-----------------------------------------------------------------------
- macdonalder - 04-25-2004 06:58 CEST 
-----------------------------------------------------------------------
-Ha what to you know, reading the manual works (looked at dmix plugin over
-on the wiki) ;)
-
-Problem solved, sorry for the bug-report.
-
-----------------------------------------------------------------------
- perex - 04-25-2004 09:51 CEST 
-----------------------------------------------------------------------
-Solved, configuration problem.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-25-04 04:00 macdonalder    New Bug                                      
-04-25-04 04:00 macdonalder    Distribution              => Slackware       
-04-25-04 04:00 macdonalder    Kernel Version            => 2.6.5           
-04-25-04 04:20 macdonalder    Bugnote Added: 0000931                       
-04-25-04 04:29 macdonalder    Bugnote Edited: 0000931                      
-04-25-04 04:56 macdonalder    Bugnote Edited: 0000931                      
-04-25-04 04:59 macdonalder    Bugnote Edited: 0000931                      
-04-25-04 04:59 macdonalder    Bugnote Edited: 0000931                      
-04-25-04 06:58 macdonalder    Bugnote Added: 0000933                       
-04-25-04 09:51 perex          Bugnote Added: 0000935                       
-04-25-04 09:51 perex          Assigned To               => perex           
-04-25-04 09:51 perex          Resolution               open => fixed       
-04-25-04 09:51 perex          Status                   new => resolved     
-07-16-04 12:41 tiwai          Status                   resolved => closed  
-======================================================================
 
 
 -------------------------------------------------------
