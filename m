@@ -1,13 +1,16 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: USB Audio/Midiman - partial success
-Date: Mon, 09 Sep 2002 19:46:21 +0200
+From: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Subject: Re: do apps need to care for xfer_align ???
+Date: Mon, 9 Sep 2002 10:43:57 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D7CDE6D.85602095@ladisch.de>
-References: <Pine.LNX.4.31.0209090841350.25400-100000@lorien.wv.mentorg.com>
+Message-ID: <20020909174357.84502.qmail@web11505.mail.yahoo.com>
+References: <Pine.LNX.4.21.0209091638060.10104-100000@gate.perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from web11505.mail.yahoo.com (web11505.mail.yahoo.com [216.136.172.37])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id TAA10137
+	for <alsa-devel@alsa-project.org>; Mon, 9 Sep 2002 19:44:04 +0200
+In-Reply-To: <Pine.LNX.4.21.0209091638060.10104-100000@gate.perex.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,65 +19,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Fedor Pikus <fedor_pikus@mentorg.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Fedor G. Pikus wrote:
-> > > Why doesn't 48KHz work, and where are higher rates, where is 24bit
-> > > recording?
-> >
-> > These features should be available if the device has correct descriptors.
-> > Please post the output of lsusb.
+> It's software only limit for read/write transfers. The direct transfers
+> (mmap) don't take care about this limit. The idea is to avoid using very
+> small transfer chunks which are inefficient. Application might change
+> this value from 1 (no control) to buffer_size (in samples), but values
+> bigger than period_size hasn't any sense anyway.
 > 
-> Wow, that's a long output. Here is is:
-> ...
+> The default value for xfer_align is period_size.
 
-Let's make a nice table from this:
+Since 'xfer_align' must be equal or greater than 'min_align', how can we get
+this value through the library?
 
-intf alt endpt  rate  bits
-0    0   (control, pcm0)
-1    0
-1    3   out 3  8-48  24
-1    4   out 3  8-44  16
-2    0
-2    3   in 5   8-48  24
-2    4   in 5   8-44  16
-3    0   (control, pcm1)
-4    0
-4    1   out 3  88-96 24
-4    2   out 3  88-96 16
-4    3   out 3  8-48  24
-4    4   out 3  8-48  16
-5    0
-5    1   in 5   88-96 24
-5    2   in 5   88-96 16
-5    3   in 5   8-48  24
-5    4   in 5   8-48  16
-
-The good news is that 24 bits (S24_3LE) should work fine (up to 48 kHz).
-
-The bad news is that this device appears to be broken by design.
-
-There are two PCM devices, but both use the same endpoints.
-Consequently, when the driver wants to record from pcm1, it reads
-from endpoint 5, but the USB driver then searches for descriptors for
-EP 5 and finds those from pcm0 which do not have information about
-88.2/96 kHz or 48 kHz at 16 bits.
-
-It may be possible to fake better descriptors by adding a quirk and
-some code to the snd-usb-audio driver. I'm not sure whether the host
-controller driver had to be aware of the fake, too -- currently, the
-alternate settings 1 and 2 wouldn't be found, and wMaxPacketSize
-would be too small for 96 kHz.
-
-The two PCM devices cannot be used at the same time anyway, so I think
-creating a quirk for interface 0 which says "ignore this" could work.
-Takashi, any comments?
+Thanks,
+Guilhem.
 
 
-Regards,
-Clemens
+__________________________________________________
+Do You Yahoo!?
+Yahoo! Finance - Get real-time stock quotes
+http://finance.yahoo.com
 
 
 -------------------------------------------------------
