@@ -1,15 +1,12 @@
-From: Markus Schoder <markus_schoder@yahoo.de>
-Subject: aplay crash in alsa-*-0.9.0beta12
-Date: Tue, 12 Mar 2002 01:10:08 +0100
+From: German Gomez Garcia <german@hal9000.piraos.com>
+Subject: Fwd: Emu10k1 SPDIF passthru doesn't work if HIGHMEM is enabled
+Date: Tue, 12 Mar 2002 01:38:19 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <16kZrk-1VaOzgC@fmrl04.sul.t-online.com>
+Message-ID: <20020312003819.GA24406@hal9000.piraos.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Received: from mailout10.sul.t-online.com (mailout10.sul.t-online.com [194.25.134.21])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA03788
-	for <alsa-devel@alsa-project.org>; Tue, 12 Mar 2002 01:11:52 +0100
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="45Z9DzgjV8m4Oswq"
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,32 +15,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: ALSA Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-I experienced crashes with aplay from alsa-*-0.9.0beta12 when playing a
-.wav file.  I tracked it down to the snd_pcm_plugin_write_areas
-function in pcm/pcm_plugin.c of libasound.
+--45Z9DzgjV8m4Oswq
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The result variable in the loop can get larger than size.  It is
-subtracted from size but since size is unsigned it will wrap
-around to an insanely high value and either loop forever or
-eventually crash.
+-- Forwarded message from "David S. Miller" <davem@redhat.com> --
 
-The reason for this behaviour seems to be that slave_frames can get
-bigger than frames due to some resampling being done in the function
-snd_pcm_rate_expand in pcm/pcm_rate.c.
+From: "David S. Miller" <davem@redhat.com>
+To: alan@lxorguk.ukuu.org.uk
+Cc: rui.p.m.sousa@clix.pt, german@piraos.com, jcm@netcabo.pt,
+        linux-kernel@vger.kernel.org, emu10k1-devel@lists.sourceforge.net,
+        steve@math.upatras.gr, d.bertrand@ieee.org, dledford@redhat.com
+Date: Thu, 28 Feb 2002 17:03:17 -0800 (PST)
+Subject: Re: [Emu10k1-devel] Re: Emu10k1 SPDIF passthru doesn't work if
 
-I patched the snd_pcm_plugin_write_areas function by not allowing more
-than frames to be subtracted from size.  This fixed the crash but I am
-now experiencing some garbage being played at the end of the .wav.
+   From: Alan Cox <alan@lxorguk.ukuu.org.uk>
+   Date: Fri, 1 Mar 2002 01:07:27 +0000 (GMT)
+  =20
+   The cast befor ethe cpu_to_ is safe if its 32bit I/O only. Maybe we shou=
+ld
+   have cpu_to_le_dma_addr_t 8)
 
-Any ideas?
+Actually, the cast to 32-bit is safe if you've set your DMA mask
+properly :-)
 
---
-Markus
+-- End forwarded message --
+
+	Please could anybody check that ALSA is doing things correctly
+with HIGHMEM enabled? it seems that it's fixed now in the oss driver (at
+least it's working for me) but ALSA is still broken if HIGHMEM is enabled.
+
+	Regards,
+
+	- german
+
+--=20
+Send email with "SEND GPG KEY" as subject to receive my GnuPG public key.
+
+--45Z9DzgjV8m4Oswq
+Content-Type: application/pgp-signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.0.6 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+iD4DBQE8jU37t47D3sninbkRAu9uAJd6gZk6yCduPALMWdjWtE4VzRuxAJ9HQPYf
+7yBuFSzyNMNWYG3w/Vn+7g==
+=pdK+
+-----END PGP SIGNATURE-----
+
+--45Z9DzgjV8m4Oswq--
 
 _______________________________________________
 Alsa-devel mailing list
