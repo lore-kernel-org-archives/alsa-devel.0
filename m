@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000169]: Oopses when closing alsaplayer
-Date: Sat, 19 Mar 2005 12:44:52 +0100
-Message-ID: <18dcfc2199da6c0cbac05494a4b23c40@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000553]: Experimental feature for dual codecs produce choppy sound
+Date: Sat, 19 Mar 2005 12:54:49 +0100
+Message-ID: <05e17d00383b5a02449a264322128f33@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 59C741D8
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:44:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 644CA139
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 12:54:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,59 +23,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=169> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=553> 
 ======================================================================
-Reported By:                palcolor
+Reported By:                cgdef
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   169
-Category:                   PCI - intel8x0
+Issue ID:                   553
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.5-rc2
+Distribution:               Gentoo
+Kernel Version:             2.6.9-rc2
 ======================================================================
-Date Submitted:             03-30-2004 13:16 CEST
-Last Modified:              03-19-2005 12:44 CET
+Date Submitted:             09-30-2004 07:51 CEST
+Last Modified:              03-19-2005 12:54 CET
 ======================================================================
-Summary:                    Oopses when closing alsaplayer
+Summary:                    Experimental feature for dual codecs produce choppy
+sound
 Description: 
-Hi all
-I´m getting oopses (only and always) when closing alsaplayer. mpg123 or
-dcd works fine. I've found these messages at the alsa-devel list:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg04024.html
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg03891.html
-
-Seem to be the same problem than mine.
-
-
+I first discovered this feature in the 2.6.9-rc2 kernel. There is a option
+which allows you to enable support for dual codecs in the cs-46xx driver.
+I have a Turtle Beach Santa Cruz card and it does come with dual codecs
+(CS 4297A-JQ and CS 4294-JQ) and a dsp (CS 4630). If the alsa driver is
+compiled with support for dual codecs the sound produced is often choppy
+and way bellow https://bugtrack.alsa-project.org/alsa-bug/view.php?id=21#90dB
+SNR (specs provided by the manufacturer and verified
+by several reviewers). 
+However, if the alsa driver is compiled without the experimental code and
+support for only one codec the sound problems disapear compleatelly.
 ======================================================================
 
 ----------------------------------------------------------------------
- palcolor - 03-31-04 20:13 
+ jdthood - 03-19-05 12:54 
 ----------------------------------------------------------------------
-Uploaded the Oops and ksymoops output.
-
-----------------------------------------------------------------------
- jdthood - 03-19-05 12:44 
-----------------------------------------------------------------------
-Submitter: Are you still getting these oopsen?
+Do you see any improvement in more recent ALSA releases?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-30-04 13:16 palcolor       New Issue                                    
-03-30-04 13:16 palcolor       Distribution              => debian          
-03-30-04 13:16 palcolor       Kernel Version            => 2.6.5-rc2       
-03-30-04 14:40 perex          Note Added: 0000719                          
-03-30-04 21:53 palcolor       File Added: ksymoops.txt                     
-03-31-04 20:12 palcolor       File Added: Oops.text                        
-03-31-04 20:13 palcolor       Note Added: 0000728                          
-04-01-04 20:49 palcolor       Issue Monitored: palcolor                    
-03-19-05 12:44 jdthood        Note Added: 0004038                          
+09-30-04 07:51 cgdef          New Issue                                    
+09-30-04 07:51 cgdef          Distribution              => Gentoo          
+09-30-04 07:51 cgdef          Kernel Version            => 2.6.9-rc2       
+11-07-04 16:37 fvdpol         Issue Monitored: fvdpol                      
+03-19-05 12:54 jdthood        Note Added: 0004042                          
 ======================================================================
 
 
