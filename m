@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000425]: usb-usx2y: System lockup on PCM device open (OHCI)
-Date: Sat, 25 Sep 2004 17:18:06 +0200 (CEST)
+Date: Sat, 25 Sep 2004 17:45:22 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040925151806.93C6D25019@server.perex-int.cz>
+Message-ID: <20040925154522.7F7D125018@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3469289
-	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 17:18:06 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F218129D
+	for <alsa-devel@alsa-project.org>; Sat, 25 Sep 2004 17:45:22 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Mandrake 10.0 Official
 Kernel Version:             2.6.8-rc2
 ======================================================================
 Date Submitted:             08-06-2004 10:53 CEST
-Last Modified:              09-25-2004 17:18 CEST
+Last Modified:              09-25-2004 17:45 CEST
 ======================================================================
 Summary:                    usb-usx2y: System lockup on PCM device open (OHCI)
 Description: 
@@ -100,6 +100,13 @@ almost
 immediately when the PCM device is open (e.g. by jackd or aplay). Yet
 another screenshot added here (usx2y-oops4.png).
 
+----------------------------------------------------------------------
+ karsten - 09-25-2004 17:45 CEST 
+----------------------------------------------------------------------
+its always dl_done_list().
+Please post unassembly of the oops.
+Look in linux/Documentation/oops-tracing.txt for assistence.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -112,6 +119,7 @@ Date Modified  Username       Field                    Change
 09-24-04 09:43 rncbc          Bugnote Added: 0001858                       
 09-25-04 17:13 rncbc          File Added: usx2y-oops4.png                    
 09-25-04 17:18 rncbc          Bugnote Added: 0001911                       
+09-25-04 17:45 karsten        Bugnote Added: 0001912                       
 ======================================================================
 
 
