@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000671]: ALSA sound cuts out w/ message: ALSA sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
-Date: Wed, 24 Nov 2004 06:47:42 +0100
-Message-ID: <b51f4ed729db91704c9a6b861ca992a4@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
+Date: Wed, 24 Nov 2004 09:24:41 +0100
+Message-ID: <d8d998a73975f2f077a30df38a5935c2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2956628D
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 06:47:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC84E2A5
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 09:24:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,65 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=671> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
 ======================================================================
-Reported By:                brentcfisher
+Reported By:                flink
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   671
-Category:                   PCI - via82xx
+Project:                    ALSA - lib
+Issue ID:                   646
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             11-24-2004 06:36 CET
-Last Modified:              11-24-2004 06:47 CET
+Date Submitted:             11-12-2004 17:02 CET
+Last Modified:              11-24-2004 09:24 CET
 ======================================================================
-Summary:                    ALSA sound cuts out w/ message: ALSA
-sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Summary:                    emu10k1: sound chopped when passthru enabled
 Description: 
-Particularily noticeable when watching a DVD via xine using AC3 Pass
-Through.  Sound will cut out momentarily (usually for no more than a
-second).  The skip is always accompanied by multiples of this message in
-the /var/log/messages file:
-
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-Nov 23 22:33:06 hostname ALSA sound/pci/via82xx.c:737: invalid
-via82xx_cur_ptr, using last valid pointer
-
-These messages appear in the log file once or twice a minute although the
-sound only noticable cuts out every few minutes .  Very annoying on an
-HTPC.
+When I play a DVD with AC3 passthru enabled, the signal is correctly send
+to my AC3 decoder but this signal is chopped. I've a little led on my
+decoder to show if dolby digital is enabled or not and this led blinks
+instead of remaining enabled. So the sound is also chopped and a DVD can't
+be 
+watched this way.
 ======================================================================
 
 ----------------------------------------------------------------------
- brentcfisher - 11-24-04 06:47 
+ duanev - 11-24-04 09:09 
 ----------------------------------------------------------------------
-Forgot to mention: This is using the SPDIF output on a Via Epia M10000.
+I'm 99.99% sure it's fixed - I've played 3 or 4 DVDs now (several with DTS
+- higher bitrate?) and never heard a glitch.  I am running a dual proc
+which seems to help my interrupt latency in other cases, but these other
+users must be running with a single proc.  Has AC3 passthrough worked for
+you on this hardware before?
+
+----------------------------------------------------------------------
+ visit0r - 11-24-04 09:24 
+----------------------------------------------------------------------
+I have managed to play couple of DVDs with AC3 without any problems, so I
+suppose the problem was somewhere else.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 06:36 brentcfisher   New Issue                                    
-11-24-04 06:36 brentcfisher   Distribution              => Gentoo          
-11-24-04 06:36 brentcfisher   Kernel Version            => 2.6.8.1         
-11-24-04 06:47 brentcfisher   Note Added: 0002541                          
+11-12-04 17:02 flink          New Issue                                    
+11-13-04 22:18 rlrevell       Note Added: 0002403                          
+11-13-04 22:31 rlrevell       File Added: patch                            
+11-13-04 22:33 rlrevell       Note Added: 0002404                          
+11-16-04 00:13 visit0r        Note Added: 0002421                          
+11-16-04 00:24 rlrevell       Note Added: 0002422                          
+11-16-04 21:09 visit0r        Note Added: 0002430                          
+11-17-04 04:06 duanev         Issue Monitored: duanev                      
+11-17-04 07:00 duanev         Note Added: 0002432                          
+11-17-04 08:05 visit0r        Issue Monitored: visit0r                     
+11-17-04 08:09 visit0r        Note Added: 0002434                          
+11-18-04 23:34 rlrevell       Note Added: 0002472                          
+11-19-04 07:14 visit0r        Note Added: 0002476                          
+11-24-04 09:09 duanev         Note Added: 0002542                          
+11-24-04 09:24 visit0r        Note Added: 0002543                          
 ======================================================================
 
 
