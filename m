@@ -1,10 +1,13 @@
-From: Hynek Hanke <hanke@brailcom.org>
-Subject: Invitation to accessibility workgroup
-Date: Fri, 25 Feb 2005 19:07:56 +0100
-Message-ID: <20050225180756.GM3447@brailcom.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
+Date: Fri, 25 Feb 2005 21:57:46 +0100
+Message-ID: <bc64637a33a382da10e23e9178414c41@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-2
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A62C25D
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 21:57:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,54 +17,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Hello everyone,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
+======================================================================
+Reported By:                aisotton
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   943
+Category:                   PCI - cmipci
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian Sid (Unstable)
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-25-2005 16:06 CET
+Last Modified:              02-25-2005 21:57 CET
+======================================================================
+Summary:                    cmipci freezes the whole system
+Description: 
+Hi,
 
-computer accessibility (for physically or mentally disabled people, as well as
-for children and even ordinary users) is very closely related to multimedia.
-For example most of the blind users rely on their sound output during all the
-time they are working with computers and it's essential for them that it's fast
-and reliable.
+I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
+gigabit ethernet controller (the board is an Asus A7V600). The sound
+card uses the cmipci module, and the ethernet card the sk98lin module.
 
-During our work on making computers accessible for the blind, we found out
-there is currently not any good solution for the multimedia framework that we
-could use. Maybe our requirements are unusual in some aspects, although I
-believe all of them are important also for other fields of use of multimedia.
+Playing sound and using the network at the same time freezes the sytem
+after a short time (generally 15-30 seconds); nothing is logged or
+displayed (I checked syslog, kern.log and /var/log/messages), it just
+freezes everything, forcing a reset of the machine (and after the
+subsequent reboot my mouse isn't recognized any more, but I don't think
+that matters).
 
-This issue was discussed on a recent meeting by the Free Standards Group
-in the end of January and the conclusion was made that we would try to put
-down our basic requirements and then try to see how can we have them fulfilled
-in the Free Software world in near future. We are seeking help of the
-multimedia community but we are also ready to help with the development of these
-missing features ourselves.
+I am using that network card since more than a year, and it never gave a
+problem; thus I think the bug is in the cmipci driver (the system never
+froze before I installed the sound card).
 
-I'd like to invite the multimedia developers who would like to seriously
-participate in these discussions to the mailing list:
+I did a memtest, but my memory seems to be ok.
 
-        accessibility@lists.freedesktop.org
-        http://lists.freedesktop.org/mailman/listinfo/accessibility
+This happens with all kernels I tested, specifically:
 
-This mailing list currently includes many of the Free Software accessibility
-and accessibility-related developers around the world including developers from
-projects/companies such as GNOME, KDE, FSG Accessibility Workgroup, IBM, Sun
-Microsystems, SuSE/Novell, Trolltech and Free(b)Soft. It's a general topic
-accessibility group targeted at cooperation among the projects and
-at the standardization process.
+Debian kernel-image-2.6.10-1-k7-4
+Debian kernel-image-2.6.9-2-k7-5
+Debian kernel-image-2.6.8-2-k7-13
+Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
+Vanilla kernel 2.6.10, compiled with the same options as Debian
+kernel-image-2.6.10-1-k7-4.
 
-In the first round of the discussion, I would like to create and agree on
-a list of all the core requirements of accessibility. I'm going
-to post a start document with the conclusions we have reached so far
-to the mailing list early next week.
 
-I hope we will finally be able to work towards the solution of this problem
-which is currently a great pain for the accessibility developers.
+======================================================================
 
-With regards & Thanks for your participation,
-Hynek Hanke
-http://www.freebsoft.org/
+----------------------------------------------------------------------
+ aisotton - 02-25-05 16:07 
+----------------------------------------------------------------------
+I'd be glad to help debugging the driver, I just don't know where to start
+:-(
+
+----------------------------------------------------------------------
+ runderwo - 02-25-05 21:57 
+----------------------------------------------------------------------
+Try booting with any of the following kernel arguments: noapic, acpi=off,
+pci=noacpi, pci=noapic, pci=nolapic.  Also post /proc/interrupts and lspci
+-vvv
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-25-05 16:06 aisotton       New Issue                                    
+02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
+02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
+02-25-05 16:07 aisotton       Note Added: 0003734                          
+02-25-05 21:57 runderwo       Note Added: 0003736                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
