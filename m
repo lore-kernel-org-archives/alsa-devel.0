@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000925]: no sound with CMI9761A
-Date: Wed, 23 Feb 2005 15:05:04 +0100
-Message-ID: <8eed65f48ca8b245388de658d3c16142@bugtrack.alsa-project.org>
+From: thomas schorpp <t.schorpp@gmx.de>
+Subject: Re: [ALSA - driver 0000925]: no sound with CMI9761A,
+ Cus fix verified OK
+Date: Wed, 23 Feb 2005 15:19:54 +0100
+Message-ID: <421C910A.9030807@gmx.de>
+References: <421B9566.7040806@gmx.de> <s5hll9fs7ds.wl@alsa2.suse.de>
+Reply-To: t.schorpp@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E88BE1DD
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 15:05:04 +0100 (MET)
+In-Reply-To: <s5hll9fs7ds.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +18,93 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> At Tue, 22 Feb 2005 21:26:14 +0100,
+> thomas schorpp wrote:
+> 
+>>post it here, cant get on bugtracker:
+> 
+> 
+> Still not possible?
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=925> 
-======================================================================
-Reported By:                Cus
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   925
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Distribution:               SuSE Linux 9.2
-Kernel Version:             2.6.11-rc3
-Resolution:                 fixed
-Fixed in Version:           
-======================================================================
-Date Submitted:             02-19-2005 18:55 CET
-Last Modified:              02-23-2005 15:05 CET
-======================================================================
-Summary:                    no sound with CMI9761A
-Description: 
-I have no sound with my Chaintech VNF-250 motherboard. It has
-an integrated CMI9761A chip, the alsa driver detects it as CMI9761,
-everything seems to be ok, but i hear nothing.
-======================================================================
+no. do you respond to my notice to the webmaster?
 
-----------------------------------------------------------------------
- tiwai - 02-22-05 14:34 
-----------------------------------------------------------------------
-Maybe better to use 0x0001 instead?  I guess 0x0008 controls the "IEC958
-Capture Monitor", and got some reports that this disturbs the output.
+> 
+> 
+>>this is ok with:
+>>
+>>-pcm playback
+>>-pcm capture
+>>-looped through lines
+>>
+>>thx, cus.
+>>
+>>  Additional Information  	 After some testing i found that the 
+>>following patch fixes the problem:
+>>
+>>--- ac97_patch.c.orig 2005-02-18 00:08:01.000000000 +0100
+>>+++ ac97_patch.c 2005-02-19 18:08:23.000000000 +0100
+>>@@ -2010,7 +2010,7 @@
+>>          ac97->ext_id |= AC97_EI_SPDIF;
+>>         /* to be sure: we overwrite the ext status bits */
+>>         snd_ac97_write_cache(ac97, AC97_EXTENDED_STATUS, 0x05c0);
+>>- snd_ac97_write_cache(ac97, AC97_CM9761_SPDIF_CTRL, 0x0209);
+>>+ snd_ac97_write_cache(ac97, AC97_CM9761_SPDIF_CTRL, 0x0009);
+>>         ac97->rates[AC97_RATES_SPDIF] = SNDRV_PCM_RATE_48000; /* 48k 
+>>only */
+>>
+>>         /* set-up multi channel */
+>>
+>>
+>>I don't know why it works, and what that 0x0200 bit means in that 
+>>register, someone may explain.
+> 
+> 
+>>Cus
+>>
+>>outstanding : Maybe better to use 0x0001 instead? I guess 0x0008 
+>>controls the "IEC958 Capture Monitor", and got some reports that this 
+>>disturbs the output. tashaki.
+>>
+>>-no, now it disturbs no more.
+> 
+> 
+> Then let's take 0x09.
 
-----------------------------------------------------------------------
- tiwai - 02-23-05 15:05 
-----------------------------------------------------------------------
-Now fixed on CVS.  Thanks.
+0x0009 ? (LSB/MSB)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-19-05 18:55 Cus            New Issue                                    
-02-19-05 18:55 Cus            File Added: lspci                            
-02-19-05 18:55 Cus            Distribution              => SuSE Linux 9.2  
-02-19-05 18:55 Cus            Kernel Version            => 2.6.11-rc3      
-02-22-05 14:34 tiwai          Note Added: 0003700                          
-02-23-05 15:05 tiwai          Status                   new => resolved     
-02-23-05 15:05 tiwai          Resolution               open => fixed       
-02-23-05 15:05 tiwai          Assigned To               => tiwai           
-02-23-05 15:05 tiwai          Note Added: 0003712                          
-======================================================================
+> 
+> 
+> 
+>>all fine, thx.
+>>
+>>add.:
+>>
+>>with this you get master vol slider back:
+>>
+>>
+>>	/* CM9761 has no Master and PCM volume although the register reacts */
+>>	ac97->flags |= /*AC97_HAS_NO_MASTER_VOL |*/ AC97_HAS_NO_PCM_VOL;
+>>
+>>@takashi: maybe this was tested only with pcm not with looped through 
+>>lines, before. i assume false negatives from previous tests.
+> 
+> 
+> OK, I'll fix the CVS now.
+> 
+> 
+> thanks,
+
+at your sevice ;)
+
+> 
+> Takashi
+
+tom
 
 
 
