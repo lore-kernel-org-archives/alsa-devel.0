@@ -1,14 +1,14 @@
-From: Petr Gladkikh <batyi@mail.ru>
-Subject: volume PCM plugin
-Date: Mon, 17 Jan 2005 15:17:36 +0600
-Message-ID: <41EB82B0.2050900@mail.ru>
-References: <200501171511.33573.igor@eellc.ru>
-Reply-To: batyi@mail.ru
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000305]: sound is locked up after suspend/resume (APM)
+Date: Mon, 17 Jan 2005 10:57:32 +0100
+Message-ID: <362e8758ff392bfd1d5de4270181e38f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080408070902090801010104"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200501171511.33573.igor@eellc.ru>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 33E041DC
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 10:57:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,175 +18,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080408070902090801010104
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305> 
+======================================================================
+Reported By:                klausr
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   305
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             Debian kernel 2.6.5-4-686
+======================================================================
+Date Submitted:             05-25-2004 14:49 CEST
+Last Modified:              01-17-2005 10:57 CET
+======================================================================
+Summary:                    sound is locked up after suspend/resume (APM)
+Description: 
+Until recently I was running oss driver cs46xx without a problem. I could
+suspend in the middle of playback and xmms would keep playing after resume
+as if nothing happend at all.
+After switching to the 2.6 kernel, currently running 2.6.5, I also
+switched to ALSA beeing the new sound architecture of choice.
+Unforunately now when I suspend and resume my notebook sound stops working
+at all. Sometimes unloading all ALSA modules helps, sometimes even that is
+not possible anymore.
+======================================================================
 
-Here is the patch (for alsa-lib-1.0.7) which is another attempt 
-(compare to coftvol plugin) to emulate volume control in alsa-lib (see 
-my previous post). The volume plugin is based on copy PCM plugin.
+----------------------------------------------------------------------
+ klausr - 05-29-04 09:36 
+----------------------------------------------------------------------
+sound hangs with both output plugins, alsa and oss. in both cases sound is
+back after closing xmms, unloading snd-cs46xx module and loading it
+again.
 
-IMO the approach which is used here would allow more flexible 
-configurations than softvol. E.g. it allows bind to master volume 
-control in addition to emulated volume control. If necessary the 
-volume plugin allows to easily extend number of hooks which can be 
-attached to it (for now only one is supported).
+one difference though. with alsa output plugin when i press pause in xmms
+to pause music pressing pause again does not work. the playing just does
+not start. i have to press play, then the playing starts again but from
+the beginning of the title.
 
-Sample configuration
-pcm.vol {
-     type volume
-     slave {
-	pcm some_plug
-     }
-     coeff 1.0
-     hook {
-         card default
-         control Master
-         index 0
-     }
-}
+with oss output plugin it works as expected. pressing pause pauses
+playing. pressing pause again resumes playing at the position it was when
+pausing.
 
-Note that
-	1. 'hook' is optional.
-	2. volume plugin does not convert PCM formats thus it is best used 
-with 'plug' PCM plugin for example.
+regards
+klaus
 
-/Petr.
+----------------------------------------------------------------------
+ jdthood - 01-17-05 10:57 
+----------------------------------------------------------------------
+> one difference though. with alsa output plugin when i press pause in xmms
+to
+> pause music pressing pause again does not work.
 
---------------080408070902090801010104
-Content-Type: application/octet-stream;
- name="alsa-lib-1.0.7-softvol-pg.patch.bz2"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="alsa-lib-1.0.7-softvol-pg.patch.bz2"
+This is probably a separate bug.  See
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=495, for example.
 
-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
-3JFOFCQ/3hFTgA==
---------------080408070902090801010104--
+Note that this bug (re: snd-cs46xx not working after suspend-'n'-resume)
+can probably be merged with ALSA bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+05-25-04 14:49 klausr         New Issue                                    
+05-25-04 14:49 klausr         Kernel Version            => Debian kernel
+2.6.5-4-686
+05-25-04 15:02 tiwai          Note Added: 0001213                          
+05-25-04 15:31 klausr         Note Added: 0001215                          
+05-25-04 15:59 klausr         Note Added: 0001217                          
+05-25-04 16:02 klausr         Issue Monitored: klausr                      
+05-25-04 16:05 tiwai          Note Added: 0001218                          
+05-25-04 16:44 klausr         Note Added: 0001220                          
+05-25-04 16:56 klausr         Note Edited: 0001220                         
+05-27-04 08:49 klausr         Issue End Monitor: klausr                    
+05-28-04 17:08 tiwai          Note Added: 0001269                          
+05-29-04 09:36 klausr         Note Added: 0001276                          
+01-17-05 10:57 jdthood        Note Added: 0003226                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
