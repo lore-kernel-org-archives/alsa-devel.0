@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Writing a mini ALSA driver from scratch
-Date: Wed, 25 Aug 2004 22:16:57 +0100
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Wed, 25 Aug 2004 23:47:33 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <412D01C9.4020403@superbug.demon.co.uk>
-References: <E1BzmB2-00014C-RI@sc8-sf-list2.sourceforge.net> <412CF1DE.1060203@sun.ac.za>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040825214733.8E91214026@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <412CF1DE.1060203@sun.ac.za>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03F33293
+	for <alsa-devel@alsa-project.org>; Wed, 25 Aug 2004 23:47:33 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,77 +16,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ludwig Schwardt <schwardt@sun.ac.za>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Ludwig Schwardt wrote:
-> Hi,
-> 
-> A student of mine is working on an audio capture driver for an ARM Linux 
-> system. The ARM (AT91RM9200) processor talks via SSC and I2S to a set of 
-> audio ADCs that capture 6 channels of 24-bit 192 kHz audio (no playback 
-> involved).
-> 
-> The application is real-time sound logging (latency not important). I 
-> figured it might save the application developers some hassles by 
-> presenting this capture device as a soundcard to Linux. That way it may 
-> simplify realtime processing by using standard callback interfaces such 
-> as JACK (less apps to write!).
-> 
-> My questions to the ALSA gurus are:
-> 
-> 1) Is this a sound approach? (sorry, that slipped out)
-Yes.
-> 
-> 2) Is it possible to write a bare-bones ALSA driver with only capturing 
-> functionality (no playback/mixer)? What are the bare essentials that 
-> make up an ALSA driver? (I'm worried about overkill)
-You can do capture only, with no playback/mixer.
-You will need to implement: -
-a) probe, init, exit routies.
-b) interrupt servicing routine.
-c) and these functions:
-static snd_pcm_ops_t snd_card_capture_ops = {
-         .open =        snd_card_pcm_open_capture,
-         .close =       snd_card_pcm_close_caputre,
-         .ioctl =       snd_card_pcm_lib_ioctl,
-         .hw_params =   snd_card_pcm_hw_params_caputre,
-         .hw_free =     snd_card_pcm_hw_free_caputre,
-         .prepare =     snd_card_pcm_prepare_caputre,
-         .trigger =     snd_card_pcm_trigger_caputre,
-         .pointer =     snd_card_pcm_pointer_caputre,
-};
-d) snd_card_pcm_pointer  <- Tells alsa where the sound card hardware is 
-currently playing a sample from.
 
-All those are explained in the "writing an alsa driver" docs.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
+======================================================================
+Reported By:                Andrew
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     453
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              08-25-2004 23:47 CEST
+======================================================================
+Summary:                    it is impossible to select spdif as capture source
+Description: 
+There are no anything spdif-input-related among
+capture source enumeration.
+======================================================================
 
-> 
-> 3) Are there any existing drivers that could serve as a good template 
-> for a minimalist driver (I'm ignoring issues such as ISA/PCI etc.), to 
-> see how viable this option is? I was thinking maybe Gravis Ultrasound or 
-> such...
+----------------------------------------------------------------------
+ tiwai - 08-25-2004 19:55 CEST 
+----------------------------------------------------------------------
+Did you use 'iec958' pcm?
 
-The "writing an alsa driver" is probably the best template.
-The alsa drivers are very modular, so you will not have to write any 
-code that is common to other drivers. You only have to do the hardware 
-specific parts.
+    % arecord -Diec958 -fdat foo.wav
 
-> 
-> 4) Is an ALSA driver even possible on ARM (dunno much about mmap and the 
-> like)?
-It should be possible. I don't know how the ARM does mmap though.
-You can use the snd-dummy alsa driver at first to check that alsa 
-compiles and installs OK on an ARM system.
+----------------------------------------------------------------------
+ Andrew - 08-25-2004 23:47 CEST 
+----------------------------------------------------------------------
+A dat fromat doesn't work: "Sample format non available"
+I have tried
 
-> 
-> Thanks in advance for any tips. I was thinking of ploughing back any 
-> generic stuff along the way (like the AT91 SSC support).
-> 
-> Ludwig Schwardt
-> 
+arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
 
+Format/rate are accepted, but the resulted file is empty.
+I use aureon 7.1.
+
+While filing the isuue, I have thought about capture selecting via
+mixer Capture Source control. Does this (others?) control influence
+to shown above command working?
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 13:16 Andrew         New Bug                                      
+08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
+08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+======================================================================
 
 
 -------------------------------------------------------
