@@ -1,14 +1,13 @@
-From: Thomas Charbonnel <thomas@undata.org>
-Subject: Re: Intel8x0 problems with rc1
-Date: Tue, 02 Dec 2003 23:46:22 +0100
+From: "Martin Holzer" <mholzer@gentoo.org>
+Subject: Alsa-tools 1.0.0 rc1 error with 2.6.0-test11
+Date: Wed, 3 Dec 2003 00:02:58 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FCD163E.7040702@undata.org>
-References: <3FCB855F.7080505@undata.org>	<s5hd6b8fl1s.wl@alsa2.suse.de>	<s5h8ylwfk40.wl@alsa2.suse.de>	<3FCC7EC4.6050200@undata.org>	<s5hn0abe7vm.wl@alsa2.suse.de>	<3FCC9A49.3070300@undata.org> <s5h3cc3dxrb.wl@alsa2.suse.de>
+Message-ID: <000401c3b928$6e273700$0801a8c0@svrmarty.gnome.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3cc3dxrb.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,29 +16,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote :
-> please try the attached patch.
-> possibly this isn't a fix, but it will print debug messages while
-> probing and opening the pcm.
-> 
-> 
-> Takashi
-> 
+make[1]: Entering directory=20
+`/var/tmp/portage/alsa-tools-1.0.0_rc1/work/alsa-tools-1.0.0rc1/hdspmixer=
+/sr
+c'=20
+if g++ -DPACKAGE_NAME=3D\"\" -DPACKAGE_TARNAME=3D\"\"=20
+-DPACKAGE_VERSION=3D\"\" -DPACKAGE_STRING=3D\"\"=20
+-DPACKAGE_BUGREPORT=3D\"\"=20
+-DPACKAGE=3D\"hdspmixer\" -DVERSION=3D\"1.6\" -DSTDC_HEADERS=3D1=20
+-DHAVE_LIBASOUND=3D1  -I. -I.   -I/usr/include/fltk-1.1  -march=20
+=3Dathlon-xp -O3 -pipe -fomit-frame-pointer=20
+-I/lib/modules/2.6.0-test11-gentoo-r1/build/include
+-I/lib/modules/2.6.0-test=20
+11-gentoo-r1/build/include -I/usr/include/fltk-1.1 =
+-I/usr/include/freetype2=20
+-march=3Dathlon-xp -mcpu=3Dathlon-xp -O3 -pipe -=20
+I/usr/X11R6/include -fno-exceptions -MT hdspmixer.o -MD -MP -MF=20
+".deps/hdspmixer.Tpo" \=20
+  -c -o hdspmixer.o `test -f 'hdspmixer.cxx' || echo './'`hdspmixer.cxx; =
+\=20
+then mv -f ".deps/hdspmixer.Tpo" ".deps/hdspmixer.Po"; \=20
+else rm -f ".deps/hdspmixer.Tpo"; exit 1; \=20
+fi=20
+In file included from hdspmixer.cxx:31:=20
+HDSPMixerCard.h:57: error: 'hdsp_9632_aeb_t' is used as a type, but is =
+not=20
+   defined as a type.=20
+hdspmixer.cxx: In function `int main(int, char**)':=20
+hdspmixer.cxx:68: error: `H9632' undeclared (first use this function)=20
+hdspmixer.cxx:68: error: (Each undeclared identifier is reported only =
+once
+for=20
+   each function it appears in.)=20
+make[1]: *** [hdspmixer.o] Error 1=20
+make[1]: Leaving directory=20
+`/var/tmp/portage/alsa-tools-1.0.0_rc1/work/alsa-tools-1.0.0rc1/hdspmixer=
+/sr
+c'=20
+make: *** [all-recursive] Error 1=20
 
-Takashi, I applied your patch but nothings shows up in my logs.
-I even replaced all the KERN_DEBUG by KERN_EMERG, and still nothing.
-The only thing I get is this :
-ALSA intel8x0.c:568: codec_semaphore: semaphore is not ready [0x1][0x300100]
-ALSA intel8x0.c:599: codec_read 0: semaphore is not ready for register 0x56
-Is it possible that your code never gets called ? You seem also to be 
-investigating about spdif, but my card does not have spdif output.
 
-Thomas
+Martin Holzer
+sVrmARTY-/irc.freenode.net
 
+Bug-Wrangler, Gentoo Linux
+=20
 
 
 
