@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000552]: FATAL: Error inserting snd_azx
-Date: Tue, 23 Nov 2004 22:01:04 +0100
-Message-ID: <68fb40ed78dec515e7afb1743554eaa2@bugtrack.alsa-project.org>
+Date: Tue, 23 Nov 2004 22:04:14 +0100
+Message-ID: <a3e4e3d590a735e31b08cecb7f00fde8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0424C2B5
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 22:01:04 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 78A962B5
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 22:04:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.8.1
 ======================================================================
 Date Submitted:             09-30-2004 01:29 CEST
-Last Modified:              11-23-2004 22:01 CET
+Last Modified:              11-23-2004 22:04 CET
 ======================================================================
 Summary:                    FATAL: Error inserting snd_azx
 Description: 
@@ -49,13 +49,6 @@ motherbord with 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6
 Family) High Definition Audio Controller (rev 03) integrated sound.
 
 ======================================================================
-
-----------------------------------------------------------------------
- rlrevell - 11-23-04 21:54 
-----------------------------------------------------------------------
-Does this mean the azx driver is working well for you?  Currently we don't
-have much feedback because the driver is so new.  If it works well then it
-should be pushed into the kernel.
 
 ----------------------------------------------------------------------
  footcow - 11-23-04 22:01 
@@ -70,6 +63,11 @@ But since 1.0.7rc2 ... the module loaded do not crash anymore my linux
 But I will be really happy to give you some help for testing with my
 configuration (AsusTek P5GD2) ... I really want to get sound ! ;o)
 
+----------------------------------------------------------------------
+ rlrevell - 11-23-04 22:04 
+----------------------------------------------------------------------
+OK then this one should be closed.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +77,7 @@ Date Modified  Username       Field                    Change
 11-23-04 21:48 footcow        Note Added: 0002529                          
 11-23-04 21:54 rlrevell       Note Added: 0002532                          
 11-23-04 22:01 footcow        Note Added: 0002533                          
+11-23-04 22:04 rlrevell       Note Added: 0002534                          
 ======================================================================
 
 
