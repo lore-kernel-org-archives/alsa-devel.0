@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000519]: [PATCH] 90_debian_alsaconf_notouch
-Date: Tue, 9 Nov 2004 16:36:50 +0100
-Message-ID: <b01403921a243e6d7633baf4eb249822@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Tue, 9 Nov 2004 16:34:24 +0100
+Message-ID: <75f9890b0b5bd562dc5a5e1686371a2a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F5302B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:36:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B394E2B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:34:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=519> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=366> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                deathpudding
+Assigned To:                pzad
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   519
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   366
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
+Distribution:               
+Kernel Version:             2.6.7
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2004 20:01 CEST
-Last Modified:              11-09-2004 16:36 CET
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              11-09-2004 16:34 CET
 ======================================================================
-Summary:                    [PATCH] 90_debian_alsaconf_notouch
+Summary:                    driver hangs when trying to load a soundfont >8MB
 Description: 
-Patch for alsaconf which makes it refrain from creating
-/etc/modprobe.conf if the latter does not already exist.
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while trying
+load the soundfont from it.
 
-Creating an empty /etc/modprobe.conf is bad because if it
-exists then modprobe uses _only_ this file -- it does not
-use /etc/modprobe.d/.
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.html
 
-Additionally, this patch makes alsaconf set the cleanup
-trap before it creates temporary files rather than after.
-
-
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-04 19:50 
+ vlajsa - 09-22-04 12:05 
 ----------------------------------------------------------------------
-Summary: Refrain from creating /etc/modprobe.conf if it does not already
-exist
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+This is even wierder! Upgrading to 2.6.9-rc2 with mm1 patch solved the
+problem! At least for me!
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 11:58 
+ tiwai - 09-22-04 18:12 
 ----------------------------------------------------------------------
-Applied.  Thanks.
+Ok, then close this bug now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 20:01 jdthood        New Issue                                    
-09-21-04 20:01 jdthood        File Added: 90_debian_alsaconf_notouch.dpatch     
-              
-09-23-04 19:50 jdthood        Note Added: 0001838                          
-09-24-04 11:58 tiwai          Status                   new => resolved     
-09-24-04 11:58 tiwai          Resolution               open => fixed       
-09-24-04 11:58 tiwai          Assigned To               => tiwai           
-09-24-04 11:58 tiwai          Note Added: 0001867                          
-11-09-04 16:36 tiwai          Status                   resolved => closed  
+07-05-04 09:43 deathpudding   New Issue                                    
+07-05-04 09:43 deathpudding   Kernel Version            => 2.6.7           
+07-10-04 20:39 vlajsa         Note Added: 0001404                          
+07-10-04 21:45 deathpudding   Note Added: 0001405                          
+07-12-04 13:31 pzad           Note Added: 0001409                          
+07-12-04 23:02 deathpudding   Note Added: 0001411                          
+07-12-04 23:03 deathpudding   Note Edited: 0001411                         
+08-03-04 17:11 vlajsa         Note Added: 0001528                          
+09-07-04 09:37 pzad           Note Added: 0001703                          
+09-07-04 10:26 deathpudding   File Added: alsacrash.txt                    
+09-07-04 10:31 deathpudding   Note Added: 0001705                          
+09-07-04 18:21 vlajsa         Note Added: 0001724                          
+09-07-04 18:25 vlajsa         Note Edited: 0001724                         
+09-08-04 01:38 deathpudding   Note Added: 0001725                          
+09-08-04 17:06 tiwai          Note Added: 0001732                          
+09-09-04 03:46 deathpudding   Note Added: 0001740                          
+09-09-04 03:49 deathpudding   Note Added: 0001741                          
+09-09-04 04:30 deathpudding   Note Added: 0001742                          
+09-13-04 15:45 tiwai          Note Added: 0001748                          
+09-14-04 02:43 deathpudding   Note Added: 0001756                          
+09-21-04 12:41 tiwai          Note Added: 0001800                          
+09-22-04 12:05 vlajsa         Note Added: 0001811                          
+09-22-04 18:12 tiwai          Status                   assigned => resolved
+09-22-04 18:12 tiwai          Resolution               open => fixed       
+09-22-04 18:12 tiwai          Note Added: 0001813                          
+11-09-04 16:34 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
