@@ -1,12 +1,13 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: about usb midi endpoints quirks
-Date: Tue, 29 Jul 2003 23:09:26 +0200
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Heirarchy question
+Date: Tue, 29 Jul 2003 23:30:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030729210926.GA10428@tuba.home>
+Message-ID: <200307292330.04586.adrian@mcmen.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,34 +19,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+I am about to start work on porting the OSS driver I wrote for 2.4 series=
+=20
+kernels to ALSA for 2.6.
 
-Hi,
+The dirver is for the Sega Dreamcast AICA sound 'card'. This sits on a pr=
+oduct=20
+specific bus inside the Dreamcast, which is an SH4 based machine.
 
-looking into usbquirks.h I saw that audio endpoints follow the rule:
-	0x0...  for output
-	0x8...  for input
-I think that's absolutely ok!
+Should the subdirectory for this be /sound/sh or /sound/sh/aica?
 
-And now: If I jump into the usb-midi world and try a similar quirk:
-       .out_ep = 0x06,
-       .in_ep = 0x86,
-it will end with an "usb_submit_urb: -22" :-(
+Thanks
 
-OTOH the use of 
-    	.out_ep = 0x06,
-	.in_ep = 0x06,
-will be accepted! :-)
-And I believe the USB MIDI device definition use 0x8.. values for inputs.
-
-Is that ALSA design (0x0.. numbers for input endpoints) really wanted?
-Ok, it's also possible that my Tascam US-122 is far away from any standard
-out there...
-
-
-martin
-
-
-
+Adrian
 
 
 -------------------------------------------------------
