@@ -1,12 +1,13 @@
-From: K.Fetscher@t-online.de
-Subject: New ALSA Driver
-Date: Tue, 8 Mar 2005 21:46:24 +0100
-Message-ID: <200503082146.24634.k.fetscher@fetron.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000975]: snd-hda-intel, no sound, no master control
+Date: Tue, 8 Mar 2005 21:57:39 +0100
+Message-ID: <c5cc2e22382f41aa7662ccdb828b6819@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F346D193
+	for <alsa-devel@alsa-project.org>; Tue,  8 Mar 2005 21:57:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,36 +17,58 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I wan't to program an ALSA driver for my custom ARM based Cirrus-EP9312 board.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=975> 
+======================================================================
+Reported By:                dirk-loesche
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   975
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Suse 9.2
+Kernel Version:             2.6.11.1
+======================================================================
+Date Submitted:             03-08-2005 21:57 CET
+Last Modified:              03-08-2005 21:57 CET
+======================================================================
+Summary:                    snd-hda-intel, no sound, no master control
+Description: 
+No sound.
 
-The driver starts with the initialisation of the hardware, with 
-snd_card_new(...), snd_pcm_new(...), the request for the DMA-Controller, 
-programming snd_pcm_set_ops(...) and 
-snd_pcm_lib_preallocate_pages_for_all(...).
+alsaconf:
+I cant hear test sound.
 
-After that, I can see the card in the /proc/asound/card0/... filesystem.
+alsamixer:
+Card: HDA Intel                                                           
+                                                         
+Chip: Realtek ALC260                                                      
+                                                         View: Playback   
+                                                                          
+                                       Item: Headphone
+
+Headphon PCM Line CD Mic PC Speak Capture to 100 and unmutem
+Master not presend!
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 21:57 dirk-loesche   New Issue                                    
+03-08-05 21:57 dirk-loesche   Distribution              => Suse 9.2        
+03-08-05 21:57 dirk-loesche   Kernel Version            => 2.6.11.1        
+======================================================================
 
 
-When I start playing a song with aplay, ALSA calls hw_params(..), prepare(..)  
-and trigger(..) with command SNDRV_PCM_TRIGGER_START. After that, all stops 
-until I make a CTRL C (after that, it terminates with hw_free and close). Is 
-it correct, that runtime->dma_addr is 0 (runtime->size is 1000 and 
-runtime->period is 400) ?
-
-
-I have looked into some drivers for the parameters of 
-snd_pcm_lib_preallocate_pages_for_all(...). There are different types for the 
-DMA type and I don't know, which is the correct type (at the moment, I use 
-SNDRV_DMA_TYPE_CONTINUOUS).
-
-Thanks
-
-Klaus  
 
 
 -------------------------------------------------------
