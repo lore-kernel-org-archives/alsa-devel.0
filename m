@@ -1,10 +1,11 @@
-From: Itay Ben-Yaacov <nib_maps@yahoo.com>
-Subject: Re: More on the intel8x0 resume problems.
-Date: Sat, 22 Nov 2003 13:23:27 -0800 (PST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Small controls bug
+Date: Sun, 23 Nov 2003 00:43:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031122212327.99905.qmail@web21006.mail.yahoo.com>
+Message-ID: <20031123004359.738df49f.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,25 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
 
-OK, I tested 1.0.0pre1, and it seems to solve the problem.  I think
-I'll just stick with that.  Thanks.
-                                                                                
-BTW, the sound corruption on lost interrupts bug is still present
-there -- any chances to get some tips on how to debug that one out?
-                                                                                
-                                                                                
-Thanks,
-Itay
+If I try to register two different controls which have the same name, it does
+not fails very nicely. It does not call the .dev_free callback and it doesn't
+free a lot of stuff:
 
-__________________________________
-Do you Yahoo!?
-Free Pop-Up Blocker - Get it now
-http://companion.yahoo.com/
+Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(5) from e501bc78 not freed
+Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(76) from e501bc60 not freed
+Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(176) from e502d18c not freed
+Nov 22 23:55:53 localhost kernel: ALSA ../alsa-kernel/core/memory.c:81: kmalloc(7) from e501bc78 not freed
+[~300 lines]
+
+
+--
+Giuliano.
+
 
 
 -------------------------------------------------------
