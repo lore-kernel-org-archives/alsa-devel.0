@@ -1,15 +1,13 @@
-From: Niklas Werner <bergtroll@gmx.li>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: status of usb audio driver
-Date: Wed, 12 Jun 2002 18:00:16 +0200
+Date: Thu, 13 Jun 2002 01:12:33 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206121600.SAA02216@papaschlumpf.wg>
-References: <s5hbsag1t5r.wl@alsa2.suse.de> <200206121419.QAA12271@papaschlumpf.wg> <s5h7kl41s4l.wl@alsa2.suse.de>
+Message-ID: <3D0772F1.6090009@boosthardware.com>
+References: <s5h7klfdlrn.wl@alsa2.suse.de>	<3D06D91D.1080104@boosthardware.com>	<s5hhek81vgl.wl@alsa2.suse.de>	<3D07564B.4050908@boosthardware.com> <s5hbsag1t5r.wl@alsa2.suse.de> <3D0760FC.5060906@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7kl41s4l.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,31 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > OK, in stream0 now my emi26 is recognised as being capable of 6 outs
-> > @ 44.1 or 48 k and 2 out @ 96 kHz, but still I only get
-> > /proc/asound/card0/: id       pcm0p       pcm0c       stream0
->
-> it's ok.  a stream can support different formats and channels.
-> if you find "Channels: 6" in stream0 proc file, then it means that the
-> pcm device 'hw:0,0' (or hw:X,0 where X is the card number) can accept
-> 6 channels playback/capture.  if so, you can just feed 6-channels
-> interleaved data to the device.
-> well, this means also, that you have to access all 6 channels at the
-> same time.
+Patrick Shirkey wrote:
 
-bugger!
-Well, OK, at least that gives me an idea... but the much discussed 
-("multiple cards"-thread on jackit-devel) .asoundrc-fiddling for getting 
-more than one app to do the playback should work ok then, shouldn't it?
+> 
+> i have been testing the sound and I am getting playback although at this 
+> point I can get sound out of hw:2,0 and hw:2,2 they are both the left 
+> channels. The sound is scratchy but it is there :)
+> 
 
-I'll give it a try :-)
+The sound is actually coming through output 2 and 4 on the sound card 
+even though I'm using hw:2,0 or hw:2,2.
 
-Have fun*
 
-Niklas
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 _______________________________________________________________
 
