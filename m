@@ -1,12 +1,17 @@
-From: Nathan Morell <frizop@charter.net>
-Subject: Trying to make gkrellm work with ALSA.
-Date: Wed, 04 Feb 2004 18:29:46 -0600
+From: alsa-devel@robdye.net
+Subject: Re: Questions to HDSP users
+Date: Wed,  4 Feb 2004 17:04:30 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40218E7A.5050402@charter.net>
+Message-ID: <1075943070.4021969e6b6db@scorpio.lunarpages.com>
+References: <4017D54D.2020502@undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from scorpio.lunarpages.com (scorpio.lunarpages.com [64.235.234.122])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id CAA12584
+	for <alsa-devel@alsa-project.org>; Thu, 5 Feb 2004 02:03:28 +0100
+In-Reply-To: <4017D54D.2020502@undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,30 +20,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi guys, this is my first note to the list so I'm going to try and get 
-some background information to start on this task.
+Quoting Thomas Charbonnel <thomas@undata.org>:
 
-After talking with Bill, the author of gkrellm, I need to find out if 
-ALSA supports 'callbacks' (a new concept in c++ to me).
+> Hi,
+> 
+> In the process of debuging the problems some hdsp users are 
+> experiencing, I reviewed almost every single line of code in the hdsp
+> 
+> driver, and there are things in there that were inherited from the
+> old 
+> rme9652 driver and that don't seem relevant anymore for the hdsp 
+> (particularly now that hdspmixer is there).
 
-quoted from our email:
-----------
-A while back I looked at ALSA 0.9 support for gkrellmss but there was no
-callback mechanism as there was in ALSA 0.5. Maybe this has changed and
-I'll look again (let me know if you have any info on this), but short of
-that, it takes a sound server that provides such callbacks. Currently
-that's ESD, but I'll probably be adding Jack support fairly soon.
-----------
+No objection from me on the proposed changes.  BTW, I am using an
+HDSP9652 with a version of ALSA I got from CVS last August or so, and
+haven't had any problems for what I'm doing (basic multichannel record
+and playback, and some MIDI).
 
 
-other then the above, and taking a close look at the original source to 
-the gkrellm-sound plugin, could anybody offer some advice on my project?
-
-thanks in advance,
---Nathan
 
 
 -------------------------------------------------------
