@@ -1,9 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: anybody else OK with current CVS *and* SMP?
-Date: Tue, 5 Aug 2003 10:17:58 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: exit() -> _exit() in pcm_direct.c
+Date: Tue, 5 Aug 2003 20:36:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308051417.h75EHwpr020319@localhost.localdomain>
+Message-ID: <Pine.LNX.4.44.0308052036050.27139-100000@pnote.perex-int.cz>
+References: <s5hu18wkyac.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hu18wkyac.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,22 +16,110 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Konstantin Stepaniuk <s.k.v@mail.ru>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-i am having a repeated problem with system lockups using current CVS
-with JACK running SCHED_FIFO on an SMP system, with the Planet's
-2.4.21 kernel.
+On Tue, 5 Aug 2003, Takashi Iwai wrote:
 
-can anyone report that a similar configuration is working for them?
-there is no way to diagnose the situation, because the kernel hangs
-totally and completely, and its not possible to get the output from
-either an oops or the magic-request key(s).
+> At Wed, 30 Jul 2003 23:21:52 +0400,
+> Konstantin Stepaniuk wrote:
+> > 
+> > Jaroslav Kysela wrote:
+> > 
+> > >On Wed, 30 Jul 2003, Konstantin Stepaniuk wrote:
+> > >
+> > >  
+> > >
+> > >>Hello.
+> > >>
+> > >>My program call snd_pcm_open() with "plug:dmix" in thread.
+> > >>Function snd_pcm_direct_server_create() hangs on waitpid() if exit() is used, 
+> > >>and server_job process keeps alive after program exit.
+> > >>This trivial patch chages exit() to _exit() in file pcm_direct.c. In this case 
+> > >>all works ok for me.
+> > >>    
+> > >>
+> > >
+> > >I'm sorry, but I still don't see a reason (I'd like to know, why the 
+> > >process hangs). Could you explain the behaviour or send me a simple test 
+> > >code to debug this thing?
+> > >
+> > >						Jaroslav
+> > >
+> > >-----
+> > >Jaroslav Kysela <perex@suse.cz>
+> > >Linux Kernel Sound Maintainer
+> > >ALSA Project, SuSE Labs
+> > >  
+> > >
+> > Here's a test:
+> > /* dmix.c */
+> > #define ALSA_PCM_NEW_HW_PARAMS_API
+> > #define ALSA_PCM_NEW_SW_PARAMS_API
+> > #include <alsa/asoundlib.h>
+> > #include <pthread.h>
+> > #include <stdio.h>
+> > 
+> > void *thread_routine( void *param )
+> > {
+> >   snd_pcm_t *pcm;
+> >   int err;
+> > 
+> >   err = snd_pcm_open( &pcm, "plug:dmix",
+> >     SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK );
+> > 
+> >   if( err < 0 )
+> >   {
+> >     fprintf( stderr, "%s\n", snd_strerror(err) );
+> >     return NULL;
+> >   }
+> > 
+> >   printf( "alsa opened\n" );
+> > 
+> >   snd_pcm_close( pcm );
+> >   return NULL;
+> > }
+> > 
+> > int main( void )
+> > {
+> >   pthread_t thread;
+> >   int i;
+> > 
+> >   if( pthread_create( &thread, 0, thread_routine, NULL ) )
+> >   {
+> >     fprintf( stderr, "pthread_create failure\n" );
+> >     return -1;
+> >   }
+> >    
+> >   pthread_join( thread, NULL );
+> >   return 0;
+> > }
+> > /*--------------------*/
+> > 
+> > This program crashes without any error message and doesn't print "alsa 
+> > opened".
+> > 
+> > sound card: intel8x0
+> > alsa version: cvs snapshot 2003-07-30
+> > kernel version: 2.4.21 (Debian)
+> > glibc: 2.3.1
+> > 
+> > This works ok with cmipci card. Maybe problem with intel8x0?
+> 
+> seems working on other cards, too.
+> 
+> are the alsa-lib version on both systems really same?
 
-it seems to be less of a problem when JACK is running without
-SCHED_FIFO. 
+And could you compare glibc versions?
 
---p
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
+
 
 
 -------------------------------------------------------
