@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Date: Wed, 29 Dec 2004 01:18:12 +0100
-Message-ID: <3d1eddd4126e65dea0424cd799393b89@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 01:24:10 +0100
+Message-ID: <592f1ec2a2f98214095062cc729a3e9b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 154732D6
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:18:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EAB2A2DD
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:24:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/knoppmyth
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             12-29-2004 01:15 CET
-Last Modified:              12-29-2004 01:18 CET
+Last Modified:              12-29-2004 01:24 CET
 ======================================================================
 Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
@@ -72,6 +72,27 @@ Because this codec does not have a master volume control in the hardware.
 Please, check the alsa-user and alsa-devel archives before filing a bug
 report!
 
+----------------------------------------------------------------------
+ wschrep - 12-29-04 01:24 
+----------------------------------------------------------------------
+Ok so what do I do because checked alsa-user and alsa-devel but
+don't seem to find a solution for this problem.
+
+This is part of my lsmod output:
+
+snd_mixer_oss          17024  2 snd_pcm_oss
+snd_via82xx            23200  3
+snd_pcm                84772  2 snd_pcm_oss,snd_via82xx
+snd_timer              21188  1 snd_pcm
+snd_ac97_codec         61828  1 snd_via82xx
+snd_page_alloc          8964  2 snd_via82xx,snd_pcm
+snd_mpu401_uart         6272  1 snd_via82xx
+snd_rawmidi            20320  1 snd_mpu401_uart
+snd_seq_device          6728  1 snd_rawmidi
+snd                    45988  9
+snd_pcm_oss,snd_mixer_oss,snd_via82xx,snd_pcm,snd_timer,snd_ac97_codec,snd_mpu401_uart,snd_rawmidi,snd_seq_device
+soundcore               7328  4 snd
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +100,7 @@ Date Modified  Username       Field                    Change
 12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
 12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
 12-29-04 01:18 rlrevell       Note Added: 0002989                          
+12-29-04 01:24 wschrep        Note Added: 0002990                          
 ======================================================================
 
 
