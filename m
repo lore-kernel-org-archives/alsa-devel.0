@@ -1,15 +1,14 @@
-From: "Alden Duncan" <aldenduncan_xi@y.net.ye>
-Subject: Application is pre approved
-Date: Sun, 14 Nov 2004 10:16:17 -0700
-Message-ID: <d4fb01c4ca6d$c488a32a$24195dd2@msg.de>
+From: Remi Bernhard <rgbmlist2@free.fr>
+Subject: Re: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is
+ detected, but doesn't work.
+Date: Sun, 14 Nov 2004 13:20:35 +0100
+Message-ID: <20041114132035.774be451@localhost>
+References: <fa667dd6f6c4e0c190237bbbe5427d38@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from msg.de (ip-8.net-81-220-82.toulouse.rev.numericable.fr [81.220.82.8])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 2A0FB206
-	for <alsa-devel@alsa-project.org>; Sun, 14 Nov 2004 18:16:25 +0100 (MET)
+In-Reply-To: <fa667dd6f6c4e0c190237bbbe5427d38@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,27 +18,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Dear Sir or Madam,
+Hello,
 
-Would you REFINANCE if you knew you'd SAVE TH0USANDS?=20
+> ----------------------------------------------------------------------
+>  TheMuso - 11-10-04 22:36 
+> ----------------------------------------------------------------------
+> Ok, changing the number to 11 allows the card to work properly. It now
+> appears in /proc/asound with all info regarding the card, and the
+> playback and capture devices. Alsamixer works, and I can even get
+> sound through it.
+> 
+> Thanks a lot Clemens, much appreciated.
+> 
+> I guess I have to close this bug now?
+> 
 
-We'll get you lnterest as low as 1.92%.=20
-Don't believe me? Fill out our small online questionaire and we'll show y=
-ou how.=20
+I'd like to know what is the best latency (or buffer size) you get with
+this card and jackd ?
 
-Get the house/home and/or car you always wanted, it only takes 10 seconds=
- of your time:
-http://statesmoneyz.com/
-
-Best Regards,
-Andrew Banks
-
-No thanks: http://statesmoneyz.com/r1/
-
-
+Regards,
+	Remi.
 
 
 -------------------------------------------------------
