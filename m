@@ -1,11 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000773]: Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Date: Sat, 1 Jan 2005 22:01:08 +0100
-Message-ID: <20050101210108.D0AD8313@alsa.alsa-project.org>
+Subject: [ALSA - driver 0000761]: Driver and all sound aplications hangs
+Date: Sat, 1 Jan 2005 22:21:12 +0100
+Message-ID: <0a3eae109199f6204139c732746196d6@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0AD8313
-	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 22:01:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49B4A2A9
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 22:21:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,81 +21,75 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
-Message-ID: <aaa5c44bce467d50436df545806adc0a@bugtrack.alsa-project.org>
-X-Priority: 3
-X-Mailer: PHPMailer [version 1.72]
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="iso-8859-1"
-
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=773> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=761> 
 ======================================================================
-Reported By:                hodgesw
+Reported By:                mr-k
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   773
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
+Issue ID:                   761
+Category:                   OTHERS
+Reproducibility:            random
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               1.08rc1
+Distribution:               Gentoo
 Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             01-01-2005 01:21 CET
-Last Modified:              01-01-2005 22:01 CET
+Date Submitted:             12-30-2004 13:13 CET
+Last Modified:              01-01-2005 22:21 CET
 ======================================================================
-Summary:                    Kernel 2.6.10 with ALSA 1.08rc1 from CVS
-(12/30/2004)
-Audigy2 Value - SB0400 card
-Audigy2 Value- AUX-In and LINE-IN no sound
+Summary:                    Driver and all sound aplications hangs
 Description: 
-Kernel 2.6.10 with ALSA 1.08rc1 from CVS (12/30/2004)
-Audigy2 Value - SB0400 card
-After trying many modprobe.preload/modprobe.conf alternatives I
-manually loaded driver  using  "modprobe -v snd-emu10k1"
-with /etc/modprobe.conf: "options snd-emu10k1  extin="0x3fff"
-After setting alsamixer volumes
-"speakertest" works; "aplay" produces good sound; mic produces good
-sound;
-"line in" does not work; "auxin" does nor work.
-kde configure plays sound.
-xmms cannot find sound card.
+I have a YMF-724F (lspci -v attached). Problem occur in alsa 1.0.7 and in
+alsa
+from kernel 2.6.10. In other versions (also in 1.0.6a) i havn't any
+problems.
+
+Sometimes (up to couple times a day) driver crash and all processes using
+sound hangs. I can't kill them (by SIGKILL and SIGTERM) and I can't remove
+the
+module by rmmod (it hangs also). When i try to shutdown the system, it
+stops
+when it try to remove the module. ps hangs when it try to get
+informations
+about other hung processes, also when i try to do it manualy (by
+/proc/pid/),
+it hangs. Everything else is working good. 
+There are no messages from the kernel in /var/log/messages and
+/var/log/dmesg or reported to the console. 
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- hodgesw - 01-01-05 21:51 
+ tiwai - 12-30-04 15:09 
 ----------------------------------------------------------------------
-Every device that alsamixer will let me set 
-i have set to  100%.
-Mic work fine as do the speaker-test and kde configuator.
-Cdplay fails and tvtime (with  defaults) fail
+The symptom sounds like a mutex deadlock.
+Please enable sysrq in kernel and try sysrq+t to see the stack traces.
+
+But, please try the latest ALSA (1.0.8rc1 or CVS version) at first.
+The bug might have been fixed.
 
 ----------------------------------------------------------------------
- rlrevell - 01-01-05 22:01 
+ mr-k - 01-01-05 22:21 
 ----------------------------------------------------------------------
-This is a new driver after all (though based on emu10k1), its quite
-possible there's a bug.  Can you try Windows to verify the hardware is OK?
+I've installed alsa 1.0.7a on 2.6.10 and I think that everything is good.
+I'm not sure yet. But on 2.6.9 with this version of driver I had problems.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-01-05 01:21 hodgesw        New Issue                                    
-01-01-05 01:21 hodgesw        Distribution              => 1.08rc1         
-01-01-05 01:21 hodgesw        Kernel Version            => 2.6.10          
-01-01-05 02:27 rlrevell       Note Added: 0003029                          
-01-01-05 16:13 hodgesw        Note Added: 0003032                          
-01-01-05 18:44 rlrevell       Note Added: 0003033                          
-01-01-05 20:35 pzad           Note Added: 0003035                          
-01-01-05 21:51 hodgesw        Note Added: 0003036                          
-01-01-05 22:01 rlrevell       Note Added: 0003037                          
+12-30-04 13:13 mr-k           New Issue                                    
+12-30-04 13:13 mr-k           Distribution              => Gentoo          
+12-30-04 13:13 mr-k           Kernel Version            => 2.6.10          
+12-30-04 13:15 mr-k           File Added: alsa-report                      
+12-30-04 13:18 mr-k           Issue Monitored: mr-k                        
+12-30-04 15:09 tiwai          Note Added: 0003022                          
+01-01-05 22:21 mr-k           Note Added: 0003038                          
 ======================================================================
 
 
