@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001033]: hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-Date: Tue, 5 Apr 2005 19:50:45 +0200
-Message-ID: <edccac0a7800b779cf934e1eb1fb961a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0001032]: 1.0.9rc2 causes mplayer -ao alsa to crash on startup
+Date: Tue, 5 Apr 2005 21:08:33 +0200
+Message-ID: <b5b4f44b0a244eafa5e64909198f28c6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E20781CA
-	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 19:50:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F385E244
+	for <alsa-devel@alsa-project.org>; Tue,  5 Apr 2005 21:08:34 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,91 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1033> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1032> 
 ======================================================================
-Reported By:                sjankie
+Reported By:                bero
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1033
-Category:                   PCI - azx
+Project:                    ALSA - lib
+Issue ID:                   1032
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.11.6
 ======================================================================
-Date Submitted:             04-03-2005 15:07 CEST
-Last Modified:              04-05-2005 19:50 CEST
+Date Submitted:             04-02-2005 16:10 CEST
+Last Modified:              04-05-2005 21:08 CEST
 ======================================================================
-Summary:                    hda sound 82801FB/FBM/FR/FW/FRW (ICH6 Family)
+Summary:                    1.0.9rc2 causes mplayer -ao alsa to crash on startup
 Description: 
-0000:00:1b.0 Class 0403: Intel Corporation 82801FB/FBM/FR/FW/FRW (ICH6
-Family) High Definition Audio Controller (rev 04)
-
-azx driver compliens about: NO AFG found.
-
-alsmixer starts, but no sound.
+1.0.9rc2 causes mplayer -ao alsa to crash on startup
 ======================================================================
 
 ----------------------------------------------------------------------
- sjankie - 04-05-05 14:52 
+ Toph - 04-05-05 21:08 
 ----------------------------------------------------------------------
-Can you give me your lspci output?
-Can you be more spec. about the  
-model=full_dig, driver  nags about: unknow word: model
-TNX,
+I can confirm this issue. Happens with anything that uses alsa, the end any
+strace is always:
+octl(7, SNDCTL_TMR_START or TCSETS, 0xbffed748) = 0
+ioctl(7, TIOCSPGRP, 0xbffed750)         = 0
+ioctl(7, TIOCSTI <unfinished ...>
++++ killed by SIGSEGV +++
 
-Sjankie
+the attached patch does make everything work again, though.
 
-----------------------------------------------------------------------
- Thomas - 04-05-05 19:50 
-----------------------------------------------------------------------
-Same problem here. Modules loaded but no sound.
-I tried all models (even cmi while my card is supposed to be a realtek
-ALC880.)
-tested with 1.0.8, 1.0.9rc2, cvs.
-
-lspci -v output:
-0000:00:1b.0 Class 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family)
-High Definition Audio Controller (rev 04)
-        Subsystem: Rioworks: Unknown device 203d
-        Flags: bus master, fast devsel, latency 0, IRQ 169
-        Memory at 80000000 (64-bit, non-prefetchable)
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-lspci -vn:
-0000:00:1b.0 Class 0403: 8086:2668 (rev 04)
-        Subsystem: 161f:203d
-
-
-dmesg output:
-ALSA
-/root/install/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_intel.c:552:
-codec_mask = 0x3
-ALSA
-/root/install/alsa/alsa-driver/pci/hda/../../alsa-kernel/pci/hda/hda_codec.c:511:
-hda_codec: no AFG node found
-
-I'll provide any additional informations required.
+I'm using Gentoo on x86, Kernel 2.6.11, patched with cko3, my soundcard is
+an "Ensoniq 5880 AudioPCI" (es1371), but it seems to happen with most
+hardware. http://bugs.gentoo.org/show_bug.cgi?id=87099 is about the same
+issue.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-03-05 15:07 sjankie        New Issue                                    
-04-03-05 15:07 sjankie        Kernel Version            => 2.6.11.6        
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-03-05 15:08 sjankie        Issue End Monitor: sjankie                    
-04-03-05 15:08 sjankie        Issue Monitored: sjankie                     
-04-04-05 17:09 1g0R           Note Added: 0004328                          
-04-05-05 14:52 sjankie        Note Added: 0004337                          
-04-05-05 18:48 Thomas         Issue Monitored: Thomas                      
-04-05-05 19:50 Thomas         Note Added: 0004339                          
+04-02-05 16:10 bero           New Issue                                    
+04-02-05 16:10 bero           File Added: alsa-lib-mplayer.patch                
+   
+04-05-05 21:08 Toph           Note Added: 0004340                          
 ======================================================================
 
 
