@@ -1,15 +1,19 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: matrix is complete again
-Date: Wed, 24 Nov 2004 20:34:46 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411242034370.2062@pnote.perex-int.cz>
-References: <Pine.HPX.4.33n.0411241510420.4564-100000@studcom.urz.uni-halle.de>
+From: Zinx Verituse <zinx@epicsol.org>
+Subject: CMI9739A
+Date: Wed, 24 Nov 2004 18:46:49 -0600
+Message-ID: <20041125004649.GA21551@bliss>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CFE55272
-	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 20:38:23 +0100 (MET)
-In-Reply-To: <Pine.HPX.4.33n.0411241510420.4564-100000@studcom.urz.uni-halle.de>
+Received: from imf17aec.mail.bellsouth.net (imf17aec.mail.bellsouth.net [205.152.59.65])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2D6B52A2
+	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 01:46:45 +0100 (MET)
+Received: from bliss.chaos ([68.17.128.52]) by imf17aec.mail.bellsouth.net
+          (InterMail vM.5.01.06.11 201-253-122-130-111-20040605) with ESMTP
+          id <20041125004640.BPDQ1994.imf17aec.mail.bellsouth.net@bliss.chaos>
+          for <alsa-devel@alsa-project.org>;
+          Wed, 24 Nov 2004 19:46:40 -0500
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,32 +23,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 24 Nov 2004, Clemens Ladisch wrote:
+I recently purchased a motherboard with an on-board CMI9739A (or so it claims)
 
-> Jaroslav Kysela wrote:
-> > 	I've finished the soundcard matrix conversion to XML.
-> 
-> Great!
-> 
-> When showing information for "All", the vendor list isn't sorted.
+the id is: 0x434d4983
 
-Fixed.
+Unfortunately, simply adding the line:
 
-> When a device doesn't have a chip specification, the list shows the
-> same chip as the entry before.
+{ 0x434d4983, 0xffffffff, "CMI9739A",           patch_cm9739,   NULL },
 
-Fixed.
+causes the card to be muted, reguardless of the mixer, because of the init
+code in patch_cm9739 -- the init code apparently isn't compatible.
 
-						Jaroslav
+Removing the initialization code, but leaving the ops, gives a few more
+functional mixer options (like "Line-In as Surround" and "Mic as Center/LFE")
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+-- 
+Zinx Verituse                                    http://zinx.xmms.org/
 
 
 -------------------------------------------------------
