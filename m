@@ -1,14 +1,13 @@
-From: "Gibson, Nelson" <ngibson@dsrnet.com>
-Subject: RME9636 and 0.9.0rc3 problems
-Date: Thu, 12 Sep 2002 16:24:33 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: USB Audio/Midiman - partial success
+Date: Fri, 13 Sep 2002 07:34:09 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <33F012255162604984A3F4BDA95C6EC402063B71@mstaex1b.DSRUSI.com>
+Message-ID: <3D811661.3080701@boosthardware.com>
+References: <s5hn0qryq08.wl@alsa2.suse.de>	<Pine.HPX.4.33n.0209100853400.12586-100000@studcom.urz.uni-halle.de> <s5h65xbp6n2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +16,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I am us an RME9636 (Hammerfall Light) and ALSA version 0.9.0rc3.  I am =
-having problems captureing data from the card.  The program that I was =
-orginally using was created with ALSA 0.9.0beta6 and I was able to read =
-2 channels of data off of the card.  Unfortunally, with the move from =
-the PIII platform to the P4 we had to upgrade redhat/kernel and the =
-beta6 version does not compile anymore.  Now when I try to compile our =
-software the program does not read 2 channels of data anymore. =20
+Takashi Iwai wrote:
+> At Tue, 10 Sep 2002 10:58:34 +0200 (METDST),
+> Clemens Ladisch wrote:
+> 
+>>>>The two PCM devices cannot be used at the same time anyway, so I think
+>>>>creating a quirk for interface 0 which says "ignore this" could work.
+>>>>Takashi, any comments?
+>>>
+>>>i think implementing a semaphore (or flag) for each endpoint would be
+>>>better, so that the driver can find generally double-endpoints
+>>>problem.
+>>
+>>I cannot imagine anybody else would be stupid enough to design a device
+>>with double endpoints. But then I didn't imagine Midiman would, either.
+>>Oh well, Murphy's Law ...  :-(
+> 
+> 
+> since many (at least plural :) devices have this problem, i changed
+> the usbaudio code slightly.  now a pcm stream is created per endpoint
+> instead of interface.
+> 
+> on this version, m-audio's device should have one (for duo) or two
+> (for quattro) pcm devices.
+> 
+> please let me know if any problems arise with this change.
+> 
 
-Hoping I could find the problem I am now trying to write a basic program =
-to see what we could be doing wrong.  I took the example by Dr. Matthias =
-Nagorni from the ALSA website (found at: =
-www.suse.de/~mana/alsa090_howto.html).  I made a few slight changes =
-which I can describe if need be, but their nothing that should be =
-causing errors.  Anyhow, the sample program is errors out (with value =
--22)when I try to use the call=20
-if(snd_pcm_hw_params(pcm_handle, hwparams) < 0) {
-  fprintf(stderr, "Error setting HW params.\n);
-  return(-1);
-}
+Now you definitely deserve a medal. A preliminary test with jack 
+provides crystal clear sound.
 
-I have been in correspondance with Mr. Paul Davis and he(we) has =
-concluded that it's not a problem with the RME9652 driver, but somewhere =
-in the kernel/library.  Any help on this would be appreciated.
+You da man You da muthafucken man. Please pat yourself on the back from me.
 
----------------------------------------------------------------------
-Nelson Gibson II
-TCNI and DSR
-Phone: 703.263.2800x1032
-Fax:     707.922.6001
-email: gibson@tcni.com or ngibson@dsrnet.com
+Now I have 2 streams in /proc/asound/card2/
 
-"A Co-Op is NOT an intern, we're better then them"
+The final test is getting all four channels to play and record at the 
+same time. If we can do that using ALSA all other platforms can eat our 
+dust. From my tests before this breakthrough it seemed possible.
+
+
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
 
 
 
