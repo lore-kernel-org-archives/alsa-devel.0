@@ -1,14 +1,14 @@
-From: "Jack O'Quin" <joq@io.com>
-Subject: Re: Lowest latency: JACK, or ALSA directly?
-Date: 12 Nov 2004 11:19:25 -0600
-Message-ID: <87k6srx9wi.fsf@sulphur.joq.us>
-References: <20041111144152.GA12443@stud.ntnu.no>
-	<87mzxozahr.fsf@sulphur.joq.us> <20041112090416.GA3167@stud.ntnu.no>
-	<87oei3xbly.fsf@sulphur.joq.us> <s5hpt2jdmsr.wl@alsa2.suse.de>
+From: Mail Delivery Subsystem <MAILER-DAEMON@aol.com>
+Subject: Returned mail: User unknown
+Date: Fri, 12 Nov 2004 12:52:30 -0500 (EST)
+Message-ID: <200411121752.MAE13992@rly-xi04.mx.aol.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="MAE13992.1100281950/rly-xi04.mx.aol.com"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hpt2jdmsr.wl@alsa2.suse.de>
+Received: from omr-d06.mx.aol.com (omr-d06.mx.aol.com [205.188.156.71])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CB316A
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 18:52:34 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,39 +18,79 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: =?iso-8859-1?q?Asbj=F8rn_S=E6b=F8?= <asbjs@stud.ntnu.no>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai@suse.de> writes:
+This is a MIME-encapsulated message
 
-> At 12 Nov 2004 10:42:33 -0600,
-> Jack O'Quin wrote:
-> > The sound card generates an interrupt at the end of each period.  This
-> > determines the input latency.  The hardware buffer holds multiple
-> > periods (you need at least two).  Its size determines the maximum
-> > output latency.  With JACK, there's not much reason to use more than
-> > two or three periods, unless you're running without realtime
-> > privileges.
-> 
-> Regarding JACK's latency:  can JACK handle more than two periods with
-> the minimal latency?  That is, keeping only two periods active (the
-> current playing and the next periods), you can achieve the same
-> latency even if the buffer consists of more than two periods.
-> 
-> I'm asking this because some boards (e.g. RME32/96) have the fixed
-> buffer size, and can't take the configuration as two periods per
-> buffer.  IIRC, JACK fills all the buffer at the first sequence, and
-> this results in the higher latency than necessary.
-> 
-> Correct me if I'm wrong.
+--MAE13992.1100281950/rly-xi04.mx.aol.com
 
-I believe you are correct about this.  You probably understand it
-better than I do.  :-)
+The original message was received at Fri, 12 Nov 2004 12:52:07 -0500 (EST)
+from 71.red-217-125-73.pooles.rima-tde.net [217.125.73.71]
 
-Is this something we could fix in JACK's ALSA driver backend?
--- 
-  joq
+
+*** ATTENTION ***
+
+Your e-mail is being returned to you because there was a problem with its
+delivery.  The address which was undeliverable is listed in the section
+labeled: "----- The following addresses had permanent fatal errors -----".
+
+The reason your mail is being returned to you is listed in the section
+labeled: "----- Transcript of Session Follows -----".
+
+The line beginning with "<<<" describes the specific reason your e-mail could
+not be delivered.  The next line contains a second error message which is a
+general translation for other e-mail servers.
+
+Please direct further questions regarding this message to your e-mail
+administrator.
+
+--AOL Postmaster
+
+
+
+   ----- The following addresses had permanent fatal errors -----
+<wardshrake@aol.com>
+
+   ----- Transcript of session follows -----
+... while talking to air-xi03.mail.aol.com.:
+>>> RCPT To:<wardshrake@aol.com>
+<<< 550 MAILBOX NOT FOUND
+550 <wardshrake@aol.com>... User unknown
+
+--MAE13992.1100281950/rly-xi04.mx.aol.com
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns; rly-xi04.mx.aol.com
+Arrival-Date: Fri, 12 Nov 2004 12:52:07 -0500 (EST)
+
+Final-Recipient: RFC822; wardshrake@aol.com
+Action: failed
+Status: 5.1.1
+Remote-MTA: DNS; air-xi03.mail.aol.com
+Diagnostic-Code: SMTP; 550 MAILBOX NOT FOUND
+Last-Attempt-Date: Fri, 12 Nov 2004 12:52:30 -0500 (EST)
+
+--MAE13992.1100281950/rly-xi04.mx.aol.com
+Content-Type: text/rfc822-headers
+
+Received: from  aol.com (71.red-217-125-73.pooles.rima-tde.net [217.125.73.71]) by rly-xi04.mx.aol.com (v103.7) with ESMTP id MAILRELAYINXI42-4da4194f836375; Fri, 12 Nov 2004 12:51:51 -0500
+From: alsa-devel@alsa-project.org
+To: wardshrake@aol.com
+Subject: Re: Your text
+Date: Fri, 12 Nov 2004 18:51:50 +0100
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_0007_00005485.00005227"
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-AOL-IP: 217.125.73.71
+X-AOL-SCOLL-SCORE: 0:0:0:
+X-AOL-SCOLL-URL_COUNT: 0
+Message-ID: <200411121252.4da4194f836375@rly-xi04.mx.aol.com>
+
+--MAE13992.1100281950/rly-xi04.mx.aol.com--
+
 
 
 -------------------------------------------------------
