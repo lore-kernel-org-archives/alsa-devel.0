@@ -1,12 +1,14 @@
-From: jhall@UU.NET (Jeremy Hall)
-Subject: pcm_multi can cause a kernel lockup
-Date: Mon, 15 Apr 2002 06:53:30 -0400 (EDT)
+From: Patrick Shirkey <kotau@firstlinux.net>
+Subject: Re: Fwd: Re: USB Quattro Linux support
+Date: Mon, 15 Apr 2002 05:16:17 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <QQmkrj01622.200204151053@neserve0.corp.us.uu.net>
+Message-ID: <20020415121617.6442736F9@sitemail.everyone.net>
+Reply-To: pshirkey@boosthardware.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,67 +17,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Paul Davis <pbd@op.net>, James@superbug.demon.co.uk
+Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--- Paul Davis <pbd@op.net> wrote:
+>>>framework for ALSA worked out, which is even more of a problem. Its
+>>>still unclear at this point whether the ALSA framework will be:
+>>>
+>>>      application<->alsa-lib<->alsa-driver<->low-level-ALSA-USB-class-driver
+>>>
+>>>OR
+>>>
+>>>      application<->alsa-lib<->low-level-non-ALSA-USB-class-driver
+>>>
+>>>the first one is easier to write, the second one is more flexible.
+>>>
 
-I am running 2.4.19-pre2+ll+preempt and seeing some annoying crashes when
-using pcm_multi.
 
-the setup:
+I think a good example of how ALSA should work with USB devices is the gphoto approach. From what I know of their framework it is along the same lines as the first option.
 
-running jack with something like this:
+>
+>the problem i alluded to is just one of making an architectural
+>decision. do you consider USB Audio devices to be best supported by a
+>kernel driver with a USB focus, or an ALSA focus? alsa-lib can handle
+>either, but in the former case (USB focus), more code has to be
+>written in user space, and the existing USB audio driver for OSS has
+>to be moved out of OSS and made more generic.
+>
 
-ctl.rme9652_48 {
-	type hw
-	card 0
-	}
+I'm pretty sure that we would have the means currently to see the device through the usb port. (I'll need to test that out) The problem I see is how does ALSA access the kernels USB modules and once that is sorted out we need the specs for the devices. 
 
-pcm.rme9652_48 {
-	type multi
-	slaves.a.pcm rme9652_0;
-	slaves.a.channels 26;
-	slaves.b.pcm rme9652_1
-	slaves.b.channels 26
-bindings.0.slave a;
-	bindings.0.channel 0;
-	...
-	bindings.27.slave b;
-	bindings.27.channel 25;
-	}
+So how do we go about writing a "low-level-ALSA-USB-class-driver"?
 
-ctl.rme9652_0 {
-	type hw;
-	card 0;
-}
 
-ctl.rme9652_1 {
-	type hw
-	card 1
-	}
 
-pcm.rme9652_0 {
-	type hw
-	}
-pcm.rme9652_1 {
-	type hw
-	card 1
-}
 
-Whatever jack period size doesn't seem to matter, the problem seems to be
-when for some reason the kernel makes jack wait on the order of
-miliseconds, like say 9 or more.  Jack's response to this is to stop and
-restart the audio device.  When this happens using a multi device, the
-computer locks and pressing reset is necessary--it won't respond to pings
-even.
+--
+Patrick Shirkey - Boost Hardware Ltd
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
-It is a dual 1.6ghz Athlon machine and the only audio hardware in it are
-the two hammerfalls.  I am running CVS of recent, looks like Apr 12 at
-around 00:08 GMT was when I checked it out.  Any help would be
-appreciated.  card0 is the master, providing word clock to card1.  
 
-The ADAT ports have valid sync, but the SPDIF ports do not, for they are
-not connected to anything.
 
-_J
+
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+_____________________________________________________________
+Want a new web-based email account ? ---> http://www.firstlinux.net
+
+_____________________________________________________________
+Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
