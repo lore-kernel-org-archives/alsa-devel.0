@@ -1,12 +1,16 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: [Jackit-devel] Multiple cards.
-Date: Wed, 12 Jun 2002 08:45:16 -0400
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: [Fwd:  Multiple cards.]
+Date: Wed, 12 Jun 2002 21:15:32 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200206121243.g5CChIP04283@post2.fast.net>
-References: <3D07388A.3010202@boosthardware.com>
+Message-ID: <3D073B64.2010200@boosthardware.com>
+References: <3D071F9B.1090302@boosthardware.com> <s5hk7p42158.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Wed, 12 Jun 2002 21:03:22 +0900."
-             <3D07388A.3010202@boosthardware.com>
+Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id OAA24239
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jun 2002 14:10:49 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,54 +19,93 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Joern Nettingsmeier <nettings@folkwang-hochschule.de>, "jackit-devel@lists.sourceforge.net" <jackit-devel@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->IIUC using this in .asoundrc will allow me to make a fake multichannel 
->card that uses multiple devices from different cards. Fooling JACK into 
->thinking that it is accessing one card instead of many.
+Takashi Iwai wrote:
+> At Wed, 12 Jun 2002 19:16:59 +0900,
+> Patrick Shirkey wrote:
+> 
+>>In your example you don't say whether your cards have are stereo or mono 
+>>  channels.
+>>
+>>I get this ouput when starting jack
+>>
+>>----
+>># jackd -R -v -d alsa -d ttable
+>>jackd 0.33.0
+>>Copyright 2001-2002 Paul Davis and others.
+>>jackd comes with ABSOLUTELY NO WARRANTY
+>>This is free software, and you are welcome to redistribute it
+>>under certain conditions; see the file COPYING for details
+>>
+>>3475 waiting for signals
+>>creating alsa driver ... ttable|1024|2|48000|swmon
+>>ALSA: no playback configurations available
+>>ALSA: cannot configure capture channel
+>>cannot load driver module alsa
+>>jack main caught signal 15
+>>-----
+>>
+>>Using the following in my .asoundrc file. I'm not sure if it is correct 
+>>as card0 has two stereo pcm devices. I'm not sure whether they are being 
+>>defined in the following or not.
+>>
+>>Does
+>>
+>>         slaves.a.channels 2
+>>
+>>refer to the pcm devices
+>>
+>>         eg. hw:0,0 and hw:0,1
+>>
+>>or the first two mono channels available on card0?
+>>
+>>         eg. left and right channels on hw:0,0
+> 
+> 
+> the latter.  hw:0,0 and hw:0,1 are different substreams,
+> i.e. different pcms.
+> 
+> if your second card has only one channel, then the amount of resultant
+> channels will be three, as you modified.  it should work so.
+> 
+> do both cards support the same condition (48kHz) ?
+>  
+> 
 
-This was always the idea of how this should work.
+Yes. Testing them seperately they both work at 48Khz
 
->It seems unecessary to have to set this up though because the devices 
->are already available to be accessed as hw:0,0 hw:0,1 hw:1,0 ...
->
->Shouldn't JACK find all available inputs and outputs by default instead 
->of relying on the user to define the device to be used?
->
->If not it seems that JACK is missing an extremely lucrative feature 
->which would contribute greatly to Linux audio and would no doubt peak 
->the interest of anyone who is not already interested.
+Do you know what this means?
 
-This isn't a question of JACK's policy, rather its more JACK following
-ALSA's design. Because ALSA allows the user to define PCM devices,
-ALSA doesn't currently offer any convenient way of enumerating all the
-possible PCM devices. If you sit down and think hard about the many
-situations a user might find themselves in, I think you'll see that
-the approach of "find all "hw" devices, gang them up, and go" really
-isn't very helpful. And for those people who try it, they will face
-the sync problem in nearly every case.
+----
+# aplay  -f dat -D ttable /1REC/beastie_boys-track_8.wav
+Playing WAVE '/1REC/beastie_boys-track_8.wav' : Signed 16 bit Little 
+Endian, Rate 44100 Hz, Stereo
+aplay: set_params:737: Broken configuration for this PCM: no 
+configurations available
 
->I can hear Paul now saying you have no desire to make this happen 
->because you do not work with consumer devices. Unless someone paid you 
->to do it.
+# arecord -f cd -D multi -c 3 | aplay -D multi
+Recording WAVE 'stdout' : Signed 16 bit Little Endian, Rate 44100 Hz, 
+Channels 3
+arecord: set_params:737: Broken configuration for this PCM: no 
+configurations available
+Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz, 
+Channels 3
+aplay: set_params:737: Broken configuration for this PCM: no 
+configurations available
+----
 
-That's correct. Consumer devices are just that. People trying to do
-multichannel work by ganging such devices are engaged in a strategy I
-don't want to support with my own time.
 
->If it is possible to do and the code was written would it be included in 
->JACK?
 
-Its possible, and if it was reasonably written, it would be included
-in JACK.
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
->If it is possible to do how much would it cost to have it implemented?
-
-I don't know. Somebody else would have to do it.
-
---p
 
 _______________________________________________________________
 
