@@ -1,10 +1,12 @@
-From: "超 李" <flyingwalter@msn.com>
-Subject: Playing always at half of the rate of recording.
-Date: Sun, 17 Nov 2002 22:44:48 +0800
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: CS46xx woes.
+Date: Sun, 17 Nov 2002 16:55:41 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F9hQkQiijdhvs3qJSyl00011c5a@hotmail.com>
+Message-ID: <3DD7BBFD.9040607@cucumelo.org>
+References: <20021115121043.67b5c0af.flame@home.se>	<Pine.LNX.4.33L2.0211151339210.14712-100000@cactus> <20021116203320.5828f7dd.flame@home.se>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -14,30 +16,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Richard Olsson <flame@home.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
-  I'm using alsa library to write an application that play and record audio 
-at the same time. I openned the default pcm device twice, and set params for 
-them, nonblock, RW_INTERLEAVED, S16_LE format, 8000Hz, and 1 channel, the 
-only difference is using SND_PCM_STREAM_CAPTURE for recording, and using 
-SND_PCM_STREAM_PLAYBACK for playing.
-  But the bytes played are always near half of the recorded, and the sound I 
-heard is slowed comparing with its normal speed.
-  My enviroment are:
-  RedHat 7.3 / alsa 0.9.0 rc5 / linux kernel 2.4.18-3
-  sound card module: via82xx
+>
+>
+>Heh; I haven't noticed anything bad with it while using Windows, but
+>then again I don't set so high standards. ;)
+>  
+>
+It was long a time since I tested this card with Windows, so I really dont
+have any good point of comparison.  
+Depending of what you are playing sound get's distorcionated when
+PCM volume is higher ~75%, dont known it's possible to get it better.
+We probably never going to known whatever magic is done in the Windows 
+driver.
 
-  How can I solve this?
-  Thanks!
+>Hmm; with rc2 if I unmute the cd input the amplifier seems to get
+>disabled sometimes (thus resulting in very badly disorted sound), but
+>using latest CVS nothing happens.
+>
+OK. confirmed, thanks for testing it out.
 
-Walter
-
-
-_________________________________________________________________
-MSN 8 helps eliminate e-mail viruses. Get 2 months FREE*. 
-http://join.msn.com/?page=features/virus
+/Benny
 
 
 
