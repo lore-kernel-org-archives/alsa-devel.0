@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000705]: RME96 Driver crashes
-Date: Fri, 3 Dec 2004 23:43:14 +0100
-Message-ID: <8a8530ca8a65191cd15dc7a4b92824c5@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
+Date: Sat, 4 Dec 2004 00:36:40 +0100
+Message-ID: <2bdb2309b39b39e7a113222d96f246eb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB13C313
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 23:43:14 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73B8B320
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 00:36:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,41 +24,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=705> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
 ======================================================================
-Reported By:                FishB8
+Reported By:                dlc
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   705
-Category:                   PCI - RME 96
+Issue ID:                   706
+Category:                   PCI - ice1712
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
 Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9
+Distribution:               DeMuDi1.2.0
+Kernel Version:             2.4.25
 ======================================================================
-Date Submitted:             12-03-2004 23:43 CET
-Last Modified:              12-03-2004 23:43 CET
+Date Submitted:             12-04-2004 00:36 CET
+Last Modified:              12-04-2004 00:36 CET
 ======================================================================
-Summary:                    RME96 Driver crashes
+Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
+to reboot
 Description: 
-Something has changed in the RME96 driver between 1.0.6 and 1.0.7 causeing
-it to crash. Whenever an audio program uses ALSA and stops playing the
-driver hangs. When trying to start JACK, it never gets started but the CPU
-hits 100%. It's impossible to kill any of the programs because any program
-dealing with processes hangs as well. The system will not totally shut
-down and has to be reset. Kernel 2.6.8 works just fine.
+System reboots when attempting to install a game under Wine.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 23:43 FishB8         New Issue                                    
-12-03-04 23:43 FishB8         File Added: config                           
-12-03-04 23:43 FishB8         Distribution              => Gentoo          
-12-03-04 23:43 FishB8         Kernel Version            => 2.6.9           
+12-04-04 00:36 dlc            New Issue                                    
+12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
+12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
 ======================================================================
 
 
