@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000448]: System hangs up
-Date: Mon, 23 Aug 2004 14:59:26 +0200 (CEST)
+Subject: [ALSA - driver 0000459]: PC Speaker doesn't produce any sound
+Date: Mon, 23 Aug 2004 15:23:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040823125926.7760A1102F@server.perex-int.cz>
+Message-ID: <20040823132354.A084C1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CDB9E2D7
-	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 14:59:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19CDE2D7
+	for <alsa-devel@alsa-project.org>; Mon, 23 Aug 2004 15:23:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,56 +20,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000448
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000459
 ======================================================================
-Reported By:                zadnica
-Assigned To:                
+Reported By:                ncrfgs
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     448
-Category:                   PCI - via82xx
+Bug ID:                     459
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   crash
+Severity:                   minor
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     resolved
+Distribution:               CruxPPC http://cruxppc.sunsite.dk/
+Kernel Version:             2.6.8.1
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             08-17-2004 13:02 CEST
-Last Modified:              08-23-2004 14:59 CEST
+Date Submitted:             08-21-2004 18:32 CEST
+Last Modified:              08-23-2004 15:23 CEST
 ======================================================================
-Summary:                    System hangs up
+Summary:                    PC Speaker doesn't produce any sound
 Description: 
-Systems hangs up, when modules snd-via82xx is loaded. When I using OSS
-module via82cxxx_audio everything works fine.
+PC Speaker doesn't produce any sound.
+System beep doesn't work.
 ======================================================================
 
 ----------------------------------------------------------------------
- sventura - 08-22-2004 09:51 CEST 
+ ncrfgs - 08-22-2004 03:28 CEST 
 ----------------------------------------------------------------------
-same crash on vaio pcg-fxa78 VT/82C686 AC97
-havent tried propoused "via82cxxx_audio" preload workaround
-verified in ver: from 0.9.2 to 1.0.5a
-native 2.4 kernel oss support works ok, so I compared initialization
-sequences
-and made this (attached) quick patch-module workaround. It's not a final
-solution but provides a close idea as of what is missing in current code
-initialization sequence.
+http://lists.debian.org/debian-powerpc/2004/06/msg00552.html
 
 ----------------------------------------------------------------------
- tiwai - 08-23-2004 14:59 CEST 
+ tiwai - 08-23-2004 15:23 CEST 
 ----------------------------------------------------------------------
-Does the attached patch fix?
+Already fixed in the recent version.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-17-04 13:02 zadnica        New Bug                                      
-08-22-04 09:51 sventura       Bugnote Added: 0001607                       
-08-22-04 09:52 sventura       File Added: myvia82xx.tar.gz                    
-08-23-04 14:59 tiwai          Bugnote Added: 0001611                       
+08-21-04 18:32 ncrfgs         New Bug                                      
+08-21-04 18:32 ncrfgs         Distribution              => CruxPPC http://cruxppc.sunsite.dk/
+08-21-04 18:32 ncrfgs         Kernel Version            => 2.6.8.1         
+08-22-04 03:00 ncrfgs         Bug Monitored: ncrfgs                        
+08-22-04 03:08 ncrfgs         Bug End Monitor: ncrfgs                      
+08-22-04 03:25 ncrfgs         Bugnote Added: 0001604                       
+08-22-04 03:26 ncrfgs         Bugnote Deleted: 0001604                     
+08-22-04 03:28 ncrfgs         File Added: patch                            
+08-22-04 03:28 ncrfgs         Bugnote Added: 0001605                       
+08-23-04 09:17 ncrfgs         Bug Monitored: ncrfgs                        
+08-23-04 15:23 tiwai          Bugnote Added: 0001612                       
+08-23-04 15:23 tiwai          Resolution               open => fixed       
+08-23-04 15:23 tiwai          Status                   assigned => resolved
 ======================================================================
 
 
