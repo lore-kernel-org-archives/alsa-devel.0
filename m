@@ -1,11 +1,11 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
 Subject: Upgrade driver to 1.0.6, memory allocation?
-Date: Wed, 18 Aug 2004 19:57:23 -0700
+Date: Wed, 18 Aug 2004 19:57:22 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2f2201c48598$401d6d10$2701010a@mail2world.com>
+Message-ID: <184801c48598$400a3330$41ca010a@mail2world.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="----=_NextPart_000_2F23_01C4855D.93BE9510"
+	boundary="----=_NextPart_000_1849_01C4855D.93AB5B30"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format.
 
-------=_NextPart_000_2F23_01C4855D.93BE9510
+------=_NextPart_000_1849_01C4855D.93AB5B30
 Content-Type: text/plain;
 	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
@@ -79,7 +79,7 @@ TIA for any enligtenment about the above.
 
 
 <P><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">_______________________________________________________________<BR><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">ICQ - You get the message, anywhere!<br>Get it @ <a href="http://www.icq.com" target=new>http://www.icq.com</a></font><br><br>&nbsp;</font></font>
-------=_NextPart_000_2F23_01C4855D.93BE9510
+------=_NextPart_000_1849_01C4855D.93AB5B30
 Content-Type: text/html
 Content-Transfer-Encoding: 7bit
 
@@ -128,7 +128,7 @@ TIA for any enligtenment about the above.<br>
 
 
 <P><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">_______________________________________________________________<BR><font face="Arial, Helvetica, sans-serif" size="2" style="font-size:13.5px">ICQ - You get the message, anywhere!<br>Get it @ <a href="http://www.icq.com" target=new>http://www.icq.com</a></font><br><br>&nbsp;</font></font>
-------=_NextPart_000_2F23_01C4855D.93BE9510--
+------=_NextPart_000_1849_01C4855D.93AB5B30--
 
 
 
