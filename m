@@ -1,121 +1,153 @@
-From: Edward Muller <edwardam@interlix.com>
-Subject: Re: Re: [Alsa-devel] Redhat 9.0 also has the snd.o
-	unresolved symbol schedule_work issue
-Date: 02 Apr 2003 17:55:46 -0600
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <1049327746.7122.4.camel@localhost.localdomain>
-References: <3E861CFC.9040908@corekin.no-ip.com>
-	 <1049062787.3017.22.camel@jason.corekin>
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: More Midisport 2x2 troubles
+Date: Thu, 3 Apr 2003 00:10:26 -0500
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <000001c2f99f$56a75b80$ac1f830a@ICO>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <1049062787.3017.22.camel@jason.corekin>
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Jason Corekin <jason@corekin.no-ip.com>
-Cc: Alsa User's <alsa-user@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net, linux-audio-user@music.columbia.edu
+Cc: nando@ccrma.stanford.edu
 List-Id: alsa-devel@alsa-project.org
 
-This is most likely (AFAIK) because redhat ships their kernel with NPTL
-(Native POSIX Thread Library).
+Hi all,
 
->From the release notes:
+I just upgraded to Mdk 9.1 and reinstalled all of the MIDI-related
+stuff, as well as the Alsa 0.9.2 (from sources, after uninstalling Mdk's
+RPM's). I also installed Fernando's modified alsasound script that
+enables smart unloading of snd- modules.
 
-Red Hat Linux 9 includes the Native POSIX Thread Library (NPTL), a new
-implementation of POSIX threads for Linux. This library provides
-performance improvements and increased scalability for i686 or better
-processors.
+The end result is that the midisport works, well sort of.
 
-This thread library is designed to be binary compatible with the old
-LinuxThreads implementation; however, applications that rely on the
-places where the LinuxThreads implementation deviates from the POSIX
-standard will need to be fixed. Notable differences include:
+The firmware loads fine, and the midisport is properly recognized. The
+problem is that I only have one MIDI port available even though this is
+the 2x2 version (I had 2 ports in Mdk 9.0, usually /dev/midi(0) and
+/dev/midi1). Now I only have /dev/midi.
 
-- Signal handling has changed from per-thread signal handling to POSIX
-process signal handling.
+The interesting thing is that the /proc/asound/card1/midi0 lists the
+following:
 
-- getpid() returns the same value in all threads.
+Output 0
+	Tx bytes 	: 0
+Output 1
+	Tx bytes	: 0
+Input 0
+	Rx bytes	: 5 (this number changes, most likely because
+it's the only port that has anything hooked up to it)
+Input 1
+	Rx bytes	: 0
 
-- Thread handlers registered with pthread_atfork are not run if vfork()
-is used - no manager thread
+So, it seems that there are 2 I and 2 O ports, but they are all
+allocated within the midi0 device according to the proc stuff (or
+/dev/midi1 according to the dev stuff). If this is the case, then how do
+I access the second port.
 
---------------------------
+Cat /dev/midi1 only outputs stuff coming into the first port, so that
+tells me something's fishy.
 
-I could be wrong but this is where I think the problem is...
+I am using CCRMA's hotplug 8_26_1 and ezusbmidi 2002_11_17.
 
+There were no alterations to the kernel or any other part of the system
+(apart from the alsa install and other audio software installs).
 
-On Sun, 2003-03-30 at 16:19, Jason Corekin wrote:
-> 	Good news I have Alsa 0.9.2 working on RedHat 9.0 working with kernel
-> version 2.4.20.  The catch is that I had to replace the RedHat kernel
-> with the stock kernel from www.kernel.org.  So the problem has to be in
-> the changes that RedHat made to their kernel.  I have to give credit to
-> Kmberry and Lance A. Brown, for pointing out that RedHat plays around
-> with the kernel before releasing it  
-> 	The only thing that I have not yet tried to do is to rework the
-> symlinks to make sure that the Alsa code knows where to find the right
-> kernel dependencies.  Since I do not know if there is any thing that I
-> am now missing from not running on the RedHat kernel or not it would be
-> nice to at least have some modules compatible with their kernel, but I'm
-> not too worried about it.
-> 	I hope this helps.
-> 
-> Jason Corekin 
-> 
-> 
-> 
-> On Sat, 2003-03-29 at 14:23, Jason Corekin wrote:
-> > I work for HP and I just downloaded the new RH 9.0 iso's from our 
-> > internal source yesterday.  After upgrading from RH 8.0 and the 2.4.18 
-> > kernel I tried to update my Alsa drivers to work with the new 2.4.20 
-> > kernel and found that althought the Alsa 0.9.2 drivers had compiled and 
-> > installed without trouble the would not load.  Instead I am getting the 
-> > error unresolved symbol schedule_work.
-> > 
-> > Now I know that there have been numerous similar complaints on the user 
-> > mailing list, but since nobody seems to be privinding and answer and 
-> > since I saw no mention of this error on the development list I thought 
-> > that I would send out this mail to both lists and see if I could get a 
-> > little bit more of a response.
-> > 
-> > I have a Yamahaa Waveforce 192XG, a 1.2Ghz Duron, 128MB of ram, and a 
-> > ECS K7S5A motherboard.  But since this appears to be a layer other then 
-> > the hardware driver layer and has been reported with to be affecting 
-> > numerous cards, I really don't think that my hardware config will be of 
-> > much importance.
-> > 
-> > Jason Corekin
-> > 
-> > 
-> > 
-> > -------------------------------------------------------
-> > This SF.net email is sponsored by:
-> > The Definitive IT and Networking Event. Be There!
-> > NetWorld+Interop Las Vegas 2003 -- Register today!
-> > http://ads.sourceforge.net/cgi-bin/redirect.pl?keyn0001en
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
--- 
-Edward Muller
+My modules.conf looks like this:
 
-Interlix - President
+# ALSA portion
+alias char-major-116 snd
+alias char-major-14 soundcore
+alias snd-card-0 snd-intel8x0
+alias sound-slot-0 snd-card-0
+alias snd-card-1 snd-hdsp
+alias sound-slot-1 snd-card-1
+alias snd-card-2 snd-usb-audio
+alias sound-slot-2 snd-card-2
+options snd major=116 cards_limit=4 device_mode=0666 device_gid=0
+device_uid=0
+options snd-intel8x0 index=0
+options snd-hdsp index=1
+options snd-usb-audio vid=0x763 pid=0x1001 index=2
 
-Web Hosting - PC Service & Support
-Custom Programming - Network Service & Support
+# CS4205
+alias sound-service-0-0 snd-mixer-oss
+#alias sound-service-0-1 snd-seq-oss
+alias sound-service-0-3 snd-pcm-oss
+#alias sound-service-0-8 snd-seq-oss
+alias sound-service-0-12 snd-pcm-oss
 
-Phone: 417-862-0573
- Cell: 417-844-2435
-  Fax: 417-862-0572
+#HDSP
+alias sound-service-1-0 snd-mixer-oss
+alias sound-service-1-1 snd-seq-oss
+alias sound-service-1-3 snd-pcm-oss
+alias sound-service-1-8 snd-seq-oss
+alias sound-service-1-12 snd-pcm-oss
 
-http://www.interlix.com
+#MIDISPORT
+alias sound-service-2-1 snd-seq-oss
+alias sound-service-2-8 snd-seq-oss
+
+In this situation the hdsp is not in use, so midisport assumes the 2nd
+card position.
+
+Upon midisport reconnect, the /var/log/messages spits out the following:
+Apr  2 23:59:49 badass-bukvic kernel: usb.c: USB disconnect on device
+00:1d.2-1 address 29
+Apr  3 00:00:00 badass-bukvic kernel: hub.c: new USB device 00:1d.2-1,
+assigned address 30
+Apr  3 00:00:00 badass-bukvic kernel: usb.c: USB device 30 (vend/prod
+0x763/0x1001) is not claimed by any active driver.
+Apr  3 00:00:03 badass-bukvic /etc/hotplug/usb.agent: Setup ezusbmidi
+for USB product 763/1001/1
+Apr  3 00:00:03 badass-bukvic /etc/hotplug/usb.agent: Module setup
+ezusbmidi for USB product 763/1001/1
+Apr  3 00:00:03 badass-bukvic /etc/hotplug/usb/ezusbmidi: load
+/usr/share/usb/ezusbmidi/ezusbmidi2x2.ihx for 763/1001/1 to
+/proc/bus/usb/002/030
+Apr  3 00:00:03 badass-bukvic kernel: usb.c: USB disconnect on device
+00:1d.2-1 address 30
+Apr  3 00:00:03 badass-bukvic kernel: hub.c: new USB device 00:1d.2-1,
+assigned address 31
+Apr  3 00:00:07 badass-bukvic /etc/hotplug/usb.agent: Setup
+snd-usb-audio audio usb-midi for USB product 763/1110/1
+Apr  3 00:00:07 badass-bukvic /etc/hotplug/usb.agent: ... blacklisted
+module:  audio
+Apr  3 00:00:07 badass-bukvic /etc/hotplug/usb.agent: ... blacklisted
+module:  usb-midi
+Apr  3 00:00:07 badass-bukvic /etc/hotplug/usb.agent: Setup alsasound
+for USB product 763/1110/1
+Apr  3 00:01:00 badass-bukvic modprobe: modprobe: Can't locate module
+sound-service-2-2
+
+(NB: what's up with the sound-service-2-2, is there such a thing?)
+
+Upon doing this, cat /dev/midi1 is the only one that works.
+
+Other pertinent info is (in abbreviated form):
+/proc/asound/version -> ALSA=0.92 kernel=2.4.21-0.13mdk
+../cards -> 0 i810, 1 2x2 (Midisport) at usb-00:1d.2-1
+../card1/ has id and midi0 files only
+
+All I also remember the last time when I was using 0.9.0 is that I had
+to upgrade from CVS in order to get both ports (it was the snd-usb-audio
+bug IIRC). But now, I did d/l and install 0.9.2 which should have those
+fixes but I can't seem to get the second port to work. Could it be that
+there's something leftover from the mdk 0.9.0 version of Alsa even after
+I did rpm -e and reinstalled 0.9.2 from sources?
+
+Any help on this issue is greatly appreciated! Sincerely,
+
+Ivica Ico Bukvic, multimedia sculptor
+http://meowing.ccm.uc.edu/~ico
+
 
 
 
