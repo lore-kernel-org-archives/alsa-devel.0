@@ -1,12 +1,16 @@
-From: Laurent Bigonville <l.bigonville@easynet.be>
-Subject: No more "beep" under kernel 2.6
-Date: Fri, 12 Mar 2004 23:48:53 +0100
+From: Mathieu Geli <geli@enseirb.fr>
+Subject: Re: snd-usb-audio and midisport1x1 little hack fixes
+ hotplug pb
+Date: Sat, 13 Mar 2004 04:32:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6FC04736-7477-11D8-9C87-00306543FC98@easynet.be>
-Mime-Version: 1.0 (Apple Message framework v612)
-Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha1; boundary="Apple-Mail-3--107198182"
+Message-ID: <20040313043234.49d783bb.geli@enseirb.fr>
+References: <20040311204610.3766f038.geli@enseirb.fr>
+	<Pine.HPX.4.33n.0403121305470.14417-100000@studcom.urz.uni-halle.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0403121305470.14417-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,46 +19,70 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: clemens@ladisch.de, nwgbh@swissonline.ch
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Ok, I applied your second patch, and get this dmesg output:
 
---Apple-Mail-3--107198182
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+drivers/usb/core/usb.c: deregistering driver snd-usb-audio
+ALSA /home/mathieu/alsa-driver/usb/usbaudio.c:2944: snd_usb_audio_disconnect called, refcount = 1
+ALSA /home/mathieu/alsa-driver/usb/usbaudio.c:2944: snd_usb_audio_disconnect called, refcount = 0
+ALSA /home/mathieu/alsa-driver/alsa-kernel/usb/usbmidi.c:148: urb status -104
+ALSA /home/mathieu/alsa-driver/alsa-kernel/usb/usbmidi.c:134: usb_submit_urb: -32
 
-Hi,
+At this point the usb was down not responding anymore, like in the past.
 
-I have installed the last kernel version and I have no more beep but I 
-still have sounds.(no problem under 2.4)
-I tried both with the included kernel version and some previous version 
-but nothing change...
-I have no more 'beep' slide in the mixer.(I don't have the PCM one 
-either, i don't know if it's related)
-My computer is a mac G4 (the first with AGP), the sound chipset is the 
-screamer one.
+what I did next, is put double each interesting lines printk, what I get is, that the rmmod of the driver was hanging on the midi ressources cleaning stuff.
+Hum, first reflex: I just comment out those 3 lines =) and guess what.. that works fine now. I tried to plug/unplug several times my mouse, the midisport, and everything
+works fine, so... I don't really know what was the bug's reason, but as long as that works I'm happy ;-)
+Probably Takashi Iwai who seems to has coded it should once have a look to understand the 'why' question.
 
-Someone have a clue?
+Cheers,
 
-Laurent
+Mathieu 
+--
 
---Apple-Mail-3--107198182
-content-type: application/pgp-signature; x-mac-type=70674453;
-	name=PGP.sig
-content-description: =?ISO-8859-1?Q?Ceci_est_une_signature_=E9lectronique_PGP?=
-content-disposition: inline; filename=PGP.sig
-content-transfer-encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (Darwin)
+Here is finally the modifications I applied:
 
-iD8DBQFAUj5sVLyDt/3apY8RAhNwAJ9MwHBqY0loK7wV0T3ECUhk2W7rAQCgiqHe
-A5R8iJ8qNhrphpodAYAk0HE=
-=CgkD
------END PGP SIGNATURE-----
+--- alsa-kernel/usb/usbmidi.c	3 Mar 2004 11:35:15 -0000	1.24
++++ alsa-kernel/usb/usbmidi.c	8 Mar 2004 09:34:05 -0000	1.25
+@@ -453,8 +453,16 @@
+ 	usbmidi_out_port_t* port = (usbmidi_out_port_t*)substream->runtime->private_data;
 
---Apple-Mail-3--107198182--
+ 	port->active = up;
+-	if (up)
++	if (up) {
++		if (port->ep->umidi->chip->shutdown) {
++			/* gobble up remaining bytes to prevent wait in
++			 * snd_rawmidi_drain_output */
++			while (!snd_rawmidi_transmit_empty(substream))
++				snd_rawmidi_transmit_ack(substream, 1);
++			return;
++		}
+ 		tasklet_hi_schedule(&port->ep->tasklet);
++	}
+ }
 
+ static int snd_usbmidi_input_open(snd_rawmidi_substream_t* substream)
+
+
+--- alsa-kernel/usb/usbaudio.c	2004-03-11 21:00:25.000000000 +0100
++++ alsa-kernel/usb/usbaudio.c	2004-03-13 04:01:06.000000000 +0100
+@@ -2939,9 +2939,9 @@
+                        snd_usb_stream_disconnect(p, &usb_audio_driver);
+                }
+                /* release the midi resources */
+-               list_for_each(p, &chip->midi_list) {
+-                       snd_usbmidi_disconnect(p, &usb_audio_driver);
+-               }
++               /* list_for_each(p, &chip->midi_list) { */
++               /* snd_usbmidi_disconnect(p, &usb_audio_driver); */
++               /* } */
+                up(&register_mutex);
+                snd_card_free_in_thread(card);
+        } else {
 
 
 -------------------------------------------------------
