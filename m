@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
-Date: Mon, 17 Jan 2005 22:07:25 +0100
-Message-ID: <292d38b39b5d47b1086fb0c9dfc1af3d@bugtrack.alsa-project.org>
+From: Michael Hoffer <info@michaelhoffer.de>
+Subject: M-Audio Qattro USB
+Date: Mon, 17 Jan 2005 22:44:46 +0100
+Message-ID: <200501172244.47086.info@michaelhoffer.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F3CB6286
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 22:07:25 +0100 (MET)
+Received: from natjimbo.rzone.de (natjimbo.rzone.de [81.169.145.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2C85D2A2
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 22:42:51 +0100 (MET)
+Received: from noname (p508B9852.dip0.t-ipconnect.de [80.139.152.82])
+	by post.webmailer.de (8.13.1/8.13.1) with ESMTP id j0HLgh2p013401
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 22:42:44 +0100 (MET)
+Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,54 +26,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+HI!
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
-======================================================================
-Reported By:                Alister
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   832
-Category:                   PCI - ens1371
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Suse linux
-Kernel Version:             2.6.5-7.111.19-default
-======================================================================
-Date Submitted:             01-17-2005 22:07 CET
-Last Modified:              01-17-2005 22:07 CET
-======================================================================
-Summary:                    sound randomly distorts, clicks, pops and low level
-Description: 
-reported here:
-http://forums.suselinuxsupport.de/index.php?showtopic=7828
+I read the Install-Howto for snd-usb-audio on www.alsa-project.org. I use
+Gentoo-Linux (kernel 2.6.9). I have the feeling that the .asoundrc file had
+no effect on my system. 
 
-but in summary:
-HW works perfectly under windows partition.
-Despite several (hopeful) upgrades, sound persists in randomly becoming
-low- level and/or VERY distorted (clipped?). Occurs anytime from few
-seconds to many minutes after being cleared. Occassionally corrects itself
-(temporary) just as randomly. But spends most of the time being badly
-distorted, low level and no left channel.
-Can always clear (temporarily) by using volume control in YaST to set max
-volumes and play high level sound through card.
-Left channel always affected worse than right.
-======================================================================
+When I tried to record with a samplerate of 96000 Hz
+audacity could not open the sounddevice. With 48000 Hz it worked 
+fine in audacity. 
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-17-05 22:07 Alister        New Issue                                    
-01-17-05 22:07 Alister        Distribution              => Suse linux      
-01-17-05 22:07 Alister        Kernel Version            =>
-2.6.5-7.111.19-default
-======================================================================
+With arecord I get the following error message. It doesn't make a difference 
+if I use other sample rates or sample formates.
+arecord gives the following output:
 
+bash-2.05b$ arecord -D quattro -f S24_3LE -r 96000 -c 2 -d 10 test.raw
+Recording WAVE 'test.raw' : Signed 24 bit Little Endian in 3bytes, Rate 96000 
+Hz, Stereo
+arecord: set_params:854: Sample format non available
 
+Thanks for your help!
 
 
 -------------------------------------------------------
