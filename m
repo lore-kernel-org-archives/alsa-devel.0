@@ -1,12 +1,18 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Alsa Fullduplex and VoIP
-Date: Mon, 23 Jun 2003 12:08:31 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: New mixer api.
+Date: Mon, 23 Jun 2003 09:11:37 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19UTlX-0005Op-00@sc8-sf-list1.sourceforge.net>
-References: <20030623151102.8046.qmail@webmail25.rediffmail.com>
+Message-ID: <NDBBLGIKBJENLAMOLFHGCEACCJAB.mknecht@controlnet.com>
+References: <3EF71E76.5070708@superbug.demon.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "23 Jun 2003 15:11:02 -0000."
-             <20030623151102.8046.qmail@webmail25.rediffmail.com>
+Received: from vivaldi.controlnet.com (hidden-user@mail.controlnet.com [199.108.40.159])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA13064
+	for <alsa-devel@alsa-project.org>; Mon, 23 Jun 2003 18:11:57 +0200
+In-Reply-To: <3EF71E76.5070708@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,20 +21,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mahendra sp <mahendra_sp@rediffmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
->1. How to make server which is actiong as a playback program waits 
->and plays in order the packets received from the client.
->2. sychonisation issue.
->3. How to over come the buffer xrun in case of playback?
+>
+> Hi,
+>
+> If a user has a 5.1 sound card, but only has 2 speakers connected, it
+> would be nice if the user could tell alsa this fact.
 
-all tricky questions. don't expect simple answers. the correct
-solutions to these problems are the basis of several people's business
-plans (not my own).
+One of my SACD players has this feature built in. It's nice in that I can
+listen to a 5.1 SACD through stereo headphones and hear all 6 of the
+channels mixed in a more or less normal way.
 
---p
+I know this isn't exactly what you are proposing, but I think it's similar.
+One of these days you are going to have an audio DVD in your PC, and maybe
+be using a stereo sound card, and you'll run into the same issue.
+
+Cheers,
+Mark
+
+
 
 
 -------------------------------------------------------
