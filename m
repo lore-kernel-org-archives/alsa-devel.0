@@ -1,18 +1,16 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: snd-usb-usx2y 0.8.5 against alsa-kernel cvshead: OHCI doesn't
- crash anymore
-Date: Mon, 25 Oct 2004 23:10:25 +0100 (WEST)
+From: "Katherine S. Burris" <katherine.sburris_zj@stapro.cz>
+Subject: (no subject)
+Date: Tue, 26 Oct 2004 16:28:11 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <32787.192.168.1.5.1098742225.squirrel@192.168.1.5>
-References: <200409302046.29798.annabellesgarden@yahoo.de>
-    <200410200228.16228.annabellesgarden@yahoo.de>
-    <s5hacuhivfb.wl@alsa2.suse.de>
-    <200410212021.22349.annabellesgarden@yahoo.de>
+Message-ID: <d5fd01c4bb78$1f1a3dac$bab8a30d@cibs10.sns.it>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200410212021.22349.annabellesgarden@yahoo.de>
+Received: from cibs10.sns.it (adsl-68-92-54-97.dsl.hstntx.swbell.net [68.92.54.97])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3EB292F5
+	for <alsa-devel@alsa-project.org>; Tue, 26 Oct 2004 02:33:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,38 +19,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Karsten Wiese wrote:
->
-> Summary: Fixes crashes that occured when communicating over ohci usb-hcds.
->
-> Work on this started, when rumors spread that ohci equipped machines would
-> crash.
-> This was due to me missing two facts:
-> 1) Ohci has a bigger usb frame number wrap around.
-> 2) It only supports URB_ISO_ASAP when submitting iso urbs.
-> Fixed now.
->
-> Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
->
+<html>
+<b>Always wanted an expensive watch such as a Rolex?<br>
+Stop dreaming and check out these bargains at throw away prices.<p></b>
 
-May I ask what's the status of this, wrt.including snd-usb-usx2y version
-0.8.5 on the official alsa-kernel tree?
-
-People seem to be happy with it, specially the OHCI owners, for whom the
-current alsa-driver-1.0.7rc2/CVS is badly broken and causes a serious
-kernel oops (bug #0000425).
-
-I hope it makes into 1.0.7 release :)
-
-Cheers.
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
-
+<b>This week only special:</b> REAL GOLD 18K Replicas from $75-$250<p>
+<a href=3D"http://mlotymbgjj.beud.com/replica/gagabob/dxplgvakoeyh">CLlCK=
+ HERE to view brochure</a>
+<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
+<a href=3D"http://lgwqxidoyfmk.beud.com/z.php">no thanks</a>
+</html>
 
 
 
