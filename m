@@ -1,14 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000800]: Sound is Corrupted or terribe quality.
-Date: Mon, 10 Jan 2005 03:20:09 +0100
-Message-ID: <643c73f94fb5ae1704823c282801c41f@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: =?GB2312?B?0MLE6r/swNajoQ==?= <ÐÂÄê¿ìÀÖ@abc.net>
+Subject: =?GB2312?B?0MLE6r/swNajoQ==?=
+Date: Mon, 10 Jan 2005 14:13:21 +0800
+Message-ID: <E1CnsmE-0005Nq-Nn@sc8-sf-mx2.sourceforge.net>
+Content-Type: multipart/mixed;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07A1C178
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 03:20:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,45 +13,10 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=800> 
-======================================================================
-Reported By:                abonilla
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   800
-Category:                   PCI - azx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             01-10-2005 03:20 CET
-Last Modified:              01-10-2005 03:20 CET
-======================================================================
-Summary:                    Sound is Corrupted or terribe quality.
-Description: 
-Sound goes out just like if the jack was not propperly plugged. bad Sound
-Quality.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-05 03:20 abonilla       New Issue                                    
-01-10-05 03:20 abonilla       Distribution              => Debian          
-01-10-05 03:20 abonilla       Kernel Version            => 2.6.9           
-======================================================================
-
-
+http://www.v4l.com.cn/001
 
 
 -------------------------------------------------------
