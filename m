@@ -1,17 +1,14 @@
-From: Chip Salzenberg <chip@pobox.com>
-Subject: Re: intel8x0: Prospects for working suspend?
-Date: Mon, 23 Feb 2004 17:40:05 -0500
+From: Francisco Moraes <fmoraes74@netzero.net>
+Subject: Re: Help with supporting Emu10k1x  and question
+Date: Mon, 23 Feb 2004 18:58:25 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040223224005.GF2555@perlsupport.com>
-References: <20040219222241.GB2390@perlsupport.com> <s5hd68auiko.wl@alsa2.suse.de>
+Message-ID: <403A93A1.8050509@netzero.net>
+References: <AABADU9R6AU6ULBA@mx06.nyc.untd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.topaz.cx (mail@topaz.cx [66.220.6.227])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA14328
-	for <alsa-devel@alsa-project.org>; Mon, 23 Feb 2004 23:43:35 +0100
-Content-Disposition: inline
-In-Reply-To: <s5hd68auiko.wl@alsa2.suse.de>
+In-Reply-To: <AABADU9R6AU6ULBA@mx06.nyc.untd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,23 +17,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-According to Takashi Iwai:
-> At Thu, 19 Feb 2004 17:22:41 -0500, Chip Salzenberg wrote:
-> > However, last I tried to suspend the intel8x0 driver, it didn't work
-> 
-> please enter to bugtracking system with the enough information
 
-Done, bug #81.  FWIW, suspending when idle results only in muteness
-curable through mixer manipulation, but suspending when active results
-in a process hang curable only with kill.
--- 
-Chip Salzenberg               - a.k.a. -               <chip@pobox.com>
-"I wanted to play hopscotch with the impenetrable mystery of existence,
-    but he stepped in a wormhole and had to go in early."  // MST3K
+>> From what I can see for the emu10k1x (aka. sb Live 5.1 from Dell) is 
+>>almost exactly the same as the Audigy LS.
+>>
+>>It is a very simple device, and the driver should be based more like the 
+>>  snd-intel8x0 driver than the snd-emu10k1 driver.
+>>It has no dsp, and no hardware mixing, and is a single open device. 
+>>Very similar to the intel8x0 feature wise.
+>>
+>>If someone will send me a sample sound card, I will get it working.
+>>    
+>>
+>
+>Do you have any information about this hardware? Datasheet or sources or 
+>something else? I am very interested.
+>  
+>
+No datasheets, source or anything else as far as I know. Just us trying 
+to reverse engineer it. I've made several changes to the emu10k1 driver 
+trying to get PCM working, but I am missing something. Hopefully it will 
+be something simple and I will have PCM playback working.
+
+Francisco
+
 
 
 -------------------------------------------------------
