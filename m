@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Paul Davis <pbd@op.net>
 Subject: Re: About integer64
-Date: Thu, 9 May 2002 12:37:40 +0200 (CEST)
+Date: Thu, 09 May 2002 07:07:53 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0205091235360.482-100000@pnote.perex-int.cz>
+Message-ID: <E175llC-0006zb-00@usw-sf-list1.sourceforge.net>
 References: <3CDA2EE2.A3C6D824@alsa-project.org>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3CDA2EE2.A3C6D824@alsa-project.org>
+In-Reply-To: Your message of "Thu, 09 May 2002 10:10:10 +0200."
+             <3CDA2EE2.A3C6D824@alsa-project.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +16,30 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Abramo Bagnara <abramo@alsa-project.org>
-Cc: Paul Davis <pbd@Op.Net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 9 May 2002, Abramo Bagnara wrote:
+>
+>I don't think that's a bad thing to have support for 64 bit integers
+>(perhaps for future use, who knows), but I think that to use this to
+>store a fixed point float is a big mistake.
+>
+>If you think for it you realize that it's *not* an integer and
+>applications are betrayed in their expectation.
 
-> 
-> I don't think that's a bad thing to have support for 64 bit integers
-> (perhaps for future use, who knows), but I think that to use this to
-> store a fixed point float is a big mistake.
-> 
-> If you think for it you realize that it's *not* an integer and
-> applications are betrayed in their expectation.
-> 
-> I see two possible solutions:
-> 1) convert internal representation to float (or double) and add support
-> for this type of data
-> 2) use SNDRV_CTL_ELEM_TYPE_BYTES
-> 
-> As I've already said I prefer 1) but too 2) is far better that to have a
-> wrong use of a data type.
+in this case, it *is* an integer. your original question was about why
+its 64 bits - i think that comes from the fixed point internal
+arithmetic. but the end result is a straightforward 64 bit little
+endian integer that needs scaling to get the actual RMS value.
 
-I fully agree. We can add a float type when necessary, but only when it
-follows IEEE-754. Hardware specific formats should be encapsulated into
-more generic types...
+which actually creates another problem that i've noticed with the
+control API. INTEGER and INTEGER64 assume that the control value is
+signed. there is no way to infer from the control element info that
+its unsigned. this isn't a "deep" problem, but it will mess up user
+interfaces that present a large unsigned value and end up displaying
+it as a negative number.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+--p
 
 
 _______________________________________________________________
