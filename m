@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: ALSA and select, poll, ... (interrupted system calls)
-Date: Tue, 22 Jun 2004 13:39:22 +0200 (METDST)
+From: Giuliano Pochini <pochini@denise.shiny.it>
+Subject: Re: alsa-seq tempo (double speed)??
+Date: Tue, 22 Jun 2004 14:37:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0406221336070.19521-100000@studcom.urz.uni-halle.de>
-References: <E1Bci5z-0007D7-00@mailer.emlix.com>
+Message-ID: <Pine.LNX.4.58.0406221434390.7265@denise.shiny.it>
+References: <200406221335.43073.holborn@telefonica.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <E1Bci5z-0007D7-00@mailer.emlix.com>
+In-Reply-To: <200406221335.43073.holborn@telefonica.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,35 +16,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?iso8859-15?Q?Nicolas_H=FCppelsh=E4user?= <nh@emlix.com>
+To: holborn <holborn@telefonica.net>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Nicolas H=FCppelsh=E4user wrote:
 
-> On Fri, 18 Jun 2004, Clemens Ladisch wrote:
+
+On Tue, 22 Jun 2004, holborn wrote:
+
+> Hi ... i was compiled yesterday kernel 2.6.7-mm1
 >
-> > Nicolas H=FCppelsh=E4user wrote:
-> > > By now I workaround with a mixture of nanosleep/"time polling" =
-(tracking
-> > > elapsed system time in a loop).  Is there a better way?
-> >
-> > If you're waiting anyway, why don't you simply wait with poll?
+> Advanced Linux Sound Architecture Driver Version 1.0.5 (Sun May 30 10:49:40
+> 2004 UTC). Compiled on Jun 22 2004 for kernel 2.6.7-mm1.
 >
-> I need to wait a defined amount of time.
-> And it doesn't make a differecne whether using poll or nanosleep si=
-nce
-> both get interrupted by alsa async signals.
+> And now the seq tempo is  "double-speed" ??
 
-Then don't enable async signals.  Or do you need them for some other
-reason than waiting for interesting events?
+Some people have this problem with 2.6.7[-something]. Probably also delays
+and keyboard repeat speed are faster. They're working on it.
 
 
-Regards,
-Clemens
-
-
-
+--
+Giuliano.
 
 
 -------------------------------------------------------
