@@ -1,52 +1,33 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: support for PCI_DEVICE_ID_INTEL_ICH6_15
-Date: Sat, 20 Nov 2004 13:31:48 -0500
-Message-ID: <1100975509.6879.31.camel@krustophenia.net>
-References: <419F7E9F.6040807@ens-lyon.fr>
+Subject: Re: 2.6.10-rc2 on VAIO laptop and PowerMac 8500/G3
+Date: Sat, 20 Nov 2004 14:11:42 -0500
+Message-ID: <1100977903.6879.56.camel@krustophenia.net>
+References: <E1CVYZM-0000Fi-00@penngrove.fdns.net>
+	 <20041120185100.GA1205@elf.ucw.cz>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <419F7E9F.6040807@ens-lyon.fr>
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brice.Goglin@ens-lyon.org
-Cc: alsa-devel@lists.sourceforge.net
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S263164AbUKTT1d@vger.kernel.org>
+In-Reply-To: <20041120185100.GA1205@elf.ucw.cz>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pavel Machek <pavel@ucw.cz>
+Cc: John Mock <kd6pag@qsl.net>, linux-kernel@vger.kernel.org, perex@suse.cz, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2004-11-20 at 18:27 +0100, Brice Goglin wrote:
-> Hi,
+Please cc: alsa-devel on ALSA issues (we now allow posts from non
+subscribers! :-P).
+
+On Sat, 2004-11-20 at 19:51 +0100, Pavel Machek wrote:
+> Hi!
 > 
-> We have a machine here whose lspci shows this soundcard :
+> > The software suspend issue was long and tedious to narrow down.  Yep, as
+> > you suspected, it appears to be specific a driver (or group thereof).  It
+> > appears to happen when the sound subsystem is included.  Attached below 
+> > is the .config and a 'diff' from the losing one to one which works.
 > 
-> 0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High 
-> Definition Audio Controller (rev 03)
-
-Sorry I missed the 'HD Audio' part.  I think you want the 'azx' driver:
-
-http://sourceforge.net/mailarchive/message.php?msg_id=8912810
-
-AFAIK Intel posted this driver and it was committed to CVS but we have
-no user feedback yet.  So it should be considered experimental, though
-it should work.  It would be good to know how it works...
-
-If this is the case "ICH 6 Family" is misleading, as this needs a
-completely different driver.
-
-Lee
-
-
-
-
--------------------------------------------------------
-This SF.Net email is sponsored by: InterSystems CACHE
-FREE OODBMS DOWNLOAD - A multidimensional database that combines
-robust object and relational technologies, making it a perfect match
-for Java, C++,COM, XML, ODBC and JDBC. www.intersystems.com/match8
+> Okay, this is for the alsa team then. Somewhere between 2.6.10-rc1 and
+> 2.6.10-rc2, ALSA started breaking swsusp :-(.
+> 								Pavel
+> 
+-- 
+Lee Revell <rlrevell@joe-job.com>
