@@ -1,13 +1,12 @@
-From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Subject: Re: alsamixer on cvs
-Date: Mon, 9 Sep 2002 13:22:09 -0700 (PDT)
+From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
+Subject: usbaudio: curframesize
+Date: Tue, 10 Sep 2002 00:47:16 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0209091321140.6898-100000@cmn37.stanford.edu>
-References: <Pine.LNX.4.33.0209092207400.882-100000@pnote.perex-int.cz>
+Message-ID: <20020909224716.34317.qmail@web12204.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.33.0209092207400.882-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,21 +15,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > I'll try, I don't know exactly where it could be failing but I'll try to 
-> > find out (I'll have to read a lot of code :-) The error is not 
-> > instantaneous, it takes almost a second (maybe) to fail, there must be a 
-> > timeout somewhere. 
-> 
-> The updated code in CVS should be more verbose. Could you try it and send 
-> me related lines from /var/log/messages? 
+hi,
 
-Let me know if the message I just sent is not enough...
--- Fernando
+the curframesize member of struct snd_usb_substream
+seams not to be initialized to something different
+from 0.
 
+thus the code sequence 
+
+subs->transfer_sched += subs->curframesize;
+if (subs->transfer_sched >= runtime->period_size) {
+	subs->transfer_sched -= runtime->period_size;
+	break;
+}
+
+in static int prepare_capture_urb() doesn't make sense
+to me. 
+should curframesize be initialized with the minimum
+estimated number of frames per 1ms?
+like 44 for 44100?
+
+karsten
+
+
+__________________________________________________________________
+
+Gesendet von Yahoo! Mail - http://mail.yahoo.de
+Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
 
 
 -------------------------------------------------------
