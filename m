@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Soundcard Matrix patch.
-Date: Mon, 01 Dec 2003 21:47:40 +0900
+Subject: Re: soundcard matrix (more)(
+Date: Mon, 01 Dec 2003 21:48:42 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FCB386C.4020008@boosthardware.com>
-References: <1070064796.3275.16.camel@localhost>
+Message-ID: <3FCB38AA.9080300@boosthardware.com>
+References: <20031126214244.GA14389@tuba.home> <s5hekvsbn3s.wl@alsa2.suse.de> <3FC89B9E.5050204@ufh.se> <3FC8A05D.3060909@ufh.se>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,18 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: manuel.jander@mat.utfsm.cl
-Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Peter Enderborg <pme@ufh.se>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Manuel Jander wrote:
-> Hi,
+Peter Enderborg wrote:
+> The yamaha Motif products have mlan interfaces. I guess that they are 
+> not supported by alsa. Should be in the lists too.
 > 
-> Here is patch to the current Soundcard matrix, to reflect the current
-> state of the Aureal driver.
+> Peter Enderborg wrote:
 > 
+>> Could someone please add firewire 410 from m-audio and put a big NO 
+>> sign on it. (there should be blacklist part
+>> of the matrix of avoid devices) Since its m-Lan we wont get any driver 
+>> if we can not put pressure on yamaha.
+>>
 
-committed. Thanks for the patch.
+These are good points. It will become a faq unless we add a note. What 
+is the official ALSA viewpoint on mlan devices?
+
+
 
 
 -- 
