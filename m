@@ -1,13 +1,17 @@
-From: Philip Thiem <ptt@umr.edu>
-Subject: Opl3 Yamaha7xx questions
-Date: Sun, 06 Oct 2002 23:25:13 -0500
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: Re: questions for alsa-devel
+Date: Mon, 07 Oct 2002 08:46:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <9030000.1033964713@werg>
+Message-ID: <m2lm5akapt.fsf@vador.mandrakesoft.com>
+References: <200210021157.g92Bvvk12578@op.net> <s5hu1k5j939.wl@alsa2.suse.de>
+	<m2ptutdlpl.fsf@vador.mandrakesoft.com> <s5hn0pxj7f4.wl@alsa2.suse.de>
+	<m2bs6ddkrk.fsf@vador.mandrakesoft.com>
+	<3D9BA2A7.6080401@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <3D9BA2A7.6080401@superbug.demon.co.uk> (James
+ Courtier-Dutton's message of "Thu, 03 Oct 2002 11:51:35 +1000")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +20,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I've been running up again the FM synethesis wall with my aopen card and 
-conflicting information, and finally decided to post to the dev group.
+James Courtier-Dutton <James@superbug.demon.co.uk> writes:
 
->From some skimming of technical documentation for ymf754.  It looks like 
-the ymf7xx family has an opl3 capability on the chip, once the nessacary 
-information is given to the card through a mapped pci configuration 
-register.  Is this correct, so that the card is opl3 compatible once the 
-ISA legacy device is told where to "listen" for fm commands?
+> You are assuming that people still use alsa-0.5.x in applications.
+> For example, xine (xine.sf.net) dropped support for alsa-0.5.x ages
+> ago, it only supports alsa-0.9.x.
+> It also supports lots of other audio drivers, eg. oss, esd, arts etc.
+> Are there still applications out there that only support alsa-0.5.x
+> and not alsa-0.9.x.
+> alsa-0.9.x is so much easier to program an application for than
+> alsa-0.5.x ever was.
 
-This all stems from my odessy trying to get fm synth to work on the
-YMF744B.  I keep getting the feeling I'm overlooking something simple.  So
-if anyone could offer advice or a plan of attack it would be appreciated. 
-I've
-included a link to copy of my last email with all the gathered information. 
-The primary things that have changed is adding this line to my modules.conf
-   options snd-ymfpci snd_mpu_port=0x330 snd_fm_port=0x388
-I don't think much of the other stuff has changed, but could fetch any 
-required information.  Also I don't seem to have any mixer control for a 
-synth or fm device.  I have been running a compile of cvs which I checked 
-out originally around late-august, tried updating the tree about week 
-around but I ran into compiles problems.
-Here's that link:
-   http://www.icequake.net/~witwerg/ymfpci.txt
-Once I get the modules compiled, I wanted to try cleaning out what I have, 
-and
-reconfiguring with debugging options turned on.
-
-Thankyou
-Philip Thiem
-
-GPG Pub Key Archived at wwwkeys.us.pgp.net
-Isn't it obvious lumberjacks love traffic lights?
-
+we're talking about booting with an alsa-0.9.0 kernel on a distro
+builded 8 monthes ago with libalsa-0.5.x ...
 
 
 
