@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
-Date: Mon, 27 Dec 2004 15:47:58 +0100
-Message-ID: <84d6af75e2a8f9efc56b79dbc298d50a@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
+Date: Mon, 27 Dec 2004 15:48:26 +0100
+Message-ID: <cb85b005bd18b6f0760317c9e31c229b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BBF7244
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:47:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9557244
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:48:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,484 +24,83 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=665> 
 ======================================================================
-Reported By:                olivier55
+Reported By:                ronis
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   659
+Issue ID:                   665
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
 Status:                     closed
-Distribution:               mandrake 10.1
-Kernel Version:             2.6.8.1-10
+Distribution:               
+Kernel Version:             
 Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-20-2004 22:25 CET
-Last Modified:              12-27-2004 15:47 CET
+Date Submitted:             11-22-2004 19:31 CET
+Last Modified:              12-27-2004 15:48 CET
 ======================================================================
-Summary:                    configure: error: Unsupported soundcard cs4236
+Summary:                    Build failure in
+/usr/src/alsa/alsa-driver/acore/init.c
 Description: 
-when i do : 
-./configure --with-cards=cs4236 --with-sequencer=yes
+There's an unterminated #ifdef in init.c.  (PM_CONFIG or  more likely
+CONFIG_PCI).  Here's the log:
 
-i've this error : 
-configure: error: Unsupported soundcard cs4236
+  CC [M]  /usr/src/alsa/alsa-driver/acore/init.o
+/usr/src/alsa/alsa-driver/acore/init.c:680:1: unterminated #ifdef
+make[4]: *** [/usr/src/alsa/alsa-driver/acore/init.o] Error 1
+make[3]: *** [/usr/src/alsa/alsa-driver/acore] Error 2
+make[2]: *** [_module_/usr/src/alsa/alsa-driver] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.9'
+make: *** [compile] Error 2
 
-my soundcard is a Crystal Audio CS4237 (cirrus logic)
-i have a laptop dell inspiron 8200
+Adding an extra #endif at the end of the file fixes things, although, I'm
+not 100% sure that this is the right place  top put things.
+
+(BTW, I'm now running 2.6.9 but didn't have a chance to midify my
+profile)
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- olivier55 - 11-22-04 19:13 
+ ronis - 11-23-04 22:15 
 ----------------------------------------------------------------------
-with the default install of mandrake 10.1, my sound card is detected. 
-if i start "alsamixer", i have this : 
+OK I moved all the alsa-* directories out of the way, did cvs -z3 update
+-dP, followed by my usual build script.   The build now completes fully
+and there are no
+rejected patch files.   Better yet, the driver works.
 
+As you thought, my CVS tree must have been corrupted somehow.
 
+I guess this can be closed.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org
- /alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;[A
- lsaMixer
-v1.0.6 (Press Escape to
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-p
- roject.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?
- id=9488;
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Card: Intel
-82801CA-ICH3                                          
-          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Chip: Cirrus Logic
-CS4205 rev 3                                   
-          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
-&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Item: Master
-
-But the cd CS4205 is not the properly sound card. However, with this
-configuration, i've no midi device in Kmidi. My trouble is, how to do for
-having a midi device  ?
+Thanks for your help.
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 16:17 
+ tiwai - 11-24-04 12:19 
 ----------------------------------------------------------------------
-CS4205 is AC97 codec chip.  Your driver should be snd-intel8x0.
-
-Simply build all drivers without --with-cards option, and run alsaconf to
-detect/configure the card.
+Ok, closed now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-20-04 22:25 olivier55      New Issue                                    
-11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
-11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
-11-20-04 22:30 olivier55      Issue Monitored: olivier55                    
-11-20-04 22:30 olivier55      Issue End Monitor: olivier55                    
-11-22-04 14:42 tiwai          Note Added: 0002502                          
-11-22-04 19:13 olivier55      Note Added: 0002511                          
-11-23-04 16:17 tiwai          Status                   assigned => resolved
-11-23-04 16:17 tiwai          Resolution               open => not an issue
-11-23-04 16:17 tiwai          Note Added: 0002521                          
-12-27-04 15:47 tiwai          Status                   resolved => closed  
+11-22-04 19:31 ronis          New Issue                                    
+11-23-04 15:59 tiwai          Note Added: 0002517                          
+11-23-04 16:52 ronis          Note Added: 0002523                          
+11-23-04 17:44 tiwai          Note Added: 0002524                          
+11-23-04 18:20 ronis          Note Added: 0002525                          
+11-23-04 18:27 tiwai          Note Added: 0002526                          
+11-23-04 22:15 ronis          Note Added: 0002535                          
+11-24-04 12:19 tiwai          Status                   assigned => resolved
+11-24-04 12:19 tiwai          Resolution               open => not an issue
+11-24-04 12:19 tiwai          Note Added: 0002548                          
+12-27-04 15:48 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
