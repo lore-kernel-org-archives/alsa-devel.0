@@ -1,15 +1,14 @@
-From: "Jo I. Herring" <j_i.herring_28@winking.be>
-Subject: Premium Replica Watches
-Date: Mon, 20 Dec 2004 19:54:24 +0800
-Message-ID: <dc2701c4e68a$7cf9271b$6bdb7a3e@xsall.nl>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
+Date: Mon, 20 Dec 2004 13:04:04 +0100
+Message-ID: <c5a63fc6346ebed6989a0a6a8212f676@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from xsall.nl (adsl-68-72-125-189.dsl.chcgil.ameritech.net [68.72.125.189])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 40AA52B0
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 12:54:52 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A41482B0
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 13:04:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,27 +21,66 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Get the Finest Rolex Watch Replica!
 
-We only sell premium watches. There's no battery in these replicas just
-like the real ones since they charge themselves as you move. The second h=
-and
-moves JUST like the real ones, too. These original watches sell in stores
-for thousands of dollars. We sell them for much less.=20
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=736> 
+======================================================================
+Reported By:                fermier
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   736
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   crash
+Priority:                   normal
+Status:                     new
+Distribution:               Mandrake 10.1 Offficial
+Kernel Version:             2.3.8.1-12mdk
+======================================================================
+Date Submitted:             12-20-2004 07:40 CET
+Last Modified:              12-20-2004 13:04 CET
+======================================================================
+Summary:                    modprobe snd-azx still gives segmentation fault
+Description: 
+After having read the other errors reported for the CMI9880 sound chip and
+that the CVS version has been fixed, I downloaded the latest CVS version
+of the alsa-driver.  ./configure and make seem to complete without errors.
+ After a make install a modprobe snd-azx still gives a segmentation fault
+just like the normal tarred ball install and the previous CVS gave.  After
+a modprobe snd-azx gave the segmentation fault a /sbin/lsmod hangs and
+becomes a zombie process the same is true for modprobe -r snd or modprobe
+-r snd-azx
+======================================================================
 
-- Replicated to the Smallest Detail
-- 98% Perfectly Accurate Markings=20
-- Signature Green Sticker w/ Serial Number on Watch Back
-- Magnified Quickset Date
-- Includes all Proper Markings
+----------------------------------------------------------------------
+ rlrevell - 12-20-04 08:31 
+----------------------------------------------------------------------
+When "modprobe snd-azx" fails do you get an Oops from the kernel?
 
-Visit us: http://www.vanai.com/rep/rolx/
+----------------------------------------------------------------------
+ fermier - 12-20-04 13:04 
+----------------------------------------------------------------------
+Sorry I did not see that I mistyped the kernel. It is kernel 2.6.8.1-12mdk,
+but probably that is almost logical.  I do indeed get an oops from the
+kernel.  I get Oops: 0002
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
 
-Christmas discount this week only! Make your order before the prices go u=
-p.
+Have no idea what this means.  I see I also got this when I tried the
+1.0.7 version from the tar ball.
 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-20-04 07:40 fermier        New Issue                                    
+12-20-04 07:40 fermier        Distribution              => Mandrake 10.1
+Offficial
+12-20-04 07:40 fermier        Kernel Version            => 2.3.8.1-12mdk   
+12-20-04 08:31 rlrevell       Note Added: 0002868                          
+12-20-04 13:04 fermier        Note Added: 0002871                          
+======================================================================
 
-No thanks: http://www.vanai.com/z.php
 
 
 
