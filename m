@@ -1,14 +1,16 @@
-From: Stephen Hassard <steve@hassard.net>
-Subject: Re: Audigy 2 support - update
-Date: Sat, 24 May 2003 09:49:45 -0700
+From: Nathaniel Gray <n8gray@caltech.edu>
+Subject: Re: dmix plugin problems -- Resend
+Date: Mon, 26 May 2003 21:16:21 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030524164945.GA17884@www.angiotech.com>
-References: <20030523051240.GA10831@www.angiotech.com> <1053747883.6906.10.camel@rivendell.home.local>
+Message-ID: <200305262116.21379.n8gray@caltech.edu>
+References: <200305261528.32421.n8gray@caltech.edu> <1053992910.1404.7.camel@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <1053992910.1404.7.camel@localhost>
 Content-Disposition: inline
-In-Reply-To: <1053747883.6906.10.camel@rivendell.home.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,34 +19,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "David E. Storey" <dave@tamos.net>
+Cc: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 23, 2003 at 08:44:43PM -0700, Florin Andrei wrote:
-> Stephen, do you mind sharing with us the ALSA-relevant part of your
-> /etc/modules.conf file, please?
+On Monday 26 May 2003 04:48 pm, David E. Storey wrote:
+> nice. Your config just helped me make it work for me. I too have an
+> intel8x0. (I also have some other gear, but in essence I can use
+> alsaplayer and xmms on my intel8x0 simultaneously.) Not being an
+> expert in .asound voodoo, I would say that yours is a bit more
+> complicated than it needs to be. Without changing your .asound file,
+> have you tried:
+>
+> aplay -D mydmix test.wav
 
-I'm particularly lazy about using modules.conf, so I generally don't bother using it.
+I'm pretty sure that will only work if the sample you're playing is at 
+the "correct" rate.  In other words, dmix doesn't do any resampling, so 
+if you try to play a file that has the wrong rate you'll get problems.  
+That's the reason for the extra layer with the "plug" plugin -- it does 
+rate conversion.
 
-I tend to load everything via /etc/modules (debian module auto-loading) in the order that I want the devices to be.
+> The only other difference is that I don't have rate 44100. It is my
+> understanding that the intel8x0 is locked at 48000 for the hardware I
+> have. 
 
-Here's what my /etc/modules looks like:
->>
-snd-emu10k1
-snd-emu10k1-synth
-snd-emux-synth
-snd-mixer-oss
-snd-pcm-oss
-snd-seq-oss
-<<
+Certain files play with the "rate 44100" line and others don't, but more 
+play with it than without it.  I'd recommend testing it with the KDE_* 
+files in /usr/share/sounds if you have KDE installed.  They have lots 
+of funky sampling rates that aplay seems to choke on.
 
-> Also, what's the distribution you're using, and what's the exact kernel
-> version?
+-- 
+>>>-- Nathaniel Gray -- Caltech Computer Science ------>
+>>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
 
-I'm using debian unstable with a custom kernel. I'm using kernel 2.4.20 w/ the ck patch over at http://members.optusnet.com.au/ckolivas/kernel/ for reduced latency (it make a big difference to the performance of my box). I compiled everything with gcc-2.95.4.
-
-later,
-Steve
 
 
 -------------------------------------------------------
