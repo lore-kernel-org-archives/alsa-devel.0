@@ -1,16 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Use only a few bds.
-Date: Thu, 22 Aug 2002 08:45:14 +0200 (CEST)
+From: etienne <eyem@lalila.net>
+Subject: hdsp / pcmcia / multiface .... details
+Date: Thu, 22 Aug 2002 18:04:15 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0208220844200.702-100000@pnote.perex-int.cz>
-References: <3D646C59.22B1BBBB@multitech.co.in>
+Message-ID: <3D649AFF.4090005@lalila.net>
+Reply-To: eyem@lalila.net
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA11997
-	for <alsa-devel@alsa-project.org>; Thu, 22 Aug 2002 08:45:31 +0200
-In-Reply-To: <3D646C59.22B1BBBB@multitech.co.in>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,50 +16,147 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Shaju Abraham <shaju@multitech.co.in>
-Cc: Alsa-Developers <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 22 Aug 2002, Shaju Abraham wrote:
+Hi all,
 
-> Hi all,
-> 
->     In our study that we are doing abt latency of sound cards, we want
-> to have a situation where I do not want to use all of the 32 bds
-> available. we want to use say only 4 or 8 of the bds with each bd
-> pointing to only a small fragment of data.( This is basically to make
-> the card interrupt frequently and will also should not be able to
-> proceed if the interrupts raised by the past bds have not been serviced.
-> So want to restrict it to 4 or 8 ) .
-> 
-> It will be of great help if you can help us on the following two points.
-> 
->             i)  What is the significance of ICH_MAX_FRAGS?  ( It seems
-> to be used only for the allocation of pages for the buffer and for
-> little else during the actual functioning of the card.)
-> 
->             ii)    What is the significance of ICH_REG_LVI_MASK?  (This
-> is more used during the actual functioning of the card & is used in the
-> interrupt service sub-routine to update the lvi.)  It is by default 0x1f
-> . Is this 'cos it can be used to address the 32 bds available.  I
-> changed this to 3 and 7 . I observed that this makes the card to use
-> only 4 or 8 of the bds available. Am I correct in this conclusion?  If I
-> do this, I get some noise. Is this because of the interrupts raised by
-> the unused bds?
-> 
->     If I am wrong abt all this, how should I go abt my idea of using
-> only 4 or 8 of the bds available?
+just thought I should give a few more details on the Hammerfall DSP + 
+multiface behaviour. (aplay works, but cant seem to get multiple channel 
+output)
 
-I'm rewriting the intel8x0 driver to use scatter-gather DMA access and 
-adding support for I845. So these question will be obsolete after a few days.
+------------------------------------------------------
+modules.conf contains:
+alias char-major-116 snd
+alias sound-slot-0 snd-card-0
+alias snd-card-0 snd-hdsp
+options snd-hammerfall_mem snd_enable=1,1
+options snd-hdsp snd_id="hdsp"
 
-						Jaroslav
+------------------------------------------------------
+I have no asound.conf or .asoundrc files configured
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+------------------------------------------------------
+ cat /proc/asound/pcm gives:
+00-00: RME Hammerfall DSP (Multiface) : RME Hammerfall DSP (Multiface) : 
+playback 1 : capture 1
+
+------------------------------------------------------
+ls /proc/asound/hdsp gives:
+hdsp  id  midi0  midi1  pcm0c  pcm0p
+
+------------------------------------------------------
+cat /proc/asound/hdsp/hdsp gives:
+RME Hammerfall DSP (Multiface) (Card #1)
+Buffers: capture c0e00000 playback c0c00000
+IRQ: 11 Registers bus: 0xf5000000 VM: 0xe08d5000
+Control register: 0x100905c
+Status register: 0x12000000
+Status2 register: 0xffff0703
+FIFO status: 0
+MIDI1 Output status: 0xffffff00
+MIDI1 Input status: 0xffffff00
+MIDI2 Output status: 0xffffff00
+MIDI2 Input status: 0xffffff00
+
+Latency: 4096 samples (2 periods of 16384 bytes)
+Hardware pointer (frames): 0
+Passthru: no
+Line out: on
+Firmware version: 5
+Sync reference: Master/Master (chosen)
+Sample rate: 0
+
+IEC958 input: Internal
+IEC958 output: Coaxial & ADAT1
+IEC958 quality: Consumer
+IEC958 emphasis: off
+IEC958 NonAudio: off
+
+IEC958 sample rate: Error flag set
+
+ADAT1: No Lock
+ADAT2: No Lock
+
+------------------------------------------------------
+aplay -v sound/orgue1.wav gives: (and only plays in one channel)
+
+Playing WAVE 'sound/orgue1.wav' : Signed 16 bit Little Endian, Rate 
+44100 Hz, Stereo
+Plug PCM: Route conversion PCM (sformat=S32_LE)
+Transformation table:
+0 <- 0
+1 <- 1
+2 <- none
+3 <- none
+4 <- none
+5 <- none
+6 <- none
+7 <- none
+8 <- none
+9 <- none
+10 <- none
+11 <- none
+12 <- none
+13 <- none
+14 <- none
+15 <- none
+16 <- none
+17 <- none
+Its setup is:
+stream       : PLAYBACK
+access       : RW_INTERLEAVED
+format       : S16_LE
+subformat    : STD
+channels     : 2
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 16
+buffer_size  : 8192
+period_size  : 4096
+period_time  : 92879
+tick_time    : 10000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 4096
+xfer_align   : 4096
+start_threshold  : 8192
+stop_threshold   : 8192
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+Slave: Hardware PCM card 0 'Hammerfall DSP' device 0 subdevice -1
+
+Its setup is:
+stream       : PLAYBACK
+access       : MMAP_NONINTERLEAVED
+format       : S32_LE
+subformat    : STD
+channels     : 18
+rate         : 44100
+exact rate   : 44100 (44100/1)
+msbits       : 24
+buffer_size  : 8192
+period_size  : 4096
+period_time  : 92879
+tick_time    : 10000
+tstamp_mode  : NONE
+period_step  : 1
+sleep_min    : 0
+avail_min    : 4096
+xfer_align   : 4096
+start_threshold  : 8192
+stop_threshold   : 8192
+silence_threshold: 0
+silence_size : 0
+boundary     : 1073741824
+Max peak (8192 samples): 08968 (0x2308) ######               27%
+Max peak (8192 samples): 09412 (0x24c4) ######               28%
+Max peak (8192 samples): 07178 (0x1c0a) #####                21%
+Max peak (8192 samples): 01246 (0x04de) #                    3%
+
+etienne
 
 
 
