@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000918]: Behringer BCA-2000
-Date: Mon, 28 Feb 2005 18:15:07 +0100
-Message-ID: <2d4c14d5d725c2fee0e250a8d6116035@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000941]: Behringer BCA 2000 USB device not recognized
+Date: Mon, 28 Feb 2005 18:21:13 +0100
+Message-ID: <5deee0afddd878b3d42b6163a15917e6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9904421C
-	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 18:15:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD26221C
+	for <alsa-devel@alsa-project.org>; Mon, 28 Feb 2005 18:21:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,57 +21,56 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been set as DUPLICATE OF issue 0000941.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=918> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=941> 
 ======================================================================
-Reported By:                billwest00
+Reported By:                sten69
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   918
+Issue ID:                   941
 Category:                   USB - usb-audio
-Reproducibility:            N/A
+Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Demudi 1.2.1
-Kernel Version:             2.4
+Distribution:               Project CCRMA/Fedora Core 1
+Kernel Version:             2.4.26-1.ll.rhfc1.ccrma
 ======================================================================
-Date Submitted:             02-18-2005 00:43 CET
-Last Modified:              02-28-2005 18:15 CET
+Date Submitted:             02-24-2005 13:59 CET
+Last Modified:              02-28-2005 18:21 CET
 ======================================================================
-Summary:                    Behringer BCA-2000
+Summary:                    Behringer BCA 2000 USB device not recognized
 Description: 
-My appologies if this is not the correct forum.  I use Agnula Demudi 1.2.1.
- I recently purchased Behringer's new usb2.0 interface.  I added
-snd-usb-audio to the /etc/modules file.  The device is not claimed by any
-driver on restart.  I actually did not expect it to work, being so new.  I
-just wanted to let you know that this device does not appear to work with
-Demudi.
-
---Thanks!
-Bill West
+The Behringer BCA 2000 device is not recognized by ALSA as a USB sound
+card.  The device is recognized by Windows XP using the Behringer drivers.
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-duplicate of        0000941 Behringer BCA 2000 USB device not recog...
+has duplicate       0000918 Behringer BCA-2000
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 02-18-05 09:34 
+ Clemens Ladisch - 02-28-05 18:21 
 ----------------------------------------------------------------------
-Please show the output of "lsusb -v".
+Unfortunately, the descriptors you've posted only show that all endpoints
+use a vendor specific protocol.
+
+This device won't be supported without information from Behringer or
+reverse engineering.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-18-05 00:43 billwest00     New Issue                                    
-02-18-05 00:43 billwest00     Distribution              => Demudi 1.2.1    
-02-18-05 00:43 billwest00     Kernel Version            => 2.4             
-02-18-05 09:34 Clemens LadischNote Added: 0003648                          
-02-18-05 16:28 billwest00     Issue Monitored: billwest00                    
-02-28-05 18:15 Clemens LadischRelationship added       duplicate of 0000941
+02-24-05 13:59 sten69         New Issue                                    
+02-24-05 13:59 sten69         Distribution              => Project CCRMA/Fedora
+Core 1
+02-24-05 13:59 sten69         Kernel Version            =>
+2.4.26-1.ll.rhfc1.ccrma
+02-24-05 14:01 sten69         Issue Monitored: sten69                      
+02-28-05 18:15 Clemens LadischRelationship added       has duplicate 0000918
+02-28-05 18:21 Clemens LadischNote Added: 0003747                          
 ======================================================================
 
 
