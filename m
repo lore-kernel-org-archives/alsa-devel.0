@@ -1,16 +1,15 @@
-From: Guilhem Tardy <guilhem_tardy@yahoo.com>
-Subject: struct _snd_pcm_hardware
-Date: Thu, 29 Aug 2002 13:57:16 -0700 (PDT)
+From: "Daniel Heckenberg" <daniel@bogusfront.org>
+Subject: RE: PCMCIA and snd-hdsp
+Date: Fri, 30 Aug 2002 09:49:12 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020829205716.2839.qmail@web11502.mail.yahoo.com>
-References: <s5hsn0z9h55.wl@alsa2.suse.de>
+Message-ID: <NEEMIOAOEHMNBAMDCGNGCELNCGAA.daniel@bogusfront.org>
+References: <E17kUso-00011B-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from web11502.mail.yahoo.com (web11502.mail.yahoo.com [216.136.172.47])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id XAA28869
-	for <alsa-devel@alsa-project.org>; Thu, 29 Aug 2002 23:01:43 +0200
-In-Reply-To: <s5hsn0z9h55.wl@alsa2.suse.de>
+In-Reply-To: <E17kUso-00011B-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,32 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I have a problem with supporting multiple audio formats in that my hardware
-defines its buffers in a number of frames rather than bytes.
+> >For some reason, the hotplug script can't successfully load the snd-hdsp
+> >driver but a simple
+> >"modprobe snd-hdsp" does work.  This is true at boot time (coldplug) and
+> >upon insertion (hotplug).  Can anyone offer any insight into this?
+>
+> i know nothing about the hotplug script of pcmcia-cs, but i bet its
+> because it doesn't use the dependency tree that depmod builds. you
+> would have the same problem with insmod(8) for example. modprobe
+> doesn't just load the named module, it loads all the required modules
+> as well.
 
-I evaluated the changes required to support description of a hardware's period
-contraints in frame AND bytes. Essentially, this would mean adding 'size_t
-period_size_min' and 'size_t period_size_max' to the stucture _snd_pcm_hardware
-in pcm.h, and then add a constraint in snd_pcm_hw_constraints_complete() in
-pcm_native.c such that the period size is within those min and max values.
-Other drivers wouldn't be affected if the period_size_min/max default values
-are properly chosen (i.e. 0 and MAX_UINT, respectively).
+No, the script does appear to do a modprobe.  I've checked the scripts
+themselves and watched their behaviour.  The appropriate required modules
+are loaded (including snd-hammerfall-mem if required).  All of those modules
+load correctly.  However, the snd-hdsp module complains that it can't find
+the module (not that there are unresolved symbols).  Then all of the other
+loaded modules are unloaded (including snd-hammerfall-mem).
 
-Would you consider such a change in the ALSA code base?
+I'm not very experienced with shell scripts so it will take me quite a while
+to scour through and look at the process in more detail...
 
-Guilhem.
+Does anyone have their hdsp hotplugging successfully?
 
+Also, I can't get alsactl to restore mixer settings correctly.  I can see
+that they've been written correctly in the asound.state file but they don't
+seem to be restored properly.  What am I doing wrong?
 
-__________________________________________________
-Do You Yahoo!?
-Yahoo! Finance - Get real-time stock quotes
-http://finance.yahoo.com
+many thanks,
+daniel
+
 
 
 -------------------------------------------------------
