@@ -1,12 +1,16 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: difference between OSS mmap and alsa mmap? [alsa-oss]
-Date: Tue, 24 Aug 2004 11:47:22 -0400
+From: Andrew Gaydenko <a@etver.com>
+Subject: Re: alsa + midi == system hangs
+Date: Tue, 24 Aug 2004 20:13:30 +0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408241547.i7OFlMKA028889@localhost.localdomain>
-References: <412B5115.5020309@superbug.demon.co.uk>
+Message-ID: <200408242013.30949@goldspace.net>
+References: <200408230108.44078@goldspace.net> <200408231412.06514@goldspace.net> <s5hoel287zl.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 24 Aug 2004 15:30:45 BST."
-             <412B5115.5020309@superbug.demon.co.uk>
+In-Reply-To: <s5hoel287zl.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,20 +19,66 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: Jaroslav Kysela <perex@suse.cz>, Florian Schmidt <mista.tapas@gmx.net>, Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
->I also think that the best way to handle this is to use double buffering.
->So the user app writes to a ring buffer, and alsa just copies one period 
->at a time to the hardware buffer each time periods_elapsed is called.
+Takashi,
 
-this doesn't work. the whole point of the OSS mmap model is that the
-app always has access to the entire hardware buffer, not just the
-current period. this is why its so hard to make it work correctly in
-emulation mode.
+1. intel8x0 was tried with
 
---p
+options snd-intel8x0 mpu_port=0x330
+
+i.e. in accordance with BIOS settings. My friend has tried to use
+the card with fluid, when fluid out is jack - all works fine. When
+fluid out is alsa, system hangs.
+
+2. I have tried ice1724 from CVS - the problem have gone - thanks!
+
+Andrew
+
+======= On Monday 23 August 2004 14:27, you wrote: =======
+At Mon, 23 Aug 2004 14:12:06 +0400,
+Andrew Gaydenko wrote:
+> 
+> Takashi,
+> 
+> The second card is used with intel8x0 driver.
+
+With MIDI support (mpu_port module parameter given)?
+
+
+Takashi
+
+> 
+> Andrew
+> ======= On Monday 23 August 2004 13:26, you wrote: =======
+> At Mon, 23 Aug 2004 01:08:44 +0400,
+> Andrew Gaydenko wrote:
+> > 
+> > Hi,
+> > 
+> > I have tried to get an answer from the alsa users mailng list without success.
+> > My last hope is here.
+> > 
+> > The problem is very simple: while trying to start any midi-related
+> > application (rosegarden, qsynth, fluid itself, MuseScore-from-CVS, ...),
+> > a system hangs absolutely. It seems like:
+> > 
+> > - the problem doesn't depend on driver: my friend has another card
+> >   with the same problem exactly,
+> 
+> Aureon driver has a bug that it probes the MIDI port which doesn't
+> exist.  This triggered lock-ups.  It was fixed recently on CVS.
+> 
+> Which another driver did cause a similar bug?
+> 
+> 
+> Takashi
+> 
+> 
+
+
 
 
 -------------------------------------------------------
