@@ -1,16 +1,16 @@
-From: Abramo Bagnara <abramo@alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: another control API issue
-Date: Wed, 08 May 2002 10:04:47 +0200
+Date: Wed, 8 May 2002 09:57:12 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CD8DC1F.709754AF@alsa-project.org>
+Message-ID: <Pine.LNX.4.33.0205080956400.507-100000@pnote.perex-int.cz>
 References: <200205080008.g4808se10498@op.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp1.libero.it (smtp1.libero.it [193.70.192.51])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA02710
-	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 10:04:55 +0200
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA02599
+	for <alsa-devel@alsa-project.org>; Wed, 8 May 2002 09:57:15 +0200
+In-Reply-To: <200205080008.g4808se10498@op.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,30 +20,28 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@alsa-project.org
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Paul Davis wrote:
-> 
+On Tue, 7 May 2002, Paul Davis wrote:
+
 > the h-dsp has some 64 bit registers. the current control API doesn't
 > offer a way of representing such values. shall i add
-> 
->       SNDRV_CTL_ELEM_TYPE_INTEGER64
+>       
+>       SNDRV_CTL_ELEM_TYPE_INTEGER64 
 > 
 > ?
 
-Just for curiosity, what they store that cannot be represented in 32
-bits?!?
+Added, except for utilities.
 
--- 
-Abramo Bagnara                       mailto:abramo@alsa-project.org
+						Jaroslav
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-ALSA project               http://www.alsa-project.org
-It sounds good!
 
 _______________________________________________________________
 
