@@ -1,11 +1,12 @@
-From: stef <stef@hardco.de>
-Subject: Re: audio via ethernet (was: dolby digital output)
-Date: Mon, 18 Feb 2002 18:00:44 +0100
-Message-ID: <3C71333C.1C775561@hardco.de>
-References: <NGBBLNODKDFPBFMBBFAFOECBCBAA.James@superbug.demon.co.uk>
+From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
+Subject: RE: dolby digital output
+Date: Mon, 18 Feb 2002 17:05:00 -0000
+Message-ID: <NGBBLNODKDFPBFMBBFAFCECHCBAA.James@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+In-Reply-To: <1014049597.1248.31.camel@insanity>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,67 +15,59 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Bob Ham <node@users.sourceforge.net>
+Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-I think sending realtime audio data via eternet will be
-extremely difficult. It should be impossible to synchronize
-sample clock via ethernet. So each device has to have its
-own sample clock. This requires:
-
-- resampling units (=no lossles connections possible)
-or
-- large buffers to slowly adapt sample rates
-  (huge variing latency, clock jitter, ...)
-
-With S/PDIF or any other common digital audio interface
-it is at least possible to synchronize the receiver
-to the transmitter's clock.
-So you have to resample only if you're mixing
-two or more digital inputs into one output.
-
-If you're using pro equipment, it is even possible
-to remotely clock digital audio sources (wordclock line).
-In this case, you never have to resample and digital
-audio processing can be lossless.
-
-But with ethernet connections it is even impossible
-to use separate digital-input amplifiers for
-your right and left speaker. (unless you add
-extra wordclock cabling...)
-
-I don't know how the 'Wireless Multimedia Alliance'
-(www.wimedia.org, JVC, Sony,...) is going to handle these
-problems. Seems as if they extend the wireless lan standard
-by some sort of real-time transfers. Like USB. They call
-it IEEE 802.15.3.
-
-Any comments? Am i wrong? What about Yamaha's MLAN (ieee1394)?
-
-Stef(an).
+The magic web site did not mention anything about an AMP.
 
 
-
-
-James Courtier-Dutton wrote:
+> -----Original Message-----
+> From: alsa-devel-admin@lists.sourceforge.net
+> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Bob Ham
+> Sent: 18 February 2002 16:27
+> To: James Courtier-Dutton
+> Cc: ALSA Development Mailing List
+> Subject: RE: [Alsa-devel] dolby digital output
 > 
-> So all I need now, is an Digital Amp with an Ethernet port for all 6 Channel
-> PCM, AC3 and DTS output.
-> I already have an ethernet card for my PC and a HUB.
 > 
-> magic.gibson.com must be stupid not to realise that what we really want is
-> an AMP with an Ethernet port, not yet another sound card.
+> On Mon, 2002-02-18 at 15:46, James Courtier-Dutton wrote:
 > 
-> We could then just connect the AMP to the ethernet port on any PC, and have
-> perfect digital quality output.
-> Alsa would then not be needed, because once the audio is in packets, it
-> would be better to keep it that way in the application.
+> > magic.gibson.com must be stupid not to realise that what we 
+> really want is
+> > an AMP with an Ethernet port
 > 
-> One could even use Radio Lan technologies, and thus remove all the cabling
-> as well.
+> Umm.. this *is* what magic can provide.  A guitar with a an ethernet
+> port, an amp with an ethernet port, a mixer with an ethernet port, a
+> computer with an ethernet port.. you name it.  (And when I say ethernet
+> here, I mean RJ45.)  Has the following specs:
 > 
-> Cheers
-> James
+> 32 channels @ 44.1 kHz x 32 bits
+> 32 channels @ 48 kHz x 32 bits
+> 16 channels @ 96 kHz x 32 bits
+> 8 channels @ 192 kHz x 32 bits
+> 
+> This is over one cable; it's not a network in the sense of ethernet. 
+> You can't plug all your instruments into a 100baseTX hub, unfortunately,
+> but you can plug all your instruments into NICs in the back of your
+> computer.
+> 
+> -- 
+> Bob Ham: bob@ham.org
+> 
+> My music: http://mp3.com/obelisk_uk
+> GNU Hurd: http://hurd.gnu.org/
+> Do your bit for UK drugs law reform: http://www.angeldeclaration.com/
+> 
+> A pessimist expects the weather to get worse.
+> An optimist hopes it will improve.
+> A realist adjusts the sails.
+> 
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 
 _______________________________________________
 Alsa-devel mailing list
