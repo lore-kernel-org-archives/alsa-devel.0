@@ -1,12 +1,12 @@
-From: "D. Sen" <dsen@homemail.com>
-Subject: RME Hdsp PCMCIA problems
-Date: Mon, 27 Sep 2004 21:00:13 +1000
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: RME9632 Precise Pointer option problem (attn Thomas Charbonnel)
+Date: Mon, 27 Sep 2004 07:12:06 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4157F2BD.7000804@homemail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <200409271112.i8RBC6Qc017508@localhost.localdomain>
+References: <4157DB53.2030801@wildgooses.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: Your message of "Mon, 27 Sep 2004 10:20:19 BST."
+             <4157DB53.2030801@wildgooses.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,44 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Ed Wildgoose <lists@wildgooses.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I am wondering if someone knows how to fix this problem.
+>With this driver the free space call returns only an approximate value, 
+>however, the "precise pointer" module option returns apparently garbage 
+>(and there are notes in the source to say this).  Looking at the code 
+>it's just returning the value from a register, so it's hard to see that 
+>the driver is doing anything bad.
 
-When I insert the RME hdsp pcmcia card (interfaced to a multiface box) 
-and type 'modprobe snd-hdsp', I get the following on /var/log/messages:
+correct. this is why this option is an option. its not on by default.
 
-Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
-failed (gfp=0x20/0)
-Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
-failed (gfp=0x21/0)
-Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
-failed (gfp=0x20/0)
-Sep 27 20:50:57 localhost kernel: __alloc_pages: 9-order allocation 
-failed (gfp=0x21/0)
-Sep 27 20:50:57 localhost kernel: RME Hammerfall DSP: no buffers available
-Sep 27 20:50:57 localhost kernel: RME Hammerfall-DSP: no cards found
+>Does anyone have any insight on whether it's possible to get a good 
+>value for free space in the buffers?  From a design point of view is it 
 
+its not. you have to keep in mind that RME designed this hardware
+around the ASIO model, in which the h/w ptr position is  essentially
+irrelevant. consequently, the way in which the ptr is updated is not
+particularly reliable.
 
-lspci shows the RME card:
-03:00.0 Multimedia audio controller: Xilinx Corporation RME Hammerfall 
-DSP (rev 0a)
+>quite accurate estimating the current point location based on counting 
+>ticks since we started and noting when we add new data, etc.
 
-/etc/pcmcia/config.opts has:
-include port 0x100-0x4ff, port 0xc00-0xcff
-include memory 0xc0000-0xfffff
-include memory 0xa0000000-0xa0ffffff, memory 0x60000000-0x60ffffff
-include port 0xa00-0xaff
-exclude irq 4
-exclude irq 7
+you should probably first explain why you want to do this. as i
+mentioned, the h/w design is really centered on straightforward double
+buffering - the application works on one "buffer" and the hardware
+works on the other. 
 
+when you add data to the buffer makes no difference to the location of
+the hw ptr, btw.
 
-Any help will be much appreciated.
-
-Thanks,
-DS
-
+--p
 
 
 -------------------------------------------------------
