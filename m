@@ -1,15 +1,12 @@
-From: Caleb Crome <alsa@crome.org>
-Subject: Re: How do create a dummy device for recording audio?
- Does it exist already?
-Date: Thu, 29 Apr 2004 08:41:10 -0700
+From: Nikhil Deo <nikhil_deo@usa.net>
+Subject: snd_pcm_plugin_read: buffer format
+Date: Thu, 29 Apr 2004 12:14:29 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40912216.6000901@crome.org>
-References: <Pine.HPX.4.33n.0404291036220.7053-100000@studcom.urz.uni-halle.de>
+Message-ID: <117iDCqod2960S16.1083255269@uwdvg016.cms.usa.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0404291036220.7053-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,71 +15,19 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Caleb Crome <alsa@crome.org>, ALSA Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-
->Caleb Crome wrote:
->  
->
->>Clemens Ladisch wrote:
->>    
->>
->>>However, Realplayer uses the OSS emulation through /dev/dsp0.  To make
->>>that work with your "file" device, add the following to the config
->>>file:
->>>
->>> pcm.dsp0 = file
->>>      
->>>
->>Awesome!  It works like a charm.  Than you so much!  The one thing that
->>doesn't work quite right is that I get the following error when
->>RealPlayer attempts to access the mixer:
->>
->>ALSA lib control.c:601:(snd_ctl_open_noupdate) Invalid CTL mixer0
->>    
->>
->
->It tries to use /dev/mixer0, too.  Add the following:
->
->  ctl.mixer0 = "hw:0"
->
->
->HTH
->Clemens
->
->
->  
->
-Clemens,
-   Thanks for the info, however  now I get the following:
-
-ALSA lib control.c:516:(snd_ctl_open_conf) Invalid type for CTL mixer0 
-definition
-
-Any ideas?  Just for the record, my asoundrc is:
-
-pcm.dsp0 = file
-pcm.file {
-     type file
-     slave {
-           pcm "hw:0,0"
-     }
-    file "/tmp/pcm.raw.pipe"
-}
-ctl.mixer0 = "hw:0"
+When I read some captured data into a buffer by calling snd_pcm_plugin_re=
+ad,
+how can I separate the left and right channels from that data? =
 
 
-When I changed the last line to:
+Thanks for your time and any hint/pointers/answer to the above. =
 
-ctl.mixer0 = hw
 
-it doesn't complain any more.  Is that the correct syntax? 
+cheers!
 
-Thanks again,
-    -Caleb
 
 
 
