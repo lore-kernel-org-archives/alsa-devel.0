@@ -1,20 +1,17 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: 1.0.6rc1 packages
-Date: Wed, 4 Aug 2004 20:51:08 +0200 (CEST)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: 1.0.6rc1 packages
+Date: Wed, 4 Aug 2004 23:31:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
+Message-ID: <20040804213106.GA612@tuba.home>
+References: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A981A25E
-	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 20:51:44 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 6F97E16069
-	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 20:51:44 +0200 (MEST)
-Received: from pnote.perex-int.cz (localhost [127.0.0.1])
-	by server.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 5938AB0B1
-	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 20:51:44 +0200 (CEST)
+Received: from mail.gmx.net (pop.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3E0A8271
+	for <alsa-devel@alsa-project.org>; Wed,  4 Aug 2004 23:29:49 +0200 (MEST)
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,19 +20,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Wed, Aug 04, 2004 at 08:51:08PM +0200, Jaroslav Kysela wrote:
+> Hi all,
+> 
+> 	the 1.0.6rc1 ALSA packages are available for testing.
 
-	the 1.0.6rc1 ALSA packages are available for testing.
+In file included from usbusx2yaudio.c:19:
+../../alsa-kernel/usb/usx2y/usbusx2yaudio.c: In function usX2Y_urbs_allocate':
+../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:492: __old_i_usX2Y_urb_complete'
+undeclared (first use in this function)
+../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:492: (Each undeclared identifier
+is reported only once
+../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:492: for each function it
+appears in.)
+../../alsa-kernel/usb/usx2y/usbusx2yaudio.c: In function usX2Y_rate_set':
+../../alsa-kernel/usb/usx2y/usbusx2yaudio.c:623: warning: assignment from
+incompatible pointer type
+usbusx2yaudio.c: At top level:
+usbusx2yaudio.c:26: warning: i_usX2Y_urb_complete__old_' defined but not used
 
-						Jaroslav
+Oh, usx2y needs a fix.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+martin
 
 
 -------------------------------------------------------
