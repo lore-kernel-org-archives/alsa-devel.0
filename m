@@ -1,16 +1,18 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: "Zlatko Savic" <rza@onebox.com>
 Subject: Re: ALSA is in 2.5!!!
-Date: Wed, 13 Feb 2002 22:14:32 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202132208560.2382-100000@pnote.perex-int.cz>
+Date: Wed, 13 Feb 2002 17:15:31 -0500
+Message-ID: <20020213221531.IXZN13130.mta09.onebox.com@onebox.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA26791
-	for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2002 22:16:14 +0100
-Received: from pnote.perex-int.cz (alsa.alsa-project.org [160.217.1.49])
-	by gate.perex.cz (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA22798
-	for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2002 22:16:11 +0100
-In-Reply-To: <Pine.LNX.4.31.0202132022200.495-100000@pnote.perex-int.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+Received: from mta09.onebox.com (mta09.onebox.com [64.68.76.81])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA28019
+	for <alsa-devel@alsa-project.org>; Wed, 13 Feb 2002 23:16:24 +0100
+Received: from onebox.com ([10.1.101.12]) by mta09.onebox.com
+          (InterMail vM.4.01.03.23 201-229-121-123-20010418) with SMTP
+          id <20020213221531.IXZN13130.mta09.onebox.com@onebox.com>
+          for <alsa-devel@alsa-project.org>;
+          Wed, 13 Feb 2002 14:15:31 -0800
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,29 +21,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Feb 2002, Jaroslav Kysela wrote:
+That is GREAT news!!! As a newbie, I have been following the development
+of the ALSA project for some time, hoping that some day all these dead
+souncards across the globe on Linux machines of other newbies (and mine
+too) will someday fire up with blarring sounds
+and make another great reason for everyone to switch to Linux.
 
-> Hi all,
->
-> 	the big moment in ALSA existence is here. Linus integrated ALSA
-> into 2.5 kernel tree!! The first pre-patch with ALSA will be available
-> soon. For impatient hackers: Check http://openlogging.org, click on
-> 'Sorted by number of lines' and choose 'Linux kernel tree' with domain
-> 'transmeta.com' and contact 'Unknown'.
-> 	I would like to send big thank you to all ALSA developers. I am
-> looking forward to the future.
+The ALSA project, along with the future kernels will make a huge step
+towards Linux domination.
 
-Finally, patch-2.5.5-pre1 with ALSA is available on ftp.kernel.org.
+You guys are awesome!
 
-						Jaroslav
+------------------------------------------- 
+Zlatko Savic
 
------
-Jaroslav Kysela <perex@suse.cz>
-SuSE Linux    http://www.suse.com
-ALSA Project  http://www.alsa-project.org
+"It's no use Mr. James - it's turtles all the way down"
+J.R.Ross, Constraints On Variables In Syntax
+
+
+
+
+__________________________________________________
+FREE voicemail, email, and fax...all in one place.
+Sign Up Now! http://www.onebox.com
 
 
 _______________________________________________
