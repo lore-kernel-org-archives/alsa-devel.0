@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 18:38:50 +0100
-Message-ID: <2cc35420814c5e4d2a407251606ccd24@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 19:27:16 +0100
+Message-ID: <ccb0c52e79e059638a9d6acbf3875f40@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7378829B
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 18:38:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EC1CE1A8
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 19:27:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 18:38 CET
+Last Modified:              12-26-2004 19:27 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,22 +56,6 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- misnagid - 12-26-04 18:17 
-----------------------------------------------------------------------
-At this point in time, I wouldn't mind buying a brand new sound card at
-all.  But it appears that the new Audigy 2 ZS has the same issues.  I have
-no problem buying the new Audigy 4 Pro.  But I dont see that new soundcard
-listed at your site. Would that solve it?  Should I get a different brand
-soundcard?  It seems from all the letters about this problem that a
-different soundcard wouldn't make any difference.  Any other ideas?  I
-dont mind throwing money at this problem.  I dont care much for all this
-putzin around and I really dont like bothering you either.  Sorry!!!
-
-
-Yours,
-Jerr
-
-----------------------------------------------------------------------
  misnagid - 12-26-04 18:38 
 ----------------------------------------------------------------------
 If I were to pay you for support, I would have no problem with that if it
@@ -80,6 +64,26 @@ card is fine too like the Audigy 4 Pro, or whatever you think best.  I am
 just trying to help us both out here, I appreciate your help a lot!!
 
 Jerr
+
+----------------------------------------------------------------------
+ pzad - 12-26-04 19:27 
+----------------------------------------------------------------------
+Do this:
+alsactl -f test.state store
+
+and attach test.state to this bug report. I think, this is just mixer
+setting problem.
+
+Try to use aplay - for example:
+
+aplay some.wav
+
+What is in /proc/asound/cards ???
+
+I don't use kmix, because it has buggy alsa support.
+
+Audigy 1, Audigy 2, Audigy 2 ZS and Audigy 4 Pro is same card under linux.
+There is no diffrence between them.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -95,6 +99,7 @@ Date Modified  Username       Field                    Change
 12-26-04 18:07 misnagid       Note Added: 0002940                          
 12-26-04 18:17 misnagid       Note Added: 0002942                          
 12-26-04 18:38 misnagid       Note Added: 0002943                          
+12-26-04 19:27 pzad           Note Added: 0002944                          
 ======================================================================
 
 
