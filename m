@@ -1,13 +1,16 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000574]: bad sound reproduction
-Date: Sat,  9 Oct 2004 15:03:03 +0200 (CEST)
+Subject: [ALSA - utils 0000575]: alsa mixer settings and sporatic loss of sound
+Date: Sat,  9 Oct 2004 18:09:47 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041009130303.942984500E@server.perex-int.cz>
+Message-ID: <20041009160947.F3ADE3E00F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D7DA1D6
-	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 15:03:03 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 41973291
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 18:09:48 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 114F32CFCA
+	for <alsa-devel@alsa-project.org>; Sat,  9 Oct 2004 18:09:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,41 +25,36 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been SUBMITTED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000574
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000575
 ======================================================================
-Reported By:                nicola
-Assigned To:                tiwai
+Reported By:                grapnell
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Bug ID:                     574
-Category:                   PCI - atiixp
+Project:                    ALSA - utils
+Bug ID:                     575
+Category:                   alsamixer
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               fedora core 2
-Kernel Version:             kernel 2.6.5-1.358
+Status:                     new
 ======================================================================
-Date Submitted:             10-09-2004 15:03 CEST
-Last Modified:              10-09-2004 15:03 CEST
+Date Submitted:             10-09-2004 18:09 CEST
+Last Modified:              10-09-2004 18:09 CEST
 ======================================================================
-Summary:                    bad sound reproduction
+Summary:                    alsa mixer settings and sporatic loss of sound
 Description: 
-Sound isn't reproduced rigth way, sound play and stop, play and stop. I
-can't hear a fluid sound, the only way to hear sound is moving continously
-the mouse. 
-I can't hear system sounds, totem (and xine based programs) doesn't
-reproduce fluid sounds, while mplayer and helix can (but sometimes stream
-is shifted on).
-
+one thing i have noticed about alsa, is a very small event can trigger a
+major crash of alsa, such as the forced quit of a non-responding
+application that uses sound etc will cause alsa to crash, and I cannot get
+sound support to come back unless I reboot. also, the mixer settings will
+not save, I have to unmute and restore all the mixer settings manually
+everytime I reboot.
 ======================================================================
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-09-04 15:03 nicola         New Bug                                      
-10-09-04 15:03 nicola         Distribution              => fedora core 2   
-10-09-04 15:03 nicola         Kernel Version            => kernel 2.6.5-1.358
+10-09-04 18:09 grapnell       New Bug                                      
 ======================================================================
 
 
