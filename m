@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000226]: Sound hangs after APM resume
-Date: Mon, 17 Jan 2005 10:59:47 +0100
-Message-ID: <9cec5bdf718b8cbd680f7d9c547666be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000536]: Sound no longer works on IBM ThinkPad 600x after waking from sleep
+Date: Mon, 17 Jan 2005 11:01:10 +0100
+Message-ID: <5a3b4a11725b86f6b7a02cbd168fa498@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8768F193
-	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 10:59:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 36E6C193
+	for <alsa-devel@alsa-project.org>; Mon, 17 Jan 2005 11:01:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=536> 
 ======================================================================
-Reported By:                marke
+Reported By:                bkendig
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   226
+Issue ID:                   536
 Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian
-Kernel Version:             &nbsp;2.6.5
+Distribution:               FC2
+Kernel Version:             2.6.9-rc2
 ======================================================================
-Date Submitted:             04-20-2004 13:07 CEST
-Last Modified:              01-17-2005 10:59 CET
+Date Submitted:             09-24-2004 16:23 CEST
+Last Modified:              01-17-2005 11:01 CET
 ======================================================================
-Summary:                    Sound hangs after APM resume
+Summary:                    Sound no longer works on IBM ThinkPad 600x after
+waking from sleep
 Description: 
-After a suspend/resume of the laptop with the cs46xx chipset the sound no
-longer works. I need to kill all sound apps unload the alsa modules and
-reload them.
+After booting this laptop, sound works fine; but after putting the system
+to sleep and waking it, sound will no longer work until the system is
+rebooted.  No error messages are displayed.
+
+This is an IBM ThinkPad 600x, which has a feature where it will cut power
+to the PCI bus to save battery when the bus is not being used.  I believe
+this is what's killing ALSA.
+
+This system is running Fedora Core 2 with kernel version 2.6.9-rc2, but
+the problem has occurred with every version of 2.6 since its release.
+
+The sound modules can not be unloaded because the system believes they're
+still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR: Module snd_cs46xx
+is in use".
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 04-20-04 15:14 
+ tiwai - 10-01-04 17:07 
 ----------------------------------------------------------------------
-already fixed in the recent CVS.
-please give a try.
+It's a known problem of cs46xx driver with TP.
+
+The driver should be able to be unloaded after resume.
+The driver is in use most likley because some apps (e.g. mixer
+or sound-server) is using it indeed.  Check which apps opening
+/dev/snd/* and /dev/mixer*, /dev/dsp*, etc via fuser.
 
 ----------------------------------------------------------------------
- jdthood - 01-17-05 10:59 
+ jdthood - 01-17-05 11:01 
 ----------------------------------------------------------------------
-Duplicate of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
+This is a duplicate of
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
+
+> The sound modules can not be unloaded because the system believes
+> they're still in use. "/sbin/rmmod snd_cs46xx" returns "ERROR:
+> Module snd_cs46xx is in use".
+
+You have to kill all applications that have sound devices open.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-20-04 13:07 marke          New Issue                                    
-04-20-04 13:07 marke          Distribution              => Debian          
-04-20-04 13:07 marke          Kernel Version            =>  2.6.5          
-04-20-04 13:10 marke          Issue Monitored: marke                       
-04-20-04 15:14 tiwai          Note Added: 0000884                          
-01-17-05 10:59 jdthood        Note Added: 0003227                          
+09-24-04 16:23 bkendig        New Issue                                    
+09-24-04 16:23 bkendig        Distribution              => FC2             
+09-24-04 16:23 bkendig        Kernel Version            => 2.6.9-rc2       
+10-01-04 17:07 tiwai          Note Added: 0002002                          
+01-17-05 11:01 jdthood        Note Added: 0003228                          
 ======================================================================
 
 
