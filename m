@@ -1,19 +1,13 @@
-From: Nicolas Pitre <nico@cam.org>
-Subject: Re: pxa2xx ac97 driver
-Date: Fri, 11 Feb 2005 10:50:22 -0500 (EST)
-Message-ID: <Pine.LNX.4.61.0502111049190.25848@localhost.localdomain>
-References: <1108123181.3181.23.camel@icampbell-debian>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
+Date: Fri, 11 Feb 2005 17:22:30 +0100
+Message-ID: <230c8f93c495d488885b0614d94f100e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Received: from relais.videotron.ca (relais.videotron.ca [24.201.245.36])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 254C41E2
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 16:50:25 +0100 (MET)
-Received: from xanadu.home ([24.200.213.96]) by VL-MO-MR007.ip.videotron.ca
- (iPlanet Messaging Server 5.2 HotFix 1.21 (built Sep  8 2003))
- with ESMTP id <0IBR004SA8000Z@VL-MO-MR007.ip.videotron.ca> for
- alsa-devel@alsa-project.org; Fri, 11 Feb 2005 10:50:24 -0500 (EST)
-In-reply-to: <1108123181.3181.23.camel@icampbell-debian>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B5C1C1AF
+	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 17:22:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,90 +17,64 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ian Campbell <icampbell@arcom.com>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 Feb 2005, Ian Campbell wrote:
 
-> Hi Nico,
-> 
-> I've just grabbed your pxa2xx audio driver from alsa CVS and given it a
-> go on my PXA255 based board. I'm running 2.6.10 with the DMA mmap API
-> backported. I got it working pretty quick with only a couple of issues
-> -- thanks!
-> 
-> First issue was minor: I think *_EOC only exist on PXA270, or at least
-> they aren't documented on the 255 and the symbols aren't defined for
-> CONFIG_PXA25x so I wrapped them in CONFIG_PXA27x. I don't know if it
-> would hurt to write to the reserved bits on 255...
-> 
-> Second issue is a bit strange. The code in the reset function does:
-> 	GCR = GCR_COLD_RST;
-> 	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
-> 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-> which either causes a hang or causes repeated interrupts so that it is
-> impossible to see what is going on (didn't see anything from a printk in
-> the irq handler though). I changed it to 
-> 	GCR = GCR_COLD_RST;
-> 	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
-> 	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
-> which matches the way the old OSS driver did the reset and now the
-> driver works great.
-> 
-> I don't understand this though since the documentation would appear to
-> suggest that the PRIRDY way makes more sense. I guess it's possible that
-> it is related to 255 errata #30 ("Invalid AC'97 interrupt during cold
-> reset") but I'm not sure...
-> 
-> Anyway, here is the patch for the changes I made, what do you think?
-> 
-> Signed-off-by: Ian Campbell <icampbell@arcom.com>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
+======================================================================
+Reported By:                hamishtpb
+Assigned To:                karsten
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   885
+Category:                   USB - usb-usx2y
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo 2004.3
+Kernel Version:             2.4.28-Gentoo-r5
+======================================================================
+Date Submitted:             02-06-2005 05:57 CET
+Last Modified:              02-11-2005 17:22 CET
+======================================================================
+Summary:                    usx2y is unsupported in v 1.08 builds
+Description: 
+Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
+when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
+compile went smoothly.
+======================================================================
 
-Looks fine to me.
+----------------------------------------------------------------------
+ Clemens Ladisch - 02-11-05 15:42 
+----------------------------------------------------------------------
+Are you using a 64-bit system?
 
-Signed-off-by: Nicolas Pitre <nico@cam.org>
+----------------------------------------------------------------------
+ hamishtpb - 02-11-05 17:22 
+----------------------------------------------------------------------
+No - I am using an Athlon XP 2400+ (2GHz).
 
-> Index: 2.6/sound/arm/pxa2xx-ac97.c
-> ===================================================================
-> --- 2.6.orig/sound/arm/pxa2xx-ac97.c	2005-02-11 10:38:07.000000000 +0000
-> +++ 2.6/sound/arm/pxa2xx-ac97.c	2005-02-11 11:33:40.659553892 +0000
-> @@ -115,7 +117,7 @@
->  	udelay(50);
->  #else
->  	GCR = GCR_COLD_RST;
-> -	GCR |= GCR_PRIRDY_IEN|GCR_SECRDY_IEN;
-> +	GCR |= GCR_CDONE_IE|GCR_SDONE_IE;
->  	wait_event_timeout(gsr_wq, gsr_bits & (GSR_PCR | GSR_SCR), 1);
->  #endif
->  
-> @@ -157,12 +159,14 @@
->  		gsr_bits |= status;
->  		wake_up(&gsr_wq);
->  
-> +#ifdef CONFIG_PXA27x
->  		/* Although we don't use those we still need to clear them
->  		   since they tend to spuriously trigger when MMC is used
->  		   (hardware bug? go figure)... */
->  		MISR = MISR_EOC;
->  		PISR = PISR_EOC;
->  		MCSR = MCSR_EOC;
-> +#endif
->  
->  		return IRQ_HANDLED;
->  	}
-> 
-> Cheers,
-> Ian.
-> -- 
-> Ian Campbell, Senior Design Engineer
->                                         Web: http://www.arcom.com
-> Arcom, Clifton Road,                    Direct: +44 (0)1223 403 465
-> Cambridge CB1 7EA, United Kingdom       Phone:  +44 (0)1223 411 200
-> 
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-06-05 05:57 hamishtpb      New Issue                                    
+02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
+02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
+02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
+02-06-05 15:53 hamishtpb      Note Added: 0003525                          
+02-09-05 11:55 tiwai          Note Added: 0003545                          
+02-09-05 12:23 hamishtpb      Note Added: 0003549                          
+02-09-05 12:44 hamishtpb      Note Added: 0003551                          
+02-09-05 12:53 hamishtpb      Note Edited: 0003551                         
+02-11-05 15:42 Clemens LadischNote Added: 0003564                          
+02-11-05 17:22 hamishtpb      Note Added: 0003565                          
+======================================================================
 
 
-Nicolas
 
 
 -------------------------------------------------------
