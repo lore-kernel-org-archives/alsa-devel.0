@@ -1,14 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: [PATCH] Audigy + FX8010 capture (hw:x,2) - again
-Date: Wed, 14 Jul 2004 01:45:34 -0400
+Subject: Re: [PATCH]Audigy 2 ZS - side support
+Date: Wed, 14 Jul 2004 01:48:42 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1089783933.7103.18.camel@mindpipe>
-References: <200406280700.i5S70jAQ017077@www4.pobox.sk>
+Message-ID: <1089784121.7103.21.camel@mindpipe>
+References: <200406280711.i5S7BGAQ017719@www4.pobox.sk>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200406280700.i5S70jAQ017077@www4.pobox.sk>
+In-Reply-To: <200406280711.i5S7BGAQ017719@www4.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,32 +21,25 @@ To: Peter Zubaj <pzad@pobox.sk>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-06-28 at 03:00, Peter Zubaj wrote:
+On Mon, 2004-06-28 at 03:11, Peter Zubaj wrote:
 > Hi,
 > 
-> This patch fixes capture problems from hw:x,2 on Audigy. It is same as
->  previous, because it can be applied cleanly against CVS (I tested
-> version from 23.06.2004) and hope it is still true for current CVS.
+> Here are patches to add support for Audigy 2 ZS side speakers.
+> They are against CVS from 23.06.2004. I hope they will apply cleanly.
 > 
-> I tested 4 channel recrding and it was OK.
+> audigy2zs_driver_v2.diff - is kernel part - same as in bugtrack but
+> for CVS.
 > 
-> hw:x,2 records outputs from FX8010 (not FX buses)
+> audigy2zs_lib_v2.diff - is alsa-lib part - this is not tested (it is
+> same as from my mail and with changes from bugtrack from elklein)
 > 
-> Using "EFX voices mask" you can set channels what you want record.
-> 
-> use alsactl store to store config
-> edit this config (set true for needed channel for "EFX voices mask"
-> control) - I recorded channels 8,9,14,15 (front and rear output).
-> use alsactl restore to restore config
-> 
-> Looks like channel count must be power of 2 (1, 2, 4, 8, ...).
+> TODO - detection of audigy 2 zs. Now it will add side controls to
+> mixer for audigy 2 to. Maybe left or right slider can control volume
+> of back center on audigy 2 too.
 > 
 
-8 channel recording seems to work as well.  I get an error with 16.
-
-What happens with the capture buffer interrupts when you double the
-number of channels, using the same period size?  The FX capture buffer
-does not seem to be per-channel.
+The Audigy 2 ZS can be identified by (emu->revision ==4 &&
+emu->model=0x2002).
 
 Lee
 
