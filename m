@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: About the matrix control...
-Date: Thu, 10 Apr 2003 21:42:48 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: [BUG] (non-)PnP oopses
+Date: Fri, 11 Apr 2003 08:36:14 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0304102141090.24159-100000@pnote.perex-int.cz>
-References: <1050010218.1636.20.camel@Jay>
+Message-ID: <Pine.HPX.4.33n.0304110835130.10925-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1050010218.1636.20.camel@Jay>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +15,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: "tiwai@suse.de" <tiwai@suse.de>, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 10 Apr 2003, Giuliano Pochini wrote:
 
-> 
-> >> About the matrix control, what did you decide ?
-> > it's accessed via normal control API.
-> > you can create "duplicated" entries by specifying the count field for
-> > snd_kcontrol_new_t.  for each duplicated entry, only the volatile part
-> > is created uniquely, which is accessed via ctl->vd[index].
-> 
-> I can't think of any use of ->vd... Inside callbacks do I get the
-> control number by kcontrol->index ?  Ok, but why ?  It was much simpler
-> to make struct sndrv_ctl_elem_value.value.integer.value[] larger or put
-> data in .value_ptr-> . What am I missing ?
+1) The card drivers terminate their pnp_card_device_id tables with an
+entry containing an empty id string:
+	{ .id = "" }
+but pnp_register_card_driver() in pnp.c expects a NULL id string as
+terminator. When no entry matches (e.g. snd-opti92x-ad1848 with a
+non-PnP Mozart card), pnp_register_card_driver() runs off the end of
+the table and oopses.
 
-Please, reread the thread. It's better to lock only one element than
-whole row (one dimension) in the matrix. Imagine applications sharing only 
-a part of matrix.
+2) When snd-opti92x-ad1848 gets loaded for a non-PnP card,
+alsa_card_opti9xx_init() will call snd_card_opti9xx_probe() with NULL
+parameters. When, additionally, the isapnp module parameter has its
+default value of 1, snd_card_opti9xx_pnp() will be called with NULL
+parameters, and die.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+Clemens
+
 
 
 
