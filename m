@@ -1,13 +1,14 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: TRAM on Audigy
-Date: Mon, 7 Jul 2003 09:19:51 +0200
+From: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Subject: Problem  with underrun and overrun
+Date: 7 Jul 2003 07:45:41 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307070719.JAA06549@www1.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <20030707074541.13927.qmail@mailweb34.rediffmail.com>
+Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+	format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,44 +17,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+Cc: James@superbug.demon.co.uk, ilyaphis@mail.ru
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+hi,
 
-I wanted to add support for TRAM on Audigy to emu10k1 driver.
-I look (tryed) at OSS driver and found that TRAM is not working=20
-too. :-(
+   This is regarding UNDERRUN and OVERRUN.
+  I want to know how to come out of Underrun and Overrun in case 
+of full duplex. In my application, its giving underun (playback)  
+ans overrun(capture)  for client and server program.  How to 
+overcome them?Is it sufficient to call snd_pcm_prepare(handle)?
 
-Then I use trial and error method and found how to setup TRAM on=20
-Audigy. I know how to read from and write to TRAM in EMU10k2 DSP=20
-program but not more.
-Is there any documentation on using TRAM on Audigy, or am I only one=20
-(except Creative and Creative NDA signer) who know how to use TRAM on=20
-Audigy ???
+   please help.
+mahendra
 
-I need more info on how is TRAM working on SB Live:
-TANKMEMADDRREG_CLEAR - Clear tank memory
-TANKMEMADDRREG_ALIGN - Align read or write relative to tank access
-TANKMEMADDRREG_WRITE - Write to tank memory
-TANKMEMADDRREG_READ - Read from tank memory
+___________________________________________________
+Click below to experience Sooraj R Barjatya's latest offering
+'Main Prem Ki Diwani Hoon' starring Hrithik, Abhishek
+  & Kareena http://www.mpkdh.com
 
-Please help
-
-Peter Zubaj
-
-PS: If no one knows more, I will make patch against current CVS and=20
-send it to this list. (mayby AC3 passthrough using TRAM will work=20
-too :-))
-
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ADig=
-italny fotoaparat Olympus =B5300 v cenach uz od 16.100,- Sk bez DPH=0ANavst=
-ivte nas na adrese http://www.somi.sk/akcie.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
