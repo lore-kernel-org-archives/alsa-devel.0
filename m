@@ -1,20 +1,14 @@
-From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
-Subject: opening alsa pcm device for input/output on specific channels
-Date: Thu, 6 Jun 2002 15:25:14 +0100
+From: vollmer.philipp@t-online.de (Philipp Vollmer)
+Subject: ALSA Programming Examples
+Date: Thu, 6 Jun 2002 13:45:31 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000601c20d66$07df3890$0400a8c0@martijn>
-Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Message-ID: <02060613013400.00759@linux>
+Reply-To: do1ypv@darc.de
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA13285
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 15:26:00 +0200
-Received: from martijn (kf-nawij-tg01-0748.dial.kabelfoon.nl [62.45.66.237])
-	by hirogen.kabelfoon.nl (Postfix) with SMTP id 930A77E17
-	for <alsa-devel@alsa-project.org>; Thu,  6 Jun 2002 15:25:42 +0200 (CEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -23,32 +17,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I again sent an email to alsa-devel using the wrong account. I think
-it is all outlook's fault...
+Hello to all ALSA Devolpers,
 
---martijn
+I am actually starting to program with the ALSA library.
+My Problem:
 
------ Original Message ----- 
-From: "Martijn Sipkema" <m.j.w.sipkema@student.tudelft.nl>
-To: <alsa-devel@alsa-project.org>
-Sent: Wednesday, June 05, 2002 7:50 PM
-Subject: opening alsa pcm device for input/output on specific channels
+When I try to compile the examples of the HOWTO exactly discriped in the 
+README of this directory.
+So I get a message as if there was a mistake in the code. There isn't I think.
+I searched for the source and I found the "open" ( for the sound device ) 
+codeline where constants seemed to me inexistant.
 
+Where is the problem?
+Is there a mistake in the example or in the HOWTO.
 
-> is it possible to open a alsa pcm device for input or output on
-> not only a certain number of channels but using a channel mask?
-> e.g. output on channels 1, 2, 5 & 6? i don't seem to find this
-> in the docs.
-> 
-> thanks,
-> 
-> --martijn
-> 
-> 
-> 
+With best regards 
+
+Philipp Vollmer
+
+PS: post to do1ypv@darc.de
 
 
 _______________________________________________________________
