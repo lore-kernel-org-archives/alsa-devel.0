@@ -1,18 +1,13 @@
-From: "Martijn Sipkema" <msipkema@sipkema-digital.com>
-Subject: Re: opening alsa pcm device for input/output on specific channels
-Date: Thu, 6 Jun 2002 16:51:35 +0100
+From: Dan Hollis <goemon@anime.net>
+Subject: Re: Writing a driver for this card: your thoughts?
+Date: Thu, 6 Jun 2002 12:04:32 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <003101c20d72$0b1d5620$0400a8c0@martijn>
-References: <200206061439.g56EdgH03077@post2.fast.net>
-Reply-To: "Martijn Sipkema" <msipkema@sipkema-digital.com>
+Message-ID: <Pine.LNX.4.44.0206061155230.15480-100000@sasami.anime.net>
+References: <3CFF4177.16823.43BD597@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hirogen.kabelfoon.nl (hirogen.kabelfoon.nl [62.45.45.69])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA14594
-	for <alsa-devel@alsa-project.org>; Thu, 6 Jun 2002 16:52:06 +0200
+In-Reply-To: <3CFF4177.16823.43BD597@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,24 +16,50 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@op.net>
-Cc: alsa-devel@alsa-project.org
+To: Eliot Blennerhassett <bigblen@xtra.co.nz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> correct. i know you love EASI
+On Thu, 6 Jun 2002, Eliot Blennerhassett wrote:
+> (It may be possible to release the host side code, but never the DSP code 
+> on the cards.)
 
-is it that obvious? :)
+Is it possible to bundle DSP firmware code with the driver? (If it's 
+uploaded by the host, and it's not in eeprom or something). It's very hard 
+to distribute drivers for firmware-based devices if we can't distribute 
+the firmware required :-o
 
-perhaps if more people like it, it would make sense porting
-it to linux...
+But we don't need the source code to the DSP firmware. Just tell us how to 
+talk to the DSP and tell it to make noise.
 
---martijn
+> I think it would be much better if we had an ALSA driver. 
 
+I agree :-)
 
+> I'd like some idea how hard it would be to write an ALSA driver either as a 
+> compatibility layer on top of our existing driver, or from the ground up.  I 
+> realise that this is rather a broad question, so please consider this an 
+> invitation to enter discussion, rather than a request for you to go off and 
+> do a lot of work for me.
 
+I think it would be better if it were a native ALSA driver talk directly 
+to the DSP, eg ALSA->DSP rather than ALSA->HPI->DSP.
 
+> Oh - what do you think of the cards' feature set?  
 
+It looks pretty nice. But what's the price? :-o
 
+> Some distinctive things about our cards (not all have all features) - they 
+> have on board DSP.  Code is downloaded by the driver. - they have a lot of 
+> on board buffer memory (hundreds of K at least) - on board DSP handles 
+> decompression/compression - mixing - samplerate conversion or multiple 
+> outputs at different rates - analog and digital audio I/O, balanced drivers 
+
+What's minimum latency possible with the card?
+
+-Dan
+-- 
+[-] Omae no subete no kichi wa ore no mono da. [-]
 
 
 
