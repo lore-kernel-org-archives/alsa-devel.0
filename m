@@ -1,14 +1,13 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: alsa-utils from CVS
-Date: Sun, 15 Jun 2003 15:22:10 +1000
+Date: Sun, 15 Jun 2003 12:21:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030615152210.21cd9d4a.erikd-alsa@mega-nerd.com>
-References: <20030615122754.48ccf3b2.erikd-alsa@mega-nerd.com>
+Message-ID: <Pine.LNX.4.44.0306151218300.2529-100000@pnote.perex-int.cz>
+References: <20030615152210.21cd9d4a.erikd-alsa@mega-nerd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030615122754.48ccf3b2.erikd-alsa@mega-nerd.com>
+In-Reply-To: <20030615152210.21cd9d4a.erikd-alsa@mega-nerd.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,43 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 15 Jun 2003 12:27:54 +1000
-Erik de Castro Lopo <erikd-alsa@mega-nerd.com> wrote:
+On Sun, 15 Jun 2003, Erik de Castro Lopo wrote:
 
-> Hi all,
+> On Sun, 15 Jun 2003 12:27:54 +1000
+> Erik de Castro Lopo <erikd-alsa@mega-nerd.com> wrote:
 > 
-> I have managed to download alsa-driver, alsa-kernel and als-lib from CVS but
-> I can't get alsa-utils. 
+> > Hi all,
+> > 
+> > I have managed to download alsa-driver, alsa-kernel and als-lib from CVS but
+> > I can't get alsa-utils. 
+> > 
+> >     erikd@coltrane > cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa login
+> >     Logging in to :pserver:anonymous@cvs.sourceforge.net:2401/cvsroot/alsa
+> >     CVS password: 
+> >     erikd@coltrane > cvs co alsa-utils
+> >     cvs server: cannot find module `alsa-utils' - ignored
+> >     cvs [checkout aborted]: cannot expand modules
+> > 
+> > Has anybody else managed this?
 > 
->     erikd@coltrane > cvs -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa login
->     Logging in to :pserver:anonymous@cvs.sourceforge.net:2401/cvsroot/alsa
->     CVS password: 
->     erikd@coltrane > cvs co alsa-utils
->     cvs server: cannot find module `alsa-utils' - ignored
->     cvs [checkout aborted]: cannot expand modules
+> It looks like SourceForge will not accept
 > 
-> Has anybody else managed this?
+>     cvs co alsa-utils
+> 
+> but will accept:
+> 
+>     cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-utils
+> 
+> Its probably insisting that I use compression over the net.
 
-It looks like SourceForge will not accept
+'cvs login' only creates repository->password entries (in ~/.cvspass), so 
+you have to specify the full repository address for checkout again, 
+because CVS/* files does not exist at the moment (thus cvs does not know, 
+which repository is root).
 
-    cvs co alsa-utils
+						Jaroslav
 
-but will accept:
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-    cvs -z3 -d:pserver:anonymous@cvs.sourceforge.net:/cvsroot/alsa co alsa-utils
-
-Its probably insisting that I use compression over the net.
-
-Erik
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-"Having a firewall that allows NFS to the Internet is like having a 
-seat belt that lets your head touch the dashboard." -- Marcus Ranum
 
 
 -------------------------------------------------------
