@@ -1,15 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000612]: Emu10k1's bass output sounds horrible
-Date: Thu, 28 Oct 2004 11:03:20 +0200
+From: =?GB2312?B?MTAwMC01MDAw1Ko=?= <kiudj@8jk.net>
+Subject: =?GB2312?B?xPrN+NW+vs3T0NK7sNnN8sjLv7Qu?=
+Date: Thu, 28 Oct 2004 18:38:24 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6a92bad6816fd41e9f8b8d9bca16f664@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <E1CN7tQ-0004eL-CN@sc8-sf-mx2.sourceforge.net>
+Reply-To: djkudj@8jh.net
+Content-Type: text/plain;charset="GB2312"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7DB0A211
-	for <alsa-devel@alsa-project.org>; Thu, 28 Oct 2004 11:03:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,77 +14,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+当今世界上没有比发群发邮件广告的更好的广告
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=612> 
-======================================================================
-Reported By:                james
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   612
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               debian
-Kernel Version:             2.6.7
-======================================================================
-Date Submitted:             10-28-2004 04:03 CEST
-Last Modified:              10-28-2004 11:03 CEST
-======================================================================
-Summary:                    Emu10k1's bass output sounds horrible
-Description: 
-I have a stereo (nothing special) speaker and speakers hooked up to my
-computer.  The bass output sounds terrible.  it's distorted and sounds
-terrible at low volumes.  With oss, the bass is crystal clear.  i have to
-reduce the bass volume to 38 for it to sound respectible.  And at that
-level, the high notes are much louder and noticable than the bass ones.
 
-i think there is a 12db boost applied to the speakers by the AC'97 mixer. 
- It would be nice if there was a way to disable this.
+●发一百万封广告邮件,您网站就有一百万人看,就有一百万人买您的产品!!
+●发一百万封广告邮件,不用几分钟.......
 
-i have the sb live value with digital output.  i'm not using digital
-output, so it's switched off.
+不买也去看看 http://www.mail333.net    
+不买也去看看 http://www.mail333.net  也许您看了，感兴趣！！！
 
-0000:00:0f.1 Input device controller: Creative Labs SB Live! MIDI/Game
-Port (rev 07)
-        Subsystem: Creative Labs Gameport Joystick
-        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
-ParErr- Stepping- SERR+ FastB2B-
-        Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort-
-<TAbort- <MAbort- >SERR- <PERR-
-        Latency: 64
-        Region 0: I/O ports at dc00 [size=8]
-        Capabilities: [dc] Power Management version 1
-                Flags: PMEClk- DSI- D1+ D2+ AuxCurrent=0mA
-PME(D0-,D1-,D2-,D3hot-,D3cold-)
-                Status: D0 PME-Enable- DSel=0 DScale=0 PME-
+全国免费送货电话 0662-3626276
+>
+>
+>
 
-======================================================================
+*****宣传网站,推广产品,最便宜的选择!******
+    
 
-----------------------------------------------------------------------
- pzad - 10-28-04 11:03 
-----------------------------------------------------------------------
-Bass and treble DSP code is same in OSS and ALSA.
 
-Try to lower "Wave" volume - otherways there will be clipping on bass. 
-When you set "PCM" to 75 % this is 0 db.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-28-04 04:03 james          New Issue                                    
-10-28-04 04:03 james          Distribution              => debian          
-10-28-04 04:03 james          Kernel Version            => 2.6.7           
-10-28-04 07:28 james          Issue Monitored: james                       
-10-28-04 11:03 pzad           Note Added: 0002285                          
-======================================================================
+{
+{                            广东新点科技公司  出品
+{
+
+
+
+
+
+
+
+
+
+
+
+
+
+****************************************
+这是一封善意的广告邮件！给您带来不便，敬请原谅！！！！
+
+如果您不想再收到这类型邮件广告，请发E-mail:xin_dian@126.com
+如果这类型广告一天内有多次重复发送，请立即告诉我们E-mail:xin_dian@126.com
+
 
 
 
