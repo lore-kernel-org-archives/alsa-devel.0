@@ -1,13 +1,13 @@
-From: "Vrihad Shoonya" <vrihad@softhome.net>
-Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 14:01:14 +0530 (IST)
+From: "Ash Willis" <ashwillis@programmer.net>
+Subject: Re: help with driver
+Date: Thu, 19 Aug 2004 03:46:19 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <34863.192.168.0.10.1092904274.squirrel@dev.datamax.co.in>
-References: <200408190751.i7J7pHoW021832@www3.pobox.sk>
+Message-ID: <20040819084619.71778164002@ws1-4.us4.outblaze.com>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200408190751.i7J7pHoW021832@www3.pobox.sk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,21 +16,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Zubaj <pzad@pobox.sk>
-Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de, tiwai@suse.de
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-> I think, there is no reason to try correct these unresolved symbols,
-> because result will by same as Takashi Iwai way.
->
-> For me looks like 7019 is diffrent from 7018. :-(
+> Add up the number of bytes or frames played, and call _elapsed when
+> the value reaches one period.
+>=20
 
-Now how much effort is required to support it in alsa if we have the
-register guide with us? We also have an OSS implementation with
-some bugs related to blocking read of the device.
+Ok, thanks. I'll sort this out when i have the time.
 
--vrihad
+Ash.
+--=20
+___________________________________________________________
+Sign-up for Ads Free at Mail.com
+http://promo.mail.com/adsfreejump.htm
 
 
 
