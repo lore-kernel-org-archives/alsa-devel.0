@@ -1,10 +1,11 @@
-From: ametts2@mindspring.com
-Subject: Firewire Audio Support
-Date: Wed, 27 Aug 2003 12:39:20 -0400 (GMT)
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: MIDI timing question
+Date: Wed, 27 Aug 2003 10:32:38 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2689281.1062002361328.JavaMail.nobody@wamui09.slb.atl.earthlink.net>
+Message-ID: <NDBBLGIKBJENLAMOLFHGKEAEDBAB.mknecht@controlnet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,17 +16,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
+   Does anyone have a simple page I could read with an explanation about how
+one would go about transmitting a given number of MIDI events at a known
+tempo using the Alsa MIDI services? How does one transmit at 92bpm with say
+16th note accuracy and really get the events to be timed correctly on the
+bus?
 
-I have a MOTU 828 -- are there any efforts underway to support FireWire (IEEE-1394), multi-channel audio devices under ALSA?  
+   Is this possible to do totally within Alsa, or do developers have to
+create their own time base and then every MIDI event just goes out raw?
 
-If so, please tell me where to find more info!
+   I understand there is possibly a 'sequencer' interface, but when I look
+at the online Alsa documentation I seem to be missing it.
 
-Thanks...
+   Please keep any answers extremely simple. I'm just looking for a little
+really basic education.
 
-A----
+Thanks in advance,
+Mark
+
 
 
 
