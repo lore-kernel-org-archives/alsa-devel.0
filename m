@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000629]: snd-powermac.o: unresolved symbol num_controls
-Date: Fri, 5 Nov 2004 10:59:06 +0100
-Message-ID: <a76d61426a041aa22f038e3f1f7930bf@bugtrack.alsa-project.org>
+Subject: [ALSA - liboss 0000630]: Too strict max periods constraints for dmix plugin
+Date: Fri, 5 Nov 2004 11:31:49 +0100
+Message-ID: <7ef92a2491b7a98ce060d0057dd03ade@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F094E248
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 10:59:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A5DE8251
+	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 11:31:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,45 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=629> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=630> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   629
-Category:                   PPC - powermac
+Project:                    ALSA - liboss
+Issue ID:                   630
+Category:                   
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             11-05-2004 10:03 CET
-Last Modified:              11-05-2004 10:59 CET
+Date Submitted:             11-05-2004 11:31 CET
+Last Modified:              11-05-2004 11:31 CET
 ======================================================================
-Summary:                    snd-powermac.o: unresolved symbol num_controls
+Summary:                    Too strict max periods constraints for dmix plugin
 Description: 
-Please see Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=279731 
-(http://bugs.debian.org/279731)
+See Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=233200
+(http://bugs.debian.org/233200).
 
-The submitter sees:
-    /lib/modules/2.4.25-ben1/updates/alsa/snd-powermac.o: unresolved
-symbol num_controls
+The submitter reports:
+> I encountered a problem with alsa-oss with some OSS only apps: they try
+to limit the maximum number of fragments to a lower value than the number
+of periods configured for dmix (the minimum number which provides smooth
+playback with all ALSA apps), which fails.
+
+The submitter also provides a patch.  The patch doesn't apply any longer
+to alsa-oss.c but the code that it patches now appears in pcm.c.
+
+
 ======================================================================
-
-----------------------------------------------------------------------
- Clemens Ladisch - 11-05-04 10:59 
-----------------------------------------------------------------------
-fixed since 1.0.7rc1 with the following patch:
-http://cvs.sourceforge.net/viewcvs.py/alsa/alsa-kernel/ppc/awacs.c?r1=1.25&r2=1.26&diff_format=u
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-05-04 10:03 jdthood        New Issue                                    
-11-05-04 10:59 Clemens LadischStatus                   assigned => resolved
-11-05-04 10:59 Clemens LadischResolution               open => fixed       
-11-05-04 10:59 Clemens LadischNote Added: 0002305                          
+11-05-04 11:31 jdthood        New Issue                                    
 ======================================================================
 
 
