@@ -1,15 +1,10 @@
-From: "guan yim" <guanyim@hotmail.com>
-Subject: 0.9.8 lib + 1.0.6a driver + old sblive = no ac3 passthrough
-Date: Tue, 14 Dec 2004 06:20:48 +0200
-Message-ID: <BAY22-F28708B2255DC9FF4966C4BAFAC0@phx.gbl>
-References: <645ab6912a4317dc73d71a8a0fbddade@bugtrack.alsa-project.org>
+From: Michael Geis <michaelgeis11@yahoo.com>
+Subject: Solved:alsa seqeuncer: How to eliminate choking
+Date: Mon, 13 Dec 2004 20:44:11 -0800 (PST)
+Message-ID: <20041214044411.93591.qmail@web51907.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: multipart/alternative; boundary="0-1838663701-1102999451=:92975"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hotmail.com (bay22-f28.bay22.hotmail.com [64.4.16.78])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BFACD28D
-	for <alsa-devel@alsa-project.org>; Tue, 14 Dec 2004 05:21:34 +0100 (MET)
-In-Reply-To: <645ab6912a4317dc73d71a8a0fbddade@bugtrack.alsa-project.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,34 +14,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
-Cc: pranay_k@hotmail.com
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+--0-1838663701-1102999451=:92975
+Content-Type: text/plain; charset=us-ascii
 
-When I use alsa-tools-0.9.8/ac3dec to play an ac3 file with passthrough 
-option, it gives me the following messages:
+Thanks for your help, Clemens and Alexandre. The problem turned out not to
+be ALSA related at all. I had made a mistake in my import to midi. When exporting to
+midi, I made an error that cancelled the previous error, which is why everything sounded
+fine when playing midi. However, my data in the score class simply werent correct under
+certain circumstances, which is why it sounded weird when I played certain pieces to the
+sequencer.
+ 
+Thanks,
+Michael
 
-Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
-ALSA lib pcm_hw.c:1055:(snd_pcm_hw_open) open /dev/snd/pcmC0D3p failed: No 
-such device
-snd_pcm_open: No such device
-Output open failed
+		
+---------------------------------
+Do you Yahoo!?
+ Dress up your holiday email, Hollywood style. Learn more.
+--0-1838663701-1102999451=:92975
+Content-Type: text/html; charset=us-ascii
 
-
-I am using 0.9.8 lib + 1.0.6a driver + old sblive (chip: eMicro 28028) . 
-However if I use everything in 0.9.8 it is ok. I check the file  
-/dev/snd/pcmC0D3p  and it is indeed there. Why I couldn't mix different 
-version of lib and driver? Please tell me the reason.
-
-Thanks
-guanyim
-
-_________________________________________________________________
-Express yourself instantly with MSN Messenger! Download today it's FREE! 
-http://messenger.msn.click-url.com/go/onm00200471ave/direct/01/
-
+<DIV>Thanks for your help, Clemens and Alexandre. The problem turned out not to</DIV>
+<DIV>be ALSA related at all. I had made a mistake in my import to midi. When exporting to</DIV>
+<DIV>midi, I made an error that cancelled the previous error, which is why everything sounded</DIV>
+<DIV>fine when playing midi. However, my data in the score class simply werent correct under</DIV>
+<DIV>certain circumstances, which is why it sounded weird when I played certain pieces to the</DIV>
+<DIV>sequencer.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,</DIV>
+<DIV>Michael</DIV><p>
+		<hr size=1>Do you Yahoo!?<br> 
+Dress up your holiday email, Hollywood style. <a href="http://us.rd.yahoo.com/evt=29909/*http://celebrity.mail.yahoo.com">Learn more.</a>
+--0-1838663701-1102999451=:92975--
 
 
 -------------------------------------------------------
