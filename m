@@ -1,16 +1,14 @@
-From: Mason Guidry <exkvhblsbkr@caller.com>
-Subject: Historical Movie of Your Hottest fantasy
-Date: Sun, 19 Dec 2004 17:37:26 -0500
-Message-ID: <629573909483.INW77818@fsf.com.au>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
+Date: Mon, 20 Dec 2004 00:04:58 +0100
+Message-ID: <d6493378a4e6a8ba436395994c107312@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="----_001_3503_65B77OU6.78SA9608"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from palindrome.duse.net ([203.86.166.22])
-          by snowshoe.worldmexico.com
-          (InterMail vK.4.04.00.03 155-307-594-20030621 license 891476zj23ao7ebt4ve253c1g84k6n89)
-          with SMTP id <20040636324247.VXSH32432.snowshoe@palindrome.duse.net>
-          for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 17:37:26 -0500
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8956927D
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 00:04:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,81 +18,98 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-devel <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
-------_001_3503_65B77OU6.78SA9608
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=732> 
+======================================================================
+Reported By:                Eric Valette
+Assigned To:                pzad
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   732
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             2.6.10-rc3
+======================================================================
+Date Submitted:             12-19-2004 15:10 CET
+Last Modified:              12-20-2004 00:04 CET
+======================================================================
+Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
+emit a very high frequency sound damaging ears
+Description: 
+Since 2.6.10-rc1 or rc2, I can no more use alsa on my PC or I may damage my
+ears! This is why I put a high priority as I think it may really damage
+people ears...
 
-Greetings Dad,
+NB : WIndows XP is working as usual, I did not change anything in my
+settings except updating the kernel from 2.6.9...
 
-We Have Secret Behaviour by Claudia Schiffer Download Now :   http://celebrityfuckfest.biz/girls.asp?CLAUDIA.jpg
+Reading the bitkeeper changelog for emuk10k1, it may well be related to
+other change in other part of the code (PCI layer...)
+
+Do you have a bitkeeper tree diff so that I can test with latest kernel
+version of the code?
+======================================================================
+
+----------------------------------------------------------------------
+ Eric Valette - 12-19-04 23:16 
+----------------------------------------------------------------------
+Unfortunately, I have only tree kernels I keep with lilo :
+current, previous and a good one.
+
+If current obviously fails, then current = previous and good = previous
+and then lilo so that I can start hacking.
+
+Unfortunately, As I do not listen to music or watch video frequently, I
+missed the exact point when it started misbehaving and probably crash the
+good kernel when migrating from 2.6.10-rc1 to something newer.
+
+----------------------------------------------------------------------
+ Eric Valette - 12-20-04 00:04 
+----------------------------------------------------------------------
+So after recompiling stock 2.6.9 : problem is still the same. So I purely
+removed /var/lib/alsa/asound.state (created by a manual alsactl store)
+from a previous version and used alsamixer to put all level to a really
+minimalistic settings => works on 2.6.9. In can put PCM to 100%
+
+So, I really do not know what went wrong as I teached debian alsa init
+script to always restore /var/lib/alsa/asound.state without storing a
+fresh version when shutting down long time ago so that it remain unchanged
+across sessions.
+
+I guess there as been an inconsistency between /var/lib/alsa/asound.state,
+the alsactl and the kernel driver at some point in time that caused this
+problem. By chance, level was low enough when it occured so that I did not
+really damaged my ears.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-19-04 15:10 Eric Valette   New Issue                                    
+12-19-04 15:10 Eric Valette   Distribution              => Debian          
+12-19-04 15:10 Eric Valette   Kernel Version            => 2.6.10-rc3      
+12-19-04 22:41 Eric Valette   Note Added: 0002851                          
+12-19-04 22:46 Eric Valette   Note Added: 0002852                          
+12-19-04 22:46 rlrevell       Note Added: 0002853                          
+12-19-04 22:51 Eric Valette   Note Added: 0002854                          
+12-19-04 23:00 rlrevell       Note Added: 0002855                          
+12-19-04 23:05 Eric Valette   Note Added: 0002856                          
+12-19-04 23:09 rlrevell       Note Added: 0002857                          
+12-19-04 23:10 rlrevell       Note Added: 0002858                          
+12-19-04 23:11 Eric Valette   Note Added: 0002859                          
+12-19-04 23:16 Eric Valette   Note Added: 0002860                          
+12-20-04 00:04 Eric Valette   Note Added: 0002861                          
+======================================================================
 
 
-
-And Lots more like:
-Puritanical Great Shots of SHANNoN ELYZABETH
-Steamy Documentation of HEIDI KLUM
-Subversive Identity theft of CAMER0N DIAZ
-
-
-
-
-
-To Cease : http://www.24-7medz.com/rms.html
-
-check out your details
-
-Virgie Mccann
-
-Flutist
-Clinical R&D International, Friendswood, Texas 77546, USA, United States of America
-Phone: 448-711-6797
-Mobile: 937-375-7541
-Email: exkvhblsbkr@caller.com
-your reply to this confirmation message is not needed
-
-This freeware is a 24 hour definite version
-
-NOTES:
-The contents of this paper is for your exclusive use and should not be badge cummings
-
-compatible doormen lola
-
-Time: Sun, 19 Dec 2004 17:37:26 -0500
-
-------_001_3503_65B77OU6.78SA9608
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-
-Hey Ms, <br><br>
-Do you want to see Grouesome pics of <b>Gwyneth Paltrow</b> <br><br><a href="http://celebrityfuckfest.biz/girls.asp?GWYNETH.jpg">Get it quickly</a> <br><br>
-And Lots more like: <br>
-Unbalanced movies of <b>CINDY CRAWFoRD</b> <br>
-Subversive movies of <b>Claudia Schiffer</b> <br>
-Decompensation Identity theft of <b>Cindy Crawf0rd</b> <br>
-<br><br><br><br><br><br>
-To Cease : <a href="http://www.24-7medz.com/rms.html">http://www.24-7medz.com/rms.html</a> <br><br>
-your paypal account <br><br>
-Virgie Mccann <br>
-Clothier <br>
-Arrow Scientific, Lane Cove, 2066, Australia <br><br>
-Phone: 251-415-2514 <br>
-Mobile: 436-591-2714 <br>
-Email: <a href=mailto:exkvhblsbkr@caller.com>exkvhblsbkr@caller.com</a> <br><br>
-THIS IS AN AUTO-GENERATED MESSAGE - PLEASE DO NOT REPLY TO THIS MESSAGE <br><br>
-This shareware is a 20 year complementary freeware <br><br>
-NOTES: <br><br>
-The contents of this connection is for usage and should not be lawbreak scabious <br><br>
-beth cortex dingy <br><br>
-Time: Sun, 19 Dec 2004 17:37:26 -0500
-
-------_001_3503_65B77OU6.78SA9608--
 
 
 -------------------------------------------------------
