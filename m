@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Sun, 16 Jan 2005 20:43:24 +0100
-Message-ID: <0365d94205178675e578140928b4ccf4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000823]: Shutdown messages
+Date: Sun, 16 Jan 2005 21:45:39 +0100
+Message-ID: <6e89c1d7ccff64db865409a4a1ea3c9c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 91F822A2
-	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 20:43:24 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 522532AB
+	for <alsa-devel@alsa-project.org>; Sun, 16 Jan 2005 21:45:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,89 +22,44 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=823> 
 ======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
+Reported By:                Mark Knecht
+Assigned To:                charbonnel
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
+Issue ID:                   823
+Category:                   PCI - RME HDSP
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
+Distribution:               FC2/PlanetCCRMA - up to date but not running newest
+kernel due to other Alsa problems
+Kernel Version:             2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              01-16-2005 20:43 CET
+Date Submitted:             01-16-2005 21:45 CET
+Last Modified:              01-16-2005 21:45 CET
 ======================================================================
-Summary:                    Poor digital aidio quality
+Summary:                    Shutdown messages
 Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
+When shutting my system down I consistently get the following message:
 
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
-
-The gnome volume control does not affect the output level when using
-libOSS.
-
-I have by now muted everything in the alsamixer except the Master volume.
-
-Playing a CD works fine.
+Shutting down sound driver rme_hammerfall dsp 0:00:0f 
+device was removed without properly calling pci_disable_device()
+This may need fixing
 ======================================================================
-
-----------------------------------------------------------------------
- fmoraes - 01-16-05 14:57 
-----------------------------------------------------------------------
-Can you try with ALSA 1.0.8?
-
-----------------------------------------------------------------------
- ddemmer - 01-16-05 20:43 
-----------------------------------------------------------------------
-Well, things have changed with 1.0.8!
-
-I tried installing rhythmbox and everything worked fine. 
-
-I then tried ALSA 1.0.8.rc2, and there was no change: rhythmbox works,
-xmms and realplay were "scratchy' with mp3, xmms was fine with libOSS.so
-as the output module. Gnome system sounds are enabled and seem fine. I
-tried the same with KDE and they are fine, too.
-
-I have just installed 1.0.8 and now:
-
-1. xmms and realplay both complain at startup that the audio device is
-busy and won't proceed any further
-2. rythmbox complains that the "default" device is busy and that it can't
-pause audio, but then after I click OK it goes on to work normally.
-3. Gnome soundcard detect works fine.
-4. Gstreamer prefs complains that it can't construct test pipeline, for
-any sound configuration.
-5. Both Gnome and KDE system sounds still work fine.
-
-Note: I have installed alsa-driver, alsa-libs, alsa-utils, alsa-oss, and
-alsa-firmware. I didn't really know what to do with alsa-tools and it
-doesn't seem to matter.
-
-BTW, I'm still running the  2.6.9-1.681_FC3.i686 kernel.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
-01-03-05 16:49 stransky       Issue Monitored: stransky                    
-01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
-01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
-01-16-05 14:57 fmoraes        Note Added: 0003217                          
-01-16-05 20:43 ddemmer        Note Added: 0003221                          
+01-16-05 21:45 Mark Knecht    New Issue                                    
+01-16-05 21:45 Mark Knecht    Distribution              => FC2/PlanetCCRMA - up
+to date but not running newest kernel due to other Alsa problems
+01-16-05 21:45 Mark Knecht    Kernel Version            =>
+2.6.8.1-1.520.2vS7.ll.rhfc2.ccrma
 ======================================================================
 
 
