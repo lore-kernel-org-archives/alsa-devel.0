@@ -1,12 +1,17 @@
-From: Ted <ted@nowtsfree.freeserve.co.uk>
-Subject: Re: alsa-driver-1.0.0pre3 - UltraSound PnP card not found?
-Date: Fri, 09 Jan 2004 05:39:14 +0000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: ALSA release 1.0.1
+Date: Fri, 9 Jan 2004 09:37:43 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040109053914.59CB14955@marimba.home.net>
-References: <20031212023329.071274955@marimba.home.net>
+Message-ID: <Pine.LNX.4.58.0401090937230.1879@pnote.perex-int.cz>
+References: <Pine.LNX.4.58.0401081520520.13704@pnote.perex-int.cz>
+ <20040108231300.GA526@zewt.org>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: My message of "Fri, 12 Dec 2003 02:33:28 GMT."
-             <20031212023329.071274955@marimba.home.net>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA04399
+	for <alsa-devel@alsa-project.org>; Fri, 9 Jan 2004 09:44:28 +0100
+In-Reply-To: <20040108231300.GA526@zewt.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,49 +20,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Ted <ted@nowtsfree.freeserve.co.uk>
+To: Glenn Maynard <g_sf@zewt.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I previously reported a problem on Thu, 27 Nov 2003,
-with loading the snd-interwave module from alsa-driver-1.0.0pre3
-into linux-2.2.25, and a "fix" for this on Fri, 12 Dec 2003.
+On Thu, 8 Jan 2004, Glenn Maynard wrote:
 
-I have looked harder at this now and think that the fix should be
-to define CONFIG_ISAPNP in support/pnp/pnp.c, before including
-<linux/isapnp.h>, rather than defining it in isapnp.h.
+> On Thu, Jan 08, 2004 at 07:15:10PM +0100, Jaroslav Kysela wrote:
+> > * alsa-driver
+> 
+>   CC [M]  /home/glenn/alsa-driver-1.0.1/usb/usbaudio.o
+> /home/glenn/alsa-driver-1.0.1/usb/usbaudio.c: In function `snd_usb_find_csint_desc':
+> /home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:1755: error: `USB_DT_CS_INTERFACE' undeclared (first use in this function)
+> /home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:1755: error: (Each undeclared identifier is reported only once
+> /home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:1755: error: for each function it appears in.)
+> /home/glenn/alsa-driver-1.0.1/usb/usbaudio.c: In function `parse_audio_endpoints':
+> /home/glenn/alsa-driver-1.0.1/usb/usbaudio.c:2341: error: `USB_DT_CS_ENDPOINT' undeclared (first use in this function)
+> make[2]: *** [/home/glenn/alsa-driver-1.0.1/usb/usbaudio.o] Error 1
+> make[1]: *** [/home/glenn/alsa-driver-1.0.1/usb] Error 2
+> 
+> linux-2.6.0/sound/usb/usbaudio.h defines these, but
+> alsa-driver-1.0.1/alsa-kernel/usb/usbaudio.h does not.  Copying in the
+> kernel header fixed it.
 
-The problem is that pnp_register_card_driver() in support/pnp/pnp.c
-is calling a dummy version of isapnp_find_dev(), defined isapnp.h,
-because CONFIG_ISAPNP isn't defined when isapnp.h is included in
-support/pnp/pnp.c.
+Use 2.6.0-rc or 2.6.1 kernels.
 
-The problem still remains in cvsexport-2004-01-02.
+						Jaroslav
 
-A better solution seems to be this:
-
-$ diff -u4 alsa-driver/support/pnp/pnp.c.Orig alsa-driver/support/pnp/pnp.c
---- alsa-driver/support/pnp/pnp.c.Orig  Fri Oct 31 15:02:21 2003
-+++ alsa-driver/support/pnp/pnp.c       Fri Jan  9 03:51:06 2004
-@@ -57,8 +57,10 @@
- #ifndef ALSA_BUILD
- #include <linux/isapnp.h>
- #include <linux/pnp.h>
- #else
-+#undef CONFIG_ISAPNP
-+#define CONFIG_ISAPNP
- #include <linux/isapnp.h>
- #undef CONFIG_PNP
- #define CONFIG_PNP
- #include "pnp.h"
-
-The driver module for my UltraSound PNP sound card will not load
-without such a correction.
-
-Ted.
--- 
-Ted <ted@nowtsfree.freeserve.co.uk>
-   http://www.nowtsfree.freeserve.co.uk
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
