@@ -1,12 +1,15 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000363]: USB webcam microphone recognized but not working
-Date: Tue, 6 Jul 2004 18:48:00 +0200
+Subject: [ALSA - driver 0000369]: SPDIF gives continous output on later versions of ALSA
+Date: Tue, 6 Jul 2004 20:26:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <74246de7f340376b38e7fc0c08a7f32c@bugtrack.alsa-project.org>
+Message-ID: <be31ba67f927d53846d26ce1ca1b70ad@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BC76252
+	for <alsa-devel@alsa-project.org>; Tue,  6 Jul 2004 20:26:53 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,123 +22,63 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been SUBMITTED.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0363
+0369
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                sehh
-Assigned To:                Clemens Ladisch
+Reported By:                Alphix
+Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     363
-Category:                   USB - usb-audio
+Bug ID:                     369
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.1
+Status:                     new
+Distribution:               Debian
+Kernel Version:             2.4.25 and 2.6.7
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-03-2004 18:44 CEST
-Last Modified:              07-06-2004 18:48 CEST
+Date Submitted:             07-06-2004 20:26 CEST
+Last Modified:              07-06-2004 20:26 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    USB webcam microphone recognized but not work=
-ing
+Summary:                    SPDIF gives continous output on later version=
+s of
+ALSA
 Description:=20
-Logitech QuickCam 3000 Pro (USB)
+First I was using this box with Linux kernel 2.4.25 and ALSA 1.0.3 (both
+downloaded and built myself). Everything worked great, I have both the
+SPDIF and regular stereo jack connected to my reciever.=20
 
-This USB webcam has an internal microphone which is
-properly recognized by the USB stack as well as
-ALSA which loads the snd-usb-audio driver properly.
+The reason for this is that the OSS emulation won't work with the SPDIF a=
+s
+it's underlying device. This was no problem however, since the reciever
+could detect if there was activity on the digital input and automatically
+switch between digital and analogous.
 
-Unfortunately the microphone doesn't seem to work though
-and there is no way to access it. The AlsaMixer only
-shows the microphone of the onboard sound card and has
-the option to change from Mic1 to Mic2, which has no
-effect.
-
-No ALSA compatible application can find the new microphone.
-
-The following are some messages produced in /var/log/messages:
-
-Jul  3 00:20:15 system kernel: pwc Philips PCA645/646 + PCVC675/680/690 +
-PCVC730/740/750 webcam module version 8.12 loaded.
-Jul  3 00:20:15 system kernel: pwc Also supports the Askey VC010, various
-Logitech QuickCams, Samsung MPC-C10 and MPC-C30,
-Jul  3 00:20:16 system kernel: pwc the Creative WebCam 5, SOTEC Afina Eye
-and Visionite VCS-UC300 and VCS-UM100.
-Jul  3 00:20:16 system kernel: pwc Logitech QuickCam Pro 3000 USB webcam
-detected.
-Jul  3 00:20:16 system kernel: pwc Registered as /dev/video0.
-Jul  3 00:20:16 system kernel: usbcore: registered new driver Philips
-webcam
-Jul  3 00:20:16 system kernel: usbaudio: device 2 audiocontrol interface =
-1
-has 1 input and 0 output AudioStreaming interfaces
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting =
-0
-FORMAT_TYPE descriptor not found
-Jul  3 00:20:16 system kernel: usbaudio: valid input sample rate 44100
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-1: format 0x00000010 sratelo 44100 sratehi 44100 attributes 0x00Jul  3
-00:20:16 system kernel: usbaudio: valid input sample rate 22050
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-2: format 0x00000010 sratelo 22050 sratehi 22050 attributes 0x00Jul  3
-00:20:16 system kernel: usbaudio: valid input sample rate 11025
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-3: format 0x00000010 sratelo 11025 sratehi 11025 attributes 0x00Jul  3
-00:20:16 system kernel: usbaudio: valid input sample rate 8000
-Jul  3 00:20:16 system kernel: usbaudio: device 2 interface 2 altsetting
-4: format 0x00000010 sratelo 8000 sratehi 8000 attributes 0x00
-Jul  3 00:20:16 system kernel: usbaudio: registered dsp 14,19
-Jul  3 00:20:16 system kernel: usbaudio: warning: found 1 of 0 logical
-channels.
-Jul  3 00:20:16 system kernel: usbaudio: assuming the channel found is th=
+However, I've been working on moving to a 2.6 based kernel, and one of th=
 e
-master channel (got a Philips camera?). Should be fine.
-Jul  3 00:20:16 system kernel: usbaudio: registered mixer 14,16
-Jul  3 00:20:16 system kernel: usbcore: registered new driver audio
-Jul  3 00:20:16 system kernel: drivers/usb/class/audio.c: v1.0.0:USB Audi=
-o
-Class driver
-Jul  3 00:20:16 system kernel: usbcore: registered new driver
-snd-usb-audio
-
-My /etc/modprobe.conf contains the following:
-alias snd-card-0 snd-via82xx
-alias snd-card-1 snd-usb-audio
-
-install snd-via82xx /sbin/modprobe --ignore-install snd-via82xx &&
-/usr/sbin/alsactl restore >/dev/null 2>&1 || :
-remove snd-via82xx { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
-/sbin/modprobe -r --ignore-remove snd-via82xx
+last few annoyances that stop me is that ALSA as shipped with the 2.6.7
+kernel (it seems to be 1.0.5a) seems to fool the reciever into believing
+that there is input on the SPDIF wire constantly. Therefore auto-switchin=
+g
+doesn't work anymore (playback via both devices still work, it's just the
+autoswitching that stopped working so I now have to switch manually).
 
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-----------------------------------------------------------------------
- Clemens Ladisch - 07-06-2004 18:48 CEST=20
-----------------------------------------------------------------------
-> kernel: drivers/usb/class/audio.c: v1.0.0:USB Audio Class driver
-
-This is the kernel's OSS driver.  It got loaded automatically before the
-ALSA driver.  Complain to the FC2 guys, and put the line
-
-audio
-
-into your /etc/hotplug/blacklist file.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -143,14 +86,12 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-03-04 18:44 sehh           New Bug                                    =
+07-06-04 20:26 Alphix         New Bug                                    =
  =20
-07-03-04 18:44 sehh           Distribution              =3D> Fedora Core =
-2  =20
-07-03-04 18:44 sehh           Kernel Version            =3D> 2.6.6-1.435.=
-2.1=20
-07-06-04 18:48 Clemens LadischBugnote Added: 0001386                     =
- =20
+07-06-04 20:26 Alphix         Distribution              =3D> Debian      =
+   =20
+07-06-04 20:26 Alphix         Kernel Version            =3D> 2.4.25 and 2=
+.6.7
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
