@@ -1,14 +1,13 @@
-From: "System Anti-Virus Administrator" <postmaster@mail.lavoz.es>
-Subject: virus found in sent message "Re: Your picture"
-Date: 20 Sep 2004 18:57:36 -0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000509]: Conexant Moden "not ready"
+Date: Mon, 20 Sep 2004 19:20:27 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <relayhost109570665646128134@relayhost>
-Mime-Version: 1.0
-Content-Type: text/plain
+Message-ID: <20040920172027.53E274904D@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.lavoz.es (dns1.lavoz.es [195.55.53.84])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id B9D682EB
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 19:01:13 +0200 (MEST)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B276B2CE
+	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 19:20:27 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,45 +20,41 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-Attention: alsa-devel@alsa-project.org
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000509
+======================================================================
+Reported By:                gbilotta
+Assigned To:                sashak
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     509
+Category:                   PCI - intel8x0m
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               Debian GNU/Linux Testing
+Kernel Version:             2.6.7
+======================================================================
+Date Submitted:             09-20-2004 19:20 CEST
+Last Modified:              09-20-2004 19:20 CEST
+======================================================================
+Summary:                    Conexant Moden "not ready"
+Description: 
+modprobing for snd_intel8x0m gives the following error:
 
+MC'97 1 converters and GPIO not ready (0xff00)
+======================================================================
 
-A virus was found in an Email message you sent. 
-This Email scanner intercepted it and stopped the entire message
-reaching its destination. 
-
-The virus was reported to be: 
-
- the W32/Netsky.d@MM virus !!!
-
-
-Please update your virus scanner or contact your IT support 
-personnel as soon as possible as you may have a virus on your system.
-
-
-Your message was sent with the following envelope:
-
-MAIL FROM: alsa-devel@alsa-project.org
-RCPT TO:   publicidad@diariodeleon.com 
-
-... and with the following headers:
-
----
-MAILFROM: alsa-devel@alsa-project.org
-Received: from cable208a141.usuarios.retecal.es (HELO diariodeleon.com) (212.183.208.141)
-  by mail.lavoz.es with SMTP; 20 Sep 2004 18:57:26 -0000
-From: alsa-devel@alsa-project.org
-To: publicidad@diariodeleon.com
-Subject: Re: Your picture
-Date: Mon, 20 Sep 2004 18:56:06 +0200
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0002_00007B70.000012AC"
-X-Priority: 3
-X-MSMail-Priority: Normal
-
-
----
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-20-04 19:20 gbilotta       New Bug                                      
+09-20-04 19:20 gbilotta       File Added: asound.tar.bz2                    
+09-20-04 19:20 gbilotta       Distribution              => Debian GNU/Linux Testing
+09-20-04 19:20 gbilotta       Kernel Version            => 2.6.7           
+======================================================================
 
 
 -------------------------------------------------------
