@@ -1,11 +1,10 @@
-From: Miha Tomsic <miha.tomsic@guest.arnes.si>
-Subject: Terratec EWS88 PCI
-Date: 25 Oct 2002 10:55:03 +0200
+From: Ralf Ackermann <rac@KOM.tu-darmstadt.de>
+Subject: Q: RTP streaming via dummy sound driver?
+Date: Fri, 25 Oct 2002 13:10:37 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1035536104.549.30.camel@josef>
+Message-ID: <Pine.LNX.4.44.0210251310020.15314-100000@musette.kom.e-technik.tu-darmstadt.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,19 +14,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
+Cc: Ralf Ackermann <rac@KOM.tu-darmstadt.de>
 List-Id: alsa-devel@alsa-project.org
 
-	Hello!
+Hello,
 
-Is the new EWS88 PCI (backend for MIC 2/8) card from Terrarec supported
-by alsa?
+though i've been looking through the archives and tried using google i
+have not found hints on the following problem / approach.
 
-Are there any differences with the EWS88MT card?
+  - Is there a way to extend the alsa dummy soundcard module (or a
+    comparable) mechanism to
+     - stream audio data (both reading and writing) to another
+       host using RTP ?
+     - doing the same for a Bluetooth link towards a bluetooth
+       headset ?
 
-Thanks and take care,
+i'm currently busy doing the later (trying to make BT audio available to
+standard applications just using the /dev/dsp interface) and have a couple
+of scenarios where using the generic
+	application <=> /dev/dsp <= RTP => other host
+would be very helpful (and potential drawbacks like increased delay etc.
+can be accepted / neglected).
 
-	Miha...
+Any further hints/links on this topic are appreciated!
+
+best regards
+ ralf
+
+--
+Best regards,
+ Ralf Ackermann
+
+---------------------------------------------------------------
+ Hosting the IP Telephony Field Trial for the Darmstadt Region
+---------------------------------------------------------------
+Ralf Ackermann                _         rac@KOM.tu-darmstadt.de
+Multimedia Communications |/ | | |\/|           Merckstrasse 25
+                          |\ |_| |  |  64283 Darmstadt, Germany
+Tel.: (+49) 6151 16-6138                Fax: (+49) 6151 16-6152
+---------------------------------------------------------------
+          http://www.kom.e-technik.tu-darmstadt.de/~rac
+---------------------------------------------------------------
 
 
 
