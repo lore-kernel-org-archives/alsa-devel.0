@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Sergey Vlasov <vsu@altlinux.ru>
 Subject: Re: hint needed
-Date: Sat, 6 Dec 2003 16:59:28 +0100 (CET)
+Date: Sat, 06 Dec 2003 18:54:43 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312061658300.20863@pnote.perex-int.cz>
+Message-ID: <pan.2003.12.06.15.54.39.818251@altlinux.ru>
 References: <20031206163939.228ea11f.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=KOI8-R
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20031206163939.228ea11f.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,13 +16,11 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 6 Dec 2003, Giuliano Pochini wrote:
+On Sat, 06 Dec 2003 16:39:39 +0100, Giuliano Pochini wrote:
 
-> 
 > Echoaudio cards are grouped into two families: EchoGals (the old
 > discontinued serie) and the Echo24. The driver is almost identical for both
 > families, but some constants define at compile time. I currently select the
@@ -43,15 +41,10 @@ On Sat, 6 Dec 2003, Giuliano Pochini wrote:
 > parts of the driver. The files would be identical except a #define at the
 > beginning :-6
 
-See alsa-kernel/pci/ens1370.c and alsa-kernel/pci/ens1371.c for an elegant 
-solution.
+You can use #include "file.c" to avoid code duplication.
 
-						Jaroslav
+There is even an example in ALSA: see alsa-kernel/pci/ens1371.c.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
