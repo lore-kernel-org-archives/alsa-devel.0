@@ -1,11 +1,12 @@
-From: Lucas Correia Villa Real <lucasvr@gobolinux.org>
-Subject: Invalid argument with snd_pcm_hw_params
-Date: Sat, 17 May 2003 13:02:44 -0300
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: ALSA + jack + xrun = kernel crash
+Date: Sat, 17 May 2003 22:57:56 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200305171300.06149.lucasvr@gobolinux.org>
+Message-ID: <3EC6A254.4010303@cucumelo.org>
+References: <1053136440.1197.213.camel@newbie.localnet.local>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_k0lx+Hcwx+WhLs2"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,186 +16,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Arthur Peters <amp@singingwizard.org>
+Cc: Alsa dev list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+>
+>
+>Hello, I am experiencing a reletivly hard crash (SysRq works but SysRq-B
+>prints a message saying it will reboot then doesn't). The crash happens
+>when jackd xruns. I've been reproducing it using "jackd -d alsa" (other
+>options don't make a difference) then "ladccad". Once the system crashs
+>the only way to get any responce is with SysRq. Keys don't echo to the
+>console and I can't switch VTs.
+>
+>Generally there is no error message or oops that I can see, even when
+>debug=full is enable in ALSA. Early on I saw a message from jackd to the
+>tune of "error write 512 somethings to device", but I have not been able
+>to reproduce it. I am willing to run any tests that might help. I use
+>journaling filesystems ;-) 
+>
+>My hardware is:
+>Dual PIII 1Ghz with 512M RAM on a Tyan MB.
+>SoundBlaster Live! Value
+>ATI Radeon 8500 (using the closed-source ATI drivers; version 2.9.8)
+>
+>My software is:
+>ALSA drivers 0.9.3a or current CVS
+>Linux 2.4.20 (vanilla or gentoo patched)
+>Jack 0.71.2
+>Current Gentoo with testing packages enabled (~x86)
+>  
+>
+Just want to tell that I'm experiencing almost the same problem (I got a 
+Dual PIII 1Gz 256Mb
+and two cs46xx soundcards)
+After updating ALSA CVS today, jack is no longer able to start, it just 
+locks up my machine, and
+sometimes even the SysRQ hack dont react. (I've been several hours today 
+fighting with this problem .....)
+What I was able to find out from the SysRQ is that the EIP all the times 
+seems
+to be somewhere at: c0153804 <.text.lock.inode+135/211>, or 
+sync_unlocked_inodes(...)
+which dont make any sense to me. (?????????????)
 
---Boundary-00=_k0lx+Hcwx+WhLs2
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+One more interesting point is that if I start the jackd without the "-R" 
+flag jack starts for a while,
+sometimes I'm able to even stop/kill it. But after that no program is 
+able to start or run correctly,
+which feels like  that something is seriously corrupted in the kernel.
 
-Hi,
+Now, for first time in my life I've downgraded ALSA to a previous CVS 
+version, which seems
+to work with JACK :(
 
-I'm porting one application of mine that used OSS, but I'm in trouble with the 
-'invalid argument' message I always get when calling snd_pcm_hw_params().
-Also, I couldn't use buffers of 1024 bytes: it aborts on 
-snd_pcm_hw_params_set_period_size() with the same error. 
-Attached follows the relevant portion of the code. 
-Some definitions used on the code:
-
-from my alsa.h file:
-#define DSP_BUFFER_SIZE        2048
-#define MONO                      1
-#define STEREO                    2
-#define AUDIO_DEVICE   "plughw:0,0"
-
-Thanks a lot for your attention. Any help is very appreciated.
-Lucas
-
-
-
-
-
---Boundary-00=_k0lx+Hcwx+WhLs2
-Content-Type: text/x-csrc;
-  charset="us-ascii";
-  name="alsa_open.c"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="alsa_open.c"
-
-#include "wrappers.h"
-#include "util.h"
-#include "alsa.h"
-
-snd_pcm_t *
-ALSA_open_dsp (char *device, int mode)
-{
-	int 	preferred_format, dir, retval, i;
-	int 	sampling_rate, ssampling_rate, frag_count, val;
-	int 	channels;
-	int 	format[6] = {
-		SND_PCM_FORMAT_S16_LE,
-		SND_PCM_FORMAT_S16_BE,
-		SND_PCM_FORMAT_U16_LE,
-		SND_PCM_FORMAT_U16_BE,
-		SND_PCM_FORMAT_U8,
-		SND_PCM_FORMAT_S8
-	};
-	
-	snd_pcm_t *pcm_handle;
-	snd_pcm_hw_params_t *hwparams;
-	snd_pcm_stream_t stream = SND_PCM_STREAM_CAPTURE;
-	snd_pcm_uframes_t periodsize;
-
-	
-	/* allocate the snd_pcm_hw_params structure on the stack */
-	snd_pcm_hw_params_alloca (&hwparams);
-	
-	/* try to open the device using 'mode' (usually O_RDONLY) */
-	if ((retval = snd_pcm_open (&pcm_handle, device, stream, mode)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_open: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-
-	/* init hwparams with full configuration space */
-	if ((retval = snd_pcm_hw_params_any (pcm_handle, hwparams)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_any: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-
-	/* set access type */
-	if ((retval = snd_pcm_hw_params_set_access (pcm_handle, hwparams, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_set_access: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-
-	/* select the best supported mode (listed on 'format') */
-	for (preferred_format = -1, i = 0; i < 6; ++i)
-		if (! snd_pcm_hw_params_test_format (pcm_handle, hwparams, format[i]))
-			{
-				preferred_format = format[i];
-				break;
-			}
-	if (preferred_format < 0) 
-		{
-			fprintf (stderr, "Could not find a supported mode for your soundcard.\n");
-			return NULL;
-		}
-
-	/* select the audio sample format */
-	if ((retval = snd_pcm_hw_params_set_format (pcm_handle, hwparams, preferred_format)) < 0)
-		fprintf (stdout, "snd_pcm_hw_params_set_format: %s\n", snd_strerror(retval));
-	
-
-	/* set the sampling rate */
-	ssampling_rate = sampling_rate = 44100;
-	if ((retval = snd_pcm_hw_params_set_rate_near (pcm_handle, hwparams, &ssampling_rate, &dir)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_set_rate_near: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-	if (dir && ssampling_rate != sampling_rate)
-		{
-			fprintf (stdout, "The rate %d Hz is not supported by %s device, using %d Hz instead.\n",
-					sampling_rate, device, retval);
-			sampling_rate = retval;
-			retval = snd_pcm_hw_params_set_rate_near (pcm_handle, hwparams, &sampling_rate, 0);
-			if (retval < 0)
-				{
-					/* sorry */
-					fprintf (stdout, "snd_pcm_hw_params_set_rate_near: %s\n", snd_strerror(retval));
-					return NULL;
-				}
-		}
-	
-	/* set the number of channels (mono/stereo) */
-	channels = MONO;
-	if ((retval = snd_pcm_hw_params_set_channels (pcm_handle, hwparams, channels)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_set_channels: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-
-	/* set the number of periods and the buffer size to be used */
-	periodsize = (DSP_BUFFER_SIZE * channels) >> 2;
-	if ((retval = snd_pcm_hw_params_set_period_size (pcm_handle, hwparams, periodsize, 0)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_set_period_size: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-	
-	/* get the maximum available periods */
-	frag_count = 16;
-	if ((retval = snd_pcm_hw_params_get_periods_max (hwparams, &val, &dir)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_get_periods_max: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-	if (val < frag_count)
-		frag_count = val;
-	
-	if ((retval = snd_pcm_hw_params_set_periods (pcm_handle, hwparams, frag_count, dir)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_set_periods: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-	
-	if ((retval = snd_pcm_hw_params_set_buffer_size_near (pcm_handle, hwparams, &periodsize)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params_set_buffer_size: %s\n", snd_strerror(retval));
-			return NULL;
-		} 
-
-	/* apply HW parameter settings to the PCM device and prepare it */
-	if ((retval = snd_pcm_hw_params (pcm_handle, hwparams)) < 0)
-		{
-			fprintf (stdout, "snd_pcm_hw_params: %s\n", snd_strerror(retval));
-			return NULL;
-		}
-	
-	snd_pcm_hw_params_free (hwparams);
-	if ((retval = snd_pcm_prepare (pcm_handle)) < 0)
-		fprintf (stdout, "snd_pcm_prepare: %s\n", snd_strerror(retval));
-
-	return pcm_handle;
-}
-
---Boundary-00=_k0lx+Hcwx+WhLs2--
+/Benny
 
 
 
