@@ -1,14 +1,14 @@
 From: Peter Enderborg <pme@ufh.se>
-Subject: Re: soundcard matrix
-Date: Sat, 29 Nov 2003 14:14:06 +0100
+Subject: Re: soundcard matrix (more)(
+Date: Sat, 29 Nov 2003 14:34:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FC89B9E.5050204@ufh.se>
-References: <20031126214244.GA14389@tuba.home> <s5hekvsbn3s.wl@alsa2.suse.de>
+Message-ID: <3FC8A05D.3060909@ufh.se>
+References: <20031126214244.GA14389@tuba.home> <s5hekvsbn3s.wl@alsa2.suse.de> <3FC89B9E.5050204@ufh.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hekvsbn3s.wl@alsa2.suse.de>
+In-Reply-To: <3FC89B9E.5050204@ufh.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,39 +21,46 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Could someone please add firewire 410 from m-audio and put a big NO sign 
-on it. (there should be blacklist part
-of the matrix of avoid devices) Since its m-Lan we wont get any driver 
-if we can not put pressure on yamaha.
+The yamaha Motif products have mlan interfaces. I guess that they are 
+not supported by alsa. Should be in the lists too.
 
-Takashi Iwai wrote:
+Peter Enderborg wrote:
 
->At Wed, 26 Nov 2003 22:42:44 +0100,
->Martin Langer wrote:
->  
+> Could someone please add firewire 410 from m-audio and put a big NO 
+> sign on it. (there should be blacklist part
+> of the matrix of avoid devices) Since its m-Lan we wont get any driver 
+> if we can not put pressure on yamaha.
 >
->>Patrick,
+> Takashi Iwai wrote:
+>
+>> At Wed, 26 Nov 2003 22:42:44 +0100,
+>> Martin Langer wrote:
+>>  
 >>
->>here is a soundcardmatrix patch which creates new Tascam USx2y entries.
->>    
+>>> Patrick,
+>>>
+>>> here is a soundcardmatrix patch which creates new Tascam USx2y entries.
+>>>   
+>>
+>>
+>> thanks, i updated the web page.
+>>
+>>
+>> Takashi
+>>
+>>
+>> -------------------------------------------------------
+>> This SF.net email is sponsored by: SF.net Giveback Program.
+>> Does SourceForge.net help you be more productive?  Does it
+>> help you create better code?  SHARE THE LOVE, and help us help
+>> YOU!  Click Here: http://sourceforge.net/donate/
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@lists.sourceforge.net
+>> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>>  
 >>
 >
->thanks, i updated the web page.
->
->
->Takashi
->
->
->-------------------------------------------------------
->This SF.net email is sponsored by: SF.net Giveback Program.
->Does SourceForge.net help you be more productive?  Does it
->help you create better code?  SHARE THE LOVE, and help us help
->YOU!  Click Here: http://sourceforge.net/donate/
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
->  
 >
 
 
