@@ -1,12 +1,13 @@
-From: Andreas Bulling <uek32z@phoenix.hadiko.de>
-Subject: problems with Terratec Aureon Sky 5.1
-Date: Sun, 14 Mar 2004 17:41:36 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: problems with Terratec Aureon Sky 5.1
+Date: Sun, 14 Mar 2004 17:59:38 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040314164136.GA24447@phoenix.hadiko.de>
+Message-ID: <Pine.LNX.4.58.0403141751370.3332@pnote.perex-int.cz>
+References: <20040314164136.GA24447@phoenix.hadiko.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20040314164136.GA24447@phoenix.hadiko.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,113 +16,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Andreas Bulling <uek32z@phoenix.hadiko.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks,
+On Sun, 14 Mar 2004, Andreas Bulling wrote:
 
-for months now I have big problems getting surround sound to work with my
-Aureon Sky 5.1 and hope someone on this list can and is willing to help me, now.
-I would like to put all of the collected information and tips on the alsa wiki afterwards.
+> -----
+> andreas@phoenix andreas $ aplay -Dsurround51 /usr/kde/3.2/share/sounds/pop.wav
+> Playing WAVE '/usr/kde/3.2/share/sounds/pop.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
+> aplay: set_params:827: Sample format non available
+> -----
+> 
+> The common format problem, but why hasn't it already been fixed in
+> /usr/share/alsa/cards/ICE1724.conf? I looked into the file, changed a little
 
-That's what I did so far:
-I've read all the scanty information concerning the ice1724 chip, the available
-alsa documentation, postings of different forums and mailinglists and also
-got in contact with Simon Oosthoeck (-> alsaWiki).
-I already posted to alsa-user but the two answers didn't help me... :(
+Because it's perfectly ok. The applications should use 'plug:surround51' 
+device if they want to enable automatic conversions. So, report this bug 
+to xine developers.
 
-The "handmade" solution I've found so far is the following:
+> bit but had no success.
 
-~/.asoundrc:
---------------------------------
-pcm.!default {
-    type plug
-    slave ice1724_S32_LE;
+> Using -Dplug:surround51 instead works, but still without sound out of the
+> rear speakers...
+
+Are you sure that xine sends six channels to device? It looks like that 
+only two channels are processed and in this case alsa-lib default 
+configuration copies only two channels to output.
+
+If you refer to 'aplay -Dplug:surround51' then it won't work, too. Same 
+problem - you need to override the default policy for the plug plugin:
+
+  route_policy STR      # route policy for automatic ttable generation
+                        # STR can be 'default', 'average', 'copy', 'duplicate'
+                        # average: result is average of input channels
+                        # copy: only first channels are copied to destination
+                        # duplicate: duplicate first set of channels
+                        # default: copy policy, except for mono capture - sum
+
+So, you need something like:
+
+pcm.duplicate {
+	type plug
+	slave.pcm "surround51"
+	route_policy duplicate
 }
 
-pcm.surround {
-        type route;
-        slave.pcm {
-                type hw;
-                card 0;
-                device 0;
-        }
-        slave.channels 6
-        ttable.0.0 1;
-        ttable.1.1 1;
-        ttable.0.2 1;
-        ttable.1.3 1;
-        ttable.0.4 1;
-        ttable.1.5 1;
-}
+And now, 'aplay -Dduplicate' will duplicate stream to all six channels.
 
-pcm_slave.ice1724_S32_LE {
-        pcm surround;
-        format S32_LE;
-}
---------------------------------
+It is also possible that you can do duplication at hardware level, but
+I don't remember the ICE1724 datasheet....
 
-Sound out of all 6 speakers but as everybody can imagine I'm not
-satisfied with this solution because also "real" surround sound
-(e.g. from dvd) is mixed up.
-
-What should work out of the box is to use the "surround51" device
-(that's what I thought at the beginning without deeper knowledge of alsa
-and what I found in xine's config for example) but all I get is the
-following error message:
+						Jaroslav
 
 -----
-andreas@phoenix andreas $ aplay -Dsurround51 /usr/kde/3.2/share/sounds/pop.wav
-Playing WAVE '/usr/kde/3.2/share/sounds/pop.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Mono
-aplay: set_params:827: Sample format non available
------
-
-The common format problem, but why hasn't it already been fixed in
-/usr/share/alsa/cards/ICE1724.conf? I looked into the file, changed a little
-bit but had no success.
-Using -Dplug:surround51 instead works, but still without sound out of the
-rear speakers...
-
-Well, perhaps someone already knows a solution to this problems... nevertheless
-here are all the other questions I want to find answers and write documentation for.
-
-1) What are the following channels (?) in a{lsa}mixer for: IEC958, IEC958 1, IEC958 Output, Multi Track Peak
-   I can select what I like but can't notice any effect. "Which to use for what purpose"?
-
-2) What are the following options for: PCM Out0, H/W In [0|1], IEC958 I (-nput ?)
-   What are the differences? "Which to use for what purpose"?
-
-3) What is the "right" way to get surround sound with the ice1724 chip?
-   Do exist different or partial solutions to this problem?
-   Should (n't) it work right "out of the box" with the standard configs?
-   
-4) Who is the main and "responsible" ice1724 developer? I would like to contact him
-   to fix this, perhaps together, and I think he should know best about questions 1-3),
-   at least I hope so ;)
-
-================================
-
-My setup is the following:
-
-- Terratec Aureon Sky 5.1
-
-0000:00:0d.0 Multimedia audio controller: IC Ensemble Inc ICE1724 [Envy24HT] (rev 01)
-  Subsystem: TERRATEC Electronic GmbH: Unknown device 1147
-  Flags: bus master, medium devsel, latency 32, IRQ 17
-  I/O ports at e400
-  I/O ports at e000 [size=128]
-  Capabilities: <available only to root>
-
-- Philipps A3.600 Surround System
-- Gentoo Linux, Kernel 2.6.4-mm1
-- Alsa Version 1.0.2c (used the kernel modules, not alsa-driver)
-- Alsa [Lib|Utils] Version [1.0.3b|1.0.3]
-- Alsa Oss Version 1.0.3a
-
-================================
-
-In suspense expectation,
-Andreas
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
