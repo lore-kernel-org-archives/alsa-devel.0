@@ -1,16 +1,12 @@
-From: Chris Smith <chris@realcomputerguy.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: RME HDSP 9632 driver
-Date: Mon, 11 Aug 2003 14:15:21 -0400
+Date: Mon, 11 Aug 2003 14:24:38 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308111415.21738.chris@realcomputerguy.com>
-References: <NDBBLGIKBJENLAMOLFHGKECLCPAB.mknecht@controlnet.com> <200308111346.46372.chris@realcomputerguy.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <200308111824.h7BIOc5G018578@localhost.localdomain>
+References: <200308111346.46372.chris@realcomputerguy.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200308111346.46372.chris@realcomputerguy.com>
-Content-Disposition: inline
+In-reply-to: Your message of "Mon, 11 Aug 2003 13:46:46 EDT."
+             <200308111346.46372.chris@realcomputerguy.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,14 +15,19 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Chris Smith <chris@realcomputerguy.com>
+Cc: Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 11 August 2003 13:46, Chris Smith wrote:
+>More importantly is this a known issue that others are having as well? If so 
+>is it only with the HDSP 9652? Have you brought the firmware up to the latest 
+>level (is Windows absolutely needed for this?)?
 
-> I have a Multiface with the PCI card in stock ...
+RME are happy to tell us how to write a firmware flash
+utility. someone just has to have the time. right now, i'm finding it
+hard to have the time to even check out how my hdsp9652 is behaving.
 
-Oops, make that a Digiface.
+ 
 
 
 -------------------------------------------------------
