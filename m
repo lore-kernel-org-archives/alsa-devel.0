@@ -1,15 +1,15 @@
 From: Marcel Holtmann <marcel@holtmann.org>
 Subject: Re: alsa-lib plugin devel
-Date: Mon, 24 Jan 2005 18:23:06 +0100
-Message-ID: <1106587386.8058.69.camel@pegasus>
+Date: Mon, 24 Jan 2005 18:25:26 +0100
+Message-ID: <1106587526.8058.72.camel@pegasus>
 References: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>
 	 <41F522DE.30702@xmission.com> <s5hk6q2u659.wl@alsa2.suse.de>
-	 <1106585584.8058.61.camel@pegasus>  <s5hhdl6u52n.wl@alsa2.suse.de>
+	 <41F5272D.9060101@xmission.com>  <s5hfz0qu4xo.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hhdl6u52n.wl@alsa2.suse.de>
+In-Reply-To: <s5hfz0qu4xo.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -25,47 +25,32 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi Takashi,
 
+> > > We can create a new API to list up the available PCMs.
+> > > It will help applications, I guess.
+> > > 
 > > > The problem is that plugins which aren't bound to drivers like btsco
 > > > are hard to detect whether they really work in advance.
 > > > Do we need a probe callback for such a plugin?
 > > 
-> > I don't think that this is needed. If people want to use a plugin to
-> > access a Bluetooth headset or headphone they need its address and at
-> > least put this in a configuration file. So adding something like
+> > I suppose there are problems listing things because the plugins behave 
+> > differently. I don't fully understand the problem.
 > > 
-> > 	pcm.aiptek {
-> > 	        type a2dp
-> > 	        bdaddr "00:0B:0D:50:12:10"
-> > 	}
-> > 
-> > to their .asoundrc to connect to the Aiptek Bluetooth Headphone should
-> > be enough.
+> > But... it would be a big inconvenience for the user to be told to know 
+> > the device name or go look it up in .asoundrc and/or /etc/asound.conf. 
+> > The {linphone,xine,gnomemeeting} gui should be able to discover and list 
+> > the plugin devices.
 > 
-> Ah yes, BT SCO would require always a certain address, so it won't work
-> without a proper configuration.  Maybe other hardware layer will be,
-> too.
+> I think putting marks in the PCM defintions is the easiest way.
 > 
-> >  However these devices should be present in the enumeration of
-> > the applications.
+> Another question about listing devices: shall we list up the entries
+> like "front", "rear", etc?
 > 
-> One of the simplest solutions is to add a field to PCM definition so
-> that the defined PCM is marked to be listed.  Such as
-> 
-> 	pcm.aiptek {
-> 		type a2dp
->  	        bdaddr "00:0B:0D:50:12:10"
-> 		listed yes
->  	}
-> 		
-> (Well "listed" isn't a good word at all.  Please suggest a better
->  one.)
+> IMO, the function should list up only the basic PCMs.  I.e. the
+> default analog output and the SPDIF (or whatever additional outputs).
 
-is this a config option that the ALSA core parses or must we do it by
-ourself. However in both cases I think that the plugin itself will
-decide if its devices are listed or not. In the case of a2dp the option
-"type a2dp" should result in asking the plugin if its devices (or maybe
-this device) are listed or not. An additional option looks for me like
-over-configuration.
+from the Bluetooth standpoint we need only to list the input and
+outputs, because there is nothing more defined. Neither for SCO or for
+the A2DP devices.
 
 Regards
 
