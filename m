@@ -1,9 +1,8 @@
-From: Adam Tee <alsa@ajtee.uklinux.net>
-Subject: Newbie Question
-Date: Sat, 25 Jan 2003 10:24:40 +0000
+From: Laurent Georget <lgeorget2@club-internet.fr>
+Subject: level plugin not loaded with current cvs
+Date: Sat, 25 Jan 2003 12:18:25 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E3265E8.9060506@ajtee.uklinux.net>
-Reply-To: adam@ajtee.uklinux.net, adam@ajtee.uklinux.net
+Message-ID: <3E327281.5070004@club-internet.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,26 +15,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hi!
 
-I'm new to alsa programming and am trying to add an alternative playback
-option for denemo, a Gtk frontend for Lilypond.  At present we have code
-   to playback a note immediately it is inserted to the score via the OSS
-style of programming, this goes to /dev/sequencer0, but under the alsa
-drivers this does not work for me, at least.
+I have made sometimes ago a level plugin for Alsa called ameter.
+(it is there:
+http://perso.club-internet.fr/lgeorget/ameter.html
+)
+It was working fine until I checked out alsa cvs, and installing it
+(yesterday).
+After recompiling/installing  ameter without getting errors, , I have
+now the following message when  using it:
 
-My question is should I use the sequencer api or the raw midi api??
-and any tips on how to use it.
+[l@localhost l]$ arecord -D ameter -v sound.wav
+ALSA lib dlmisc.c:107:(snd_dlsym_verify) unable to verify version for
+symbol _snd_pcm_scope_ameter_open
+ALSA lib pcm_meter.c:742:(snd_pcm_meter_add_scope_conf) symbol
+_snd_pcm_scope_ameter_open is not defined inside /usr/local/lib/libameter.so
+arecord: main:462: audio open error: No such device or address
 
-I am currently using a SBLive card and am not having much luck.
+There is the same message when using the plugin with Glame, and also
+with Abramo Bagnara original level plugin.
+(I am using Mandrake 9.0)
+
+I installed back 0.9rc6, and it works fine again.
+
+Any idea highly welcomed!
+
+Laurent
 
 
 
-Adam
-Maintainer GNU Denemo, a GTK+ frontend to GNU Lilypond
 
 
 
