@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
-Date: Tue, 7 Dec 2004 18:12:15 +0100
-Message-ID: <dafb7630ac241491afa783fd8fcaae7f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000712]: Setting <4 channels in surround40 fails
+Date: Tue, 7 Dec 2004 18:51:54 +0100
+Message-ID: <3bf228aebbb877352433a49d377d0e02@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 609303AE
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:12:15 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2A6238A
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 18:51:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,42 +22,59 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=712> 
 ======================================================================
-Reported By:                scorpion77
-Assigned To:                jcdutton
+Reported By:                darkbrain
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   711
-Category:                   PCI - audigyls
+Issue ID:                   712
+Category:                   PCI - cs46xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-1.6_FC2custom
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-07-2004 18:12 CET
-Last Modified:              12-07-2004 18:12 CET
+Date Submitted:             12-07-2004 18:36 CET
+Last Modified:              12-07-2004 18:51 CET
 ======================================================================
-Summary:                    Sound still bad with alsa on sb audigyls / ca0106
+Summary:                    Setting <4 channels in surround40 fails
 Description: 
-Sound is choppy and at wrong speed with both the snd-audigyls from alsa
-1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
-last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
-Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
-Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
-the CVS version is used.
+If you try
+alsa-lib/test/pcm -D surround40:0
+You obtain: Channels count (1) not available for playbacks: Invalid
+argument
+But we have 4 channels!
+I've tried to find the problem into the sources without luck :(
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 12-07-04 18:42 
+----------------------------------------------------------------------
+This is not a bug.
+surround40 is for 4 seprated channels.
+
+If you want to duplicate 2-channel stereo signal to 4-channels, try the
+CVS version.  It can have a new mixer control 'Duplicate Front'. 
+Otherwise, you can do it via asoundrc (see bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617).
+
+----------------------------------------------------------------------
+ darkbrain - 12-07-04 18:51 
+----------------------------------------------------------------------
+BTW with cmipci driver it's possible. There is an incompatibility with
+openal witch try to open 2 channels without luck.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:12 scorpion77     New Issue                                    
-12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
-12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
+12-07-04 18:36 darkbrain      New Issue                                    
+12-07-04 18:42 tiwai          Note Added: 0002757                          
+12-07-04 18:51 darkbrain      Note Added: 0002759                          
 ======================================================================
 
 
