@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000458]: Alsa-driver doesn't compile on x86_64
-Date: Fri, 22 Oct 2004 16:47:26 +0200
+Subject: [ALSA - driver 0000428]: unresolved symbols in snd-pcm.ko on alpha linux-2.6.7
+Date: Fri, 22 Oct 2004 16:49:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <b4e9bf520007b86e2f9aff403bcaf0f3@bugtrack.alsa-project.org>
+Message-ID: <ea665e6ebda5fa499de61eb2edb4dec9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 778F4242
-	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:47:26 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 56E1629D
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 16:49:26 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,105 +22,76 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue requires your FEEDBACK.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=458> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=428> 
 ======================================================================
-Reported By:                aldg
+Reported By:                svetljo
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   458
+Issue ID:                   428
 Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   block
 Priority:                   normal
-Status:                     feedback
-Distribution:               Mandrake
-Kernel Version:             2.4.27
+Status:                     resolved
+Distribution:               Mandrake cooker
+Kernel Version:             2.6.7
+Resolution:                 unable to duplicate
+Fixed in Version:           
 ======================================================================
-Date Submitted:             08-21-2004 12:17 CEST
-Last Modified:              10-22-2004 16:47 CEST
+Date Submitted:             08-06-2004 21:15 CEST
+Last Modified:              10-22-2004 16:49 CEST
 ======================================================================
-Summary:                    Alsa-driver doesn't compile on x86_64
+Summary:                    unresolved symbols in snd-pcm.ko on alpha
+linux-2.6.7
 Description: 
-make  -C ioctl32 modules
-make[2]: Entering directory
-`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
-gcc -D__KERNEL__ -DMODULE=1
--I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
--I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
--fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include  -DKBUILD_BASENAME=ioctl32   -c -o ioctl32.o ioctl32.c
-In file included from ioctl32.c:2:
-../../alsa-kernel/core/ioctl32/ioctl32.c: In function
-`_snd_ioctl32_ctl_elem_list':
-../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: implicit
-declaration of function `compat_ptr'
-../../alsa-kernel/core/ioctl32/ioctl32.c:119: warning: assignment makes
-pointer from integer without a cast
-In file included from ioctl32.c:2:
-../../alsa-kernel/core/ioctl32/ioctl32.c: In function
-`_snd_ioctl32_ctl_elem_value':
-../../alsa-kernel/core/ioctl32/ioctl32.c:302: warning: assignment makes
-pointer from integer without a cast
-gcc -D__KERNEL__ -DMODULE=1
--I/mnt/data/packages/alsa/alsa-driver-1.0.6a/include 
--I/lib/modules/2.4.27/build/include -O2 -mno-red-zone -mcmodel=kernel
--fno-reorder-blocks -fno-strength-reduce -finline-limit=2000 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc -iwithprefix
-include  -DKBUILD_BASENAME=pcm32   -c -o pcm32.o pcm32.c
-In file included from
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/linux/compat.h:1,
-                 from ../../alsa-kernel/core/ioctl32/ioctl32.h:29,
-                 from ../../alsa-kernel/core/ioctl32/pcm32.c:27,
-                 from pcm32.c:2:
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
-redefinition of `compat_time_t'
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:5: error:
-`compat_time_t' previously declared here
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:7: error:
-redefinition of `struct compat_timespec'
-/mnt/data/packages/alsa/alsa-driver-1.0.6a/include/compat_64.h:12: error:
-redefinition of `struct compat_timeval'
-In file included from pcm32.c:2:
-../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xferi':
-../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: implicit declaration
-of function `compat_ptr'
-../../alsa-kernel/core/ioctl32/pcm32.c:196: warning: assignment makes
-pointer from integer without a cast
-In file included from pcm32.c:2:
-../../alsa-kernel/core/ioctl32/pcm32.c: In function `_snd_ioctl32_xfern':
-../../alsa-kernel/core/ioctl32/pcm32.c:260: warning: assignment makes
-pointer from integer without a cast
-../../alsa-kernel/core/ioctl32/pcm32.c:268: warning: assignment makes
-pointer from integer without a cast
-make[2]: *** [pcm32.o] Error 1
-make[2]: Leaving directory
-`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore/ioctl32'
-make[1]: *** [_modsubdir_ioctl32] Error 2
-make[1]: Leaving directory
-`/mnt/data/packages/alsa/alsa-driver-1.0.6a/acore'
-make: *** [compile] Error 1
+trying to compile latest alsa driver 1.0.6-rc1
+results in unresolved symbols at module link time
+in snd-pcm.ko
 
+gcc-3.4 , linux-2.6.7
+
+here is the message:
+*** Warning: "__ioremap" [sound/core/snd-pcm.ko] undefined!
+*** Warning: "virt_to_phys" [sound/core/snd-pcm.ko] undefined!
+
+which results in unusable alsa drivers
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-22-04 16:47 
+ svetljo - 08-13-04 14:40 
 ----------------------------------------------------------------------
-Can you try with 1.0.7rc2?
+general /*probably stupid */ question
+
+why don't you use remap_page_range instead of io_remap_page_range 
+wouldn't this solve the problem
+
+----------------------------------------------------------------------
+ perex - 10-22-04 16:49 
+----------------------------------------------------------------------
+Please, reopen if this bug still exists with 1.0.7rc2..
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-21-04 12:17 aldg           New Issue                                    
-08-21-04 12:17 aldg           Distribution              => Mandrake        
-08-21-04 12:17 aldg           Kernel Version            => 2.4.27          
-10-22-04 16:47 perex          Note Added: 0002248                          
-10-22-04 16:47 perex          Status                   assigned => feedback
+08-06-04 21:15 svetljo        New Issue                                    
+08-06-04 21:15 svetljo        Distribution              => Mandrake cooker 
+08-06-04 21:15 svetljo        Kernel Version            => 2.6.7           
+08-11-04 19:31 svetljo        Issue Monitored: svetljo                     
+08-12-04 11:09 svetljo        Note Added: 0001552                          
+08-12-04 11:35 perex          Note Added: 0001553                          
+08-12-04 11:42 svetljo        Note Added: 0001554                          
+08-12-04 11:54 perex          Note Added: 0001555                          
+08-12-04 12:06 svetljo        Note Added: 0001556                          
+08-12-04 12:45 svetljo        Note Added: 0001557                          
+08-12-04 14:07 svetljo        Note Added: 0001558                          
+08-13-04 14:40 svetljo        Note Added: 0001563                          
+10-22-04 16:49 perex          Status                   assigned => resolved
+10-22-04 16:49 perex          Resolution               open => unable to
+duplicate
+10-22-04 16:49 perex          Note Added: 0002249                          
 ======================================================================
 
 
