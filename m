@@ -1,15 +1,15 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] Fixes ac3 passthru non-audio bit setting
- for AC97 codecs.
-Date: Thu, 14 Aug 2003 18:44:02 +0100
+From: holborn <holborn@telefonica.net>
+Subject: alsa-seq queue events
+Date: Thu, 14 Aug 2003 19:20:30 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F3BCA62.6090701@superbug.demon.co.uk>
-References: <3F3BA7B3.3010901@superbug.demon.co.uk> <s5h8ypwfcmb.wl@alsa2.suse.de> <20030814164913.GA31684@magma.unil.ch>
+Message-ID: <200308141920.30197.holborn@telefonica.net>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030814164913.GA31684@magma.unil.ch>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,40 +18,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gregoire Favre <greg@magma.unil.ch>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Gregoire Favre wrote:
-> On Thu, Aug 14, 2003 at 06:05:48PM +0200, Takashi Iwai wrote:
-> 
-> 
->>>The problem I was having was that the spdif "non-audio" bit was not 
->>>being set.
->>>This patch fixes that problem.
->>
->>thanks, now applied to cvs.
-> 
-> 
-> Is there any hope to do the same for the cs46xx?
-> 
-> Thank you very much,
-> 
-> 	Grégoire
-> __________________________________________________________________
-> http://www-ima.unil.ch/greg ICQ:16624071 mailto:greg@magma.unil.ch
-> 
-> 
-I don't know if I can help or not, because I don't have that sound card.
-If you can send me the output of :-
-lspci -v
-lspci -vn
-alsamixer  <- What is the name of the Card: and Chip: ?
 
-I will see what I can do.
+Hi!
 
-Cheers
-James
+I have two questions.
+
+When i queue a event
+
+snd_seq_ev_set_note(&ev, channel, note, velocity, length);
+snd_seq_ev_schedule_tick(&ev, queue_id,  0, tick);
+
+if tick is earlier than the actual tick alsa-seq play the event?
+
+i think that's true ...  but .. in this case:
+
+when alsa-seq sends note-off for this event?   in tick+length?  or in "actual 
+tick" + length?
+
+well .. are four questions :-)
+
+Thanks
+
+
+Josep
+
+
 
 
 
