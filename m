@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Tue, 28 Sep 2004 10:47:02 -0400
+Date: Tue, 28 Sep 2004 16:48:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409281447.i8SEl26W023093@localhost.localdomain>
-References: <4158F290.3050301@pg.gda.pl>
+Message-ID: <Pine.LNX.4.58.0409281643130.1731@pnote.perex-int.cz>
+References: <200409281113.i8SBDo5U021462@localhost.localdomain>
+ <4159659B.2020702@pg.gda.pl>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 28 Sep 2004 07:11:44 +0200."
-             <4158F290.3050301@pg.gda.pl>
+In-Reply-To: <4159659B.2020702@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,26 +18,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->in sound area. I personally want to offer Linux solution as a desktop 
->multimedia system but at this time I just can't.
->Sorry to say that.
+On Tue, 28 Sep 2004, Adam Tla=B3ka wrote:
 
-this is getting really irritating adam. you *can* do this, i *do* it.
-you don't like the API and you want to be able to overwrite any part
-of the buffer. this is not equivalent to "offering linux as a desktop
-multimedia system.
+> And placeing something in kernel (ALSA drivers I mean) should not break
+> existing normal apps.
 
->If an app could comunicate with it through /dev interface it could be 
->unchanged and compability will be saved.
+We don't break normal apps. You're referring mostly to commercial product=
+=20
+(OSS/Unix). The OSS code in Linux kernel does not offer functionality you=
+=20
+requested, too.
 
-ah, so thats the essence here. you still want apps to use the OSS API.
-ok, i'm out of here.
+> I want to have possibility of doing cat file.wav > /dev/dsp
+> and play it with 5.1 or 2 speakers or with headphones with special=20
+> stereo  effects applied just by one click or keypress on special mixer=20
+> app on the fly without restarting anything and fiddling with config=20
+> files and program execution arguments.
+> Current ALSA design is not user friendly and rather not meets these end=
+=20
+> user requirements. May be it should be only for audio profs?
 
---p
+Help us. I have all those ideas in my brain, but they are not implemented=
+=20
+due lack of time. Crying - that something is not implemented - will not=20
+help us at all.
+
+=09=09=09=09=09=09Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
