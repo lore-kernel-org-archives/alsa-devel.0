@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000350]: Alsa Installation probleme
-Date: Fri, 16 Jul 2004 12:15:46 +0200 (CEST)
+Subject: [ALSA - driver 0000356]: sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
+Date: Fri, 16 Jul 2004 12:18:35 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040716101546.E935926008@server.perex-int.cz>
+Message-ID: <20040716101835.99BC926008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2844B254
-	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:15:47 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E1CC325B
+	for <alsa-devel@alsa-project.org>; Fri, 16 Jul 2004 12:18:35 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,101 +22,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000350
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000356
 ======================================================================
-Reported By:                miro911
-Assigned To:                perex
+Reported By:                coderock
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     350
-Category:                   0_compilation problem_!!!
+Bug ID:                     356
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   minor
 Priority:                   normal
 Status:                     resolved
 Distribution:               
-Kernel Version:             
+Kernel Version:             2.6.7
 Resolution:                 not a bug
 ======================================================================
-Date Submitted:             06-29-2004 18:27 CEST
-Last Modified:              07-16-2004 12:15 CEST
+Date Submitted:             06-30-2004 21:21 CEST
+Last Modified:              07-16-2004 12:18 CEST
 ======================================================================
-Summary:                    Alsa Installation probleme
+Summary:                    sound/pci/via82xx.c:737: invalid via82xx_cur_ptr, using last valid pointer
 Description: 
-hi everbody.Hi have try to install the news version of alsa on mandarake
-10.0 and i have a probleme during the configure sripts some one cane help
-my ??
-
-error:[mathieu@mathieu alsa]$ ./configure
-checking for gcc... no
-checking for cc... no
-checking for cc... no
-checking for cl... no
-configure: error: no acceptable C compiler found in $PATH
-See `config.log' for more details.
-
-Into Config.log:
-## --------- ##
-## Platform. ##
-## --------- ##
-
-hostname = mathieu
-uname -m = i686
-uname -r = 2.6.3-7mdksmp
-uname -s = Linux
-uname -v = https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000001 SMP Wed Mar 17 14:24:28 CET 2004
-
-/usr/bin/uname -p = unknown
-/bin/uname -X     = unknown
-
-/bin/arch              = i686
-/usr/bin/arch -k       = unknown
-/usr/convex/getsysinfo = unknown
-hostinfo               = unknown
-/bin/machine           = unknown
-/usr/bin/oslevel       = unknown
-/bin/universe          = unknown
-
-PATH: /usr/bin
-PATH: /bin
-PATH: /usr/bin
-PATH: /usr/local/bin
-PATH: /usr/X11R6/bin/
-PATH: /usr/games
-PATH: /home/mathieu/bin
-
-
-## ----------- ##
-## Core tests. ##
-## ----------- ##
-
-configure:1309: checking for gcc
-configure:1338: result: no
-configure:1389: checking for cc
-configure:1418: result: no
-configure:1431: checking for cc
-configure:1477: result: no
-configure:1530: checking for cl
-configure:1559: result: no
-configure:1573: error: no acceptable C compiler found in $PATH
-See `config.log' for more details.
-
-
+I'm getting flooded by these (sound works fine):
+Jun 30 20:45:30 nd47 kernel: fail: idx = 46/64, lastpos = 0xbb00, bufsize2
+= 0x8000, offsize = 0xb800, size = 0x400, count = 0x120
+Jun 30 20:45:30 nd47 kernel: ALSA sound/pci/via82xx.c:737: invalid
+via82xx_cur_ptr, using last valid pointer
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 07-16-2004 12:15 CEST 
+ tiwai - 07-16-2004 12:18 CEST 
 ----------------------------------------------------------------------
-Apparently, you didn't install the gcc?
-Then it's not a BUG of ALSA.
+It's just a warning message that the hardware reports an invalid
+DMA pointer.  Appears only when you compile with the debug option.
+
+Usually harmless.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-29-04 18:27 miro911        New Bug                                      
-07-16-04 12:15 tiwai          Bugnote Added: 0001448                       
-07-16-04 12:15 tiwai          Resolution               open => not a bug   
-07-16-04 12:15 tiwai          Status                   assigned => resolved
+06-30-04 21:21 coderock       New Bug                                      
+06-30-04 21:21 coderock       Kernel Version            => 2.6.7           
+07-16-04 12:18 tiwai          Bugnote Added: 0001449                       
+07-16-04 12:18 tiwai          Assigned To               => tiwai           
+07-16-04 12:18 tiwai          Resolution               open => not a bug   
+07-16-04 12:18 tiwai          Status                   new => resolved     
 ======================================================================
 
 
