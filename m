@@ -1,15 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Not important oops
-Date: Thu, 22 Jan 2004 12:41:36 +0100 (CET)
+From: Mario Loritz <loritz@fh-furtwangen.de>
+Subject: config bug with sbawe and --with-isapnp=no
+Date: Thu, 22 Jan 2004 12:49:07 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401221236110.2314@pnote.perex-int.cz>
-References: <200401211255.i0LCtroL006857@www1.pobox.sk> <s5h65f56t7b.wl@alsa2.suse.de>
- <Pine.LNX.4.58.0401211945400.2010@pnote.perex-int.cz> <s5h3ca96scx.wl@alsa2.suse.de>
- <400F1978.4030901@superbug.demon.co.uk>
+Message-ID: <200401221249.07577.loritz@fh-furtwangen.de>
+Reply-To: loritz@fh-furtwangen.de
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <400F1978.4030901@superbug.demon.co.uk>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,31 +18,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 22 Jan 2004, James Courtier-Dutton wrote:
+Hello List,
 
-> User application does VOL++.
-> OSS has a range from 0-100
-> ALSA uses hardware range of 0-31.
-> THus: -
-> OSS VOL=0
-> OSS VOL++
-> ALSA VOL stays at 0
-> OSS READ VOL, = 0;
+Since about Alsa version 0.9.8, the compilation of the alsa-driver for
+the Sound Blaster AWE (non-pnp) results in a non-usable driver.
 
-It should work. We have correction for this case in snd_mixer_oss_conv1(). 
-Perhaps, the code has a bug somewhere. Can you write a small code which 
-shows this bug for debugging?
+The driver fails to load with a message about a symbol error.
+(Sorry, lost the output, have to regenerate it.)
 
-						Jaroslav
+If I compile the driver with pnp turned on, then I can load the 
+driver with the option "isapnp=no", which didn't work BEFORE alsa 0.9.8.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+So we replaced one bug with another, didn't we?
+
+Thanks for reading,
+Mario
+
 
 
 -------------------------------------------------------
