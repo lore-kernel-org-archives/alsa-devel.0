@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000668]: AC3 passthrough works up to 2.6.10-rc1 but not under rc2
-Date: Tue, 23 Nov 2004 16:08:35 +0100
-Message-ID: <da36873012f4b7945d1f4bc4f9e4536f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000539]: Problem with changing size of etram
+Date: Tue, 23 Nov 2004 16:12:24 +0100
+Message-ID: <ca17d6e42b47a6bf275006c6c0058be8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C25C2D3
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:08:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C09782D3
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:12:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,45 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=668> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=539> 
 ======================================================================
-Reported By:                Gregoire
-Assigned To:                
+Reported By:                mikma
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   668
-Category:                   PCI - via82xx
+Issue ID:                   539
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     new
-Distribution:               gentoo amd64
-Kernel Version:             2.6.10-rc2
+Status:                     resolved
+Distribution:               Debian
+Kernel Version:             2.6.5
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             11-23-2004 16:04 CET
-Last Modified:              11-23-2004 16:08 CET
+Date Submitted:             09-24-2004 23:55 CEST
+Last Modified:              11-23-2004 16:12 CET
 ======================================================================
-Summary:                    AC3 passthrough works up to 2.6.10-rc1 but not under
-rc2
+Summary:                    Problem with changing size of etram
 Description: 
-I have checked the changelog but I don't know what exactly have changed to
-see which change breake the AC3 passtrough ?
+It doesn't work to double the etram size, because of a bad comparison
+statement.
+
+patch of emufx.c:
+-       if (emu->fx8010.etram_pages.bytes == size)
++       if ((emu->fx8010.etram_pages.bytes / 2) == size)
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 16:08 
+ pzad - 11-22-04 22:09 
 ----------------------------------------------------------------------
-Does AC3 passthru work when you compile ALSA 1.0.7 on 2.6.10-rc1?
+Can be this aplied to CVS, please ???
+
+----------------------------------------------------------------------
+ tiwai - 11-23-04 16:12 
+----------------------------------------------------------------------
+Applied to CVS.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 16:04 Gregoire       New Issue                                    
-11-23-04 16:04 Gregoire       Distribution              => gentoo amd64    
-11-23-04 16:04 Gregoire       Kernel Version            => 2.6.10-rc2      
-11-23-04 16:08 tiwai          Note Added: 0002518                          
+09-24-04 23:55 mikma          New Issue                                    
+09-24-04 23:55 mikma          Distribution              => Debian          
+09-24-04 23:55 mikma          Kernel Version            => 2.6.5           
+11-13-04 21:51 pzad           Note Added: 0002402                          
+11-18-04 17:44 pzad           Note Added: 0002450                          
+11-22-04 21:31 mikma          Note Added: 0002512                          
+11-22-04 22:09 pzad           Note Added: 0002513                          
+11-23-04 16:12 tiwai          Status                   assigned => resolved
+11-23-04 16:12 tiwai          Resolution               open => fixed       
+11-23-04 16:12 tiwai          Note Added: 0002519                          
 ======================================================================
 
 
