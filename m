@@ -1,12 +1,14 @@
-From: Andrei Boros <andrei@srr.ro>
-Subject: alsa-utils cvscompile
-Date: Mon, 22 Sep 2003 12:13:05 +0300
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Opti92x-ad1848 won't take Opti924 card
+Date: Mon, 22 Sep 2003 11:56:27 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F6EBD21.385BE9EA@srr.ro>
+Message-ID: <Pine.HPX.4.33n.0309221153001.8132-100000@studcom.urz.uni-halle.de>
+References: <3F6EBA30.28AC216F@srr.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <3F6EBA30.28AC216F@srr.ro>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,37 +17,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Andrei Boros <andrei@srr.ro>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- 
- alsa-utils fails to compile to compile with the following :
+Andrei Boros wrote:
+> options snd-cs46xx              mmap_valid=1 index=0 id="Fortissimo-II"
+> enable=1
+> options snd-opti-92x-ad1848     index=1 isapnp=1 id="Opti924" port=0x220
+> irq=5 dma1=0 fm_port=0x38
 
-make  all-am
-make[2]: Entering directory `/serve/install/alsa-cvs/alsa-utils/include'
-make[2]: Leaving directory `/serve/install/alsa-cvs/alsa-utils/include'
-make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-utils/include'
-Making all in alsactl
-make[1]: Entering directory `/serve/install/alsa-cvs/alsa-utils/alsactl'
-source='alsactl.c' object='alsactl.o' libtool=no \
-depfile='.deps/alsactl.Po' tmpdepfile='.deps/alsactl.TPo' \
-depmode=none /bin/sh ../depcomp \
-gcc -DHAVE_CONFIG_H -I. -I. -I../include     -O2 -Wall -pipe -g -c `test
--f alsactl.c || echo './'`alsactl.c
-gcc  -O2 -Wall -pipe -g   -o alsactl  alsactl.o  -lasound -lm -ldl
--lpthread
-gcc: alsactl.o: No such file or directory
-make[1]: *** [alsactl] Error 1
-make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-utils/alsactl'
-make: *** [all-recursive] Error 1
+I hope these lines aren't wrapped in the original.
+Shouldn't fm_port be 0x388?
 
 
+HTH
+Clemens
 
--- 
-ing. Andrei Boros
-mailto:andrei@srr.ro / +40-21-303-1870
-Centrul pt. Tehnologia Informatiei
-Societatea Romana de Radiodifuziune
+
 
 
 -------------------------------------------------------
