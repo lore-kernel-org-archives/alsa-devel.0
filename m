@@ -1,12 +1,13 @@
-From: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Subject: alsa-0.9.3a : powermac locks machine hard
-Date: Thu, 15 May 2003 19:05:40 +1000
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: snd_async_add_pcm_handler() and SND_PCM_ACCESS_MMAP_INTERLEAVED
+Date: Thu, 15 May 2003 11:11:07 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030515190540.567823bd.erikd-alsa@mega-nerd.com>
+Message-ID: <Pine.LNX.4.44.0305151108590.9877-100000@pnote.perex-int.cz>
+References: <5.1.0.14.2.20030515095924.03421e38@pop.gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <5.1.0.14.2.20030515095924.03421e38@pop.gmx.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,65 +16,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Peter Vollmer <remllov_@gmx.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Thu, 15 May 2003, Peter Vollmer wrote:
 
-I have an Apple iBook running Debian Linux with a kernel compiled
-from the Debian kernel-source-2.4.20 package with the Debain PowerPC
-patches applied. I have installed from source (obtained at 
-alsa-project.org) :
+> Hi all,
+> 
+> I am trying to use the mmap access method together with an async_handler 
+> function (ice1712 in multitrack mode),
+> but in a setting where multiple periods fit into a buffer, I get back the 
+> same address pointer to the accessible data in  snd_pcm_mmap_begin(...) in 
+> areas[x].addr multiple times (one for every period in the buffer, I guess) 
+> in the signal handler. I was following the pcm.c sinus generator demo more 
+> or less, but the combination of mmap/async_handler is not used there.
 
-	alsa-driver-0.9.3a
-	alsa-lib-0.9.3
+I've added async_direct method to show you the right code. The updated 
+pcm.c is in CVS.
 
-When I run the init script ("/etc/init.d/alsa start" on my Debian 
-installation) it fails stating that alsactl seg faulted. If I 
-then run "/etc/init.d/alsa stop", the machine locks hard (no 
-response to keyboard or pings).
+						Jaroslav
 
-I then removed the battery and rebooted the machine. Here is the
-kernel Ooops message. Is there anything I can do to help debug this?
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-Cheers,
-Erik
-
-May 15 11:09:04 miles kernel: i2c-core.o: driver PMac Keywest Audio registered.
-May 15 11:09:04 miles kernel: i2c-core.o: client [TAS3001c] registered to adapter [mac-io 0](pos. 0).
-May 15 11:09:05 miles kernel: Oops: kernel access of bad area, sig: 11
-May 15 11:09:05 miles kernel: NIP: C001140C XER: 20000000 LR: C00113DC SP: CAB09E60 REGS: cab09db0 TRAP: 0300    Not tainted
-May 15 11:09:05 miles kernel: MSR: 00001032 EE: 0 PR: 0 FP: 0 ME: 1 IR/DR: 11
-May 15 11:09:05 miles kernel: DAR: 00000000, DSISR: 40000000
-May 15 11:09:05 miles kernel: TASK = cab08000[458] 'alsactl' Last syscall: 6 
-May 15 11:09:05 miles kernel: last math cab08000 last altivec 00000000
-May 15 11:09:05 miles kernel: GPR00: CC658D98 CAB09E60 CAB08000 00000001 00009032 00000001 D1823EF0 C02CE260 
-May 15 11:09:05 miles kernel: GPR08: CA9D3000 C0200000 D184C000 C00113AC 24000822 1001F350 00000000 00000000 
-May 15 11:09:05 miles kernel: GPR16: 00000000 00000000 00000000 00000000 00009032 0AB09F40 00000000 00000003 
-May 15 11:09:05 miles kernel: GPR24: CC658D9C C0240000 C02039C0 00000001 CC658D98 CC658D9C 00000000 CAB09E60 
-May 15 11:09:05 miles kernel: Call backtrace: 
-May 15 11:09:05 miles kernel: C0032A40 D1823964 D182661C C00390B0 C0037C04 C0037C9C C00042FC 
-May 15 11:09:05 miles kernel: 0FE180A0 0FF65D68 0FF65E04 100056EC 100061A8 0FCD0E04 00000000 
-May 15 11:09:17 miles kernel: Oops: kernel access of bad area, sig: 11
-May 15 11:09:17 miles kernel: NIP: C001140C XER: 20000000 LR: C00113DC SP: CAB13E60 REGS: cab13db0 TRAP: 0300    Not tainted
-May 15 11:09:17 miles kernel: MSR: 00001032 EE: 0 PR: 0 FP: 0 ME: 1 IR/DR: 11
-May 15 11:09:17 miles kernel: DAR: 00000000, DSISR: 40000000
-May 15 11:09:17 miles kernel: TASK = cab12000[468] 'alsactl' Last syscall: 6 
-May 15 11:09:17 miles kernel: last math cab12000 last altivec 00000000
-May 15 11:09:17 miles kernel: GPR00: CC658D98 CAB13E60 CAB12000 00000001 00009032 00000001 D1823EF0 C02CE260 
-May 15 11:09:17 miles kernel: GPR08: CA9DE040 C0200000 D184C000 C00113AC 24000822 1001F350 00000000 00000000 
-May 15 11:09:17 miles kernel: GPR16: 00000000 00000000 00000000 00000000 00009032 0AB13F40 00000000 00000003 
-May 15 11:09:17 miles kernel: GPR24: CC658D9C C0240000 C02039C0 00000001 CC658D98 CC658D9C 00000000 CAB13E60 
-May 15 11:09:17 miles kernel: Call backtrace: 
-May 15 11:09:17 miles kernel: C0032A40 D1823964 D182661C C00390B0 C0037C04 C0037C9C C00042FC 
-May 15 11:09:17 miles kernel: 0FE180A0 0FF65D68 0FF65E04 10005484 10006154 0FCD0E04 00000000 
-
-
--- 
-+-----------------------------------------------------------+
-  Erik de Castro Lopo  nospam@mega-nerd.com (Yes it's valid)
-+-----------------------------------------------------------+
-Linux, the UNIX defragmentation tool.
 
 
 -------------------------------------------------------
