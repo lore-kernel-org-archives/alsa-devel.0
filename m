@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000963]: Sounc card is mute
-Date: Wed, 23 Mar 2005 20:03:07 +0100
-Message-ID: <22a76129c5d2ac94f453d5fa75487c80@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000958]: noisy output on low sample rate files when using dmix
+Date: Thu, 24 Mar 2005 00:39:35 +0100
+Message-ID: <e85a25d0b6665b2a8da9fa1bf1a0b267@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 11A59261
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 20:03:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B79302A4
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 00:39:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,84 +23,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=963> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=958> 
 ======================================================================
-Reported By:                jnilles
+Reported By:                mtraum
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   963
-Category:                   PCI - cs46xx
+Project:                    ALSA - lib
+Issue ID:                   958
+Category:                   mixer
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     acknowledged
-Distribution:               SuSE
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             03-04-2005 19:07 CET
-Last Modified:              03-23-2005 20:03 CET
+Date Submitted:             03-02-2005 21:23 CET
+Last Modified:              03-24-2005 00:39 CET
 ======================================================================
-Summary:                    Sounc card is mute
+Summary:                    noisy output on low sample rate files when using
+dmix
 Description: 
-I have a Turtle Beach Santa Cruz. It worked perfectly with SuSE Linux 9.0
-and still works perfectly under Windows XP. I "upgraded" to SuSE 9.2 and
-the sound card is inoperative, mute, lifeless, sound-free. The only advice
-I got from SuSE support was that I shouldn't have skipped from 9.0 to 9.2
-without going thgrough 9.1 on the way. That sounds like pretty stupid
-advice.
-I have spent weeks twiddling with settings  recommended by member sof the
-alsa users group, to no avail.
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000988 No errors, but no sound output
+When using dmix, I get noise when playing files with low sample rates. The
+level of noise increases the lower the sample rate is. This noise does not
+exist when playing files without dmix, and I'm playing them with 'aplay'.
+
+
+Files sampled at 44100 have no noticeable noise (at least for me), so I'm
+assumming there's a problem with the resampling algorithm.
+
+Just to be sure, I generated some test tones with sgen
+(http://www.comp.leeds.ac.uk/jj/linux/siggen.html). You can clearly hear
+the noise on these samles, which I am attaching.
 ======================================================================
 
 ----------------------------------------------------------------------
- jnilles - 03-23-05 19:20 
+ Rottwang - 03-13-05 09:43 
 ----------------------------------------------------------------------
-I can control the External Amplifier setting with amixer using:
-amixer -c 0 cset numid=36 0 (or 1)
-'M' toggles the External Amlifier with alsamixer. So the answer is
-affirmative for both.
+I can confirm this too
 
 ----------------------------------------------------------------------
- jnilles - 03-23-05 20:03 
+ grabner - 03-24-05 00:39 
 ----------------------------------------------------------------------
-As an addition to madCoder's  remarks, I suggest that the default setting
-of External Amplifier should be 'On'. Had that been the case many hours of
-messing about by all concerned would have been saved.
+I confirm in a slightly different situation: playing through plughw on a
+device with fixed sampling rate (39063Hz), even without dmix.
+
+The bug is in src/pcm/pcm_rate.c at line 128 (or line 194 for 16 bit
+samples), where the last frame of a period is repeated if no more frames
+are available. This adds to the original signal a peak with an amplitude
+proportional to the slope of the signal at this point, which is larger for
+higher frequency signals or lower sampling rates.
+
+A working solution to this problem existed in alsa-lib up to version
+1.0.7, where the last frame of each period was available when processing
+the next period. However, for reasons unknown to me, this method has been
+replaced by a broken algorithm in version 1.0.8, which causes the noise
+reported in this issue.
+
+A note to the previous posters on this topic: could you please check if
+the problem also occurs with alsa-lib 1.0.7? This would verify if we are
+actually talking about the same thing, and help fixing it.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-04-05 19:07 jnilles        New Issue                                    
-03-04-05 19:07 jnilles        Distribution              => SuSE            
-03-09-05 18:53 tiwai          Note Added: 0003840                          
-03-10-05 00:21 jnilles        Note Added: 0003846                          
-03-10-05 15:01 jdthood        Note Added: 0003856                          
-03-10-05 20:29 jnilles        Note Added: 0003872                          
-03-10-05 22:04 jdthood        Note Added: 0003874                          
-03-16-05 01:33 jnilles        Note Added: 0003926                          
-03-16-05 12:31 tiwai          Note Added: 0003941                          
-03-16-05 22:52 jnilles        Note Added: 0003972                          
-03-17-05 10:11 jdthood        Note Added: 0003980                          
-03-17-05 23:07 jnilles        Note Added: 0003986                          
-03-18-05 14:38 jdthood        Note Added: 0003993                          
-03-18-05 17:59 tiwai          Note Added: 0003997                          
-03-18-05 22:42 jnilles        Note Added: 0004006                          
-03-19-05 09:44 jdthood        Note Added: 0004025                          
-03-19-05 18:55 jnilles        Note Added: 0004066                          
-03-22-05 14:58 jdthood        Note Added: 0004125                          
-03-22-05 15:13 jdthood        Relationship added       has duplicate 0000988
-03-22-05 15:14 jdthood        Severity                 major => minor      
-03-22-05 15:14 jdthood        Status                   new => acknowledged 
-03-23-05 01:00 madCoder       Note Added: 0004147                          
-03-23-05 01:01 madCoder       Note Edited: 0004147                         
-03-23-05 09:15 jdthood        Note Added: 0004151                          
-03-23-05 19:20 jnilles        Note Added: 0004184                          
-03-23-05 20:03 jnilles        Note Added: 0004186                          
+03-02-05 21:23 mtraum         New Issue                                    
+03-02-05 21:23 mtraum         File Added: testtones.tar.gz                    
+03-02-05 22:08 hamel_g        Note Added: 0003781                          
+03-13-05 09:43 Rottwang       Note Added: 0003901                          
+03-22-05 00:01 eradicator     Issue Monitored: eradicator                    
+03-24-05 00:39 grabner        Note Added: 0004188                          
 ======================================================================
 
 
