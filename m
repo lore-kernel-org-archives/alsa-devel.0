@@ -1,13 +1,15 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Problems with intel8x0 driver. (and probably the cause of VT8233/A/8235
- Clock Problem)
-Date: Wed, 10 Dec 2003 02:34:43 +0000
+Subject: Re: VT8233/A/8235 Clock Problem - good results, some
+ possible bugs?
+Date: Wed, 10 Dec 2003 02:38:50 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FD68643.4080203@superbug.demon.co.uk>
+Message-ID: <3FD6873A.3070002@superbug.demon.co.uk>
+References: <Pine.HPX.4.33n.0312081003040.24764-100000@studcom.urz.uni-halle.de>  <1070914615.1921.24.camel@Wizard.knechthome.com>  <20031208210455.GF1802@sirius.home>  <1070942917.1981.67.camel@Wizard.knechthome.com>  <20031209102125.GB835@master.mivlgu.local>  <1070976470.1854.10.camel@Wizard.knechthome.com>  <Pine.LNX.4.58.0312091435200.20863@pnote.perex-int.cz> <1070977455.1862.25.camel@Wizard.knechthome.com> <Pine.LNX.4.58.0312091530010.20863@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.58.0312091530010.20863@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,33 +18,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Mark Knecht <markknecht@comcast.net>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Jaroslav Kysela wrote:
+> On Tue, 9 Dec 2003, Mark Knecht wrote:
+> 
+> 
+>>On Tue, 2003-12-09 at 05:35, Jaroslav Kysela wrote:
+>>
+>>>On Tue, 9 Dec 2003, Mark Knecht wrote:
+>>>
+>>>
+>>>>I am disappointed that there is no option to set the PCM ADC to 44100 in
+>>>
+>>>ADC is for capture not for playback.
+>>
+>>Well, of course you are right about this. Is it 5:30AM where you are
+>>like it is here? (I should do more thinking!) ;-)
+>>
+>>Thanks Jaroslav.
+>>
+>>Then how do we explain that in dxs_support=2 my sound is so bad? I'm
+>>using 44.1KHz material and supposedly everything is running at 44.1KHz. 
+> 
+> 
+> To be honest, we don't know at the moment. It seems that our 
+> initialization of the VIA bridge might be broken for some reason and VRA 
+> (variable rate) communication between this bridge and VRA capable AC'97 
+> codec is not 100% correct.
+> 
+> 						Jaroslav
+> 
 
-I have just downloaded the latest alsa-kernel cvs and installed it.
-The sample rate converters and rate setting functions seem broken.
-
-For example. I can output at any rate to a SB Audigy2 because it does 
-not need any sample rate conversion, but if I use the intel8x0 chip for 
-sound output, the rate on the chip is fixed at 48000, and any rate other 
-than that either hangs the output, or fails.
-When if fails: -
-err = snd_pcm_hw_params_set_rate_near(handle, params, &rate, 0);
-
-If "rate" is initially 48000 it works, if "rate" is 44100 if fails, but 
-in different ways, if device name is "default", it hangs when outputting 
-audio and no sound even begins to come out of the speakers, if device 
-name is "front", err = 0, and rate gets given the value of 0 or 48000 
-randomly!
-
-If I am using a plug device like the "front" or "default" device, it 
-should automatically do sample rate conversion for me, but none of the 
-sample rate conversion seems to work!
+I think this problem is caused by a bug in the sample rate converters.
+I am getting similar problems with the intel8x0 driver, and I think it 
+is being caused by the sample rate converters not acting when using the 
+"default" or "front" device.
 
 Cheers
 James
+
 
 
 -------------------------------------------------------
