@@ -1,14 +1,11 @@
-From: Friedrich Ewaldt <friedrich.ewaldt@gmx.de>
-Subject: Re: Re: [Alsa-user] fm801 driver status?
-Date: Thu, 19 Dec 2002 21:21:52 +0100
+From: Jeff Ridenour <jridenou@ics.uci.edu>
+Subject: Re: Dell OEM Soundblaster Live 5.1 with different PCI ID
+Date: Thu, 19 Dec 2002 19:38:05 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E022A60.20002@gmx.de>
-References: <3DF8A109.2030206@gmx.de>	<s5hel8nuvee.wl@alsa2.suse.de>	<3DF8B8FA.3040009@gmx.de>	<s5h3cp3uorz.wl@alsa2.suse.de>	<m27keexn25.fsf@vador.mandrakesoft.com>	<3DF9C1CD.3090205@gmx.de>	<s5hisxxubkx.wl@alsa2.suse.de>	<3DFA1166.2020409@gmx.de>	<s5hel8lua27.wl@alsa2.suse.de>	<3DFA25F1.2000705@gmx.de>	<s5hznr6roae.wl@alsa2.suse.de>	<3DFE3DA5.4000700@gmx.de>	<s5h8yyowm5s.wl@alsa2.suse.de>	<3E0077E9.9050402@gmx.de> <s5hr8ceutxh.wl@alsa2.suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <72DB76FA-13CC-11D7-9D7F-0050E4E6A73C@ics.uci.edu>
+Mime-Version: 1.0 (Apple Message framework v482)
+Content-Type: multipart/alternative; boundary=Apple-Mail-3--228740566
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr8ceutxh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,145 +14,241 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-Takashi Iwai wrote:
-
->At Wed, 18 Dec 2002 14:28:09 +0100,
->Friedrich Ewaldt wrote:
->  
->
->>Using aplay, at the end of the audio file the last played samples get 
->>repeated once. This doesn't happen with 'play', 'cat somefile /dev/dsp' 
->>or 'artsplay'. But when I cause an error beep in a shell, I first hear 
->>the beep and then the last samples played back before by any program 
->>like  aplay, play, xmms,... I can reproduce this as many time as I like, 
->>i.e. the samples remain in the soundcard buffer all the time.
->>Another issue regarding aplay: playing back mono wav with a sampling 
->>frequency below 44k1, the sound get's crackled. This also doesn't happen 
->>with the other playback programs.
->>    
->>
->
->hmm, this could have been a cause of the last hang-up.
->the unexpected interrupt was not caught by the handler.
->
->could you check /proc/asound/card0/pcm0p/sub0/hw_params for each case?
->
-Here's the output of /proc/asound/card0/pcm0p/sub0/hw_params for a 8Bit 
-mono 11kHz wav file:
-
-*** played with 'play'
-access: RW_INTERLEAVED
-format: U8
-subformat: STD
-channels: 1
-rate: 11025 (11025/1)
-period_size: 8192
-buffer_size: 65536
-tick_time: 10000
-OSS format: U8
-OSS channels: 1
-OSS rate: 11025
-OSS period bytes: 8192
-OSS periods: 8
-
-*** played with 'aplay'
-access: RW_INTERLEAVED
-format: U8
-subformat: STD
-channels: 1
-rate: 11025 (11025/1)
-period_size: 149
-buffer_size: 5513
-tick_time: 10000
-
-*** xmms, oss output:
-access: RW_INTERLEAVED
-format: U8
-subformat: STD
-channels: 1
-rate: 11025 (11025/1)
-period_size: 256
-buffer_size: 8192
-tick_time: 10000
-OSS format: U8
-OSS channels: 1
-OSS rate: 11025
-OSS period bytes: 256
-OSS periods: 32
-
-*** xmms, alsa output
-access: MMAP_INTERLEAVED
-(if MMAP deactivated in xmms: access: RW_INTERLEAVED)
-format: U8
-subformat: STD
-channels: 1
-rate: 11025 (11025/1)
-period_size: 149
-buffer_size: 5513
-tick_time: 10000
+--Apple-Mail-3--228740566
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=US-ASCII;
+	format=flowed
 
 
-Sound is ok with play and xmms/OSS output, but with aplay and xmms/ALSA 
-it is noisy and crackled as if it were bad FM radio transmission (with 
-and without MMAP mode, MMAP doesn't change anything).
-That's only true for mono files with low sampling rates. Stereo files 
-are ok using alsa or oss device.
+Just as an update, when I try to use aplay to play a sound, I get this 
+error:
 
-Using xmms/ALSA, another problem occurs:
-If xmms finishes playback of one file and starts the next of the 
-playlist, output sounds like if it were mixed with helicopter noise. To 
-stop this distortion I can press the 'pause' button twice or press 
-'stop' + 'playback'.
-The same distortion occurs when I start playback of the same or another 
-file of the playlist while playback of one file is running. I can see 
-(better: hear) this problem with stereo 44kHz files and ALSA output. 
-Using OSS output, this problem doesn't occur.
-I don't see this problem using xmms/ALSA on an similar system (some 
-software) with another soundcard.
+[root@beall-dell-01 sounds]# aplay phone.wav
+Playing WAVE 'phone.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+Stereo
+aplay: pcm_write:999: write error: Input/output error
+[root@beall-dell-01 sounds]#
 
->also, please try the attached patch (the drivers should be compiled
->with --with-debug=full) and see what shown in the kernel messages.
->this will print the current ply_ctrl register value.
->the patch is to the latest cvs.  the cvs tree already includes the
->last fix and some additions for pause/release and spdif-out.
->  
->
-I patched against the cvs snapshot from december 9th with all your 
-previous patches applied before. I'll also test with latest cvs if I 
-find some more time.
 
-Here's some output of /var/log/syslog after applaying the last patch and 
-compiling with debug=full:
+So i'm guessing there's still a problem with the emu10k1 driver and this 
+dumb oem card?
 
-after error beep in shell:
-Dec 19 19:43:13 localhost kernel: ALSA ../alsa-kernel/pci/fm801.c:395: 
-prepare: ply_ctrl = 0x180
-(after the beep I hear loud noise or the last audio samples played 
-before by any audio player. These samples are played with wrong speed, 
-probably because the beep is played back at another sampling rate)
+jeff
 
-after playing mono wav file 8Bit, 11kHz using aplay or play:
-Dec 19 19:44:15 localhost kernel: ALSA ../alsa-kernel/pci/fm801.c:395: 
-prepare: ply_ctrl = 0x380
 
-after playing stereo wav file 16Bit, 44.1kHz using aplay or play:
-Dec 19 19:45:00 localhost kernel: ALSA ../alsa-kernel/pci/fm801.c:395: 
-prepare: ply_ctrl = 0xc980
 
-The messages are repeated for every playback.
-Do these play_ctrl values show anything? They are the same for 'aplay' 
-as for 'play' (and xmms, too). But playing back with native alsa apps, I 
-have some trouble that I don't have when I use /dev/dsp. The values seem 
-to depend only on the audio format. Does this info help?
-ciao
-fe
+On Thursday, December 19, 2002, at 11:02 AM, Jeffrey Kent Ridenour wrote:
 
+Hi folks,
+
+I was having the exact same problem, so I tried changing the source using
+the diff file provided by Takashi, thanks a lot!  This did make progress
+for me, since before, the i couldn't get the driver to modprobe.
+
+The driver now loads and I can now give gmix/alsamixer to open (couldn't
+before).  However, I'm still not getting sound.  when I turn the volume 
+up
+and mess with the sliders, I do hear changes in the signal level (i.e. 
+the
+noise floor goes up and down), but I haven't been able to get any sounds
+or CD's to play.
+
+Is this because the driver really doesn't work?  Or is there something
+else that i haven't configured properly?  Any suggestions or response 
+from
+anyone would be much appreciated.  (I have a deadline I'm working with,
+and I need to decide soon whether I should buy a different soundcard or
+not)
+
+jeff
+
+
+
+At Thu, 19 Dec 2002 10:45:22 +0100,
+elchhome@gmx.de wrote:
+Hello Friends,
+Dell ships since a month an OEM Soundblaster Live 5.1 (sb0200) with a
+different PCI ID
+for original sblive you got 1102:0002
+the Dell version has 1102:0006
+I got  no sound with the actual version of the sound driver.
+Could anyone be so kind to incorporate this into the source code?
+
+please try the attached patch.
+this will add the entry as emu10k1 (sb live!).  it seems that the chip
+is emu10k1, not audigy.
+if it works, please let me know.  i'll commit it to cvs.
+
+
+thanks,
+
+Takashi
+
+
+
+
+-------------------------------------------------------
+This SF.NET email is sponsored by: Geek Gift Procrastinating?
+Get the perfect geek gift now!  Before the Holidays pass you by.
+T H I N K G E E K . C O M      http://www.thinkgeek.com/sf/
+_______________________________________________
+Alsa-devel mailing list
+Alsa-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-devel
+
+
+--Apple-Mail-3--228740566
+Content-Transfer-Encoding: 7bit
+Content-Type: text/enriched;
+	charset=US-ASCII
+
+
+Just as an update, when I try to use aplay to play a sound, I get this
+error:
+
+
+<fixed>[root@beall-dell-01 sounds]# aplay phone.wav
+
+Playing WAVE 'phone.wav' : Signed 16 bit Little Endian, Rate 44100 Hz,
+
+Stereo
+
+aplay: pcm_write:999: write error: Input/output error
+
+[root@beall-dell-01 sounds]# 
+
+
+
+So i'm guessing there's still a problem with the emu10k1 driver and
+this dumb oem card?
+
+
+jeff
+
+
+
+</fixed>
+
+On Thursday, December 19, 2002, at 11:02 AM, Jeffrey Kent Ridenour
+wrote:
+
+
+<color><param>0000,0000,DEDE</param>Hi folks,
+
+
+I was having the exact same problem, so I tried changing the source
+using
+
+the diff file provided by Takashi, thanks a lot!  This did make
+progress
+
+for me, since before, the i couldn't get the driver to modprobe. 
+
+
+The driver now loads and I can now give gmix/alsamixer to open
+(couldn't
+
+before).  However, I'm still not getting sound.  when I turn the
+volume up
+
+and mess with the sliders, I do hear changes in the signal level (i.e.
+the
+
+noise floor goes up and down), but I haven't been able to get any
+sounds
+
+or CD's to play.
+
+
+Is this because the driver really doesn't work?  Or is there something
+
+else that i haven't configured properly?  Any suggestions or response
+from
+
+anyone would be much appreciated.  (I have a deadline I'm working with,
+
+and I need to decide soon whether I should buy a different soundcard or
+
+not)
+
+
+jeff
+
+
+
+
+</color><color><param>0000,6363,1212</param>At Thu, 19 Dec 2002
+10:45:22 +0100,
+
+elchhome@gmx.de wrote:
+
+</color><color><param>0000,0000,DEDE</param>Hello Friends,
+
+Dell ships since a month an OEM Soundblaster Live 5.1 (sb0200) with a 
+
+</color><color><param>5454,0000,0000</param>different PCI ID
+
+</color><color><param>0000,0000,DEDE</param>for original sblive you
+got 1102:0002
+
+</color><color><param>5454,0000,0000</param>the Dell version has
+1102:0006
+
+</color><color><param>0000,0000,DEDE</param>I got  no sound with the
+actual version of the sound driver.
+
+</color><color><param>5454,0000,0000</param>Could anyone be so kind to
+incorporate this into the source code?
+
+</color><color><param>0000,6363,1212</param>
+
+please try the attached patch.
+
+this will add the entry as emu10k1 (sb live!).  it seems that the chip
+
+is emu10k1, not audigy.
+
+if it works, please let me know.  i'll commit it to cvs.
+
+</color><color><param>0000,0000,DEDE</param>
+
+
+</color><color><param>0000,6363,1212</param>thanks,
+
+</color><color><param>0000,0000,DEDE</param>
+
+</color><color><param>0000,6363,1212</param>Takashi
+
+</color><color><param>0000,0000,DEDE</param>
+
+
+
+
+-------------------------------------------------------
+
+This SF.NET email is sponsored by: Geek Gift Procrastinating?
+
+Get the perfect geek gift now!  Before the Holidays pass you by.
+
+T H I N K G E E K . C O M     
+</color><underline><color><param>1A1A,1A1A,FFFF</param>http://www.thinkgeek.com/sf/</color></underline><color><param>0000,0000,DEDE</param>
+
+_______________________________________________
+
+Alsa-devel mailing list
+
+Alsa-devel@lists.sourceforge.net
+
+</color><underline><color><param>1A1A,1A1A,FFFF</param>https://lists.sourceforge.net/lists/listinfo/alsa-devel</color></underline><color><param>0000,0000,DEDE</param>
+
+
+</color>
+--Apple-Mail-3--228740566--
 
 
 
