@@ -1,21 +1,21 @@
 From: GCZ <geeceezee@free.fr>
 Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 17:34:51 +0200
+Date: Tue, 10 Aug 2004 17:44:23 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4118EB1B.6010602@free.fr>
-References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr> <Pine.LNX.4.58.0408100931160.1779@pnote.perex-int.cz> <41187FA1.80905@free.fr> <Pine.LNX.4.58.0408100955090.1779@pnote.perex-int.cz>
+Message-ID: <4118ED57.50302@free.fr>
+References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr> <20040810151525.GC1671@fliwatut.scifi>
 Reply-To: geeceezee@free.fr
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5BAB0201
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 17:34:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C7F6C201
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 17:44:23 +0200 (MEST)
 Received: from [192.168.1.21] (auteuil-3-82-66-93-25.fbx.proxad.net [82.66.93.25])
-	by postfix4-2.free.fr (Postfix) with ESMTP id 5A96F1BBDE2
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 17:34:51 +0200 (CEST)
-In-Reply-To: <Pine.LNX.4.58.0408100955090.1779@pnote.perex-int.cz>
+	by postfix4-2.free.fr (Postfix) with ESMTP id 43E2C1BAB24
+	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 17:44:23 +0200 (CEST)
+In-Reply-To: <20040810151525.GC1671@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,19 +27,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+Frank Barknecht wrote:
 
-> Yes, but a ssh debugging root access and your ears might be sufficient 
-> for Takashi. I think that Takashi has a good contact with Terratec (GCZ 
-> has Terratec Aureon 5.1 Sky). Please, wait until Takashi is back from 
-> vacation (next week).
+> I stay with open source software, because this libre thing is
+> important to me.
 
-I was told that more documentation from Terratec was needed, but if I 
-can help by providing a shell account and my feedback, I'll be glad to.
+Oh. You don't say. Well, this "libre thing" is important to me too (I'm 
+not running linux on all of my three machines just because I don't like 
+Windows), but how exactly am I supporting Free Software just by running 
+something that doesn't work for me?
 
-> Also, which driver you tried? 1.0.6rc2?
+Jaroslav implied that I could, actually, actively help by providing a 
+shell account and my feedback, which I will do. I didn't know that would 
+actually help. But otherwise, when there's no Free Software alternative 
+that works in a particular situation, I don't see any problem with 
+buying closed-source software.
 
-1.0.5a.
+There's no way to play 3D games with the "nv" driver for my Nvidia 
+GeForce FX5900. Should I refrain from playing UT2004 just because 
+Nvidia's drivers, which work beautifully, are closed-source? Should I 
+refrain from playing Quake 3 because ALSA doesn't work with it?
 
 
 -------------------------------------------------------
