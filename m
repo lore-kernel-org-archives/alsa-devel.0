@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000760]: alsa 32-bit emulation hangs computer
-Date: Fri, 31 Dec 2004 06:57:50 +0100
-Message-ID: <c8147098f22ffa66486a76572d5d826e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000764]: ABIT VA-20 works with dxs_support=1
+Date: Fri, 31 Dec 2004 12:41:55 +0100
+Message-ID: <ce5768983506c9d9e0a8c23e07e6de65@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6662930D
-	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 06:57:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D1FE132A
+	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 12:41:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,65 +22,47 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=760> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=764> 
 ======================================================================
-Reported By:                bugfood
+Reported By:                tomhughes
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   760
-Category:                   OTHERS
+Issue ID:                   764
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
-Distribution:               Debian 64-bit, &quot;gcc-3.4 flavor&quot;
-Kernel Version:             2.6.10, 64-bit
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             12-30-2004 07:28 CET
-Last Modified:              12-31-2004 06:57 CET
+Date Submitted:             12-31-2004 12:41 CET
+Last Modified:              12-31-2004 12:41 CET
 ======================================================================
-Summary:                    alsa 32-bit emulation hangs computer
+Summary:                    ABIT VA-20 works with dxs_support=1
 Description: 
-I'm working on setting up the 64-bit port of Debian on my computer. So far
-so good, except that running 32-bit alsa programs within a chroot causes
-the computer to hang and become almost completely unresponsive; all I can
-do is use magic SysRq to reboot. There are no messages from the kernel in
-/var/log/messages or reported to the console.
+My ABIT VA-20 motherboard is not currently recognised by the dxs_support
+whitelist in the via82xx driver but I have tested it with a 44.1kHz sound
+file and dxs_support=1 and it appears to work correctly. The lspci output
+for the device is:
 
-64-bit alsa programs work fine
-64-bit oss programs work fine
-32-bit oss programs work fine
-
-I've tested with an SB Live and with my motherboard's onboard i810 audio -
-both have the same problem.
-
+  00:11.5 Class 0401: 1106:3059 (rev 60)
+          Subsystem: 147b:1411
+          Flags: medium devsel, IRQ 10
+          I/O ports at bc00 [size=256]
+          Capabilities: <available only to root>
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-30-04 15:04 
-----------------------------------------------------------------------
-It's fixed in the recent ALSA.  Try ALSA 1.0.8rc1.
-
-----------------------------------------------------------------------
- bugfood - 12-31-04 06:57 
-----------------------------------------------------------------------
-Thanks tiwai. I didn't realize there was a new version out yet. I compiled
-and installed alsa-driver 1.0.8rc1, and the problem is fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-30-04 07:28 bugfood        New Issue                                    
-12-30-04 07:28 bugfood        File Added: config-2.6.10                    
-12-30-04 07:28 bugfood        Distribution              => Debian 64-bit,
-"gcc-3.4 flavor"
-12-30-04 07:28 bugfood        Kernel Version            => 2.6.10, 64-bit  
-12-30-04 15:04 tiwai          Note Added: 0003021                          
-12-31-04 06:57 bugfood        Note Added: 0003025                          
+12-31-04 12:41 tomhughes      New Issue                                    
+12-31-04 12:41 tomhughes      Distribution              => Fedora Core 3   
+12-31-04 12:41 tomhughes      Kernel Version            => 2.6.9           
 ======================================================================
 
 
