@@ -1,13 +1,14 @@
-From: "Stephen Warren" <SWarren@nvidia.com>
-Subject: Merging alsa-kernel-1.0.7 into kernel 2.6.9
-Date: Thu, 18 Nov 2004 20:41:13 -0800
-Message-ID: <DBFABB80F7FD3143A911F9E6CFD477B002A7F808@hqemmail02.nvidia.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Fri, 19 Nov 2004 05:45:39 +0100
+Message-ID: <3cbfe813e4945a9e071d4cef3c5c168b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DD26D1C8
+	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 05:45:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,75 +18,72 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I'm working on a project where we don't use modules for the kernel at
-all - for various reasons such as target environment simplicity - very
-hard-coded boot scripts, no huge sysvinit based interactive 'desktop'
-system etc.
 
-We need ALSA support, and specifically, alsa-driver 1.0.7 release fixes
-some problems for the target hardware we're using.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+======================================================================
+Reported By:                bons78
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   167
+Category:                   SPARC - cs4231
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
+======================================================================
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-19-2004 05:45 CET
+======================================================================
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Description: 
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-So, I'm attempting to merge the content of alsa-driver 1.0.7 into the
-kernel source tree, and to build ALSA support as non-modules.
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-I found a few resources that *basically* say you just copy the
-alsa-kernel directory into the kernel tree and that's it. So, here's
-what I started doing:
 
-# linux-kernel.org is a virgin kernel.org 2.6.9 tree
-rm -rf linux-kernel.org-2
-cp -rp linux-kernel.org linux-kernel.org-2
-chmod -R +w linux-kernel.org-2
-rm -rf alsa-driver-1.0.7
-tar jxvf patches-src/alsa-driver-1.0.7.tar.bz2
-cd alsa-driver-1.0.7/alsa-kernel/
-rm -rf oss
-cp -a * ../../linux-kernel.org-2/sound
-rm -rf ../../linux-kernel.org-2/sound/include
-rm -rf ../../linux-kernel.org-2/sound/Documentation
-cd include
-cp -a * ../../../linux-kernel.org-2/include/sound
-cd ../Documentation
-cp -a * ../../../linux-kernel.org-2/Documentation/sound/alsa
-cd ../../..
-diff -urN linux-kernel.org linux-kernel.org-2 >
-patches-src/nvidia-2.6.9-alsa-1.0.7-1.diff
 
-This gets me a pretty fair way. I found from that point, that all I
-needed to do was apply acore/init.patch, then manually fix all the calls
-to module_param_array() to take a dummy count argument to back-port the
-code to the 2.6.9 API.
+======================================================================
 
-Having done this, the kernel does compile and I can get sound working.
-However, I'm wondering if this is a totally 100% correct approach. For
-example, if I watch the result of a regular "./configure;make" build of
-alsa-driver, I notice a lot of patches being applied to the source
-before the build, most to enable the code to compile on a wide range of
-kernels. If I manually apply to my tree every *.patch that the regular
-build process applies, then I'm left with a few sets of errors:
+----------------------------------------------------------------------
+ weeve - 07-04-04 22:32 
+----------------------------------------------------------------------
+Just an update to say that this is still valid up through 2.6.7-bk12
 
-* memalloc failures, due to missing header files (config.h/adriver.h if
-I recall)
-* KERNEL_VERSION isn't define everywhere, due to missing
-<linux/version.h> includes
-* still have the module_param_array problems
+----------------------------------------------------------------------
+ weeve - 11-19-04 05:45 
+----------------------------------------------------------------------
+>From a recent thread on the sparclinux mailing list
+<http://marc.theaimsgroup.com/?t=110017101000004&r=1&w=2>, get_fs() ==
+KERNEL_DS will always cause a SPARC64 machne to hang.
 
-So, should I just ignore all the patches except init.path, do the manual
-fixup of the module_param_array stuff and be done?
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+======================================================================
 
-Any pointers on the 'correct' way to do this would be greatly
-appreciated. If there's an accurate doc somewhere, my googling hasn't
-found it.
 
-Thanks.
-
---=20
-Stephen Warren, Software Engineer, NVIDIA, Fort Collins, CO
-swarren@nvidia.com        http://www.nvidia.com/
-swarren@wwwdotorg.org     http://www.wwwdotorg.org/pgp.html
 
 
 -------------------------------------------------------
