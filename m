@@ -1,14 +1,12 @@
-From: "kreuzritter2000@gmx.de" <kreuzritter2000@gmx.de>
-Subject: Re: EWS64XL: cs4232 alsa driver is no more workingwith Alsa 0.9.0beta12 and Sam9407 driver , Alsa0.5.x worked fine
-Date: Fri, 8 Mar 2002 23:19:24 +0100
-Message-ID: <200203082216.XAA00992@alsa.alsa-project.org>
+From: Daniel Caujolle-Bert <segfault@club-internet.fr>
+Subject: Re: ALSA vs OSS/free
+Date: Sat, 09 Mar 2002 02:51:49 +0100
+Message-ID: <3C896AB5.68DBD5EC@club-internet.fr>
+References: <Pine.GSO.3.96.1020308131428.14407A-100000@yin.interaccess.com>
+Reply-To: segfault@club-internet.fr
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 8bit
-Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id XAA00992
-	for <alsa-devel@alsa-project.org>; Fri, 8 Mar 2002 23:16:44 +0100
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,99 +15,94 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: kevin@kevindumpscore.com, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello
+Hi,
 
+Kevin Conder wrote:
+> 
+> > > > Kai Vehmanen wrote on Thu, 07 Mar 2002 05:41:34 -0800:
+> > > >
+> > > > Why is ALSA the better alternative?
+> > > > Have I missed some important points?
+> > >
+> > > Kevin Conder wrote:
+> > >
+> > >         OSS has one crucial advantage over ALSA: documentation!
+> > > Perhaps one day ALSA will have something like the Programmer's Guide
+> > > to OSS. Check it out at http://www.opensound.com/pguide/
+> >
+> > Daniel Caujolle-Bert:
+> >
+> >        And this is a nice troll.
+> 
+>         A troll is an email that is posted to elicit a huge amount of
+> responses. (Example: What is the best audio editor?) I don't think my
+> email was a troll. I'm amazed that it even got this response.
 
-Ok, now i tried the CS4236 driver,
-but i get still the same errors.
+	The main fact is 4Front is a commercial society, they ship
+binary only drivers. I think there are many people working in this
+society, and some are probably working on the documentation.
+	Take a look at CVS logs, i don't see dozen of devels, are
+you agree. So, i think there's a time to code THEN there a time 
+to build docs (the doxygen sections in code are oftenly updated).
 
+	This is why i think there is a non-sense in this *advandage*
+of OSS here.
 
-I think its a bug, something is really messed up.
-I also tried the old ALSA 0.5.x drivers again but i get the same errors now.
-It must have something to do with the upgrade from Kernel  2.4.9 to 2.4.18, 
-because now, no version from ALSA works anymore, no ALSA 0.9.x and no ALSA 
-0.5.x
+> 
+>         Kai was asking if he missed some important points. I think
+> documentation is an important point. I didn't imagine that it would
+> be so controversial.
+> 
+> >       Do you want to write this documentation, i guess developper
+> > team will help you.
+> 
+>         I have helped in small ways, wherever I can. I've helped with the
+> ALSA HOWTO and other projects. Unfortunately, I could never get ALSA 0.9.x
+> to compile so I'm still using 0.5 for now.
 
-As i said in the mail before ALSA 0.5.x worked with Kernel 2.4.9.
+	Already today ?. I haven'y seen a compilation problem for a long
+time now. Have you tried latest official beta release ?
 
+>         As far getting help from the developer team, they weren't very
+> patient about my compilation problems... I've posted other requests like
+> re-opening the alsa-doc mailing list that have been ignored. I don't mean
+> any offense to the ALSA developers, I realize that they're really busy
+> right now.
 
-These are the messages i get when trying to load the modules when using the 
-newest ALSA 0.9.x version.
+	Developpers can't spend too much time in user support, this is 
+another job i think. They just can show you a the way, most of the
+time.
 
+>         So I'm waiting for things to stabilize, that's why I said "one
+> day..."
 
------------------------------------
-$ modprobe snd-cs4236
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: init_module: No 
-such device
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: Hint: insmod errors 
-can be caused by incorrect module parameters, including invalid IO or IRQ 
-parameters
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: insmod 
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o failed
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: insmod snd-cs4236 
-failed
+	Why waiting, help them, if you have time, if you want help the
+world. I'm pretty sure if you try another time, you will get feedback
+from Alsa devels and Alsa client devels to write a nice Alsa
+Programmer's
+Guide, since alsa09 is largely used in native mode.
 
+> 
+> >        I'm amazed how some people are so strong with their mouth !
+> 
+>         This sentence is very confusing but I think it's supposed to be a
+> personal attack. I really don't know what to do at this point... Would
+> changing my message to "ALSA is missing something like The Programmer's
+> Guide to OSS" be better?
 
+	This mean, critisism is so easy, helping people is another
+story. And yes, the message is better, less offending (as my point
+of view, even if i'm not an Alsa devel (lucky are they ;-) ).
 
---------------------------------
-$ insmod snd-cs4236
-Using /lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_cs4236_create_R8f80cf2a
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_cs4236_mixer_R1da3cb4a
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_cs4231_timer_Rd7b3a479
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_opl3_create_R7cfd1ec5
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_opl3_hwdep_new_R0cd48230
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_cs4236_pcm_Rf5217338
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4236.o: unresolved symbol 
-snd_mpu401_uart_new_R606a10b8
------------------------------------
- $ modprobe snd-cs4232
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: init_module: No 
-such device
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: Hint: insmod errors 
-can be caused by incorrect module parameters, including invalid IO or IRQ 
-parameters
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: insmod 
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o failed
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: insmod snd-cs4232 
-failed
+Cheers.
+-- 
+73's de Daniel, F1RMB.
 
-
-----------------------------------
-$  insmod snd-cs4232
-Using /lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_cs4231_timer_Rd7b3a479
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_opl3_create_R7cfd1ec5
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_opl3_hwdep_new_R0cd48230
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_cs4231_mixer_Rb6145477
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_cs4231_pcm_R6e831eea
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_mpu401_uart_new_R606a10b8
-/lib/modules/2.4.18/kernel/sound/isa/cs423x/snd-cs4232.o: unresolved symbol 
-snd_cs4231_create_R1b369888
-
-
-
-Can someone help me with this problem?
-
-Best Regards,
- Oliver C.
-
-
+              -=- Daniel Caujolle-Bert -=- segfault@club-internet.fr -=-
+                        -=- f1rmb@f1rmb.ampr.org (AMPR NET) -=-
 
 _______________________________________________
 Alsa-devel mailing list
