@@ -1,11 +1,10 @@
-From: David B Harris <david@eelf.ddts.net>
-Subject: Is there a planned release of alsa-driver any time soon?
-Date: Mon, 12 May 2003 16:58:43 -0400
+From: Alex Romosan <romosan@sycorax.lbl.gov>
+Subject: trident problems
+Date: Mon, 12 May 2003 14:58:20 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030512165843.0d7d1996.david@eelf.ddts.net>
+Message-ID: <87addrrfnn.fsf@sycorax.lbl.gov>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1"; boundary="CA:=.82hVT:83CQ8"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -18,39 +17,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---CA:=.82hVT:83CQ8
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+i am running kernel 2.4.21-rc2 and i think since friday after i did a
+cvs update i can't get the trident module to load anymore. this is the
+output from syslog:
 
-Hey there :)
+kernel: PCI: Found IRQ 10 for device 00:0b.0
+kernel: PCI: Sharing IRQ 10 with 00:05.0
+kernel: ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:2048: AC'97 0:0 does not respond - RESET
+kernel: Trident 4DWave PCI soundcard not found or device busy
+insmod: /lib/modules/2.4.21-rc2/kernel/sound/pci/trident/snd-trident.o: init_module: No such device
+insmod: Hint: insmod errors can be caused by incorrect module parameters, including invalid IO or IRQ parameters.       You may find more information in syslog or the output from dmesg
+insmod: /lib/modules/2.4.21-rc2/kernel/sound/pci/trident/snd-trident.o: insmod snd-card-0 failed
 
-I'm one of the maintainers for the Debian ALSA packages. We've been
-getting various and sundry bug reports with respect to 0.9.3a, and I
-checked out CVS to see if perhaps it was an upstream bug that had been
-fixed, and I believe it was (more specifically, the devfs fixes).
+any ideas?
 
-However, the differences between CVS and 0.9.3a are pretty huge :) So,
-before I spend a number of hours going through it, weeding out the
-fixes, only to have 0.9.3b released the next day, I figured I'd ask
-first :)
+--alex--
 
-So, any plans?
-
-(Note: I'm subscribed to the list, no need to mail copies to me
-personally)
-
---CA:=.82hVT:83CQ8
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
-
-iD8DBQE+wAsDuCQ/g7GxJcARAvbYAJ4s02xILKZwiR5HqcMj7WhXIdNDtwCcDf77
-4MuiThtaP8vOEBrV0gcn3XM=
-=Ix1R
------END PGP SIGNATURE-----
-
---CA:=.82hVT:83CQ8--
+-- 
+| I believe the moment is at hand when, by a paranoiac and active |
+|  advance of the mind, it will be possible (simultaneously with  |
+|  automatism and other passive states) to systematize confusion  |
+|  and thus to help to discredit completely the world of reality. |
 
 
 -------------------------------------------------------
