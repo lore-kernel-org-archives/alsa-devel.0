@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000706]: SERR: Status=4210 followed by NMI reason 34 leading to reboot
-Date: Sat, 4 Dec 2004 00:36:40 +0100
-Message-ID: <2bdb2309b39b39e7a113222d96f246eb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000703]: alsa-driver-1.0.7 compile error dealing with 'remap_page_range'
+Date: Sat, 4 Dec 2004 00:53:18 +0100
+Message-ID: <07303e582b34cb258fa0ef64edcfa7b7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73B8B320
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 00:36:40 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A800316
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 00:53:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,38 +22,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=706> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=703> 
 ======================================================================
-Reported By:                dlc
-Assigned To:                
+Reported By:                Nsane457
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   706
-Category:                   PCI - ice1712
+Issue ID:                   703
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               DeMuDi1.2.0
-Kernel Version:             2.4.25
+Status:                     assigned
+Distribution:               Gentoo 2004.3
+Kernel Version:             linux-2.6.9-nitro4 (also tried mm-sources and
+gentoo-dev-sources)
 ======================================================================
-Date Submitted:             12-04-2004 00:36 CET
-Last Modified:              12-04-2004 00:36 CET
+Date Submitted:             12-03-2004 21:00 CET
+Last Modified:              12-04-2004 00:53 CET
 ======================================================================
-Summary:                    SERR: Status=4210 followed by NMI reason 34 leading
-to reboot
+Summary:                    alsa-driver-1.0.7 compile error dealing with
+'remap_page_range'
 Description: 
-System reboots when attempting to install a game under Wine.
+Since I have a crappy OEM Dell SBLive! soundcard I can't use the emu10k1
+module.  I need the emu10k1x module which is now supported in alsa but not
+in any kernel.  I followed the instructions from
+http://gentoo-wiki.com/HOWTO_ALSA_sound_mixer_aka_dmix .  But no matter
+what it won't compile. I changed the ALSA_CARDS variable to other cards,
+and just one card, and it won't work.
 ======================================================================
+
+----------------------------------------------------------------------
+ rlrevell - 12-03-04 21:11 
+----------------------------------------------------------------------
+That sounds like an incorrect build procedure.  You compile ALSA like
+this:
+
+./configure --with-cards=emu10k1x --with-kernel=/path/to/kernel/source
+
+----------------------------------------------------------------------
+ eradicator - 12-04-04 00:53 
+----------------------------------------------------------------------
+The ALSA_CARDS environment variable should be comma delimeted, but that
+isn't a factor here as it understood what you meant...
+
+rlrevell, check the log, the configure line was this:
+./configure --prefix=/usr --host=i686-pc-linux-gnu --mandir=/usr/share/man
+--infodir=/usr/share/info --datadir=/usr/share --sysconfdir=/etc
+--localstatedir=/var/lib --with-oss --with-kernel=/usr/src/linux
+--with-build= --with-isapnp=yes --with-sequencer=yes --with-cards=emu10k1x
+ens1371 intel8x0
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-04-04 00:36 dlc            New Issue                                    
-12-04-04 00:36 dlc            Distribution              => DeMuDi1.2.0     
-12-04-04 00:36 dlc            Kernel Version            => 2.4.25          
+12-03-04 21:00 Nsane457       New Issue                                    
+12-03-04 21:00 Nsane457       File Added: 2299-alsa-driver-1.0.7-r1.log         
+          
+12-03-04 21:00 Nsane457       Distribution              => Gentoo 2004.3   
+12-03-04 21:00 Nsane457       Kernel Version            => linux-2.6.9-nitro4
+(also tried mm-sources and gentoo-dev-sources)
+12-03-04 21:03 Nsane457       File Added: straceinfo.log                    
+12-03-04 21:11 rlrevell       Note Added: 0002713                          
+12-04-04 00:53 eradicator     Note Added: 0002714                          
 ======================================================================
 
 
