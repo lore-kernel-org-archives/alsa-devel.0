@@ -1,13 +1,22 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000943]: cmipci freezes the whole system
-Date: Fri, 25 Feb 2005 16:07:31 +0100
-Message-ID: <37d9da755409007f66a7bb3c82823090@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [PATCH 1/5] emu10k1 SB Live: Master volume and
+	front channels via fxbus 8,9
+Date: Fri, 25 Feb 2005 11:59:56 -0500
+Message-ID: <1109350797.9681.30.camel@krustophenia.net>
+References: <421A3A3A.6070009@glocalnet.net>
+	 <Pine.LNX.4.58.0502220925540.1748@pnote.perex-int.cz>
+	 <1109109856.31071.44.camel@krustophenia.net>
+	 <Pine.LNX.4.58.0502230918440.1748@pnote.perex-int.cz>
+	 <421C4586.5090000@glocalnet.net>
+	 <Pine.LNX.4.58.0502230956490.1748@pnote.perex-int.cz>
+	 <s5hwtszshhr.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 26C45242
-	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 16:07:32 +0100 (MET)
+Received: from mustang.oldcity.dca.net (mustang.oldcity.dca.net [216.158.38.3])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 11A9D23E
+	for <alsa-devel@alsa-project.org>; Fri, 25 Feb 2005 17:59:58 +0100 (MET)
+In-Reply-To: <s5hwtszshhr.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,77 +26,27 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@alsa-project.org, "mikma@users.sourceforge.net" <mikma@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, 2005-02-23 at 11:22 +0100, Takashi Iwai wrote:
+> IIRC, the problem was stated in the case that both front and
+> multi-channel streams are output at the same time.
+> 
+> I think this patch is fine (although not tested yet).  At least, it
+> will decrease the difference between Live and Audigy.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=943> 
-======================================================================
-Reported By:                aisotton
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   943
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian Sid (Unstable)
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-25-2005 16:06 CET
-Last Modified:              02-25-2005 16:07 CET
-======================================================================
-Summary:                    cmipci freezes the whole system
-Description: 
-Hi,
+Agreed.  This should be applied, as soon as we have some successful test
+reports.  I would like for it to be in 1.0.9.  But we should be careful
+as so many patches will have gone into the emu10k1 driver since 1.0.8.
 
-I have a Terratec Aureon 5.1 PCI sound card, and an on-board 3Com 3c940
-gigabit ethernet controller (the board is an Asus A7V600). The sound
-card uses the cmipci module, and the ethernet card the sk98lin module.
+I'll test this on my SBLive this weekend.  And update some of the bug
+reports so the users who were really bothered by this can give some
+feedback.
 
-Playing sound and using the network at the same time freezes the sytem
-after a short time (generally 15-30 seconds); nothing is logged or
-displayed (I checked syslog, kern.log and /var/log/messages), it just
-freezes everything, forcing a reset of the machine (and after the
-subsequent reboot my mouse isn't recognized any more, but I don't think
-that matters).
+Lee
 
-I am using that network card since more than a year, and it never gave a
-problem; thus I think the bug is in the cmipci driver (the system never
-froze before I installed the sound card).
-
-I did a memtest, but my memory seems to be ok.
-
-This happens with all kernels I tested, specifically:
-
-Debian kernel-image-2.6.10-1-k7-4
-Debian kernel-image-2.6.9-2-k7-5
-Debian kernel-image-2.6.8-2-k7-13
-Debian kernel-image-2.6.10-1-k7-4 with PREEMPT deactivated
-Vanilla kernel 2.6.10, compiled with the same options as Debian
-kernel-image-2.6.10-1-k7-4.
-
-
-======================================================================
-
-----------------------------------------------------------------------
- aisotton - 02-25-05 16:07 
-----------------------------------------------------------------------
-I'd be glad to help debugging the driver, I just don't know where to start
-:-(
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-25-05 16:06 aisotton       New Issue                                    
-02-25-05 16:06 aisotton       Distribution              => Debian Sid (Unstable)
-02-25-05 16:06 aisotton       Kernel Version            => 2.6.10          
-02-25-05 16:07 aisotton       Note Added: 0003734                          
-======================================================================
 
 
 
