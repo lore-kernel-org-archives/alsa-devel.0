@@ -1,8 +1,9 @@
-From: Dirk Aust <dirk_aust@gmx.de>
-Subject: intek8x0 driver
-Date: Sun, 20 Jul 2003 13:04:51 +0200
+From: holborn <holborn@telefonica.net>
+Subject: ALSA sequencer. Maybe a bug??
+Date: Sun, 20 Jul 2003 18:36:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307201304.51654.dirk_aust@gmx.de>
+Message-ID: <200307201836.48382.holborn@telefonica.net>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="us-ascii"
@@ -20,23 +21,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
-I have some difficulties using the /dev/dsp devices, when trying to use the 
-call: 
 
-mmap2(NULL, 16384, PROT_READ, MAP_SHARED, 5, 0) = -1 EIO (Input/output error)
+Hi!
 
-I can open the device:
-open("/dev/dsp", O_RDONLY|O_LARGEFILE) = 5
+I'm not really sure but ....
 
-and make use of a lots ioctl.
+if you open the seqencer for OUTPUT or DUPLEX and the program starts two or 
+more threads, the program "eats" 100% of system time.
 
-If I'm not root, I even can't read() from that device, even though I'm the 
-owner of /dev/dsp0.
+Is that normal?
 
-Any ideas?
+Josep
 
-Best Regards
+
+
+
+
 
 
 
