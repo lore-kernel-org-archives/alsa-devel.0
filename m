@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000576]: PCM device number wrong for iec958 on emu10k1
-Date: Fri, 12 Nov 2004 12:28:46 +0100
-Message-ID: <313a82fe725c4f09ca8d8db51412b155@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000497]: cdplayer and midi does'n work
+Date: Fri, 12 Nov 2004 12:29:15 +0100
+Message-ID: <bb316750e9caaa18744bdadfaeae59ca@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E793D280
-	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:28:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1BFE0185
+	for <alsa-devel@alsa-project.org>; Fri, 12 Nov 2004 12:29:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,59 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=576> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=497> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                maciekb
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   576
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   497
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Resolution:                 fixed
+Distribution:               Debian unstable
+Kernel Version:             2.6.7
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-09-2004 18:23 CEST
-Last Modified:              11-12-2004 12:28 CET
+Date Submitted:             09-11-2004 16:46 CEST
+Last Modified:              11-12-2004 12:29 CET
 ======================================================================
-Summary:                    PCM device number wrong for iec958 on emu10k1
+Summary:                    cdplayer and midi does'n work
 Description: 
-Package: libasound2
-Version: 1.0.6-2
-Severity: normal
-Tags: patch
-
-Hi,
-
-passthrough of AC3 sound from xine with my Soundblaster
-Live Value does not work any more with the current version
-of ALSA. Xine reported snd_pcm_open(), no such device. I
-suspect that the number of the iec958 PCM device has been
-erroneously changed in EMU10K1.conf. After changing it
-(back?) to 3, it works correctly, like with previous
-versions. See the following mini-patch:
-
---- /usr/share/alsa/cards/EMU10K1.conf~ 2004-09-26 19:17:05.000000000
-+0200
-+++ /usr/share/alsa/cards/EMU10K1.conf  2004-10-08 22:29:14.000000000
-+0200
-@@ -223,7 +223,7 @@
-	slave.pcm {
-		type hw
-		card $CARD
--		device 2
-+               device 3
-        }
-        hooks.0 {
-                type ctl_elems
-									
-This may probably the same as bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=274951.
-
-Best Regards,
-Martin (L)
-
--- System Information:
-Debian Release: 3.1
-  APT prefers testing
-  APT policy: (500, 'testing')
-Architecture: i386 (i686)
-Kernel: Linux 2.6.7-1-386
-Locale: LANG=C, LC_CTYPE=C
-
-Versions of packages libasound2 depends on:
-ii  libc6                       2.3.2.ds1-16 GNU C Library: Shared
-libraries an
-
--- no debconf information
+I have A7V600-X motherboard with via8237 chipset
+My cdplayer does'n play and i do not have midi. 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 10-13-04 11:52 
+ maciekb - 10-13-04 18:23 
 ----------------------------------------------------------------------
-OK, I assume that version mismatch is the root of the problem.
-Linux 2.6.8.1 still contains ALSA 1.0.4, not 1.0.6.  This bug
-report can be closed.
+It was it, I bought new comp and didn't check (think) that cable is
+connected.
+Sorry for disturbing.
 
 ----------------------------------------------------------------------
- tiwai - 10-13-04 15:58 
+ tiwai - 10-13-04 18:28 
 ----------------------------------------------------------------------
-Closed.
+ok, closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-09-04 18:23 jdthood        New Issue                                    
-10-11-04 10:12 pzad           Note Added: 0002071                          
-10-11-04 10:55 jdthood        Note Added: 0002072                          
-10-13-04 11:52 jdthood        Note Added: 0002119                          
-10-13-04 15:58 tiwai          Status                   new => resolved     
-10-13-04 15:58 tiwai          Resolution               open => fixed       
-10-13-04 15:58 tiwai          Assigned To               => tiwai           
-10-13-04 15:58 tiwai          Note Added: 0002124                          
-11-12-04 12:28 tiwai          Status                   resolved => closed  
+09-11-04 16:46 maciekb        New Issue                                    
+09-11-04 16:46 maciekb        Distribution              => Debian unstable 
+09-11-04 16:46 maciekb        Kernel Version            => 2.6.7           
+09-13-04 15:32 tiwai          Note Added: 0001745                          
+09-15-04 22:17 maciekb        Note Added: 0001765                          
+09-20-04 17:43 tiwai          Note Added: 0001790                          
+10-13-04 18:23 maciekb        Note Added: 0002130                          
+10-13-04 18:28 tiwai          Status                   new => resolved     
+10-13-04 18:28 tiwai          Resolution               open => not an issue
+10-13-04 18:28 tiwai          Assigned To               => tiwai           
+10-13-04 18:28 tiwai          Note Added: 0002131                          
+11-12-04 12:29 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
