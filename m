@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Mon, 28 Mar 2005 02:00:34 +0200
-Message-ID: <e4e1bc9dc622c3db119afd3ae413c721@bugtrack.alsa-project.org>
+Date: Mon, 28 Mar 2005 02:19:44 +0200
+Message-ID: <04de41fc3b9804ca1779265339987050@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3724D187
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 02:00:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5ABD225D
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 02:19:44 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,46 +39,13 @@ Distribution:
 Kernel Version:             2.6.11.5
 ======================================================================
 Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-28-2005 02:00 CEST
+Last Modified:              03-28-2005 02:19 CEST
 ======================================================================
 Summary:                    no audio in - unable to record
 Description: 
 I can only get a weak hiss from the card even with the recording level up
 full
 ======================================================================
-
-----------------------------------------------------------------------
- msillence - 03-28-05 01:52 
-----------------------------------------------------------------------
-Forum info:
-
-I would suggest you open a new thread on your local forum, if you can't
-find an existing one.
-It looks like they have forums for each country/area/language...
-
-Copy the below and add http:// in front just the h t t p : / / bit not the
-generated [^] !
-
-forums.creative.com/creativelabs/board/message?board.id=soundblaster&message.id=14182
-
-PS. Sorry about the multiple edits but the url parser on this site chops
-the link at the ? and adds [^] which looks confusing. Anyone know where
-one reports bugs for the bug tracker...
-
-
-Message:
-
-Subject: Request for Linux support...
-
-I recently purchased a soundblaster live 24 card.
-As dramatic as the improvement is over the on boad sound, the board is
-very poorly supported in linux and suffers from stuttering and can not
-record (the main reason for purchase)
-
-Please, please, please could you release enough documentation so someone
-can write an open driver for your hardware...
-
-
 
 ----------------------------------------------------------------------
  jcdutton - 03-28-05 02:00 
@@ -88,6 +55,11 @@ Sound card matrix has been updated to note point
 
 Please note that I have signed NDA agreements with Creative, and they
 still won't give me this information.
+
+----------------------------------------------------------------------
+ msillence - 03-28-05 02:19 
+----------------------------------------------------------------------
+Thanks James.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -110,6 +82,7 @@ Date Modified  Username       Field                    Change
 03-28-05 01:46 msillence      Note Edited: 0004226                         
 03-28-05 01:52 msillence      Note Edited: 0004226                         
 03-28-05 02:00 jcdutton       Note Added: 0004227                          
+03-28-05 02:19 msillence      Note Added: 0004228                          
 ======================================================================
 
 
