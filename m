@@ -1,12 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
+From: Roger Williams <raw@qux.com>
 Subject: Re: hdsp multiface pci.
-Date: Wed, 22 Jan 2003 13:19:16 -0500
+Date: 22 Jan 2003 13:30:50 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301221814.h0MIEnx0013504@spider.tela.com>
-References: <m3znpvhi19.fsf@grouper.coelacanth.com>
+Message-ID: <m3el75ghph.fsf@grouper.coelacanth.com>
+References: <200301221814.h0MIEnx0013504@spider.tela.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "20 Jan 2003 12:01:38 EST."
-             <m3znpvhi19.fsf@grouper.coelacanth.com>
+In-Reply-To: <200301221814.h0MIEnx0013504@spider.tela.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,28 +16,34 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roger Williams <raw@qux.com>
+To: Paul Davis <paul@linuxaudiosystems.com>
 Cc: markknecht@attbi.com, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->This would explain why snd_hdsp works (i.e. you can playback and
->record through the default I/O), although amixer doesn't do anything:
->the driver doesn't have to set up any default connections, because
->those are part of the FPGA reset state.  I would be surprised if
+>>>>> Paul Davis <paul@linuxaudiosystems.com> writes:
 
-actually, the driver does have to set up default connections, which
-are zero gain for every possible routing unless the line_outs_monitor
-option is set to a non-zero value. in that case, all h/w input streams
-and all s/w playback streams are routed at unity gain to the two line
-out channels, with stereo assignment following an odd->left,
-even->right mapping.
+  >> This would explain why snd_hdsp works (i.e. you can playback and
+  >> record through the default I/O), although amixer doesn't do
+  >> anything: the driver doesn't have to set up any default
+  >> connections, because those are part of the FPGA reset state...
 
-as i've told mark independently, the hdsp-9652 has different register
-assignments for the mixer, and until recently i did not have that
-information from rme. the hdsp-9652 effectively has no mixer at this
-time on linux.
+  > actually, the driver does have to set up default connections,
+  > which are zero gain for every possible routing...
 
---p
+Yes, I understand that that's what the driver is _supposed_ to do.
+That's how it works on my HDSP PCI and Cardbus systems.  But isn't it
+true that the current driver doesn't actually set up any of those
+zero-gain connections for the HDSP 9652?
+
+This is the only point that I was trying to make to Mark -- the
+default unity-gain connections (i.e. playback -> H/W output) that he
+has been using are FPGA configuration defaults, not explicitly set up
+by the driver.
+
+-- 
+Roger Williams <raw@qux.com>
+Qux Tool & Die, Middleborough, Massachusetts
+// Omne tulit punctum qui misquit utile dulci //
 
 
 -------------------------------------------------------
