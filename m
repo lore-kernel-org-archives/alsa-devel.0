@@ -1,35 +1,39 @@
-From: Eckhard Jokisch <e.jokisch@u-code.de>
-Subject: sbLive! -Drive digital IOs exchanged?
-Date: Wed, 24 Dec 2003 22:20:57 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312242220.57516.e.jokisch@u-code.de>
-Reply-To: e.jokisch@u-code.de
+From: "Peter Neuman" <neuman_peter@hotmail.com>
+Subject: RE: Works Audigy2 ZS with ALSA? [please replay me]
+Date: Thu, 25 Dec 2003 16:49:10 +0000
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <LAW11-F11XTztJQBF5t0001e216@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: alsa-user@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello guys,
-I just noticed that the controls ( or their names) of the digital inputs of 
-Live!-drive are changed. If I want ot get sound out of the coaxial inputs I 
-have to raise the optocal s "sliders" in alsamixer as well as in 
-alsermixergui. 
+Hi,
 
-Merry Xmas to all of you
+I have a Audigy2 and works fine with ALSA 0.9.8, before
+I buy the Audigy2 ZS is Audigy2 ZS ready for ALSA?
 
-Eckhard Jokisch
+
+Please replay me, very big thanks!
+P.S.: please update
+http://www.alsa-project.org/alsa-doc/, under "Creative
+Labs" is not "Audigy2" please make new(is better for
+newbies)...
+
+_________________________________________________________________
+Schützen Sie Ihren Posteingang vor unerwünschten E-Mails. 
+http://www.msn.de/antispam/prevention/junkmailfilter Jetzt 
+Hotmail-Junk-Filter aktivieren!
 
 
 
