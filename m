@@ -1,8 +1,8 @@
 From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Strange alsa mixer controls
-Date: Wed, 16 Jul 2003 18:16:49 +0100
+Subject: Problems with snd_pcm_wait() Incorrect return values.
+Date: Wed, 16 Jul 2003 19:33:57 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F158881.5090904@superbug.demon.co.uk>
+Message-ID: <3F159A95.3060507@superbug.demon.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -15,29 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Simple mixer control 'Mic Select',0
-   Capabilities:
-   Mono:
-
-I get this with a SB Live and also other sound cards.
-I think that it should be an on/off switch, but there seems to be no way 
-to actually switch it on and off in amixer or alsamixer.
-
-Other entries are like
-Simple mixer control 'Mic Boost (+20dB)',0
-   Capabilities: pswitch pswitch-joined
-   Playback channels: Mono
-   Mono: Playback [off]
-which is fine.
-
-So, what are these controls like "Mic Select" for, and how does one get 
-them to work in alsamixer.
+I cannot ever seem to get a return value of 1.
+I always get return values of 0, regardless of the timeout value.
+Can anyone help me?
 
 Cheers
 James
+
+
+
+Extract from documentation: -
+  int snd_pcm_wait  	(   	snd_pcm_t *  	 pcm,
+		
+		int 	timeout
+	)  	
+   	
+
+Wait for a PCM to become ready.
+
+Parameters:
+     pcm  	PCM handle
+     timeout  	maximum time in milliseconds to wait
+
+Returns:
+     a positive value on success otherwise a negative error code
+
+Return values:
+     0  	timeout occurred
+     1  	PCM stream is ready for I/O
+
+Examples:
+     /test/latency.c, and /test/pcm.c.
 
 
 
