@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000059]: On au8820 left and right channels are swapped
-Date: Mon, 28 Mar 2005 04:27:34 +0200
-Message-ID: <de600c650ddc4bda4033155ca7407438@bugtrack.alsa-project.org>
+Date: Mon, 28 Mar 2005 04:28:12 +0200
+Message-ID: <7263b4a5cafead47ca428491af9b3f6b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 94FEB253
-	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:27:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A241253
+	for <alsa-devel@alsa-project.org>; Mon, 28 Mar 2005 04:28:12 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been ASSIGNED.
+The following issue has been UPDATED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=59> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.6.2
 ======================================================================
 Date Submitted:             02-13-2004 11:40 CET
-Last Modified:              03-28-2005 04:27 CEST
+Last Modified:              03-28-2005 04:28 CEST
 ======================================================================
 Summary:                    On au8820 left and right channels are swapped
 Description: 
@@ -50,6 +50,85 @@ Relationships       ID      Summary
 ----------------------------------------------------------------------
 related to          0000949 Randomly, left and right tracks are swaped
 ======================================================================
+
+----------------------------------------------------------------------
+ kernel_bug - 02-21-04 15:40 
+----------------------------------------------------------------------
+If you think that i have swapped my speakers, it is not true: mixer works
+correctly.
+
+----------------------------------------------------------------------
+ Tim - 03-02-04 02:56 
+----------------------------------------------------------------------
+I have exactly the same problem: Since I changed from an old OSS driver
+version with precompiled parts to ALSA, in more or less 95% of all cases
+the channels are swapped. (au8820)
+
+----------------------------------------------------------------------
+ kernel_bug - 04-09-04 11:54 
+----------------------------------------------------------------------
+Ok, with last release (1.0.4) it works almost correctly. Channels swapped
+only on first playing after loading modules. After this, all works
+correctly.
+
+----------------------------------------------------------------------
+ mjander - 04-09-04 18:35 
+----------------------------------------------------------------------
+This bug is believed to be fixed in latest patch posted on OpenVortex devel
+list. Will be sent to the ALSA guys now.
+
+----------------------------------------------------------------------
+ mjander - 04-17-04 18:59 
+----------------------------------------------------------------------
+THis bug has been fixed in alsa-driver version beyond 1.0.4 (to be released
+at a unknown time). A patch is available at:
+http://docencia.mat.utfsm.cl/~mjander/aureal/alsa/aureal-2.6.5.diff.gz
+The credits for the bug discovery are for "claudia" (VortexOfSound
+forum).
+
+Best Regards
+
+----------------------------------------------------------------------
+ kernel_bug - 04-26-04 17:04 
+----------------------------------------------------------------------
+Channels are still swapped (always) when you are playing something first
+time after loading modules. At least on my system, the following steps
+always result in channel swapping:
+1. unload ALSA modules (I usually do it with `service alsasound stop`)
+2. Load them back
+3. Play the sound.
+
+----------------------------------------------------------------------
+ mjander - 04-26-04 23:27 
+----------------------------------------------------------------------
+Could you send me more details ? I really don't understand exactly what do
+you mean.
+email: mjander(at)users[dot].sourceforge[dot]net
+
+Thanks
+
+----------------------------------------------------------------------
+ jdthood - 03-10-05 15:31 
+----------------------------------------------------------------------
+> Channels are still swapped (always) when you are playing something
+> first time after loading modules.
+
+Submitter: Is this bug still present?  Are the channels swapped just
+after the module is loaded?
+
+----------------------------------------------------------------------
+ mjander - 03-10-05 16:44 
+----------------------------------------------------------------------
+AFAIK this bug was solved a long time ago. It was supposedly caused by a
+incorrect routing table initialization (bug found by Claudia). That fact,
+i guess, leaved some random routes interferening with other intentional
+routes.
+
+Did anyone still get this bug or may we close it ?
+
+Best Regards
+
+Manuel
 
 ----------------------------------------------------------------------
  kernel_bug - 03-10-05 21:25 
