@@ -1,13 +1,13 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000005]: alsa-driver-1.0.2: unresolved symbols in snd.o
-Date: Tue, 27 Jan 2004 22:18:57 +0100 (CET)
+Date: Tue, 27 Jan 2004 22:37:16 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127211857.44EAB25009@server.perex-int.cz>
+Message-ID: <20040127213716.448954904B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA18669
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:19:18 +0100
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA19273
+	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:37:22 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,7 +22,7 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005
+http://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000005
 ======================================================================
 Reporter:                   ZlatkO
 Handler:                    perex
@@ -38,7 +38,7 @@ Distribution:               Slackware 8.1
 Kernel Version:             2.4.24
 ======================================================================
 Date Submitted:             01-27-2004 21:31 CET
-Last Modified:              01-27-2004 22:18 CET
+Last Modified:              01-27-2004 22:37 CET
 ======================================================================
 Summary:                    alsa-driver-1.0.2: unresolved symbols in snd.o
 Description: 
@@ -83,6 +83,13 @@ make[1]: *** [sound.o] Error 1
 make[1]: Leaving directory `/usr/src/alsa-driver-1.0.2/acore'
 make: *** [compile] Error 1
 
+----------------------------------------------------------------------
+ perex - 01-27-2004 22:37 CET 
+----------------------------------------------------------------------
+Ok, can you add '#define sound_class NULL' after removing of suggested line
+(on the same place)? Note that the rebuilded alsa-driver package has this
+fix included.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -93,6 +100,7 @@ Date Modified  Username       Field                    Change
 01-27-04 22:08 perex          Priority                 normal => immediate 
 01-27-04 22:15 perex          Category                 CORE - control => 0_compilation problem_!!!
 01-27-04 22:18 khali          Bugnote Added: 0000007                       
+01-27-04 22:37 perex          Bugnote Added: 0000008                       
 ======================================================================
 
 
