@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000531]: alsamixer.1: Please explain the display
-Date: Mon, 20 Dec 2004 14:39:55 +0100
-Message-ID: <9784a62d05e939c48676b37ff1306cc6@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000734]: please add command-line control of initial display
+Date: Mon, 20 Dec 2004 14:39:05 +0100
+Message-ID: <3a5c8d8c618365964ce6c00c9b98b52b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BC5672E7
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:39:55 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3DBBF2E7
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:39:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,61 +24,49 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=531> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=734> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   531
+Issue ID:                   734
 Category:                   alsamixer
-Reproducibility:            always
-Severity:                   minor
+Reproducibility:            N/A
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 06:26 CEST
+Date Submitted:             12-19-2004 21:27 CET
 Last Modified:              12-20-2004 14:39 CET
 ======================================================================
-Summary:                    alsamixer.1: Please explain the display
+Summary:                    please add command-line control of initial display
 Description: 
-On the man page describe the display, e.g. the "------" seen over some
-controls means what, etc.
+The submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286194 says:
+
+> Since 1.0.7 alsamixer starts up by default in Playback mode. This is
+> most annoying as I frequently want to mess with my capture devices. A
+> command-line option giving the mode (playback, capture or channels) to
+> start up in would be most useful.
+
 ======================================================================
-
-----------------------------------------------------------------------
- jdthood - 12-19-04 21:24 
-----------------------------------------------------------------------
-Another Debian user has submitted Debian bug report
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=286192 asking
-that the new way of displaying controls be documented.  He writes:
-
-> When using alsamixer 1.0.7 for the first time I panicked because I
-> couldn't see my capture devices any more!
->
-> A little googling found the answer, but the man page should mention
-> this, and it should also mention how to switch views.
-
-
-See http://bugs.debian.org/286192 for the full report.
 
 ----------------------------------------------------------------------
  tiwai - 12-20-04 14:39 
 ----------------------------------------------------------------------
-More detailed description was added to CVS.
+Added -V option now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 06:26 jdthood        New Issue                                    
-09-24-04 08:24 pzad           Note Added: 0001856                          
-12-19-04 21:24 jdthood        Note Added: 0002850                          
+12-19-04 21:27 jdthood        New Issue                                    
 12-20-04 14:39 tiwai          Status                   new => resolved     
 12-20-04 14:39 tiwai          Resolution               open => fixed       
 12-20-04 14:39 tiwai          Assigned To               => tiwai           
-12-20-04 14:39 tiwai          Note Added: 0002876                          
+12-20-04 14:39 tiwai          Note Added: 0002875                          
 ======================================================================
 
 
