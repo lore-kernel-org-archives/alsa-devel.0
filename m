@@ -1,18 +1,15 @@
-From: jfm3 <jfm3@ouroboros-complex.org>
-Subject: Re: hdsp driver status
-Date: 03 Jul 2003 16:20:49 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: hdsp driver status
+Date: Thu, 3 Jul 2003 13:37:51 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1057263648.1244.24.camel@localhost.localdomain>
-References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
-	 <3F044FF5.2010602@boosthardware.com>  <3F0456A5.9000600@boosthardware.com>
-	 <1057252106.7192.61.camel@lotte>
-	 <1057252985.1241.20.camel@localhost.localdomain>
-	 <3F047C89.9080100@boosthardware.com>
+Message-ID: <NDBBLGIKBJENLAMOLFHGKEIDCKAB.mknecht@controlnet.com>
+References: <32880.81.50.18.84.1057263758.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F047C89.9080100@boosthardware.com>
+In-Reply-To: <32880.81.50.18.84.1057263758.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,31 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: ALSA Developer List <alsa-devel@lists.sourceforge.net>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-07-03 at 14:57, Patrick Shirkey wrote:
-> > I have an 0xb Multiface. I haven't been able to load the firmware with
-> > 0.9.4, either with the PCI or the PCMCIA interface. [...]
-> 
-> Try using this script if you don't already have something similar. I now 
-> get sound through my line out:
-> 
-> --------------
-> modprobe snd-hdsp; hdsploader;
-> 
-> # route jack inputs to line out
-> # left
-> amixer -c 1 cset numid=5 26,26,4000
-> amixer -c 1 cset numid=5 28,26,4000 [...]
+>
+> The documentation is the driver code. Paul is in contact with people from
+> RME. As of today I'm not, but I'll try to contact them. I'd be as happy as
+> you to see the driver working smoothly in all possible configurations.
+>
+> Thomas
+>
 
-Thanks for the script. My problem isn't getting amixer commands right, I
-don't even get that far. As my original message said, I can't load the
-firmware. hdsploader fails. I don't have the output of how it fails with
-me, but I've posted it to alsa-devel before.
--- 
-(jfm3  2838 BCBA 93BA 3058 ED95  A42C 37DB 66D1 B43C 9FD0)
+Thomas,
+   We RME users are very happy to have you on our side!
+
+   Can you give some insight (if you have enough info to comment!) into how
+much of the driver for the HDSP/DF/MF is also used for the HDSP 9652? I'm
+sort of concerned that after 6 months of no mixer on the HDSP 9652, the
+DF/MF mixer will get fixed, and then I'll find out it has nothing to do the
+HDSP 9652 and be let down again.
+
+   Is it one common design, or is the mixer different?
+
+Thanks,
+Mark
+
 
 
 
