@@ -1,8 +1,8 @@
 From: barat@medien.uni-weimar.de
-Subject: plughw versus hw (fwd)
-Date: Wed, 30 Jul 2003 22:32:02 +0200 (CEST)
+Subject: mmaped play in multichannel mode (fwd)
+Date: Wed, 30 Jul 2003 22:37:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0307302230580.14824@spring>
+Message-ID: <Pine.LNX.4.53.0307302236410.14824@spring>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
@@ -18,9 +18,26 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 hi,
-i read that plughw does some magic conversion for samplerate and stuff. 
-how does this magic work. whats the main differenc in the concept of hw 
-and plughw. 
+i have written some code for mmaped-play. it works so far for up to 2 
+channels, but in multichannel-mode i get some mismatch about available 
+buffersize or exactly a snd_pcm_mmap_commit error.
+the essential part is the following:
+
+  snd_pcm_mmap_begin(alsa_handler, &area, &offset, &frames_transmit);
+
+  /* this is specific to interleaved streams (or non-interleaved
+   * streams with only one channel) */
+  outbuffer = ((char *) area->addr + (area->first + area->step * offset) / 
+8);
+
+  //write data
+  memcpy(outbuffer, data, (frames_transmit * bytes_per_sample));
+ 
+  commitres = snd_pcm_mmap_commit(alsa_handler, offset, frames_transmit);
+
+i guess that outbuffer has a wrong size. does somebody have any idea about 
+this outbuffer calculation?
+
 
 thanx and regards
 
