@@ -1,14 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000701]: Here is a speaker-test man page
-Date: Thu, 2 Dec 2004 13:44:39 +0100
-Message-ID: <3e2ba0432400549d0cf580a65886a11c@bugtrack.alsa-project.org>
+From: "Tony Whitfield" <t_whitfield_cx@merlin.net.au>
+Subject: =?iso-8859-1?b?UHJlLXF1YWxpZnksIGFuZCBhcHBseSBmb3IgaG9tZSBbbG9hbnNdIGFuZCBbbW9ydGdhZ2VzXQ==?=
+Date: Thu, 02 Dec 2004 12:46:36 +0000
+Message-ID: <1101991596.6678@merlin.net.au>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AE913275
-	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 13:44:39 +0100 (MET)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 368FF275
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 13:46:07 +0100 (MET)
+Received: from merlin.net.au (unknown [220.172.230.121])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4677B3D5B0
+	for <alsa-devel@alsa-project.org>; Thu,  2 Dec 2004 13:46:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,40 +25,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-885=
+9-1">
+</head>
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=701> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   701
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             12-02-2004 13:44 CET
-Last Modified:              12-02-2004 13:44 CET
-======================================================================
-Summary:                    Here is a speaker-test man page
-Description: 
-Attached is a speaker-test man page which I believe was submitted to Debian
-by James Courtier-Dutton.  Please proof read it before including it.
-
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-02-04 13:44 jdthood        New Issue                                    
-12-02-04 13:44 jdthood        File Added: speaker-test.1                    
-======================================================================
-
+Re-fin<font style=3Dfont-size:1px>.</font>ance now, even with bad-cre<fon=
+t style=3Dfont-size:1px>.</font>dit!<br>
+<br>
+* Best Re-fin<font style=3Dfont-size:1px>.</font>ance Ra<font style=3Dfon=
+t-size:1px>.</font>te for cre<font style=3Dfont-size:1px>.</font>dit chal=
+lenged.<br>
+* Best Cust<font style=3Dfont-size:1px>.</font>omer Ser<font style=3Dfont=
+-size:1px>.</font>vice<br>
+* Low<font style=3Dfont-size:1px>.</font>est Inte<font style=3Dfont-size:=
+1px>.</font>rest-Rat<font style=3Dfont-size:1px>.</font>es in Years<br>
+* SA<font style=3Dfont-size:1px>.</font>VE $<font style=3Dfont-size:1px>.=
+</font>100-$<font style=3Dfont-size:1px>.</font>400 per month<br>
+<br>
+Our easy ap<font style=3Dfont-size:1px>.</font>plica<font style=3Dfont-si=
+ze:1px>.</font>tion only takes one minute.<br>
+<br>
+<a href=3D"http://2y69hg2sxmyqow.mort-g-age-now.com/?gr3">Cli<font style=3D=
+font-size:1px>.</font>ck  He<font style=3Dfont-size:1px>.</font>re</a>
 
 
 
