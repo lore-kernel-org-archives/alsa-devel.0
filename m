@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000782]: Poor digital aidio quality
-Date: Sun, 23 Jan 2005 04:52:57 +0100
-Message-ID: <2ea3ba3d5b60c0f17747f96a1843f79e@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000843]: alsactl does not report error status when it can't restore levels for all cards
+Date: Sun, 23 Jan 2005 11:23:57 +0100
+Message-ID: <2f30de2bc983819f410355964c41d9c1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FE6526F
-	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2005 04:52:58 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 28C94199
+	for <alsa-devel@alsa-project.org>; Sun, 23 Jan 2005 11:23:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,137 +22,51 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=843> 
 ======================================================================
-Reported By:                ddemmer
-Assigned To:                fmoraes
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   782
-Category:                   PCI - emu10k1x
+Project:                    ALSA - utils
+Issue ID:                   843
+Category:                   alsactl
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core
-Kernel Version:             2.6.9-1.681_FC3.i686
+Status:                     new
 ======================================================================
-Date Submitted:             01-03-2005 16:20 CET
-Last Modified:              01-23-2005 04:52 CET
+Date Submitted:             01-23-2005 11:23 CET
+Last Modified:              01-23-2005 11:23 CET
 ======================================================================
-Summary:                    Poor digital aidio quality
+Summary:                    alsactl does not report error status when it can't
+restore levels for all cards
 Description: 
-Attempting to play MP3 files with RealPlay or xmms using ALSA output
-results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
-I can change the xmms configuration to use libOSS.so instead of libALSA
-which fixes the problem.
+# modprobe snd-dummy
+# alsactl restore Dummy
+No state is present for card Dummy
+# echo $?
+0
 
-The gnome "Detect Sound Card" utility works fine and plays it's sound
-fine.
+It would be helpful if alsactl returned a nonzero status in the event
+that it is unable to restore settings for the specified card (or, in
+case it's just "alsactl restore", for one of the cards).
 
-The gnome volume control does not affect the output level when using
-libOSS.
+It would be especially helpful if this status were other than 1 so
+that "No state is present" could be distinguished from "No such
+device".
 
-I have by now muted everything in the alsamixer except the Master volume.
-
-Playing a CD works fine.
+# alsactl restore 2
+alsactl: set_controls:1119: snd_ctl_open error: No such device
+# echo $?
+1
 ======================================================================
-
-----------------------------------------------------------------------
- fmoraes - 01-22-05 23:29 
-----------------------------------------------------------------------
-Some of the problems you describe (device busy) cannot be fixed unless you
-either configure dmix usage for your system or disable the sound server
-which is probably using the sound, preventing other OSS enabled
-applications to use the sound card.
-
-The emu10k1x doesn't have true hardware mixing, so this has to be done in
-software with dmix.
-
-----------------------------------------------------------------------
- ddemmer - 01-23-05 04:52 
-----------------------------------------------------------------------
-Thanks for the comments, folks. It is looking like things are wandering
-away from the original complaint, so I suppose I could be persuaded to
-drop this as a bug report. However, I do have some issues outsanding,
-though they're getting to the point more of satisfying my curiosity.
-
-Anyway, in answer to tiwai, I see the definition of plughw:0,0 in
-/etc/alsa/alsa.conf but I don't see a way to get xmms to use it, so I
-can't try that.
-
-In answer to fmoraes 22 Jan 05 comment: I agree, and I have been trying to
-go through the ALSA web site to get the dmix set up. I'm not sure if it's
-working though: Rhythmbox no longer complains on starting up, but xmms
-does. xmms will play once you clear the error. However, xmms is still
-garbled if I use the default PCM device: only hw:0,0 works. Realplay now
-doesn't work at all. xmms and Rhythmbox lock each other out -- if dmix was
-working should they both be able to play at the same time?
-
-My .asoundrc now looks like this:
-
-pcm.emu10k1x {
-  type hw
-  card 0
-}
-
-ctl.emu10k1x {
-  type hw
-  card 0
-}
-
-pcm.emu10k1x {
-	type plug
-	slave.pcm "dmixer"
-    }
-
- 
-    pcm.dmixer  {
-	type dmix
-	ipc_key 1024
-	slave {
-	    pcm "hw:1,0"
-	    period_time 0
-	    period_size 1024
-	    buffer_size 4096
-	    rate 44100
-	}
-	bindings {
-	    0 0
-	    1 1
-	}
-    }
- 
-    ctl.dmixer {
-	type hw
-	card 0
-    }
-
-Is this right? Also, is there a quick way to try it out -- right now I am
-rebooting to be sure it "takes", which limits my eagerness to experiment.
-When I try to use aplay as suggested in the ALSA pages to test with an mp3
-file I just get screeching. 
-
-And finally: please let me know if this is getting too far off the mark
-and should take my questions to some other forum.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 16:20 ddemmer        New Issue                                    
-01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
-01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
-01-03-05 16:49 stransky       Issue Monitored: stransky                    
-01-04-05 13:43 ddemmer        Issue Monitored: ddemmer                     
-01-04-05 13:43 ddemmer        Issue End Monitor: ddemmer                    
-01-16-05 14:57 fmoraes        Note Added: 0003217                          
-01-16-05 20:43 ddemmer        Note Added: 0003221                          
-01-19-05 18:34 ddemmer        Note Added: 0003310                          
-01-19-05 20:45 tiwai          Note Added: 0003317                          
-01-22-05 23:29 fmoraes        Note Added: 0003383                          
-01-23-05 04:52 ddemmer        Note Added: 0003386                          
+01-23-05 11:23 jdthood        New Issue                                    
 ======================================================================
 
 
