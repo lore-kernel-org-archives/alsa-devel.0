@@ -1,15 +1,14 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: alsa-lib plugin devel
-Date: Mon, 24 Jan 2005 18:25:26 +0100
-Message-ID: <1106587526.8058.72.camel@pegasus>
-References: <Pine.HPX.4.33n.0501240933490.4480-100000@studcom.urz.uni-halle.de>
-	 <41F522DE.30702@xmission.com> <s5hk6q2u659.wl@alsa2.suse.de>
-	 <41F5272D.9060101@xmission.com>  <s5hfz0qu4xo.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
+Date: Mon, 24 Jan 2005 18:36:09 +0100
+Message-ID: <390eaed4a745c39932af53e182b8a20e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hfz0qu4xo.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D194321C
+	for <alsa-devel@alsa-project.org>; Mon, 24 Jan 2005 18:36:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,42 +18,103 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Brad Midgley <bmidgley@xmission.com>, Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> > > We can create a new API to list up the available PCMs.
-> > > It will help applications, I guess.
-> > > 
-> > > The problem is that plugins which aren't bound to drivers like btsco
-> > > are hard to detect whether they really work in advance.
-> > > Do we need a probe callback for such a plugin?
-> > 
-> > I suppose there are problems listing things because the plugins behave 
-> > differently. I don't fully understand the problem.
-> > 
-> > But... it would be a big inconvenience for the user to be told to know 
-> > the device name or go look it up in .asoundrc and/or /etc/asound.conf. 
-> > The {linphone,xine,gnomemeeting} gui should be able to discover and list 
-> > the plugin devices.
-> 
-> I think putting marks in the PCM defintions is the easiest way.
-> 
-> Another question about listing devices: shall we list up the entries
-> like "front", "rear", etc?
-> 
-> IMO, the function should list up only the basic PCMs.  I.e. the
-> default analog output and the SPDIF (or whatever additional outputs).
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+======================================================================
+Reported By:                jbrsubscribe
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   836
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               Suse
+Kernel Version:             2.6.8-24.10-smp
+======================================================================
+Date Submitted:             01-19-2005 18:19 CET
+Last Modified:              01-24-2005 18:36 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
+slider control for Surround/Center/LFE/Side
+Description: 
+Unable to set volume control for Surround/Center/LFE/Side due to the fact
+that the sliders for these entities do not function in alsamixer and
+gamix. The sliders cannot be manipulated. The only functional sliders are
+PCM, PC Speaker and the two (2) Capture sliders.
+In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
+appear at all.
+======================================================================
 
-from the Bluetooth standpoint we need only to list the input and
-outputs, because there is nothing more defined. Neither for SCO or for
-the A2DP devices.
+----------------------------------------------------------------------
+ jbrsubscribe - 01-24-05 14:40 
+----------------------------------------------------------------------
+tiwai,
+I would like to join IgOR, mab and the others in thanking you for your
+support. You've been very helpfull. Just one thing..is there some document
+(a kind of HOW-TO) where one can find all of the parameters/options for
+the Intel HDA (C-Media 9880) card? This would make things so much easier.
 
-Regards
+----------------------------------------------------------------------
+ jbrsubscribe - 01-24-05 18:36 
+----------------------------------------------------------------------
+I tried this and here is what happened:
+1 - the IEC958 selector appears in alsamixer and QAMix.
+2 - The Channel (2ch/6ch) selector does NOT appear in alsamixer.
+3 - the red light on the optical out appears (indicating there is some
+output there), but I cannot get sound or record anything from that optical
+out.
+Question: Is there a method to change the output frequency (44 KHz,
+96KHz)of the SPDIF?
 
-Marcel
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-19-05 18:19 jbrsubscribe   New Issue                                    
+01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
+01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
+01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-19-05 18:27 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-19-05 18:36 tiwai          Status                   new => resolved     
+01-19-05 18:36 tiwai          Resolution               open => not an issue
+01-19-05 18:36 tiwai          Assigned To               => tiwai           
+01-19-05 18:36 tiwai          Note Added: 0003311                          
+01-19-05 18:36 tiwai          Assigned To              tiwai =>            
+01-20-05 01:07 jbrsubscribe   Status                   resolved => feedback
+01-20-05 01:07 jbrsubscribe   Resolution               not an issue => reopened
+01-20-05 01:07 jbrsubscribe   Note Added: 0003320                          
+01-20-05 01:51 jbrsubscribe   Note Added: 0003321                          
+01-20-05 11:52 1g0R           Note Added: 0003325                          
+01-20-05 18:42 jbrsubscribe   Note Added: 0003328                          
+01-20-05 19:11 tiwai          Note Added: 0003331                          
+01-21-05 00:30 jbrsubscribe   Note Added: 0003335                          
+01-21-05 05:56 1g0R           Note Added: 0003338                          
+01-21-05 08:16 mab            Note Added: 0003339                          
+01-21-05 11:08 1g0R           Note Added: 0003340                          
+01-21-05 12:04 tiwai          Note Added: 0003343                          
+01-21-05 12:05 tiwai          Note Added: 0003344                          
+01-21-05 16:55 mab            Note Added: 0003348                          
+01-21-05 17:26 tiwai          Note Added: 0003349                          
+01-21-05 22:08 1g0R           Note Added: 0003370                          
+01-22-05 09:04 mab            Note Added: 0003373                          
+01-22-05 09:06 mab            Note Edited: 0003373                         
+01-22-05 12:33 1g0R           Note Added: 0003374                          
+01-22-05 21:30 mab            Note Added: 0003378                          
+01-22-05 21:43 mab            Note Edited: 0003378                         
+01-23-05 02:43 1g0R           Note Added: 0003385                          
+01-23-05 11:52 1g0R           Note Added: 0003387                          
+01-24-05 12:18 tiwai          Note Added: 0003391                          
+01-24-05 13:46 1g0R           Note Added: 0003392                          
+01-24-05 14:40 jbrsubscribe   Note Added: 0003393                          
+01-24-05 18:36 jbrsubscribe   Note Added: 0003394                          
+======================================================================
 
 
 
