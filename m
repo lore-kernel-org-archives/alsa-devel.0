@@ -1,13 +1,9 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: runtime->dma_addr
-Date: Wed, 3 Mar 2004 19:29:19 +0100 (CET)
+From: novamail@novanix.com
+Subject: AD1888 sound driver mainly working but optical problems.
+Date: Wed, 03 Mar 2004 14:15:02 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403031928440.2089@pnote.perex-int.cz>
-References: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E1Aybpe-0004En-Rm@server3.novanix.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,31 +12,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Gupta, Kshitij" <kshitij@ti.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 3 Mar 2004, Gupta, Kshitij wrote:
+I have the AD1888 on the P4P800S working to some degree.  I have the alsa drivers and it reads the card as: SIS SI7012 and Chip as obviously AD1888.   All sound seems to come out the headphone port no problem, however the optical out is a bit more flaky.  I seem to have mplayer working via optical out as long as I have the following set in alsamixer:
 
-> hi,
-> 	Can someone please explain me what is  the difference between
-> runtime->dma_addr and runtime->dma_area
-> 
-> where runtime = substream->runtime
-> 
-> I am getting a very strange problem where I am getting a rumtime->dma_addr
-> value as 0 while runtime->dma_area is a proper value.  
-> Any hints will be helpful
 
-dma_area is virtual address (visible from the CPU view)
-dma_addr is the physical bus address (visible from the hardware)
+IEC958 Playback Source:  AC-Linkv (A/D conv also works but often has a tinny sound to it)
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+IEC958 Playback AC97-SPSA: 0
+
+
+However, when I go to play a wav file (using aplay or mplayer) something goes wrong and it automatically mutes the IEC958 item in alsamixer.  On my previous motherboard I remember there being an option to convert wav type audio to the optical jack without a problem,  is there some way I can still do that?
+
+
+ 
+
+
+Thanks for everyones help on this driver.
+                 Thank You For Your Time,
+                                                      Nick Daum
+                                         http://www.Novanix.com
 
 
 -------------------------------------------------------
