@@ -1,12 +1,11 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: userspace pcm/midi for firewire based cards
-Date: Tue, 16 Nov 2004 08:47:55 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0411160837260.755-100000@studcom.urz.uni-halle.de>
-References: <4198FC54.7000309@esat.kuleuven.ac.be>
+From: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
+Subject: Conversion from S16 format to ALAW
+Date: Tue, 16 Nov 2004 08:59:05 +0100
+Message-ID: <4199B349.4080404@ma.tech.ascom.ch>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4198FC54.7000309@esat.kuleuven.ac.be>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,45 +15,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pieter Palmers <ppalmers@esat.kuleuven.ac.be>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Pieter Palmers wrote:
-> I'm working on the development of DM1000 based firewire based devices
-> (ESI QuataFire 610, M-Audio FireWire devices, ...).
-> The question that arises is: userspace driver or kernel driver.
-> Personally I favor the userspace driver, because we can use the FW libs
-> that are already present for some of the stuff. On the other hand it
-> seems to me that programming a kernel driver would be ?easier? than
-> implementing a plugin.
+Hi all,
 
-Probably not, both plugins and kernel drivers implement more or less
-the same stuff.
+I am trying to sample and play alaw streams on my iPAQ 5500. The HW 
+driver registers support for S16_LE only. So, to achieve my purpose, I 
+register a plugin like following in my alsa.conf file:
 
-> If I'm right, that would require providing all interfaces/
-> capabilities the alsa-lib middle layer provides.
+pcm.alaw {
+	type alaw
+	slave {
+		pcm  "hw:0.0"
+		format S16_LE
+	}
+}
 
-No, the PCM plugin interface isn't that big.  Look at the plugins in
-the alsa-lib/src/pcm directory (pcm_null.c is very simple).
+With this, when I use arecord to capture sound, I get an error "arecord: 
+set_params:832: Sample format not available".
 
-> what about the latency/realtime behaviour of the two options?
+Is there something wrong in my configuration setup or am I missing 
+something ? Any clues or suggestions would be appreciated.
 
-You get the function calls made by the applications, the latency
-depends on what your plugin does with the data.  I'd guess the
-bottleneck would be the userspace firewire library.
-
-> Is there an equivalent plugin mechanism for MIDI stuff?
-
-rawmidi devices are implemented as plugins (currently, there are "hw"
-and "virtual" plugins).  Or you could implement a sequencer client
-(see <http://www.informatik.uni-halle.de/~ladischc/usbmidid_old.html>
-for an (obsolete) userspace USB MIDI driver).
-
-
-Best regards,
-Clemens
-
+Regards,
+Manu
 
 
 -------------------------------------------------------
