@@ -1,19 +1,15 @@
-From: Juan Linietsky <coding@reduz.com.ar>
-Subject: Re: [
-Date: Mon, 1 Apr 2002 00:02:13 -0300
+From: catsman<catsman@hanmir.com>
+Subject: (no subject)
+Date: Sun, 31 Mar 2002 22:12:23 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020401000214.092f1c53.coding@reduz.com.ar>
-References: <200203311327.PAA17899@gate.perex.cz>
+Message-ID: <200203311314.PAA29956@alsa.alsa-project.org>
+Reply-To: hicdcdcom@yahoo.co.kr
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/html; charset="ks_c_5601-1987"
 Content-Transfer-Encoding: base64
-Received: from john.anime.com.ar ([64.113.39.216])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA09393
-	for <alsa-devel@alsa-project.org>; Mon, 1 Apr 2002 04:58:50 +0200
-Received: from server (c00lius@OL16-140.fibertel.com.ar [24.232.140.16])
-	by john.anime.com.ar (8.9.3/8.9.3) with SMTP id WAA32690
-	for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2002 22:58:27 -0400
-In-Reply-To: <200203311327.PAA17899@gate.perex.cz>
+Received: from localhost ([211.109.215.31])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id PAA29956
+	for <alsa-devel@alsa-project.org>; Sun, 31 Mar 2002 15:14:02 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -25,11 +21,38 @@ List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gU3VuLCAzMSBNYXIgMjAwMiAyMjoyNTo1NiArMDkwMA0KY2F0c21hbjxjYXRzbWFuQGhh
-bm1pci5jb20+IHdyb3RlOg0KDQo+IHd3dy5oaWNkY2QuY29tDQo+IA0KPiAtILz2vcWwxbrO
-vcMgvsa3ocDHILz2vcWwxbrOILn2xrDAuyDFrLivx8+8xbytILjewM/AuyDB1rzFvt8gvPa9
-xbDFus4gw7O4rrChILXLtM+02S4NCj4gLSAgvPa9xbDFus69wyDIuL3FILbHtMIgtOS6r7Xu
-wLi3ziDHz73HsOa/7CDBprjxILi7vu64rr+hIFu89r3FsMW6zl2287DtILLAfiEgtN6+xsHW
-vcOx4iC52bb4tM+02S7H0bjewM8stNnAvSC+38jEu+e/68DatMIgv/i5rrq4seKzqsO3us7G
-xMDPurix4rimILLAtK23r8HWvLy/5A0KPiANCg0KDQpzZXJpb3VzbHksIGhvdyBkbyB5b3Ug
-Z3V5cyBzdGFuZCB0aGlzPyA6KQ0KDQo=
+PGh0bWw+PGhlYWQ+DQo8bWV0YSBodHRwLWVxdWl2PSJjb250ZW50LXR5cGUiIGNvbnRlbnQ9
+InRleHQvaHRtbDsgY2hhcnNldD1ldWMta3IiPg0KPHRpdGxlPnd3dy5oaWNkY2QuY29tPC90
+aXRsZT4NCjxtZXRhIG5hbWU9ImdlbmVyYXRvciIgY29udGVudD0iTmFtbyBXZWJFZGl0b3Ig
+djUuMCI+DQo8L2hlYWQ+DQo8Qk9EWSB0ZXh0PWJsYWNrIHZMaW5rPXB1cnBsZSBhTGluaz1y
+ZWQgbGluaz1ibHVlIGJnQ29sb3I9d2hpdGU+DQo8VEFCTEUgY2VsbFNwYWNpbmc9MCBjZWxs
+UGFkZGluZz0wIHdpZHRoPTc5MCBhbGlnbj1jZW50ZXI+DQo8VEJPRFk+DQo8VFI+DQo8VEQg
+YWxpZ249bWlkZGxlIHdpZHRoPTgwMD4NCjxUQUJMRSBjZWxsU3BhY2luZz0wIGJvcmRlckNv
+bG9yRGFyaz13aGl0ZSB3aWR0aD03NTANCmJvcmRlckNvbG9yTGlnaHQ9YmxhY2sgYm9yZGVy
+PTE+DQo8VEJPRFk+DQo8VFI+DQo8VEQgd2lkdGg9NzUwIGJvZGVyPSIwIj4NCjxQPjxGT05U
+IHNpemU9Mj4tILz2vcWwxbrOvcMmbmJzcDu+xrehwMcmbmJzcDs8U1RST05HPrz2vcWwxbrO
+PC9TVFJPTkc+DQq59sawwLs8U1RST05HPiA8L1NUUk9ORz48Rk9OVCBjb2xvcj0jZmYwMDAw
+PjxGT05UDQpjb2xvcj0jMDA4MGZmPjxTVFJPTkc+xay4rzwvU1RST05HPjwvRk9OVD48L0ZP
+TlQ+PEZPTlQNCmNvbG9yPSMwMDAwMDA+x8+8xbytILjewM/AuyDB1rzFvt8gvPa9xbDFus4g
+w7O4rrChILXLtM+02S48QlI+PC9GT05UPjwvRk9OVD48Rk9OVA0Kc2l6ZT0yPi0mbmJzcDsm
+bmJzcDu89r3FsMW6zr3DIMi4vcUgtse0wiC05Lqvte7AuLfOIMfPvcew5r/sIMGmuPEguLu+
+7riuv6EgWzxTVFJPTkc+PEZPTlQNCmNvbG9yPSNmZjAwMDA+vPa9xbDFus5dPC9GT05UPjwv
+U1RST05HPrbzsO0gssB+ISC03r7Gwda9w7HiDQq52bb4tM+02S7H0bjewM8stNnAvSC+38jE
+u+e/68DatMIgv/i5rrq4seKzqsO3us7GxMDPurix4rimILLAtK23r8HWvLy/5DwvRk9OVD48
+L1A+PC9URD48L1RSPjwvVEJPRFk+PC9UQUJMRT4NCjxUUj4NCjxURCB2QWxpZ249Y2VudGVy
+IGFsaWduPW1pZGRsZSB3aWR0aD0iMTAwJSIgaGVpZ2h0PTA+DQo8UD48SUZSQU1FIGlkPWdm
+cmFtZSBib3JkZXI9MCBuYW1lPWdmcmFtZWkgbWFyZ2luV2lkdGg9MCBmcmFtZVNwYWNpbmc9
+MA0KbWFyZ2luSGVpZ2h0PTAgc3JjPSJodHRwOi8vd3d3LmhpY2RjZC5jb20iIGZyYW1lQm9y
+ZGVyPTAgd2lkdGg9Nzg3DQpzY3JvbGxpbmc9bm8gaGVpZ2h0PTEzMDA+PC9JRlJBTUU+PC9Q
+PjwvVEQ+PC9UUj48L1RCT0RZPjwvVEFCTEU+DQo8SFIgY29sb3I9IzhiYjVlMj4NCjxIUiBj
+b2xvcj0jOGJiNWUyPg0KPEhSIGNvbG9yPSM4YmI1ZTI+DQo8RElWIGFsaWduPWNlbnRlcj4N
+CjxGT05UIGZhY2U9sby4siBzaXplPTIgY29sb3I9IzhiYjVlMj66uyC43sDPwLogwaS6uMXr
+vcW6ziCxx7DtILvnx9e/oSDAx7DFDQrBprjxv6EgW7GksO1dtvMgx6W9w7XIILGksO0guN7A
+z8DUtM+02S48L0ZPTlQ+PEJSPg0KPEEgc3R5bGU9IlBBRERJTkctUklHSFQ6IDNweDsgUEFE
+RElORy1MRUZUOiAzcHg7IEZPTlQtU0laRTogMTJweDsNClBBRERJTkctQk9UVE9NOiAzcHg7
+IENPTE9SOiAjZmZmZjAwOyBQQURESU5HLVRPUDogM3B4OyBGT05ULUZBTUlMWTogsby4sjsN
+CkJBQ0tHUk9VTkQtQ09MT1I6ICM4YmI1ZTI7IFRFWFQtREVDT1JBVElPTjogbm9uZSINCmhy
+ZWY9Im1haWx0bzpoaWNkY2Rjb21AeWFob28uY28ua3IiPrz2vcWwxbrOPC9BPg0KPEZPTlQg
+Y29sb3I9IzhiYjVlMiAgc2l6ZT0yIGNvbG9yPSM4YmI1ZTI+ufbGsMC7IMWsuK/Hz73DuOkg
+vPa9xbDFus7Ds7iusKEgwMy3577uIMH9tM+02S48L0ZPTlQ+DQo8L0RJVj4NCjxIUiBjb2xv
+cj0jOGJiNWUyPg0KPC9CT0RZPjwvaHRtbD4NCg==
