@@ -1,21 +1,11 @@
-From: Frank Barknecht <barknech@ph-cip.uni-koeln.de>
-Subject: Re: ALSA is in 2.5!!!
-Date: Thu, 14 Feb 2002 00:59:53 +0100
-Message-ID: <20020214005953.G1302@fliwatut.scifi>
-References: <Pine.LNX.4.31.0202132022200.495-100000@pnote.perex-int.cz>
+From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
+Subject: Re: second repost: oops on intel8x0
+Date: Thu, 14 Feb 2002 01:21:43 +0100 (CET)
+Message-ID: <a4f0gi$4dq$1@quimby2.netfonds.no>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Received: from mailrelay.netcologne.de (mailrelay.netcologne.de [194.8.194.96])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id BAA02242
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 01:00:07 +0100
-Received: from fliwatut.scifi (dial-194-8-196-166.netcologne.de [194.8.196.166])
-	by mailrelay.netcologne.de (8.11.6/8.11.6) with ESMTP id g1E002s03504
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 01:00:02 +0100 (MET)
-Received: (from freak@localhost)
-        by fliwatut.scifi (8.12.0.Beta5/8.12.0.Beta5/Debian 8.12.0-1) id g1DNxrTR003279
-        for alsa-devel@alsa-project.org; Thu, 14 Feb 2002 00:59:53 +0100
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.31.0202132022200.495-100000@pnote.perex-int.cz>
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20020214001543.V2103@shurdeek.cb.ac.at>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,24 +14,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Peter Surda <shurdeek@panorama.sth.ac.at>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela hat gesagt: // Jaroslav Kysela wrote:
+On Thu, 14 Feb 2002, Peter Surda wrote:
 
-> the big moment in ALSA existence is here. Linus integrated ALSA into
-> 2.5 kernel tree!!
-Here in Cologne the Carneval ("Fastelovend") just ended, now it's time to
-start the next party.
+<oopses snipped>
 
-My dearest congratulation: Alaaf!
--- 
-                                                 __    __
- Frank Barknecht       ____ ______   ____ __ trip\ \  / /wire ______
-                      / __// __  /__/ __// // __  \ \/ /  __ \\  ___\	
-                     / /  / ____/  / /  / // ____// /\ \\  ___\\____ \	
-                    /_/  /_____/  /_/  /_//_____// /  \ \\_____\\_____\
-                                                /_/    \_\ 
+>After they happen, sound card remains silent and module blocked.
+
+Decode the oopses with ksymoops, then we'll have a better chance of
+figuring out what the problem is.
+
+--
+Erik I. Bolsø | email: <knan at mo.himolde.no>
+The UNIX philosophy basically involves giving you enough rope to
+hang yourself.  And then a couple of feet more, just to be sure.
+
+
 
 _______________________________________________
 Alsa-devel mailing list
