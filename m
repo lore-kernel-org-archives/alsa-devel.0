@@ -1,10 +1,13 @@
-From: karsten wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH] reenable MIDI for usx2y
-Date: Sun, 27 Mar 2005 14:00:12 +0200 (CEST)
-Message-ID: <20050327120012.26503.qmail@web26510.mail.ukl.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
+Date: Sun, 27 Mar 2005 16:08:56 +0200
+Message-ID: <c69f9ab59060c2e758f71490c39fa4e1@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-129010921-1111924812=:25813"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 712F7231
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 16:08:56 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,70 +17,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Devel Alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---0-129010921-1111924812=:25813
-Content-Type: text/plain; charset=iso-8859-1
-Content-Id: 
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Clemens,
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+======================================================================
+Reported By:                sHINOBI
+Assigned To:                jcdutton
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   907
+Category:                   PCI - ca0106
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.10-1.766_FC3
+======================================================================
+Date Submitted:             02-13-2005 11:36 CET
+Last Modified:              03-27-2005 16:08 CEST
+======================================================================
+Summary:                    The sound is choppy and sometimes played at wrong
+speed
+Description: 
+The soundcard is working, although the sound is choppy when playing sound
+at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+======================================================================
 
-usx2y needs to specify exactly what usb-endpoints to use.
-this feature got lost lately and is restored by attached
-patch. Please apply!
+----------------------------------------------------------------------
+ sHINOBI - 03-27-05 01:13 
+----------------------------------------------------------------------
+I'd like to update issue, with version 1.0.9rc2 the sound problems in games
+are  gone in tested games (KIS, NwN and Majesty seems to be OK), I'm
+observing sound problems only in plaympeg program for now. I'll try to
+test more applications.
+Thanks for your great work guys.
 
-rgds,
-Karsten
+----------------------------------------------------------------------
+ Cimmo - 03-27-05 16:08 
+----------------------------------------------------------------------
+I've the same board from MSI: with xmms all is ok selecting default device,
+but I tried to hear sound also from the rear reading this
+http://alsa.opensrc.org/index.php?page=FAQ028 
+and selecting pcm.ch40dup in xmms device alsa configuration the sound
+become choppy and faster, is there a solution?
 
-Canonical Patch:
-------------------------------------------------------
-Don't detect MIDI usb-endpoint, if quirk specifies it
+See my .asoundrc in attachment.
 
-If for QUIRK_MIDI_FIXED_ENDPOINT a struct
-snd_usb_midi_endpoint_info's
-members out_ep or in_ep are !=3D 0,
-they shall be treated as exactly what usb-endpoints to use.
-This rule was lost due to a recent change in usbmidi.c
-and is reestablished by attached patch.
+Thanx for your support!
 
-signed-of-by: Karsten Wiese <annabellesgarden@yahoo.de>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-13-05 11:36 sHINOBI        New Issue                                    
+02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
+02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
+02-13-05 11:38 sHINOBI        Note Added: 0003583                          
+03-02-05 13:22 Juha           Note Added: 0003770                          
+03-19-05 18:24 jcdutton       Note Added: 0004064                          
+03-22-05 22:14 tiwai          Note Added: 0004138                          
+03-22-05 22:56 sHINOBI        Note Added: 0004144                          
+03-23-05 12:56 tiwai          Note Added: 0004155                          
+03-23-05 19:40 sHINOBI        Note Added: 0004185                          
+03-27-05 01:13 sHINOBI        Note Added: 0004219                          
+03-27-05 16:08 Cimmo          Note Added: 0004222                          
+======================================================================
 
 
-=09
-
-=09
-	=09
-___________________________________________________________=20
-Gesendet von Yahoo! Mail - Jetzt mit 250MB Speicher kostenlos - Hier anme=
-lden: http://mail.yahoo.de
---0-129010921-1111924812=:25813
-Content-Type: text/x-diff; name="usbmidi.c.patch"
-Content-Description: usbmidi.c.patch
-Content-Disposition: inline; filename="usbmidi.c.patch"
-
-Index: usbmidi.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbmidi.c,v
-retrieving revision 1.45
-diff -U3 -r1.45 usbmidi.c
---- usbmidi.c	24 Mar 2005 07:17:17 -0000	1.45
-+++ usbmidi.c	25 Mar 2005 13:46:50 -0000
-@@ -1492,7 +1492,8 @@
- 		case QUIRK_MIDI_FIXED_ENDPOINT:
- 			memcpy(&endpoints[0], quirk->data,
- 			       sizeof(snd_usb_midi_endpoint_info_t));
--			err = snd_usbmidi_detect_endpoints(umidi, &endpoints[0], 1);
-+			err = (endpoints[0].in_ep || endpoints[0].out_ep) ? 0 :
-+				snd_usbmidi_detect_endpoints(umidi, &endpoints[0], 1);
- 			break;
- 		case QUIRK_MIDI_YAMAHA:
- 			err = snd_usbmidi_detect_yamaha(umidi, &endpoints[0]);
-
---0-129010921-1111924812=:25813--
 
 
 -------------------------------------------------------
