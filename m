@@ -1,14 +1,15 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: [App development] - Need list of hardware devic
-Date: Fri, 11 Jul 2003 10:24:07 +0200 (CEST)
+From: "Thomas Charbonnel" <thomas@undata.org>
+Subject: Re: hdsploader 1.1
+Date: Fri, 11 Jul 2003 12:01:06 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030711102407.pochini@shiny.it>
-References: <200307082029.21801.gkajmowi@tbaytel.net>
+Message-ID: <34483.80.11.199.28.1057917666.squirrel@www.undata.org>
+References: <45125.81.51.162.201.1057777378.squirrel@www.undata.org>
+        <32898.24.225.156.130.1057884141.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200307082029.21801.gkajmowi@tbaytel.net>
+In-Reply-To: <32898.24.225.156.130.1057884141.squirrel@webmail.ouroboros-complex.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,58 +18,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Garrett Kajmowicz <gkajmowi@tbaytel.net>
+To: jfm3@ouroboros-complex.org
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> I start the system. The red light on the Multiface is on. No sound
+> drivers are loaded yet. My modules.conf is as you see it.
+>
+> [jfm3@localhost jfm3]$ sudo hdsploader
+> hdsploader - firmware loader for RME Hammerfall DSP cards
+> Looking for HDSP + Multiface or Digiface cards :
+> Card 0 : RME Hammerfall DSP at 0xe9020000, irq 12
+> Upload firmware for card hw:0
+> Firmware uploaded for card hw:0
+> Card 1 :
+>
 
-On 09-Jul-2003 Garrett Kajmowicz wrote:
-> I'm just begining my first ALSA application.  As a part of the GUI I need to
-> prompt the user to select from a list the soundcard and input device for both
-> recording and playback.  How would you suggest doing this?  Examples welcome.
+Note thant you don't need to run hdsploader as root.
+If the hdsp appears as card 0, I suspect the modules get loaded at some
+point by some other mechanism. Did you tweak your init scripts ?
 
-Try this:
+> The red light goes out. I can get sound if I mess around with gamix and
+> amixer enough, although I still haven't figured out what all the numbers
+> mean.
+>
+> Shouldn't that be card 3 as the hdsp? In modules.conf I have the hdsp at
+> index 3. I don't understand exactly what the card "index" means.
+>
+> If I have snd-virmidi not commented out and follow the above procedure,
+> I get a kernel oops when I run hdsploader but otherwise the same
+> results.
+>
 
+I thought the maximum alsa snd_card_limit was 8, maybe I'm wrong ? That
+could explain the oops...
 
-int err, i, n, cardnum;
-char devname[8], cardname[32];
-snd_ctl_card_info_t *hw_info;
+Why do you use the -k flag with options ?
 
-
-  // Scans all installed cards
-  snd_ctl_card_info_alloca(&hw_info);
-  cardnum=-1;
-  ctlhandle=0;
-
-  while (snd_card_next(&cardnum)>=0 && cardnum>=0) {
-    sprintf(devname, "hw:%d", cardnum);
-    if ((err=snd_ctl_open(&ctlhandle, devname, 0))<0) {
-      printf("snd_ctl_open(%s) Error: %s\n", devname, snd_strerror(err));
-      continue;
-    }
-    if ((err=snd_ctl_card_info(ctlhandle, hw_info))>=0) {
-      if (!strcmp(snd_ctl_card_info_get_driver(hw_info), "Echoaudio")) {
-        strcpy(card, devname);
-        strcpy(cardname, snd_ctl_card_info_get_name(hw_info));
-        printf("Card found: %s  (%s)\n", snd_ctl_card_info_get_longname(hw_info), devname);
-        break;
-      }
-    } else {
-      printf("snd_ctl_card_info(%s) Error: %s\n", devname, snd_strerror(err));
-      exit(1);
-    }
-    snd_ctl_close(ctlhandle);
-    ctlhandle=0;
-  }
-
-  if (!ctlhandle) {
-    printf("No Echoaudio cards found, sorry.\n");
-    return(0);
-  }
+Thomas
 
 
-
-Bye.
 
 
 
