@@ -1,17 +1,15 @@
-From: "Marc Titinger" <titinger@digigram.com>
-Subject: RE: dmix plugin
-Date: Wed, 12 Feb 2003 19:04:28 +0100
+From: ljp <ljp@llornkcor.com>
+Subject: Re: Re: [linux-audio-dev] Re: why is no-one responding
+	are you all just a bunch of &*^%&^%^& wits???
+Date: 12 Feb 2003 10:56:58 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <08F1D234AF91E540BC1F43889E2A6AA70AEBFD@digiexch.digigram.com>
+Message-ID: <1045072621.25120.65.camel@shippin>
+References: <E18j00T-0003MM-00@sc8-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from digiexch.digigram.com (mail.digigram.com [213.30.172.230])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA09898
-	for <alsa-devel@alsa-project.org>; Wed, 12 Feb 2003 19:03:54 +0100
-Content-Class: urn:content-classes:message
+In-Reply-To: <E18j00T-0003MM-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,101 +18,95 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: linux-audio-dev <linux-audio-dev@music.columbia.edu>, ardour-dev <ardour-dev@lists.sourceforge.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-This looks Great !
+On Wed, 2003-02-12 at 09:49, Paul Davis wrote:
+> >If you are interested, I am sure people would pay for binaries of
+> >ardour.I would. I know other musicans that would.I could get more
+> >musicans to. Personally, I have been waiting for it since I first heard
+> >about it. Why not release something? 
+> 
+> because i am tired of downloading open source projects that are still
+> so clearly under development. i am tired of the impression that this
+> creates. when i get hold of something like freqtweak, which i can
+> compile or get binaries for, and the thing just works ... that is the
+> right impression. the wrong impression comes from stupid bugs,
+> inability to cleanly exit the program (still a core problem with
+> ardour), and functionality that is obviously necessary and either
+> missing or incomplete.
 
-I haven't yet experimented a lot with .asoundrc files, so please excuse =
-me if the following questions are irrelevant or OTO, but:
+ahhh, you are a perfectionist! I see your point. Open source software is
+always under dev, unless it's not maintained. You _could_ release
+'alpha' versions clearly stating that it is alpha condition. 
 
-I was wondering if one could define a plug pcm, that offers two stereo =
-pairs routed with policy "average" to a single-stereo "hw" slave.
+> 
+> 				      People are waiting! Most open
+> >source projects release binaries throughout their development phase.
+> >Instead of adding cool new features for years on end, why not release
+> >something that musicans can use. 
+> 
+> that's precisely what i am trying to do. however, my definition of
+> "something that musicians can use" might be different from yours.
 
-My understanding is that until this dmix pcm, there was no "official" =
-means supported by alsalib to achieve software mix of streams comming =
-from differents apps.
+Well, obviously, ardour isn't at the 'release' stage, but perhaps beta
+or even alpha. Perhaps someone else with more time, could release a
+binary version for you. Pick one or two target dists, and release alpha
+binaries or such. You'd certainly get more bug reports. :)
+ 
+> jazz++ has been around for a long time, and is available as a
+> binary. why isn't it widely loved and used? because it really isn't
+> very good. i know that i tried to use it many times, and found it,
+> well, frankly i found it completely awful. 
+ 
+> ardour still has lots of significant bugs and a few design issues that
+> need addressing before i want the general population judging it. to
+> release ready-to-run copies now, or even tarballs that would help
+> people who can't/won't use CVS to try to compile it ... well, all i
+> think it would do is to increase the number of people who have "been
+> there, don't want to go back" with respect to the program.
 
-Could I have one app open the first pair of my hypothetic plug pcm, and =
-another app open the second pair ?
-I guess this would be managed like a concurrent access to a pcm, and =
-block or fail the second open() call.=20
+Personally, I keep checking back to projects that are in some kind of
+beta stage, or too buggy to use and look interesting, to see what things
+have changed. Heck, I'll even use software day to day that crashes
+constantly, if I think it's useful enough. (mozilla - early stages comes
+to mind)
 
-Would'nt it be nice to create a dmix pcm "behind"  a such plug pcm, to =
-provide mix in a transparent way ?
+ 
+> when ardour is in a state where i believe (rightly or wrongly) that a
+> reasonably typical target user can sit down and just use it without
+> encountering bugs when recording a typical 12-32 track piece, there
+> will be binaries.
 
-thanks for your light over this=20
-Marc.
-
-
-
-> -----Original Message-----
-> From: Jaroslav Kysela [mailto:perex@suse.cz]
-> Sent: mercredi 12 f=E9vrier 2003 10:46
-> To: ALSA development
-> Subject: [Alsa-devel] dmix plugin
->=20
->=20
-> Hi all,
->=20
-> 	a next step to get the lowlatency sharing of exclusive=20
-> PCM devices=20
-> is in ALSA CVS - the dmix (direct mixing) plugin..
-> 	How it works? Basically, the playback in driver runs forewer
-> without any xrun detection. The ring buffer (only just played=20
-> areas) is
-> also silenced in each interrupt. Then we have multiple clients and a
-> process (server) which passes the file descriptor of playback=20
-> devices to
-> them. The server also takes care about freeing of used shm memory and
-> semaphore.
-> 	The big step forward is that we share one mmaped ring buffer
-> accross many processes and each process can add samples into=20
-> it without
-> any process<->kernel swaps. Also, each processes are independant, thus
-> failing of one doesn't break others. It's not multithreaded,=20
-> we don't need
-> this mechanism.
->=20
-> Here is an .asoundrc example configuration (plugin defaults=20
-> are 48kHz,=20
-> stereo, signed 16-bit little endian):
->=20
-> pcm.dmix {
-> 	type dmix
-> 	ipc_key 1234	# must be unique for all dmix plugins!!!!
-> 	slave {
-> 		pcm "hw:0,0"
-> 	}
-> }
->=20
-> 	Then try: 'aplay -Dplug:dmix <filename>' on multiple consoles.
->=20
-> 	Note that it's still alpha code and there are some not correctly
-> implemented functions (like drain, rewind and more). Note=20
-> that you'll need
-> also the latest ALSA driver from CVS, because the silence settings was
-> enhanced a bit and bug in the timer code will crash your machine.
->=20
-> 					Enjoy it!
-> 						Jaroslav
->=20
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
->=20
->=20
->=20
+People are willing now to support you financially now, Paul.Paypal might
+be a good idea, if you dont mind begging till ardour is at a point where
+you can release to the general public.
+ 
+> --p
+> 
+> 
 > -------------------------------------------------------
 > This SF.NET email is sponsored by:
-> SourceForge Enterprise Edition + IBM + LinuxWorld =3D Something 2 See!
+> SourceForge Enterprise Edition + IBM + LinuxWorld = Something 2 See!
 > http://www.vasoftware.com
 > _______________________________________________
 > Alsa-devel mailing list
 > Alsa-devel@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/alsa-devel
->=20
+-- 
+My cat's a debugger....
+
+Potter, Lorn, "ljp"
+core developer / Web Administrator
+Project OPIE- the Open Palmtop Integrated Environment
+http://opie.handhelds.org | http://www.opie.info (german) |
+http://www.opie.us
+IRC: irc.freenode.net #opie #opie.de
+
+llornkcor@handhelds.org
+llornkcor@helixcommunity.org
+
 
 
 -------------------------------------------------------
