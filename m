@@ -1,24 +1,14 @@
-From: Torrey Hoffman <thoffman@arnor.net>
-Subject: Re: Re: ice1712 driver broken in 2.6.1-mm kernels
-Date: Thu, 22 Jan 2004 14:49:11 -0800
+From: "Edward Wildgoose" <ed@wildgooses.com>
+Subject: Re: HDSP 9632 driver and expansion cards
+Date: Thu, 22 Jan 2004 22:46:40 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1074811750.13428.68.camel@moria.arnor.net>
-References: <1074633766.6579.2.camel@moria.arnor.net>
-	 <Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>
-	 <1074637277.6579.16.camel@moria.arnor.net>
-	 <Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>
-	 <1074712729.5895.11.camel@moria.arnor.net>
-	 <Pine.OSF.4.58.0401212214060.155462@kosh.hut.fi>
-	 <1074808462.13428.14.camel@moria.arnor.net>
-	 <Pine.OSF.4.58.0401230000480.447402@kosh.hut.fi>
+Message-ID: <018701c3e139$9ab05a20$0369a8c0@BigMotha>
+References: <1074650862.6893.10.camel@rivendell.home.local> <400E74F6.1040803@undata.org> <02f701c3e04e$1f39d2e0$5d40a8c0@FRiskMan.com> <400EEDE9.80208@undata.org> <013301c3e0fc$f4ea92e0$5d40a8c0@FRiskMan.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain;
+	charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from devil.servak.biz (devil.servak.biz [209.124.81.2])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA17423
-	for <alsa-devel@alsa-project.org>; Thu, 22 Jan 2004 23:49:17 +0100
-In-Reply-To: <Pine.OSF.4.58.0401230000480.447402@kosh.hut.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -27,39 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
-Cc: ALSA Development <alsa-devel@alsa-project.org>
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-01-22 at 14:02, Tommi Sakari Uimonen wrote:
-> > Thanks for the tip.  I tried your suggestion, but it doesn't work for
-> > me.  My .asoundrc now has this in it:
-(snip)
+> I will try it again and document exactly which apps and what my setup is.
+> Sorry for the vague problem report...  In the meantime I'm actually using
+> the PAD card for general duties (ie watching TV)
 
-> It should be -D maudio_spdif, so lose the plug: and it will work. I think
-> the analog should also work without plug.
+Hi Thomas,
 
-Thanks!  That did it, mostly...  I now can play sound through the SPDIF!
+I successfully watched a surround 5.1 film tonight using the 9632!! Wahey!  Thanks a bunch!
 
-The analog doesn't work without "plug", I get an error "aplay:
-set_params:827: Sample format non available".  I think it's because the
-2496 driver only does 24bit, so 16bit pcm requires translation.  
+I had to use Xine and oss emulation (kernel 2.6.1 mm-1 and alsa patched to around 1.01 I think?).  Alsa and xine gave errors about
+device surround51 not being defined, but I think this is likely my setup of Xine..?
 
-But that's not a problem - plug works fine.
+Mplayer completely refuses to play ball.  In asla mode (using plug), it scrolls a load of:
+alsa-space: xrun of at least: 11.501 msecs, resetting stream
 
-The one problem is I still can't play different wave files
-simultaneously through the two outputs.
+type messages.   (always 10-12ms, with occasionaly 18ms thrown in)  Sound just stutters constantly.
 
-If I start "aplay -D maudio_spdif 12.wav &" and then try to do "aplay -D
-plug:maudio_analog 11.wav" at the same time, the second one just blocks
-until the first one is done.  
+It is no better in OSS mode, same bad audio, but no messages on the screen.
 
-This is unfortunate, since I'd really like to be able to run two-room
-sound from my computer into different amplifiers and speakers.  I'm sure
-there's a way to do it, since the hardware is capable of it... 
+I'm fairly sure that mplayer is at least trying to set the period size (since it fails to work under alsa with my RME 96/8 PAD card,
+moaning about unable to set period size).
 
--- 
-Torrey Hoffman <thoffman@arnor.net>
+Any ideas what might be happening?  My guess would have been that the period size was too small and the player was not servicing the
+audio frequently enough...  However, I'm not sure...
+
+Mythtv has a similar issue, and this is the main app I want to get working.  Any ideas would be appreciated!
+
+Thanks
+
+Ed W
 
 
 
