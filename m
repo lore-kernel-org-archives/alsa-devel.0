@@ -1,125 +1,52 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000561]: Sound disappear
-Date: Fri,  8 Oct 2004 20:38:52 +0200 (CEST)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041008183852.846024800C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EAD4DE2
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 20:38:52 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 9831E2C6D2
-	for <alsa-devel@alsa-project.org>; Fri,  8 Oct 2004 20:38:52 +0200 (MEST)
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: io_remap_page_range (was Re: [Alsa-devel] alsa-driver will
+	not	compile with kernel  2.6.9-rc2-mm4-S7)
+Date: Fri, 08 Oct 2004 15:23:16 -0400
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1097263396.1442.28.camel@krustophenia.net>
+References: <1096675930.27818.74.camel@krustophenia.net>
+	 <32868.192.168.1.8.1096677269.squirrel@192.168.1.8>
+	 <1096678268.27818.84.camel@krustophenia.net> <s5hmzz2zeqn.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S263770AbUJHTZz@vger.kernel.org>
+In-Reply-To: <s5hmzz2zeqn.wl@alsa2.suse.de>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Rui Nuno Capela <rncbc@rncbc.org>, linux-kernel <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@elte.hu>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2004-10-04 at 11:26, Takashi Iwai wrote:
+> At Fri, 01 Oct 2004 20:51:08 -0400,
+> Lee Revell wrote:
+> > 
+> > On Fri, 2004-10-01 at 20:34, Rui Nuno Capela wrote:
+> > > Lee Revell wrote:
+> > > Good grief! I'm having this too, and I was desperate thinking I was the
+> > > only one, and ultimately offering the blame to gcc 3.4.1 which is what I'm
+> > > test-driving now on my laptop (Mdk 10.1c).
+> > > 
+> > > Now I remember that -mm4 has some issue about remap_page_range kernel
+> > > symbol being renamed to something else, which is breaking the build of
+> > > outsider modules (i.e. not the ones bundled under the kernel source tree).
+> > > Or so it seems.
+> > 
+> > Looking through my archives I cannot find a report of this exact issue,
+> > but you are probably right.  Looks like ALSA drivers need to be updated.
+> 
+> The alsa-kernel code there (pcm_native.c) is ok but the patch in
+> alsa-driver looks broken for the recent change of remap_pfn_range().
+> 
+> Also, there was another API brekage about pci_save/restore_state().
+> 
+> Fixed both on CVS now.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000561
-======================================================================
-Reported By:                ungod
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     561
-Category:                   PCI - ice1724
-Reproducibility:            random
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-03-2004 02:22 CEST
-Last Modified:              10-08-2004 20:38 CEST
-======================================================================
-Summary:                    Sound disappear
-Description: 
-Sometimes, at completely random occasions, all sound suddently disappear.
-At rare occasions, the sound will appear again shortly after, at first at
-very low, but then again at full volume.
-It may often go days before the problem occurs, and then sometimes it
-happens all the time.
+I think this is still broken.  Same problem when I went to configure
+ALSA for -mm3-T3.  The configure script gets
+CONFIG_HAVE_OLD_REMAP_PAGE_RANGE wrong; I have the new version but
+configure fails to detect it.
 
-I've attempted to do some researching myself, and I quickly noticed that
-by just reinitializing the WM8770 chip with a user-space program, the
-sound would reappear, but then again I noticed that the CS8415A chip is
-disabled when it happens (apparently this is the only chip besides the
-ICE1724 that you may actually read from).
-The STAC9744 is apparently also reset as the volume must be changed in the
-mixer before any sound can come from there.
+AFAICT the test in configure is a NOOP and
+CONFIG_HAVE_OLD_REMAP_PAGE_RANGE always gets set to 1.
 
-The few times the whole thing occour while I am not listening to music,
-I've noticed that you actually hear the click from the headphone relay, so
-I think that this whole issue is related to some improper handeling of the
-GPIO pins. If they are all switched to zero at some point, this would
-reset all chips connected to the ICE1724, however, I tried adding debug
-info every time a GPIO related function was called, but there never was
-any such debug message prior to the fault.
-
-Natually it is extremely difficult to fix such a problem when it is as
-random as it is. Actually when using the 4Front OSS drivers, I've
-sometimes experienced the same thing, however their drivers aren't
-flawless either, I imagine. In fact, when I at first got the card, I
-thought it was broken, since the ALSA drivers produced no sound (reversed
-volume control etc.) and the OSS only worked for a couple of minutes until
-all sound disappeared. At all time, the optical output was fully
-functional.
-
-Anyway, I do not expect to see the problem solved just like that, and I
-intend to continue attempting to resolve the bug myself. It would however
-be nice to know whether I am the only one at all experiencing the problem,
-as it may in fact then be a hardware problem or (though most unlikely) a
-conflict between existing hardware.
-
-The problem occur on all versions of ALSA starting from 1.0.5 (haven't
-tried anyone older than that) and including the latest CVS (synchronize
-often and compile daily as I am also working on other issues and lacking
-features of the ice1724)
-======================================================================
-
-----------------------------------------------------------------------
- ungod - 10-03-2004 02:23 CEST 
-----------------------------------------------------------------------
-Oh, completly forgot to mention.
-
-The card is a Terratec Aureon 7.1 Space (PCB rev. 1.4)
-
-And I haven't tried the Windows drivers (no Windows installed) so I can't
-say if they're better
-
-----------------------------------------------------------------------
- ungod - 10-08-2004 20:38 CEST 
-----------------------------------------------------------------------
-Hmm... Now the relay is permanently dead. And I did some testing in Windows
-and some other machines with the same result. Apparently it is my
-hardware. When I looked at the card, I DID notice that the 7805 (5V
-regulator) IC looked somewhat burned. I imagine that it supplied the
-nessesary voltage to drive the relay or something.
-
-So the bug can be closed, as it was not ALSA related.
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-03-04 02:22 ungod          New Bug                                      
-10-03-04 02:23 ungod          Bugnote Added: 0002008                       
-10-08-04 20:38 ungod          Bugnote Added: 0002057                       
-======================================================================
-
-
--------------------------------------------------------
-This SF.net email is sponsored by: IT Product Guide on ITManagersJournal
-Use IT products in your business? Tell us what you think of them. Give us
-Your Opinions, Get Free ThinkGeek Gift Certificates! Click to find out more
-http://productguide.itmanagersjournal.com/guidepromo.tmpl
+Lee
