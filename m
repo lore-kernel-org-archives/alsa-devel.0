@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
-Date: Thu,  9 Sep 2004 03:46:04 +0200 (CEST)
+Date: Thu,  9 Sep 2004 03:49:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040909014604.9493913002@server.perex-int.cz>
+Message-ID: <20040909014918.D103A13002@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E90792DB
-	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 03:46:04 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 43465206
+	for <alsa-devel@alsa-project.org>; Thu,  9 Sep 2004 03:49:19 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:
 Kernel Version:             2.6.7
 ======================================================================
 Date Submitted:             07-05-2004 09:43 CEST
-Last Modified:              09-09-2004 03:46 CEST
+Last Modified:              09-09-2004 03:49 CEST
 ======================================================================
 Summary:                    driver hangs when trying to load a soundfont >8MB
 Description: 
@@ -151,6 +151,12 @@ soundfont, probably stopping when it runs out of memory. Only one
 instrument played when I played a test midi file. I don't understand why
 it thinks there isn't enough memory.
 
+----------------------------------------------------------------------
+ deathpudding - 09-09-2004 03:49 CEST 
+----------------------------------------------------------------------
+ah, it's using dma_alloc, and the txt I attached says there was only 32kb
+DMA memory free.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -170,6 +176,7 @@ Date Modified  Username       Field                    Change
 09-08-04 01:38 deathpudding   Bugnote Added: 0001725                       
 09-08-04 17:06 tiwai          Bugnote Added: 0001732                       
 09-09-04 03:46 deathpudding   Bugnote Added: 0001740                       
+09-09-04 03:49 deathpudding   Bugnote Added: 0001741                       
 ======================================================================
 
 
