@@ -1,16 +1,13 @@
-From: Ian Forde <ian@duckland.org>
-Subject: Re: Broken nforce3 support in ALSA on amd64?
-Date: Wed, 09 Mar 2005 20:40:06 -0800
-Message-ID: <1110429607.15460.3.camel@colgate3.iforde.net>
-References: <1109468746.11523.20.camel@colgate3.iforde.net>
-	 <s5hr7irwpjf.wl@alsa2.suse.de> <1110225967.935.12.camel@mindpipe>
-	 <s5hfyz7us6w.wl@alsa2.suse.de> <1110244309.1183.25.camel@mindpipe>
-	 <1110260716.7958.1.camel@colgate3.iforde.net>
-	 <s5h3bv6uzv3.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000978]: intel8x0 sound does not work on 2.6.10 kernel with alsa 1.0.8
+Date: Thu, 10 Mar 2005 06:37:39 +0100
+Message-ID: <0181c581eedbe30f4bdb66b478a869c7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5h3bv6uzv3.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 711671CA
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 06:37:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,20 +17,50 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-03-08 at 12:43 +0100, Takashi Iwai wrote:
-> nForce seems to route the SPDIF not through AC97 but directly to the
-> transmitter.  So, tuning AC97 registers will unlikely help.
 
-Okay - so I disabled it in the BIOS and put in an older SBLive 5.1 card
-that I had before.  I can get PCM audio just fine, but AC3 passthrough
-is once again lighting up the receiver, but with no audio coming
-through.  Please tell me this isn't an AMD64 thing...
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=978> 
+======================================================================
+Reported By:                johnz
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   978
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               FC3
+Kernel Version:             kernel-2.6.10-1.770_14.rhfc3.at
+======================================================================
+Date Submitted:             03-10-2005 06:37 CET
+Last Modified:              03-10-2005 06:37 CET
+======================================================================
+Summary:                    intel8x0 sound does not work on 2.6.10 kernel with
+alsa 1.0.8
+Description: 
+On an ASRock motherboard with SIS 7012 sound controller, the Sound works on
+kernel-2.6.9-1.681_FC3. (The mixer controls don't work. Only the PCM mute
+mixer control works; volume sliders have no effect.)  There is no sound
+when I boot the same system with kernel-2.6.10-1.770_14.rhfc3.at or other
+2.6.10 kernels with 1.0.8 alsa.
+======================================================================
 
-	-I
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-10-05 06:37 johnz          New Issue                                    
+03-10-05 06:37 johnz          File Added: asound.state                     
+03-10-05 06:37 johnz          Distribution              => FC3             
+03-10-05 06:37 johnz          Kernel Version            =>
+kernel-2.6.10-1.770_14.rhfc3.at
+======================================================================
+
 
 
 
