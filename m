@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Fri, 15 Oct 2004 19:12:44 +0200 (CEST)
+Date: Fri, 15 Oct 2004 19:24:20 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015171244.ACED83B007@server.perex-int.cz>
+Message-ID: <20041015172420.0B6213B025@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13C921B6
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:12:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6872730C
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:24:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-15-2004 19:12 CEST
+Last Modified:              10-15-2004 19:24 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -90,6 +90,13 @@ least).
 
 I haven't used a 2.4 in months, would it helped it I tried with one?
 
+----------------------------------------------------------------------
+ KAtiOS - 10-15-2004 19:24 CEST 
+----------------------------------------------------------------------
+Also note that I tried in the past with and without preempt without making
+a major difference that I can still think of.
+(preemp activated right now btw)
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -100,6 +107,7 @@ Date Modified  Username       Field                    Change
 10-15-04 18:51 KAtiOS         Bugnote Added: 0002169                       
 10-15-04 19:02 lee            Bugnote Added: 0002170                       
 10-15-04 19:12 KAtiOS         Bugnote Added: 0002171                       
+10-15-04 19:24 KAtiOS         Bugnote Added: 0002172                       
 ======================================================================
 
 
