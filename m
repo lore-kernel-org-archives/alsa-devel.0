@@ -1,13 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: exit() -> _exit() in pcm_direct.c
-Date: Tue, 5 Aug 2003 20:36:36 +0200 (CEST)
+From: Adrian McMenamin <adrian@mcmen.demon.co.uk>
+Subject: Re: Attn Soundcard matrix maintainer.
+Date: Tue, 5 Aug 2003 19:52:04 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0308052036050.27139-100000@pnote.perex-int.cz>
-References: <s5hu18wkyac.wl@alsa2.suse.de>
+Message-ID: <200308051952.04677.adrian@mcmen.demon.co.uk>
+References: <20030804160546.3004.h007.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hu18wkyac.wl@alsa2.suse.de>
+In-Reply-To: <20030804160546.3004.h007.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,110 +18,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Konstantin Stepaniuk <s.k.v@mail.ru>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 5 Aug 2003, Takashi Iwai wrote:
+On Tuesday 05 August 2003 00:05, Eliot Blennerhassett wrote:
+> For AudioScience cards
 
-> At Wed, 30 Jul 2003 23:21:52 +0400,
-> Konstantin Stepaniuk wrote:
-> > 
-> > Jaroslav Kysela wrote:
-> > 
-> > >On Wed, 30 Jul 2003, Konstantin Stepaniuk wrote:
-> > >
-> > >  
-> > >
-> > >>Hello.
-> > >>
-> > >>My program call snd_pcm_open() with "plug:dmix" in thread.
-> > >>Function snd_pcm_direct_server_create() hangs on waitpid() if exit() is used, 
-> > >>and server_job process keeps alive after program exit.
-> > >>This trivial patch chages exit() to _exit() in file pcm_direct.c. In this case 
-> > >>all works ok for me.
-> > >>    
-> > >>
-> > >
-> > >I'm sorry, but I still don't see a reason (I'd like to know, why the 
-> > >process hangs). Could you explain the behaviour or send me a simple test 
-> > >code to debug this thing?
-> > >
-> > >						Jaroslav
-> > >
-> > >-----
-> > >Jaroslav Kysela <perex@suse.cz>
-> > >Linux Kernel Sound Maintainer
-> > >ALSA Project, SuSE Labs
-> > >  
-> > >
-> > Here's a test:
-> > /* dmix.c */
-> > #define ALSA_PCM_NEW_HW_PARAMS_API
-> > #define ALSA_PCM_NEW_SW_PARAMS_API
-> > #include <alsa/asoundlib.h>
-> > #include <pthread.h>
-> > #include <stdio.h>
-> > 
-> > void *thread_routine( void *param )
-> > {
-> >   snd_pcm_t *pcm;
-> >   int err;
-> > 
-> >   err = snd_pcm_open( &pcm, "plug:dmix",
-> >     SND_PCM_STREAM_PLAYBACK, SND_PCM_NONBLOCK );
-> > 
-> >   if( err < 0 )
-> >   {
-> >     fprintf( stderr, "%s\n", snd_strerror(err) );
-> >     return NULL;
-> >   }
-> > 
-> >   printf( "alsa opened\n" );
-> > 
-> >   snd_pcm_close( pcm );
-> >   return NULL;
-> > }
-> > 
-> > int main( void )
-> > {
-> >   pthread_t thread;
-> >   int i;
-> > 
-> >   if( pthread_create( &thread, 0, thread_routine, NULL ) )
-> >   {
-> >     fprintf( stderr, "pthread_create failure\n" );
-> >     return -1;
-> >   }
-> >    
-> >   pthread_join( thread, NULL );
-> >   return 0;
-> > }
-> > /*--------------------*/
-> > 
-> > This program crashes without any error message and doesn't print "alsa 
-> > opened".
-> > 
-> > sound card: intel8x0
-> > alsa version: cvs snapshot 2003-07-30
-> > kernel version: 2.4.21 (Debian)
-> > glibc: 2.3.1
-> > 
-> > This works ok with cmipci card. Maybe problem with intel8x0?
-> 
-> seems working on other cards, too.
-> 
-> are the alsa-lib version on both systems really same?
+[snip]
 
-And could you compare glibc versions?
+Just noticed this matrix.
 
-						Jaroslav
+Could you add (In green?) the "AICA Super Intelligent Sound Processor" to=
+ the=20
+matrix - either under Sega (it is the Dreamcast's sound card) or Yamaha (=
+who=20
+actually manufactured the thing).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+I wrote the OSS/Free driver for this thing for the Linux 2.4 kernels and =
+I am=20
+currently working on an ALSA driver for 2.6, but no code to release just =
+yet=20
+- hopefully that will be rectified shortly.
 
+Adrian
 
 
 -------------------------------------------------------
