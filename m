@@ -1,15 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000466]: tumbler_init_client error
-Date: Thu, 21 Oct 2004 23:24:23 +0200
+From: "Aurelia Whitley" <awhitley_un@moda.freeserve.co.uk>
+Subject: Fake Role.x Watch
+Date: Fri, 22 Oct 2004 00:14:04 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <a02fffa47d1d0920124fa4c81aded1d3@bugtrack.alsa-project.org>
+Message-ID: <59e901c4b7cc$d8dbc57f$6ad634bf@stamm-excalibur.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/html;
+	charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 79A11216
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 23:24:23 +0200 (MEST)
+Received: from stamm-excalibur.de (modemcable106.220-130-66.mc.videotron.ca [66.130.220.106])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 0494E33B
+	for <alsa-devel@alsa-project.org>; Fri, 22 Oct 2004 00:18:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,32 +22,26 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-A NOTE has been added to this issue.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D466>=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Issue History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-08-26-04 22:36 schwab         New Issue                                  =
- =20
-08-27-04 19:37 tiwai          Note Added: 0001647                        =
- =20
-10-21-04 23:24 schwab         Note Added: 0002225                        =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-
+<html>
+Real gold 18kt Rolex replicas that look EXACTLY like the originals<p>
+we have all the latest models:<br>
+- <a href=3D"http://susctblqusub.nteri.com/replica/den4/bsmjolbtggpb">rol=
+ex submariner</a><br>
+- <a href=3D"http://tbewppcdalgx.nteri.com/replica/den4/ptoyesbaniib">rol=
+ex daytona</a><br>
+- <a href=3D"http://kixzufkxrcw.nteri.com/replica/den4/vcdgycommgpdd">rol=
+ex datejust</a><br>
+- <a href=3D"http://kwnumxcmyoeem.nteri.com/replica/den4/iuafcibambavh">r=
+olex rolex yachtmaster</a><br>
+- <a href=3D"http://qptodveqhjfd.nteri.com/replica/den4/bpyuzlbsteqdt">ro=
+lex oyster perpetual</a><p>
+These are perfectly identical to the originals,<br>
+but at a tiny fraction of the cost.<br>
+<a href=3D"http://qltujlbiomgzp.nteri.com/replica/den4/zuesgxbyex">Have a=
+ look, you'll be amazed</a>
+<p><br><br><br><br><br>
+<a href=3D"http://nrqbkjbeeazm.nteri.com/z.php">No, thanks</a>
+</html>
 
 
 -------------------------------------------------------
