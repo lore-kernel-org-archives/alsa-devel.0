@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Sun, 26 Dec 2004 17:47:50 +0100
-Message-ID: <80aa7b0b9d99afe3d230d5b0e65b94f8@bugtrack.alsa-project.org>
+Date: Sun, 26 Dec 2004 18:07:50 +0100
+Message-ID: <7d0b78b01233bf698aca445a098e1c72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8786F191
-	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 17:47:50 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F07929B
+	for <alsa-devel@alsa-project.org>; Sun, 26 Dec 2004 18:07:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-26-2004 17:47 CET
+Last Modified:              12-26-2004 18:07 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -54,19 +54,6 @@ driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
 successful in all other regards install of Fedora FC3.
 
 ======================================================================
-
-----------------------------------------------------------------------
- pzad - 12-26-04 16:56 
-----------------------------------------------------------------------
-Alsamixer has them. :-)
-
-Use alsamixer, use cursor keys (left, right) to scroll.
-Look at upper left corner there is line with "Item:" - there is item
-name.
-
-Not everything should be unmuted.
-
-SIGSEGV - this is problem of artsd, I think.
 
 ----------------------------------------------------------------------
  misnagid - 12-26-04 17:47 
@@ -106,6 +93,22 @@ Please assist.
 Thanks,
 Jerry
 
+----------------------------------------------------------------------
+ misnagid - 12-26-04 18:07 
+----------------------------------------------------------------------
+Could ArtsD be causing this proble?  I see notes about the latest ArtsD
+being buggy but that downfrading to older version didn't help.
+
+G-d, I really don't know what to here.  What should I di regarding this
+ArtsD thing?  Nothing?  I am getting no sounds at all right now, whether
+it be KDE sounds, applications sounds, sounds from playback of whatever
+kinds of mucic files, gurnischt!  Nothing!
+
+Could use you help I admit!
+
+Thanks,
+Jerry
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -117,6 +120,7 @@ Date Modified  Username       Field                    Change
 12-26-04 16:44 misnagid       Note Added: 0002937                          
 12-26-04 16:56 pzad           Note Added: 0002938                          
 12-26-04 17:47 misnagid       Note Added: 0002939                          
+12-26-04 18:07 misnagid       Note Added: 0002940                          
 ======================================================================
 
 
