@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000512]: [PATCH] 15_alsamixer_doc_mute
-Date: Tue, 9 Nov 2004 16:35:30 +0100
-Message-ID: <1e828781f99ec872e88c1de416af0cb2@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000519]: [PATCH] 90_debian_alsaconf_notouch
+Date: Tue, 9 Nov 2004 16:36:50 +0100
+Message-ID: <b01403921a243e6d7633baf4eb249822@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DBB9E2B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:35:30 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8F5302B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:36:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,56 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=512> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=519> 
 ======================================================================
 Reported By:                jdthood
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - utils
-Issue ID:                   512
-Category:                   alsamixer
+Issue ID:                   519
+Category:                   alsaconf
 Reproducibility:            always
-Severity:                   text
+Severity:                   major
 Priority:                   normal
 Status:                     closed
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-21-2004 19:45 CEST
-Last Modified:              11-09-2004 16:35 CET
+Date Submitted:             09-21-2004 20:01 CEST
+Last Modified:              11-09-2004 16:36 CET
 ======================================================================
-Summary:                    [PATCH] 15_alsamixer_doc_mute
+Summary:                    [PATCH] 90_debian_alsaconf_notouch
 Description: 
-Patch for alsamixer.1 to make it mention that '<' and '>' 
-mute channels separately only if the hardware supports this.
+Patch for alsaconf which makes it refrain from creating
+/etc/modprobe.conf if the latter does not already exist.
+
+Creating an empty /etc/modprobe.conf is bad because if it
+exists then modprobe uses _only_ this file -- it does not
+use /etc/modprobe.d/.
+
+Additionally, this patch makes alsaconf set the cleanup
+trap before it creates temporary files rather than after.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 09-23-04 19:47 
+ jdthood - 09-23-04 19:50 
 ----------------------------------------------------------------------
-Summary: mention that '<' and '>' mute channels separately only if the
-hardware supports this
+Summary: Refrain from creating /etc/modprobe.conf if it does not already
+exist
 
 Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
 
 ----------------------------------------------------------------------
- tiwai - 09-24-04 11:37 
+ tiwai - 09-24-04 11:58 
 ----------------------------------------------------------------------
 Applied.  Thanks.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-21-04 19:45 jdthood        New Issue                                    
-09-21-04 19:45 jdthood        File Added: 15_alsamixer_doc_mute.dpatch          
-         
-09-23-04 14:13 tiwai          Note Added: 0001825                          
-09-23-04 19:47 jdthood        Note Added: 0001835                          
-09-24-04 11:37 tiwai          Status                   new => resolved     
-09-24-04 11:37 tiwai          Resolution               open => fixed       
-09-24-04 11:37 tiwai          Assigned To               => tiwai           
-09-24-04 11:37 tiwai          Note Added: 0001862                          
-11-09-04 16:35 tiwai          Status                   resolved => closed  
+09-21-04 20:01 jdthood        New Issue                                    
+09-21-04 20:01 jdthood        File Added: 90_debian_alsaconf_notouch.dpatch     
+              
+09-23-04 19:50 jdthood        Note Added: 0001838                          
+09-24-04 11:58 tiwai          Status                   new => resolved     
+09-24-04 11:58 tiwai          Resolution               open => fixed       
+09-24-04 11:58 tiwai          Assigned To               => tiwai           
+09-24-04 11:58 tiwai          Note Added: 0001867                          
+11-09-04 16:36 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
