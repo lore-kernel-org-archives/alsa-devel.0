@@ -1,15 +1,12 @@
-From: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Subject: Re: [fixed] snd-usb-audio and midisport1x1 little
-	hack fixes hotplug pb
-Date: Tue, 23 Mar 2004 19:24:19 +0100
+From: Philip Lawatsch <philip@lawatsch.at>
+Subject: PCI - via82xx  and Bugs #0000092 and #0000043
+Date: Tue, 23 Mar 2004 21:16:37 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1080066259.2406.1.camel@chief.local>
-References: <Pine.HPX.4.33n.0403170857070.10179-100000@studcom.urz.uni-halle.de>
+Message-ID: <40609B25.3030106@lawatsch.at>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0403170857070.10179-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,20 +15,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Apparently, snd_usb_audio_disconnect is called recursively, caused by
-> the call to usb_driver_release_interface, and then deadlocks.
-> 
-> The USB core will release all interfaces automatically, so we don't
-> need this call.  Please remove the usb_driver_release_interface line.
+Hi,
 
-Sorry, in case of your're awaiting any response. It works.
 
-Regards, Hartmut
+I've got a VIA 8235 and can reproduce bug #43 (Rear + LFE/Center almost 
+silent) using alsa-kernel and alsa-driver from cvs (co today).
 
+Now i'd like to know if someone is working on a fix, or if I'm better of 
+buying a "real" soundcard to get 5.1 ?
+
+with kind regards Philip Lawatsch
+
+-- 
+WaUG 'nuff said
 
 
 -------------------------------------------------------
