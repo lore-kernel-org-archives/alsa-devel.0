@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000809]: asfxload + aconnect called before dsp used causes dsp to be locked
-Date: Thu, 13 Jan 2005 18:58:33 +0100
-Message-ID: <6f6fa0ff88d6415f03c4a3c53990061a@bugtrack.alsa-project.org>
+Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
+Date: Thu, 13 Jan 2005 20:21:30 +0100
+Message-ID: <52a1b1cc41394e8a7a23504a317dad72@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7E3B026E
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 18:58:33 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EE3B12F6
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 20:21:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,96 +22,38 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=809> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
 ======================================================================
-Reported By:                vinyvat
+Reported By:                gvy
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   809
-Category:                   PCI - emu10k1
+Project:                    ALSA - firmware
+Issue ID:                   815
+Category:                   
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               Debian testing
-Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             01-12-2005 09:34 CET
-Last Modified:              01-13-2005 18:58 CET
+Date Submitted:             01-13-2005 20:21 CET
+Last Modified:              01-13-2005 20:21 CET
 ======================================================================
-Summary:                    asfxload + aconnect called before dsp used causes
-dsp to be locked
+Summary:                    missing DESTDIR support with hotplug dir
 Description: 
-PS: This bug is present in the alsa version in stock kernel 2.6.8.1 up to
-1.0.8-rc2.
+with intoruction of hotplug dir I had to kludge in RPM buildroot into
+configure parameters -- it doesn't belong there, it's rather install-time
+not compile-time (and definitely not configure-time).
 
-For convienience I like to have my wavetable loaded and midi connections
-setup during bootup so I can use my midi keyboard by just turning on the
-computer.
-
-This worked OK with stock kernel 2.6.3 ( and whatever alsa version came
-with it ).
-
-Recently upgraded to stock 2.6.8.1 which had the modprobe
-snd-emu10k1-synth freeze bug, but was able to work around this by
-launching my wavetable loading script post the modprobe. Play back from my
-keyboard worked great.
-
-This is when I began to notice apps that accessed the dsp reporting that
-they were locked out ( and did not produce any sound ). First would be
-arts when kde started up, and then any dvd playing app ( ogle, mplayer,
-xine, all of them setup to use alsa ).
-
-Strangely though, alsaplayer still worked despite the fact that the other
-apps didn't - could it be using some other way of plugin to the emu10k1
-mixer ? 
-
-Have tried upgrading to alsa-driver-1.0.7 ( which didn't play any
-wavetable sounds at all - strange ), then to alsa-driver-1.0.8-rc2 ( which
-does play wavetable sounds ) but none of these fixes this problem.
-
-If I change the order of things - have artsd start up, start a dvd
-playback, and then call asfxload + aconnect, then everything is mixed and
-sounds great.
+hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
+too.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-13-05 12:41 
-----------------------------------------------------------------------
-They I'd say it's not a bug of ALSA.  You really exhausted the memory by
-loading  a big soundfont.
-
-Note that the driver occupies the consitent memory area with soundfont
-data.
-
-----------------------------------------------------------------------
- vinyvat - 01-13-05 18:58 
-----------------------------------------------------------------------
-The computer itself has 1 Gigabyte of memory and I thought the emu10k1
-cards loaded SF2 into the system memory - one of the very nice features of
-the card.
-
-After the asfxload the system still has plenty of memory.
-
-Keep in mind that if I launch an app that keeps a persistent connection to
-/dev/dsp ( like ogle playing a DVD ), and then go through the asfxload +
-aconnect sequence, then everything works great - which is why this is such
-an interesting bug.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-12-05 09:34 vinyvat        New Issue                                    
-01-12-05 09:34 vinyvat        Distribution              => Debian testing  
-01-12-05 09:34 vinyvat        Kernel Version            => 2.6.8.1         
-01-12-05 15:16 tiwai          Note Added: 0003171                          
-01-12-05 18:50 vinyvat        Note Added: 0003175                          
-01-13-05 06:42 vinyvat        Note Added: 0003182                          
-01-13-05 12:41 tiwai          Note Added: 0003183                          
-01-13-05 18:58 vinyvat        Note Added: 0003198                          
+01-13-05 20:21 gvy            New Issue                                    
 ======================================================================
 
 
