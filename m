@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
-Date: Sun, 26 Sep 2004 12:03:35 +0200 (CEST)
+Date: Sun, 26 Sep 2004 12:25:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926100335.77C23B09F@server.perex-int.cz>
+Message-ID: <20040926102518.52991B09D@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9CFF2B6
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 12:03:35 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 994C42D2
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 12:25:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -36,7 +36,7 @@ Priority:                   normal
 Status:                     new
 ======================================================================
 Date Submitted:             09-26-2004 10:44 CEST
-Last Modified:              09-26-2004 12:03 CEST
+Last Modified:              09-26-2004 12:25 CEST
 ======================================================================
 Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
 Description: 
@@ -65,6 +65,13 @@ IDE initilization so it is probably caused by IDE).
 ----------------------------------------------------------------------
 Sounds like an XMMS bug.  Does the same thing happen with aplay?
 
+----------------------------------------------------------------------
+ sasa - 09-26-2004 12:25 CEST 
+----------------------------------------------------------------------
+I cannot reproduce it with aplay. You are probably right, it is a XMMS
+bug.
+Thanks.
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -72,6 +79,7 @@ Date Modified  Username       Field                    Change
 09-26-04 10:58 sasa           Bugnote Added: 0001916                       
 09-26-04 10:59 sasa           Bug Monitored: sasa                          
 09-26-04 12:03 lee            Bugnote Added: 0001918                       
+09-26-04 12:25 sasa           Bugnote Added: 0001919                       
 ======================================================================
 
 
