@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Multiple Sound Streams out of a single card
-Date: Mon, 15 Sep 2003 19:34:57 +0200 (METDST)
+Subject: Re: Another alsa newbie seeks help
+Date: Mon, 15 Sep 2003 19:37:51 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0309151932250.24294-100000@studcom.urz.uni-halle.de>
-References: <1063555915.21172.17.camel@localhost>
+Message-ID: <Pine.HPX.4.33n.0309151936090.24294-100000@studcom.urz.uni-halle.de>
+References: <1063591377.3330.29.camel@localhost>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <1063555915.21172.17.camel@localhost>
+In-reply-to: <1063591377.3330.29.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,17 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: AthlonRob <athlonrob@data.4t3.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Sol <science@foxinternet.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-AthlonRob wrote:
-> I'd still like to hear, though, if it is possible to get OSS emulation
-> to use the dmix plugin...
+Sol wrote:
+> I have been using the example "pcm.c" in the alsa-lib/test directory to
+> learn about alsa and my soundcard(audiophile 2496 ice1712).
+>
+> I have found something strange that I do not understand.
+> async_direct(mmap) method will produce no sound for my card.  However,
+> if I change the format to S32_LE in pcm.c and first specify 10 channels
+> using async method- then I get sound when I use the async_direct method
+> afterwards.
+>
+> If I haven't confused myself writing this, it looks like this:
+>
+> ./pcm -c 10 -m async_direct
+> Playback device is plughw:0,0
 
-In theory, you can define a pcm named "dsp0" in your .asoundrc and
-start your OSS program with the aoss script from the OSS compatibility
-package (see the ALSA homepage).
+This uses the plug plugin, which does all kinds of intelligent or
+"intelligent" conversions. Please try to use hw:0,0 directly.
 
 
 HTH
