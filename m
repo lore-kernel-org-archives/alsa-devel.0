@@ -1,13 +1,14 @@
-From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Subject: Re: An alsa lib, that works over OSS drivers ?
-Date: Mon, 19 Apr 2004 20:54:13 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: An alsa lib, that works over OSS drivers ?
+Date: Mon, 19 Apr 2004 21:11:53 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xfzazvlwq.fsf@kth.se>
+Message-ID: <Pine.LNX.4.58.0404192110440.13137@pnote.perex-int.cz>
 References: <20040419180118.96664.qmail@web41306.mail.yahoo.com>
+ <yw1xfzazvlwq.fsf@kth.se>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <yw1xfzazvlwq.fsf@kth.se>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,22 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Me Eby <meeby@yahoo.com> writes:
+On Mon, 19 Apr 2004, M?ns Rullg?rd wrote:
 
-> Can't be done that way.  That is why there is an OSS
-> wrapper for alsa.  The OSS drivers do not support
-> all of the capabilities that ALSA drivers do.
+> Me Eby <meeby@yahoo.com> writes:
+> 
+> > Can't be done that way.  That is why there is an OSS
+> > wrapper for alsa.  The OSS drivers do not support
+> > all of the capabilities that ALSA drivers do.
+> 
+> So now there's one person saying it can't be done, and another saying
+> it has been done.  There seems to be slight contradiction here.
 
-So now there's one person saying it can't be done, and another saying
-it has been done.  There seems to be slight contradiction here.
+Not really. This comment is for the OSS API->ALSA driver conversion, but
+the former question was for the ALSA API->OSS driver conversion.
 
--- 
-Måns Rullgård
-mru@kth.se
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
