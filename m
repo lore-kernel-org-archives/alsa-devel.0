@@ -1,16 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: No sound with Midiman Delta 1010LT
-Date: Sun, 14 Apr 2002 21:43:50 +0200 (CEST)
+From: Paul Davis <pbd@op.net>
+Subject: Re: Fwd: Re: USB Quattro Linux support
+Date: Sun, 14 Apr 2002 18:21:59 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0204142141070.1114-100000@pnote.perex-int.cz>
-References: <1018806069.1812.15.camel@idefix.homelinux.org>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E16wsMV-0003ar-00@usw-sf-list1.sourceforge.net>
+References: <3CB990F8.80509@superbug.demon.co.uk>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA02635
-	for <alsa-devel@alsa-project.org>; Sun, 14 Apr 2002 21:44:14 +0200
-In-Reply-To: <1018806069.1812.15.camel@idefix.homelinux.org>
+In-Reply-To: Your message of "Sun, 14 Apr 2002 15:23:52 BST."
+             <3CB990F8.80509@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,30 +15,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jean-Marc Valin <jean-marc.valin@hermes.usherb.ca>
-Cc: Tom Browne <tbrowne@tbrowne.demon.co.uk>, alsa-devel <alsa-devel@alsa-project.org>
+To: James@superbug.demon.co.uk
+Cc: linux-audio-dev@music.columbia.edu, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 14 Apr 2002, Jean-Marc Valin wrote:
+>>framework for ALSA worked out, which is even more of a problem. Its
+>>still unclear at this point whether the ALSA framework will be:
+>>
+>>      application<->alsa-lib<->alsa-driver<->low-level-ALSA-USB-class-driver
+>>
+>>OR
+>>
+>>      application<->alsa-lib<->low-level-non-ALSA-USB-class-driver
+>>
+>>the first one is easier to write, the second one is more flexible.
+>>
+>>--p
+>>  
+>>
+>Is the biggest problem the need to get alsa to accept Plugable hardware. 
+>E.g. USB.
+>Does the current alsa architecture allow for hot plug and remove of 
+>sound hardware ?
 
-> Hi,
-> 
-> I've taken a picture of the card, which you can find here:
-> http://speex.sourceforge.net/misc/1010LT.jpg
-> 
-> The card has 4 AK4524s and 15 small chips labeled as 5532 114B RJC. Also
-> a CS8427. Any useful info you can extract from that?
+thats not an issue with ALSA. pluggable hardware is not part of
+ALSA. it would be part of the kernel's handling of USB. at the moment,
+ALSA doesn't support any interfaces that allow hot plugging, but i
+can't think of anything in the codebase that would cause a problem. i
+load and unload ALSA modules very often when i'm doing driver
+development, which is isomorphous to handling hot-plugged devices.
 
-It's a good starting point, but we need to know more about GPIO 
-connections. CS8427 is also used in Audiophile, so we can assume that
-wire connections are similar.
+whether or not the kernel's support for USB can deal with it, i have
+no idea. i would be suprised if the answer was no.
 
-I'll try ask MidiMan for more details.
+the problem i alluded to is just one of making an architectural
+decision. do you consider USB Audio devices to be best supported by a
+kernel driver with a USB focus, or an ALSA focus? alsa-lib can handle
+either, but in the former case (USB focus), more code has to be
+written in user space, and the existing USB audio driver for OSS has
+to be moved out of OSS and made more generic.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+--p
