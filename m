@@ -1,12 +1,11 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Re: Implementing ALSA compatibility in OSS
-Date: Mon, 15 Nov 2004 19:58:34 +0200 (EET)
-Message-ID: <Pine.LNX.4.58.0411151931420.9516@zeus.compusonic.fi>
-References: <Pine.HPX.4.33n.0411151707500.1491-100000@studcom.urz.uni-halle.de>
+From: Pieter Palmers <ppalmers@esat.kuleuven.ac.be>
+Subject: userspace pcm/midi for firewire based cards
+Date: Mon, 15 Nov 2004 18:58:28 +0000
+Message-ID: <4198FC54.7000309@esat.kuleuven.ac.be>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0411151707500.1491-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,37 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 15 Nov 2004, Clemens Ladisch wrote:
+Hi all,
 
-> The purpose of having alsa-lib is that things like sample format/rate
-> conversion, virtualization, software synths, replacement drivers like
-> Jack etc. can be done in user space.  We either do not want or cannot
-> do this in kernel space.
-But why does this need to be done in alsa-lib? Jack is also a library.
+I'm working on the development of DM1000 based firewire based devices 
+(ESI QuataFire 610, M-Audio FireWire devices, ...).
+The question that arises is: userspace driver or kernel driver. 
+Personally I favor the userspace driver, because we can use the FW libs 
+that are already present for some of the stuff. On the other hand it 
+seems to me that programming a kernel driver would be ?easier? than 
+implementing a plugin. If I'm right, that would require providing all 
+interfaces/capabilities the alsa-lib middle layer provides.
+What are the thoughts about this on this list? I've already seen some 
+small discussions about this (e.g. bluetooth), but I'm not completely 
+convinced... what about the latency/realtime behaviour of the two options?
 
-> > Maybe alsa-lib could be implemented on top of the OSS driver API instead
-> > of having two redundant APIs in the kernel.
->
-> AFAICS the ALSA API is a superset of the OSS API.
-Right. 1500+ library calls is really a superset of OSS API that has just
-5 system calls and a handfull of ioctl calls. OSS is designed to make
-the right decisions itself without babysitting by the applications. With
-ALSA you check what the device can do. With OSS you simply tell the device
-what it should do. In that way we need just a fraction of primitives for
-the same functionality.
+ From a development perspective I do think that it's nice to work in 
+userland. I still remember the numerous reboots when working on the isis 
+kernel driver...
+Would it be interesting to construct userland code in such a way that it 
+is easy to migrate it to kernel space? Or isn't it worth the effort?
 
-Best regards,
+And finally a practical question: The PCM part can be implemented as a 
+plugin, for which I should look at pcm_jack.c. Is there an equivalent 
+plugin mechanism for MIDI stuff? I've googled around, but I couldn't 
+find a clear answer.
 
-Hannu
------
-Hannu Savolainen (hannu@opensound.com)
-http://www.opensound.com (Open Sound System (OSS))
-http://www.compusonic.fi (Finnish OSS pages)
-OH2GLH QTH: Karkkila, Finland LOC: KP20CM
+Greets,
+
+Pieter Palmers
+FreeBoB project
+freebob.sourceforge.net
 
 
 -------------------------------------------------------
