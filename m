@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: Return to sender messages, etc...
-Date: Wed, 22 Sep 2004 14:09:43 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: [PATCH] Kernel crash
+Date: Wed, 22 Sep 2004 16:12:56 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200409221209.i8MC9fJN005073@www7.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <XFMail.20040922161256.pochini@shiny.it>
+References: <s5hbrfyzkdx.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hbrfyzkdx.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,22 +17,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tsw@johana.com
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-In past this list was only for subscribers, now is open (this was
-requirement from kernel people) for everyone (spams too).
+On 22-Sep-2004 Takashi Iwai wrote:
 
-Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D REKLAMA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A*BUENA VISTA SOCIAL CLUB*          Info: +=
-421 904 666 363=0A*Ibrahim Ferrer*                   http://www.xl.sk=0A*3.=
-oktobra 2004 o 20,00 hod*       email: mailto:buena@xl.sk=0A*Bratislava, IN=
-CHEBA - hala C*=0A
+> OTOH, when you link streams but feed/read data separately for each
+> stream, the clock difference doesn't matter.  Each stream may have
+> even different periods, buffer sizes, whatever.
+>
+> So, in the first case, handling xrun/drain/drop in sync of all linked
+> streams makes sense.  But what about the second case...?
+
+It makes sense if the streams were started syncronously and the clock
+is the same, but there isn't a way to know that right now. It would
+also require driver support.
+
+
+> Well, the link can be removed dynamically.  So, in theory, we can
+> propose like the following:
+>
+> - Start, drain, drop and xrun of linked streams are operated to all
+>   streams by a single call.  Especially, drain assures that the all
+>   streams get sync'ed.
+>
+> - When one wants to operate drain and drop separately, explicitly
+>   unlink streams after the sync'ed start.
+
+It's ok IMHO.
+
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
