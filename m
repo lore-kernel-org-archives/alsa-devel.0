@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: possibly bug, sb audigy 2.5.61 and ac3 passthrough
-Date: Mon, 17 Feb 2003 11:38:02 +0100 (CET)
+From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+Subject: new rme firmware
+Date: Mon, 17 Feb 2003 11:50:06 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302171137370.1054-100000@pnote.perex-int.cz>
-References: <3E50213E.4080109@erkkila.org>
+Message-ID: <20030217105006.GB1442@finnendahl.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3E50213E.4080109@erkkila.org>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +16,35 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "Paul E. Erkkila" <pee@erkkila.org>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 16 Feb 2003, Paul E. Erkkila wrote:
+Hi,
 
-> 
-> Greetings,
-> 
->    I'm trying to get ac3 passthrough working on my media pc.  However
-> when i try and open /dev/snd/pcmC0D3p i receive a no such device error.
-> I noticed a few not really resolved answers in the archives so i figured
-> I'd post again. The devices exist in /dev/snd and /proc/asound/dev and
-> playback and recording function correctly now (even sound via the
-> optical connection to the receiver). I've read through all the online
-> help i could find and am still stumped =/
+arecord seems to work with the new revision of the hdsp pci (rev
+11). The computer still freezes if pd is used with input
+enabled. G=FCnther Geiger, the author of the new alsa port of pd, said
+the way he implemented the pd port freezing of computer can only be
+related to kernel/alsa problems.
 
-ac3 passtrough is not supported for audigy yet.
+The situation:
 
-						Jaroslav
+- pd works fine in and out with the older revision
+- the computer freezes starting pd input enabled with the new revision
+- the computer doesn't crash with arecord
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+The question remains, whether this is due to an incompleted load of
+the firmware as the syslogs suggest. I wonder, whether it is even
+possible to get arecord and sound out to work when the firmware load
+is incomplete or whether this is a bogus message from the driver. =20
 
+Let me know, if any syslogs or other material is needed to pin down
+the problem. If worse comes to worse I'm considering to downgrade the
+firmware to revision 10, but I'd rather avoid that for obvious
+reasons.
+
+--
+Orm=20
 
 
 -------------------------------------------------------
