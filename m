@@ -1,14 +1,13 @@
-From: "daniel sheltraw" <l5gibson@hotmail.com>
-Subject: general audio card Q
-Date: Mon, 29 Jul 2002 23:49:03 -0500
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Re: guitar + sblive + ardour + ladspa effects
+Date: Tue, 30 Jul 2002 15:01:00 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F118RXf2LTrpwACkWHZ000183fb@hotmail.com>
+Message-ID: <3D462B9C.2040002@boosthardware.com>
+References: <E17ZHUa-0008M8-00@usw-sf-list1.sourceforge.net> <1027977926.10978.104.camel@insanity>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from hotmail.com (f118.law7.hotmail.com [216.33.237.118])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id GAA27321
-	for <alsa-devel@alsa-project.org>; Tue, 30 Jul 2002 06:49:36 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,22 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Bob Ham <node@users.sourceforge.net>
+Cc: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>, Ardour Devel Mailing List <ardour-dev@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello ALSA list
+Bob Ham wrote:
 
-Besides the RME PST card, are there other sound cards which can do
-interrupt driven data transfer to double-buffers (ie. no DMA) for
-playback?
+> 
+> Err.. I mean have *both* cards in jack.  I have a ~/.asoundrc with
+> "platinum51" and "via" devices defined.  I normally do "jackd -d alsa -d
+> platinum51".  Doing "jackd -d alsa -d platinum51 -d via" makes it only
+> use the via card.  How can I tell it to use both?
 
-Thanks,
-Daniel Sheltraw
+There is some info on how to set up your .asoundrc for this operation in 
+the alsa wiki.
 
+http://alsa.opensrc.org
 
-
-_________________________________________________________________
-Chat with friends online, try MSN Messenger: http://messenger.msn.com
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
