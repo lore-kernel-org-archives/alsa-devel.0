@@ -1,11 +1,13 @@
-From: Olaf Hering <olh@suse.de>
-Subject: sound/core/pcm_lib.c:158: BUG
-Date: Sun, 19 Dec 2004 00:53:59 +0100
-Message-ID: <20041218235359.GA3782@suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: sound/core/pcm_lib.c:158: BUG
+Date: Sat, 18 Dec 2004 19:34:12 -0500
+Message-ID: <1103416452.28301.5.camel@krustophenia.net>
+References: <20041218235359.GA3782@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20041218235359.GA3782@suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,16 +17,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Olaf Hering <olh@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, 2004-12-19 at 00:53 +0100, Olaf Hering wrote:
+> Is this just debug output, or should I be worried about it?
+> 
+> linux-2.6.10-rc3-olh/sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x1000
+> 
+> This is an ibook2, playing mp3 with xmms, alsa version is 1.0.3, from sles9.
+> I remember no failures in the last couple hours.
 
-Is this just debug output, or should I be worried about it?
+That message indicates that the hardware pointer returned by the pointer
+callback was beyond the end of the buffer which should not be possible.
 
-linux-2.6.10-rc3-olh/sound/core/pcm_lib.c:158: BUG: stream = 0, pos = 0x4000, buffer size = 0x4000, period size = 0x1000
+This could indicate an off by one error in the driver, it looks like the
+erroneous position is one sample past the end of the buffer.
 
-This is an ibook2, playing mp3 with xmms, alsa version is 1.0.3, from sles9.
-I remember no failures in the last couple hours.
+Lee
+
 
 
 -------------------------------------------------------
