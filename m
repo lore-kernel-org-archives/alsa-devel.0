@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 16:58:21 +0100
-Message-ID: <c4cd7ce0cc3732d1fd76c04d703c8cbe@bugtrack.alsa-project.org>
+Date: Mon, 27 Dec 2004 17:42:14 +0100
+Message-ID: <ce168cabc29fc70a834cac8bb16c9ff3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3CA4F212
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 16:58:22 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BAA50205
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 17:42:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Fedora FC3
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 16:58 CET
+Last Modified:              12-27-2004 17:42 CET
 ======================================================================
 Summary:                    Buzz from ALSA setup
 Description: 
@@ -56,20 +56,23 @@ successful in all other regards install of Fedora FC3.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 12-27-04 16:45 
-----------------------------------------------------------------------
-Set "Master" volume.
-Set "Surround" volume.
-Set "Center" volume.
-Set "LFE" volume
-
-----------------------------------------------------------------------
  misnagid - 12-27-04 16:58 
 ----------------------------------------------------------------------
 here is new file per your instructions, called test3.state.  still not
 working tho.  ugh!
 
 jerr
+
+----------------------------------------------------------------------
+ misnagid - 12-27-04 17:42 
+----------------------------------------------------------------------
+Seems like I've done everything but it still doesn't work.  What do we need
+to do now to get the sound to work?
+
+I was able to get Debian ALSA to work on this same exact system here. 
+Nothing's changed with this system.  This is Fedora FC3 now, that's all.
+
+Jerry
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -107,6 +110,8 @@ Date Modified  Username       Field                    Change
 12-27-04 16:38 misnagid       Note Added: 0002965                          
 12-27-04 16:45 pzad           Note Added: 0002966                          
 12-27-04 16:58 misnagid       Note Added: 0002967                          
+12-27-04 16:58 misnagid       File Added: test3.state                      
+12-27-04 17:42 misnagid       Note Added: 0002968                          
 ======================================================================
 
 
