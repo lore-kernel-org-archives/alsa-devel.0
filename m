@@ -1,12 +1,10 @@
-From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Subject: Re: snd_pcm_open fails
-Date: Tue, 01 Jun 2004 00:03:56 +0200
+From: "Zack Borschuk" <zackqtip@hotmail.com>
+Subject: question about possible support acquisition
+Date: Mon, 31 May 2004 19:25:48 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xsmdg9rub.fsf@kth.se>
-References: <40BBA233.4000504@cornfed.com>
+Message-ID: <BAY19-F38WgP1A83xiD00018248@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,32 +17,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-"Frank W. Miller" <fwmiller@cornfed.com> writes:
+I was wondering if a petition asking Creative Labs to release the needed 
+information to create efficient support for the Audigy LS would be plausible 
+or not.   Please let me know, so that if it is plausible, I could start 
+working on getting the petition signed by enough people.
 
-> Hi,
->
-> I've got my header file installed now.  I had to install two rpms
->
-> alsa-lib-1.0.4-12.rhfc1.at.i386.rpm
-> alsa-lib-devel-1.0.4-12.rhfc1.at.i386.rpm
->
-> on my default Fedora Core 1 install.  I restarted and my cdplayer is
-> still working so thats good.  I can also do my compiles with
-> <alsa/asoundlib.h> being found and -lasound being linked, so thats
-> good too.  Trouble is, now when I try to open the pcm devices with
-> something like:
->
-> snd_pcm_open(..., "default", ...);
->
-> I'm getting a No such file or directory error.  Same thing for
-> "plughw" and "plughw:0,0".  Anyone seen this before?
+Thanks,
 
-Most likely missing ALSA device files (/dev/snd/*).  There's a script
-somewhere to create them.
+Zack Borschuk
 
--- 
-Måns Rullgård
-mru@kth.se
+_________________________________________________________________
+FREE pop-up blocking with the new MSN Toolbar – get it now! 
+http://toolbar.msn.click-url.com/go/onm00200415ave/direct/01/
 
 
 
