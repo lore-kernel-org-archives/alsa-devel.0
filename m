@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: AW: usb quattro
-Date: Mon, 09 Sep 2002 20:56:03 +0900
+Date: Mon, 09 Sep 2002 22:32:47 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D7C8C53.7060001@boosthardware.com>
-References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>	<s5hvg5jwgvk.wl@alsa2.suse.de>	<3D7912A2.1000908@boosthardware.com> <s5hy9abzefz.wl@alsa2.suse.de>
+Message-ID: <3D7CA2FF.2030705@boosthardware.com>
+References: <3D77A319.3010703@boosthardware.com>	<DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>	<s5hvg5jwgvk.wl@alsa2.suse.de>	<3D7912A2.1000908@boosthardware.com> <s5hy9abzefz.wl@alsa2.suse.de> <3D7C8C53.7060001@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,81 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Sat, 07 Sep 2002 05:40:02 +0900,
-> Patrick Shirkey wrote:
+Patrick Shirkey wrote:
+
+>>
+>> the resolution of usb-audio device is 1ms.  this value is fixed.
+>> thus you need to adjust the period size according to the sample rate
+>> if you want to achieve the real-time response with a small period
+>> size.
+>>
+>> that means:
+>> - the sample rate should be 48kHz (or 32kHz), which can be divided by
+>>   1000, and should not be 44.1kHz.
+>> - the period size should be aligned to (rate / 1000).
+>>   in the case of 48kHz, the period size should be 48, 96, 192, ...
+>>
+>> please try this combination.
+>>
+>>
 > 
->>Takashi Iwai wrote:
->>
->>
->>>>the Tascam US-428 driver (copied / changed from snd-usb-audio ) showed a
->>>>similar problem.
->>>>I worked around it by not using ASYNC_UNLINKing of the urbs.
->>>
->>> 
->>>yes, this could be the problem.
->>>this happend once and i thought it fixed on the alsa side, but it
->>>seems that there is something wrong on usb driver itself.
->>>why it happened on jack is because jack caused xrun - and the driver
->>>tries to stop the stream and unlinks urbs with ASYNC_UNLINK flag.
->>>
->>>anyway, i changed the code on cvs to use SYNC unlink mode as default.
->>>this may have a drawback that the urbs still exist even if the driver
->>>stops the stream after detection of xrun.  but usually this doesn't
->>>matter so much.
->>>
->>>i've tested normal playbacks and it seems working.
->>>
->>>
->>
->>I have actually managed to get a stream from alsaplayer through without 
->>a hang but the sound is choppy.
->>
->>I will make a test signal  so you can hear what I am getting. It's 
->>similar to what was happening before the driver was fixed last time.
->>
->>I got this output from jackd. this happened after I started jack and 
->>didn't connect any other apps. Maybe it timed out but I don't think it 
->>is supposed to.
->>
->>----
->>$ jackd -v -d alsa -d q4
->>jackd 0.37.1
->>Copyright 2001-2002 Paul Davis and others.
->>jackd comes with ABSOLUTELY NO WARRANTY
->>This is free software, and you are welcome to redistribute it
->>under certain conditions; see the file COPYING for details
->>
->>512 waiting for signals
->>creating alsa driver ... q4|1024|2|48000|swmon
+> Takashi you little beauty :)
 > 
+> The sound is infinitely better.
 > 
-> the resolution of usb-audio device is 1ms.  this value is fixed.
-> thus you need to adjust the period size according to the sample rate
-> if you want to achieve the real-time response with a small period
-> size.
+> I'll add a note to the docs.
 > 
-> that means:
-> - the sample rate should be 48kHz (or 32kHz), which can be divided by
->   1000, and should not be 44.1kHz.
-> - the period size should be aligned to (rate / 1000).
->   in the case of 48kHz, the period size should be 48, 96, 192, ...
-> 
-> please try this combination.
-> 
+> Hmm. Now I have no excuses when people ask to hear my music though ;)
 > 
 
-Takashi you little beauty :)
+Blah. I spoke too soon. I should have been worried when it was so easy.
 
-The sound is infinitely better.
+I can get much better sound quality using this:
 
-I'll add a note to the docs.
+jackd -v -R -d alsa -d q4 -p 1152
 
-Hmm. Now I have no excuses when people ask to hear my music though ;)
+which is through the plug layer. Currently the hw layer produces white 
+noise.
+
+I will have to track down the correct settings.
+
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
