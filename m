@@ -1,91 +1,205 @@
-From: Joshua Kwan <joshk@triplehelix.org>
-Subject: Some problems with snd-au8830
-Date: Sun, 12 Sep 2004 01:42:04 -0700
-Sender: linux-kernel-owner@vger.kernel.org
-Message-ID: <20040912084204.GA22712@darjeeling.triplehelix.org>
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH]snd-usb-usx2y 0.7.2a
+Date: Sun, 12 Sep 2004 11:33:46 +0200
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <200409121133.46219.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S268533AbUILImP@vger.kernel.org>
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_6fBRBsTXDoAiyxm"
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-To: alsa-devel@lists.sourceforge.net, linux-kernel mailing list <linux-kernel@vger.kernel.org>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---UlVJffcvxoiEqYs2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello ALSA developers (cc: LKML for any inspiration),
-
-Some snd-au8830 concerns..
-
-I've recently been using my Aureal Vortex2 SQ2500 with ALSA's snd-au8830
-to do some recording, and I got a humongous pile of these in my dmesg:
-
-vortex: IRQ reg error
-vortex: IRQ fifo error
-vortex: IRQ dma error
-
-and at the end of each batch:
-
-vortex: 0 virt=3D0, real=3D0, delta=3D-1
-
-Also, I can't seem to start up JACK using the ALSA backend:
-
-loading driver ..
-creating alsa driver ...
-hw:0|hw:0|1024|2|48000|0|0|nomon|swmeter|-|32bit
-control device hw:0
-configuring for 48000Hz, period =3D 1024 frames, buffer =3D 2 periods
-Couldn't open hw:0 for 32bit samples trying 24bit instead
-Couldn't open hw:0 for 24bit samples trying 16bit instead
-ALSA: cannot set period size to 1024 frames for capture
-ALSA: cannot configure capture channel
-cannot load driver module alsa
-
-It only works when I use -p 512 (512 frames/period) and disable capture
-outputs:
-
-$ jackd -d alsa -p512 -P
-
-creating alsa driver ... hw:0|-|512|2|48000|0|0|nomon|swmeter|-|32bit
-control device hw:0
-configuring for 48000Hz, period =3D 512 frames, buffer =3D 2 periods
-Couldn't open hw:0 for 32bit samples trying 24bit instead
-Couldn't open hw:0 for 24bit samples trying 16bit instead
-
-It all works perfectly with my other machine which uses snd-intel8x0.
-(Except, of course, that there's no nice hardware mixing.) Any ideas?
-
-Thanks!
-
---=20
-Joshua Kwan
-
---UlVJffcvxoiEqYs2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+--Boundary-00=_6fBRBsTXDoAiyxm
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-Comment: http://triplehelix.org/~joshk/pubkey_gpg.asc
+Hi Takashi,
 
-iQIVAwUBQUQL3KOILr94RG8mAQLi/A//dYWegIpCxPx3vQB6kHAs1501j2ujVjvj
-wQ4jbi/anDe9lID+p3e4SVqmfbJbHfH5pnb0+Dkr4Fh3UQ+/Uena/DBLJQJ3KQYE
-UiQneRPu5swQfCEBAxu3tHXjmBscGcpZ3CJm4I30gIHj0m4ePUnaCKEdrOUMI9y1
-LcpR0hP9GVUnrad7+fABJwwRLufU7iG2Hxp1ZHr9omVAj36f4MmYs+EripJoUNLC
-b8MQtkzt267ojna/XhV0pjzmC2e2ostPTILmLGzuLwYlcL2WZf8KpKmJGal/W79z
-BvJckkeisVwmE/e9IEPtGyQ/5YlEo6LXGl5jjU5iOwirau1ZkzaUkKI+H9W0lTPy
-SUKnSnRqpg2BQjU5ElqnBtKYZ6OoqjLeL4r4LMW+Me24+h+Kt/wYNHZBfJabn288
-l6IHF2i3oZ6Mhw3X4/N3pU4V0df/pqQIg+wCNdXCnWjxeMCjfPEFAFwpXBG5A96Z
-/NHJok5dttkX/ShhZoN8z25pZ3jKQOrquZP24YBTKu2N7mjzLjgQlNhIEKSDOqJo
-w8iARbztnLT7uoejINI4VRmd9uwtAIcmg74xmhQeJh7j3nrxAX6BU01Iry2Ku8aI
-ZiwTXA36VJJnOjNZh7iHZjLQkM9V+NZzqFHw9sLKtUer9ytTgcta5lS0c3hq8MIb
-nT8RcyHwpRA=
-=Bopd
------END PGP SIGNATURE-----
+I found some improvements in the current kernel's version.
+Please also apply in cvs.
 
---UlVJffcvxoiEqYs2--
+thanks,
+Karsten
+
+--Boundary-00=_6fBRBsTXDoAiyxm
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="snd-usb-usx2y.patch.0.7.2a"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="snd-usb-usx2y.patch.0.7.2a"
+
+Index: alsa-kernel/usb/usx2y/usX2Yhwdep.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usx2y/usX2Yhwdep.c,v
+retrieving revision 1.1
+diff -u -r1.1 usX2Yhwdep.c
+--- alsa-kernel/usb/usx2y/usX2Yhwdep.c	3 Aug 2004 14:22:48 -0000	1.1
++++ alsa-kernel/usb/usx2y/usX2Yhwdep.c	11 Sep 2004 20:46:12 -0000
+@@ -211,43 +211,50 @@
+ 
+ static int snd_usX2Y_hwdep_dsp_load(snd_hwdep_t *hw, snd_hwdep_dsp_image_t *dsp)
+ {
+-	int	lret, err;
+-	char*	buf;
++	usX2Ydev_t *priv = hw->private_data;
++	int	lret, err = -EINVAL;
+ 	snd_printdd( "dsp_load %s\n", dsp->name);
+ 
+-	buf = dsp->image;
+-
+-	err = -EINVAL;
+ 	if (access_ok(VERIFY_READ, dsp->image, dsp->length)) {
+-		struct usb_device* dev = ((usX2Ydev_t*)hw->private_data)->chip.dev;
+-		buf = kmalloc(dsp->length, GFP_KERNEL);
+-		copy_from_user(buf, dsp->image, dsp->length);
+-		if ((err = usb_set_interface(dev, 0, 1)))
++		struct usb_device* dev = priv->chip.dev;
++		char *buf = kmalloc(dsp->length, GFP_KERNEL);
++		if (!buf)
++			return -ENOMEM;
++		if (copy_from_user(buf, dsp->image, dsp->length)) {
++			kfree(buf);
++			return -EFAULT;
++		}
++		err = usb_set_interface(dev, 0, 1);
++		if (err)
+ 			snd_printk("usb_set_interface error \n");
+ 		else
+ 			err = usb_bulk_msg(dev, usb_sndbulkpipe(dev, 2), buf, dsp->length, &lret, 6*HZ);
+ 		kfree(buf);
+ 	}
+-	if (!err  &&  1 == dsp->index)
+-		do {
+-			set_current_state(TASK_UNINTERRUPTIBLE);
+-			schedule_timeout(HZ/4);			// give the device some time 
+-			if ((err = usX2Y_AsyncSeq04_init((usX2Ydev_t*)hw->private_data))) {
+-				snd_printk("usX2Y_AsyncSeq04_init error \n");
+-				break;
+-			}
+-			if ((err = usX2Y_In04_init((usX2Ydev_t*)hw->private_data))) {
+-				snd_printk("usX2Y_In04_init error \n");
+-				break;
+-			}
+-			if ((err = usX2Y_create_alsa_devices(hw->card))) {
+-				snd_printk("usX2Y_create_alsa_devices error %i \n", err);
+-				snd_card_free(hw->card);
+-				break;
+-			}
+-			((usX2Ydev_t*)hw->private_data)->chip_status |= USX2Y_STAT_CHIP_INIT; 
+-			snd_printdd("%s: alsa all started\n", hw->name);
+-		} while (0);
++	if (err)
++		return err;
++	if (dsp->index == 1) {
++		set_current_state(TASK_UNINTERRUPTIBLE);
++		schedule_timeout(HZ/4);			// give the device some time 
++		err = usX2Y_AsyncSeq04_init(priv);
++		if (err) {
++			snd_printk("usX2Y_AsyncSeq04_init error \n");
++			return err;
++		}
++		err = usX2Y_In04_init(priv);
++		if (err) {
++			snd_printk("usX2Y_In04_init error \n");
++			return err;
++		}
++		err = usX2Y_create_alsa_devices(hw->card);
++		if (err) {
++			snd_printk("usX2Y_create_alsa_devices error %i \n", err);
++			snd_card_free(hw->card);
++			return err;
++		}
++		priv->chip_status |= USX2Y_STAT_CHIP_INIT; 
++		snd_printdd("%s: alsa all started\n", hw->name);
++	}
+ 	return err;
+ }
+ 
+Index: alsa-kernel/usb/usx2y/usbusx2y.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usx2y/usbusx2y.c,v
+retrieving revision 1.1
+diff -u -r1.1 usbusx2y.c
+--- alsa-kernel/usb/usx2y/usbusx2y.c	3 Aug 2004 14:22:48 -0000	1.1
++++ alsa-kernel/usb/usx2y/usbusx2y.c	11 Sep 2004 20:46:13 -0000
+@@ -346,11 +346,11 @@
+ 	     device->descriptor.idProduct != USB_ID_US224 &&
+ 	     device->descriptor.idProduct != USB_ID_US428) ||
+ 	    !(card = usX2Y_create_card(device)))
+-		return 0;
++		return NULL;
+ 	if ((err = usX2Y_hwdep_new(card, device)) < 0  ||
+ 	    (err = snd_card_register(card)) < 0) {
+ 		snd_card_free(card);
+-		return 0;
++		return NULL;
+ 	}
+ 	return card;
+ }
+Index: alsa-kernel/usb/usx2y/usbusx2yaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usx2y/usbusx2yaudio.c,v
+retrieving revision 1.2
+diff -u -r1.2 usbusx2yaudio.c
+--- alsa-kernel/usb/usx2y/usbusx2yaudio.c	5 Aug 2004 09:46:20 -0000	1.2
++++ alsa-kernel/usb/usx2y/usbusx2yaudio.c	11 Sep 2004 20:46:15 -0000
+@@ -411,7 +411,7 @@
+ 		if (free_tb)
+ 			kfree((*urb)->transfer_buffer);
+ 		usb_free_urb(*urb);
+-		*urb = 0;
++		*urb = NULL;
+ 	}
+ }
+ /*
+@@ -427,7 +427,7 @@
+ 
+ 	if (subs->tmpbuf) {
+ 		kfree(subs->tmpbuf);
+-		subs->tmpbuf = 0;
++		subs->tmpbuf = NULL;
+ 	}
+ }
+ 
+@@ -794,7 +794,7 @@
+ 				return err;
+ 		snd_printdd("starting capture pipe for playpipe\n");
+ 		usX2Y_urbs_allocate(capsubs);
+-		capsubs->completed_urb = 0;
++		capsubs->completed_urb = NULL;
+ 		{
+ 			DECLARE_WAITQUEUE(wait, current);
+ 			add_wait_queue(&capsubs->wait_queue, &wait);
+@@ -838,7 +838,7 @@
+ 				}
+ 			}
+ 		}
+-		subs->completed_urb = 0;
++		subs->completed_urb = NULL;
+ 		subs->next_urb_complete = -1;
+ 		subs->stalled = 0;
+ 	}
+
+--Boundary-00=_6fBRBsTXDoAiyxm--
+
+
+-------------------------------------------------------
+This SF.Net email is sponsored by: YOU BE THE JUDGE. Be one of 170
+Project Admins to receive an Apple iPod Mini FREE for your judgement on
+who ports your project to Linux PPC the best. Sponsored by IBM. 
+Deadline: Sept. 13. Go here: http://sf.net/ppc_contest.php
