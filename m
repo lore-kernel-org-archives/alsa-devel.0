@@ -1,12 +1,14 @@
-From: James Tappin <sjt@star.sr.bham.ac.uk>
-Subject: modules.conf in the alsa docs pages
-Date: Tue, 20 Aug 2002 13:40:24 +0100
+From: Andy Lo-A-Foe <andy@alsaplayer.org>
+Subject: Re: Kernel OOP with alsaplayer driver
+Date: Tue, 20 Aug 2002 14:59:53 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020820134024.430b48b2.sjt@star.sr.bham.ac.uk>
+Message-ID: <20020820125953.GA920@orbital.xs4all.nl>
+References: <20020820110644.GA380@orbital.xs4all.nl> <s5hk7mlsok4.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hk7mlsok4.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,26 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: pshirkey@boosthardware.com
-Cc: ALSA Development <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I just noticed when checking for something in the "install"
-documentation on the ALSA page that the alias in the template
-modules.conf is not being filled in any more; i.e. it reads:
-       alias snd-card-0 snd-
-for many cards (not all -- interwave seems to work, but ice1712
-doesn't), I'm sure that it was OK last time I checked [a week or so
-ago].
+On Tue, Aug 20, 2002 at 02:27:23PM +0200, Takashi Iwai wrote:
 
-James
+> could you check via strace which ioctl triggers this?
+> strangely i cannot reproduce this on my machine.
 
--- 
-+------------------------+-------------------------------+---------+
-| James Tappin           | School of Physics & Astronomy |  O__    |
-| sjt@star.sr.bham.ac.uk | University of Birmingham      | --  \/` |
-| Ph: 0121-414-6462. Fax: 0121-414-3722                  |         |
-+--------------------------------------------------------+---------+
+strace gives the following (parsed):
+
+....
+....
+open("/dev/snd/pcmC0D0p", O_RDWR)       = 4
+ioctl(4, AGPIOC_INFO, 0xbfffdf60)       = 0
+....
+ioctl(4, 0xc25c4110, 0xbfffe09c)        = 0
+ioctl(4, 0xc25c4110, 0xbfffe09c)        = 0
+ioctl(4, 0xc25c4110, 0xbfffe41c)        = 0
+....
+....
+....lots of the above...
+....
+....then after we initiate shutdown of the program....
+ioctl(4, 0x4143, 0x1807)                = 0
+ioctl(4, 0x4112, 0x40031090)            = 0
+close(4)                                = 0
+open("/root/.alsaplayer/config", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 4
+close(4)                                = 0
+
+Not sure if this helps, I can't get symbol values for the ioctl
+parameters. Let me know...
+
+Thanks,
+Andy
 
 
 -------------------------------------------------------
