@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000816]: No connexion sound & long time to connect
-Date: Thu, 13 Jan 2005 22:51:41 +0100
-Message-ID: <b85109131c52e8e9718b25c218f176a4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000306]: compiles, but no sound comes out
+Date: Fri, 14 Jan 2005 00:53:48 +0100
+Message-ID: <7c097b4770ffc4de56c088bab4a5d1fd@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 61988285
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 22:51:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2A99B307
+	for <alsa-devel@alsa-project.org>; Fri, 14 Jan 2005 00:53:49 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,72 +22,108 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=306> 
 ======================================================================
-Reported By:                Cyrille
-Assigned To:                sashak
+Reported By:                Quietti
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   816
-Category:                   PCI - atiixp-modem
+Issue ID:                   306
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   block
 Priority:                   normal
 Status:                     assigned
-Distribution:               Slackware
-Kernel Version:             2.4.26
+Distribution:               Debian
+Kernel Version:             self-compiled 2.6.6 vanilla.
 ======================================================================
-Date Submitted:             01-13-2005 22:51 CET
-Last Modified:              01-13-2005 22:51 CET
+Date Submitted:             05-25-2004 20:35 CEST
+Last Modified:              01-14-2005 00:53 CET
 ======================================================================
-Summary:                    No connexion sound & long time to connect
+Summary:                    compiles, but no sound comes out
 Description: 
-Hi,
-On my Toshiba Satellite A30 laptop with ATI IXP MODEM I have finally
-succeeded to run my modem (1002:434d  ATI) on a slackware 10.0 with 2.4.26
-kernel.
-(I'm using it at this time)
-But, 2 little bugs :
-- first : no sound during numbering & connexion
-- second : there's a long time (20 secondes approximtively) before
-connexion (after ATDT command).
+This is a plain vanilla kernel 2.6.6, which uses ALSA 1.0.4.
 
-I give you this info :
+The kernel compiles fine, the snd_powermac module loads without any error,
+but no sound comes up.
 
-I use :
-- slmodem-2.9.10
-- alsa-1.0.7
-- connexion with kppp (KDE 3.2)
-
-=======================
-root@tromatism:/home/cyrille# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: IXP [ATI IXP], device 0: ATI IXP AC97 [ATI IXP AC97]
-  Subdevices: 1/1
-  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
-card 1: Modem [ATI IXP Modem], device 0: ATI IXP MC97 [ATI IXP MC97]
-  Subdevices: 0/1
-  Subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0: subdevice
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
-======================
-
-
-Can you explain the problem ?
-Should I wait the alsa-driver 1.0.8 ?
-
-Cheers,
-Cyrille
+Running alsamixer gives me a mixer screen where none of the sliders can be
+moved.
 ======================================================================
+
+----------------------------------------------------------------------
+ Quietti - 01-07-05 00:30 
+----------------------------------------------------------------------
+'hwinfo' mentions the following about the sound hardware of this vintage
+iMac:
+
+11: None 00.0: 0401 Multimedia audio controller
+  [Created at prom.409]
+  Unique ID: AT0p.4TqZ9X2iLH0
+  Parent ID: LxCh.xWNNVcdS2SF
+  Hardware Class: sound
+  Model: "Apple Integrated Sound (burgundy)"
+  Vendor: int 0x0401 "Apple"
+  Device: int 0x0012 "Integrated Sound (burgundy)"
+  PROM id: pci@80000000/mac-io@10/davbus@14000/sound
+  IRQ: 17 (1 event)
+  Driver Info https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0:
+    Driver Status: dmasound is not active
+    Driver Activation Cmd: "modprobe dmasound"
+  Config Status: cfg=new, avail=yes, need=no, active=unknown
+  Attached to: https://bugtrack.alsa-project.org/alsa-bug/view.php?id=7
+(Unclassified device)
+
+07: PCI 10.0: ff00 Unclassified device
+  [Created at pci.244]
+  Unique ID: LxCh.xWNNVcdS2SF
+  SysFS ID: /devices/pci0000:00/0000:00:10.0
+  SysFS BusID: 0000:00:10.0
+  Hardware Class: unknown
+  Model: "Apple Paddington Mac I/O"
+  Vendor: pci 0x106b "Apple Computer Inc."
+  Device: pci 0x0017 "Paddington Mac I/O"
+  Driver: "macio"
+  PROM id: pci@80000000/mac-io@10
+  Memory Range: 0x80800000-0x8087ffff (rw,non-prefetchable)
+  Config Status: cfg=new, avail=yes, need=no, active=unknown
+
+----------------------------------------------------------------------
+ Quietti - 01-14-05 00:53 
+----------------------------------------------------------------------
+These CVS repositorie appear to contain Apple's own open source drivers:
+
+http://cvs.opendarwin.org/index.cgi/src/AppleOnboardAudio/
+http://cvs.opendarwin.org/index.cgi/src/IOAudioFamily/
+
+Note that some files must be unhidden from the Attic to appear visible.
+
+Comparing those to what you have should at least allow you to see what
+might be wrong in the current ALSA code.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-13-05 22:51 Cyrille        New Issue                                    
-01-13-05 22:51 Cyrille        Distribution              => Slackware       
-01-13-05 22:51 Cyrille        Kernel Version            => 2.4.26          
+05-25-04 20:35 Quietti        New Issue                                    
+05-25-04 20:35 Quietti        File Added: asound.state                     
+05-25-04 20:35 Quietti        Distribution              => Debian          
+05-25-04 20:35 Quietti        Kernel Version            => self-compiled 2.6.6
+vanilla.
+05-25-04 20:38 Quietti        Issue Monitored: Quietti                     
+05-28-04 21:18 tiwai          Note Added: 0001274                          
+05-28-04 21:37 Quietti        Note Added: 0001275                          
+07-25-04 20:16 Quietti        Note Added: 0001473                          
+09-08-04 06:32 Quietti        Note Added: 0001726                          
+10-20-04 00:38 Quietti        Note Added: 0002209                          
+01-06-05 18:14 Quietti        Note Added: 0003093                          
+01-06-05 18:27 rlrevell       Note Added: 0003094                          
+01-06-05 19:43 Quietti        Note Added: 0003095                          
+01-07-05 00:00 Quietti        Note Added: 0003096                          
+01-07-05 00:19 Quietti        Note Added: 0003097                          
+01-07-05 00:30 Quietti        Note Added: 0003098                          
+01-14-05 00:53 Quietti        Note Added: 0003206                          
 ======================================================================
 
 
