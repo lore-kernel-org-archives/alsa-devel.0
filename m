@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000853]: Clicks or pops are produced in Griffin USB iMic PCM output
-Date: Fri, 28 Jan 2005 08:28:18 +0100
-Message-ID: <57dfd609ecfc74b81e6ad4c5742e497d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000832]: sound randomly distorts, clicks, pops and low level
+Date: Fri, 28 Jan 2005 11:06:18 +0100
+Message-ID: <e849ce3979d143fe7f8d58749c17a1c3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7CC1221B
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 08:28:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D32C225
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 11:06:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,50 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=853> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=832> 
 ======================================================================
-Reported By:                vtowel
-Assigned To:                Clemens Ladisch
+Reported By:                Alister
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   853
-Category:                   USB - usb-audio
+Issue ID:                   832
+Category:                   PCI - ens1371
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.10-gentoo-r2, with low latency patch
+Status:                     new
+Distribution:               Suse linux
+Kernel Version:             2.6.5-7.111.19-default
 ======================================================================
-Date Submitted:             01-28-2005 08:28 CET
-Last Modified:              01-28-2005 08:28 CET
+Date Submitted:             01-17-2005 22:07 CET
+Last Modified:              01-28-2005 11:06 CET
 ======================================================================
-Summary:                    Clicks or pops are produced in Griffin USB iMic PCM
-output
+Summary:                    sound randomly distorts, clicks, pops and low level
 Description: 
-I've been spending the longest time trying to figure out why FluidSynth has
-been producing these inconsistent clicks while I play MIDI through it. I
-finally determined that this behaviour is not specific to FluidSynth, but
-to my USB iMic sound card, since the problem does not occur when I
-configure FluidSynth to use my internal sound card. I am also able to hear
-these clicks through the iMic by just playing an MP3 through them,
-although it's not as frequent. It seems that the frequency of the clicks
-is dependent on my CPU load; the more I stress my system, the easier it is
-to hear these clicks/pops. But it's difficult to determine whether there's
-a direct relationship there or not, because this behaviour is so
-inconsistent. But I can always cause the clicks to happen within at most a
-couple minutes, especially if I'm playing MIDI through FluidSynth.
+reported here:
+http://forums.suselinuxsupport.de/index.php?showtopic=7828
+
+but in summary:
+HW works perfectly under windows partition.
+Despite several (hopeful) upgrades, sound persists in randomly becoming
+low- level and/or VERY distorted (clipped?). Occurs anytime from few
+seconds to many minutes after being cleared. Occassionally corrects itself
+(temporary) just as randomly. But spends most of the time being badly
+distorted, low level and no left channel.
+Can always clear (temporarily) by using volume control in YaST to set max
+volumes and play high level sound through card.
+Left channel always affected worse than right.
 ======================================================================
+
+----------------------------------------------------------------------
+ Alister - 01-28-05 11:06 
+----------------------------------------------------------------------
+I am very willing to help test any proposed solutions, please contact me if
+required.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 08:28 vtowel         New Issue                                    
-01-28-05 08:28 vtowel         Distribution              => Gentoo          
-01-28-05 08:28 vtowel         Kernel Version            => 2.6.10-gentoo-r2,
-with low latency patch
+01-17-05 22:07 Alister        New Issue                                    
+01-17-05 22:07 Alister        Distribution              => Suse linux      
+01-17-05 22:07 Alister        Kernel Version            =>
+2.6.5-7.111.19-default
+01-28-05 11:06 Alister        Note Added: 0003425                          
 ======================================================================
 
 
