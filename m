@@ -1,17 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: signed/unsigned pcm formats
-Date: Wed, 08 Sep 2004 10:26:55 +0200 (METDST)
+Subject: Re: ALSA Programming Interface for Kernel 2.6.8
+Date: Wed, 08 Sep 2004 10:15:44 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0409081016460.20437-100000@studcom.urz.uni-halle.de>
-References: <E1C4dNi-0000yJ-0z@mailer.emlix.com>
+Message-ID: <Pine.HPX.4.33n.0409081003240.20437-100000@studcom.urz.uni-halle.de>
+References: <20040907103237.46836.qmail@web8503.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate2.uni-halle.de (mailgate2.urz.uni-halle.de [141.48.3.8])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B68182AF
-	for <alsa-devel@alsa-project.org>; Wed,  8 Sep 2004 10:27:13 +0200 (MEST)
-In-reply-to: <E1C4dNi-0000yJ-0z@mailer.emlix.com>
+In-reply-to: <20040907103237.46836.qmail@web8503.mail.in.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,37 +17,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
-Cc: alsa-devel@alsa-project.org
+To: =?iso-8859-1?q?Dinesh=20Ahuja?= <mdlinux7@yahoo.co.in>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Nicolas H=FCppelsh=E4user wrote:
-> What is the value range of a signed format type of data width x?
+Dinesh Ahuja wrote:
+> I have build and installed Kernel 2.6.8 which has a
+> ALSA support. I want to do a programming with ALSA
+> API's and for that I should get the hold of developers
+> kit which will provide me all the neccessary headers
+> and libraries to work with.
 
-Without the sign, there are x-1 bits for the value, so the maximum
-value is 2^(x-1)-1.  Negative values are stored as two's complement,
-so the minimum value is -(2^(x-1)).
+Headers and library are part of the alsa-lib package:
+<ftp://ftp.alsa-project.org/pub/lib/alsa-lib-1.0.4.tar.bz2>
 
-> For 8 bit I would expect -127,...,128.
+The documentation can be generated from the source files (run "make
+doc" in the alsa-lib directory, if you have doxygen) or is available
+online at <http://www.alsa-project.org/alsa-doc/alsa-lib/> (well,
+currently it isn't).
 
-It's -128 ... 127.
-
-> How is this range encoded in unsigned type of equal bit width?
-
-Add/subtract 128 (which is the equivalent of flipping the most
-significant bit).
-
-> Or is it hardware dependent?
-
-SND_PCM_FORMAT_U8 is defined as above.  If there would be any hardwar=
-e
-using a different unsigned format (there isn't), another PCM_FORMAT_
-would have to be defined.
+There are some other packages containing utilities and some hardware-
+specific tools for certain sound cards.  The source files in
+alsa-utils can be helpful as examples how to use the ALSA API.
+<ftp://ftp.alsa-project.org/pub/utils/alsa-utils-1.0.4.tar.bz2>
+<ftp://ftp.alsa-project.org/pub/tools/alsa-tools-1.0.4.tar.bz2>
+<ftp://ftp.alsa-project.org/pub/firmware/alsa-firmware-1.0.4.tar.bz2>
+<ftp://ftp.alsa-project.org/pub/oss-lib/alsa-oss-1.0.4.tar.bz2>
 
 
 HTH
 Clemens
-
 
 
 
