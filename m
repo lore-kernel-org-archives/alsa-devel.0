@@ -1,8 +1,8 @@
 From: "thewade" <pdman@aproximation.org>
 Subject: Re: Alsa and hdspmixer segfault
-Date: Fri, 1 Oct 2004 12:19:40 -0600
+Date: Fri, 1 Oct 2004 12:33:54 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410011819.i91IJeUY001712@sanctuary.aproximation.org>
+Message-ID: <200410011833.i91IXsMn001748@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,21 +15,19 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> > Should I rebuild fltk?
+> > Lastly, what is the best way to determine the latency of my pesent
+> > kernel?
 >
-> Not always, but what shows the stack trace?
+> What is the smallest period size you can use without xruns?
 
-How do I do that? Im not fimilar with gdb.
+256 is too small, 512 works fine. I cant seem to set the period to
+anything between that, proabably because its not a 2^2 value. I tried
+360 and 384 but jackd wouldn acecpt those. So just over 10ms I guess...
+(512/48000 sec)
 
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 182894123680 (LWP 2494)]
-0x0000003092b6d075 in cb2 () from /usr/lib64/libfltk.so.1.1
-(gdb) trace
-trace command requires an argument
-(gdb) trace stack
-Tracepoint 1 at 0x3092c92be0
+What is the typical latency with the mm+VP patch installed?
 
-Thanks!
+Thanks again,
 -thewade
 
 
