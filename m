@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: MIDI port names
-Date: Thu, 20 Feb 2003 21:19:19 +0100 (CET)
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Re: unterminated conditionals: @HAVE_JACK_TRUE@
+Date: Thu, 20 Feb 2003 21:30:02 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302202116250.1266-100000@pnote.perex-int.cz>
-References: <s5h8ywbf24i.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.21.0302202109150.17762-100000@mailserver.intern.bfad.de>
+References: <Pine.LNX.4.44.0302202057290.1266-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8ywbf24i.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.44.0302202057290.1266-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +16,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Clemens Ladisch <clemens@ladisch.de>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 20 Feb 2003, Takashi Iwai wrote:
+On Thu, 20 Feb 2003, Jaroslav Kysela wrote:
 
-> At Thu, 20 Feb 2003 15:14:45 +0100 (CET),
-> Jaroslav wrote:
+> > Then after ./build config I get in alsa-lib/src/pcm/Makefile
 > > 
-> > If there is a way to determine the connection between sequencer port and 
-> > rawmidi device, I'm ok with any solution. Otherwise, please, solve this 
-> > problem.
+> > @HAVE_JACK_TRUE@else !HAVE_JACK
+> > @HAVE_JACK_TRUE@endif !HAVE_JACK
+> > 
+> > @HAVE_JACK_TRUE@all: libpcm.la
 > 
-> one of the advantages of the sequencer is that it hides the lowlevel
-> implementations, regardless of mpu401 or wavetable.  hence, there
-> is no explicit link between the lowlevel device and the sequencer
-> client/port, so far.  there are only bit flags indicating what kind of
-> functions are supported by the port.
-> 
-> it's not bad to have such an attribute, though.  but if we have that,
-> it will be an addition.
+> Could you try to remove !HAVE_JACK string?
 
-We can use different name for client like:
+>From where?
 
-RawMIDI - %s
+I have just removed that 3 lines from that Makefile amd run ./build all
+again. This time:
 
-Where %s is whatever you want ;-)) card->shortname, card->id or anything 
-else. The card number can be calculated from the client address and device 
-/ subdevice from the port address.
+Making all in alsamixer
+make[1]: Entering directory `/root/ALSA/alsa-utils/alsamixer'
+cd .. && automake --foreign alsamixer/Makefile
+cd .. \
+  && CONFIG_FILES=alsamixer/Makefile CONFIG_HEADERS= /bin/sh ./config.status
+creating alsamixer/Makefile
+make[1]: Leaving directory `/root/ALSA/alsa-utils/alsamixer'
+make[1]: Entering directory `/root/ALSA/alsa-utils/alsamixer'
+gcc -DHAVE_CONFIG_H -I. -I. -I../include     -g -O2 -c alsamixer.c
+gcc  -g -O2  -o alsamixer  alsamixer.o -lncurses -lasound -lm -ldl -lpthread
+alsamixer.o: In function `update_enum_list':
+/root/ALSA/alsa-utils/alsamixer/alsamixer.c:513: undefined reference to
+`snd_mixer_selem_get_enum_item'
+/root/ALSA/alsa-utils/alsamixer/alsamixer.c:520: undefined reference to
+`snd_mixer_selem_get_enum_items'
+/root/ALSA/alsa-utils/alsamixer/alsamixer.c:527: undefined reference to
+`snd_mixer_selem_set_enum_item'
+alsamixer.o: In function `display_enum_list':
+/root/ALSA/alsa-utils/alsamixer/alsamixer.c:696: undefined reference to
+`snd_mixer_selem_get_enum_item'
+/root/ALSA/alsa-utils/alsamixer/alsamixer.c:699: undefined reference to
+`snd_mixer_selem_get_enum_item_name'
+alsamixer.o: In function `mixer_reinit':
+/root/ALSA/alsa-utils/alsamixer/alsamixer.c:1512: undefined reference to
+`snd_mixer_selem_is_enumerated'
+collect2: ld returned 1 exit status
+make[1]: *** [alsamixer] Error 1
+make[1]: Leaving directory `/root/ALSA/alsa-utils/alsamixer'
+make: *** [all-recursive] Error 1
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+The problem is I have (previous version?) of
+/usr/lib/libasound.so.2
+/usr/lib/libasound.so.2.0.0
+
+But should not build script take care of it by linking ../../alsa-lib/ ?
+
+I have run "make install" in alsa-lib and then again ./build all
+it went through OK.
+
+
+Best regards,
+--
+Tomek
 
 
 
