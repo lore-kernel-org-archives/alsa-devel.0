@@ -1,15 +1,13 @@
-From: "Karsten Wiese" <annabellesgarden@yahoo.de>
-Subject: AW: usb quattro
-Date: Thu, 5 Sep 2002 21:02:00 +0200
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: AW: usb quattro
+Date: Fri, 06 Sep 2002 04:25:34 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>
-References: <3D77A319.3010703@boosthardware.com>
+Message-ID: <3D77AFAE.6030803@boosthardware.com>
+References: <DAELIEGDPLDDCIJPAICBGEHNCDAA.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="US-ASCII"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D77A319.3010703@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,60 +16,44 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Karsten Wiese <annabellesgarden@yahoo.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> Here's what I get from ksymoops
->
-> ----
-> Warning (compare_maps): ksyms_base symbol
-> vmalloc_to_page_R__ver_vmalloc_to_page not found in System.map.
-> Ignoring ksyms_base entry
-> Unable to handle kernel NULL pointer dereference at virtual
-> address 00000020
-> c01e52e4
-> *pde = 00000000
-> CPU:    0
-> EIP:    0010:[<c01e52e4>]  Not tainted
-> Using defaults from ksymoops -t elf32-i386 -a i386
-> EFLAGS: 00010097
-> eax: cf21cc84   ebx: cf21c480    ecx: d7efd3fc      edx: cf21c484
-> esi: 00000000   ed1: 00000097     ebp: cf21cc84       esp: c0287f38
-> Warning (Oops_set_regs): garbage 'ed1: 00000097     ebp: cf21cc84
-> esp: c0287f38' at end of register line ignored
-> ds: 0018        es: 0018       ss:0018
-> Process swapper (pid: 0, stackpage=c0287000)
-> Stack:  00000292 d7efd3fc 00000000 0000cc00 d7efd380 c0287fac c01e535b5
-> d7efd380
->          d7efd380 d7eede80 04000001 0000000b c0109e8a 0000000b d7efd380
-> c0287fac
->          c0287fac 0000000b c02bee80 d7eede80 c010a018 0000000b c0287fac
-> d7eede80
-> Call Trace: [<c01e53b5>] [<c0109e8a>] [<c010a018>] [<c0106f10>]
-> [<c0106f10>]
->     [<c010c108>] [<c0106f10>] [<c0106f36>] {<c0106fc2>] [<c0105000>]
-> Code: c7 46 20 98 ff ff ff 8b 43 10 8b 1b 80 b8 00 00 00 8b 48
->
->
->  >>EIP; c01e52e4 <uhci_remove_pending_qhs+44/90>   <=====
->
+Karsten Wiese wrote:
 
-the Tascam US-428 driver (copied / changed from snd-usb-audio ) showed a
-similar problem.
-I worked around it by not using ASYNC_UNLINKing of the urbs.
+>> >>EIP; c01e52e4 <uhci_remove_pending_qhs+44/90>   <=====
+>>
+> 
+> 
+> the Tascam US-428 driver (copied / changed from snd-usb-audio ) showed a
+> similar problem.
+> I worked around it by not using ASYNC_UNLINKing of the urbs.
+> 
+> uhci_remove_pending_qhs is called to unlink urbs in ASYNC mode.
+> seems as if uhci has a bug ? or may we asyncly unlink only 1 urb at a time?
+> any experiences with kernels > 2.4.18 ?
+> 
 
-uhci_remove_pending_qhs is called to unlink urbs in ASYNC mode.
-seems as if uhci has a bug ? or may we asyncly unlink only 1 urb at a time?
-any experiences with kernels > 2.4.18 ?
+This is with kernel 2.4.19pre10
 
-Karsten
+It may be that the code is fixed for the 2.5.x series. there seems to be 
+a few different versions of the uhci code floating around.
 
 
-__________________________________________________________________
 
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
+"Um...symbol_get and symbol_put... They're
+kindof like does anyone remember like get_symbol
+and put_symbol I think we used to have..."
+- Rusty Russell in his talk on the module subsystem
+
 
 
 -------------------------------------------------------
