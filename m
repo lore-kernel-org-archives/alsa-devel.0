@@ -1,11 +1,12 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: [KSYMOOPS] Memeory related errors killed SMP box
-Date: Thu, 31 Oct 2002 00:10:03 +0000 (GMT)
+From: Bruce Paterson <bruce@tele-ip.com>
+Subject: Re: Help !  Distorted sound on re-run
+Date: Thu, 31 Oct 2002 16:47:13 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021031001003.18255.qmail@web40609.mail.yahoo.com>
+Message-ID: <3DC0C3E1.B49F4EEE@tele-ip.com>
+References: <3DB8D214.674FEFB6@tele-ip.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0-1709549304-1036023003=:17309"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,112 +16,268 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: tiwai@suse.de
+To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---0-1709549304-1036023003=:17309
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
-Content-Disposition: inline
+Bruce Paterson wrote:
+> 
 
-Hi,
+I got zero feedback on the problem below, so I thought I'd add the code
+segment and see
+if anyone can tell me what I'm doing wrong !
+See code below.
 
-I downloaded and installed today's CVS ALSA and the
-following happened:
+> HELP !
+> I've tried everything I can think of and I'm at a loss.
+> 
+> Setup:
+> alsa 0.9.0rc2
+> soundcard Terratec EWS88 (ice1712 driver)
+> direct hw:0,0 using snd_pcm_readi & writei with descriptor polling.
+> length approx 50s similtaneous read & write. read from all channels.
+> modified 'envy24setup' to preset hardware levels on startup
+> full restart of sound system each 'pass' (new handles etc.)
+> 
+> Problem:
+> The first pass works fine with beautiful audio.
+> The next pass the output is badly distorted (sounds like an incomplete
+> buffer or something), but
+> no errors reported, no under/overruns.... only evidence that something
+> is wrong is to listen to it.
+> 
+> What fixes it:
+> Waiting. Yup...if I wait > 1 minute before the 2nd pass then that is
+> also fine. Something 'happens'
+> in that time to make it all ok again.
+> This is why it's taken me ages to actually notice the problem at all !
+> (program has been running
+> for months).
+> 
+> What *doesn't* help:
+> Not doing a full sound restart between passes (ie. merely doing a drop
+> afterwards, then restart with
+> prepare & start, leaving pcm handles alive).
+> Playing a wav file with 'aplay' in between passes.
+> Exiting from my program and starting again between passes.
+> adding hw_free commands prior to close of the in & out handles.
 
-- no sound when using aplay
-- complete X-server lockup when trying to load OSS
-emulation modules. (Machine still pingable, though.)
+Recent observations: The distortion (buffer problem ?) seems to occur a
+fixed interval after
+the sound is started after a good delay then stopped, then started
+again. ie. If I send shorter bursts
+I can get two good ones in beofre a bad one (quite consistantly),
+whereas only 1 good longer burst.
 
-On reboot, the same thing happened except this time I
-received an oops. (Attached.) I strongly suspect
-today's memory-related changes.
+Also, if I send a really really long burst (ie continueous) the problem
+never occurs. It's only if I stop
+then start again !
 
-I am using a SB-Live! card with Linux-2.4.19-SMP.
+Here is the code segment in question. The periodsize is setup to be 1/4
+of the buffersize which is set
+to the maximum the soundcard will give me. When restarting the soundcard
+is initialised from scratch
+(new fd's), but I tried without doing this and it makes no difference):
 
+	/* Get one full width buffer, buffersize is in frames. */
+	outbuf = (char *)calloc(out_buffer_size * OUTCH,
+snd_pcm_format_width(format) / 8);
+		/* calloc since we want silence initially on output */
+	inbuf = (char *)calloc(in_buffer_size * INCH,
+snd_pcm_format_width(format) / 8);
+
+	/* Start the ball rolling */
+	snd_pcm_prepare(outhand);
+	snd_pcm_prepare(inhand);
+	snd_pcm_reset(outhand);
+	snd_pcm_reset(inhand);
+	snd_pcm_start(inhand);
+
+	/* This is the IO loop */
+	outp = a buffer that contains what I want to output;
+	outl = length of said buffer;			
+	outs = (QUIET * (Fs/1000));	/* Pre-silence output time */
+	Delay *= Fs;			/* Change to sample count */
+	Delay += QUIET * (Fs/1000);	/* Always delay the output quiet period as
+well */
+	dc = Delay;
+	samps = N; 
+	ocopy = 0;
+	/* inptrs already point to fmptrs */
+	for(;;)
+	{
+		if(outs)
+			out = outs;
+		else
+		{
+			if(outl)
+			{	
+				if( ocopy == 0 )
+				{
+					ocopy = 1;
+					/* Copy from single channel full buffer to full width one */
+					sampl = (long *)outp;
+					sampm = (long *)outbuf;
+
+					for(x=0; x < out_buffer_size; x++)
+					{
+						/* only 2 channels output (180 deg out of phase) */
+						*sampm = *sampl++;
+						sampm += OUTCH;		 /* Skip over other output channels */
+						if( x > outl )
+							break;
+					}
+					out = outl;
+				}
+			}
+			else
+				out = out_buffer_size;		/* Silence after */
+		}
+
+		/* See if ready for output data yet */
+        	poll(outfds, ocount, -1);
+        	snd_pcm_poll_descriptors_revents(outhand, outfds, ocount,
+&revents);
+        	if (revents & POLLERR)
+		{
+			fprintf(stderr, "Tx Poll failed\n");
+			err = -1;
+			break;
+		}
+        	if (revents & POLLOUT)
+		{
+			err = snd_pcm_writei(outhand, (void *)outbuf, out > out_buffer_size ?
+out_buffer_size  : out );
+			if( err < 0 )
+			{
+				/* EAGAIN Shouldn't happen now since we're polling first */
+				if( err != -EAGAIN )
+				{
+					fprintf(stderr, "Write failed %s", snd_strerror(err));
+					break;
+				}
+			}
+			else
+			{
+				if(outs)
+					outs -= err;
+				else
+				{
+					if(outl)
+					{
+						outl -= err;
+						outp += err * snd_pcm_format_width(format)/8;
+						ocopy = 0;
+						if( outl == 0 )
+						{
+							/* Finished actual output. Now fill buffer with silence again */
+							sampm = (long *)outbuf;
+							for(x=0; x < out_buffer_size; x++)
+							{
+								*sampm++ = 0;
+								*sampm = 0;
+								sampm += OUTCH-1; /* Skip over other output channels */
+							}
+						}
+					}
+				}
+			}	
+		}
+
+		/* See if data ready to be read yet... we started sampling earlier. */
+        	poll(infds, icount, -1);
+        	snd_pcm_poll_descriptors_revents(inhand, infds, icount,
+&revents);
+        	if (revents & POLLERR)
+		{
+			fprintf(stderr, "Rx Poll failed\n");
+			err = -1;
+			break;
+		}
+        	if( !((revents & POLLIN) || (revents & POLLPRI)) )
+			continue;
+
+		if(dc)
+		{
+	  		err = snd_pcm_readi(inhand, inbuf, dc > in_buffer_size ?
+in_buffer_size : dc);
+	  		if(err < 0)
+			{
+				if( err != -EAGAIN )
+				{
+					fprintf(stderr,"Read error at %ld: %s\n", Delay-dc,
+snd_strerror(err));
+					break;
+				}
+			}
+			else
+			{
+				dc -= err;
+				if( dc )
+					continue;
+			}
+		}
+
+		/* Finally actually record some real stuff */
+	  	err = snd_pcm_readi(inhand, inbuf, samps > in_buffer_size ?
+in_buffer_size : samps);
+	  	if(err < 0)
+		{
+			if( err != -EAGAIN )
+			{
+				/* No point in underrun recovery in this application so abort */
+				fprintf(stderr,"Read error at %ld: %s\n", N-samps,
+snd_strerror(err));
+				break;
+			}
+		}
+		else
+		{
+			samps -= err;
+			/* Copy from full width buffer to channels */
+			for(y=0; y < channels; y++)
+			{
+				sampl = (long *)inbuf + y;
+				sampm = (long *)inptrs[y];
+				for(x=0; x < err; x++)
+				{
+					*sampm++ = *sampl;
+					sampl += INCH;
+				}
+				inptrs[y] += err * snd_pcm_format_width(format)/8;
+			}
+			if( samps <= 0 )
+				break;
+		}
+	}
+	fprintf(stderr,"Sampling Completed\n");
+	snd_pcm_unlink(outhand);
+	snd_pcm_drop(outhand);
+	snd_pcm_drop(inhand);
+	snd_pcm_hw_free(outhand);
+	snd_pcm_close(outhand);
+	snd_pcm_hw_free(inhand);
+	snd_pcm_close(inhand);
+
+	/* Free up temporary memory */
+	free(inbuf); free(outbuf);
+
+-- 
 Cheers,
-Chris
+Bruce
+-------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager.
 
-
-
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
---0-1709549304-1036023003=:17309
-Content-Type: application/octet-stream; name=ALSA-KSYMOOPS
-Content-Transfer-Encoding: base64
-Content-Description: ALSA-KSYMOOPS
-Content-Disposition: attachment; filename=ALSA-KSYMOOPS
-
-a3N5bW9vcHMgMi40LjYgb24gaTY4NiAyLjQuMTkuICBPcHRpb25zIHVzZWQK
-ICAgICAtViAoZGVmYXVsdCkKICAgICAtayAvcHJvYy9rc3ltcyAoZGVmYXVs
-dCkKICAgICAtbCAvcHJvYy9tb2R1bGVzIChkZWZhdWx0KQogICAgIC1vIC9s
-aWIvbW9kdWxlcy8yLjQuMTkvIChkZWZhdWx0KQogICAgIC1tIC9ib290L1N5
-c3RlbS5tYXAtMi40LjE5IChzcGVjaWZpZWQpCgpPY3QgMzAgMjI6NTY6MTkg
-dHdvcGl0IGtlcm5lbDoga2VybmVsIEJVRyBhdCBwYWdlX2FsbG9jLmM6MjA2
-IQpPY3QgMzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogaW52YWxpZCBvcGVy
-YW5kOiAwMDAwCk9jdCAzMCAyMjo1NjoxOSB0d29waXQga2VybmVsOiBDUFU6
-ICAgIDAKT2N0IDMwIDIyOjU2OjE5IHR3b3BpdCBrZXJuZWw6IEVJUDogICAg
-MDAxMDpbcm1xdWV1ZSsxNDcvNTc2XSAgICBOb3QgdGFpbnRlZApPY3QgMzAg
-MjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogRUZMQUdTOiAwMDAxMDA4NgpPY3Qg
-MzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogZWF4OiAwMDAwMDA4ZSAgIGVi
-eDogYzAyNzdmMjQgICBlY3g6IDAwMDAwMDAwICAgZWR4OiAwMDAwMDMzYQpP
-Y3QgMzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogZXNpOiAwMDAwMDAwMSAg
-IGVkaTogYzEwMDliMDAgICBlYnA6IGMwMjc3ZjAwICAgZXNwOiBmNzY3OWJi
-YwpPY3QgMzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogZHM6IDAwMTggICBl
-czogMDAxOCAgIHNzOiAwMDE4Ck9jdCAzMCAyMjo1NjoxOSB0d29waXQga2Vy
-bmVsOiBQcm9jZXNzIGFwbGF5IChwaWQ6IDcwMiwgc3RhY2twYWdlPWY3Njc5
-MDAwKQpPY3QgMzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogU3RhY2s6IGU3
-ODU1YzAwIGMxMDA5YjAwIDAwMDAwMDAzIDAwMDI1ZWM2IDAwMDAwMjkyIDAw
-MDAwMDAwIGMwMjc3ZjAwIGMwMjc4MTMwIApPY3QgMzAgMjI6NTY6MTkgdHdv
-cGl0IGtlcm5lbDogICAgICAgIDAwMDAwMDQxIGY3ZWY1MDAwIDAwMDAwMDAw
-IGMwMTNiODFjIDAwMDAwMDBkIGMwMjc3ZjAwIGMwMjc4MTJjIDAwMDAwMDIx
-IApPY3QgMzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogICAgICAgIDAwMDAw
-MDExIDAwMDAwMDIxIDAwMDAxMDAwIGY3ZWY1MDAwIDAwMDAwMDAwIGMwMTNi
-OTljIGMwMTEwMWZjIGMxMDMwMDIwIApPY3QgMzAgMjI6NTY6MTkgdHdvcGl0
-IGtlcm5lbDogQ2FsbCBUcmFjZTogICAgW19fYWxsb2NfcGFnZXMrNzYvNDMy
-XSBbX19nZXRfZnJlZV9wYWdlcysyOC8zMl0gW3BjaV9hbGxvY19jb25zaXN0
-ZW50Kzc2LzE0NF0gWzxmODkzZGNhOD5dIFs8Zjg5M2EyZmM+XQpPY3QgMzAg
-MjI6NTY6MTkgdHdvcGl0IGtlcm5lbDogICBbPGY4OTY1Y2U3Pl0gWzxmODk3
-MDY2MT5dIFs8Zjg5NzBlZTY+XSBbPGY4OTViNDkwPl0gWzxmODk1YjU0ND5d
-IFs8Zjg5NWU4MGI+XQpPY3QgMzAgMjI6NTY6MTkgdHdvcGl0IGtlcm5lbDog
-Q29kZTogMGYgMGIgY2UgMDAgYzAgZWIgMjQgYzAgOGIgNTcgMDQgODkgZmQg
-OGIgMDcgODkgNTAgMDQgODkgMDIgClVzaW5nIGRlZmF1bHRzIGZyb20ga3N5
-bW9vcHMgLXQgZWxmMzItaTM4NiAtYSBpMzg2CgoKPj5lYng7IGMwMjc3ZjI0
-IDxjb250aWdfcGFnZV9kYXRhKzI0LzM0MD4KPj5lZGk7IGMxMDA5YjAwIDxf
-ZW5kK2NkODk5NC8zODUxNGVmND4KPj5lYnA7IGMwMjc3ZjAwIDxjb250aWdf
-cGFnZV9kYXRhKzAvMzQwPgo+PmVzcDsgZjc2NzliYmMgPF9lbmQrMzczNDhh
-NTAvMzg1MTRlZjQ+CgpUcmFjZTsgZjg5NjVjZTcgPFtzbmQtcGNtXXNuZF9w
-Y21fc2didWZfYWxsb2MrNjcvMTUwPgpUcmFjZTsgZjg5NzA2NjEgPFtzbmQt
-ZW11MTBrMV1zbmRfZW11MTBrMV9wY21fY2hhbm5lbF9hbGxvYytjMS8xODA+
-ClRyYWNlOyBmODk3MGVlNiA8W3NuZC1lbXUxMGsxXXNuZF9lbXUxMGsxX3Bs
-YXliYWNrX2h3X3BhcmFtcys1Ni9kMD4KVHJhY2U7IGY4OTViNDkwIDxbc25k
-LXBjbV1zbmRfcGNtX2h3X3BhcmFtcysyNzAvMmIwPgpUcmFjZTsgZjg5NWI1
-NDQgPFtzbmQtcGNtXXNuZF9wY21faHdfcGFyYW1zX3VzZXIrNzQvYTA+ClRy
-YWNlOyBmODk1ZTgwYiA8W3NuZC1wY21dc25kX3BjbV9wbGF5YmFja19pb2N0
-bDErNGIvMmYwPgoKQ29kZTsgIDAwMDAwMDAwIEJlZm9yZSBmaXJzdCBzeW1i
-b2wKMDAwMDAwMDAgPF9FSVA+OgpDb2RlOyAgMDAwMDAwMDAgQmVmb3JlIGZp
-cnN0IHN5bWJvbAogICAwOiAgIDBmIDBiICAgICAgICAgICAgICAgICAgICAg
-dWQyYSAgIApDb2RlOyAgMDAwMDAwMDIgQmVmb3JlIGZpcnN0IHN5bWJvbAog
-ICAyOiAgIGNlICAgICAgICAgICAgICAgICAgICAgICAgaW50byAgIApDb2Rl
-OyAgMDAwMDAwMDMgQmVmb3JlIGZpcnN0IHN5bWJvbAogICAzOiAgIDAwIGMw
-ICAgICAgICAgICAgICAgICAgICAgYWRkICAgICVhbCwlYWwKQ29kZTsgIDAw
-MDAwMDA1IEJlZm9yZSBmaXJzdCBzeW1ib2wKICAgNTogICBlYiAyNCAgICAg
-ICAgICAgICAgICAgICAgIGptcCAgICAyYiA8X0VJUCsweDJiPiAwMDAwMDAy
-YiBCZWZvcmUgZmlyc3Qgc3ltYm9sCkNvZGU7ICAwMDAwMDAwNyBCZWZvcmUg
-Zmlyc3Qgc3ltYm9sCiAgIDc6ICAgYzAgOGIgNTcgMDQgODkgZmQgOGIgICAg
-ICByb3JiICAgJDB4OGIsMHhmZDg5MDQ1NyglZWJ4KQpDb2RlOyAgMDAwMDAw
-MGUgQmVmb3JlIGZpcnN0IHN5bWJvbAogICBlOiAgIDA3ICAgICAgICAgICAg
-ICAgICAgICAgICAgcG9wICAgICVlcwpDb2RlOyAgMDAwMDAwMGYgQmVmb3Jl
-IGZpcnN0IHN5bWJvbAogICBmOiAgIDg5IDUwIDA0ICAgICAgICAgICAgICAg
-ICAgbW92ICAgICVlZHgsMHg0KCVlYXgpCkNvZGU7ICAwMDAwMDAxMiBCZWZv
-cmUgZmlyc3Qgc3ltYm9sCiAgMTI6ICAgODkgMDIgICAgICAgICAgICAgICAg
-ICAgICBtb3YgICAgJWVheCwoJWVkeCkKCg==
-
---0-1709549304-1036023003=:17309--
+    /\\\/\\\/\\\    /   /      Bruce Paterson          
+   /  \\\ \\\ \\\  /   /    Senior Design Engineer
+  /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
+ /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
+/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
+      Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
+                        WWW:   http://www.tele-ip.com       VK3TJN
+-------------------------------------------------------------------
 
 
 -------------------------------------------------------
