@@ -1,11 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: The ALSA Situation
-Date: Wed, 10 Nov 2004 16:13:21 -0500
-Message-ID: <200411102113.iAALDLUN001061@localhost.localdomain>
-References: <Pine.LNX.4.58.0411101051240.2301@ppc970.osdl.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
+Date: Wed, 10 Nov 2004 22:33:04 +0100
+Message-ID: <620bacb982e0450abef249a1856eeae9@bugtrack.alsa-project.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 10 Nov 2004 11:09:07 PST."
-             <Pine.LNX.4.58.0411101051240.2301@ppc970.osdl.org>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D188A236
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 22:33:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,53 +18,78 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Linus Torvalds <torvalds@osdl.org>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->That said, I don't see why a regular open() that doesn't wait shouldn't 
->act that way. I would suggest that "close()" wait for the buffer to drain, 
->unless interrupted by a signal. Again, this is how all other streaming 
->devices tend ot work - this is _not_ a new requirement.
->
->So if you have
->
->	#!/bin/sh
->	prog1
->	prog2
->	prog3
->
->and they all open the sound device, they _will_ be serialized by their
->closes. This is exactly why the VFS layer calls "->flush()" on each close,
 
-i think you missed my point about program exit not being synonymous
-with close(2). if prog1 closes the device but then does something else
-for a while, prog2 doesn't run till prog1 exits (in the above shell
-script). 
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
+======================================================================
+Reported By:                spirou
+Assigned To:                martin
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   611
+Category:                   PCI - RME 32
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9-gentoo-r1
+======================================================================
+Date Submitted:             10-27-2004 03:44 CEST
+Last Modified:              11-10-2004 22:33 CET
+======================================================================
+Summary:                    Can't access Digi32 with kernel 2.6.9
+Description: 
+The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
+All I get is a "Device busy". With 2.6.8 everything is fine.
+lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
+======================================================================
 
-with the block-on-busy-open behaviour, prog2 runs but blocks on open
-and then continues as soon as prog1 does the close(). with
-EBUSY-on-busy and a script, prog2 doesn't run till prog1 exits.
+----------------------------------------------------------------------
+ tiwai - 11-10-04 12:08 
+----------------------------------------------------------------------
+Does this happen on yours, Martin?
+It sounds like the app reopen the device before closing properly.
 
-btw, xmms is a sort-of relevant example of this. xmms opens and closes
-the audio device several times during a typical use pattern, and
-doesn't exit unless actually told explicitly to do so. so:
+If this problem is reproducible, please try strace to check which call
+sequence triggers the problem.
 
-    xmms beep1
-    otherprog beep2
+----------------------------------------------------------------------
+ martin - 11-10-04 22:33 
+----------------------------------------------------------------------
+Yep. Same on my rme32 (using kernel v2.4)
+But the card hangs only if I try to play an audio file which isn't
+natively supported by the hardware (let's say 11025kHz,
 
-would not actually do the right thing. one could fault xmms for this
-behaviour, i suppose.
+So I guess both conditions are neccessary:
+- mmap mode
+- audio format conversion
 
->Imagine a user that clicks on an icon to launch an application. What does
->he/she/it do when the app doesn't start? Clicks again. And again. Until
->bored. And then, five hours later, when xmms exits, you have a hundred
->applications suddenly all starting up at the same time. THAT is
->"non-obvious breakage".
+I've uploaded two straces: a correct and a bad one
+(11.025kHz,16bit,mono):
+rme32.stracelog.FINE.gz (correct)
+rme32.stracelog.WRONG.gz (bad).
 
-100% agreed.
-
---p
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-27-04 03:44 spirou         New Issue                                    
+10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
+10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
+11-09-04 19:16 tiwai          Note Added: 0002341                          
+11-10-04 02:47 spirou         Note Added: 0002354                          
+11-10-04 11:04 martin         Note Added: 0002360                          
+11-10-04 12:08 tiwai          Note Added: 0002363                          
+11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
+     
+11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
+    
+11-10-04 22:33 martin         Note Added: 0002377                          
+======================================================================
 
 
 
