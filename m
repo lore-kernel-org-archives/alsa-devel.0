@@ -1,22 +1,14 @@
-From: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
-Subject: signed/unsigned pcm formats
-Date: Tue, 7 Sep 2004 12:39:21 +0200
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: ALSA Programming Interface for Kernel 2.6.8
+Date: Tue, 7 Sep 2004 13:04:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1C4dNi-0000yJ-0z@mailer.emlix.com>
-Reply-To: nh@emlix.com
+Message-ID: <20040907130432.4318a5d0@mango.fruits.de>
+References: <20040907103237.46836.qmail@web8503.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.emlix.com (mail2.emlix.com [193.159.217.188])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9EA5629C
-	for <alsa-devel@alsa-project.org>; Tue,  7 Sep 2004 12:39:30 +0200 (MEST)
-Received: from emlix ([172.17.111.84] helo=mailer.emlix.com)
-	by mail.emlix.com with esmtp (Exim 4.34)
-	id 1C4dNk-0001Rw-5S
-	for alsa-devel@alsa-project.org; Tue, 07 Sep 2004 12:39:25 +0200
-Content-Disposition: inline
+In-Reply-To: <20040907103237.46836.qmail@web8503.mail.in.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,27 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Dinesh Ahuja <mdlinux7@yahoo.co.in>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi everybody!
+On Tue, 7 Sep 2004 11:32:37 +0100 (BST)
+Dinesh Ahuja <mdlinux7@yahoo.co.in> wrote:
 
-I would like to know how pcm data is encoded.
-What is the value range of a signed format type of data width x?
-For 8 bit I would expect -127,...,128.
+> I have build and installed Kernel 2.6.8 which has a
+> ALSA support. I want to do a programming with ALSA
+> API's and for that I should get the hold of developers
+> kit which will provide me all the neccessary headers
+> and libraries to work with.
+> 
+> Could anyone suggest me how to proceed with ALSA
+> programming and from where I can get the Developer Kit
+> for my new Kernel 2.6.8.
+> 
+> I have following ALSA version from
+> /proc/asound/version
+> 
+> Advanced Linux Sound Architecture Driver Version 1.0.4
+> (Mon May 17 14:31:44 2004 UTC).
+> Compiled on Sep  7 2004 for kernel 2.6.8.
 
-How is this range encoded in unsigned type of equal bit width?
-Is, for 8 bit width, signed -127,...,0 mapped to unsigned 0,...,127 and signed 
-1,...,128 to unsigned 128,...,255?  Or is it hardware dependent?
+Hi,
 
-Viele Gruesse / best regards
-        Nicolas Hueppelshaeuser
---
-nicolas hueppelshaeuser, emlix gmbh, http://www.emlix.com,
-mailto:nh@emlix.com
-fon +49 551 37000-37, fax -38, keplerstrasse 24, 37085 goettingen, germany
+depending on your distribution all you need to do is to install a
+alsa-dev or libasound-dev pakage [naming differs from dist to dist]. The
+api docs should be available on alsa-project.org, though somewhat
+obfuscated, thus here's a direct link:
 
-emlix - your embedded linux partner
+hrrrmm, alsa-project.org is down for me atm
+
+Well, i think the api docs were mising anyways the last time i checked.
+But you could also grab an alsa-lib tarball and generate the docs from
+that. Well, to get an alsa-lib tarball alsa-project.org would need to be
+up, too :) So just wait until it's back up again..
+
+flo
 
 
 -------------------------------------------------------
