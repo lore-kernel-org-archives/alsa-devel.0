@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa - 0.9.8 (and today's cvs - 16.11.2003) interwave
- problem.
-Date: Sun, 16 Nov 2003 18:35:13 +0100 (CET)
+From: Martin Langer <martin-langer@gmx.de>
+Subject: problems on alpha
+Date: Sun, 16 Nov 2003 18:51:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.53.0311161834220.16992@pnote.perex-int.cz>
-References: <3FB8F17B.3010505@web.de>
+Message-ID: <20031116175117.GA1174@tuba.home>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FB8F17B.3010505@web.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,47 +15,87 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Nima Ghassemi <ngn928@web.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 17 Nov 2003, Nima Ghassemi wrote:
 
-> hi,
->
-> there's some problem which I tracked down to
->
-> ~alsa-driver/sound/core/control.c
->
-> int snd_ctl_add(snd_card_t * card, snd_kcontrol_t * kcontrol)
-> {
->         snd_ctl_elem_id_t id;
->         unsigned int idx;
->
->     snd_runtime_check(card != NULL && kcontrol != NULL, return -EINVAL);
->         snd_assert(kcontrol->info != NULL, return -EINVAL);
->         id = kcontrol->id;
->         down_write(&card->controls_rwsem);
->     if (_ctl_find_id(card, &id)) {
->                 up_write(&card->controls_rwsem);
->                 snd_ctl_free_one(kcontrol);
->                 return -EBUSY;
->     }
-> [...]
->
-> the problem lies in _ctl_find_id (card, &id). by commenting the if-block
-> out, everything (as well
-> as the sound-card) works perfectly (as far as I could test it...).
+Hi,
 
-Can you add some printk's to determine which id is causing the problem so
-we can fix it? Thanks.
+please don't try to build au88x0 on an alpha. You have to read a lot. 
+But here is an extract with some quite interesting points about CVS ;-)
 
-						Jaroslav
+martin
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
+-I/lib/modules/2.2.19/build/include -O2 -mno-fp-regs -ffixed-8 -Wa,-mev6
+-DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-DKBUILD_BASENAME=memory_wrapper   -c -o memory_wrapper.o memory_wrapper.c
+memory_wrapper.c: In function snd_compat_vmalloc_to_page':
+memory_wrapper.c:35: warning: implicit declaration of function VMALLOC_VMADDR'
+memory_wrapper.c:39: warning: implicit declaration of function pgd_offset'
+memory_wrapper.c:39: warning: assignment makes pointer from integer without
+a cast
+memory_wrapper.c:40: warning: implicit declaration of function pmd_offset'
+memory_wrapper.c:40: warning: assignment makes pointer from integer without
+a cast
+memory_wrapper.c:41: warning: implicit declaration of function pte_offset'
+memory_wrapper.c:41: warning: assignment makes pointer from integer without
+a cast
+memory_wrapper.c:43: warning: implicit declaration of function pte_page'
+
+[...]
+
+gcc -D__KERNEL__ -DMODULE=1 -I/usr/local/src/alsa-cvs/alsa-driver/include
+-I/lib/modules/2.2.19/build/include -O2 -mno-fp-regs -ffixed-8 -Wa,-mev6
+-DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
+-fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-DKBUILD_BASENAME=au8810   -c -o au8810.o au8810.c
+In file included from au88x0.c:23,
+                 from au8810.c:8:
+/usr/local/src/alsa-cvs/alsa-driver/include/sound/initval.h: In function
+get_option_long':
+/usr/local/src/alsa-cvs/alsa-driver/include/sound/initval.h:172: warning:
+implicit declaration of function get_option'
+In file included from au8810.c:8:
+au88x0.c: In function snd_vortex_dev_free':
+au88x0.c:76: warning: implicit declaration of function pci_release_regions'
+au88x0.c:77: warning: implicit declaration of function pci_disable_device'
+au88x0.c: In function snd_vortex_create':
+au88x0.c:121: warning: implicit declaration of function pci_request_regions'
+
+[...]
+
+au88x0_core.c: In function vortex_mixer_en_sr':
+au88x0_core.c:72: warning: passing arg 2 of cia_writel' makes integer from
+pointer without a cast
+au88x0_core.c: In function vortex_mixer_dis_sr':
+au88x0_core.c:76: warning: passing arg 2 of cia_writel' makes integer from
+pointer without a cast
+au88x0_core.c: In function vortex_mix_muteinputgain':
+au88x0_core.c:80: warning: passing arg 2 of cia_writel' makes integer from
+pointer without a cast
+au88x0_core.c:81: warning: passing arg 2 of cia_writel' makes integer from
+pointer without a cast
+
+[...]
+
+ld  -r -o snd-au8810.o au8810.o au8810_core.o au8810_pcm.o au8810_mixer.o
+au8810_mpu401.o au8810_game.o au8810_eq.o
+au8810_core.o(.modinfo+0x0): multiple definition of __module_kernel_version'
+au8810.o(.modinfo+0x0): first defined here
+au8810_pcm.o(.modinfo+0x0): multiple definition of __module_kernel_version'
+au8810.o(.modinfo+0x0): first defined here
+au8810_mixer.o(.modinfo+0x0): multiple definition of __module_kernel_version'
+au8810.o(.modinfo+0x0): first defined here
+au8810_mpu401.o(.modinfo+0x0): multiple definition of __module_kernel_version'
+au8810.o(.modinfo+0x0): first defined here
+au8810_game.o(.modinfo+0x0): multiple definition of __module_kernel_version'
+au8810.o(.modinfo+0x0): first defined here
+au8810_eq.o(.modinfo+0x0): multiple definition of __module_kernel_version'
+au8810.o(.modinfo+0x0): first defined here
+make[2]: *** [snd-au8810.o] Error 1
 
 
 -------------------------------------------------------
