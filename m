@@ -1,14 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001014]: card detect function is never called in pxa2xx-ac97
-Date: Tue, 29 Mar 2005 23:44:00 +0200
-Message-ID: <010425e65b21be52e425a7de3eca3923@bugtrack.alsa-project.org>
+From: James Courtier-Dutton <James@superbug.co.uk>
+Subject: Re: Re: 2.6.12-rc1-mm3, sound card lost id
+Date: Tue, 29 Mar 2005 21:53:05 +0100
+Message-ID: <4249C031.7020501@superbug.co.uk>
+References: <20050325002154.335c6b0b.akpm@osdl.org>	 <20050326111945.5eb58343.khali@linux-fr.org> <s5hr7hyiqra.wl@alsa2.suse.de>	 <20050329195721.385717aa.khali@linux-fr.org>	 <1112127424.5141.7.camel@mindpipe>	 <20050329224630.069cda56.khali@linux-fr.org>	 <1112129571.5141.18.camel@mindpipe>	 <20050329231345.281e7323.khali@linux-fr.org> <1112131111.5386.3.camel@mindpipe>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9258025E
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 23:44:00 +0200 (MEST)
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81B4625E
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 23:53:05 +0200 (MEST)
+In-Reply-To: <1112131111.5386.3.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,99 +20,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Jean Delvare <khali@linux-fr.org>, Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
+Lee Revell wrote:
+> On Tue, 2005-03-29 at 23:13 +0200, Jean Delvare wrote:
+> 
+>>>+	{.vendor = 0x1102, .device = 0x0002, .subsystem = 0x80271102,
+>>>+	 .driver = "EMU10K1", .name = "SBLive! Value [CT4832]", 
+>>>+	 .emu10k1_chip = 1,
+>>>+	 .ac97_chip = 1} ,
+>>
+>>Unsurprisingly, my card is now named CT4832. I had to edit
+>>/etc/asound.state manually to get my mixer settings back (with some
+>>warnings, but I get some sound).
+>>
+>>Not sure I quite see the idea of renaming from "Live", which the user
+>>will understand, to (I suppose) the exact chip name on the card, while
+>>the user has certainly no idea what it is. But heh I'm not an ALSA
+>>developer, there must be a good reason.
+> 
+> 
+> Blame Creative.  They have released so many different cards under the
+> Live! name that it's become meaningless.  There are now two separate
+> classes of cards marketed as Live! (or Audigy) that don't even use the
+> same driver (ca0106 and emu10k1x), the hardware isn't even similar.
+> Unsurprisingly, the user confusion is massive.
+> 
+> The model number is the simplest unique identifier.  This is also what
+> the "good" Windows drivers for these devices, http://www.kxproject.com,
+> use.
+> 
+> Lee
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1014> 
-======================================================================
-Reported By:                twinsen
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1014
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               custom: PXA255/uClibc
-Kernel Version:             2.6.11.5
-======================================================================
-Date Submitted:             03-25-2005 00:04 CET
-Last Modified:              03-29-2005 23:43 CEST
-======================================================================
-Summary:                    card detect function is never called in pxa2xx-ac97
-Description: 
-Hi there,
-I have a some problem with this driver. The environment:
-ALSA source: alsa-driver-1.0.9rc1
-Kernel source: linux-2.6.11.5 (stock)
-
-I cross compiled the kernel and the alsa source for arm target with a 
-toolchain from handhelds.org. I used the following configure command
-line:
-
-./configure --with-cards=pxa2xx-ac97 
---with-kernel=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-build=/home/twinsen/EmbeddedLinux/Kernel/linux-2.6.11.5 
---with-cross=/usr/local/arm/3.3.2/bin/arm-linux-
-
-config runs without problems, when running make gcc complains about
-"pci_dev_present" being redefined (alsa-driver-1.0.9rc1/include/adriver.h,
-orig: include/linux/pci.h), but compiles ok. 
-
-The problem:
-I loaded all modules (snd, snd-timer, snd-page-alloc, snd-pcm,
-snd-ac97-codec, snd-pxa2xx-pcm, snd-pxa2xx-ac97) but still no soundcard in
-/proc/asound/cards.
-I looked a bit inside the driver, and when snd-pxa2xx-ac97 is loaded, the
-module init function registers the new driver:
-driver_register(&pxa2xx_ac97_driver);
-
-The driver struct contains a probe function:
-.probe          = pxa2xx_ac97_probe,
-but it's never called, so the driver doesn't even check the existance of
-the sound card. Why is that? Did I srcew up the cross compiling?
-Thanks:
-	George
-======================================================================
-
-----------------------------------------------------------------------
- tiwai - 03-29-05 16:25 
-----------------------------------------------------------------------
-No certain idea.  It should be called from platform_bus...
-
-----------------------------------------------------------------------
- twinsen - 03-29-05 23:43 
-----------------------------------------------------------------------
-The driver actually fails here: 
-<kernel>/drivers/base/bus.c
-int driver_probe_device(struct device_driver * drv, struct device * dev)
-{
-        if (drv->bus->match && !drv->bus->match(dev, drv)) return
--ENODEV;
-
-The device ID of the device doesn't match the device ID of the driver. (or
-something like that according to the comment of this function)
-Unfortunately i don't know too much about kernel internals, and have no
-idea what to do... :(
-Commenting the line out didn't help :) Nice kernel panic with looong
-backtrace.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-25-05 00:04 twinsen        New Issue                                    
-03-25-05 00:04 twinsen        Distribution              => custom: PXA255/uClibc
-03-25-05 00:04 twinsen        Kernel Version            => 2.6.11.5        
-03-29-05 16:25 tiwai          Note Added: 0004247                          
-03-29-05 23:43 twinsen        Note Added: 0004259                          
-======================================================================
-
-
+It looks to me that alsactl is to blame here.
+If a user has 2 sound cards of exactly the same model, the state will
+not be saved, as the state.xxxx will be the same for both cards.
+I think we need to change alsactl to make the saved state unique.
+Maybe a combination of driver name and card number, and not use short
+name at all.
+Any comments?
 
 
 -------------------------------------------------------
