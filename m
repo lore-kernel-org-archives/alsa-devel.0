@@ -1,15 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000602]: I do not compiled ALSA-DRIVER-1.0.6a
-Date: Mon, 25 Oct 2004 17:48:45 +0200
+From: Karsten Noe <kn@daimi.au.dk>
+Subject: sound input stops
+Date: Mon, 25 Oct 2004 16:57:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <f98f522664ae48f649792bbb8ddc6c6e@bugtrack.alsa-project.org>
+Message-ID: <1098716224.5089.2.camel@rip.daimi.au.dk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4B2332FD
-	for <alsa-devel@alsa-project.org>; Mon, 25 Oct 2004 17:48:46 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,43 +15,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=602> 
-======================================================================
-Reported By:                ma13860
-Assigned To:                perex
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   602
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-25-2004 17:48 CEST
-Last Modified:              10-25-2004 17:48 CEST
-======================================================================
-Summary:                    I do not compiled ALSA-DRIVER-1.0.6a
-Description: 
-When i realese the make the conpiler have 1 error,
-when compiled the program VXP440.C, because no found the filed VXPOCKET.C
-in the directory /ALSA-DRIVER-1.6a/PCMCIA/VX.
-======================================================================
+I have problems with a piece of software, that is supposed to read input
+from a microphone and analyze the data.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-25-04 17:48 ma13860        New Issue                                    
-======================================================================
+The problem is that sometimes it starts as it should, and other times it
+does not. Also I read a maximum of 2048 samples at the time, and if the
+number of samples returned by snd_pcm_avail_update gets larger than this
+value, the software also fails.
 
+Stripped for error handling, the initialization looks like this:
+
+snd_pcm_open(&capture_handle,"plughw:0,1",               
+SND_PCM_STREAM_CAPTURE, 0);
+
+snd_pcm_hw_params_malloc (&hw_params);
+
+snd_pcm_hw_params_any (capture_handle, hw_params);
+
+snd_pcm_hw_params_set_access (capture_handle, hw_params,
+SND_PCM_ACCESS_RW_INTERLEAVED);
+
+snd_pcm_hw_params_set_format (capture_handle, hw_params,   
+SND_PCM_FORMAT_FLOAT_LE);
+
+unsigned int val = sampleRate;
+
+snd_pcm_hw_params_set_rate_near  (capture_handle, hw_params, &val, 0);
+
+snd_pcm_hw_params_set_channels (capture_handle, hw_params, 1);
+
+snd_pcm_hw_params (capture_handle, hw_params);
+
+snd_pcm_hw_params_free (hw_params);
+
+snd_pcm_prepare (capture_handle);
+
+Now a thread is running that continuously does something like the
+following:
+
+while (true)
+{
+  count = snd_pcm_avail_update(capture_handle);
+  if (count<0) {count=0;}
+
+  if (count>2048) {count=2048;}
+
+  snd_pcm_readi (capture_handle, inputBuffer, count);
+
+  .... Analyze data in inputBuffer ....
+}
+
+The problem is that sometimes this loop stops updating the inputBuffer.
+In these cases, count stays the same  after wards for every iteration at
+a low value (count<50).
+
+As long as count is large, there is no problem, but when is goes low, I
+get no new input..
+
+Please tell me what I am doing wrong.
+
+Thanks 
+
+Karsten
 
 
 
