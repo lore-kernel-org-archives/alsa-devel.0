@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000756]: ASRock k7vt4a+ with CMedia CMI9761 no mixer!
-Date: Wed, 29 Dec 2004 01:15:45 +0100
-Message-ID: <1dbaea0a816b1b7b2b8e75c6390cbf21@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 01:18:12 +0100
+Message-ID: <3d1eddd4126e65dea0424cd799393b89@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5CB9E2D6
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:15:45 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 154732D6
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 01:18:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=756> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               debian/knoppmyth
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             12-29-2004 01:15 CET
-Last Modified:              12-29-2004 01:15 CET
+Last Modified:              12-29-2004 01:18 CET
 ======================================================================
 Summary:                    ASRock k7vt4a+ with CMedia CMI9761 no mixer!
 Description: 
@@ -65,12 +65,20 @@ to work.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-29-04 01:18 
+----------------------------------------------------------------------
+Because this codec does not have a master volume control in the hardware. 
+Please, check the alsa-user and alsa-devel archives before filing a bug
+report!
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-29-04 01:15 wschrep        New Issue                                    
 12-29-04 01:15 wschrep        Distribution              => debian/knoppmyth
 12-29-04 01:15 wschrep        Kernel Version            => 2.6.10          
+12-29-04 01:18 rlrevell       Note Added: 0002989                          
 ======================================================================
 
 
