@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000549]: Jackd crash randomly
-Date: Tue,  5 Oct 2004 08:32:55 +0200 (CEST)
+Subject: [ALSA - driver 0000558]: Hardware Monitoring is missing for EWS88D
+Date: Tue,  5 Oct 2004 16:00:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041005063255.522544C00D@server.perex-int.cz>
+Message-ID: <20041005140054.25CAE4E012@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C0753261
-	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 08:34:08 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 685C21E3
+	for <alsa-devel@alsa-project.org>; Tue,  5 Oct 2004 16:00:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,129 +22,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000549
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000558
 ======================================================================
-Reported By:                roswel
-Assigned To:                karsten
+Reported By:                theitch
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     549
-Category:                   USB - usb-usx2y
-Reproducibility:            random
-Severity:                   crash
+Bug ID:                     558
+Category:                   PCI - ice1712
+Reproducibility:            always
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Debian sid/experimental
-Kernel Version:             2.6.9-rc2-bk14
+Status:                     new
+Distribution:               FC 1 - CCRMA
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             09-29-2004 07:52 CEST
-Last Modified:              10-05-2004 08:32 CEST
+Date Submitted:             10-02-2004 05:03 CEST
+Last Modified:              10-05-2004 16:00 CEST
 ======================================================================
-Summary:                    Jackd crash randomly
+Summary:                    Hardware Monitoring is missing for EWS88D
 Description: 
-Hi,
-I still have some troubles with jackd. I rebuilt a kernel without
-USB_CONFIG_BANDWITH and now jackd start without problem. But sometimes, it
-hang with the following jackd error  : 
-04:25:29.436 Audio connection graph change.
-delay of 1022980.000 usecs exceeds estimated spare time of 17909.000;
-restart ...
-04:28:42.753 XRUN callback. (1)
-
-I never have this error with my integrated chip using intel_i8x0 driver.
-But wost, after a random time, jackd crash with the following error : 
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-could not start playback (Broken pipe)
-jackd watchdog: timeout - killing jackd
-
-And in my kernel logs, i've got : 
-Sequence Error!(ep=10;nuc=1,frame=643)
-Sequence Error!(ep=8;nuc=0,frame=643)
-Sequence Error!(ep=8;nuc=1,frame=644)
-
-Jackd crashs also if i'm not doing anything. I tried to let it run
-sometimes without using it, and it crashs.
-
-Thanx for your attention.
+The Hardware Monitoring for the the envy24/ice1712-based Terratec EWS88D
+does not function when using the ice1712 driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- karsten - 10-01-2004 01:24 CEST 
+ tiwai - 10-04-2004 18:55 CEST 
 ----------------------------------------------------------------------
-please recheck snd-usb-usx2y version 0.8.0, which I posted to the
-alsa-devel list.
+It's a bug of jack.  Since EWS88D has no analog I/O for multi-channel
+mode, it doesn't have the corresponding control for analog but only
+for SPDIF.
 
 ----------------------------------------------------------------------
- roswel - 10-01-2004 10:07 CEST 
+ theitch - 10-05-2004 16:00 CEST 
 ----------------------------------------------------------------------
-How to get it, i'm not subscribe to alsa-devel list. Can you forward me
-your mail? or give me a link kto download it please.
-
-----------------------------------------------------------------------
- karsten - 10-01-2004 15:29 CEST 
-----------------------------------------------------------------------
-I've uploaded it here now too.
-apply it against a fresh new alsa tree.
-
-----------------------------------------------------------------------
- roswel - 10-01-2004 19:06 CEST 
-----------------------------------------------------------------------
-ok, so i tried your patch. I definitly work better than before, but after a
-quite long time it crash again. Before, it crashed after 2 or 3 minutes.
-With the patch, i tried 2 times, the first time it crashed after 20
-minutes, and the second it crashed afeter 35 minutes.
-But before i was able to restart jackd or alsaplayer, but now, i've to
-restart my computer. If i try to restart jackd, i got :
-ALSA lib pcm_hw.c:549:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-could not start playback (Broken pipe)
-jackd watchdog: timeout - killing jackd
-
-To unplug and replug doesn't change anything.
-
-I've the following message in my kernel logs :
-ALSA
-/home/roswel/Devel/alsa/alsa-driver/alsa-kernel/usb/usx2y/usbusx2yaudio.c:263:
-Sequence Error!(ep=10;wait=628,frame=629).
-Most propably some urb of usb-frame 628 is still missing.
-Cause could be too long delays in usb-hcd interrupt handling.
-This driver definitely wants 1 interrupt per ms.
-To make it work for a system that can't deliver interrupts reliably at
-that rate,
-You'd have to make it work for NRPACKS > 1. To start, grep for NRPACKS in
-this code ;-)
-
-----------------------------------------------------------------------
- roswel - 10-05-2004 08:32 CEST 
-----------------------------------------------------------------------
-Hummm i would just add, that the driver crash also if i don't use my
-soundcard. After a random time, if my soundcard is plugged, i got the
-following message in my kernel logs :
-ALSA
-/home/roswel/Devel/alsa/alsa-driver/alsa-kernel/usb/usx2y/usbusx2yaudio.c:263:
-Sequence Error!(ep=10;wait=628,frame=629).
-Most propably some urb of usb-frame 628 is still missing.
-Cause could be too long delays in usb-hcd interrupt handling.
-This driver definitely wants 1 interrupt per ms.
-To make it work for a system that can't deliver interrupts reliably at
-that rate,
-You'd have to make it work for NRPACKS > 1. To start, grep for NRPACKS in
-this code ;-)
+Thanks. I will go check the jack bug db.
+Would it also be a bug with envy24control? 
+Would the ice1712 ever be able to H/W monitor the 8 ADAT-based channels?
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-29-04 07:52 roswel         New Bug                                      
-09-29-04 07:52 roswel         Distribution              => Debian sid/experimental
-09-29-04 07:52 roswel         Kernel Version            => 2.6.9-rc2-bk14  
-09-29-04 07:52 roswel         Bug Monitored: roswel                        
-10-01-04 01:24 karsten        Bugnote Added: 0001989                       
-10-01-04 10:07 roswel         Bugnote Added: 0001996                       
-10-01-04 15:27 karsten        File Added: snd-usb-usx2y.patch.0.8.0                    
-10-01-04 15:29 karsten        Bugnote Added: 0001998                       
-10-01-04 19:06 roswel         Bugnote Added: 0002004                       
-10-05-04 08:32 roswel         Bugnote Added: 0002015                       
+10-02-04 05:03 theitch        New Bug                                      
+10-02-04 05:03 theitch        Distribution              => FC 1 - CCRMA    
+10-02-04 05:03 theitch        Kernel Version            => 2.4.26          
+10-03-04 20:36 theitch        Bug Monitored: theitch                       
+10-04-04 18:55 tiwai          Bugnote Added: 0002012                       
+10-05-04 16:00 theitch        Bugnote Added: 0002016                       
 ======================================================================
 
 
