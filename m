@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000318]: alsaconf: -bash: syntax error in conditional expression
-Date: Wed, 19 Jan 2005 15:36:00 +0100
-Message-ID: <4baf5554ea5f7200f2dcb362435bbaaf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Wed, 19 Jan 2005 15:46:38 +0100
+Message-ID: <a3cdbbc17a11771bc8ff5f6302f39948@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A94DB26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:36:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 87489212
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 15:46:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,76 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=318> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
 ======================================================================
-Reported By:                Toralf Förster
-Assigned To:                
+Reported By:                1g0R
+Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   318
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   822
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
-Status:                     new
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
 ======================================================================
-Date Submitted:             05-31-2004 12:25 CEST
-Last Modified:              01-19-2005 15:36 CET
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-19-2005 15:46 CET
 ======================================================================
-Summary:                    alsaconf: -bash: syntax error in conditional
-expression
+Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
-The error above results from lines like:
-  
-elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
-
-instead it should be 
-elif [[ -f /etc/redhat-release && `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
-
-notice the doubled '[[' and ']]' and '&&' instead of '-a', isn't it ?
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-19-05 15:36 
+ tiwai - 01-19-05 15:16 
 ----------------------------------------------------------------------
-You don't have to use double brackets.
+Hmm I don't understand what's exactly your problem.  Please elaborate a bit
+more what you did and what didn't work.
 
-< elif [ -f /etc/redhat-release -a `grep -c "Red Hat" /etc/redhat-release
-2>/dev/null` -ne 0 ]; then
-> elif [ -f /etc/redhat-release ] && [ "$(grep -c "Red Hat"
-/etc/redhat-release 2>/dev/null)" -ne "0" ]; then
+You started xmms with ALSA output plugin, and changed the volume in xmms? 
+In xmms ALSA output plugin, you can choose (plugin's) software volume or
+not.  If the soft volume is chosen, it's the task of xmms plugin and it
+doesn't change the mixer outside.
+Also, you can choose whether Master or PCM mixer is used.  CMI9880 has no
+Master volume but only PCM.
+
+----------------------------------------------------------------------
+ 1g0R - 01-19-05 15:46 
+----------------------------------------------------------------------
+I can change the volume only in alsaplayer.
+A cant change in alsamixer,kmix,xmms.(PCM and MASTER)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-31-04 12:25 Toralf Förster New Issue                                    
-01-19-05 15:36 jdthood        Note Added: 0003288                          
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
+01-19-05 14:40 tiwai          Note Added: 0003275                          
+01-19-05 14:59 1g0R           Note Added: 0003280                          
+01-19-05 15:16 tiwai          Note Added: 0003281                          
+01-19-05 15:46 1g0R           Note Added: 0003289                          
 ======================================================================
 
 
