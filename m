@@ -1,11 +1,11 @@
-From: Garett Shulman <shulmang@colorado.edu>
-Subject: ice1712 dshare asoundrc
-Date: Thu, 20 Nov 2003 15:47:01 -0700
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: ALSA-CVS : "delay" in audio with OSS emulation
+Date: Fri, 21 Nov 2003 00:18:36 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FBD4465.8070800@colorado.edu>
+Message-ID: <20031121001836.36542.qmail@web40606.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,52 +15,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I would really like to do hardware mixing since my card should support 
-it. I have been hacking away trying to google and decypher the plugin 
-docs and have created the following asoundrc. However, when I try to run 
-a second instance of fluidsynth on 44_2 I get the following error:
-ALSA lib pcm_dshare.c:800:(snd_pcm_dshare_open) destination channel 
-specified in bindings is alread used. I'm not sure what I'm doing wrong. 
-Is alsa simply not capable of taking advantage of the ice1712 hardware 
-mixer? Here is the asoundrc I have so far.
+Hi,
 
-pcm.44_dshare {
-	type dshare
-	ipc_key 42892323
-	ipc_key_add_uid yes
-	slave {
-		pcm "hw:0,0"
-		period_time 0
-		period_size 70
-		periods 24
-		buffer_size 1024
-		channels 10
-	}
-	bindings {
-	0 0
-	1 1
-	2 2
-	3 3
-	}
-}
+I've been noticing this for weeks, and it's still
+present in 1.0.0-pre1 (fresh from CVS): using
+RealPlayer v8 with OSS emulation, the sound is now
+several seconds behind the pictures. I haven't touched
+my RealPlayer installation, and there is no such delay
+if I use the native OSS drivers instead, so I'm fairly
+confident that the problem is with ALSA.
 
-pcm.44_1 {
-	type plug
-	ttable.0.0 1
-	ttable.0.1 1
-	slave.pcm 44_dshare
-}
+I saw no such problem running xine native ALSA
+support.
 
-pcm.44_2 {
-	type plug
-	ttable.0.2 1
-	ttable.0.3 1
-	slave.pcm 44_dshare
-}
+I have a SB Live! (rev 7) card, and am running
+Linux-2.4.22 (SMP).
 
+Cheers,
+Chris
+
+
+________________________________________________________________________
+Want to chat instantly with your online friends?  Get the FREE Yahoo!
+Messenger http://mail.messenger.yahoo.co.uk
 
 
 -------------------------------------------------------
