@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000736]: modprobe snd-azx still gives segmentation fault
-Date: Mon, 20 Dec 2004 13:05:46 +0100
-Message-ID: <a3e21c448cb63b54bddaafa1a2dc20b3@bugtrack.alsa-project.org>
+Date: Mon, 20 Dec 2004 14:27:28 +0100
+Message-ID: <c04cd3a52a1c6cd88e7336c589b63a8e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5322D2BD
-	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 13:05:46 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 82C9B2E3
+	for <alsa-devel@alsa-project.org>; Mon, 20 Dec 2004 14:27:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Mandrake 10.1 Offficial
 Kernel Version:             2.3.8.1-12mdk
 ======================================================================
 Date Submitted:             12-20-2004 07:40 CET
-Last Modified:              12-20-2004 13:05 CET
+Last Modified:              12-20-2004 14:27 CET
 ======================================================================
 Summary:                    modprobe snd-azx still gives segmentation fault
 Description: 
@@ -55,22 +55,17 @@ becomes a zombie process the same is true for modprobe -r snd or modprobe
 ======================================================================
 
 ----------------------------------------------------------------------
- fermier - 12-20-04 13:04 
-----------------------------------------------------------------------
-Sorry I did not see that I mistyped the kernel. It is kernel 2.6.8.1-12mdk,
-but probably that is almost logical.  I do indeed get an oops from the
-kernel.  I get Oops: 0002
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-
-Have no idea what this means.  I see I also got this when I tried the
-1.0.7 version from the tar ball.
-
-----------------------------------------------------------------------
  fermier - 12-20-04 13:05 
 ----------------------------------------------------------------------
 Maybe I should also state that the system is using the Asus P5AD2
 motherboard on which I have everything working except for the sound.  I am
 really prepared to try a lot of things to get it to work.
+
+----------------------------------------------------------------------
+ tiwai - 12-20-04 14:27 
+----------------------------------------------------------------------
+First, make sure that you removed the old driver modules from 1.0.7.
+Then please attach the oops contents.  Otherwise it's hard to debug.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +77,7 @@ Offficial
 12-20-04 08:31 rlrevell       Note Added: 0002868                          
 12-20-04 13:04 fermier        Note Added: 0002871                          
 12-20-04 13:05 fermier        Note Added: 0002872                          
+12-20-04 14:27 tiwai          Note Added: 0002873                          
 ======================================================================
 
 
