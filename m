@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
-Date: Thu, 3 Feb 2005 12:25:59 +0100
-Message-ID: <99e4c50123423e458b856d119090888f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000882]: Sound stops working in two scenarios with snd-via82xx module
+Date: Thu, 3 Feb 2005 18:59:49 +0100
+Message-ID: <3f8e2c94f3d0228bcdb454275c9dfe24@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B919A1E4
-	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 12:25:59 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 245DF205
+	for <alsa-devel@alsa-project.org>; Thu,  3 Feb 2005 18:59:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,34 +23,46 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=882> 
 ======================================================================
-Reported By:                yure
+Reported By:                rob
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   881
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   minor
+Project:                    ALSA - driver
+Issue ID:                   882
+Category:                   PCI - via82xx
+Reproducibility:            sometimes
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               Redhat 9
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             02-03-2005 12:25 CET
-Last Modified:              02-03-2005 12:25 CET
+Date Submitted:             02-03-2005 18:59 CET
+Last Modified:              02-03-2005 18:59 CET
 ======================================================================
-Summary:                    Distorted sound with enabled dmix plugin
+Summary:                    Sound stops working in two scenarios with
+snd-via82xx module
 Description: 
-After 10-20 minutes listening music with xmms or beep-media-player I hear
-distorted sound. Appear noise.
-This problem is appear when enabled dmix plugin through configuration file
-~/.asoundrc.
+Sound normally works fine, but we have problems a large percentage of the
+time when booting after a day or two of the systems being off, or less
+frequently if I unplug/replug or turn on/off amplified speakers.  It seems
+to vary from machine to machine even with identical hardware.
+
+This is a major annoyance for us as we have many of these systems which
+we're trying to use in an educational setting with audio.  We can work
+around it, but it's not ideal.  If only it had showed up in our initial
+testing!
+
+
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-03-05 12:25 yure           New Issue                                    
+02-03-05 18:59 rob            New Issue                                    
+02-03-05 18:59 rob            Distribution              => Redhat 9        
+02-03-05 18:59 rob            Kernel Version            => 2.4.22          
 ======================================================================
 
 
