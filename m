@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Thu, 17 Feb 2005 22:01:35 +0100
-Message-ID: <50f978b7c6670e1ac50de30bec5a7e95@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000917]: intel8x0 ACPI suspend/resume trouble
+Date: Thu, 17 Feb 2005 22:38:48 +0100
+Message-ID: <d3023e2b6f6b612572e7ef257b89a049@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A03826C
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 22:01:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E77CA26C
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 22:38:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,85 +23,103 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=154> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=917> 
 ======================================================================
-Reported By:                wzzrd
-Assigned To:                perex
+Reported By:                christophe
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   154
-Category:                   mixer
+Project:                    ALSA - driver
+Issue ID:                   917
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
+Status:                     new
+Distribution:               Ununtu
+Kernel Version:             2.6.11-rc3
 ======================================================================
-Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              02-17-2005 22:01 CET
+Date Submitted:             02-17-2005 20:16 CET
+Last Modified:              02-17-2005 22:38 CET
 ======================================================================
-Summary:                    Master volume only controls front output (emu10k1)
+Summary:                    intel8x0 ACPI suspend/resume trouble
 Description: 
-Setting the alsamixer Master Volume slider only controls the front two
-speakers. The rear speakers have to be controlled with the Wave Surround
-setting. I'm not sure whether this is an alsamixer bug or a alsa-driver
-bug. If I'm wrong putting it here, sorry.
+I have a problem with the driver for my soundcard after
+ACPI suspend/resume cycles with a 2.6.11-rc3 kernel. (I add the same
+problem with prior kernels, I first tried with 2.6.8).
 
-It would be very convenient to be able to control all four speakers with
-the Master Volume setting and to have a Front and Rear slider to control
-the front and rear speakers individually.
+This is a IBM x40 laptop (23865FU) with an intel chipset.
+
+The relevant lspci line is:
+0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801DB (ICH4) AC'97
+Audio Controller (rev
++01)
+
+The driver I use is snd_intel8x0.
+
+The problem is that after a suspend/resume cycle the sound
+output is either off or only on one side or with statics.
+
+I tried to do:
+
+~$ alsactl power off
+~$ alsactl power on
+
+without any change.
+
+If I suspend/resume multiple time I can get the sound output
+a little better (like on one side instead of off). But so far
+to get the correct sound back I need to reboot.
+
+Is it a known problem?
+Is there a way to force the driver to reinitialized the chipset?
+
+Thanks for alsa,
+Christophe
+
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000176 Master volume does not alters center, L...
-has duplicate       0000786 Master can't handle all channel
-related to          0000172 Master volume control only controls fro...
-======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 02-03-05 20:20 
+ christophe - 02-17-05 21:06 
 ----------------------------------------------------------------------
-Peter Zubaj and Mikael Magnusson have provided me with all the necessary
-info to implement a proper master volume for the SBLive.  I should have
-this working real soon now.
+Looking at intel8x0.c,
+it seems that I should use the option with the value hp_only against the
+snd-intel8x0 module.
+
+I will try and report the result,
+Thanks.
 
 ----------------------------------------------------------------------
- adamk75 - 02-17-05 22:01 
+ christophe - 02-17-05 22:38 
 ----------------------------------------------------------------------
-Just checking to see if there's an update on the status of this bug yet?
+With the ac97_quirk, it seems like I have no more sound at all.
 
-Adam
+Right now the sounds is good quality, I will try to remove/insert the
+module next time I get a crapy sound.
+
+Two remarks concerning my earlier observation that the second side was
+back after lowering the pcm volume:
+1. It doesn't work all the time.
+2. When everything is fine, I can have both the master and the pcm volume
+at the max value. When I was getting the right side back eralier, when
+moving the pcm volume up, I was loosing the right side again. 
+
+Otherwise, I noticed that the "Jack Sense" track in the mixer does not
+seem to work, and the headphone volume is ignored. Is it the normal
+behavior?
+
+Thanks,
+Christophe
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-23-04 17:31 wzzrd          New Issue                                    
-03-23-04 18:42 perex          View Status              @0@ => public       
-03-23-04 18:42 perex          Description Updated                          
-03-23-04 18:42 perex          Additional Information Updated                    
-03-23-04 18:43 perex          Status                   new => assigned     
-03-23-04 18:43 perex          Assigned To               => perex           
-03-26-04 20:21 djtm           Note Added: 0000708                          
-04-19-04 02:47 tarball        Issue Monitored: tarball                     
-04-19-04 21:23 perex          Relationship added       has duplicate 0000176
-05-24-04 22:51 delmonico      Note Added: 0001199                          
-10-22-04 16:44 perex          Relationship added       related to 0000172  
-10-23-04 01:09 djtm           Note Added: 0002253                          
-10-23-04 01:09 djtm           File Added: alsavol.sh                       
-10-23-04 01:10 djtm           Note Edited: 0002253                         
-11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
-01-04-05 21:01 Miwer          Note Added: 0003081                          
-01-04-05 21:11 rlrevell       Note Added: 0003082                          
-01-04-05 21:29 pzad           Note Added: 0003083                          
-01-04-05 21:38 rlrevell       Note Added: 0003084                          
-01-04-05 22:30 pzad           Note Added: 0003085                          
-01-04-05 22:38 rlrevell       Note Added: 0003086                          
-01-07-05 18:23 tiwai          Relationship added       has duplicate 0000786
-01-09-05 20:28 voroskoi       Issue Monitored: voroskoi                    
-01-27-05 00:58 adamk75        Issue Monitored: adamk75                     
-01-27-05 01:00 adamk75        Note Added: 0003418                          
-02-01-05 22:57 adamk75        Note Added: 0003475                          
-02-03-05 20:20 rlrevell       Note Added: 0003493                          
-02-17-05 22:01 adamk75        Note Added: 0003642                          
+02-17-05 20:16 christophe     New Issue                                    
+02-17-05 20:16 christophe     Distribution              => Ununtu          
+02-17-05 20:16 christophe     Kernel Version            => 2.6.11-rc3      
+02-17-05 20:30 tiwai          Note Added: 0003636                          
+02-17-05 21:01 christophe     Note Added: 0003639                          
+02-17-05 21:06 christophe     Note Added: 0003640                          
+02-17-05 22:38 christophe     Note Added: 0003643                          
 ======================================================================
 
 
