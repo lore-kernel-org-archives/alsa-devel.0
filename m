@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000836]: Intel HDA (C-Media 9880) - alsamixer/gamix - no slider control for Surround/Center/LFE/Side
-Date: Wed, 19 Jan 2005 18:19:01 +0100
-Message-ID: <1a95813c342f97ede7a6d91483402585@bugtrack.alsa-project.org>
+Subject: [ALSA - utils 0000798]: Make alsaconf optinal able to create an asound.conf
+Date: Wed, 19 Jan 2005 18:33:49 +0100
+Message-ID: <aec10ea6b998ceb42135e60dd4e70ed8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9B589233
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:19:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E0217212
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 18:33:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,44 +22,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=836> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=798> 
 ======================================================================
-Reported By:                jbrsubscribe
+Reported By:                christeck
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   836
-Category:                   PCI - azx
+Project:                    ALSA - utils
+Issue ID:                   798
+Category:                   alsaconf
 Reproducibility:            always
 Severity:                   feature
 Priority:                   normal
 Status:                     new
-Distribution:               Suse
-Kernel Version:             2.6.8-24.10-smp
 ======================================================================
-Date Submitted:             01-19-2005 18:19 CET
-Last Modified:              01-19-2005 18:19 CET
+Date Submitted:             01-09-2005 22:05 CET
+Last Modified:              01-19-2005 18:33 CET
 ======================================================================
-Summary:                    Intel HDA (C-Media 9880) - alsamixer/gamix - no
-slider control for Surround/Center/LFE/Side
+Summary:                    Make alsaconf optinal able to create an asound.conf
 Description: 
-Unable to set volume control for Surround/Center/LFE/Side due to the fact
-that the sliders for these entities do not function in alsamixer and
-gamix. The sliders cannot be manipulated. The only functional sliders are
-PCM, PC Speaker and the two (2) Capture sliders.
-In KAMix, KMix and QAMix the sliders for Surround/Center/LFE/Side do not
-appear at all.
+An asound.conf is difficult to create manually due to its difficult to
+understand syntax. Would be great if alsaconf could optional create it, so
+the user can
+
+* Define in which order the cards appear (e.g., internal AC97, Modem,
+USB-Audio and an USB MIDI card)
+
+* Define some dmix devices
+
+* Else? Not familiar enough with dmix, I do not use it :)
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-19-05 16:56 
+----------------------------------------------------------------------
+Argh, sorry Thomas, yes, it's yours.
+
+----------------------------------------------------------------------
+ christeck - 01-19-05 18:33 
+----------------------------------------------------------------------
+You're certainly right, but it seems that I cannot close this entry; I
+guess you have permissions, can you please close this entry?
+
+Thanks and sorry for the traffic :) .
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-19-05 18:19 jbrsubscribe   New Issue                                    
-01-19-05 18:19 jbrsubscribe   File Added: aadebug                          
-01-19-05 18:19 jbrsubscribe   Distribution              => Suse            
-01-19-05 18:19 jbrsubscribe   Kernel Version            => 2.6.8-24.10-smp 
+01-09-05 22:05 christeck      New Issue                                    
+01-19-05 15:29 jdthood        Note Added: 0003287                          
+01-19-05 16:48 tiwai          Note Added: 0003293                          
+01-19-05 16:54 jdthood        Note Added: 0003297                          
+01-19-05 16:56 tiwai          Note Added: 0003298                          
+01-19-05 18:33 christeck      Note Added: 0003309                          
 ======================================================================
 
 
