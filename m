@@ -1,11 +1,10 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: new alsa docs.
-Date: Tue, 06 Aug 2002 20:12:02 +0900
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: [ANNOUNCE] aconnectgui update
+Date: Tue, 6 Aug 2002 15:32:26 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D4FAF02.7000309@boosthardware.com>
-References: <20020805232519.H683@cebreiro.nc.rr.com>	<3D4F9602.7030804@boosthardware.com> <20020806104713.2f0ce97e.sjt@star.sr.bham.ac.uk>
+Message-ID: <20020806153226.317b9c9d.mdeboer@iua.upf.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,58 +15,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: James Tappin <sjt@star.sr.bham.ac.uk>
-Cc: ALSA Development <alsa-devel@lists.sourceforge.net>
+To: alsa-user@alsa-project.org, alsa-devel@alsa-project.org
+Cc: linux-audio-announce@music.columbia.edu
 List-Id: alsa-devel@alsa-project.org
 
-James Tappin wrote:
-> On Tue, 06 Aug 2002 18:25:22 +0900
-> PS> > On Tue, 06 Aug 2002, Patrick Shirkey wrote:
-> PS> > 
-> PS> > 
-> PS> >>I'm have soreted out all the final bugs I had with the new docs
-> PS> >setup. >Added the midi stuff and I feel that the site is ready for
-> PS> >prime time.>
-> PS> >>You can see it here:
-> PS> >>
-> PS> >>http://www.alsa-project.org/alsa-doc/
-> 
-> Just a couple of minor queries.
-> 1) In the "Setting up modprobe and kmod support" you do not include the
-> line:
->         alias sound-service-0-8 snd-seq-oss
-> (at least for the two cards relevant to me [trident and ice1712] but you
-> do
-> include it in the explanation. Which is recommended?
-> 
+Hello,
 
-Hmmm, good question. I have added it for now as they are different minor 
-numbers.
+I have updated aconnectgui, my fltk-based graphical user interface
+for aconnect. There are some important changes: external changes
+in the routings and clients (adding,removing) are now reflected
+in the GUI. Also, the source-code has been cleaned up quite a bit.
 
-> 2) For debian it is possible to add a new file "alsasound" (say) to
-> /etc/modutils/ and update-modules will find it (I'm not sure if this is
-> recommended practice or not, I'm still very much a beginner with
-> debian).
-> 
+Source code and an updated screenshot can be found at
 
-Ahh. So all files that configure modules in some way eg startup or 
-modules.conf are dealt with by modutils? I'll read up and see if I can 
-make the tip more precise.
+http://www.iua.upf.es/~mdeboer/projects/aconnectgui/
 
-> Overall though, a nice piece of work, that should be very useful in
-> making ALSA more accessible to new users.
-> 
+(NB: this server will be down tonight CET due to a electricity cut,
+so if you cannot connect, please try again tomorrow)
 
-Thanks.
-
-
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+Maarten
 
 
 
