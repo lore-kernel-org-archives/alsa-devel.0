@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
-Date: Wed, 10 Nov 2004 11:26:16 +0100
-Message-ID: <c1fdf7d6ab705346f3d65e3efd6cb1c8@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: The ALSA Situation
+Date: Wed, 10 Nov 2004 11:57:12 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
+References: <200411100150.iAA1okCE029069@localhost.localdomain>
+ <001e01c4c6ce$77672eb0$0a00000a@eugenia>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 66D092BE
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 11:26:16 +0100 (MET)
+In-Reply-To: <001e01c4c6ce$77672eb0$0a00000a@eugenia>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,108 +17,40 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Eugenia Loli-Queru <eloli@eugenia.co.uk>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net, torvalds@osdl.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 9 Nov 2004, Eugenia Loli-Queru wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=377> 
-======================================================================
-Reported By:                TheMuso
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   377
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26 and 2.6.7
-======================================================================
-Date Submitted:             07-12-2004 05:56 CEST
-Last Modified:              11-10-2004 11:26 CET
-======================================================================
-Summary:                    AudioTrak MAYA44 USB is detected, but doesn't work.
-Description: 
-With alsa-driver from latest CVS, this card is detected by hotplug, and
-assigned to snd-usb-audio, however it is not detected and set up.
-======================================================================
+> 1. again with the mixing thing, browsers will stall and not load a flash 
+> webpage if another app uses the sound device. It's tragic to see firefox not 
+> loading www.macromedia.com for example, just because xmms is playing a 
+> song...
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-10-04 09:56 
-----------------------------------------------------------------------
-It seems the driver aborts while parsing the descriptors for the mixer
-controls.
+You can disable this feature - look for nonblock_open in
+Documentation/sound/alsa/OSS-Emulation.txt . We follow posix by default,
+the original OSS API does not.
 
-Please apply the patch and recompile with --with-debug=detect, then show
-the dmesg output.
+> 2. This: http://www.osnews.com/img/6443/audio.png Check the clean and 
+> logical OSS options and then check the endless alsa ones (my monitor was not 
+> wide enough to fit them all). Why things like that are not cleaned up? (it's 
+> not gnome's volume control fault btw, I asked the developer, he said it's 
+> Alsa's)
 
-----------------------------------------------------------------------
- TheMuso - 11-10-04 11:26 
-----------------------------------------------------------------------
-Dmesg output:
-usb.c: registered new driver snd-usb-audio
-ALSA usbaudio.c:3186: probing 0a92:0091:0
-ALSA usbaudio.c:3235: creating streams
-ALSA usbaudio.c:2572: 2:1:1: add audio endpoint 0x1
-ALSA usbaudio.c:2572: 2:2:1: add audio endpoint 0x82
-ALSA usbaudio.c:3240: creating mixer
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 7
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 6
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 5
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 4
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 3
-ALSA ../alsa-kernel/usb/usbmixer.c:506: checking source unit 3
-ALSA ../alsa-kernel/usb/usbmixer.c:874: [4] FU [Speaker Playback Switch]
-ch = 1, val = 0/1/1
-ALSA ../alsa-kernel/usb/usbmixer.c:635: min 0, max 255
-ALSA ../alsa-kernel/usb/usbmixer.c:874: [4] FU [Speaker Playback Volume]
-ch = 2, val = 0/255/1
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 2
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 1
-ALSA ../alsa-kernel/usb/usbmixer.c:506: checking source unit 1
-ALSA ../alsa-kernel/usb/usbmixer.c:874: [2] FU [Speaker Playback Switch]
-ch = 1, val = 0/1/1
-ALSA ../alsa-kernel/usb/usbmixer.c:635: min 0, max 255
-ALSA ../alsa-kernel/usb/usbmixer.c:874: [2] FU [Speaker Playback Volume]
-ch = 2, val = 0/255/1
-ALSA ../alsa-kernel/usb/usbmixer.c:506: checking source unit 6
-ALSA ../alsa-kernel/usb/usbmixer.c:874: [7] FU [Speaker Playback Switch]
-ch = 1, val = 0/1/1
-ALSA ../alsa-kernel/usb/usbmixer.c:635: min 0, max 255
-ALSA ../alsa-kernel/usb/usbmixer.c:874: [7] FU [Speaker Playback Volume]
-ch = 2, val = 0/255/1
-ALSA ../alsa-kernel/usb/usbmixer.c:1458: parse_audio_unit 11
-ALSA ../alsa-kernel/usb/usbmixer.c:1005: invalid mixer unit descriptor 11
-ALSA usbaudio.c:3242: creating mixer failed
-ALSA usbaudio.c:3263: error, exiting
+We have API which won't be changed. It's only an abstraction level which
+is missing in alsa-lib. Actually, all mixer controls are automatically
+mapped from the driver to application which is not ideal for complex
+hardware. I'm working on layer which will solve this issue.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-07-12-04 05:56 TheMuso        New Issue                                    
-07-12-04 05:56 TheMuso        Distribution              => Slackware 10.0  
-07-12-04 05:56 TheMuso        Kernel Version            => 2.4.26 and 2.6.7
-07-14-04 19:27 Clemens LadischNote Added: 0001418                          
-07-15-04 00:42 TheMuso        Note Added: 0001422                          
-07-15-04 08:59 Clemens LadischNote Added: 0001424                          
-07-15-04 13:41 TheMuso        Note Added: 0001432                          
-07-16-04 16:59 Clemens LadischNote Added: 0001453                          
-07-17-04 03:03 TheMuso        Note Added: 0001455                          
-08-15-04 12:14 TheMuso        Note Added: 0001567                          
-08-20-04 11:18 Clemens LadischNote Added: 0001597                          
-08-22-04 04:01 TheMuso        Note Added: 0001606                          
-09-03-04 03:42 TheMuso        Note Added: 0001685                          
-09-20-04 15:14 TheMuso        Note Added: 0001787                          
-11-10-04 09:54 Clemens LadischFile Added: usb_logging.patch                    
-11-10-04 09:56 Clemens LadischNote Added: 0002358                          
-11-10-04 11:26 TheMuso        Note Added: 0002361                          
-======================================================================
+Things are not tragic as you've described.
 
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
