@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
-Date: Sun, 6 Feb 2005 15:53:48 +0100
-Message-ID: <cf4536940f2604e21bbe5b2d94d533fe@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000886]: alsactl store = crash
+Date: Sun, 6 Feb 2005 16:01:47 +0100
+Message-ID: <f8e5e05be12f932c736a8eb48235ee5b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1876F236
-	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 15:53:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9E13A236
+	for <alsa-devel@alsa-project.org>; Sun,  6 Feb 2005 16:01:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,47 +21,68 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
 ======================================================================
-Reported By:                hamishtpb
-Assigned To:                karsten
+Reported By:                udasoft
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   885
-Category:                   USB - usb-usx2y
+Issue ID:                   886
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo 2004.3
-Kernel Version:             2.4.28-Gentoo-r5
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-06-2005 05:57 CET
-Last Modified:              02-06-2005 15:53 CET
+Date Submitted:             02-06-2005 16:01 CET
+Last Modified:              02-06-2005 16:01 CET
 ======================================================================
-Summary:                    usx2y is unsupported in v 1.08 builds
+Summary:                    alsactl store = crash
 Description: 
-Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
-when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
-compile went smoothly.
-======================================================================
+I have a Intel D915PBL Motherboard with High Definition Audio Controller
+(ICH6 Family).
 
-----------------------------------------------------------------------
- hamishtpb - 02-06-05 15:53 
-----------------------------------------------------------------------
-I forgot to mention that the problem occurs with both Gentoo's own portage
-builds of 1.0.8 and manually downloaded builds.
+When I save the state of mixer with alsactl, receive this error:
+
+udasoftware root # alsactl  store
+Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+PREEMPT SMP
+Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
+snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
+snd_timer snd snd_page_alloc nvidia
+CPU:    0
+EIP:    0060:[<00000000>]    Tainted: P      VLI
+EFLAGS: 00010282   (2.6.10-gentoo-r6)
+EIP is at 0x0
+eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
+esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
+ds: 007b   es: 007b   ss: 0068
+Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
+Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
+00000022
+       00000000 00000000 00000000 00000000 00000000 00000000 00000000
+00000000
+              00000000 00000000 00000000 00000000 00000000 00000000
+00000000 00000000
+              Call Trace:
+               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
+                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
+                 [<c016f8ba>] sys_ioctl+0xca/0x230
+                  [<c01031af>] syscall_call+0x7/0xb
+                  Code:  Bad EIP value.
+                   Segmentation fault
+======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 05:57 hamishtpb      New Issue                                    
-02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
-02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
-02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
-02-06-05 15:53 hamishtpb      Note Added: 0003525                          
+02-06-05 16:01 udasoft        New Issue                                    
+02-06-05 16:01 udasoft        Distribution              => Gentoo          
+02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
 ======================================================================
 
 
