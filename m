@@ -1,12 +1,14 @@
-From: Rene Rebe <rene.rebe@gmx.net>
-Subject: problem with versioned symbols and shared libraries
-Date: Fri, 16 Jan 2004 20:02:00 +0100 (CET)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: alsa and kernel 2.6
+Date: Fri, 16 Jan 2004 20:01:14 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040116.200200.971177181.rene.rebe@gmx.net>
+Message-ID: <4008430A.7070408@superbug.demon.co.uk>
+References: <4007DF9D.2030103@esitcom.org>	<4007E0EF.7070206@superbug.demon.co.uk> <s5h8yk7ena8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: Text/Plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h8yk7ena8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,107 +17,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: ziegler@informatik.hu-berlin.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Amaury Jacquot <sxpert@esitcom.org>, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Takashi Iwai wrote:
+> At Fri, 16 Jan 2004 13:02:39 +0000,
+> James Courtier-Dutton wrote:
+> 
+>>Amaury Jacquot wrote:
+>>
+>>>any chance the alsa that is in 2.6 would get updated to the latest 
+>>>stable version (1.0.1) ?
+>>>this would allow me to test kernel 2.6 on my carpc
+>>>
+>>>also, I didn't find any changelog in the alsa tree ...
+>>>
+>>>
+>>
+>>For test purposes, try option 2 on 
+>>http://alsa.opensrc.org/index.php?page=AlsaBuild2.6
+>>
+>>It tells you how to merge 1.0.1 with the 2.6 kernel.
+> 
+> 
+> the current version of alsa-driver can be built directly with the 2.6
+> kernel tree.  there was a bug regading the module versioning, and i
+> fixed it right now.
+> 
+> 
+> Takashi
+> 
+> 
+Is there a tar ball of alsa-driver that works with 2.6 kernel ?
+The latest 1.0.1 tar ball does not work.
+If you think it should work, I will try again, and post the bug output.
 
-we experience a fairly strange problem with the versioned symbols in
-the libasound.so. We have a C++ wrapper library which is normally
-linked as shared obkect, too. But for some strange reasonsthe linker
-does not map stuff like "snd_pcm_hw_params_get_channels_max" and
-friends (with a pointer to the val at the end, now) to the correct
-symbol.
-
-Of course when linked statically into a single binary it works fine.
-
-Example log of some testing:
-
-Let's link a normal object and a shared obeject of the ALSAHelper:
-
-rene@idefix:~/develop/trunk/lowlevel/src$ g++   -g -Wall   -I. -I../inc=
-lude -I../../dam/include -I../../utility/include -c -o ALSAHelper.o ALS=
-AHelper.cc
-rene@idefix:~/develop/trunk/lowlevel/src$ g++ --shared  -g -Wall   -I. =
--I../include -I../../dam/include -I../../utility/include -o ALSAHelper.=
-so ALSAHelper.cc
-
-And now let's link the test application:
-
-First the shared object:
-
-rene@idefix:~/develop/trunk2/lowlevel/tests$ g++   -g -Wall   -I. -I../=
-include -I../../dam/include -I../../utility/include -o ALSAHelper ALSAH=
-elper.cc ../src/ALSAHelper.so  -lasound
-
-rene@idefix:~/develop/trunk2/lowlevel/tests$ ./ALSAHelper
-Format 16 bit
-Channels min: 268513264
-Channels max: 268513264
-Rate min: 0
-Rate max: 0
-Periods min: 0
-Periods max: 0
-Period Size: 0
-Get periods: 0
-
-Hm - quite incorrect values - let's see which symbol is used:
-
-gdb) bt
-#0  0x0ff433f0 in __old_snd_pcm_hw_params_get_channels_max (params=3D0x=
-10013498)
-    at pcm.c:6407
-#1  0x0ffdc438 in GSMP::ALSAPCM::GetChannelsMax() (this=3D0x7ffff4e0)
-    at ALSAHelper.cc:342
-#2  0x10002238 in main () at ALSAHelper.cc:67
-
-Hm - but it works fine linked statically with the normal obcject:
-
-rene@idefix:~/develop/trunk2/lowlevel/tests$ g++   -g -Wall   -I. -I../=
-include -I../../dam/include -I../../utility/include -o ALSAHelper ALSAH=
-elper.cc ../src/ALSAHelper.o  -lasound
-
-rene@idefix:~/develop/trunk2/lowlevel/tests$ ./ALSAHelper
-Format 16 bit
-Channels min: 2
-Channels max: 2
-Rate min: 44100
-Rate max: 48000
-Periods min: 1
-Periods max: 32
-Period Size: 2048
-Get periods: 4
-
-;-) - and which symbol is used:
-
-(gdb) bt
-#0  __snd_pcm_hw_params_get_channels_max (params=3D0x10017f68, val=3D0x=
-7fffe48c)
-    at pcm.c:3334
-#1  0x10003cac in GSMP::ALSAPCM::GetChannelsMax() (this=3D0x7ffff4e0)
-    at ALSAHelper.cc:342
-#2  0x10001c00 in main () at ALSAHelper.cc:67
-
-Any idea what is happening to ALSA's symbol versioning using shared
-objects?
-
-In the case it matters, this is all on PowerPC (ROCK Linux) ...
-
-gcc (GCC) 3.2.3
-GNU C Library stable release version 2.3.2, by Roland McGrath et al.
-GNU ld version 2.14.90.0.4.1 20030523
-GNU assembler 2.14.90.0.4.1 20030523
-
-Thanks in advance - yours,
-  Ren=E9
-
---  =
-
-Ren=E9 Rebe - Europe/Germany/Berlin
-  rene@rocklinux.org rene@rocklinux-consulting.de
-http://www.rocklinux.org http://www.rocklinux-consulting.de
-http://gsmp.tfh-berlin.de/gsmp http://gsmp.tfh-berlin.de/rene
+Cheers
+James
 
 
 
