@@ -1,16 +1,12 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Re: How do I make -D hw:0,1 default?
-Date: 03 Jun 2003 16:51:36 -0700
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Quick question
+Date: Tue, 03 Jun 2003 20:38:30 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054684296.2045.3.camel@Wizard.knechthome.com>
-References: <NDBBLGIKBJENLAMOLFHGCEBCCGAB.mknecht@controlnet.com>
-	 <1054667178.2274.5.camel@Wizard.knechthome.com>
-	 <20030604013014.255e4429.mista.tapas@gmx.net>
-Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Message-ID: <E19NMCj-0006SU-00@sc8-sf-list1.sourceforge.net>
+References: <1054663089.20856.56.camel@dave.sipquest.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030604013014.255e4429.mista.tapas@gmx.net>
+In-reply-to: Your message of "03 Jun 2003 13:58:08 EDT."
+             <1054663089.20856.56.camel@dave.sipquest.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,44 +15,56 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: David Stuart <dave@sipquest.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2003-06-03 at 16:30, Florian Schmidt wrote:
+>Ah, I think you misunderstand me a little bit.. it's not that I am
+>trying to do anything different than usual, it's that I'm having trouble
+>with the basics. Specifically, the HOW-TOs that I have found all seem to
+>have a different way of writing and reading to/from the hardware buffer.
 
-> hi..  maybe i can add something.. here's a snippet from my .asoundrc
-> 
-> pcm.!default {
->         type hw
->         card 0
-> }
-> 
-> ctl.!default {
->         type hw
->         card 0
-> }
-> 
-> 
-> this creates a "default" pcm device which can point to any kind of pcm
-> device.. here it refers to card 0 which is a hw device. maybe you cann
-> add a "device 1" or "subdevice 1" to make it use the right pcm..
+thats because there are multiple ways to do it.
 
-Florian,
-   Yes. Thanks. This is something Jaroslav pointed out later in the
-morning. With this strategy I got at least a simple alsa application to
-play sounds cleanly, so this was helpful.
+>I have not, as of yet, been able to find a clear description of the core
+>concepts around writing and reading to the device. Also some recommend
+>one way, and then another HOWTO says not to do it that way.. it's all
+>rather confusing.
 
-   Can you shed any light on getting a game like frozen-bubble to use
-Alsa? When I try to start this app it lock up with error messages about
-resources being busy.
+if you want something that's not confusing, then JACK is your
+friend. it was specifically designed to cut away all the complexity
+and force you to write a well-designed application (and yes, its me
+who gets to define what well-designed means :)
 
-   Am I correct in guessing that an app like frozen-bubble is using the
-OSS portion of Alsa? Is there some setup that I can do to point OSS
-sound requests to this default device?
+and no, you don't need to modify anything about your stock RH system
+to use JACK. the modifications are only needed if you want low
+latency, and such modifications would be needed to get this with just
+ALSA anyway. a jack client will run just as well as a native ALSA
+(better in some senses) when the jack server is run with equivalent
+parameters for the audio hardware.
 
-Thanks much,
-Mark
+>For instance, I'm really not sure what size my buffer needs to be, if
+>there is a difference between the "hardware buffer" and the buffer in my
+>program, How "periods" work into all this, what's the difference between
+>hw and plughw, etc. Also each of the examples seems to configure the
+>hardware differently, which I find also odd..
+
+there are many ways of doing this too.
+
+>So to sum it up, the problem is not only that I'm new to ALSA, but that
+>I'm new to sound programming in general. Is there somewhere I can go to
+>learn the basics (at least enough to do capture and playback, beyond
+>that I'm not as interested)?
+
+if you're trying to learn sound programming, the last thing you want
+to be messing with is a hardware abstraction layer that can handle any
+audio h/w you can imagine. do yourself a favor and use jack
+instead. you can focus on audio programming rather than how to setup
+an audio interface. better yet, your application will talk to other
+jack-enabled applications if and when you want to.
+
+--p
+
 
 
 
