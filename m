@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - tools 0000276]: envy24control crash
-Date: Sat, 19 Mar 2005 19:44:00 +0100
-Message-ID: <542a85dc6df1dab0e11a93ca31bf397e@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000483]: alsa-libs samplerate-conversion causes assertion frames <= snd_pcm_mmap_avail
+Date: Sat, 19 Mar 2005 19:51:23 +0100
+Message-ID: <042320a921946a606e5d7052cdf6cd1f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0AA311FD
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:44:00 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0DA961E6
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 19:51:23 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,62 +21,86 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=276> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=483> 
 ======================================================================
-Reported By:                BugBuster
+Reported By:                jwrdegoede
 Assigned To:                
 ======================================================================
-Project:                    ALSA - tools
-Issue ID:                   276
-Category:                   envy24control
+Project:                    ALSA - lib
+Issue ID:                   483
+Category:                   ordinary pcm
 Reproducibility:            always
 Severity:                   crash
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             05-14-2004 19:09 CEST
-Last Modified:              03-19-2005 19:44 CET
+Date Submitted:             09-06-2004 11:39 CEST
+Last Modified:              03-19-2005 19:51 CET
 ======================================================================
-Summary:                    envy24control crash
+Summary:                    alsa-libs samplerate-conversion causes assertion
+frames <= snd_pcm_mmap_avail
 Description: 
-If you do:
-"./envy24control --help" you get a segmentation fault in getopt_long...
+When running xmame (x.mame.net) with alsa selected for sound output on my
+es1688. I get the following error:
+pcm.c:5957: snd_pcm_mmap_commit: Assertion frames <=
+snd_pcm_mmap_avail(pcm)' failed.
+
+I checked the source for the alsa driver (I'm one of the xmame developers)
+and the number of frames it is passing to snd_pcm_writei is always smaller
+then or equal to the value
+returned by:
+err = snd_pcm_status(priv->pcm_handle, status);
+/* check err */
+frames = snd_pcm_status_get_avail(status);
+
+After some more testing I noticed that alsa returns 22050 as the actual
+acquired samplerate, but I know from the oss days that my card can only do
+22095 not 22050. So I thought this error might be caused by the
+alsa-lib-samplerate conversion code, which appearantly is default enabled
+(Fedora feature?)
+
+To test my hypothesis I tried creating an almost empty .asoundrc:
+pcm.!default {
+type hw
+card 0
+}
+
+ctl.!default {
+type hw
+card 0
+}
+
+And now alsa-lib returns 22095 as the acquired samplerate and everything
+works fine! So IMHO this problem is clearly somewhere in alsa-libs
+samplerate conversion.
+
+I've searched the internet for this assertion and I believe this bug has
+bitten more people and applications and needs fixing ASAP. (note I'm not
+saying this because I need it fixed, since the .asoundrc workaround works
+fine for me, but I'm saying this in the general interest)
 
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 09:40 
+ jdthood - 03-19-05 19:26 
 ----------------------------------------------------------------------
-Submitter: Is the bug still present?
-
-This should be reassigned to alsa-tools.
+What was in your /etc/asound.conf before you added the .asoundrc?
 
 ----------------------------------------------------------------------
- jdthood - 03-19-05 17:49 
+ jwrdegoede - 03-19-05 19:51 
 ----------------------------------------------------------------------
-This was reported fixed in 1.0.7
-
-* alsa-tools
-  - envy24control
-    - Fixed segfault when envy24control --help is called
+This was quite some time ago currently I have a different computer with a
+newer version of my distro (Fedora) but I believe that there was no
+/etc/asound.conf . Atleast the current Fedora doesn't have one.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-14-04 19:09 BugBuster      New Issue                                    
-05-14-04 19:09 BugBuster      Distribution              => Gentoo          
-05-14-04 19:09 BugBuster      Kernel Version            => 2.6.5-gentoo-r1 
-03-19-05 09:40 jdthood        Note Added: 0004024                          
-03-19-05 17:49 jdthood        Note Added: 0004058                          
-03-19-05 19:43 perex          Project                  ALSA - driver => ALSA -
-tools
-03-19-05 19:44 perex          Status                   new => resolved     
-03-19-05 19:44 perex          Resolution               open => fixed       
-03-19-05 19:44 perex          Category                 OTHERS => envy24control
+09-06-04 11:39 jwrdegoede     New Issue                                    
+03-19-05 19:26 jdthood        Note Added: 0004067                          
+03-19-05 19:51 jwrdegoede     Note Added: 0004068                          
 ======================================================================
 
 
