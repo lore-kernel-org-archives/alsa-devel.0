@@ -1,12 +1,8 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Re: dmix plugin
-Date: Wed, 19 Feb 2003 12:17:08 +0100
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: MIDI port names
+Date: Wed, 19 Feb 2003 07:40:06 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E5367B4.9BB02DED@libero.it>
-References: <Pine.LNX.4.44.0302191131230.1224-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Message-ID: <200302191240.h1JCe6A18300@linuxaudiosystems.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,45 +12,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> 
-> On Wed, 19 Feb 2003, Abramo Bagnara wrote:
-> 
-> > Jaroslav Kysela wrote:
-> > >
-> > > I've implemented the whole transfer and mix loop in assembly and it works
-> > > without any drastic impact on CPU usage. I tried to optimize the assembler
-> > > part as much as I can, but if some assembler guru want to give a glance,
-> > > I'll appreciate it. The function is named mix_areas1() in
-> > > alsa-lib/src/pcm/pcm_dmix.c.
-> >
-> > one comment:
-> >
-> > It's better to execute interleaved check once and not in mix_areas
-> 
-> Done. I was tired enough yesterday to bother with these details.
-> 
-> > one objection:
-> >
-> > I doubt very much that you gain anything coding the mixing loop in
-> > assembler, you've data showing that?
-> 
-> I think that I spent some ticks by duplicating code for saturation and
-> also the main while{} loop is more effective than GCC generates. But it's
-> only guess.
+a few days ago i told mark knecht that i would change the name of the
+ports that show up under the sequencer that correspond to the
+Hammerfall MIDI ports.
 
-I hope to find the time to check it this evening
+in looking at the code, i now realize i have no idea how to do this,
+since the port names are set up (AFAICT) by the module that maps
+rawmidi ports to the sequencer API and vice versa. 
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+however, the midisport 2x2 seems to be able to do this. can i get a
+pointer on how its done? or better yet, can we form all the port names
+in a consistent way, such as card->shortname + " port " + N ?
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+--p
+
 
 
 -------------------------------------------------------
