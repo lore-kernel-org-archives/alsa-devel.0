@@ -1,16 +1,21 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Documentation Bugs
-Date: Sun, 25 Jan 2004 18:23:51 +0900
+From: Tommi Sakari Uimonen <tuimonen@cc.hut.fi>
+Subject: Re: Re: ice1712 driver broken in 2.6.1-mm kernels
+Date: Sun, 25 Jan 2004 22:59:11 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40138B27.4050001@boosthardware.com>
-References: <1074896628.13428.189.camel@moria.arnor.net>
+Message-ID: <Pine.OSF.4.58.0401252229580.419724@kosh.hut.fi>
+References: <1074633766.6579.2.camel@moria.arnor.net>
+ <Pine.LNX.4.58.0401202308390.2010@pnote.perex-int.cz>
+ <1074637277.6579.16.camel@moria.arnor.net> <Pine.LNX.4.58.0401210908220.2010@pnote.perex-int.cz>
+ <1074712729.5895.11.camel@moria.arnor.net> <Pine.OSF.4.58.0401212214060.155462@kosh.hut.fi>
+ <1074808462.13428.14.camel@moria.arnor.net> <Pine.OSF.4.58.0401230000480.447402@kosh.hut.fi>
+ <1074811750.13428.68.camel@moria.arnor.net> <Pine.OSF.4.58.0401230051410.447402@kosh.hut.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www3.webhosting.cx (IDENT:EsDxkAIhi7Xwa7weJAIQorrbB7lyy/V4@www3.webhosting.cx [207.44.248.26])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA12306
-	for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2004 10:25:27 +0100
+Received: from smtp-1.hut.fi (root@smtp-1.hut.fi [130.233.228.91])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA25955
+	for <alsa-devel@alsa-project.org>; Sun, 25 Jan 2004 21:59:18 +0100
+In-Reply-To: <Pine.OSF.4.58.0401230051410.447402@kosh.hut.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,80 +28,49 @@ To: Torrey Hoffman <thoffman@arnor.net>
 Cc: ALSA Development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Torrey Hoffman wrote:
-> I've been working through the .asoundrc documentation and have found
-> several errors.
-> 
+> > The one problem is I still can't play different wave files
+> > simultaneously through the two outputs.
+> >
+> > If I start "aplay -D maudio_spdif 12.wav &" and then try to do "aplay -D
+> > plug:maudio_analog 11.wav" at the same time, the second one just blocks
+> > until the first one is done.
+> >
+> > This is unfortunate, since I'd really like to be able to run two-room
+> > sound from my computer into different amplifiers and speakers.  I'm sure
+> > there's a way to do it, since the hardware is capable of it...
 
-Thanks for the detailed report.
+Now after thinking this, I think ecasound is the right tool for this.
 
-I have fixed the obvious errors but I'm not sure what the problem is 
-with the rate_convert example. I have left it as is for now.
+Create a device to .asoundrc: (with correct card number of course)
 
+pcm.2496_4ch
+{
+        type plug
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.2.8 1
+        ttable.3.9 1
+        slave.pcm {
+        type hw
+        card 0
+        device 0
+        }
+}
 
+Then use ecasound with this device, and take input from two sources and
+send them to the appropriate channels, first input to channels 1&2, second
+to channels 3&4.
 
-> 
-> ------------------------------------------------------
-> 3. The rate conversion plug documentation (or code?) is broken.
-> 
-> I'm not sure if this is a documentation bug or a driver/alsa-lib bug. 
-> 
-> My .asoundrc at this point closely follows the documentation (with
-> corrections as noted in bug#2) and looks like:
-> 
-> pcm.ac97 {
-> 	type hw
-> 	card 0
-> 	device 0
-> }
-> 
-> pcm_slave.sl2 {
-> 	pcm ac97
-> 	rate 44100
-> }
-> 
-> pcm.rate_convert {
-> 	type rate
-> 	slave sl2
-> }
-> 
-> The documentation says:  
-> "Now you can call this newly created virtual device by: aplay -D
-> rate_convert test.wav"
-> 
-> But when I try that, I get this error:
-> 
-> Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
-> aplay: set_params:805: Broken configuration for this PCM: no configurations available
-> 
-> Note that "aplay -D ac97 test.wav" works, but plays too fast (at 48000),
-> and gives the warning "please, try the plug plugin (-Dplug:ac97)". If I
-> do that, it works perfectly.
-> 
-> So I think the documentation is wrong, or at least incomplete, or rate
-> conversion does not work.
-> 
+I don't know the right way to do this, but I know that it can be done.
+Since ecasound can split 4 channel wav to separate channels, I don't see
+why it wouldn't join two stereo samples to one 4 channel sample.
+
+Maybe you'll have to ask this from ecasound-list
+
+http://www.eca.cx/mlists.html
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-
-  Apparently upon the beginning of the barrage, the donkey broke 
-discipline and panicked, toppling the cart. At that point, the rockets 
-disconnected from the timer, leaving them strewn around the street. 
-Tethered to the now toppled cart, the donkey was unable to escape before 
-the arrival of U.S. troops.
-
-United Press International
-Rockets on donkeys hit major Baghdad sites
-
-By P. MITCHELL PROTHERO
-Published 11/21/2003 11:13 AM
-
+Tommi
 
 
 -------------------------------------------------------
