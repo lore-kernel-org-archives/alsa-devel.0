@@ -1,12 +1,16 @@
-From: mru@users.sourceforge.net (=?iso-8859-1?q?M=E5ns_Rullg=E5rd?=)
-Subject: 4/6-channel output on CMI8738
-Date: 03 Jun 2003 12:45:39 +0200
+From: Jaakko =?iso-8859-1?q?Pr=E4tt=E4l=E4?=
+	<Jaakko.Prattala@Helsinki.FI>
+Subject: Re: still losing with hdsp (me too)
+Date: Tue, 3 Jun 2003 14:13:13 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xk7c3l9rg.fsf@zaphod.guide>
+Message-ID: <200306031413.13936.Jaakko.Prattala@Helsinki.FI>
+References: <50411.24.225.156.130.1054593994.squirrel@webmail.ouroboros-complex.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <50411.24.225.156.130.1054593994.squirrel@webmail.ouroboros-complex.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,46 +22,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tuesday 03 June 2003 01:46, jfm3@ouroboros-complex.org wrote:
 
-I'm trying to get 4/6-channel playback to work with a CMI8738 chip.
-It's behaving a little oddly, however.
+> lspci -vvv output is attached.
+> I bought the hdsp and multiface recently. It might have the dreaded
+> version 11 firmware.
 
-First I have to switch off "Four Channel Mode", which I guess is
-normal.  With that switch off, I can play 4 channels on hw:0,1 or
-surround40.  The problem is that the front output is replicated on the
-rear jack.  This is cured by turning on "Exchange DAC".  The "PCM"
-volume control also works in this mode, but the "Master" control only
-affects front output.  Anyhow, 4-channel playback is pretty much OK.
+Xilinx Corporation RME Hammerfall DSP (rev 0b)
+0b hexadecimal =3D=3D 11 decimal
+so, you have revision 11 firmware...
 
-Next I try 6-channel playback.  With the same settings it works,
-except that the volume control doesn't affect channels 5 and 6.  With
-"Exchange DAC" off, the front output is silent, but channels 1 and 2
-are sent to the rear instead.
+This looks like the problem I'm having that didn't go away by
+downgrading the firmware. Then again, I'm using the cardbus interface.
+Anyway, rev 10 firmware gets loaded and rev 11 doesn't. So
+maybe try downgrading?
 
-All this would be acceptable if it wasn't for some quirks.  Sometimes,
-the right rear output goes to maximum volume, with no apparent reason,
-and a few times the output has suddenly stopped completely.  This has
-happened while playing with the mixer settings.  Stopping and
-restarting the playback program helps.
+######## the (me too) part: ####################
 
-Finally, the surround51 device behaves like a duplicate of hw:0,0.
+Sorry to burn the devel-list bandwidth again.
+I'm still wishing that somewhere I'd get a hint of what's
+going on with my system. (The snd-hdsp module locks up
+when I try to use it. Start aplay or pd and wind up with a module
+that can't be rmmod'ed because of "device or resource busy".)
+I'd try fixing the code if I could
+pinpoint the bug. As for now I don't know if it's alsa, pcmcia or
+pci code that hates my hardware.
 
-Am I doing something wrong, or is the driver just not perfect?
+David Hinds of the pcmcia-cs project tells me that I should
+use the kernel pcmcia and ask you, alsa-developers,
+and as I'm still stuck, here I am, asking:
 
-Here's my /proc/asound/cards:
-0 [CMI8738MC6     ]: CMI8738-MC6 - C-Media PCI CMI8738-MC6
-                     C-Media PCI CMI8738-MC6 (model 55) at 0x8800, irq 24
+1. What do you reckon that hdsploader ioctl error is?
+    (iirc it comes even when the fw gets loaded...)
+2. What could cause the module lock-up?
 
-and /proc/asound/version:
-Advanced Linux Sound Architecture Driver Version 0.9.2.
-Compiled on Mar 31 2003 for kernel 2.4.21-pre5.
+In other words:
+- where should I look for the nastiness and
+- what could I do to narrow down the set of possible
+  places too look.
 
-Maybe I should upgrade, but I haven't noticed any changes to the
-cmipci driver that seem related to the problems.
+I'm using alsa from cvs (last update on 18th of May)
+on a hp xe4100 laptop with all sorts of kernels,
+mostly 2.4.20 with acpi patches.
 
--- 
-Måns Rullgård
-mru@users.sf.net
+--=20
+Jaakko Pr=E4tt=E4l=E4
+Jaakko.Prattala@Helsinki.FI
 
 
 
