@@ -1,12 +1,12 @@
 From: Paul Davis <pbd@op.net>
-Subject: Re: Example app source code or docs needed to help me do mmap.
-Date: Sat, 27 Apr 2002 12:59:31 -0400
+Subject: Re: glue for new driver
+Date: Sat, 27 Apr 2002 13:01:06 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200204271659.g3RGx7f11351@post2.fast.net>
-References: <3CC9F106.8020806@superbug.demon.co.uk>
+Message-ID: <E171VZ1-0006u0-00@usw-sf-list1.sourceforge.net>
+References: <20020427032659.98182.qmail@web11504.mail.yahoo.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Sat, 27 Apr 2002 01:29:58 BST."
-             <3CC9F106.8020806@superbug.demon.co.uk>
+In-Reply-To: Your message of "Fri, 26 Apr 2002 20:26:59 PDT."
+             <20020427032659.98182.qmail@web11504.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,44 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: James@superbug.demon.co.uk
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Can someone point me to an example alsa app doing mmap ?
+>Hi,
 >
->I want to convert my application from plain pcm_write  to mmap mode.
->I would also like to understand how you detect if a sound card can do 
->mmap or not.
->
->I help develope a multimedia application, and 6 audio channels (5.1 
->sound) starts to require mmap mode on very slow PCs.
+>I am writing a driver for a new card, and wonder how the ALSA server will
+>recognize my module as one of its own? Besides, is there anything I should kno
+>w
+>regarding debugging ALSA drivers?
 
-either
+there is no "ALSA server", at least not in the context you're
+discussing. 
 
-	aplay.c (simple, confusing)
-	latency.c (simple, limited)
-	{JACK}/alsa_driver.c (complete, confusing)
-
-might help. I think that the Jack case is the only one that handles
-what I would call "synchronous full duplex" (i.e. capture and playback
-running in sync). the others don't tend to worry about that detail,
-and it affects the inner loops of the code quite a bit.
-
-to find out if mmap is support, you ask use
-
-   snd_pcm_hw_params_set_access (handle, params,
-			         SND_PCM_ACCESS_MMAP_NONINTERLEAVED);
-
-or
-
-   snd_pcm_hw_params_set_access (handle, params,
-			         SND_PCM_ACCESS_MMAP_INTERLEAVED);
-
-if it works, then it works :) BTW, any "plug" device supports mmap
-mode regardless or not of the corresponding "hw" device(s) do. that's
-partly why JACK uses mmap mode without checking for this - if a user
-tries it on h/w that doesn't support it, they can just use
-"plughw:D,S" instead of "hw:D,S" when naming it.
+you should download ALSA from CVS and build your driver within your copy
+of the ALSA source tree, modifying makefiles etc. as needed to include
+it in the build. that way, when its ready, you can submit a patch back
+to jaroslav that includes everything thats needed, not just driver
+source. 
 
 --p
