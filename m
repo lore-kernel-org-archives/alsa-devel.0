@@ -1,16 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: dmix plugin
-Date: Thu, 13 Feb 2003 17:30:18 +0100 (CET)
+From: ljp <ljp@llornkcor.com>
+Subject: dev advise needed
+Date: 13 Feb 2003 10:03:44 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302131728350.1315-100000@pnote.perex-int.cz>
-References: <s5h65romrtz.wl@alsa2.suse.de>
+Message-ID: <1045155826.25120.103.camel@shippin>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id RAA31209
-	for <alsa-devel@alsa-project.org>; Thu, 13 Feb 2003 17:30:33 +0100
-In-Reply-To: <s5h65romrtz.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,24 +15,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 13 Feb 2003, Takashi Iwai wrote:
+Hello,
 
-> agreed here, although i feel it's also nice to set it as default for a
-> consumer card which has no hardware mix function.
+I am working on adding native alsa support to the Helix project, and am
+running into issues I think are with threading between the two.
 
-We can add the special configuration to card-specific configuration files
-(like for surround*, spdif etc.), but I was too lazy to do it ;-)
+Mainly, variable values are returning as 0 when they shouldn't be.
+such as 
 
-						Jaroslav
+function(int &bleh) {
+bleh = 1;
+}
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+when function() returns, bleh == 0 in the calling function, I have used
+valgrind to show me that it is trying to access unaccessable variables.
+
+Now, both helix and alsa are threaded. and helix works fine with the oss
+implementation.
+Helix locks and unlocks when needed.
+
+I havent done a all that much of threaded programming, any suggestions
+on what I should look into? or hints at solving this?
+
+thx,
+ljp
+
+
+-- 
+My cat's a debugger....
+
+Potter, Lorn, "ljp"
+core developer / Web Administrator
+Project OPIE- the Open Palmtop Integrated Environment
+http://opie.handhelds.org | http://www.opie.info (german) |
+http://www.opie.us
+IRC: irc.freenode.net #opie #opie.de
+
+llornkcor@handhelds.org
+llornkcor@helixcommunity.org
 
 
 
