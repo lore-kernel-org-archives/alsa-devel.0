@@ -1,13 +1,11 @@
-From: "Dirk Hofmann" <dirk_h@hrzpub.tu-darmstadt.de>
-Subject: Re: sassi, can you hear me? or Re: A little report on Guillemots MAXI Studio ISIS...
-Date: Sun, 3 Nov 2002 02:22:13 +0100
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: ALSA-CVS: Card ID problem - too many symbolic links
+Date: Sun, 3 Nov 2002 15:40:27 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001f01c282d7$7167e910$aad95382@bert>
-References: <1035485738.10187.23.camel@saturn.sol>
+Message-ID: <20021103154027.96438.qmail@web40607.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -17,50 +15,62 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Daniel Haus <daniel.haus@vizarts.de>, alsa-devel mailinglist <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
------ Original Message -----
-From: "Daniel Haus" <daniel.haus@vizarts.de>
-To: "alsa-devel mailinglist" <alsa-devel@lists.sourceforge.net>
-Sent: Thursday, October 24, 2002 7:55 PM
-Subject: [Alsa-devel] sassi, can you hear me? or Re: A little report on
-Guillemots MAXI Studio ISIS...
+Here is what my /proc/asound directory looks like with
+the latest ALSA CVS:
+
+$ ls -als /proc/asound/
+total 0
+   0 dr-xr-xr-x    7 root     root            0 Nov  3
+15:38 .
+   0 dr-xr-xr-x  111 root     root            0 Oct 30
+23:08 ..
+   0 lrwxrwxrwx    1 root     root            0 Nov  3
+15:38 ICH -> ICH
+   0 lrwxrwxrwx    1 root     root            0 Nov  3
+15:38 SB-Live -> SB-Live
+   0 dr-xr-xr-x    7 root     root            0 Nov  3
+15:38 card0
+   0 dr-xr-xr-x    4 root     root            0 Nov  3
+15:38 card1
+   0 -r--r--r--    1 root     root            0 Nov  3
+15:38 cards
+   0 dr-xr-xr-x    2 root     root            0 Nov  3
+15:38 dev
+   0 -r--r--r--    1 root     root            0 Nov  3
+15:38 devices
+   0 -r--r--r--    1 root     root            0 Nov  3
+15:38 hwdep
+   0 dr-xr-xr-x    2 root     root            0 Nov  3
+15:38 oss
+   0 -r--r--r--    1 root     root            0 Nov  3
+15:38 pcm
+   0 dr-xr-xr-x    2 root     root            0 Nov  3
+15:38 seq
+   0 -r--r--r--    1 root     root            0 Nov  3
+15:38 timers
+   0 -r--r--r--    1 root     root            0 Nov  3
+15:38 version
+
+The problem is that both my "Card ID" symbolic links
+are now pointing to themselves. (Module option "ID=").
+
+Cheers,
+Chris
 
 
-> I am very interested if there is any progress with the Guillemot Maxi
-> Studio ISIS, or the Dream SAM9707 chip at all All I could find was -
-> except the usual "buy some other card"-messages this very interesting
-> post from Sassi, that gave me hope that at least there used to be
-> someone who really had the will to make it work with alsa.
->
-> http://sourceforge.net/mailarchive/message.php?msg_id=104782
-> from 2001-12-02, a long time.
->
-> Now, even if I don't have much experience developing device drivers,
-> too, I am really willing to spend time trying to make alsa and isis
-> friends. At least for the learning effect.
->
-> Does anyone have such a card or know if there is development? Sassi,
-> where are you?
-I have a Guillemot Maxi Studio ISIS soundcard. But I don't have any
-experience devoloping device drivers but rather I'm a Linux newbie.
-I programmed some little things under windows so far and  contacted
-Guillemot some month ago and it seem's there are willing
-to help. Is there a list with things someone must now to develop a
-alsa driver ???
-Also I would do the best I can developing and testing a driver for this
-card.
-
-Regards
-
-Dirk
-
+__________________________________________________
+Do You Yahoo!?
+Everything you'll ever need on one web page
+from News and Sport to Email and Music Charts
+http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: See the NEW Palm 
-Tungsten T handheld. Power & Color in a compact size!
-http://ads.sourceforge.net/cgi-bin/redirect.pl?palm0001en
+This SF.net email is sponsored by: ApacheCon, November 18-21 in
+Las Vegas (supported by COMDEX), the only Apache event to be
+fully supported by the ASF. http://www.apachecon.com
