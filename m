@@ -1,14 +1,17 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: us-122 firwareloader
-Date: Mon, 31 May 2004 19:18:09 +0200
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: weird xrun problem
+Date: Sun, 30 May 2004 21:12:39 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040531171809.GA640@tuba.home>
-References: <E1BUd3Y-0003tD-KA@sc8-sf-list2.sourceforge.net> <40BB5314.9080404@laposte.net>
+Message-ID: <20040530211239.28fe33a4.pochini@shiny.it>
+References: <20040522123855.12837e8d.pochini@shiny.it>
+	<Pine.LNX.4.58.0405231116590.2139@pnote.perex-int.cz>
+	<20040525231642.4ae3c3a1.pochini@shiny.it>
+	<Pine.LNX.4.58.0405260942320.1937@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <40BB5314.9080404@laposte.net>
+In-Reply-To: <Pine.LNX.4.58.0405260942320.1937@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,40 +20,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: JoDaY <jo.day@laposte.net>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 31, 2004 at 05:45:24PM +0200, JoDaY wrote:
-> Hi all,
-> 
-> I've 2 install of linux, the first one is the oldest where hotplug
-> is able to load firmware when I plug a Tascam us-122.
-> But if I use snd-usb-usx2y.o (seen in depmod), hotplug is not able to 
-> load the right firmware... The usb led is not lightened :(
+On Wed, 26 May 2004 09:52:06 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-Sounds like you are using the old tascam-loader instead of usx2yloader. Have
-you installed both usx2yloader parts (in alsa-tools and alsa-firmware)?
+> > > ALSA does not know about this. All period sizes must be equal.
+> > 
+> > I thought about this again. Are you sure all periods must be aqual ?  
+> > When I record or play something using unequal periods, sound is perfect.
+> > It means ALSA reads and writes the last (sometimes a lot) smaller period
+> > as well.
+>
+> The driver must not acknowledge the settled period with the midlevel and
+> application before the specified time. Of course, if you're running into
+> a rounding problem, you can acknowledge more periods at one time.
+> In other cases, it's not very practical to program hardware to use 
+> different period sizes, because you need more interrupts for processing.
 
-> 
-> On the other linux, I can't get firmwareloader working...
-
-Where does it hang? Do you already have a renumbered ID? It changes from
-8006 to 8007. Check that number with lsusb. Everything installed?
-- fxload
-- hotplug scripts
-- alsa-tools/usx2yloader
-- alsa-firmware/usx2yloader
-
-Any output in the logfiles?
+My question was about your sentence: "All period sizes must be equal". Is it
+true ? It seems quite strange to me because ALSA passes a buffer size that
+is not multiple than the period size almost always. This is not a problem in
+my case because the s-g list is generic enough to handle it.
 
 
-martin
-
-
--- 
-                                     Living on earth may be expensive,
-                   but it includes an annual free trip around the sun. 
+--
+Giuliano.
 
 
 -------------------------------------------------------
