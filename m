@@ -1,10 +1,14 @@
-From: Hannu Savolainen <hannu@opensound.com>
-Subject: Implementing ALSA compatibility in OSS
-Date: Mon, 15 Nov 2004 12:38:25 +0200 (EET)
-Message-ID: <Pine.LNX.4.58.0411151141220.9261@zeus.compusonic.fi>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
+Date: Mon, 15 Nov 2004 11:59:28 +0100
+Message-ID: <81449df94baa16d34ac871f7115ce382@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24CCF284
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 11:59:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,78 +18,74 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi folks!
 
-We are considering making our OSS software compatible with ALSA. However
-there are some serious problems. Maybe somebody on this list could give us
-some initial help.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
+======================================================================
+Reported By:                pancogi
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   650
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.4.27
+======================================================================
+Date Submitted:             11-15-2004 11:59 CET
+Last Modified:              11-15-2004 11:59 CET
+======================================================================
+Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
+Description: 
+hi
+my Sb Live do not work with emu10k1, lspci -v say:
 
-Our initial plan was to implement a version of libasound.so that
-implements the required functionality in OSS way. However the problem is
-that there are more than 1500 snd_* functions exported by libasound.so
-(of alsa-lib-1.0.7rc2). How many of them are actually needed and how many
-of them are just helpers used internally by the library.
+0000:00:0d.0 Multimedia audio controller: Creative Labs SB Live! EMU10k1
+(rev 08)
+        Subsystem: Creative Labs CT4760 SBLive! OEM version
+        Flags: bus master, medium devsel, latency 32, IRQ 5
+        I/O ports at d800 [size=32]
+        Capabilities: [dc] Power Management version 2
 
-After checking about 10 or 20 different applications we have found about
-220 different routines that have been used by them. In addition there
-are 90 routines used by amixer/alsamixer we have decided to leave
-unimplemented. Each new program we try adds about 10 to 20 new routines to
-the set.
+lspci -n, say:
 
-There are about 1200 calls we have not "seen" yet. At this rate we will
-need to try at least 60 to 120 programs before we know how many ALSA
-routines need to be implemented for good ALSA compatibility. However
-it looks like we are running out of programs. Many apps on the applications
-list (http://www.alsa-project.org/applications.php) seem to have been
-updated last tame in 2002 and they don't work with ALSA 1.0.x any more. Is
-this list up to date or do we have just looked at a wrong place.
+0000:00:0d.0 Class 0401: 1102:0002 (rev 08)
 
-Is there any other official documentation for the pcm and mixer
-interfaces in addition to the DOXYGEN stuff? It's mostly just a function
-prototype list and not very helpfull.
+dmesg after modprobe snd-emu10k1,
 
-Btw, the "Howto use the ALSA API" document
-(http://equalarea.com/paul/alsa-audio.html) contains three sample programs
-for audio but they are bit out of date. The
-snd_pcm_hw_params_set_rate_near() call seems to use some older parameter
-passing convention and they don't work with ALSA 1.0.x. Maybe somebody
-should fix them.
+PCI: Found IRQ 5 for device 00:0d.0
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1905: AC'97 0 does not
+respond - RESET
+ALSA ../../alsa-kernel/pci/ac97/ac97_codec.c:1913: AC'97 0 access is not
+valid [0x0], removing mixer.
 
-Is the ALSA library API frozen now or should we wait until the 2.0
-version to avoid doing redundant work?
+dmesg after modprobe oss modules emu10k1, say:
 
-Another alternative is making OSS compatible with the ALSA's device driver
-interface /dec/snd/*. This would be the most natural alternative. Is there
-any documentation written for it (nothing seems to be available in the net)?
+emu10k1: EMU10K1 rev 8 model 0x8028 found, IO at 0xd800-0xd81f, IRQ 5
+ac97_codec: AC97  codec, id: 0x0000:0x0000 (Unknown)
 
+but no sound output.
+with kernel 2.6.9, the same.
 
-Third alternative might be improving the OSS plugin for Jack. After
-browsing the ALSA web site it looks like many pages recommend using Jack
-instead of the ALSA library API. However are there any reasons to
-implement a new version of libasound.so instead of improving the Jack
-plugin?
+thanks,
+giovanni.
+======================================================================
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-15-04 11:59 pancogi        New Issue                                    
+11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
+======================================================================
 
 
-Anyway we will include a mimimal "Simple ALSA" (SALSA) library in the next
-OSS version (in few days) that permits running selected ALSA applications
-(mainly esd, xmms and alsaplayer). This is needed because many Linux
-distributions have compiled them with OSS support disabled. The first
-version of this library implements about 20 or 30 ALSA library routines.
-In addtion there are about 200 "stub" routines required to make the loader
-happy. The remaining 1300 calls don't have even stubs yet so we do not
-claim having full ALSA support yet.
-
-Best regards,
-
-Hannu
------
-Hannu Savolainen (hannu@opensound.com)
-http://www.opensound.com (Open Sound System (OSS))
-http://www.compusonic.fi (Finnish OSS pages)
-OH2GLH QTH: Karkkila, Finland LOC: KP20CM
 
 
 -------------------------------------------------------
