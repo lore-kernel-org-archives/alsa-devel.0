@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
-Date: Wed, 12 Jan 2005 15:03:36 +0100
-Message-ID: <f4792f60420677140f6951f03e2b7737@bugtrack.alsa-project.org>
+Date: Wed, 12 Jan 2005 15:02:41 +0100
+Message-ID: <1772996b93950661af26de1c849241fe@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F09A1209
-	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:03:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC11116E
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 15:02:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Arch Linux
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             12-26-2004 06:50 CET
-Last Modified:              01-12-2005 15:03 CET
+Last Modified:              01-12-2005 15:02 CET
 ======================================================================
 Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
 chipset choppy, plays to fast
@@ -56,14 +56,20 @@ the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
+ JonathanL - 01-12-05 14:13 
+----------------------------------------------------------------------
+I have the same problem, with one ALI 5455 (integrated to my ALI
+motherboard) All work fine with alsa-driver-1.0.5 but sound seems to go
+too fast with alsa >= 1.0.6 (cvs included). All programs are  repporting
+messages like "alsa-space: xrun of at least 0,187 msecs. resetting
+stream1,8% 8 0 99%" (this one is from mplayer) even for a 48 kHz sampled
+file.
+I join my codec97#0 files.
+
+----------------------------------------------------------------------
  tiwai - 01-12-05 15:02 
 ----------------------------------------------------------------------
 Did you try 1.0.8rc2?
-
-----------------------------------------------------------------------
- tiwai - 01-12-05 15:03 
-----------------------------------------------------------------------
-Ah, ok, this happens also on CVS version...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -81,7 +87,6 @@ Date Modified  Username       Field                    Change
 01-12-05 14:16 JonathanL      File Added: codec97#0_cvs_jonathanl               
     
 01-12-05 15:02 tiwai          Note Added: 0003164                          
-01-12-05 15:03 tiwai          Note Added: 0003165                          
 ======================================================================
 
 
