@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Mon, 3 Jan 2005 12:07:56 +0100
-Message-ID: <a2f9ca3aa1ba79b4c5219961641f165c@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000760]: alsa 32-bit emulation hangs computer
+Date: Mon, 3 Jan 2005 12:10:41 +0100
+Message-ID: <f8d69ec2e74dc8643c16ab167f0b4645@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3AC622CD
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 12:07:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C82BD2B6
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 12:10:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=760> 
 ======================================================================
-Reported By:                aquarichy
-Assigned To:                
+Reported By:                bugfood
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   750
-Category:                   PCI - via82xx
+Issue ID:                   760
+Category:                   OTHERS
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             2.6.9+
+Status:                     resolved
+Distribution:               Debian 64-bit, &quot;gcc-3.4 flavor&quot;
+Kernel Version:             2.6.10, 64-bit
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              01-03-2005 12:07 CET
+Date Submitted:             12-30-2004 07:28 CET
+Last Modified:              01-03-2005 12:10 CET
 ======================================================================
-Summary:                    no sound since 2.6.8.1
+Summary:                    alsa 32-bit emulation hangs computer
 Description: 
-Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
-compile  any newer stable kernel, there is no sound.  Compilation executes
-without complaints.  No Sound related options change.  I have even tried
-saying No to all the new options 2.6.9 and .10 provided in fear that one
-of those might be interfering, but nada.  
+I'm working on setting up the 64-bit port of Debian on my computer. So far
+so good, except that running 32-bit alsa programs within a chroot causes
+the computer to hang and become almost completely unresponsive; all I can
+do is use magic SysRq to reboot. There are no messages from the kernel in
+/var/log/messages or reported to the console.
+
+64-bit alsa programs work fine
+64-bit oss programs work fine
+32-bit oss programs work fine
+
+I've tested with an SB Live and with my motherboard's onboard i810 audio -
+both have the same problem.
+
+
 ======================================================================
 
 ----------------------------------------------------------------------
- aquarichy - 12-31-04 06:30 
+ tiwai - 12-30-04 15:04 
 ----------------------------------------------------------------------
-Thank you very much tiwai, I now have sound. 
-
-I was making a stupid mistake regarding the quirk option.  I had always
-been placing "ac97_quirk=0" into my /etc/modules.conf.  I tried putting it
-into /etc/modprobe.conf, along with some other magic I googled:
-"options snd-via82xx dxs_support=4 ac97_quirk=0"
-and sound was restored to me.
-
-I was, and still am, quite ignorant about module loading, since I used to
-build everything into my kernel, but I suppose that will no longer do. 
-Hurrah for quirks? 
-
-I hope I did not consume too much of your time, thank you for it anyway. 
-
-Sincerely, 
-  Richard Schwarting
+It's fixed in the recent ALSA.  Try ALSA 1.0.8rc1.
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 12:07 
+ bugfood - 12-31-04 06:57 
 ----------------------------------------------------------------------
-Doesn't the driver work without dxs_support and ac97_quirk options?
-
-Anyway, please provide the output of "lspci -nv" and the name of your
-machine, mobo, or laptop.
+Thanks tiwai. I didn't realize there was a new version out yet. I compiled
+and installed alsa-driver 1.0.8rc1, and the problem is fixed.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 02:20 aquarichy      New Issue                                    
-12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
-12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
-12-29-04 08:23 aquarichy      Note Added: 0002993                          
-12-29-04 14:12 tiwai          Note Added: 0002996                          
-12-29-04 19:02 aquarichy      Note Added: 0003007                          
-12-29-04 19:17 aquarichy      Note Added: 0003008                          
-12-29-04 19:37 aquarichy      Note Added: 0003009                          
-12-29-04 20:39 aquarichy      Note Added: 0003011                          
-12-29-04 20:46 rlrevell       Note Added: 0003012                          
-12-30-04 00:07 aquarichy      Note Added: 0003015                          
-12-30-04 06:05 aquarichy      Note Edited: 0003015                         
-12-30-04 06:36 aquarichy      Note Added: 0003017                          
-12-30-04 13:02 tiwai          Note Added: 0003018                          
-12-31-04 06:30 aquarichy      Note Added: 0003024                          
-01-03-05 12:07 tiwai          Note Added: 0003053                          
+12-30-04 07:28 bugfood        New Issue                                    
+12-30-04 07:28 bugfood        File Added: config-2.6.10                    
+12-30-04 07:28 bugfood        Distribution              => Debian 64-bit,
+"gcc-3.4 flavor"
+12-30-04 07:28 bugfood        Kernel Version            => 2.6.10, 64-bit  
+12-30-04 15:04 tiwai          Note Added: 0003021                          
+12-31-04 06:57 bugfood        Note Added: 0003025                          
+01-03-05 12:10 tiwai          Status                   new => resolved     
+01-03-05 12:10 tiwai          Resolution               open => fixed       
+01-03-05 12:10 tiwai          Assigned To               => tiwai           
 ======================================================================
 
 
