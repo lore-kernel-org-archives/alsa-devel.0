@@ -1,16 +1,12 @@
-From: "Ryan Cassidy" <rcassidy@stanford.edu>
-Subject: RE: Interrupt-driven (or callback/handler?), Full-duplex (simultaneous capture/playback) without using JACK
-Date: Mon, 29 Dec 2003 17:57:21 -0800
+From: Karsten Wiese <annabellesgarden@yahoo.de>
+Subject: [PATCH]snd-usb-usx2y.patch.0.4.1
+Date: Tue, 30 Dec 2003 14:35:08 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000701c3ce78$43939a50$264440ab@roboserv1>
-References: <Pine.LNX.4.53.0311090927040.3073@pnote.perex-int.cz>
-Reply-To: <rcassidy@stanford.edu>
+Message-ID: <200312301435.08262.annabellesgarden@yahoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: Multipart/Mixed;
+  boundary="Boundary-00=_M8X8/49wMXOW/A8"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.53.0311090927040.3073@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,85 +15,149 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 'Jaroslav Kysela' <perex@suse.cz>
-Cc: 'Paul Davis' <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> On Sat, 8 Nov 2003, Ryan Cassidy wrote:
->=20
-> > > Paul Davis wrote:
-**************************************************
-> > > the ALSA PCM API doesn't have "handlers". it doesn't provide any
-kind
-> > > of callback mechanism. what it does do is to provide a poll(2)
-> > > interface, allowing callback-like mechanisms to be built around it
-> > > (like JACK).
-> > >
 
-> > Ryan J. Cassidy replies:
-*********************************************
-> > Will snd_async_add_pcm_handler() not do the trick?  It says
-> > "asynchronous," which doesn't sound like what I want, but the
-"handler"
-> > part sounds promising :).
-> >
-> > If that doesn't work, it's sort of a bummer that ALSA doesn't offer
-a
-> > callback-mechanism for simultaneous audio i/o, non?  This means that
-to
-> > get "what I want" (i.e. allowing my program to do useful work while
-> > waiting for new audio samples), I need to use snd_pcm_wait() and
-fork
-> > off an extra process to do the "useful work," right?
+--Boundary-00=_M8X8/49wMXOW/A8
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
+Hi Jaroslav,
 
-> Jaroslav replies:
-******************************************************=20
-> Yes, snd_async_add_pcm_handler() might help you and it works. It's
-> originated in the interrupt handler. But please note that the handler
-is
-> in the unix style signal callback thus there are many restrictions
-(you
-> should avoid to do most of syscalls in this code etc.).
->=20
-> But for mmaped access and the standard ALSA transfer mechanism (use
-only
-> snd_pcm_avail_update() to get the right position) it is the fast way
-to
-> create an interrupt based handlers in the applications.
->=20
-> For the synchronization: You must do it in your application. We work
-with
-> two diferrent streams and although the streams are hardware
-synchronized,
-> there might be some buffering issues (FIFOs) so the playback and
-capture
-> pointers do not match exactly. So the best way is to obtain the
-current
-> pointer using snd_pcm_avail_update() and compute how many frames you
-can
-> process for the duplex operation (I mean for both streams).
+this fixes 24Bit 4Channel capturing.
+Please commit.
 
-Just to be sure here: it is possible, then, to add a single PCM handler
-(via snd_async_add_pcm_handler()) to a LINKED pair of streams (one for
-playback, one for capture)?  Moreover, this handler will be called only
-once each period/buffer-time to signal the need for BOTH capture and
-playback frames (since the streams are linked)?
+Thanks,
+Karsten
 
-(Note to Paul: I realize that no system calls are allowed within the
-handler, but I think I could work around this via message-passing to the
-main application.  Perhaps this is na=EFve/incorrect?)
+--Boundary-00=_M8X8/49wMXOW/A8
+Content-Type: text/x-diff;
+  charset="us-ascii";
+  name="snd-usb-usx2y.patch.0.4.1"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename="snd-usb-usx2y.patch.0.4.1"
 
-Since the streams are hardware synchronized, is there any way to disable
-the FIFOs that Jaroslav mentions above?  Why are the FIFOs needed in the
-first place?
+Index: usbusx2y.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2y.c,v
+retrieving revision 1.4
+diff -u -r1.4 usbusx2y.c
+--- usbusx2y.c	2 Dec 2003 10:15:02 -0000	1.4
++++ usbusx2y.c	30 Dec 2003 13:21:03 -0000
+@@ -1,6 +1,10 @@
+ /*
+  * usbus428.c - ALSA USB US-428 Driver
+  *
++2003-12-30 Karsten Wiese
++	Version 0.4.1:
++	Fix 24Bit 4Channel capturing for the us428.
++
+ 2003-11-27 Karsten Wiese, Martin Langer
+ 	Version 0.4:
+ 	us122 support.
+@@ -85,7 +89,7 @@
+ 
+ 
+ MODULE_AUTHOR("Karsten Wiese <annabellesgarden@yahoo.de>");
+-MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.4");
++MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.4.1");
+ MODULE_LICENSE("GPL");
+ MODULE_CLASSES("{sound}");
+ MODULE_DEVICES("{{TASCAM(0x1604), "NAME_ALLCAPS"(0x8001)(0x8007) }}");
+Index: usbusx2yaudio.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2yaudio.c,v
+retrieving revision 1.4
+diff -u -r1.4 usbusx2yaudio.c
+--- usbusx2yaudio.c	5 Dec 2003 08:06:19 -0000	1.4
++++ usbusx2yaudio.c	30 Dec 2003 13:21:05 -0000
+@@ -141,13 +141,22 @@
+  * copy the data from each desctiptor to the pcm buffer, and
+  * update the current position.
+  */
+-static void framecpy_4c(int* p_dma_area, int* cp, int cnt)
++static void framecpy_4c_16(unsigned char *p_dma_area, unsigned char *cp, int cnt)
+ {
+ 	do{
+-		*p_dma_area = *cp;
+-		p_dma_area += 2;
+-		cp++;
+-	}while (--cnt);
++		*(int *)p_dma_area = *(int *)cp;
++		p_dma_area += 8;
++		cp += 4;
++	} while (--cnt);
++}
++
++static void framecpy_4c_24(unsigned char *p_dma_area, unsigned char *cp, int cnt)
++{
++	do{
++		memcpy(p_dma_area, cp, 6);
++		p_dma_area +=  12;
++		cp += 6;
++	} while (--cnt);
+ }
+ 
+ static int snd_usX2Y_urb_capt_retire(snd_usX2Y_substream_t *subs,
+@@ -158,6 +167,10 @@
+ 	unsigned char	*cp;
+ 	int 		i, len, lens = 0, hwptr_done = subs->hwptr_done;
+ 	usX2Ydev_t	*usX2Y = subs->stream->usX2Y;
++	void (*fourc_cpy)(unsigned char* p_dma_area, unsigned char* cp, int cnt) = 0;
++
++	if (runtime->channels == 4)
++		fourc_cpy = usX2Y->stride == 4 ? framecpy_4c_16 : framecpy_4c_24;
+ 
+ 	for (i = 0; i < NRPACKS; i++) {
+ 		cp = (unsigned char*)urb->transfer_buffer + urb->iso_frame_desc[i].offset;
+@@ -200,21 +213,21 @@
+ 		/* copy a data chunk */
+ 		if ((hwptr_done + len) > runtime->buffer_size) {
+ 			int cnt = runtime->buffer_size - hwptr_done;
+-			if (runtime->channels != 4) {
++			if (fourc_cpy) {
++				unsigned char *p_dma_area = runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : usX2Y->stride);
++				fourc_cpy(p_dma_area + hwptr_done * usX2Y->stride * 2, cp, cnt);
++				fourc_cpy(p_dma_area, cp + cnt * usX2Y->stride, len - cnt);
++			} else {
+ 				int blen = cnt * usX2Y->stride;
+ 				memcpy(runtime->dma_area + hwptr_done * usX2Y->stride, cp, blen);
+ 				memcpy(runtime->dma_area, cp + blen, len * usX2Y->stride - blen);
+-			} else {
+-				int* p_dma_area = (int*)runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : 1);
+-				framecpy_4c(p_dma_area + hwptr_done * 2, (int*)cp, cnt);
+-				framecpy_4c(p_dma_area, (int*)cp + cnt, len - cnt);
+ 			}
+ 		} else {
+-			if (runtime->channels != 4) {
+-				memcpy(runtime->dma_area + hwptr_done * usX2Y->stride, cp, len * usX2Y->stride);
++			if (fourc_cpy) {
++				unsigned char *p_dma_area = runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : usX2Y->stride);
++				fourc_cpy(p_dma_area + hwptr_done * usX2Y->stride * 2, cp, len);
+ 			} else {
+-				int* p_dma_area = (int*)runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : 1);
+-				framecpy_4c(p_dma_area + hwptr_done * 2, (int*)cp, len);
++				memcpy(runtime->dma_area + hwptr_done * usX2Y->stride, cp, len * usX2Y->stride);
+ 			}
+ 		}
+ 		lens += len;
+@@ -290,7 +303,8 @@
+ 	} else {
+ 		/* set the buffer pointer */
+ 		urb->transfer_buffer = runtime->dma_area + subs->hwptr * usX2Y->stride;
+-		subs->hwptr += count;
++		if ((subs->hwptr += count) >= runtime->buffer_size)
++			subs->hwptr -= runtime->buffer_size;			
+ 	}
+ 	spin_unlock_irqrestore(&subs->lock, flags);
+ 	urb->transfer_buffer_length = count * usX2Y->stride;
 
-Cheers, rjc.
---
-Ryan J. Cassidy
-Electrical Engineering Graduate Student, CCRMA Researcher
-Stanford University
-E-mail: ryanc@ieee.org
+--Boundary-00=_M8X8/49wMXOW/A8--
 
 
 
