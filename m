@@ -1,18 +1,14 @@
-From: Matt Flax <flatmax@ieee.org>
-Subject: Re: Re: SiS7012 hang alsa version 0.9.3c
-Date: Tue, 27 May 2003 16:32:30 +1000
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Problem compiling alsa-driver-0.9.3c
+Date: Tue, 27 May 2003 08:09:19 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030527063230.GA32370@ee.unsw.edu.au>
-References: <20030524170852.GB15643@ee.unsw.edu.au> <Pine.HPX.4.33n.0305261041530.24202-100000@studcom.urz.uni-halle.de> <20030526132610.GA27490@ee.unsw.edu.au>
-Reply-To: Matt Flax <flatmax@pgb.unsw.edu.au>
+Message-ID: <Pine.HPX.4.33n.0305270806320.2726-100000@studcom.urz.uni-halle.de>
+References: <200305261857.31425.azidog@nyc.rr.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from smtp3.unsw.edu.au (smtp3.unsw.EDU.AU [149.171.96.70])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id HAA23603
-	for <alsa-devel@alsa-project.org>; Tue, 27 May 2003 07:48:00 +0200
-Content-Disposition: inline
-In-Reply-To: <20030526132610.GA27490@ee.unsw.edu.au>
+In-reply-to: <200305261857.31425.azidog@nyc.rr.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,115 +17,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: core sound <alsa-devel@alsa-project.org>
-Cc: Clemens Ladisch <clemens@ladisch.de>
+To: Jacek Blizinski <azidog@nyc.rr.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-OK - it would appear the win2k loads this soundcard as a realtek ac'97 
-sound card. 
-It gives it :
-IRQ=05
-I/O=0xf800-0xf8ff
-I/O=0xfe80-0xfeff
+Jacek Blizinski wrote:
+> checking for GCC version...
+> Kernel compiler: gcc 3.2.2 (Mandrake Linux 9.1 3.2.2-3mdk)
+> Used compiler:   gcc-3.2.2 (GCC) 3.2.2 (Mandrake Linux 9.1 3.2.2-3mdk)
+> Fatal error: Compiler type does not match
+>
+> However the compiler is the same. Is there any way to fix this or remove the
+> check?
 
-Is it possible to specify these ? I tried loading the intel8x0 driver 
-with :
-modprobe snd-intel8x0 irq=5
-but the same problem with irq=0 happened as before.
+I don't know why the identification strings are different, but you can
+remove the error by deleting line 2754 of the configure script.
 
-There is a driver available at realtek :
-http://www.realtek.com.tw/downloads/downloads1-3.aspx?series=8&Software=True
 
-If that helps at all ?
+HTH
+Clemens
 
-Matt
 
-On Mon, May 26, 2003 at 11:26:10PM +1000, Matt Flax wrote:
-> Hi,
-> 
-> I  just checked the BIOS - it is a mobile bios and does not let you turn 
-> IRQs on/off nor other stuff ...
-> 
-> In the bios it reports the card as a SiS 7018.
-> This would mean it requires the trident driver.
-> 
-> Still no success ! I am   beginning to believe that it is something else 
-> ! It is a mobile combo chip ... SiS M650 and SiS962
-> 
-> dmesg prints:
-> Trident 4DWave PCI soundcard not found or device busy
-> 
-> Module inst. reports :
-> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: 
-> init_module: No such device
-> Hint: insmod errors can be caused by incorrect module parameters, 
-> including invalid IO or IRQ parameters.
->       You may find more information in syslog or the output from dmesg
-> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: insmod 
-> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o failed
-> /lib/modules/2.4.20-1-686/kernel/sound/pci/trident/snd-trident.o: insmod 
-> snd-trident failed
-> 
-> 
-> lspci  -v  prints :
-> 
-> 00:02.7 Multimedia audio controller: Silicon Integrated Systems [SiS] 
-> SiS7012 PCI Audio Accelerator (rev a0)
->         Subsystem: CLEVO/KAPOK Computer: Unknown device 0400
->         Flags: medium devsel
->         I/O ports at 1c00 [disabled] [size=256]
->         I/O ports at 1800 [disabled] [size=128]
->         Capabilities: [48] Power Management version 2
-> 
-> 
-> 
-> 
-> On Mon, May 26, 2003 at 10:44:31AM +0200, Clemens Ladisch wrote:
-> > Matt Flax wrote:
-> > > When I try to load the intel alsa module I get a hang state, with this
-> > > output :
-> > > PCI: Enabling device 00:02.7 (0000 -> 0001)
-> > > PCI: No IRQ known for interrupt pin C of device 00:02.7. Please try
-> > > using pci=biosirq.
-> > > ALSA ../alsa-kernel/pci/intel8x0.c:2249: unable to grab IRQ 0
-> > >
-> > > So I appended that to the lilo.conf file and ran lilo, upon reboot -
-> > > same problem.
-> > 
-> > Apparently, your BIOS didn't allocate an interrupt for the AC'97 device.
-> > Try changing some PnP-related settings in the BIOS setup.
-> > 
-> > 
-> > HTH
-> > Clemens
-> > 
-> 
-> -- 
-> http://mffm.ee.unsw.edu.au
-> 
-> WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-> FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-> Vector Bass                : http://mffmvectorbass.sourceforge.net/
-> Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
-> 
-> 
-> -------------------------------------------------------
-> This SF.net email is sponsored by: ObjectStore.
-> If flattening out C++ or Java code to make your application fit in a
-> relational database is painful, don't do it! Check out ObjectStore.
-> Now part of Progress Software. http://www.objectstore.net/sourceforge
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
--- 
-http://mffm.ee.unsw.edu.au
-
-WSOLA TimeScale Audio Mod  : http://mffmtimescale.sourceforge.net/
-FFTw C++                   : http://mffmfftwrapper.sourceforge.net/
-Vector Bass                : http://mffmvectorbass.sourceforge.net/
-Multimedia Time Code       : http://mffmtimecode.sourceforge.net/
 
 
 -------------------------------------------------------
