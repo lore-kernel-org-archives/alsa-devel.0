@@ -1,12 +1,14 @@
 From: Lars Heineken <Lars.Heineken@gmx.de>
-Subject: Opening dev/dsp takes very long
-Date: Sat, 13 Mar 2004 21:01:05 +0100
+Subject: Additional info: Opening dev/dsp takes very long
+Date: Sat, 13 Mar 2004 21:24:00 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40536881.4030903@gmx.de>
+Message-ID: <40536DE0.5070303@gmx.de>
+References: <40536881.4030903@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <40536881.4030903@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,36 +17,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-Hi !
+.. some more infos on the issue:
 
-I switched from 2.4 to 2.6 a few days ago and noticed this strange
-problem. Whatever program uses OSS-emulation takes 1-3 seconds to open
-/dev/dsp and start playing sound. It seems that this has something to do
-with the preemptive kernel option, because I experienced the same when I
-tried a 2.4 kernel with the preemptive patch.
-I thought that having a prememtive kernel would reduce delays in general
-~ and not increase them dramatically.
-How can I be of help to find and locate this problem ?
+- - The delay does not affect output via alsa directly, only the
+OSS-emulation.
 
-Greetings,
+- - Using XMMS and jumping around in the song (via the main slider)
+creates the same delay every time the player jumps to the new position.
+
+- - Some applications suffer from more delay than others, the worst one is
+wavbreaker (3-4 seconds), it's barely usable.
+
 
 Lars.
-
-PS: Hardware is EWX24/96, if that helps.
-
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.2.3 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
 
-iD8DBQFAU2iBrp9JEomxNXERAuAtAJ0SqH7CtAidytYox5ZmWw1gOfMIpACdHRf6
-xJQw7Ug3+gvimU11ECwGY4c=
-=ko6Q
+iD8DBQFAU23grp9JEomxNXERAtzYAKCdWb4GWo9CO1m69V8Lid6qIscEbgCggOT8
+5ZMWcX8TxhL5/AlFzCKHJJg=
+=e554
 -----END PGP SIGNATURE-----
 
 
