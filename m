@@ -1,13 +1,14 @@
-From: Giuliano Pochini <pochini@denise.shiny.it>
-Subject: Re: Error: firmware not found
-Date: Tue, 25 Jan 2005 16:35:46 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0501251615290.9451@denise.shiny.it>
-References: <m2hdl7ujr8.fsf@vador.mandrakesoft.com> <XFMail.20050125093227.pochini@shiny.it>
- <s5h3bwpr1js.wl@alsa2.suse.de>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [Alsa-user] [PATCH] emu10k1 multichannel support
+Date: Tue, 25 Jan 2005 13:43:05 -0500
+Message-ID: <1106678585.10845.8.camel@krustophenia.net>
+References: <1106091073.24484.60.camel@krustophenia.net>
+	 <1106672990.27843.7.camel@radium.gaugetheory.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h3bwpr1js.wl@alsa2.suse.de>
+In-Reply-To: <1106672990.27843.7.camel@radium.gaugetheory.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,45 +18,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Thierry Vignaud <tvignaud@mandrakesoft.com>, Alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Brian L Scipioni <brian@gaugetheory.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 2005-01-25 at 12:09 -0500, Brian L Scipioni wrote:
+> Lee,
+> 
+> 	Can you provide instructions for applying the patch?
+> 
+> 	First I assume I need the latest alsa from CVS, right?
+> 
 
+Yes.  I do plan to make a patch against kernel 2.6.10, hopefully I will
+get to that today.  For now, here's the quick CVS install HOWTO.  You
+must have ALSA compiled as modules for this to work.
 
-On Tue, 25 Jan 2005, Takashi Iwai wrote:
+$ mkdir cvs/alsa-cvs
+$ cd cvs/alsa-cvs
+$ cvs -d ":pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa" co .
+$ patch -p1 < emu10k1-multichannel-v005.patch
+$ ./build prep
+$ cd alsa-driver
+$ ./configure --with-cards=emu10k1 --with-kernel=/path/to/kernel/source
+$ make && sudo make install
 
-> > No, it isn't, because those devices use the same PCI card, that is
-> > the kernel reports the same PCI ID/subID's. The driver has to load
-> > the firmware and then it asks the DSP what (if any) external box is
-> > attached. If it is the wrong driver it exits with -ENODEV.
->
-> Hmm, but having two drivers for the identical PCI ID/subID isn't
-> good.  Isn't it possible to determine in the driver level which model
-> it is?
+Then just reboot, or rmmod your existing ALSA modules and modprobe the
+new ones.
 
-Nope. They *are* the same card. Only the DSP knows what box is attached.
+This was only tested on Debian, YMMV.
 
-The generic driver by Echoaudio does:
+Lee
 
-Load the DSP loader
-Load the DSP code of the Layla3G
-Is the attached box a Layla3G ?
-	no:
-	reset DSP
-	Load the DSP code of the Gina3G
-Load the ASIC code
-
-The ALSA driver exits if the box is wrong. The obvious solution is to do
-that same procedure in the ALSA driver, but it implies I have to replace
-all references to card capabilites (# of channels, etc...) with variables.
-Those vars never change their values after init. Furthermore a few
-functions are different. I worked a lot to do as much choices as possible
-at compile time. Currently they're all constants.
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
