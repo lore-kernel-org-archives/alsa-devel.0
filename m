@@ -1,8 +1,8 @@
 From: Arve Knudsen <aknuds-1@broadpark.no>
 Subject: Re: Which API to use for simple clients?
-Date: Mon, 05 Jan 2004 15:29:15 +0100
+Date: Mon, 05 Jan 2004 15:31:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <opr1a3u1eoq1sf88@mail.broadpark.no>
+Message-ID: <opr1a3ywb6q1sf88@mail.broadpark.no>
 References: <20040102181512.9272.3@llama.ing-simmons.net>   <opr07br2w0q1sf88@mail.broadpark.no>   <20040104120057.9272.13@llama.ing-simmons.net>   <opr09c5cvcq1sf88@mail.broadpark.no>   <20040105092621.2782.3@llama.elixent.com>   <opr1axlkxxq1sf88@mail.broadpark.no> <20040105133633.17708.4@llama.elixent.com>
 Mime-Version: 1.0
 Content-Type: text/plain; format=flowed; charset=iso-8859-1
@@ -17,8 +17,7 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: nick@img-simmons.net
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, 05 Jan 2004 13:36:33 +0000, <nick@img-simmons.net> wrote:
