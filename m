@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000907]: The sound is choppy and sometimes played at wrong speed
-Date: Sat, 19 Mar 2005 18:24:16 +0100
-Message-ID: <3682ea5d9d432ed7980f6ed545bcd4ee@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000906]: OSS mixer does not work
+Date: Sat, 19 Mar 2005 18:25:40 +0100
+Message-ID: <a6083ad965b610f71bc93bb2c4284cac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96AC41CE
-	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:24:16 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3A9231D2
+	for <alsa-devel@alsa-project.org>; Sat, 19 Mar 2005 18:25:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,68 +23,81 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=907> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=906> 
 ======================================================================
-Reported By:                sHINOBI
+Reported By:                adaviel
 Assigned To:                jcdutton
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   907
+Issue ID:                   906
 Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     assigned
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.10-1.766_FC3
+Distribution:               Fedora Core 1
+Kernel Version:             2.4.22
 ======================================================================
-Date Submitted:             02-13-2005 11:36 CET
-Last Modified:              03-19-2005 18:24 CET
+Date Submitted:             02-13-2005 07:02 CET
+Last Modified:              03-19-2005 18:25 CET
 ======================================================================
-Summary:                    The sound is choppy and sometimes played at wrong
-speed
+Summary:                    OSS mixer does not work
 Description: 
-The soundcard is working, although the sound is choppy when playing sound
-at 44100 Hz. 48000 Hz audio like the one at DVD's is played correctly.
+OSS-based mixers such as aumix or xmixer will not
+work. aumix says "no device found". A second sound device on the same PC
+configured as snd-card-1 appears to work as /dev/mixer1
+Alsamixer appears to work on both the Audigy and Intel devices
+(at the time of writing I do not have physical access to the device
+to verify sound output)
 ======================================================================
 
 ----------------------------------------------------------------------
- sHINOBI - 02-13-05 11:38 
+ tiwai - 02-14-05 16:27 
 ----------------------------------------------------------------------
-Grrr. I'm sorry I forgot to supply soundcard info.
-
-cat /proc/asound/cards
-0 [CA0106         ]: CA0106 - CA0106
-                     Live! by MSI [SB0438] at 0xde00 irq 201
+Do you have /dev/mixer with a proper permission?
 
 ----------------------------------------------------------------------
- Juha - 03-02-05 13:22 
+ adaviel - 02-14-05 23:30 
 ----------------------------------------------------------------------
-I have the exactly same problem with my 
+lrwxrwxrwx    1 root     root          /dev/mixer -> /dev/mixer0
+crw-rw-rw-    1 root     root      14, /dev/mixer0
+crw-rw-rw-    1 root     root      14, /dev/mixer1
 
-0 [CA0106         ]: CA0106 - CA0106
-Live! 7.1 24bit [SB0410] at 0xa400 irq 10 card. The only good thing is
-that the card works ok when used through OSS emulation.
+card 0 is ca0106
+card 1 is Intel ich5 which seems to work OK
+
+I want to use the vrvs.org/Mbone tool "rat" which needs full-duplex
+audio at (usually) 8kHz o 16kHz with microphone/speakers
+I cannot get any input on the VU meter with any input selected in
+alsamixer or
+with "capture into playback" set high. The input levels won't move in
+alsamixer
+for any inputs e.g. "AC97 in". I don't see "mic in" - but I'm not very
+familiar with ALSA or with this card. It's what a user found in a store
+when
+they wanted to retrofit sound to an older PC running RedHat 7.3.
+
+When I use OSS "play" on a WAV file the sound is very choppy and the rate
+sounds
+wrong. When I try aplay it's not choppy but the rate is still odd.
+However mpg123 sounds OK on an MP3 file. Will this card work for me in
+Rat,
+or is it only really good for playing DVDs/CDs ?
 
 ----------------------------------------------------------------------
- jcdutton - 03-19-05 18:24 
+ jcdutton - 03-19-05 18:25 
 ----------------------------------------------------------------------
-Known problem. Any 44.1khz sound will not play well on these cards.
-Any 44.1khz sound has to be converted to 48khz before being sent to the
-sound card. Many linux application can do this. e.g. xine has a "force
-rate" option, that one can set to 48khz, so that any sound file stored at
-44.1khz rate will be converted to 48khz before being sent to the sound
-card.
+Known problem. "Master" control needs to be added to the sound card driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-13-05 11:36 sHINOBI        New Issue                                    
-02-13-05 11:36 sHINOBI        Distribution              => Fedora Core 3   
-02-13-05 11:36 sHINOBI        Kernel Version            => 2.6.10-1.766_FC3
-02-13-05 11:38 sHINOBI        Note Added: 0003583                          
-03-02-05 13:22 Juha           Note Added: 0003770                          
-03-19-05 18:24 jcdutton       Note Added: 0004064                          
+02-13-05 07:02 adaviel        New Issue                                    
+02-13-05 07:02 adaviel        Distribution              => Fedora Core 1   
+02-13-05 07:02 adaviel        Kernel Version            => 2.4.22          
+02-14-05 16:27 tiwai          Note Added: 0003600                          
+02-14-05 23:30 adaviel        Note Added: 0003614                          
+03-19-05 18:25 jcdutton       Note Added: 0004065                          
 ======================================================================
 
 
