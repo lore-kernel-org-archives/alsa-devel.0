@@ -1,14 +1,15 @@
-From: Wilfried Weissmann <Wilfried.Weissmann@gmx.at>
-Subject: Re: Aureal Vortex PATCH [Fwd: via workaround error]
-Date: Tue, 13 Jan 2004 20:47:13 +0100
+From: holborn <holborn@telefonica.net>
+Subject: The LAD History
+Date: Wed, 14 Jan 2004 04:04:49 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40044B41.8020707@gmx.at>
-References: <1073703888.4419.2.camel@localhost>	<s5hbrp9gtc8.wl@alsa2.suse.de>	<4002E295.3050001@gmx.at> <s5hbrp9auwa.wl@alsa2.suse.de>
+Message-ID: <200401140404.49938.holborn@telefonica.net>
+Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------030303040903020302030204"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbrp9auwa.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,66 +18,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: manuel.jander@mat.utfsm.cl, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------030303040903020302030204
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Takashi Iwai wrote:
-[snip]
-> i applied the fixed version to cvs.  please check it later.
+Sorry i'm new :-) from 2003 .... today is my first visit to linuxaudio.org 
+home page, i never know about their existence. Then .... can someone explain 
+here in a few words a little history about when/how LAD and linuxaudio was 
+born and their dependencies?
 
-the changes are fine.
 
-> 
-> could you also provide the patch to INSTALL (document) file?
+Sorry this kind of discussion is to mutch for my poor English, i need hours to 
+read it, but i try ...  :-)
 
-the patch is attached (against current alsa CVS)...
+Thanks
 
-> 
-> 
-> thanks,
-> 
-> Takashi
 
-greetings,
-wilfried
+Josep
 
---------------030303040903020302030204
-Content-Type: text/plain;
- name="alsa-1.0.1-aureal-via-quirks-docs.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-1.0.1-aureal-via-quirks-docs.patch"
 
-Index: INSTALL
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/INSTALL,v
-retrieving revision 1.154
-diff -u -r1.154 INSTALL
---- INSTALL	12 Jan 2004 14:40:21 -0000	1.154
-+++ INSTALL	13 Jan 2004 19:39:29 -0000
-@@ -261,6 +261,14 @@
-            control correctly. If you have problems regarding this, try
-            another ALSA compliant mixer (alsamixer works).
- 
-+    pcifix	- Control PCI workarounds
-+		  0 = Disable all workarounds
-+		  1 = Force the PCI latency of the Aureal card to 0xff
-+		  2 = Force the Extend PCI#2 Internal Master for Efficient
-+		      Handling of Dummy Requests on the VIA KT133 AGP Bridge
-+		  3 = Force both settings
-+		  255 = Autodetect what is required (default)
-+
- 
- Trouble Shooting
- ================
 
---------------030303040903020302030204--
 
 
 -------------------------------------------------------
