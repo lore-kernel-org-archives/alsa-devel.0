@@ -1,15 +1,14 @@
-From: torsten <torsten@inetw.net>
-Subject: Re: wolk kernel headers
-Date: Tue, 11 Feb 2003 16:34:59 -0500
+From: Christian Esken <c.esken@cityweb.de>
+Subject: cs464xx: "Unexpected hw_pointer value"
+Date: Tue, 11 Feb 2003 23:48:35 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030211163459.61d158b7.torsten@inetw.net>
-References: <20030210161442.55d398cd.torsten@inetw.net>
-	<s5hznp3ciyp.wl@alsa2.suse.de>
+Message-ID: <200302112348.36330.c.esken@cityweb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznp3ciyp.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,23 +17,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
->> Since the kerenel headers copied into /usr/include match
->> the glibc when my kernel was compiled (non-wolk), there
->> are no files asound.h and asequencer.h (needed by kdelibs).
->
->this is a bug of kdelibs.  the application shouldn't refer to these
->files.  i thought it's fixed on kde cvs...
+I have tons of  "Unexpected hw_pointer value" messages when trying to play DVD's using xine.
+The notable effect is that DVD audio (and video) playback is interrupted every few seconds for
+perhaps 100ms.
 
+Is this more a driver issue (bug) or a hardware fault?!?
 
-I have searched bugs.kde.org, but I find no mention.
-It may be fixed in CVS, I'm using release 3.1.
+Feb 11 23:37:39 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -496, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:41 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -256, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:45 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -448, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:45 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -496, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:47 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -240, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:47 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -512, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:47 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -224, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:48 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -336, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:49 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -288, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:49 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -368, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:50 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -512, max jitter = 8192): wrong interrupt acknowledge?
+Feb 11 23:37:50 bjork kernel: ALSA ../alsa-kernel/core/pcm_lib.c:123: Unexpected hw_pointer value (stream = 0, delta: -256, max jitter = 8192): wrong interrupt acknowledge?
 
-Torsten
+Chris
 
 
 -------------------------------------------------------
