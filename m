@@ -1,11 +1,11 @@
 From: Henry Walpool <apkennedy@firstlinux.net>
-Subject: [PATCH] Adding support for ST Audio Media 7.1 to hoontech.[ch]
-Date: Sun, 8 Dec 2002 15:54:53 -0800 (PST)
+Subject: (no subject)
+Date: Sun, 8 Dec 2002 15:53:06 -0800 (PST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021208235454.12DAB405A@sitemail.everyone.net>
+Message-ID: <20021208235306.C897D3BBE@sitemail.everyone.net>
 Reply-To: apkennedy@firstlinux.net
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="----------=_1039391694-20118-0"
+Content-Type: multipart/mixed; boundary="----------=_1039391586-7325-0"
 Content-Transfer-Encoding: binary
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -21,7 +21,7 @@ List-Id: alsa-devel@alsa-project.org
 
 This is a multi-part message in MIME format...
 
-------------=_1039391694-20118-0
+------------=_1039391586-7325-0
 Content-Type: text/plain
 Content-Disposition: inline
 Content-Transfer-Encoding: 7bit
@@ -34,7 +34,7 @@ Want a new web-based email account ? ---> http://www.firstlinux.net
 _____________________________________________________________
 Select your own custom email address for FREE! Get you@yourchoice.com w/No Ads, 6MB, POP & more! http://www.everyone.net/selectmail?campaign=tag
 
-------------=_1039391694-20118-0
+------------=_1039391586-7325-0
 Content-Type: text/plain; name="questions_alsa_dev.txt"
 Content-Disposition: inline; filename="questions_alsa_dev.txt"
 Content-Transfer-Encoding: base64
@@ -94,7 +94,7 @@ J3Mgb3duIElSUSBhbHNvLgpNYXkgaGF2ZSBzb21ldGhpbmcgdG8gZG8gd2l0
 aCB0aGUgdmlhIEtUMTMzIGJhc2VkIG1vdGhlcmJvYXJkIEkKaGF2ZS4gCgpU
 aGFua3MgCgpIZW5yeQo=
 
-------------=_1039391694-20118-0--
+------------=_1039391586-7325-0--
 
 
 -------------------------------------------------------
