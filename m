@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
-Date: Sun, 21 Nov 2004 21:36:39 +0100
-Message-ID: <7b8c6e73ae90d30adb1c28f74a7b37be@bugtrack.alsa-project.org>
+Date: Sun, 21 Nov 2004 21:26:48 +0100
+Message-ID: <7eac03cadaeee3c07a2144ea05163c5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69E14271
-	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 21:36:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 95B6326D
+	for <alsa-devel@alsa-project.org>; Sun, 21 Nov 2004 21:26:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian/unstable
 Kernel Version:             linux-2.6.4+
 ======================================================================
 Date Submitted:             03-30-2004 00:02 CEST
-Last Modified:              11-21-2004 21:36 CET
+Last Modified:              11-21-2004 21:26 CET
 ======================================================================
 Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
@@ -60,6 +60,18 @@ So I suspect a problem in the ioctl32 wrapper.
 ======================================================================
 
 ----------------------------------------------------------------------
+ sjoerd - 11-21-04 17:44 
+----------------------------------------------------------------------
+A friend of mine just tried both my patches on his blade 100. The cvs patch
+against 2.6.10-rc2 did indeed freeze his machine. Linux 2.6.9 with the
+patch that was on the sparclinux list worked fine.. So either i forgot to
+forward port something or something else was broken..
+
+On a side note, his sound didn't have any distorsions. So the bad quality
+i'm hearing is the alsa driver for my card and not the 32 bit emulation
+layer
+
+----------------------------------------------------------------------
  eradicator - 11-21-04 21:26 
 ----------------------------------------------------------------------
 ok, good point about the code testing on different archs, and you're right
@@ -73,12 +85,6 @@ wrong...
 
 Also, I'm not familiar with "__attribute__((packed));"  What does that do,
 and why was that removed from the ends of the structs?
-
-----------------------------------------------------------------------
- eradicator - 11-21-04 21:36 
-----------------------------------------------------------------------
-ok... I tried the patched 2.6.9 snd-ioctl32 sources with my modified 2.6.7
-kernel to the same freezing result...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -109,7 +115,6 @@ Date Modified  Username       Field                    Change
 11-21-04 12:54 sjoerd         Note Added: 0002488                          
 11-21-04 17:44 sjoerd         Note Added: 0002489                          
 11-21-04 21:26 eradicator     Note Added: 0002490                          
-11-21-04 21:36 eradicator     Note Added: 0002491                          
 ======================================================================
 
 
