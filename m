@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: =?iso-8859-1?Q?[ALSA_-_driver_0000855]:_Analog_Input_doesn=B4t_work?=
-Date: Fri, 28 Jan 2005 13:21:18 +0100
-Message-ID: <c475966043c00ef9e718701997706f78@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000854]: Can't load module snd-cs4236, snd-cs4236 or snd-sb8
+Date: Fri, 28 Jan 2005 13:18:36 +0100
+Message-ID: <59d3a9a71c61e61978e6f9c34ec31298@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A6BEC1F9
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 13:21:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4FEA11F9
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 13:18:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,40 +24,43 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=855> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=854> 
 ======================================================================
-Reported By:                Tom
+Reported By:                mrpee
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   855
-Category:                   PCI - azx
+Issue ID:                   854
+Category:                   ISA - cs4236
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Fedora Core 3 + Alsa 1.0.8
-Kernel Version:             2.6.9 and 2.6.10 (from Fedora)
+Distribution:               Debian
+Kernel Version:             2.6.8-2-386
 ======================================================================
-Date Submitted:             01-28-2005 13:21 CET
-Last Modified:              01-28-2005 13:21 CET
+Date Submitted:             01-28-2005 13:18 CET
+Last Modified:              01-28-2005 13:18 CET
 ======================================================================
-Summary:                    Analog Input doesn´t work
+Summary:                    Can't load module snd-cs4236, snd-cs4236 or snd-sb8
 Description: 
-I tried to capture some tunes with my CMI9880 (an a ASUS P5GD2). It doesn´t
-care with mixer settings are made, the is simply no sound input.
+I can't load any modules for my sound carc Cirrus Logic cs4237b on my Dell
+Latitude CP M233XT. I tried snd-cs4236, snd-cs4236 and also the
+soundblaster module snd-sb8 with the same result "no such device".
 
-Does the azx driver support line-in anyways?
+I think I'll tried everything, kernel 2.4 with alsamodules, 2.6.1, alsa
+1.0.7-2. half/full duplex, changing irq, dma etc.
+
+Here is a link from another forum whith the same problem:
+http://www.talkaboutsoftware.com/group/linux.debian.laptop/messages/7049.html
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-28-05 13:21 Tom            New Issue                                    
-01-28-05 13:21 Tom            Distribution              => Fedora Core 3 + Alsa
-1.0.8
-01-28-05 13:21 Tom            Kernel Version            => 2.6.9 and 2.6.10
-(from Fedora)
+01-28-05 13:18 mrpee          New Issue                                    
+01-28-05 13:18 mrpee          Distribution              => Debian          
+01-28-05 13:18 mrpee          Kernel Version            => 2.6.8-2-386     
 ======================================================================
 
 
