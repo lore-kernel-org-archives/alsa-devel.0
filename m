@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Fri, 21 Jan 2005 21:19:54 +0100
-Message-ID: <fe28ee7c02eb033b2f8162b4988494b1@bugtrack.alsa-project.org>
+Date: Fri, 21 Jan 2005 21:28:02 +0100
+Message-ID: <721c489d01be7100d974cdef28149538@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D1CB421B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:19:54 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F37D9225
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 21:28:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-21-2005 21:19 CET
+Last Modified:              01-21-2005 21:28 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -49,16 +49,6 @@ I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
 I cant raise the trigger.
 No SPDIF out.
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-21-05 21:15 
-----------------------------------------------------------------------
-There is no file indeed in /usr/lib/alsa indeed.  It's for external
-plugins.
-The internal plugins are found in /usr/lib/libasound.so.
-
-Check whether /usr/lib/libasound.so* files are correctly installed (check
-the date of files).
 
 ----------------------------------------------------------------------
  1g0R - 01-21-05 21:19 
@@ -74,6 +64,11 @@ libasound.so.2.0.0
 [root@skynet lib]#  
 
 I think its okay.I compilled 10 minutes ago.
+
+----------------------------------------------------------------------
+ rlrevell - 01-21-05 21:28 
+----------------------------------------------------------------------
+OK so what is the output of "ldd `which aplay`"?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -119,6 +114,7 @@ Date Modified  Username       Field                    Change
 01-21-05 21:07 1g0R           Note Added: 0003358                          
 01-21-05 21:15 tiwai          Note Added: 0003359                          
 01-21-05 21:19 1g0R           Note Added: 0003361                          
+01-21-05 21:28 rlrevell       Note Added: 0003362                          
 ======================================================================
 
 
