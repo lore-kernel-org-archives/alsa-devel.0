@@ -1,15 +1,14 @@
-From: "Federico Vega" <f.vegarx@postzegelman.nl>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Fri, 26 Nov 2004 21:24:59 +0200
-Message-ID: <373901c4d3ed$2b2d705c$9dbcd4d7@fi.au.dk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Fri, 26 Nov 2004 21:53:45 +0100
+Message-ID: <b8f0832d5957b25bb930495fcb9cea36@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from fi.au.dk (h-67-101-122-71.cmbrmaor.dynamic.covad.net [67.101.122.71])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 75E1D232
-	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 20:26:26 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 594A2211
+	for <alsa-devel@alsa-project.org>; Fri, 26 Nov 2004 21:53:46 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,138 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
+======================================================================
+Reported By:                bons78
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   167
+Category:                   SPARC - cs4231
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
+======================================================================
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-26-2004 21:53 CET
+======================================================================
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
+Description: 
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
-
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
-
-Visit us: http://www.icors.com/rep/rolex/
-
-Best regards,
-Hilton Jones
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
 
-No thanks: http://www.icors.com/z.php
+
+======================================================================
+
+----------------------------------------------------------------------
+ eradicator - 11-26-04 21:40 
+----------------------------------------------------------------------
+Ok... found something that works on amd64, but not on sparc64...
+$ timidity -Os /home/jeremy/gentoo/sounds/Final\ Fantasy\ 7\ -\ Aerith\'s\
+Theme.mid
+...
+Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
+failed: Broken pipe
+ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
+pipe
+ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
+pipe
+
+I hear one chime and then the SNDRV_PCM_IOCTL_SYNC_PTR errors...
+
+I'm attaching the strace...
+
+----------------------------------------------------------------------
+ eradicator - 11-26-04 21:53 
+----------------------------------------------------------------------
+ok... I'm willing to bet that the problem there is with poorly written code
+in timidity as I'm having no trouble with any other players...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
+11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:39 eradicator     Note Added: 0002485                          
+11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
+11-21-04 17:44 sjoerd         Note Added: 0002489                          
+11-21-04 21:26 eradicator     Note Added: 0002490                          
+11-21-04 21:36 eradicator     Note Added: 0002491                          
+11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
+11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
+            
+11-22-04 00:49 eradicator     Note Added: 0002494                          
+11-22-04 16:22 tiwai          Note Added: 0002508                          
+11-23-04 10:16 eradicator     Note Added: 0002514                          
+11-23-04 15:34 tiwai          Note Added: 0002515                          
+11-23-04 15:36 tiwai          File Added: ioctl32-user-alloc.diff               
+    
+11-24-04 10:26 eradicator     Note Added: 0002544                          
+11-24-04 12:53 eradicator     Note Added: 0002553                          
+11-24-04 13:01 eradicator     Note Added: 0002556                          
+11-24-04 13:01 tiwai          Note Added: 0002557                          
+11-24-04 13:09 tiwai          Note Added: 0002559                          
+11-24-04 14:29 eradicator     Note Added: 0002563                          
+11-24-04 14:52 tiwai          Note Added: 0002564                          
+11-24-04 14:53 tiwai          File Added: ioctl32-user-alloc-hack.diff          
+         
+11-24-04 23:24 eradicator     Note Added: 0002582                          
+11-24-04 23:31 eradicator     Note Added: 0002583                          
+11-25-04 12:22 tiwai          Note Added: 0002588                          
+11-25-04 12:23 tiwai          File Added: ioctl32-user-alloc-hack2.diff         
+          
+11-26-04 08:26 eradicator     Note Added: 0002594                          
+11-26-04 08:59 eradicator     File Added: revert-pcm_hw_params.patch            
+       
+11-26-04 09:22 eradicator     File Added: alsa.strace                      
+11-26-04 09:22 eradicator     Note Added: 0002595                          
+11-26-04 12:40 tiwai          Note Added: 0002604                          
+11-26-04 15:17 tiwai          Note Added: 0002606                          
+11-26-04 15:17 tiwai          File Added: ioctl32-user-alloc-hack3.diff         
+          
+11-26-04 20:31 eradicator     Note Added: 0002611                          
+11-26-04 21:05 eradicator     Note Added: 0002612                          
+11-26-04 21:40 eradicator     Note Added: 0002613                          
+11-26-04 21:40 eradicator     File Added: strace                           
+11-26-04 21:53 eradicator     Note Added: 0002614                          
+======================================================================
+
 
 
 
