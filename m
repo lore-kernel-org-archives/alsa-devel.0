@@ -1,14 +1,13 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: EMU10K1 - CVS: nasty "click" at end of WAV files, and spurious extra modules.
-Date: Mon, 3 Feb 2003 13:38:15 +0000 (GMT)
+From: Oliver Schrempf <un1q@stud.uni-karlsruhe.de>
+Subject: Re: asoundrc problem
+Date: Mon, 3 Feb 2003 14:40:26 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030203133815.74143.qmail@web40607.mail.yahoo.com>
-References: <s5h8ywxiqm7.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0302031434160.17295-100000@rzstud2.stud.uni-karlsruhe.de>
+References: <s5h4r7lioor.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h8ywxiqm7.wl@alsa2.suse.de>
+In-Reply-To: <s5h4r7lioor.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,71 +20,24 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> wrote:
-> Hi Chris,
-> 
-> At Fri, 31 Jan 2003 19:56:51 +0000 (GMT),
-> Chris Rankin wrote:
-> > 
-> >  --- Takashi Iwai <tiwai@suse.de> wrote:
-> > > do you know which version (or date) the driver
-> > > worked without clicks?
-> > > there have been not many changes for emu10k1 or
-> pcm
-> > > stuffs recently.
-> > 
-> > On a hunch, I downloaded the alsa-lib-0.9.0rc6 and
-> > alsa-util-0.9.0rc6 packages and tried those
-> against
-> > the current CVS version of the kernel modules.
-> There
-> > is no nasty clicking sound using 0.9.0rc6
-> userspace.
-> > 
-> > Even more interesting:
-> > 
-> > alsa-lib 0.9.0rc6 + alsa-utils CVS => CLICK!
-> > alsa-lib CVS + alsa-utils 0.9.0rc6 => No click.
-> 
-> wow, that's interesting.  thanks for tracking it
-> down.
-> 
-> unfortuantely i cannot reproduce this problem with
-> the combination of
-> alsa-lib CVS + alsa-utils CVS on my audigy.
-> 
-> is it possible that the behavior depends on the wav
-> file to play?
-> if the file is not too big, could you send me the
-> example wav file to
-> trigger this, so that i can test on my machine?
+> it's the expected behavior, because the hardware doesn't support this
+> format.  it suppors only S32_LE.
 
-Sure, although maybe you have them already? They're
-the sounds from the Windows 95 sound schemes, such as
-"Jungle: Windows start", "Jungle: Windows exit",
-"Robotz: error" etc.
+OK, I understand this, but when I use
+% arecord -Dhw:0,0 -fS32_LE -r48000 foo.wav
+I get
+arecord: set_params:792: Channels count non available
 
-The *specific* change that causes the click is 1.156
-in aplay.c. This change went in about 29th January.
-However, having said that, I'm not entirely sure that
-aplay 1.155 isn't chopping off the first little bit of
-the WAV files either. And I tried using aplay with my
-SoundScape driver last night, too (which hasn't
-changed significantly for a very long time, and which
-only glues the CS4321 and MPU-401 drivers together
-anyway). With this sound card, I heard the WAV file
-start playing then quickly RE-start playing... most
-odd. It didn't used to do that, and the "click" sound
-was also audible at the end with aplay.c 1.156 too.
+Is this expected, too?
 
-Chris
+> but it seems that this is an alsa-lib bug although i can play
+> 4-channel wav file using two consumer cards...
+Hmm? Can I help here? I'm no expert in alsa-lib, but I can test on my
+hardware. Let me know if you need something.
+Thanks
 
+Oli
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
 
 
 -------------------------------------------------------
