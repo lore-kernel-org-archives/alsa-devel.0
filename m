@@ -1,14 +1,13 @@
-From: thomas schorpp <t.schorpp@gmx.de>
-Subject: Re: [Fwd: Re: newer C-Media CMI9761A], No PCM Master
- slider functional
-Date: Sat, 19 Feb 2005 00:13:32 +0100
-Message-ID: <4216769C.6000209@gmx.de>
-References: <42162C3C.6000703@gmx.de>
-Reply-To: t.schorpp@gmx.de
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000922]: "make install" should place libasound.so in /usr/lib64
+Date: Sat, 19 Feb 2005 01:50:40 +0100
+Message-ID: <b3ad48f3e21bd783883bffc77e4438f7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <42162C3C.6000703@gmx.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EB23B248
+	for <alsa-devel@alsa-project.org>; Sat, 19 Feb 2005 01:50:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,43 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@users.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ok. got the pcm master slider. no function.
 
-if the bitsetting is correct, theres no hardware gain driver for pcm 
-master on the chip.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=922> 
+======================================================================
+Reported By:                Cus
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   922
+Category:                   general
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-19-2005 01:50 CET
+Last Modified:              02-19-2005 01:50 CET
+======================================================================
+Summary:                    "make install" should place libasound.so in
+/usr/lib64
+Description: 
+In SuSE Linux, the 64-bit versions of the libs are in /usr/lib64 instead of
+in /usr/lib. If the "make install" script put the just compiled
+libasound.so in /usr/lib instead of /usr/lib64, then the programs will
+still use the old version of libasound.so in /usr/lib64. 
+So if the architecture is x86_64, then putting libasound.so in /usr/lib64
+can solve this issue.
+======================================================================
 
-so back to head cvs and find out whats wrong with the pcm sound with 
-patch_9761().
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-19-05 01:50 Cus            New Issue                                    
+======================================================================
 
-tom
 
-static void check_volume_resolution(ac97_t *ac97, int reg, unsigned char 
-*lo_max, unsigned char *hi_max)
-{
-	unsigned short cbit[3] = { 0x20, 0x10, 0x01 };
-	unsigned char max[3] = { 63, 31, 15 };
-	int i;
-
-	*lo_max = *hi_max = 0;
-	for (i = 0 ; i < ARRAY_SIZE(cbit); i++) {
-		unsigned short val;
-		snd_ac97_write(ac97, reg, 0x8080 | cbit[i] | (cbit[i] << 8));
-		val = snd_ac97_read(ac97, reg);
-		if (! *lo_max && (val & cbit[i]))
-			*lo_max = max[i];
-		if (! *hi_max && (val & (cbit[i] << 8)))
-			*hi_max = max[i];
-		if (*lo_max && *hi_max)
-			break;
-	}
-	snd_printk (KERN_ERR "vol res reg %d hi %d low %d\n", reg, *lo_max, 
-*hi_max);
-	*lo_max = 31; *hi_max = 31;
-}
 
 
 -------------------------------------------------------
