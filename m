@@ -1,15 +1,26 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [Jackit-devel] irq handler top half timestamps
-Date: Fri, 10 Dec 2004 14:00:59 -0500
-Message-ID: <1102705260.29919.7.camel@krustophenia.net>
-References: <20041210182359.2a5dc4a4@mango.fruits.de>
-	 <200412101717.iBAHHZuW012442@localhost.localdomain>
-	 <20041210185426.5cd6ab23@mango.fruits.de>
+From: "SN World Foundation" <wf@world-foundation.org>
+Subject: Mini production plants to resolve giant problem
+Date: Fri, 10 Dec 2004 18:17:14 +0100
+Message-ID: <MDAEMON-F200412101817.AA171137md50056409673@world-foundation.org>
+Reply-To: wf@world-foundation.org
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="=_NextPart_2rfkindysadvnqw3nerasdf";
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041210185426.5cd6ab23@mango.fruits.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 05FA7349
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 20:02:09 +0100 (MET)
+Received: from galileo.ran.es (unknown [212.34.140.4])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 454F33DF5E
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 20:02:09 +0100 (MET)
+Received: from mercurio.ran.es ([212.34.128.5])
+	by galileo.ran.es (8.12.10/8.11.6) with ESMTP id iBAJ6xZm005846
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 20:06:59 +0100
+Received: from world-foundation.org ([212.34.141.8])
+	by mercurio.ran.es (8.11.2/8.9.3) with ESMTP id iBB6HDN16565
+	for <alsa-devel@alsa-project.org>; Sat, 11 Dec 2004 07:17:16 +0100
+Received: from STEPC020 by world-foundation.org
+	with SMTP (MDaemon.v3.1.2.R)
+	for <alsa-devel@alsa-project.org>; Fri, 10 Dec 2004 18:17:11 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,37 +30,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, Jaroslav Kysela <perex@suse.cz>, Ingo Molnar <mingo@elte.hu>, jackit-devel@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2004-12-10 at 18:54 +0100, Florian Schmidt wrote:
-> i think this assumption is not always true. On a realtime preemptive
-> kernel, the bottom half of the alsa irq handler can run in a thread. In
-> the normal jackd usage case this thread should probably be the highest
-> priority thread in the system and this should eliminate most scheduling
-> delays. I still think the best way [also with respect to variable length
-> code paths in the bottom handler before taking the timestamp
-> (speculation on my part)] would be to take the timestamp in the top half
-> if that's possible. Bottom half timestamp will probably still be better
-> than a timestamp taken in jackd though as we eliminate the (variable)
-> time needed for waking up jackd.
+This is a multi-part message in MIME format
 
-Maybe I am not understanding the ALSA code correctly, but I was under
-the impression that ALSA interrupt handlers do not really have a bottom
-half as such, in that they do not schedule any work for later via
-raising a softirq or scheduling a tasklet.  They just do it all in the
-top half.  It's possible for ALSA to do everything in the top half
-because all you do in an ALSA interrupt handler is call
-snd_pcm_period_elapsed on one or more substreams.  For this to work it
-seem like snd_pcm_period_elapsed has to be O(N) and therefore realtime
-safe.
+--=_NextPart_2rfkindysadvnqw3nerasdf
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Am I getting this all wrong?
+New Technology for the Third World, December 2004
 
-Lee
+Production Mini-plants in mobile containers. Worldwide Partners program
 
+SN World Foundation will supply to countries and developing regions the technology and necessary support for production in series of Mini-plants in mobile=20containers (40-foot). The Mini-plant system is designed in such a way that all the production machinery is fixed on the platform of the container, with all wiring,=20piping, and installation parts; that is, they are fully equipped... and the Mini-plant is ready for production.
 
+More than 700 portable production systems: Bakeries, Water purification, Dehydrated food, Steel Nails, Fruit juice preparation, Tire Retreading, Reinforcement Bar=20Bending for Construction Framework, Sheeting for Roofing, Ceilings and Fa=E7ades, Plated Drums, Aluminum Buckets, Injected Polypropylene Housewares, Pressed=20Melamine Items (Glasses, Cups, Plates, Mugs, etc.), Mufflers, Construction Electrically Welded Mesh, Plastic Bags and Packaging, Medical assistance mobile=20units, Sanitary Material, Hypodermic Syringes, Hemostatic Clamps, etc.=20
+SN World Foundation has started a Co-investment program for the installation of small Assembly Plants to manufacture, in series, the Mini-plants of portable=20production on site, region or country where required. One of the most relevant features is the fact that these plants will be connected to the International Trade=20System, with access to more than 50 million raw materials, products and services and automatic transactions for world trade.
+
+Due to financial reasons, involving cost and social impact, the best solution is setting up Assembly Plants on the same countries and regions, using local resources=20(labor, some equipment, etc.) SN World Foundation participates at 50% (fifty percent) for investment of each Assembly Plant.
+
+If you are interested in being a partner in your country or region, you can send your CV to: SN World Foundation (click here) <A HREF=3D=22mailto:tech=40world-
+foundation.org?Subject=3DINTERESTED IN BEING A PARTNER=22>Worldwide Partners Program</A>
+
+By Sarah Mathews, Program Manager
+
+RELATED INTERNET LINKS:=20<A HREF=3D=22http://news.bbc.co.uk/1/hi/world/africa/4078003.stm=22>'No drop' in world hunger deaths.</A> The annual UN Food and Agriculture Organisation (FAO)=20report says present levels of hunger cause the death of more than five million children a year.=20
+SEE ALSO:=20<A HREF=3D=22http://news.bbc.co.uk/1/hi/world/europe/3749280.stm=22>UN agency marks World Food Day.</A>
+
+-------------------------------------------------------------------------
+If you received this in error or would like to be removed from our list, please return us indicating: remove or un-subscribe in subject field, Thanks. <A=20HREF=3D=22mailto:wf=40world-foundation.org?Subject=3DREMOVE or UN-SUBSCRIBE=22>Manager Program</A>
+=A9 2004 SN World Foundation. All rights reserved.
+
+--=_NextPart_2rfkindysadvnqw3nerasdf
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<HTML>
+<HEAD>
+<meta http-equiv=3D=22content-type=22 content=3D=22text/html;CHARSET=3Diso8859-1=22>
+</HEAD>
+<BODY BGCOLOR=3D=22=23FFFFFF=22>
+<FONT FACE=3D=22Arial=22><FONT SIZE=3D2>New Technology for the Third World<FONT FACE=3D=22Arial=22>, <FONT FACE=3D=22Arial=22>December 2004<FONT FACE=3D=22Arial=22><BR>
+<BR>
+<B>Production Mini-plants in mobile containers. Worldwide Partners program</B><BR>
+<BR>
+SN<FONT FACE=3D=22Arial=22> World Foundation<FONT FACE=3D=22Arial=22> will supply to countries and developing regions the technology and necessary support for production in series of Mini-plants in mobile containers (40-foot). The Mini-plant system is designed in such a way that all the production machinery is fixed on the platform of the container, with all wiring, piping, and installation parts; that is, they are fully equipped... and the <FONT FACE=3D=22Arial=22>M<FONT FACE=3D=22Arial=22>ini-plant is ready for production.<BR>
+<BR>
+<FONT FACE=3D=22Arial=22>More than 700 portable production systems: Bakeries, Water purification, Dehydrated food, Steel Nails, Fruit juice preparation, Tire Retreading, Reinforcement Bar Bending for Construction Framework, Sheeting for Roofing, Ceilings and Fa&ccedil;ades, Plated Drums, Aluminum Buckets, Injected Polypropylene Housewares, Pressed Melamine Items (Glasses, Cups, Plates, Mugs, etc.), Mufflers, Construction Electrically Welded Mesh, Plastic Bags and Packaging, Medical assistance mobile units, Sanitary Material, Hypodermic Syringes, Hemostatic Clamps, etc. <FONT FACE=3D=22Arial=22><BR>
+<BR>
+S<FONT FACE=3D=22Arial=22>N World Foundation<FONT FACE=3D=22Arial=22> has started a Co-investment program for the installation of small Assembly <FONT FACE=3D=22Arial=22>P<FONT FACE=3D=22Arial=22>lants to manufacture<FONT FACE=3D=22Arial=22>, <FONT FACE=3D=22Arial=22>in<FONT FACE=3D=22Arial=22> <FONT FACE=3D=22Arial=22>series<FONT FACE=3D=22Arial=22>,<FONT FACE=3D=22Arial=22> the Mini-plants of portable production on site, region or country where required. One of the most relevant features is the fact that these plants will be connected to the <FONT FACE=3D=22Arial=22>International<FONT FACE=3D=22Arial=22> Trade System<FONT FACE=3D=22Arial=22>,<FONT FACE=3D=22Arial=22> with access to more than 50 million raw materials, products and services and automatic transactions for world trade.<BR>
+<BR>
+Due to financial reasons, involving cost and social impact, the best solution is setting up <FONT FACE=3D=22Arial=22>A<FONT FACE=3D=22Arial=22>ssembly <FONT FACE=3D=22Arial=22>P<FONT FACE=3D=22Arial=22>lants on the same countries and regions, using local resources (labor, some equipment, etc.) SN<FONT FACE=3D=22Arial=22> World Foundation<FONT FACE=3D=22Arial=22> participates at 50% (fifty percent) for investment of each Assembly <FONT FACE=3D=22Arial=22>P<FONT FACE=3D=22Arial=22>lant.<BR>
+<BR>
+If you are interested in being a partner in your country or region, you can send your CV to:<FONT FACE=3D=22Arial=22> <B><FONT FACE=3D=22Arial=22>SN<FONT FACE=3D=22Arial=22> World Foundation</B> (click here) <FONT FACE=3D=22Arial=22><a href=3D=22mailto:tech=40world-foundation.org?Subject=3DINTERESTED IN BEING A PARTNER=22>Worldwide Partners Program</a><BR>
+<BR>
+By <FONT FACE=3D=22Arial=22>Sarah Mathews<FONT FACE=3D=22Arial=22>, <FONT FACE=3D=22Arial=22>Program Manager<BR>
+<BR>
+RELATED INTERNET LINKS: <BR>
+<a href=3D=22http://news.bbc.co.uk/1/hi/world/africa/4078003.stm=22>'No drop' in world hunger deaths.</a> The annual UN Food and Agriculture Organisation (FAO) report says present levels of hunger cause the death of more than five million children a year. <BR>
+<BR>
+SEE ALSO: <BR>
+<a href=3D=22http://news.bbc.co.uk/1/hi/world/europe/3749280.stm=22>UN agency marks World Food Day.</a><FONT FACE=3D=22Arial=22><BR>
+<BR>
+-------------------------------------------------------------------------<BR>
+If you received this in error or would like to be removed from our list, please return us indicating: remove or un-subscribe in subject field, Thanks. <FONT FACE=3D=22Arial=22><a href=3D=22mailto:wf=40world-foundation.org?Subject=3DREMOVE or UN-SUBSCRIBE=22>Manager Program</a><BR>
+&copy; 2004 SN World Foundation. All rights reserved.<FONT COLOR=3D=22=23=22><FONT FACE=3D=22Arial=22><BR>
+</FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT>
+</BODY>
+</HTML>
+
+--=_NextPart_2rfkindysadvnqw3nerasdf--
 
 
 
