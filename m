@@ -1,100 +1,44 @@
-From: Christian Kujau <evil@g-house.de>
-Subject: Re: Oops in 2.6.10-rc1
-Date: Mon, 08 Nov 2004 21:59:11 +0100
-Message-ID: <418FDE1F.7060804@g-house.de>
-References: <4180F026.9090302@g-house.de> <Pine.LNX.4.58.0410281526260.31240@pnote.perex-int.cz> <4180FDB3.8080305@g-house.de> <418A47BB.5010305@g-house.de> <418D7959.4020206@g-house.de> <Pine.LNX.4.58.0411062244150.2223@ppc970.osdl.org> <20041107130553.M49691@g-house.de> <418E4705.5020001@g-house.de> <Pine.LNX.4.58.0411070831200.2223@ppc970.osdl.org> <20041107182155.M43317@g-house.de> <418EB3AA.8050203@g-house.de> <Pine.LNX.4.58.0411071653480.24286@ppc970.osdl.org> <418F6E33.8080808@g-house.de> <Pine.LNX.4.58.0411080951390.2301@ppc970.osdl.org>
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Echoaudio driver, hint request
+Date: Mon, 8 Nov 2004 22:46:37 +0100
+Message-ID: <20041108224637.1fd8b6cd.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-sound-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.58.0411080951390.2301@ppc970.osdl.org>
-Sender: linux-sound-owner@vger.kernel.org
-To: Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc: Linus Torvalds <torvalds@osdl.org>, alsa-devel@lists.sourceforge.net, linux-sound@vger.kernel.org, Greg KH <greg@kroah.com>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
 
-Linus Torvalds schrieb:
->
-> No, just gut feel. If the pre-merge ALSA works, and the post-merge one 
-> doesn't, and the oops in both cases happen somewhere close to where it 
-> does "pci_enable_device()", there's not a lot left. There are interrupts, 
-> and there is the PCI layer...
 
-yes, makes sense.
+My driver currently registers two pcm devices: pmc#0 for analog channels and
+pcm#1 for digital channels. Though the DSP interface does not make that
+distinction: for example the Gina24 has 2 analog and 8 digital input
+channels and they are numbered 16..25. It's also possible to use a substream
+made of all 10 channels at the same time.
 
->>
->>i did "bk undo -a1.2463" from a current -BK tree and it oopses:
-> 
-> Note that "bk undo -axxx" will _leave_ xxx in place, and undo everything 
-> after. 
-> 
-> So what you did still has the merge in the tree, and that it still oopses 
-> is thus to be expected. BUT, we're getting closer.
+The question is: what's better, the current approach of keeping analog and
+digital channels on different pcm devices (quite messy at driver level), or
+should I put them toghether and write a proper .alsarc file, so the user can
+choose digital channels by name instead of by index ?
 
-yes, i think i understood that. that's why i wanted to revert 1.2463 too.
 
-[...]
 
-> 
-> Now, that's fine - the USB merge is likely to be ok, so try doing
-> 
-> 	bk undo -a1.2462
+--
+Giuliano.
 
-for now i appreciate your work here but i have to postpone the the "bk
-revtool" stuff because i have no X _and_ bk here. (but i'm a good student
-and will do my homework)
 
-> and you will now have a tree that is exactly the same as before, except it 
-> does _not_ have the PCI merge from Greg.
-> 
-> And if this one does not oops, you can now officially blame Greg.
-
-i can't wait... ;)
-
->> Now, if you want to get _really_ fancy, you can now look at each changeset 
-> that differed, with something like
-> 
-> 	bk set -n -d -r1.2462 -r1.2463 | bk -R prs -h -d'<:P:@:HOST:>\n$each(:C:){\t(:C:)\n}\n' -
-> 
-> which is black magic that does a set operation and shows all the changes 
-> in between the sets of "bk at 1.2462" and "bk at 1.2463".
-> 
-> (This is _not_ the same as "bk changes -r1.2462..1.2463", because that one 
-> just shows the single merge change that is on the direct _path_ from one 
-> changeset to another. The black magic thing shows the set difference of 
-> changesets that comes from the full graph at two points).
-> 
-> Then you can look at each change individually and see if they matter.
-
-will do, after the build
-
-> 
-> And once you can do the set operations, you're officially a BK poweruser.  
-> Me, I just have a script, I'm a BK dabbler.
-> 
-> Looking at the list (appended), I don't see anything obvious, but hey, if 
-> it was obvious it wouldn't have been merged in the first place. 
-> 
-> Thanks for your willingness to pursue this thing,
-
-hey, thanks to you and to the folks in the Cc: field to chase a bug which
-only _i_ encounter until now.
-
-/me is building now....
-thanks,
-Christian.
-- --
-BOFH excuse #111:
-
-The salesman drove over the CPU board.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.5 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://enigmail.mozdev.org
-
-iD8DBQFBj94f+A7rjkF8z0wRAm/uAJ0eTBa20JnX+250GpFiSED4b+arQwCggSgo
-CO/MQ+1jeOOvb7WaJRKg7uY=
-=Qlt1
------END PGP SIGNATURE-----
+-------------------------------------------------------
+This SF.Net email is sponsored by:
+Sybase ASE Linux Express Edition - download now for FREE
+LinuxWorld Reader's Choice Award Winner for best database on Linux.
+http://ads.osdn.com/?ad_id=5588&alloc_id=12065&op=click
