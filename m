@@ -1,12 +1,19 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] trident: reduce stack usage
-Date: Wed, 02 Jul 2003 17:17:08 +0200 (METDST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: hdsp multiface.
+Date: Wed, 02 Jul 2003 21:55:32 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0307021713510.4037-100000@studcom.urz.uni-halle.de>
+Message-ID: <3F02D644.4070106@boosthardware.com>
+References: <3F027575.2010306@boosthardware.com> <s5h8yrhkyv1.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id SAA05453
+	for <alsa-devel@alsa-project.org>; Wed, 2 Jul 2003 18:45:30 +0200
+Received: from www3.webhosting.cx (www3.webhosting.cx [207.44.248.26])
+	by gate.perex.cz (Perex's E-mail Delivery System) with ESMTP id 4F3E8DC
+	for <alsa-devel@alsa-project.org>; Wed,  2 Jul 2003 16:41:01 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,153 +22,90 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai wrote:
+> 
+>>Error opening hwdep device on card hw:1.
+> 
+>   ^^^^^^^^^^^^^^^^^^^
+> 
+> this message appears when snd_hwdep_open() fails.
+> do you have /dev/snd/hwC1D0 with the proper permission?
+> 
 
-reduce stack usage
+I realised that cvs is still broken.
+
+So now I'm trying with the 0.9.4 tarballs because cvs is at version 
+0.9.0rc6 and I get about ten sets of this from hdsploader if I don't 
+modprobe snd-hdsp first. hdsploader will still load the modules:
+
+06903:  symbol=__deregister_frame_info;  lookup in file=hdsploader
+06903:  symbol=__deregister_frame_info;  lookup in 
+file=/usr/lib/libasound.so.2
+06903:  symbol=__deregister_frame_info;  lookup in file=/lib/libm.so.6
+06903:  symbol=__deregister_frame_info;  lookup in file=/lib/libdl.so.2
+06903:  symbol=__deregister_frame_info;  lookup in file=/lib/libpthread.so.0
+06903:  symbol=__deregister_frame_info;  lookup in file=/lib/libc.so.6
+06903:  symbol=_IO_flush_all;  lookup in file=hdsploader
+06903:  symbol=_IO_flush_all;  lookup in file=/usr/lib/libasound.so.2
+06903:  symbol=_IO_flush_all;  lookup in file=/lib/libm.so.6
+06903:  symbol=_IO_flush_all;  lookup in file=/lib/libdl.so.2
+06903:  symbol=_IO_flush_all;  lookup in file=/lib/libpthread.so.0
+06903:  symbol=_IO_flush_all;  lookup in file=/lib/libc.so.6
+06903:  symbol=_exit;  lookup in file=hdsploader
+06903:  symbol=_exit;  lookup in file=/usr/lib/libasound.so.2
+06903:  symbol=_exit;  lookup in file=/lib/libm.so.6
+06903:  symbol=_exit;  lookup in file=/lib/libdl.so.2
+06903:  symbol=_exit;  lookup in file=/lib/libpthread.so.0
+06903:  symbol=_exit;  lookup in file=/lib/libc.so.6
 
 
-Index: alsa-kernel/pci/trident/trident_main.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/trident/trident_main.c,v
-retrieving revision 1.45
-diff -u -r1.45 trident_main.c
---- alsa-kernel/pci/trident/trident_main.c	21 Jun 2003 07:52:38 -0000	1.45
-+++ alsa-kernel/pci/trident/trident_main.c	3 Jul 2003 15:09:33 -0000
-@@ -2958,10 +2958,12 @@
- 	ac97_t _ac97;
- 	snd_card_t * card = trident->card;
- 	snd_kcontrol_t *kctl;
--	snd_ctl_elem_value_t uctl;
-+	snd_ctl_elem_value_t *uctl;
- 	int idx, err, retries = 2;
+I'm testing as root so these settings should be correct right?
 
--	memset(&uctl, 0, sizeof(uctl));
-+	uctl = (snd_ctl_elem_value_t *)snd_kcalloc(sizeof(*uctl), GFP_KERNEL);
-+	if (!uctl)
-+		return -ENOMEM;
+crw-rw----    1 root     audio    116,   4 Jul  3 08:41 hwC0D0
+crw-rw----    1 root     audio    116,   5 Jul  3 08:41 hwC0D1
 
- 	memset(&_ac97, 0, sizeof(_ac97));
- 	_ac97.write = snd_trident_codec_write;
-@@ -2973,12 +2975,12 @@
- 	if ((err = snd_ac97_mixer(trident->card, &_ac97, &trident->ac97)) < 0) {
- 		if (trident->device == TRIDENT_DEVICE_ID_SI7018) {
- 			if ((err = snd_trident_sis_reset(trident)) < 0)
--				return err;
-+				goto __out;
- 			if (retries-- > 0)
- 				goto __again;
--			return -EIO;
-+			err = -EIO;
- 		}
--		return err;
-+		goto __out;
- 	}
 
- 	/* secondary codec? */
-@@ -3002,11 +3004,11 @@
+If I load the module before running modprobe snd-hdsp I can see the card
+in /proc/asound/cards but then hdsploader says this:
 
- 	if (trident->device != TRIDENT_DEVICE_ID_SI7018) {
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_vol_wave_control, trident))) < 0)
--			return err;
--		kctl->put(kctl, &uctl);
-+			goto __out;
-+		kctl->put(kctl, uctl);
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_vol_music_control, trident))) < 0)
--			return err;
--		kctl->put(kctl, &uctl);
-+			goto __out;
-+		kctl->put(kctl, uctl);
- 		outl(trident->musicvol_wavevol = 0x00000000, TRID_REG(trident, T4D_MUSICVOL_WAVEVOL));
- 	} else {
- 		outl(trident->musicvol_wavevol = 0xffff0000, TRID_REG(trident, T4D_MUSICVOL_WAVEVOL));
-@@ -3019,59 +3021,68 @@
- 		tmix->voice = NULL;
- 	}
- 	if ((trident->ctl_vol = snd_ctl_new1(&snd_trident_pcm_vol_control, trident)) == NULL)
--		return -ENOMEM;
-+		goto __nomem;
- 	if ((err = snd_ctl_add(card, trident->ctl_vol)))
--		return err;
-+		goto __out;
+hdsploader - firmware loader for RME Hammerfall DSP cards
+Looking for HDSP + Multiface or Digiface cards :
+Card 0 : C-Media PCI CMI8738 (model 37) at 0x9800, irq 10
+19612:  symbol=strncmp;  lookup in file=hdsploader
+19612:  symbol=strncmp;  lookup in file=/usr/lib/libasound.so.2
+19612:  symbol=strncmp;  lookup in file=/lib/libm.so.6
+19612:  symbol=strncmp;  lookup in file=/lib/libdl.so.2
+19612:  symbol=strncmp;  lookup in file=/lib/libpthread.so.0
+19612:  symbol=strncmp;  lookup in file=/lib/libc.so.6
+Card 1 : RME Hammerfall DSP (Multiface) at 0xe9000000, irq 11
+Upload firmware for card hw:1
+Error opening hwdep device on card hw:1.
 
- 	if ((trident->ctl_pan = snd_ctl_new1(&snd_trident_pcm_pan_control, trident)) == NULL)
--		return -ENOMEM;
-+		goto __nomem;
- 	if ((err = snd_ctl_add(card, trident->ctl_pan)))
--		return err;
-+		goto __out;
+Either way I still get this message from aplay:
 
- 	if ((trident->ctl_rvol = snd_ctl_new1(&snd_trident_pcm_rvol_control, trident)) == NULL)
--		return -ENOMEM;
-+		goto __nomem;
- 	if ((err = snd_ctl_add(card, trident->ctl_rvol)))
--		return err;
-+		goto __out;
+aplay -f cd -D hw:1,0 /art/1REC/020403-studio.wav
+Playing WAVE '/art/1REC/020403-studio.wav' : Signed 16 bit Little 
+Endian, Rate 44100 Hz, Stereo
+aplay: set_params:800: Access type not available
 
- 	if ((trident->ctl_cvol = snd_ctl_new1(&snd_trident_pcm_cvol_control, trident)) == NULL)
--		return -ENOMEM;
-+		goto __nomem;
- 	if ((err = snd_ctl_add(card, trident->ctl_cvol)))
--		return err;
-+		goto __out;
 
- 	if (trident->device == TRIDENT_DEVICE_ID_NX) {
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_ac97_rear_control, trident))) < 0)
--			return err;
--		kctl->put(kctl, &uctl);
-+			goto __out;
-+		kctl->put(kctl, uctl);
- 	}
- 	if (trident->device == TRIDENT_DEVICE_ID_NX || trident->device == TRIDENT_DEVICE_ID_SI7018) {
 
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_spdif_control, trident))) < 0)
--			return err;
-+			goto __out;
- 		if (trident->ac97->ext_id & AC97_EI_SPDIF)
- 			kctl->id.index++;
- 		if (trident->ac97_sec && (trident->ac97_sec->ext_id & AC97_EI_SPDIF))
- 			kctl->id.index++;
- 		idx = kctl->id.index;
--		kctl->put(kctl, &uctl);
-+		kctl->put(kctl, uctl);
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_spdif_default, trident))) < 0)
--			return err;
-+			goto __out;
- 		kctl->id.index = idx;
- 		kctl->id.device = pcm_spdif_device;
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_spdif_mask, trident))) < 0)
--			return err;
-+			goto __out;
- 		kctl->id.index = idx;
- 		kctl->id.device = pcm_spdif_device;
-
- 		if ((err = snd_ctl_add(card, kctl = snd_ctl_new1(&snd_trident_spdif_stream, trident))) < 0)
--			return err;
-+			goto __out;
- 		kctl->id.index = idx;
- 		kctl->id.device = pcm_spdif_device;
- 		trident->spdif_pcm_ctl = kctl;
- 	}
-
--	return 0;
-+	err = 0;
-+	goto __out;
-+
-+      __nomem:
-+	err = -ENOMEM;
-+
-+      __out:
-+	kfree(uctl);
-+
-+	return err;
- }
-
- /*
-
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
