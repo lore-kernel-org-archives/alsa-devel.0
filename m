@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000395]: No Sound-Output on FSC D1219 Mainboard (OSS-Free from Kenrel works)
-Date: Fri, 25 Mar 2005 15:27:21 +0100
-Message-ID: <d8f51ca80b7ffe55a4ad07a49347147c@bugtrack.alsa-project.org>
+Date: Fri, 25 Mar 2005 15:31:20 +0100
+Message-ID: <c58815472eb05a08d99d25d10d7ed182@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4D22246
-	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:27:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4AB84238
+	for <alsa-devel@alsa-project.org>; Fri, 25 Mar 2005 15:31:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Fedora Core 2
 Kernel Version:             2.6.6-1.435.2.3
 ======================================================================
 Date Submitted:             07-17-2004 11:32 CEST
-Last Modified:              03-25-2005 15:27 CET
+Last Modified:              03-25-2005 15:31 CET
 ======================================================================
 Summary:                    No Sound-Output on FSC D1219 Mainboard (OSS-Free
 from Kenrel works)
@@ -53,15 +53,15 @@ Core 2 kernel-sourcecode) it works fine.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:11 
-----------------------------------------------------------------------
-Try switching 'External Amplifier' off.   Or on.
-
-----------------------------------------------------------------------
  thorstenl - 03-25-05 15:27 
 ----------------------------------------------------------------------
 jdthood, thanks for the tip. I removed the system/boards two weeks ago, so
 I can't try it anymore.
+
+----------------------------------------------------------------------
+ thorstenl - 03-25-05 15:31 
+----------------------------------------------------------------------
+Seems I'm blind. I can't find any option to close this bug...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -73,6 +73,8 @@ Date Modified  Username       Field                    Change
 07-17-04 11:33 thorstenl      Issue Monitored: thorstenl                    
 03-23-05 16:11 jdthood        Note Added: 0004176                          
 03-25-05 15:27 thorstenl      Note Added: 0004208                          
+03-25-05 15:27 thorstenl      Issue End Monitor: thorstenl                    
+03-25-05 15:31 thorstenl      Note Added: 0004209                          
 ======================================================================
 
 
