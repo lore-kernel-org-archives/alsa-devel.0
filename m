@@ -1,13 +1,16 @@
-From: Yitao Duan <duan@cs.berkeley.edu>
-Subject: Re: Problem with arecord on Audigy 2 NX
-Date: Mon, 29 Mar 2004 15:05:52 -0800
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: alsa-driver-1.0.4rc1 missing snd-usb-usx2y ?
+Date: Tue, 30 Mar 2004 00:51:41 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4068ABD0.18FCFB1F@cs.berkeley.edu>
-References: <4064B687.C88E8575@cs.berkeley.edu> <Pine.LNX.4.58.0403271339440.1836@pnote.perex-int.cz>
+Message-ID: <32796.192.168.1.5.1080604301.squirrel@www.rncbc.org>
+References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>    
+    <200403292129.04497.annabellesgarden@yahoo.de>  
+    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,52 +19,41 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the info, Jaroslav. I upgraded all of the lib, driver, tools, and
-utils to 1.0.4rc1. But I got the same results: linux rec command worked fine
-but arecord caused Segmentation fault after readi_func was called 3 times
-(aplay also worked alright). Any idea what can be happening? Or is there
-anybody using the same card (Audigy 2 NX) without problem?
+Hi,
 
-Thanks.
+Just checked out 1.0.4rc1 a few moments ago and I'm already missing the
+snd-usb-usx2y module. AFAICT it's not being included by
+./configure --with-cards option, nor it gets built when one sets
+--with-cards=all.
 
-Yitao
+I am quite sure this was being built as of 1.0.3 and before. The source
+files are in fact on the tarball, but aren't picked up by the build
+process, at least as I use to, nor does it appear on ./configure --help
+anymore.
 
-Jaroslav Kysela wrote:
+Maybe I'm doing something fundamentally wrong. My ol'time build steps used
+to be just the following:
 
-> On Fri, 26 Mar 2004, Yitao Duan wrote:
->
-> > Hi,
-> >
-> > I am having trouble recording using Creative Labs Sound Blaster Audigy 2
-> > NX. The linux rec program worked fine. But whenever I use arecord (e.g.
-> > arecord test.wav), I got Segmentation fault. I pinpointed the problem to
-> > the function  pcm_read in aplay.c. Specifically it was the line:
-> >
-> >  r = readi_func(handle, data, count);
-> >
-> > that caused the fault. readi_func was called 3 times without problem.
-> > But the 4th call will cause the fault. gdb showed that a NULL pointer
-> > was encountered in function snd_pcm_rate_grab_next_period: rate->slave
-> > was NULL. The following is a stack trace when the fault happened.
-> > However, rate->slave was not NULL during the 3 normal readi_func calls
-> > and I checked that the handle passed to readi_func was always the same.
-> > What could happen that made the pointer NULL for the 4th call? I am
-> > running 2.4.21-4.EL kernel and gcc 3.2.3. Any information will be highly
-> > appreciated.
->
-> Try alsa-lib-1.0.4rc1.
->
->                                                 Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
+./configure --with-isapnp=no --with-sequencer=yes --with-oss=yes
+--with-cards=all
+make
+make install
 
+Am I missing some fine print since 1.0.3 release? The above worked out
+simply fine until then.
+
+Now that I'm with a US-224 on my hands for going after some party, this
+feels somewhat unconfortable if not disappointing. Is this intentional or
+just some mistake?
+
+Bye.
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
 -------------------------------------------------------
