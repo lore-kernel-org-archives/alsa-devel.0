@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: [PATCH] fix resamplers.
-Date: Wed, 21 Jul 2004 19:06:55 +0100
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000399]: Audigy ls + gameport
+Date: Wed, 21 Jul 2004 20:47:04 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40FEB0BF.7000306@superbug.demon.co.uk>
-References: <40FE8863.50009@superbug.demon.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040721184704.87FE52F001@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <40FE8863.50009@superbug.demon.co.uk>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0D5C6259
+	for <alsa-devel@alsa-project.org>; Wed, 21 Jul 2004 20:47:04 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,28 +16,54 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-James Courtier-Dutton wrote:
-> The current pcm_rate.c tends to insert zero samples in the stream.
-> 
-> E.g. Downsampling from 48000 -> 16000
-> Starts with a block of 2048, and has to create 682 samples.
-> The current code sometimes only produces 681 samples, leaving the last 
-> one zero.
-> 
-> The attached patch fixes this problem.
-> 
-> James
-> 
-> 
 
-I have done more testing, and it does not quite fix everything.
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000399
+======================================================================
+Reported By:                eric
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     399
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora core 1
+Kernel Version:             kernel 2.6.7
+======================================================================
+Date Submitted:             07-20-2004 23:24 CEST
+Last Modified:              07-21-2004 20:47 CEST
+======================================================================
+Summary:                    Audigy ls + gameport
+Description: 
+no audigy ls support for gameport analog in standard kernel 
+(2.6.7)
+and no patch in alsa cvs files.
 
-James
 
+======================================================================
+
+----------------------------------------------------------------------
+ jcdutton - 07-21-2004 20:47 CEST 
+----------------------------------------------------------------------
+I sent this patch to the maintainer for emu10k1-gp.c a few weeks ago.
+So, it should be appearing in the kernel some time soon.
+A similar line is used to the emu10k1x.
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-20-04 23:24 eric           New Bug                                      
+07-20-04 23:24 eric           Distribution              => Fedora core 1   
+07-20-04 23:24 eric           Kernel Version            => kernel 2.6.7    
+07-21-04 20:47 jcdutton       Bugnote Added: 0001463                       
+======================================================================
 
 
 -------------------------------------------------------
