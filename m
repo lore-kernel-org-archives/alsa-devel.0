@@ -1,16 +1,12 @@
-From: Florin Andrei <florin@andrei.myip.org>
-Subject: Re: An offer to help from a Linux Device Driver
-	engineer
-Date: 13 May 2003 20:58:04 -0700
+From: Gerhard Dirschl <gerhard.dirschl@gmx.de>
+Subject: Noise Problem
+Date: Wed, 14 May 2003 08:17:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1052884684.6767.17.camel@rivendell.home.local>
-References: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
-Reply-To: alsa-devel@lists.sourceforge.net
+Message-ID: <20030514061752.GA22960@euh11a303.stud.uni-karlsruhe.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <286558.1052850103221.JavaMail.nobody@daisy.psp.pas.earthlink.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,23 +18,61 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2003-05-13 at 11:21, John Hubbard wrote:
-> Hello,
->     May I help the ALSA project, by building device drivers for anything that is not yet supported?  I am a device driver engineer looking to gain experience with Linux Audio, and to advance my knowledge in this area.  I definitely have an ulterior motive (to enhance my resume) but I also happen to love composing on my SY-85 synthesizer in my spare time, so this is not as unnatural as it sounds...
-> 
->     My first idea was to find an unsupported sound card, purchase one, and provide ALSA support for it.  However, after lurking on this mailing list for a few days, I see that you all  have been busy, and it may actually be difficult to find an unsupported card.
+ Hi.
 
-Another option might be to clean up an existing driver that "sort of
-works". For example: SBLive, Audigy and Audigy2 are almost ok, most of
-the functions are supported, but... either digital CD input does not
-work on SBLive Value, or MIDI input does not work on Audigy2 Platinum,
-etc. It would be nice to have at least a few good cards 100% supported.
+I've tried to record a few samples with my M-Audio Audiophile using the
+following settings:
+Format: 24_3LE, 2 channels, sampling rate 48 kHz, pcm device
+pcm.hwmix {
+    type plug
+    slave {
+        pcm "hw:0,0"
+        format S32_LE
+    }
+    ttable.0.10 1
+    ttable.1.11 1
+}
+
+At the first view everything looked fine, but dragging down all sliders in 
+the mixer, there was still a noise at approx. -80dB on channel 1, while 
+channel 0 was far bellow -100dB.
+The noise has gone, as I changed the above routing table something like this
+ttable.0.10 1
+ttable.0.8  0.01
+ttable.1.11 1
+ttable.1.7  0.01
+
+There seems to be a flaw in pcm_route: 
+@@ -790,15 +792,7 @@
+ #endif
+ 		dptr->att = att;
+ 		dptr->nsrcs = nsrcs;
+-		if (nsrcs == 0)
+-			dptr->func = snd_pcm_route_convert1_zero;
+-		else if (nsrcs == 1 && !att) {
+-			if (params->use_getput)
+-				dptr->func = snd_pcm_route_convert1_one_getput;
+-			else
+-				dptr->func = snd_pcm_route_convert1_one;
+-		} else
+-			dptr->func = snd_pcm_route_convert1_many;
++		dptr->func = snd_pcm_route_convert1_many;
+ 		if (nsrcs > 0) {
+ 			dptr->srcs = calloc((unsigned int) nsrcs, sizeof(*srcs));
+ 			if (!dptr->srcs)
+
+
+params->use_getput should be 1 here, but it is 0, it becomes 1 later on.
+The whole case distinction is made again in snd_pcm_route_convert1_many, 
+removing it here solves my problem.
+
+  ciao
+    gd...
 
 -- 
-Florin Andrei
-
-http://florin.myip.org/
-
+Gerhard Dirschl
+Karlsruhe
+Germany
 
 
 -------------------------------------------------------
