@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000743]: msleep is now defined in linux/include/linux/delay.h causing conflict with macro defined in alsa-driver/include/adriver.h
-Date: Mon, 27 Dec 2004 15:10:52 +0100
-Message-ID: <5883faa772cfeb5dea4811c539254448@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000748]: Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455 chipset choppy, plays to fast
+Date: Mon, 27 Dec 2004 15:12:24 +0100
+Message-ID: <3c44934bb0cb2d1555a582ac1c210029@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4195417E
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:10:52 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 73CC51E5
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:12:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,57 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=743> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=748> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                pcmcginty
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   743
-Category:                   0_compilation problem_!!!
+Issue ID:                   748
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Arch Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-23-2004 22:10 CET
-Last Modified:              12-27-2004 15:10 CET
+Date Submitted:             12-26-2004 06:50 CET
+Last Modified:              12-27-2004 15:12 CET
 ======================================================================
-Summary:                    msleep is now defined in linux/include/linux/delay.h
-causing conflict with macro defined in alsa-driver/include/adriver.h
+Summary:                    Kernel 2.6.9 and 2.6.10 makes sound of Ali 5455
+chipset choppy, plays to fast
 Description: 
-Recent 2.4.29-pre3 patch moves msleep() from include/linux/libata-compat.h
-to include/linux/delay.h.  As a result, alsa-driver 1.0.7 does not
-compile
-on 2.4.29-pre3 because it defines its own msleep macro in
-include/adriver.h.
-Currently the macro is defined inside
-    #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 6) ... #endif.
-The code seems to be the same in CVS.  I guess this version dependency
-needs to be updated.
-
-
-gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
--I/usr/src/linux-2.4.29/include -I/usr/src/linux-2.4.29/include2
--I/usr/src/linux-2.4.29/include -O2 -mpreferred-stack-boundary=2
--march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
--Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
--nostdinc -iwithprefix include   -DEXPORT_SYMTAB -c timer.c
-In file included from timer.c:23:
-/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
-"do"
-/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
-'(' token
-/usr/src/linux-2.4.29/include/linux/delay.h:60: error: parse error before
-'(' token
-make[4]: *** [timer.o] Error 1
-
+I've been spending a lot of time getting sound to work on my Sharp Actius
+MM20 laptop. The platform has an ALI 5455 chip that is using the intel8x0
+ALSA driver. On a 2.6.7 kernel, the sound is 100% perfect. The 2.6.9 and
+2.6.10 kernel series cause the sound to become garbled as if the song is
+skipping through the music faster than it should. I have not tried ont he
+2.6.8 series. I can compile and try out if required. It is possible this
+is some other kernel issue, however I'm not sure how to track down where
+the kernel might be breaking the ALSA driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-27-04 15:10 
+ tiwai - 12-27-04 15:12 
 ----------------------------------------------------------------------
-Fixed on CVS.
+Please attach the contents of /proc/asound/card0/codec97#0/* files.
+Check whether VRA is enabled there.
+
+Could you try to play 48kHz samples?  I guess it works fine.
+
+I fixed the VRA bit handling on CVS version.  Give a try, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-23-04 22:10 jdthood        New Issue                                    
-12-27-04 15:10 tiwai          Status                   assigned => resolved
-12-27-04 15:10 tiwai          Resolution               open => fixed       
-12-27-04 15:10 tiwai          Note Added: 0002960                          
+12-26-04 06:50 pcmcginty      New Issue                                    
+12-26-04 06:50 pcmcginty      Distribution              => Arch Linux      
+12-26-04 06:50 pcmcginty      Kernel Version            => 2.6.10          
+12-26-04 06:51 pcmcginty      Issue Monitored: pcmcginty                    
+12-27-04 15:12 tiwai          Note Added: 0002961                          
 ======================================================================
 
 
