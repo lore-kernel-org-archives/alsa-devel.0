@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000772]: Analog/Digital output not working.
-Date: Fri, 31 Dec 2004 23:02:02 +0100
-Message-ID: <5c08b2d77dea42118352d0ae7269f4d1@bugtrack.alsa-project.org>
+Date: Sat, 1 Jan 2005 00:33:36 +0100
+Message-ID: <39d0fb37cd9fa44fcd1280f4e9104e0e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 54DCD336
-	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 23:02:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B79B433B
+	for <alsa-devel@alsa-project.org>; Sat,  1 Jan 2005 00:33:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=772> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.9-1.681_FC3
 ======================================================================
 Date Submitted:             12-31-2004 23:02 CET
-Last Modified:              12-31-2004 23:02 CET
+Last Modified:              01-01-2005 00:33 CET
 ======================================================================
 Summary:                    Analog/Digital output not working.
 Description: 
@@ -63,11 +63,21 @@ came with the 2.6.9 kernel) or whether I have some strange
 misconfiguration. Help is appreciated! Thanks!
 ======================================================================
 
+----------------------------------------------------------------------
+ ianw1234 - 01-01-05 00:33 
+----------------------------------------------------------------------
+Well, ok.. playing a sound with "aplay -Dplug:spdif wavfile.wav" works, as
+does mplayer -ao alsa:device=spdif.
+
+I'll see if I can map the OSS devices to this, but it seems strange that I
+would need to do a lot of .asoundrc trickery to get this to work.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-31-04 23:02 ianw1234       New Issue                                    
 12-31-04 23:02 ianw1234       Kernel Version            => 2.6.9-1.681_FC3 
+01-01-05 00:33 ianw1234       Note Added: 0003028                          
 ======================================================================
 
 
