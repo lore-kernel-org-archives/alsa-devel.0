@@ -1,13 +1,14 @@
-From: "Matthew Williams" <mw01@wilber.pointclark.net>
-Subject: RE: Unitor8/AMT8 driver for alsa 0.9.0rc1
-Date: Sat, 22 Mar 2003 05:17:35 +1100
+From: Robert Vetter <rv@robertvetter.com>
+Subject: Need for a new ALSA developer?
+Date: Fri, 21 Mar 2003 19:50:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <020601c2efd6$2655eb40$3200a8c0@MATT>
+Message-ID: <200303211950.01240.rv@robertvetter.com>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
+  charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +17,20 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-I was wondering if any more work has been done on the Unitor8/AMT8 driver? I
-found this webpage which had a working version of the alsa driver but for
-the USB only:
-http://www.math.tu-berlin.de/~sbartels/unitor/
-Unfortunately no more work had been done on that since the 28th of May,
-2000. I tried emailing the developers of that driver and had no response.
+Hello everybody,
 
-Next I did a search through the alsa-devel archives and came across a
-working alsa driver for the serial version of the Unitor8. That driver was
-for alsa 0.9.0rc1. That post was almost a year ago by Manush Dodunekov:
-http://sourceforge.net/mailarchive/message.php?msg_id=1510131
+My name is Robert and I'm very much interested in working on ALSA Project with 
+you. I primarily would like to develop a new driver for a souncard, which is 
+not supported by ALSA yet, perhaps some USB stuff from Midiman?
 
-It appeared that Martijn Sipkema was working on a library:
-http://sourceforge.net/mailarchive/message.php?msg_id=1511505
+Please let me know what are the possibilities for me to be involved.
 
-It also appeared that Manush Dodunekov was wondering on a userspace
-unitor8-driver:
-http://sourceforge.net/mailarchive/message.php?msg_id=1515201
+Thanks
 
-So I was wondering if there was any progress on the Unitor8/AMT8 driver for
-the serial port version of the Emagic Unitor8/AMT8 Mk II? If not, has
-someone updated Manush Dodunekov original serial port driver for the
-Unitor8/AMT8 driver for alsa 0.9.0rc1 up to the latest alsa 0.9.2?
-
-Regards,
-Matthew
-
+Robert Vetter
 
 
 -------------------------------------------------------
