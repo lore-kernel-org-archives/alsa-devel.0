@@ -1,10 +1,10 @@
-From: Ann Patterson <annp322@sbcglobal.net>
-Subject: M-Audio Revolution and MythTV
-Date: Sun, 29 Feb 2004 18:18:13 -0800
+From: Doug McLain <nostar@comcast.net>
+Subject: return value of snd_pcm_hw_params_set_rate_near
+Date: Mon, 01 Mar 2004 02:21:51 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1078107493.5239.19.camel@localhost.localdomain>
+Message-ID: <4042E48F.8090009@comcast.net>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -18,32 +18,33 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I installed a M-Audio Revolution 7.1 (snd-ice1724) in my mythtv box. I
-had mythtv working fine with the machine's onboard sound (snd-trident)
-using OSS emulation. The revo works correctly for things like xine,
-mplayer, aplay (of course), play, etc. In mythtv, however, I get no
-sound. 
+According to the alsa documentation, the return value of 
+snd_hw_params_set_rate_near is the 'approximate chosen rate', and the 
+3rd arg being type 'int'.  The two tutorials at the documentation 
+section of the alsa-project website both hold true to this with code like:
 
-I dug into the mythtv code, and found that it is doing a call to
-ioctl(audiofd, SNDCTL_DSP_GETOSPACE, &info) and using the info.bytes
-value that is returned to determine whether or not to write to the card.
-The first call to SNDCTL_DSP_GETOSPACE appears to return a reasonable
-number, but from that point, the numbers returned are all over the
-place, and are often negative. So, mythtv, of course, won't write to the
-card. I find that if I comment out the code that checks the values
-returned from GETOSPACE, I get sound, but it is out of sync with the
-video (sound slightly behind video).
+exact_rate = snd_pcm_hw_params_set_rate_near(pcm_handle, hwparams, rate, &dir);
+    if (dir != 0) {
+      fprintf(stderr, "The rate %d Hz is not supported by your hardware.\n 
+                       ==> Using %d Hz instead.\n", rate, exact_rate);
+    }
 
-I'm using the dmix plugin, if that matters, but I got the same results
-without the plugin.
 
-I'm willing to debug this further, but I've not done anything with alsa
-or soundcards before, so I need a bit of help in determining where to
-look.
 
--- 
+After unsuccesful attempts at using this function this way (I'm learning 
+linux audio software devel starting with alsa drivers and user 
+interface), I went into the aplay source and found the version that 
+tests a before and after version of arg 3 (which is a pointer to int 
+that gets changed to the result rate by the function) and tests the 
+return only for err. I assume this function changed?  Im at the learning 
+stage so I'm probably stating the obvious, but when your new sometimes 
+reassurance from someone that knows helps.  Is the documentaion just 
+behind, or did this slip by unnoticed?  Curious...
 
-Ann P.
+---
+
+http://nostar.isa-geek.com
+
 
 
 
