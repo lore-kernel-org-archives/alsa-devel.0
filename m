@@ -1,14 +1,13 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: Update on website.
-Date: Fri, 12 Apr 2002 04:11:20 -0700 (PDT)
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: Re: PCM Rate Plugin
+Date: Fri, 12 Apr 2002 13:16:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020412111120.C146836F9@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+Message-ID: <Pine.BSF.4.44.0204121312350.95907-100000@fest.stud.fee.vutbr.cz>
+References: <Pine.LNX.4.33.0204120916570.581-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0204120916570.581-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,66 +16,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Forgot the crucial part :)
+On Fri, 12 Apr 2002, Jaroslav Kysela wrote:
 
-http://www.alsa-project.org/index-new.html
+> On Fri, 12 Apr 2002, Kasparek Tomas wrote:
+>
+> > > well, then it's a bug of alsa-lib.
+> > > could you explain the symptom more precisely?
+> >
+> > I have solved this yet. Original behavior (using "pcm.default") was:
+> >
+> > - using rate supported by card -> mono and stereo capture works
+> >
+> > - using non-standard rate -> just stereo works (that is native for the UDA
+> >   chip), for Mono "arecod" produces just 44bytes of header.
+>
+> It should work in both cases. I suspect for a bug in alsa-lib. Can you
+> trigger this bug also in snd-dummy driver? Can you send me modified dummy
+> driver then?
+
+I will try it.
+
+> > Weel, I would like to ask one more question: The chip sipport not only
+> > 16bit(LE) samples but 18 and 20 bits LE samples too. Would it be hard to
+> > update ALSA to support these sample sizes? Where should I look for
+> > informations when trying to get this running?
+>
+> How are these samples organized? They are stored in 32-bit words or
+> something else?
+
+I did't tried yet, but from the documentation I suppose they are stored in
+18/20-bit words. All transfer is done via serial line, so after DMA
+transfer you probably get these 18/20bit words without any padding.
+
+I will try this too and send results.
+
+Bye
 
 --
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
 
-
---- Patrick Shirkey <kotau@firstlinux.net> wrote:
->I just spent most of today making some improvements to the new index page, adding new links and generally tidying up.
->
->I added links to the ALSA WIKI, Dr. Nagornis' 0.9.0 howto, Paul Davis's API guide and the .asoundrc txt file.
->
->I also completed the new index page so that it updates when news is added. Nice system Jaroslav.
->
->I feel that the new index page is ready to go primetime now. I believe it covers everything that was discussed over the past 4 months as being necessary including:
->
->- Easy access to crucial marketing information on the main page.
->- A brief but consise explanation of what ALSA is and why.
->- Access to recent news easily for those who wish to view it.
->- A flowing design. On most monitors all the crucial information is shown in the first screen.
->- The links don't take up as much space as they do currently.
->- Some simple php tricks so that windows and netscape users get approximately the same design.
->- layout and color scheme are fitting with the popular php paradigm.
->
->If anyone has anymore they would like added to the design please let me know. Otherwise I will take it to mean that the new page is accepted and I will make the switch.
->
->I'm also looking for suggestions for additional documentation links and would like to hear from developers who are supporting the 0.9 series so I can add your APPs to the applications page.
->
->
->Best regards.
->
->
->--
->Patrick Shirkey - Boost Hardware Ltd
->For the discerning hardware connoisseur
->Http://www.boosthardware.com
->Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
->
->
->
->_____________________________________________________________
->Want a new web-based email account ? ---> http://www.firstlinux.net
->
->_____________________________________________________________
->Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
-
-_____________________________________________________________
-Run a small business? Then you need professional email like you@yourbiz.com from Everyone.net  http://www.everyone.net?tag
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 tomas.kasparek@[seznam.cz,volny.cz]
+	 linux@fit.vutbr.cz
+	student FIT VUT Brno
