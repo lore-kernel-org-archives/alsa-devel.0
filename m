@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
-Date: Wed, 19 Jan 2005 17:22:10 +0100
-Message-ID: <c42dc9178a275ebebb88c9f459261fd8@bugtrack.alsa-project.org>
+Date: Wed, 19 Jan 2005 17:28:55 +0100
+Message-ID: <60f29fef7b4d3e2a5d2b0d6adcb66182@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0D3D26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:22:10 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D5E9526D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:28:55 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Slackware 10.0
 Kernel Version:             2.4.26
 ======================================================================
 Date Submitted:             07-01-2004 16:26 CEST
-Last Modified:              01-19-2005 17:22 CET
+Last Modified:              01-19-2005 17:28 CET
 ======================================================================
 Summary:                    Alsa always uses card0 and does not use card1, even
 when card0 is a modem
@@ -52,20 +52,35 @@ KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-07-05 21:51 
-----------------------------------------------------------------------
-> (BTW, about this kind of discussion for general implementations,
-> I'd like to do on ML rather than on web. I basically hate the
-> web interface...)
-
-OK, let's continue discussion at alsa-devel.
-
-----------------------------------------------------------------------
  tiwai - 01-19-05 17:22 
 ----------------------------------------------------------------------
-Thomas, could you provide a patch summary, description and signed-off-by to
-apply?
-I'll set the default index -2 for all modem drivers.
+Also, a correction for ALSA-Configuration.txt would be appreciated, too.
+
+----------------------------------------------------------------------
+ jdthood - 01-19-05 17:28 
+----------------------------------------------------------------------
+> Thomas, could you provide a patch summary, description and
+> signed-off-by to apply?
+
+
+Will do ... probably tonight.
+
+
+> I'll set the default index -2 for all modem drivers.
+
+
+OK, although that isn't really necessary because distributors can add
+
+    options snd-foo-modem index=-2
+
+lines to the module loader configuration file.
+
+
+> Also, a correction for ALSA-Configuration.txt would be appreciated,
+too.
+
+
+Will do.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -88,6 +103,8 @@ Date Modified  Username       Field                    Change
 01-07-05 21:51 jdthood        Note Added: 0003122                          
 01-07-05 21:51 jdthood        Note Edited: 0003114                         
 01-19-05 17:22 tiwai          Note Added: 0003303                          
+01-19-05 17:22 tiwai          Note Added: 0003304                          
+01-19-05 17:28 jdthood        Note Added: 0003305                          
 ======================================================================
 
 
