@@ -1,8 +1,8 @@
 From: holborn <holborn@telefonica.net>
 Subject: asfxload
-Date: Wed, 4 Feb 2004 11:35:40 +0000
+Date: Wed, 4 Feb 2004 11:44:58 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200402041135.40551.holborn@telefonica.net>
+Message-ID: <200402041144.58413.holborn@telefonica.net>
 Reply-To: holborn@telefonica.net
 Mime-Version: 1.0
 Content-Type: text/plain;
@@ -22,22 +22,14 @@ To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
-Hi
+Ops sorry .... 
 
+forget the las message .. i just compiled 2.6.2, and .. the driver version ... 
+is a little bit old .. sorry.
 
-I cant load soundfonts with asfxload .... and i can with sfxload (0.5.0)
-
-No Emux synth hwdep device is found
-
-and in my lsmod appears:
-
-snd_hwdep               8448  2 snd_emu10k1
-snd_emux_synth         40384  1 snd_emu10k1_synth
-
-
-well the emu10k1 synths works :)
 
 Josep
+
 
 
 
