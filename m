@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000537]: VIA VT8237: rear L/R switched with Center/LFE
-Date: Wed, 10 Nov 2004 14:01:34 +0100
-Message-ID: <f37122bbb3eaee30c2349bf42208f083@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
+Date: Wed, 10 Nov 2004 14:05:13 +0100
+Message-ID: <0a0c86e2a153bcf61d592be01ec0ecac@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 443DB242
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:01:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69EEC24A
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:05:13 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,51 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=537> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=545> 
 ======================================================================
-Reported By:                gertverv
-Assigned To:                tiwai
+Reported By:                vlajsa
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   537
-Category:                   PCI - via82xx
+Issue ID:                   545
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     resolved
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.8.1
+Distribution:               
+Kernel Version:             2.6.9-rc2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-24-2004 19:41 CEST
-Last Modified:              11-10-2004 14:01 CET
+Date Submitted:             09-26-2004 17:34 CEST
+Last Modified:              11-10-2004 14:05 CET
 ======================================================================
-Summary:                    VIA VT8237: rear L/R switched with Center/LFE
+Summary:                    midi note off ignored?! (i'm not sure that this is
+driver problem - correct me if wrong)
 Description: 
-While playing back 5.1 audio, it looks like the rear L/R channels are
-swapped with the Center/LFE channels. The rear L/R and Center/LFE are
-connected via Gigabyte Surround-Kit.
-
-
+Using sequencer application (tested with rosegarden) and vkeybd produce
+some strange sustain-like channel-lock effect. With rosegarden midi note
+is played only once (only first that appeared in midi track) and others
+are corrctly sent to alsa but not audiable. That first note is pitch and
+velocity correct. With vkeybd this is some kind wierder - Every played
+note is audiable as it should, but effect is more like deep reverb on most
+instuments piano), and sustan like on looping instruments (organs)!
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-14-04 12:28 
+ vlajsa - 10-20-04 18:22 
 ----------------------------------------------------------------------
-Then we need a software routing.
-Please try the attached patch for the driver.  Then, copy
-the attached VIA8237.conf to /usr/share/alsa/cards.
-
-----------------------------------------------------------------------
- gertverv - 10-14-04 18:51 
-----------------------------------------------------------------------
-Thanks, now it seems to work. I tested the patch and config file with the
-speaker-test program and playing back a DVD with xine.
-
-I noticed with alsamixer that when I was running the speaker-test program,
-that the Line-In was switched to surround (also the sound of the TV card
-connected to line-in disappeared).
-In the VIA8237.conf, I changed the value of "Line-In As Surround" and "Mic
-As Center/LFE" to off. Because I have the rear L/R and Center/LFE
-connected via the Gigabyte Surround kit, so I don't have to use the
-Line-In and Mic connectors for this.
+Please close this one! I've upgraded to 1.0.7rc2 and all seems to be fine
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-24-04 19:41 gertverv       New Issue                                    
-09-24-04 19:41 gertverv       Distribution              => Fedora Core 2   
-09-24-04 19:41 gertverv       Kernel Version            => 2.6.8.1         
-09-24-04 19:50 gertverv       Note Added: 0001903                          
-10-12-04 15:06 tiwai          Note Added: 0002104                          
-10-12-04 18:21 gertverv       Note Added: 0002106                          
-10-13-04 16:20 tiwai          Note Added: 0002125                          
-10-13-04 16:20 tiwai          File Added: via-6ch-slot.diff                    
-10-13-04 19:21 gertverv       Note Added: 0002133                          
-10-14-04 12:28 tiwai          Note Added: 0002140                          
-10-14-04 12:29 tiwai          File Added: via8237.diff                     
-10-14-04 12:29 tiwai          File Added: VIA8237.conf                     
-10-14-04 18:51 gertverv       Note Added: 0002158                          
-11-10-04 14:01 tiwai          Status                   new => resolved     
-11-10-04 14:01 tiwai          Resolution               open => fixed       
-11-10-04 14:01 tiwai          Assigned To               => tiwai           
+09-26-04 17:34 vlajsa         New Issue                                    
+09-26-04 17:34 vlajsa         Kernel Version            => 2.6.9-rc2       
+10-20-04 18:22 vlajsa         Note Added: 0002217                          
+11-10-04 14:05 tiwai          Status                   assigned => resolved
+11-10-04 14:05 tiwai          Resolution               open => fixed       
 ======================================================================
 
 
