@@ -1,19 +1,13 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Re: DMIX and capture stream
-Date: Wed, 7 Jan 2004 13:05:30 +0100
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: Select call  with alsa
+Date: Wed, 7 Jan 2004 13:08:04 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040107130530.4dd7edf6.mista.tapas@gmx.net>
-References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>
-	<200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com>
-	<s5h1xqe2rjp.wl@alsa2.suse.de>
-	<Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
-	<20040106223828.39d2c233.mista.tapas@gmx.net>
-	<s5hvfno10r5.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0401071303290.507@autumn>
+References: <Law10-F77UPMUdjhexa0003b7a3@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hvfno10r5.wl@alsa2.suse.de>
+In-Reply-To: <Law10-F77UPMUdjhexa0003b7a3@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,43 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Alex Lau <lau2468@hotmail.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 07 Jan 2004 12:01:02 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+Alex Lau wrote:
 
-> as written in my previous mail, it was a quick hack.  and there is a
-> better approach.
-> 
-> the attached patch will add a new plugin, asym, which defines
-> different slave pcms for playback and capture streams.
-> for example,
-> 
-> 	pcm.duplex {
-> 		type asym
-> 		playback.pcm "dmix"
-> 		capture.pcm "dsnoop"
-> 	}
-> 
+>I had done some search on the internet about using select(2) with
+>alsa and found the function snd_pcm_file_descriptor(
+>*snd_pcm_handle_t). However when I try to test it with a simple
+>program, I got compliation error of fundefined reference. I also try
+>to lokk it up in the library documentation buit from the source code
+>but unable to find such function.
+>
+>Can someone direct me to a suitable document about this function?
 
-Ah, ok. This solution makes even more sense, since it is more generally
-useful. Especially for [broken] alsa apps that don't let you specify
-seperate pcm's for playback/capture..
+you seem to be looking for
 
-I think of this plugin as making a full duplex pcm out of two half
-duplex pcm. So why not call the plugin "duplexer"?
+snd_pcm_poll_descriptors_count (...) and
+snd_pcm_poll_descriptors (...)
 
-Flo
+hth,
 
-P.S.: One question that comes up though: What happens when you specify a
-full duplex device as one of the two pcm's? Will there be an error msg?
-Or maybe some of the "multi" functionality could be used...
+tim
 
--- 
-hrrrm! 
-
+ps: from my experience, poll(2) is a better replacement for select(2).
 
 
 -------------------------------------------------------
