@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
-Date: Wed, 10 Nov 2004 14:20:46 +0100
-Message-ID: <7118f00d9128eaf82520ee8a1ad19b77@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000640]: azx code is nasty
+Date: Wed, 10 Nov 2004 14:30:38 +0100
+Message-ID: <dfd63d078eae09c572eb23af577618f6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 191CB24E
-	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:20:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B923E251
+	for <alsa-devel@alsa-project.org>; Wed, 10 Nov 2004 14:30:38 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,82 +22,46 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=640> 
 ======================================================================
-Reported By:                Luke-Jr
-Assigned To:                tiwai
+Reported By:                russell
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   626
-Category:                   PPC - powermac
+Issue ID:                   640
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   crash
+Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
+Distribution:               Debian/Ubuntu
+Kernel Version:             2.6.8.1
 ======================================================================
-Date Submitted:             11-03-2004 15:14 CET
-Last Modified:              11-10-2004 14:20 CET
+Date Submitted:             11-10-2004 14:30 CET
+Last Modified:              11-10-2004 14:30 CET
 ======================================================================
-Summary:                    Oops on cat /dev/urandom > /dev/dsp
+Summary:                    azx code is nasty
 Description: 
-Oops: kernel access of bad area, sig: 11
-[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
-tainted
-MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
-DAR: D254203C, DSISR: 40000000
-TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
-GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
-00000B03
-GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
-00000000
-GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
-00000000
-GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
-00000B03
-NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
-LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
-Call trace:
- [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
- [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
- [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
- [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
- [c0058320] vfs_write+0x114/0x13c
- [c0058424] sys_write+0x4c/0x90
- [c00063a0] ret_from_syscall+0x0/0x44
+Some of the code in the azx driver is very difficult to read, depending on
+how you set up tabs etc in your IDE. This is a[n almost] purely cosmetic
+change to codec_enum.c
 
+I have commented out some of the snd_printdd()s inside the smaller helper
+functions too (to make my poor l'il log look nicer). I have also changed
+one obviously inefficient function (get_bit_value()) into a macro. All
+seems to compile and work about as well as 1.0.7rc2 does (for me, not
+particularly well - hence my work on it)
 ======================================================================
-
-----------------------------------------------------------------------
- Luke-Jr - 11-10-04 14:05 
-----------------------------------------------------------------------
-Don't see that option in my .config and according to "grep FRAME_POINTER
-`find -name Kconfig`", it is only available on ppc64 and m32r platforms.
-This system is an iBook running on a 900 MHz G3 (ppc), so the option
-doesn't seem to be available...
-
-----------------------------------------------------------------------
- tiwai - 11-10-04 14:20 
-----------------------------------------------------------------------
-Hmm, ppc seems not having this option.
-You can find the gcc option easily in the root Makefile of linux kernel
-tree.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-03-04 15:14 Luke-Jr        New Issue                                    
-11-09-04 18:51 tiwai          Note Added: 0002334                          
-11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
-11-09-04 19:41 tiwai          Note Added: 0002349                          
-11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
-11-10-04 12:10 tiwai          Note Added: 0002365                          
-11-10-04 14:05 Luke-Jr        Note Added: 0002373                          
-11-10-04 14:20 tiwai          Note Added: 0002374                          
+11-10-04 14:30 russell        New Issue                                    
+11-10-04 14:30 russell        File Added: codec_enum.c                     
+11-10-04 14:30 russell        Distribution              => Debian/Ubuntu   
+11-10-04 14:30 russell        Kernel Version            => 2.6.8.1         
 ======================================================================
 
 
