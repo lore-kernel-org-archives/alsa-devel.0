@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000915]: When compiled with SND_HWDEP enabled, the intel8x0 driver is no longer able to share an IRQ with other devices
-Date: Thu, 17 Feb 2005 10:17:42 +0100
-Message-ID: <5aa2e40d335ee8af14713106e83db4ca@bugtrack.alsa-project.org>
+Date: Thu, 17 Feb 2005 10:56:36 +0100
+Message-ID: <7def56f26dbd5aec2b69d14d0a8f9664@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3239A25E
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 10:17:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5C293264
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 10:56:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=915> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.10-gentoo-r7
 ======================================================================
 Date Submitted:             02-17-2005 10:17 CET
-Last Modified:              02-17-2005 10:17 CET
+Last Modified:              02-17-2005 10:56 CET
 ======================================================================
 Summary:                    When compiled with SND_HWDEP enabled, the intel8x0
 driver is no longer able to share an IRQ with other devices
@@ -55,12 +55,21 @@ Since I didn't change the ipw2200 driver but only an alsa related option,
 I guess it's an alsa bug
 ======================================================================
 
+----------------------------------------------------------------------
+ Jochen - 02-17-05 10:56 
+----------------------------------------------------------------------
+I forgot to add, the other sound-card is the bluetooth-alsa project
+snd-bt-sco driver. I'm pretty sure however that this is not related to
+this module, because it doesn't need to be loaded to reproduce the wrong
+behaviour
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-17-05 10:17 Jochen         New Issue                                    
 02-17-05 10:17 Jochen         Distribution              => Gentoo          
 02-17-05 10:17 Jochen         Kernel Version            => 2.6.10-gentoo-r7
+02-17-05 10:56 Jochen         Note Added: 0003627                          
 ======================================================================
 
 
