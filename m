@@ -1,15 +1,12 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: [PATCH] Kernel crash
-Date: Sat, 11 Sep 2004 21:02:12 +0200
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: snd_pcm_link documentation
+Date: Sat, 11 Sep 2004 21:59:57 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040911210212.317d930b.pochini@shiny.it>
-References: <s5h7jr7whqj.wl@alsa2.suse.de>
-	<XFMail.20040907095502.pochini@shiny.it>
+Message-ID: <1094954396.1306.102.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20040907095502.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,96 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: alsa-user
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 07 Sep 2004 09:55:02 +0200 (CEST)
-Giuliano Pochini <pochini@shiny.it> wrote:
+Hmm, I think I may have an explanation for the perennial favorite
+complain about ALSA, "there's no documentation!".  It's a Google bug.
 
-> On 06-Sep-2004 Takashi Iwai wrote:
-> 
-> >> It successfully crashes my system after a few attempts:
-> >>
-> >> Linux Jay 2.6.8.1 #2 SMP Wed Aug 18 15:14:51 CEST 2004 ppc unknown
-> >> booted with maxcpus=1 and without preempt.
-> >> alsa-driver-1.0.6a and CVS-2004-09-05
-> >> alsa-lib-1.0.4
-> >> gcc 3.4.1
-> >>
-> >> with both the powermac (Snapper) driver and my Echoaudio driver.
-> >
-> > It doesn't crash on my system with SB live with the latest CVS
-> > version but segfaults at line 263 because c is bogus.
-> > The crash looks likely driver-specific, then.
-> 
-> No, I don't think so. I already found (one of?) the cause, but
-> I forgot to mention it again, sorry. It happens because ALSA
-> calls the .free() pcm callback without calling .trigger(STOP)
-> and .close() first. Jaroslav posted a patch which didn't work,
-> then the discussion stopped. The problem occurs only when the
-> substreams are linked and the userpace app is badly broken
-> like mine.
+Googling for "snd_pcm_link documentation" produces only 15 results:
 
-I added some code in the hw_free callback to avoid the crash and some debug
-lines in pcm_native.c and I got this trace:
+http://www.google.com/search?q=snd_pcm_link+documentation&num=50&hl=en&lr=&ie=UTF-8&safe=off&output=search
 
-pcm_trigger start
-[...]
-pcm_native.c:1241: snd_pcm_playback_drain (state=RUNNING)
-pcm_native.c:1294: snd_pcm_playback_drain not empty
-pcm_native.c:1204: snd_pcm_change_state(DRAINING)
-pcm_native.c:1457: snd_pcm_capture_drop (state=DRAINING)
-pcm_native.c:1204: snd_pcm_change_state(SETUP)
+The correct page does not appear at all:
 
- This changes the state of both substreams to SETUP, so
- snd_pcm_playback/capture_drain/drop() functions will not call _stop()
- anymore.
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___p_c_m.html#a61
 
-pcm_native.c:1359: snd_pcm_playback_drop (state=SETUP)
-pcm_hw_free(play) <--- BUG!
-pcm_close
-pcm_native.c:snd_pcm_capture_drop (state=SETUP)
-pcm_hw_free(capt)
-pcm_close
+How is it that the full API docs have been posted on alsa-project.org
+for ages, and the best Google can do is one lousy page of code examples
+and old mailing list postings?
+
+No wonder so many people (myself included) get so worked up about the
+"lack of ALSA documentation"; there effectively isn't any unless you
+already know exactly where to look.
+
+Probably all the internal links in the Doxygen-derived HTML are
+triggering some heuristic to detect Google-spamming (or whatever the
+heck they call it).
+
+Lee
 
 
-
-I developed this patch, but I'm not sure it's ok. The first part probably is
-not required but it seems more correct IMHO.
-
-
-
-
---- alsa-kernel/core/pcm_native.c_orig	Sat Sep 11 15:29:51 2004
-+++ alsa-kernel/core/pcm_native.c	Sat Sep 11 20:54:32 2004
-@@ -1280,7 +1280,8 @@
- 		break; 
- 	}
  
--	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING) {
-+	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING ||
-+	    runtime->status->state == SNDRV_PCM_STATE_DRAINING) {
- 		if (snd_pcm_playback_empty(substream)) {
- 			snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
- 			goto _end;
-@@ -1467,7 +1468,10 @@
- 	case SNDRV_PCM_STATE_PREPARED:
- 	case SNDRV_PCM_STATE_DRAINING:
- 	case SNDRV_PCM_STATE_XRUN:
--		snd_pcm_change_state(substream, SNDRV_PCM_STATE_SETUP);
-+		if (snd_pcm_update_hw_ptr(substream) >= 0)
-+			snd_pcm_stop(substream, SNDRV_PCM_STATE_SETUP);
-+		else
-+			snd_pcm_change_state(substream, SNDRV_PCM_STATE_SETUP);
- 		break;
- 	default: 
- 		break; 
 
-
-
---
-Giuliano.
 
 
 -------------------------------------------------------
