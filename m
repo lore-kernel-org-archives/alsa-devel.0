@@ -1,12 +1,11 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
+From: Jaroslaw Sobierski <fycio@gucio.com>
 Subject: Re: Re: dmix plugin
-Date: Mon, 17 Feb 2003 16:21:10 +0100
+Date: Mon, 17 Feb 2003 07:32:56 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E50FDE6.81199A36@libero.it>
-References: <Pine.LNX.4.44.0302171553180.1054-100000@pnote.perex-int.cz>
+Message-ID: <1045495976.3e5100a8efb9b@webmail3.namezero.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,44 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: abramo.bagnara@libero.it
+Cc: perex@suse.cz, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> 
-> On Mon, 17 Feb 2003, Abramo Bagnara wrote:
-> 
-> > You're wrong: xadd is atomic but xadd/read/saturation/write is not.
-> >
-> > Without the loop I've added you risk to write on hw_ring_buffer an *old*
-> > value:
-> >
-> > A:            B:
-> > xadd
-> > read
-> >               xadd
-> >               read
-> >               saturate
-> >               write
-> > saturate
-> > write
-> 
-> I see, the read/saturate/write must be atomic, too. In this case, it would
-> be better to use a global (or a set of) mutex(es) to lock the hardware
-> ring buffer. The futexes are nice.
+>> I see, the read/saturate/write must be atomic, too. In this case, it would
+>> be better to use a global (or a set of) mutex(es) to lock the hardware
+>> ring buffer. The futexes are nice.
+>
+>They are nice indeed, but definitely not the right solution here.
+>
+>Although I don't know if it's the absolute best solution, the 'retry'
+>approach I've proposed is far better and much more efficient.
 
-They are nice indeed, but definitely not the right solution here.
+I have to agree with Abramo. A global mutex would cause long and unnecessary 
+waits for the processes trying to write to the plugin. Locking access to
+individual parts of the buffer is messy. Notice that concurrent writes 
+to the same sample in the buffer will occur sporadically, and the "re-read"
+in the loop costs almost nothing, while synchronization mechanisms could 
+block often.
 
-Although I don't know if it's the absolute best solution, the 'retry'
-approach I've proposed is far better and much more efficient.
-
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
-
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+--------------
+Fycio (J.Sobierski)
+ fycio@gucio.com
 
 
 -------------------------------------------------------
