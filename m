@@ -1,17 +1,18 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
 Subject: Re: 1.0.6rc1 packages
-Date: Wed, 04 Aug 2004 23:17:38 +0100
+Date: Wed, 4 Aug 2004 23:53:45 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <41116082.20500@superbug.demon.co.uk>
-References: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
+Message-ID: <32796.192.168.1.5.1091660025.squirrel@192.168.1.5>
+References: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>   
+    <41116082.20500@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-34.mail.demon.net (anchor-post-34.mail.demon.net [194.217.242.92])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75903271
-	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 00:17:39 +0200 (MEST)
-In-Reply-To: <Pine.LNX.4.58.0408042050320.15189@pnote.perex-int.cz>
+Received: from smtp.netcabo.pt (smtp.netcabo.pt [212.113.174.9])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C2D5220D
+	for <alsa-devel@alsa-project.org>; Thu,  5 Aug 2004 00:56:01 +0200 (MEST)
+In-Reply-To: <41116082.20500@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,26 +21,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Karsten Wiese <annabellesgarden@yahoo.de>, Martin Langer <martin-langer@gmx.de>, Takashi Iwai <tiwai@suse.de>, Jaroslav Kysela <perex@suse.cz>
 List-Id: alsa-devel@alsa-project.org
 
 Jaroslav Kysela wrote:
+
+>
 > Hi all,
-> 
 > 	the 1.0.6rc1 ALSA packages are available for testing.
-> 
-> 						Jaroslav
-> 
+>
 
-compiles completely with "./configure --with-cards=all".
-also compiles with "./configure --with-cards=emu10k1,audigyls"
-"make install" with emu10k1 and audigyls works fine.
+Everything builds fine on my SUSE 9.1 box, for a 2.6.8-rc2 SMP/HT kernel.
+That includes snd-usb-usx2y is compiling, loading and sounds fine.
 
-kernel version 2.6.8rc2.
+Tomorrow I'll try on my dreaded laptop, Mdk10.0, 2.6.8-rc2 UP kernel,
+where recent snd-usb-usx2y it's known to freeze the whole system :(
 
-Cheers
-James
+BTW, it's not a SMP vs. UP issue, as I've tested today on a SMP kernel
+with a very same config as of my other box, and the freezing result was
+the same.
+
+Regards,
+--=20
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
+
+
 
 
 
