@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Fri, 11 Feb 2005 23:49:50 +0100
-Message-ID: <b54dbbf8fc02f7eca80827b49d152219@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: [PATCH] emu10k1: split snd_emu10k1_trigger_voice into trigger and
+ prepare functions
+Date: Fri, 11 Feb 2005 18:16:40 -0500
+Message-ID: <1108163800.20365.82.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6BD2200
-	for <alsa-devel@alsa-project.org>; Fri, 11 Feb 2005 23:49:50 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,47 +15,99 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+This patch provides better sync between multiple voices by separating
+the trigger_voice function into prepare_voice which sets up the volume
+and filter parameters and trigger_voice which sets pitch target, current
+and initial pitch and enables the voice interrupt.  For standard PCM
+this should not make much of a difference but will be important for
+minimizing phase error between voices for multichannel PCM.
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
-======================================================================
-Reported By:                kiksen
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   901
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-11-2005 23:49 CET
-Last Modified:              02-11-2005 23:49 CET
-======================================================================
-Summary:                    The onboard audigyls chip on msi k8 diamond
-motherboard not recognized. Path supplied.
-Description: 
-We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
+This behavior was derived from the opensource.creative.com driver.
 
-Have made a path.
-======================================================================
+Signed-Off-By: Lee Revell <rlrevell@joe-job.com>
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-11-05 23:49 kiksen         New Issue                                    
-02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
-     
-02-11-05 23:49 kiksen         Distribution              => Gentoo          
-02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
-======================================================================
+Lee
+
+Index: alsa-cvs-default-test/alsa-kernel/pci/emu10k1/emupcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emupcm.c,v
+retrieving revision 1.37
+diff -u -r1.37 emupcm.c
+--- alsa-cvs-default-test/alsa-kernel/pci/emu10k1/emupcm.c	10 Feb 2005 11:52:51 -0000	1.37
++++ alsa-cvs-default-test/alsa-kernel/pci/emu10k1/emupcm.c	11 Feb 2005 21:27:21 -0000
+@@ -510,35 +510,50 @@
+ 	snd_emu10k1_ptr_write(emu, CCR_CACHEINVALIDSIZE, voice, ccis);
+ }
+ 
+-static void snd_emu10k1_playback_trigger_voice(emu10k1_t *emu, emu10k1_voice_t *evoice, int master, int extra)
++static void snd_emu10k1_playback_prepare_voice(emu10k1_t *emu, emu10k1_voice_t *evoice, int master, int extra)
+ {
+ 	snd_pcm_substream_t *substream;
+ 	snd_pcm_runtime_t *runtime;
+ 	emu10k1_pcm_mixer_t *mix;
+-	unsigned int voice, pitch, pitch_target, tmp;
+ 	unsigned int attn;
++	unsigned int voice, tmp;
+ 
+ 	if (evoice == NULL)	/* skip second voice for mono */
+ 		return;
+ 	substream = evoice->epcm->substream;
+ 	runtime = substream->runtime;
+-	mix = &emu->pcm_mixer[substream->number];
+ 	voice = evoice->number;
+-	pitch = snd_emu10k1_rate_to_pitch(runtime->rate) >> 8;
+-	pitch_target = emu10k1_calc_pitch_target(runtime->rate);
++	mix = &emu->pcm_mixer[substream->number];
++
+ 	attn = extra ? 0 : 0x00ff;
+ 	tmp = runtime->channels == 2 ? (master ? 1 : 2) : 0;
+ 	snd_emu10k1_ptr_write(emu, IFATN, voice, attn);
+ 	snd_emu10k1_ptr_write(emu, VTFT, voice, (mix->attn[tmp] << 16) | 0xffff);
+ 	snd_emu10k1_ptr_write(emu, CVCF, voice, (mix->attn[tmp] << 16) | 0xffff);
+-	snd_emu10k1_voice_clear_loop_stop(emu, voice);		
+-	if (extra)
+-		snd_emu10k1_voice_intr_enable(emu, voice);
+ 	snd_emu10k1_ptr_write(emu, DCYSUSV, voice, 0x7f7f);
++	snd_emu10k1_voice_clear_loop_stop(emu, voice);
++}	
++
++static void snd_emu10k1_playback_trigger_voice(emu10k1_t *emu, emu10k1_voice_t *evoice, int master, int extra)
++{
++	snd_pcm_substream_t *substream;
++	snd_pcm_runtime_t *runtime;
++	unsigned int voice, pitch, pitch_target, tmp;
++
++	if (evoice == NULL)	/* skip second voice for mono */
++		return;
++	substream = evoice->epcm->substream;
++	runtime = substream->runtime;
++	voice = evoice->number;
++
++	pitch = snd_emu10k1_rate_to_pitch(runtime->rate) >> 8;
++	pitch_target = emu10k1_calc_pitch_target(runtime->rate);
+ 	snd_emu10k1_ptr_write(emu, PTRX_PITCHTARGET, voice, pitch_target);
+ 	if (master)
+ 		snd_emu10k1_ptr_write(emu, CPF_CURRENTPITCH, voice, pitch_target);
+ 	snd_emu10k1_ptr_write(emu, IP, voice, pitch);
++	if (extra)
++		snd_emu10k1_voice_intr_enable(emu, voice);
+ }
+ 
+ static void snd_emu10k1_playback_stop_voice(emu10k1_t *emu, emu10k1_voice_t *evoice)
+@@ -573,6 +588,9 @@
+ 		snd_emu10k1_playback_invalidate_cache(emu, epcm->voices[0]);
+ 		/* follow thru */
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		snd_emu10k1_playback_prepare_voice(emu, epcm->voices[0], 1, 0);
++		snd_emu10k1_playback_prepare_voice(emu, epcm->voices[1], 0, 0);
++		snd_emu10k1_playback_prepare_voice(emu, epcm->extra, 1, 1);
+ 		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[0], 1, 0);
+ 		snd_emu10k1_playback_trigger_voice(emu, epcm->voices[1], 0, 0);
+ 		snd_emu10k1_playback_trigger_voice(emu, epcm->extra, 1, 1);
 
 
 
