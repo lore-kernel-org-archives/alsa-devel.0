@@ -1,13 +1,18 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
-Date: Sat, 12 Feb 2005 14:36:09 +0100
-Message-ID: <8ae71ea1ec21df6fad3407b63a25b527@bugtrack.alsa-project.org>
+From: Rick Wright <riwright@vt.edu>
+Subject: Re: potential emu10k1 bug/issue for Audigy2 ZS Platinum Pro
+Date: Sat, 12 Feb 2005 10:12:14 -0500
+Message-ID: <6.2.0.14.0.20050212100644.09c31778@pop.vt.edu>
+References: <420B8B23.2090404@vt.edu>
+ <1108067206.10310.7.camel@krustophenia.net>
+ <420BD024.8040602@vt.edu>
+ <1108073563.11177.1.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 12E831FE
-	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 14:36:10 +0100 (MET)
+Content-Type: text/plain; charset="us-ascii"; format=flowed
+In-Reply-To: <1108073563.11177.1.camel@krustophenia.net>
+References: <420B8B23.2090404@vt.edu>
+ <1108067206.10310.7.camel@krustophenia.net>
+ <420BD024.8040602@vt.edu>
+ <1108073563.11177.1.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,69 +22,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+At 05:12 PM 2/10/2005 2/10/2005, Lee Revell wrote:
+>On Thu, 2005-02-10 at 16:20 -0500, Rick Wright wrote:
+> > > > The real problem is that the PCM output volume control sliders are
+> > > > backwards (or perhaps the remapping the channels to L/R, rather 
+> than R/L
+> > > > will fix this).  For example: PCM Front L slider controls the 
+> volume of
+> > > > playback_9 which is the RIGHT Front signal, PCM Front R slider 
+> controls
+> > > > playback_10 which is the LEFT Front signal.  This is true for all 
+> of the
+> > > > Stereo Output channel pairs.  If you think about it, the PCM 
+> sliders are
+> > > > actually controlling the correct physical L & R outputs on the 
+> card, but
+> > > > the alsa_pcm:playback signals being routed to those physical channels
+> > > > are reversed, make sense?
+> > > >
+> > > > Is this a bug?  If so, what is the proper place/way to report it so 
+> that
+> > > > I don't use any more of your time?  Has it already been fixed?  I know
+> > > > you mentioned v008 still had problems...
+> > > >
+> > > >
+> > >
+> > > ISTR that this is a hardware bug, and the kX driver works around it.  I
+> > > will look into it.
+> > >
+> > > Are the channels reversed if you use JACK with the default stereo PCM,
+> > > hw:0,0?
+> > >
+> > >
+> > Using hw:0,0 for BOTH the Input & Output devices in QJackCtl:
+> > (actually, input probably doesn't matter, huh?)
+> > playback_1 maps to Stereo Output #1 RIGHT and volume is controlled by
+> > the PCM LEFT slider
+> > playback_2 maps to Stereo Output #1 LEFT and volume is controlled by
+> > the PCM RIGHT slider
+> >
+> > In this case, it seems that slider is controlling the correct
+> > playback_x stream, but the stream is mapped to the wrong stereo
+> > channel of the soundcard.
+>
+>This does look like an upstream bug.  Can you verify that the channels
+>are still reversed without my patch?
+>
+>Lee
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
-======================================================================
-Reported By:                kiksen
-Assigned To:                jcdutton
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   901
-Category:                   PCI - ca0106
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             02-11-2005 23:49 CET
-Last Modified:              02-12-2005 14:36 CET
-======================================================================
-Summary:                    The onboard audigyls chip on msi k8 diamond
-motherboard not recognized. Path supplied.
-Description: 
-We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
 
-Have made a path.
-======================================================================
+Lee,
 
-----------------------------------------------------------------------
- jcdutton - 02-12-05 00:56 
-----------------------------------------------------------------------
-Please post the output of:
-lspci -vn | grep -1 0401
+Should I report this issue on the ALSA bugtracking system or is it already 
+being worked on?
 
-----------------------------------------------------------------------
- kiksen - 02-12-05 14:36 
-----------------------------------------------------------------------
-Found out the serial in the names section should be 0x10091462 for
-detection of correct name.
-
-Here's the output of lspci -vn | grep -1 0401:
-
-00000:01:0d.0 Class 0401: 1102:0007
-        Subsystem: 1462:1009
-
-By the way. The chip is named SB0438
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-11-05 23:49 kiksen         New Issue                                    
-02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
-     
-02-11-05 23:49 kiksen         Distribution              => Gentoo          
-02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
-02-12-05 00:56 jcdutton       Note Added: 0003569                          
-02-12-05 14:36 kiksen         Note Added: 0003571                          
-======================================================================
-
+Rick
 
 
 
