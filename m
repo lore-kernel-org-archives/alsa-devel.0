@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000747]: Sample rate issue with Audiotrak OPTOPlay (usbaudio)
-Date: Sat, 25 Dec 2004 19:07:02 +0100
-Message-ID: <a1f15a9be56df08614f0e7647fc6d227@bugtrack.alsa-project.org>
+From: "Gil F. Phelps" <gfphelps_ah@tviund.is>
+Subject: (no subject)
+Date: Sat, 25 Dec 2004 23:11:36 +0000
+Message-ID: <48f201c4ead7$f3f9943c$16742e4c@1.1.3.3.3.7.5.2.2.5.8.tpc.int>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 053052AB
-	for <alsa-devel@alsa-project.org>; Sat, 25 Dec 2004 19:07:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,50 +16,23 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-cvslog@alsa-project.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=747> 
-======================================================================
-Reported By:                JonLech
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   747
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora
-Kernel Version:             2.6.10-rc3
-======================================================================
-Date Submitted:             12-25-2004 19:07 CET
-Last Modified:              12-25-2004 19:07 CET
-======================================================================
-Summary:                    Sample rate issue with Audiotrak OPTOPlay (usbaudio)
-Description: 
-The Audiotrak OPTOPlay supports setting the sample rate, but not getting
-it. However, the current usbaudio code disables both for the device. This
-results in stuttering when I output e.g 48000Hz samples because the device
-is never set to 48000Hz.
-
-Attached is a patch which fixes this.
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-25-04 19:07 JonLech        New Issue                                    
-12-25-04 19:07 JonLech        File Added: usbaudio-optoplay.patch               
-    
-12-25-04 19:07 JonLech        Distribution              => Fedora          
-12-25-04 19:07 JonLech        Kernel Version            => 2.6.10-rc3      
-======================================================================
-
+<html>
+<b>Got a good taste but short of money?<br>
+Cautious about your budget but want some luxury in life?<p></b>
+Treat yourself to this perfect opportunity:<br>
+<b>REAL 18ct. G0LD REPLlCA Watches such as CARTlER/R0 L.EX from $70-$200<=
+/b><br>
+They look so real no one will know the difference.. Money back guarantee!=
+<p>
+<a href=3D"http://ljzhqlbtlmuhj.inkgfdgh.info/?asIccfb0ReNi9Gaykjinxshghz=
+ec">Press left mouse button here to see our new collection</a>
+<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
+<a href=3D"http://xsezdxdgmp.inkgfdgh.info/beoaumdhci?ewMMgPfApOlmJKKpcun=
+vqcgurtwc">abort</a>
+</html>
 
 
 
