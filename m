@@ -1,13 +1,15 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Re: dmix plugin
-Date: Mon, 17 Feb 2003 13:15:36 +0100
+From: Allan Klinbail <allank@labyrinth.net.au>
+Subject: Re: can't compile CVS after fresh system install
+Date: 17 Feb 2003 23:45:20 +1100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E50D268.AA16D200@libero.it>
-References: <Pine.LNX.4.44.0302171112590.1054-100000@pnote.perex-int.cz>
+Message-ID: <1045485927.16502.78.camel@littlewolf2.littlewolf>
+References: <1045455722.13170.13.camel@littlewolf2.littlewolf>
+	<s5hk7fzi4sh.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5hk7fzi4sh.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,83 +18,91 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-dev <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> 
-> On Mon, 17 Feb 2003, Jaroslaw Sobierski wrote:
-> 
-> > > > b) sum overflow: we can lower volume of samples before sum; I think that
-> > > >    hardware works in this way, too
-> > >
-> > > Here I don't understand you. Suppose we have 3 samples to mix:
-> > > a = 0x7500
-> > > b = 0x7400
-> > > c = 0x8300
-> > >
-> > > If you do a + b + c (in this order) you obtain:
-> > > d=0
-> > > d += a -> 7500
-> > > d += b -> 0xe900 -> 0x7fff
-> > > d += c -> 0x02ff
-> > >
-> > > while the correct result is 0x6c00. You see?
-> >
-> > AFAIK most hardware does not mix by reducing volume before the sum. On the
-> > contrary, it is usually summed "as is" to a wider register, and often even so
-> > used. For example, a sound card able to mix 16 chanels of 16 bits would have
-> > a 16+4 bits or 24 bit register were the channels are added and no saturation
-> > can occur. In good hardware this would not even be downscaled back to 16 bits,
-> > but a 24 bit D/A converter would be used instead. In older times (Gravis Ultra
-> > Sound and I think older SB AWE) this could easily be spotted by the difference
-> > in supported "hardware" channels and "software" channels. A card with a 32 bit
-> > sum register and 24 bit DA could support (as above) 16 hardware channels and
-> > for example 64 software channels (mixed together in quadrouplets to the 16 hw).
-> >
-> > In our case, such "solution" would have to affect the whole buffer, meaning
-> > we would need 3 (or better yet 4) bytes per sample, which would eventually get
-> > reduced back to 2 bytes on the way out to the sound card. This seems neither
-> > elegant nor memory efficient but would work, and also solves the "a)" problem
-> > because we don't need to saturate so an atomic add can be performed on each
-> > sample.
-> 
-> Yes, this solution is good. I've though about it, too. Unfortunately, it
-> adds additional transfers including saturation from the "sum" ring buffer
-> to the DMA buffer of hardware.
+Hi 
 
-I remember you that the main point of dmix existence is the "direct"
-part.
+Yes I did try to run 'make clean', each time I tried again.  
 
-If we'd need to use an intermediate buffer and a mixing thread, the dmix
-approach lose our interest.
+I then have refreshed my cvs directories using the update command... 
+Still no good, well partially, jack can see alsa now.. but I'm still
+having problems with building alsa-lib directories.. (see output at
+bottom of message) 
 
-A solution might be to have a shared parallel sw ring buffer where to
-store the exact value:
+Then I tried wiping the alsa-lib directory and "refreshing" that one
+from scratch.. still same problem
 
-        xadd(sw, *src);
-	do {
-		v = *sw;
-		if (v > 0x7fff)
-			s = 0x7fff;
-		else if (v < -0x8000)
-			s = -0x8000;
-		else
-	     		s = v;
-		*hw = v;
-	} while (unlikely(v != *sw));
-	
-This should solve also the atomicity update.
 
-Comments?
+Then I tried a CVS snapshot from the 15th of this month (I figured
+earlier than my most recent CVS download and newer than the mtpav
+changes) . Same problem
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+Then I did the same for the alsa-driver as I did for alsa-lib
+(completely removed then downloaded from CVS again)  same problem... 
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+
+OUt of frustration .. even though I had already run ./snddevices before
+I decided to try running that again.. the output was different to usual,
+maybe something is involved here.. although until I re-installed
+Mandrake non of this was a problem
+
+
+mv: cannot move `/dev/sndstat' to `/dev/1sndstat': Operation not
+permitted
+rm: cannot remove `/dev/snd': Is a directory
+mv: cannot stat `/dev/1sndstat': No such file or directory
+rm: cannot remove `/dev/snd/controlC0': Operation not permitted
+rm: cannot remove `/dev/snd/controlC1': Operation not permitted
+rm: cannot remove `/dev/snd/controlC2': Operation not permitted
+rm: cannot remove `/dev/snd/controlC3': Operation not permitted
+rm: cannot remove `/dev/snd/controlC4': Operation not permitted
+rm: cannot remove `/dev/snd/controlC5': Operation not permitted
+rm: cannot remove `/dev/snd/controlC6': Operation not permitted
+rm: cannot remove `/dev/snd/controlC7': Operation not permitted
+rm: cannot remove `/dev/snd/midiC0D0': Operation not permitted
+rm: cannot remove `/dev/snd/midiC2D0': Operation not permitted
+rm: cannot remove `/dev/snd/pcmC0D0c': Operation not permitted
+rm: cannot remove `/dev/snd/pcmC0D0p': Operation not permitted
+rm: cannot remove `/dev/snd/pcmC1D0c': Operation not permitted
+rm: cannot remove `/dev/snd/pcmC1D0p': Operation not permitted
+rm: cannot remove `/dev/snd/seq': Operation not permitted
+rm: cannot remove `/dev/snd/timer': Operation not permitted
+rmdir: `/dev/snd': Operation not permitted
+ALSA dynamic sound device filesystem
+create symbolic link `/dev/snd/dev' to `/proc/asound/dev'
+ALSA loader devices
+Creating /dev/aload?... done
+Creating /dev/aloadSEQ... done
+
+ 
+Here is the complete output from where the errors starting appearing, in
+make 
+
+cc -shared  conf.lo confmisc.lo input.lo output.lo async.lo error.lo
+dlmisc.lo -Wl,--whole-archive control/.libs/libcontrol.al
+mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
+timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
+instr/.libs/libinstr.al compat/.libs/libcompat.al
+-Wl,--no-whole-archive  control/.libs/libcontrol.al
+mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al
+timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al
+instr/.libs/libinstr.al compat/.libs/libcompat.al -lm -ldl
+-lpthread           -Wl,--version-script=Versions -Wl,-soname
+-Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+gcc: pcm/.libs/libpcm.al: No such file or directory
+gcc: pcm/.libs/libpcm.al: No such file or directory
+make[2]: *** [libasound.la] Error 1
+make[2]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/local/audio/cvs/alsa/alsa-lib/src'
+make: *** [all-recursive] Error 1
+[allan@littlewolf2 alsa-lib]$ 
+
+
+
+
 
 
 -------------------------------------------------------
