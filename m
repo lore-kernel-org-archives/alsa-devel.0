@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: problems with ALSA and SDL
-Date: Sat, 31 Jan 2004 09:48:41 +0100 (CET)
+Subject: Re: ice1712 noise
+Date: Sat, 31 Jan 2004 11:26:11 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0401310947580.1876@pnote.perex-int.cz>
-References: <20040127190140.29693112.segfault@email.it>
+Message-ID: <Pine.LNX.4.58.0401311125130.1876@pnote.perex-int.cz>
+References: <20040131060928.GA27876@ice_nine.wi.rr.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040127190140.29693112.segfault@email.it>
+In-Reply-To: <20040131060928.GA27876@ice_nine.wi.rr.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,20 +16,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Francesco Abbate <segfault@email.it>
+To: Anthony <avan@uwm.edu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 27 Jan 2004, Francesco Abbate wrote:
+On Sat, 31 Jan 2004, Anthony wrote:
 
-> So the question is :
-> is ALSA much more CPU intensive then OSS or there is some
-> technical problem which cause this effect ?
+> Hi, I've been hearing for some weeks now a very high
+> frequency, quiet crackling distortion when using my
+> delta44 on playback. This is with driver versions
+> 0.9.8 and 1.0.2.
+> 
+> Symptoms:
+> * It only occurs on playback.
+> * It is not always present, but once it manifests
+>   it is consistent.
+> * I've ruled out external gear by swapping everything
+> * It cannot be recorded...i.e. if i use jack capture
+>   while it is happening, and playback on my other
+>   card I do not hear it
+> * I have been able to reproduce it with alsaplayer
+>   using the hardware layer (so not a jack problem).
+> * shutting down alsa apps and restarting the drivers
+>   fixes the problem until it reoccurs. It can take
+>   a long to to resurface.
+> * Of course, there is no way for me to rule out the
+>   card itself as being the problem.
+> * Other than driver changes, my system has been
+>   a rather stable 2.4.21 kernel.
 
-I suspect that there might be some trouble with SDL code. Can you try our 
-tools (aplay/arecord) to verify it?
+It looks like that something is wrong with DACs.
+Does the noise occur on all outputs?
 
-						Jaroslav
+				 	Jaroslav
 
 -----
 Jaroslav Kysela <perex@suse.cz>
