@@ -1,13 +1,14 @@
-From: Tobias Peters <tpeters@uni-oldenburg.de>
-Subject: usb sampling rate (Re: start_threshold having no
- effect)
-Date: Tue, 28 Oct 2003 08:56:37 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Simple alsa sequencer question
+Date: Tue, 28 Oct 2003 10:23:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E1AEOiU-0000Cp-00@hpux02.hrz.uni-oldenburg.de>
+Message-ID: <Pine.HPX.4.33n.0310281019210.6436-100000@studcom.urz.uni-halle.de>
+References: <20031027165933.2307acfe.rpav@mephle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20031027165933.2307acfe.rpav@mephle.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,20 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Ryan Pavlik <rpav@mephle.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 21 Oct 2003 14:26:24 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
+Ryan Pavlik wrote:
+> Takashi Iwai <tiwai@suse.de> wrote:
+>
+> > Ryan Pavlik wrote:
+> > > Shouldn't I get numbers in ev->time.time.tv_*?  I'm just getting
+> > > zeros... what did I miss? ;)
+> >
+> > (snip)
+>
+> OK, I've attached some code to show what I'm doing exactly.
 
-> but 1ms period alignment is important:  if you want a RT process with
-> the USB audio device, choose the sample rate with multiple of 1000.
-> for example, avoid 44.1kHz, but use 48k instead.
+The event timestamps are set yo the current time of the queue. Your
+queue isn't running, so its current time is zero.
 
-Wouldn't the clocks of the usb and of the d/a converter get out sync
-anyway, because of the drift? Why is a multiple of 1000 important then?
+Call snd_seq_start_queue(seq, queue, NULL) (and snd_seq_drain_output).
 
-  Tobias
+
+HTH
+Clemens
+
 
 
 
