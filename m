@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000660]: No sound output  despite unmuting and maximizing all volume settings
-Date: Thu, 25 Nov 2004 07:07:25 +0100
-Message-ID: <6526bd6a886bd90eea727639422b2680@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000670]: soundmax integrated digital not working in slack 10
+Date: Wed, 24 Nov 2004 17:54:47 +0100
+Message-ID: <f941bc984dee7c03746951f5817a1967@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A8DE1FC
-	for <alsa-devel@alsa-project.org>; Thu, 25 Nov 2004 07:07:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D2FD2E3
+	for <alsa-devel@alsa-project.org>; Wed, 24 Nov 2004 17:54:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,99 +24,87 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=660> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=670> 
 ======================================================================
-Reported By:                bji
-Assigned To:                
+Reported By:                michaelhoy
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   660
-Category:                   PCI - intel8x0
+Issue ID:                   670
+Category:                   PCI - atiixp
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 3
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               slackware
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             11-21-2004 02:53 CET
-Last Modified:              11-25-2004 07:07 CET
+Date Submitted:             11-24-2004 00:55 CET
+Last Modified:              11-24-2004 17:54 CET
 ======================================================================
-Summary:                    No sound output  despite unmuting and maximizing all
-volume settings
+Summary:                    soundmax integrated digital not working in slack 10
 Description: 
-I get no sound output from any program I have tried (xmms, play, aplay, cat
-> /dev/audio) with no error messages or any other indication that there is
-a problem which would cause sound to not occur.
-
-I have already run alsamixer many times and tried every combination of
-muted and unmuted settings with all volumes maximized.  With no volume
-settings muted, and all volume settings at maximum level, I still get no
-sound.
-
-Everything *looks* like it's working - output in the kernel log, xmms's
-display, everything.  But I get no sound out of the built-in speaker or
-the headphone jack.
-
-I have tried the following:
-
-* Default install of Fedora Core 3; it recognized the sound card and
-installed module settings in /etc/modprobe.conf to load snd-intel8x0.  But
-I never got any sound out of this default install no matter what I tried.
-
-* Custom compiled the 2.6.9 kernel with no patches except the software
-suspend 2 patch.  This built the version of the ALSA drivers that come
-with 2.6.9.  Still no sound.
-
-* Downloaded and compiled version 1.0.7 of the ALSA drivers and installed
-them.  Still no sound.
-
+basically the sound card won't work with alsa. below is an email to lee a
+developer he recommended i submit this as a bug fix. please read the
+'additional information section' if this is not the correct way of
+submitting a bug fix i apologize as this is my first.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-24-04 14:57 
+ michaelhoy - 11-24-04 17:48 
 ----------------------------------------------------------------------
-Thanks.
+you wanted to know what was in /dev/snd?
 
-The problem in this bug seems that some missing codec setup for STAC9752. 
-Needs a more deeper look at the datasheet.
+i do not know what should be there so I simply pasted the contents of it
+all here. thanks.
+mike h
+
+root@slackware:~# ls /dev/snd
+controlC0  hwC2D0    midiC0D4  midiC2D0  midiC3D4  pcmC0D4c  pcmC1D2c 
+pcmC2D0c  pcmC2D6c  pcmC3D4c
+controlC1  hwC2D1    midiC0D5  midiC2D1  midiC3D5  pcmC0D4p  pcmC1D2p 
+pcmC2D0p  pcmC2D6p  pcmC3D4p
+controlC2  hwC2D2    midiC0D6  midiC2D2  midiC3D6  pcmC0D5c  pcmC1D3c 
+pcmC2D1c  pcmC2D7c  pcmC3D5c
+controlC3  hwC2D3    midiC0D7  midiC2D3  midiC3D7  pcmC0D5p  pcmC1D3p 
+pcmC2D1p  pcmC2D7p  pcmC3D5p
+hwC0D0     hwC3D0    midiC1D0  midiC2D4  pcmC0D0c  pcmC0D6c  pcmC1D4c 
+pcmC2D2c  pcmC3D0c  pcmC3D6c
+hwC0D1     hwC3D1    midiC1D1  midiC2D5  pcmC0D0p  pcmC0D6p  pcmC1D4p 
+pcmC2D2p  pcmC3D0p  pcmC3D6p
+hwC0D2     hwC3D2    midiC1D2  midiC2D6  pcmC0D1c  pcmC0D7c  pcmC1D5c 
+pcmC2D3c  pcmC3D1c  pcmC3D7c
+hwC0D3     hwC3D3    midiC1D3  midiC2D7  pcmC0D1p  pcmC0D7p  pcmC1D5p 
+pcmC2D3p  pcmC3D1p  pcmC3D7p
+hwC1D0     midiC0D0  midiC1D4  midiC3D0  pcmC0D2c  pcmC1D0c  pcmC1D6c 
+pcmC2D4c  pcmC3D2c  seq
+hwC1D1     midiC0D1  midiC1D5  midiC3D1  pcmC0D2p  pcmC1D0p  pcmC1D6p 
+pcmC2D4p  pcmC3D2p  timer
+hwC1D2     midiC0D2  midiC1D6  midiC3D2  pcmC0D3c  pcmC1D1c  pcmC1D7c 
+pcmC2D5c  pcmC3D3c
+hwC1D3     midiC0D3  midiC1D7  midiC3D3  pcmC0D3p  pcmC1D1p  pcmC1D7p 
+pcmC2D5p  pcmC3D3p
+root@slackware:~#
 
 ----------------------------------------------------------------------
- bji - 11-25-04 07:07 
+ tiwai - 11-24-04 17:54 
 ----------------------------------------------------------------------
-Is there something I can do to help?  Thanks!
+The kernel should have shown any error/warning messages when you load
+snd-atiixp module.  If so, it's either a BIOS problem or a well-known ACPI
+problem.
+
+I'd recommend you to play with different boot options related with ACPI. 
+(Check other bug entries about atiixp.)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-21-04 02:53 bji            New Issue                                    
-11-21-04 02:53 bji            Distribution              => Fedora Core 3   
-11-21-04 02:53 bji            Kernel Version            => 2.6.9           
-11-21-04 02:55 bji            Note Added: 0002481                          
-11-21-04 02:56 bji            File Added: proc_asound.txt                    
-11-21-04 03:16 bji            Note Added: 0002483                          
-11-21-04 03:19 bji            Note Added: 0002484                          
-11-23-04 16:20 tiwai          Note Added: 0002522                          
-11-23-04 23:23 IceRAM         Note Added: 0002537                          
-11-23-04 23:24 IceRAM         File Added: asound.state                     
-11-23-04 23:25 IceRAM         File Added: modprobe.conf                    
-11-23-04 23:26 IceRAM         File Added: iceram_lsmod.txt                    
-11-23-04 23:27 IceRAM         Note Added: 0002538                          
-11-23-04 23:28 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Note Edited: 0002537                         
-11-23-04 23:29 IceRAM         Issue Monitored: IceRAM                      
-11-23-04 23:45 IceRAM         Note Added: 0002539                          
-11-23-04 23:45 IceRAM         File Added: .asoundrc                        
-11-23-04 23:46 IceRAM         Note Edited: 0002538                         
-11-24-04 12:32 bji            File Added: asound.state                     
-11-24-04 12:33 bji            Note Added: 0002550                          
-11-24-04 12:40 tiwai          Note Added: 0002552                          
-11-24-04 13:15 IceRAM         Note Deleted: 0002537                        
-11-24-04 13:16 IceRAM         Note Deleted: 0002539                        
-11-24-04 13:19 IceRAM         Note Deleted: 0002538                        
-11-24-04 13:26 IceRAM         Note Added: 0002561                          
-11-24-04 14:57 tiwai          Note Added: 0002565                          
-11-25-04 07:07 bji            Note Added: 0002587                          
+11-24-04 00:55 michaelhoy     New Issue                                    
+11-24-04 00:55 michaelhoy     Distribution              => slackware       
+11-24-04 00:55 michaelhoy     Kernel Version            => 2.4.26          
+11-24-04 12:18 tiwai          Note Added: 0002547                          
+11-24-04 17:48 michaelhoy     Note Added: 0002573                          
+11-24-04 17:54 tiwai          Note Added: 0002574                          
 ======================================================================
 
 
