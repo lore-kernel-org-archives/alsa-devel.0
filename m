@@ -1,13 +1,14 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: anybody else OK with current CVS *and* SMP?
-Date: Thu, 07 Aug 2003 00:20:23 +0200
+From: juan <jcb@niluge.net>
+Subject: Re: maestro3 driver hangs dell laptop
+Date: Thu, 7 Aug 2003 02:04:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F317F27.7010702@cucumelo.org>
-References: <200308051417.h75EHwpr020319@localhost.localdomain>
+Message-ID: <20030807000435.GA12100@athena>
+References: <20030803210237.GA1176@zeus.homenet> <s5hr840kxyt.wl@alsa2.suse.de> <20030805140827.GB25707@athena> <s5hptjkkxbt.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <s5hptjkkxbt.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,39 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->i am having a repeated problem with system lockups using current CVS
->with JACK running SCHED_FIFO on an SMP system, with the Planet's
->2.4.21 kernel.
->
->can anyone report that a similar configuration is working for them?
->there is no way to diagnose the situation, because the kernel hangs
->totally and completely, and its not possible to get the output from
->either an oops or the magic-request key(s).
->
->it seems to be less of a problem when JACK is running without
->SCHED_FIFO. 
->  
->
-A couple of month agoo I've tried to upgrade the ALSA CVS, and I 
-remember that I got
-almost exactly the same sympton that you are describing.
+On Tuesday 05 August, 2003 ? 04:12:22PM +0200, Takashi Iwai wrote:
+> At Tue, 5 Aug 2003 16:08:27 +0200,
+> 
+> do you see the LED blinking?
+> if yes, you could see a last kernel dieing message in the log terminal
+> (often alt+F10 in linux console).  try to switch to that one quickly
+> after loading the module, and wait for the death.  if sysrq is enabled
+> in the kernel, you can see even the backtrace via alt+sysrq+P.
 
-Sometimes when running JACK without X, the SysRQ key works, however
-I did not get any useful information from it, I did not get any 
-interactive response
-from the developer list, and I've been very lasy ....
+what i do when i want to load the faulty maestro3 is boot with
+init=/bin/sh ro , so i really have only one console.
 
-Since that I'm using a very old ALSA CVS version from May 17, that seems
-to work fine with SMP.
-
-/Benny
-
+when the machine is frozen, nothing works not even sys req keys
 
 
 -------------------------------------------------------
