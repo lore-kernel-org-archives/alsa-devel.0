@@ -1,14 +1,16 @@
-From: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+From: Justin Cormack <justin@street-vision.com>
 Subject: Re: still hammerfall-mem on hdsp?
-Date: Sat, 17 Jan 2004 18:24:21 +0100
+Date: 17 Jan 2004 18:04:51 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040117172420.GA2865@finnendahl.de>
-References: <20040116222019.GA12671@finnendahl.de> <20040117143105.1576449c.TimBlechmann@gmx.net>
+Message-ID: <1074362691.28226.4.camel@lotte.street-vision.com>
+References: <20040116222019.GA12671@finnendahl.de>
+	<20040117143105.1576449c.TimBlechmann@gmx.net>
+	<20040117172420.GA2865@finnendahl.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <20040117143105.1576449c.TimBlechmann@gmx.net>
+In-Reply-To: <20040117172420.GA2865@finnendahl.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +19,36 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Orm Finnendahl <finnendahl@folkwang-hochschule.de>
+Cc: alsa list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Am 17. Januar 2004, 14:31 Uhr (+0100) schrieb Tim Blechmann:
->
-> you shouldn't need this...
+On Sat, 2004-01-17 at 17:24, Orm Finnendahl wrote:
+> Am 17. Januar 2004, 14:31 Uhr (+0100) schrieb Tim Blechmann:
+> >
+> > you shouldn't need this...
+> 
+> Thanks. I get snd-hdsp loaded and the firmware uploaded. "cat
+> /proc/asound/card0/hdsp" looks good. But when I try to run alsamixer i
+> get 
+> 
+> no mixer elems found 
+> 
+> This is a freshly installed machine and I fear there are some missing
+> device links or something. I ran the snddevices script in alsa-driver.
+> Bear with me if this is stupid and just point me to appropriate
+> readmes if possible.
 
-Thanks. I get snd-hdsp loaded and the firmware uploaded. "cat
-/proc/asound/card0/hdsp" looks good. But when I try to run alsamixer i
-get 
+it doesnt have a mixer, other than the hardware matrix mixer.
+Docs are on the website, but try
 
-no mixer elems found 
+amixer cset numid=5 26,0,32768
+amixer cset numid=5 27,1,32768
 
-This is a freshly installed machine and I fear there are some missing
-device links or something. I ran the snddevices script in alsa-driver.
-Bear with me if this is stupid and just point me to appropriate
-readmes if possible.
+to route playback channels 1 and 2 to multiface analogue channels 1,2 or
+digiface adat1 channels 1 and 2.
 
---
-Orm
+
 
 
 -------------------------------------------------------
