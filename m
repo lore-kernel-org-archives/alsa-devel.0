@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
-Date: Wed, 9 Mar 2005 03:09:07 +0100
-Message-ID: <d6355864353eb5a9f711a9614c9cbf33@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000972]: No sound after install...
+Date: Wed, 9 Mar 2005 03:14:53 +0100
+Message-ID: <6da48218d1021a1d3cd7aa9e605300da@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AAE3D13B
-	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 03:09:07 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C281173
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 03:14:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,42 +23,53 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=371> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=972> 
 ======================================================================
-Reported By:                fmoraes
-Assigned To:                perex
+Reported By:                rbechard1
+Assigned To:                fmoraes
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   371
-Category:                   PCI - cs46xx
+Issue ID:                   972
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     assigned
 Distribution:               
-Kernel Version:             2.6.6-1.435.2.3
+Kernel Version:             
 ======================================================================
-Date Submitted:             07-09-2004 15:59 CEST
-Last Modified:              03-09-2005 03:09 CET
+Date Submitted:             03-08-2005 02:00 CET
+Last Modified:              03-09-2005 03:14 CET
 ======================================================================
-Summary:                    dmix does not work with snd-cs46xx driver
+Summary:                    No sound after install...
 Description: 
-When trying to use dmix with the snd-cs46xx driver, no output is produced.
+After following all of the install instructions included with the
+documentation there is no sound from the sound card. The settings in
+DiskDrake indicate that the sound card is using the correct driver and
+alsaconf reconfigured it several times to no effect. I also check the
+mixer outputs and nothing is muted.
 ======================================================================
 
 ----------------------------------------------------------------------
- fmoraes - 03-09-05 03:09 
+ fmoraes - 03-09-05 02:11 
 ----------------------------------------------------------------------
-Nobody looked at this?
+Do you have the /dev/snd/* devices?
+
+Francisco
+
+----------------------------------------------------------------------
+ rbechard1 - 03-09-05 03:14 
+----------------------------------------------------------------------
+There is no /snd folder in my /dev directory...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-09-04 15:59 fmoraes        New Issue                                    
-07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
-07-15-04 14:10 perex          Status                   new => assigned     
-07-15-04 14:10 perex          Assigned To               => perex           
-03-09-05 03:09 fmoraes        Note Added: 0003823                          
+03-08-05 02:00 rbechard1      New Issue                                    
+03-08-05 02:01 rbechard1      Issue Monitored: rbechard1                    
+03-08-05 09:54 rbechard1      Note Added: 0003813                          
+03-09-05 02:11 fmoraes        Note Added: 0003820                          
+03-09-05 03:14 rbechard1      Note Added: 0003824                          
 ======================================================================
 
 
