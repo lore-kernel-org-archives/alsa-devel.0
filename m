@@ -1,16 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000455]: segfault when trying to connect dmix->plug
-Date: Thu, 19 Aug 2004 10:21:54 +0200 (CEST)
+From: "Vrihad Shoonya" <vrihad@softhome.net>
+Subject: Re: Is there plans to support SiS7019?
+Date: Thu, 19 Aug 2004 14:01:14 +0530 (IST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040819082154.3872C1102F@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <34863.192.168.0.10.1092904274.squirrel@dev.datamax.co.in>
+References: <200408190751.i7J7pHoW021832@www3.pobox.sk>
+Mime-Version: 1.0
+Content-Type: text/plain;charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A12A124D
-	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 10:21:54 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 5A7F2190C5
-	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 10:21:54 +0200 (MEST)
+In-Reply-To: <200408190751.i7J7pHoW021832@www3.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,78 +16,22 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net, clemens@ladisch.de, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000455
-======================================================================
-Reported By:                stsp
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Bug ID:                     455
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             08-18-2004 20:20 CEST
-Last Modified:              08-19-2004 10:21 CEST
-======================================================================
-Summary:                    segfault when trying to connect dmix->plug
-Description: 
-Hi.
+> I think, there is no reason to try correct these unresolved symbols,
+> because result will by same as Takashi Iwai way.
+>
+> For me looks like 7019 is diffrent from 7018. :-(
 
-With the attached configuration I get
-segmentation fault:
----
-$ ogg123 mise02-ulicka.ogg
-ALSA lib pcm_dmix.c:873:(snd_pcm_dmix_open) dmix plugin can be only
-connected to hw plugin
-Segmentation fault
----
+Now how much effort is required to support it in alsa if we have the
+register guide with us? We also have an OSS implementation with
+some bugs related to blocking read of the device.
 
-Here is the problematic place:
----
-Program received signal SIGSEGV, Segmentation fault.
-[Switching to Thread 1078196992 (LWP 30505)]
-snd_pcm_plug_open (pcmp=0xbffff7c0, name=0x43653b13 "default",
-    sformat=1131543104, schannels=1131543104, srate=1131543104,
-    route_policy=1131543104, ttable=0x4371fa40, tt_ssize=1131543104,
-    tt_cused=1131543104, tt_sused=1131543104, slave=0x428c6fdc,
-    close_slave=1131543104) at pcm_plug.c:1034
-1034            pcm->fast_ops = slave->fast_ops;
-(gdb) p pcm->fast_ops
-$1 = (snd_pcm_fast_ops_t *) 0x0
----
-So it is trying to assign to NULL.
-======================================================================
+-vrihad
 
-----------------------------------------------------------------------
- stsp - 08-19-2004 10:21 CEST 
-----------------------------------------------------------------------
-> $1 = (snd_pcm_fast_ops_t *) 0x0
-> So it is trying to assign to NULL.
-OK, never mind, of course that assignment is valid.
-Nothing wrong with the slave->fast_fops either.
-But it segfaults here only when some memory debugger
-is used (njamd, efence), otherwise it segfaults much
-later. Might be some memory corruption.
-Attached are backtraces at a crash points: log1 - with
-memory debugger; log2 - without. Both looks pretty
-useless...
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-08-18-04 20:20 stsp           New Bug                                      
-08-18-04 20:20 stsp           File Added: asound.conf                      
-08-19-04 10:21 stsp           Bugnote Added: 0001589                       
-======================================================================
 
 
 -------------------------------------------------------
