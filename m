@@ -1,11 +1,12 @@
-From: Nikhil Deo <nikhil_deo@usa.net>
-Subject: snd_pcm_plugin_read: buffer format
-Date: Thu, 29 Apr 2004 12:14:29 -0400
+From: Russ Garrett <russ@garrett.co.uk>
+Subject: "does not support 28bit PCI busmaster DMA" on AMD64
+Date: Thu, 29 Apr 2004 19:32:39 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <117iDCqod2960S16.1083255269@uwdvg016.cms.usa.net>
+Message-ID: <1083263559.6227.39.camel@localhost>
+Reply-To: russ@garrett.co.uk
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,16 +19,22 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-When I read some captured data into a buffer by calling snd_pcm_plugin_re=
-ad,
-how can I separate the left and right channels from that data? =
+Just upgraded my system to an Athlon 64 processor, specs are:
+
+Athlon 64 3200+
+Gigabyte GA-K8N Pro (nForce3)
+M-Audio Audiophile 2496 Sound card (Ice1712)
+Linux 2.6.5
+
+Whenever I try to modprobe snd_ice1712, I get the following error in
+dmesg:
+
+architecture does not support 28bit PCI busmaster DMA
+ICE1712: probe of 0000:01:0a.0 failed with error -6
 
 
-Thanks for your time and any hint/pointers/answer to the above. =
-
-
-cheers!
-
+Russ Garrett
+russ@garrett.co.uk
 
 
 
