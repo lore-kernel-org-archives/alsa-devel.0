@@ -1,10 +1,13 @@
-From: Raymond <rayau@netvigator.com>
-Subject: aplay - How to use device 3 of card 0 ?
-Date: Sun, 06 Mar 2005 13:22:01 +0800
-Message-ID: <422A9379.5030809@netvigator.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000965]: No Sound from Right Surround Speaker
+Date: Sun, 6 Mar 2005 13:27:18 +0100
+Message-ID: <7a97b08726667198b5886968ebe54f0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 318E5188
+	for <alsa-devel@alsa-project.org>; Sun,  6 Mar 2005 13:27:19 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,396 +17,381 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
-Cc: openvortex-dev@nongnu.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-What is the correct syntax for "aplay" to use device 3 of card 0 ?
 
-# aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: au8830 [au8830], device 0: AU88x0 ADB [adb]
-   Subdevices: 32/32
-   Subdevice #0: subdevice #0
-   Subdevice #1: subdevice #1
-   Subdevice #2: subdevice #2
-   Subdevice #3: subdevice #3
-   Subdevice #4: subdevice #4
-   Subdevice #5: subdevice #5
-   Subdevice #6: subdevice #6
-   Subdevice #7: subdevice #7
-   Subdevice #8: subdevice #8
-   Subdevice #9: subdevice #9
-   Subdevice #10: subdevice #10
-   Subdevice #11: subdevice #11
-   Subdevice #12: subdevice #12
-   Subdevice #13: subdevice #13
-   Subdevice #14: subdevice #14
-   Subdevice #15: subdevice #15
-   Subdevice #16: subdevice #16
-   Subdevice #17: subdevice #17
-   Subdevice #18: subdevice #18
-   Subdevice #19: subdevice #19
-   Subdevice #20: subdevice #20
-   Subdevice #21: subdevice #21
-   Subdevice #22: subdevice #22
-   Subdevice #23: subdevice #23
-   Subdevice #24: subdevice #24
-   Subdevice #25: subdevice #25
-   Subdevice #26: subdevice #26
-   Subdevice #27: subdevice #27
-   Subdevice #28: subdevice #28
-   Subdevice #29: subdevice #29
-   Subdevice #30: subdevice #30
-   Subdevice #31: subdevice #31
-card 0: au8830 [au8830], device 1: AU88x0 SPDIF [spdif]
-   Subdevices: 1/1
-   Subdevice #0: subdevice #0
-card 0: au8830 [au8830], device 2: AU88x0 A3D [a3d]
-   Subdevices: 16/16
-   Subdevice #0: subdevice #0
-   Subdevice #1: subdevice #1
-   Subdevice #2: subdevice #2
-   Subdevice #3: subdevice #3
-   Subdevice #4: subdevice #4
-   Subdevice #5: subdevice #5
-   Subdevice #6: subdevice #6
-   Subdevice #7: subdevice #7
-   Subdevice #8: subdevice #8
-   Subdevice #9: subdevice #9
-   Subdevice #10: subdevice #10
-   Subdevice #11: subdevice #11
-   Subdevice #12: subdevice #12
-   Subdevice #13: subdevice #13
-   Subdevice #14: subdevice #14
-   Subdevice #15: subdevice #15
-card 0: au8830 [au8830], device 3: AU88x0 WT [wt]
-   Subdevices: 64/64
-   Subdevice #0: subdevice #0
-   Subdevice #1: subdevice #1
-   Subdevice #2: subdevice #2
-   Subdevice #3: subdevice #3
-   Subdevice #4: subdevice #4
-   Subdevice #5: subdevice #5
-   Subdevice #6: subdevice #6
-   Subdevice #7: subdevice #7
-   Subdevice #8: subdevice #8
-   Subdevice #9: subdevice #9
-   Subdevice #10: subdevice #10
-   Subdevice #11: subdevice #11
-   Subdevice #12: subdevice #12
-   Subdevice #13: subdevice #13
-   Subdevice #14: subdevice #14
-   Subdevice #15: subdevice #15
-   Subdevice #16: subdevice #16
-   Subdevice #17: subdevice #17
-   Subdevice #18: subdevice #18
-   Subdevice #19: subdevice #19
-   Subdevice #20: subdevice #20
-   Subdevice #21: subdevice #21
-   Subdevice #22: subdevice #22
-   Subdevice #23: subdevice #23
-   Subdevice #24: subdevice #24
-   Subdevice #25: subdevice #25
-   Subdevice #26: subdevice #26
-   Subdevice #27: subdevice #27
-   Subdevice #28: subdevice #28
-   Subdevice #29: subdevice #29
-   Subdevice #30: subdevice #30
-   Subdevice #31: subdevice #31
-   Subdevice #32: subdevice #32
-   Subdevice #33: subdevice #33
-   Subdevice #34: subdevice #34
-   Subdevice #35: subdevice #35
-   Subdevice #36: subdevice #36
-   Subdevice #37: subdevice #37
-   Subdevice #38: subdevice #38
-   Subdevice #39: subdevice #39
-   Subdevice #40: subdevice #40
-   Subdevice #41: subdevice #41
-   Subdevice #42: subdevice #42
-   Subdevice #43: subdevice #43
-   Subdevice #44: subdevice #44
-   Subdevice #45: subdevice #45
-   Subdevice #46: subdevice #46
-   Subdevice #47: subdevice #47
-   Subdevice #48: subdevice #48
-   Subdevice #49: subdevice #49
-   Subdevice #50: subdevice #50
-   Subdevice #51: subdevice #51
-   Subdevice #52: subdevice #52
-   Subdevice #53: subdevice #53
-   Subdevice #54: subdevice #54
-   Subdevice #55: subdevice #55
-   Subdevice #56: subdevice #56
-   Subdevice #57: subdevice #57
-   Subdevice #58: subdevice #58
-   Subdevice #59: subdevice #59
-   Subdevice #60: subdevice #60
-   Subdevice #61: subdevice #61
-   Subdevice #62: subdevice #62
-   Subdevice #63: subdevice #63
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=965> 
+======================================================================
+Reported By:                imac
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   965
+Category:                   PCI - via82xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian Sid
+Kernel Version:             2.6.11-rc4 (And many many kernels earlier)
+======================================================================
+Date Submitted:             03-06-2005 01:23 CET
+Last Modified:              03-06-2005 13:27 CET
+======================================================================
+Summary:                    No Sound from Right Surround Speaker
+Description: 
+This bug has been around since 0000043 (Original ALSA Bugtrack #)
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=43
+Lots of details there, but a bad bug description.  Here's my current
+details
+BTW, the profile pulldown in the bug form was empty :)
 
+Let me know how I can help debug this further, if there is no trivial
+fix.
 
-# aplay --list-pcms
-PCM list:
-hw {
-         @args.0 CARD
-         @args.1 DEV
-         @args.2 SUBDEV
-         @args.CARD {
-                 type string
-                 default {
-                         @func getenv
-                         vars {
-                                 0 ALSA_PCM_CARD
-                                 1 ALSA_CARD
-                         }
-                         default {
-                                 @func refer
-                                 name 'defaults.pcm.card'
-                         }
-                 }
-         }
-         @args.DEV {
-                 type integer
-                 default {
-                         @func igetenv
-                         vars {
-                                 0 ALSA_PCM_DEVICE
-                         }
-                         default {
-                                 @func refer
-                                 name 'defaults.pcm.device'
-                         }
-                 }
-         }
-         @args.SUBDEV {
-                 type integer
-                 default {
-                         @func refer
-                         name 'defaults.pcm.subdevice'
-                 }
-         }
-         type hw
-         card $CARD
-         device $DEV
-         subdevice $SUBDEV
-}
-plughw {
-         @args.0 CARD
-         @args.1 DEV
-         @args.2 SUBDEV
-         @args.CARD {
-                 type string
-                 default {
-                         @func getenv
-                         vars {
-                                 0 ALSA_PCM_CARD
-                                 1 ALSA_CARD
-                         }
-                         default {
-                                 @func refer
-                                 name 'defaults.pcm.card'
-                         }
-                 }
-         }
-         @args.DEV {
-                 type integer
-                 default {
-                         @func igetenv
-                         vars {
-                                 0 ALSA_PCM_DEVICE
-                         }
-                         default {
-                                 @func refer
-                                 name 'defaults.pcm.device'
-                         }
-                 }
-         }
-         @args.SUBDEV {
-                 type integer
-                 default {
-                         @func refer
-                         name 'defaults.pcm.subdevice'
-                 }
-         }
-         type plug
-         slave.pcm {
-                 type hw
-                 card $CARD
-                 device $DEV
-                 subdevice $SUBDEV
-         }
-}
-plug {
-         @args.0 SLAVE
-         @args.SLAVE {
-                 type string
-         }
-         type plug
-         slave.pcm $SLAVE
-}
-dmix {
-         @args.0 SLAVE
-         @args.1 FORMAT
-         @args.2 RATE
-         @args.SLAVE {
-                 type string
-                 default 'hw:0,0'
-         }
-         @args.FORMAT {
-                 type string
-                 default S16_LE
-         }
-         @args.RATE {
-                 type integer
-                 default 48000
-         }
-         type dmix
-         ipc_key 5678293
-         ipc_key_add_uid yes
-         slave {
-                 pcm $SLAVE
-                 format $FORMAT
-                 rate $RATE
-         }
-}
-dsnoop {
-         @args.0 SLAVE
-         @args.1 FORMAT
-         @args.2 RATE
-         @args.SLAVE {
-                 type string
-                 default 'hw:0,0'
-         }
-         @args.FORMAT {
-                 type string
-                 default S16_LE
-         }
-         @args.RATE {
-                 type integer
-                 default 48000
-         }
-         type dsnoop
-         ipc_key 5778293
-         ipc_key_add_uid yes
-         slave {
-                 pcm $SLAVE
-                 format $FORMAT
-                 rate $RATE
-         }
-}
-shm {
-         @args.0 SOCKET
-         @args.1 PCM
-         @args.SOCKET {
-                 type string
-         }
-         @args.PCM {
-                 type string
-         }
-         type shm
-         server $SOCKET
-         pcm $PCM
-}
-tee {
-         @args.0 SLAVE
-         @args.1 FILE
-         @args.2 FORMAT
-         @args.SLAVE {
-                 type string
-         }
-         @args.FILE {
-                 type string
-         }
-         @args.FORMAT {
-                 type string
-                 default raw
-         }
-         type file
-         slave.pcm $SLAVE
-         file $FILE
-         format $FORMAT
-}
-file {
-         @args.0 FILE
-         @args.1 FORMAT
-         @args.FILE {
-                 type string
-         }
-         @args.FORMAT {
-                 type string
-                 default raw
-         }
-         type file
-         slave.pcm null
-         file $FILE
-         format $FORMAT
-}
-null {
-         type null
-}
-cards 'cards.pcm'
-front 'cards.pcm.front'
-rear 'cards.pcm.rear'
-center_lfe 'cards.pcm.center_lfe'
-side 'cards.pcm.side'
-surround40 'cards.pcm.surround40'
-surround41 'cards.pcm.surround41'
-surround50 'cards.pcm.surround50'
-surround51 'cards.pcm.surround51'
-surround71 'cards.pcm.surround71'
-iec958 'cards.pcm.iec958'
-spdif 'cards.pcm.iec958'
-modem 'cards.pcm.modem'
-default 'cards.pcm.default'
+****LSPCI:
+0000:00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 50)
+        Subsystem: ABIT Computer Corp.: Unknown device 1401
+        Flags: medium devsel, IRQ 22
+        I/O ports at cc00 [size=256]
+        Capabilities: [c0] Power Management version 2
+
+****AMIXER:
+Simple mixer control 'Master',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 21 [68%] [on]
+  Front Right: Playback 21 [68%] [on]
+Simple mixer control 'Master Mono',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 19 [61%] [on]
+Simple mixer control '3D Control - Center',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Depth',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 15
+  Mono: 0 [0%]
+Simple mixer control '3D Control - Switch',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'PCM',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 16 [52%] [on]
+  Front Right: Playback 16 [52%] [on]
+Simple mixer control 'Surround',0
+  Capabilities: pvolume pswitch pswitch-joined
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 28 [90%] [on]
+  Front Right: Playback 31 [100%] [on]
+Simple mixer control 'Surround Down Mix',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Center',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 24 [77%] [on]
+Simple mixer control 'Center/LFE Down Mix',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'LFE',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 31
+  Mono: Playback 22 [71%] [on]
+Simple mixer control 'Line',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 20 [65%] [on] Capture [off]
+  Front Right: Playback 20 [65%] [on] Capture [off]
+Simple mixer control 'Line-In As Surround',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'CD',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Mic',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [on]
+  Front Right: Capture [on]
+Simple mixer control 'Mic As Center/LFE',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Boost (+20dB)',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Mic Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Video',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 0 [0%] [off] Capture [off]
+  Front Right: Playback 0 [0%] [off] Capture [off]
+Simple mixer control 'Phone',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined cswitch
+cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Mono
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Mono: Playback 0 [0%] [off]
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'IEC958',0
+  Capabilities: pswitch pswitch-joined cswitch cswitch-joined
+  Playback channels: Mono
+  Capture channels: Mono
+  Mono: Playback [on] Capture [off]
+Simple mixer control 'IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'IEC958 Playback AC97-SPSA',0
+  Capabilities: volume volume-joined
+  Playback channels: Mono
+  Limits: 0 - 3
+  Mono: 2 [67%]
+Simple mixer control 'PC Speaker',0
+  Capabilities: pvolume pvolume-joined pswitch pswitch-joined
+  Playback channels: Mono
+  Limits: Playback 0 - 15
+  Mono: Playback 0 [0%] [off]
+Simple mixer control 'Aux',0
+  Capabilities: pvolume pswitch pswitch-joined cswitch cswitch-joined
+cswitch-exclusive
+  Capture exclusive group: 0
+  Playback channels: Front Left - Front Right
+  Capture channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 25 [81%] [on] Capture [off]
+  Front Right: Playback 25 [81%] [on] Capture [off]
+Simple mixer control 'Mono Output Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Capture',0
+  Capabilities: cvolume cswitch cswitch-joined
+  Capture channels: Front Left - Front Right
+  Limits: Capture 0 - 15
+  Front Left: Capture 0 [0%] [on]
+  Front Right: Capture 0 [0%] [on]
+Simple mixer control 'Mix',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Mix Mono',0
+  Capabilities: cswitch cswitch-joined cswitch-exclusive
+  Capture exclusive group: 0
+  Capture channels: Front Left - Front Right
+  Front Left: Capture [off]
+  Front Right: Capture [off]
+Simple mixer control 'Analog to IEC958 Output',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'Duplicate Front',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Exchange Center/LFE',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [off]
+Simple mixer control 'External Amplifier',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'Input Source Select',0
+  Capabilities:
+  Mono:
+Simple mixer control 'Input Source Select',1
+  Capabilities:
+  Mono:
+Simple mixer control 'Swap Surround Slot',0
+  Capabilities: pswitch pswitch-joined
+  Playback channels: Mono
+  Mono: Playback [on]
+Simple mixer control 'VIA DXS',0
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',1
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',2
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+Simple mixer control 'VIA DXS',3
+  Capabilities: pvolume
+  Playback channels: Front Left - Front Right
+  Limits: Playback 0 - 31
+  Front Left: Playback 31 [100%]
+  Front Right: Playback 31 [100%]
+
+****PROC/CODEC97
+0-0/0: Realtek ALC650D
+
+Capabilities     :
+DAC resolution   : 20-bit
+ADC resolution   : 18-bit
+3D enhancement   : Realtek 3D Stereo Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Double rate slots: 10/11
+Extended ID      : codec=0 rev=1 AMAP LDAC SDAC CDAC DSA=0 SPDIF DRA VRA
+Extended status  : SPCV LDAC SDAC CDAC SPDIF=6/9 SPDIF VRA
+PCM front DAC    : 44100Hz
+PCM Surr DAC     : 44100Hz
+PCM LFE DAC      : 44100Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=44.1kHz
 
 
+0:00 = 5980
+0:02 = 0a0a
+0:04 = 0000
+0:06 = 000c
+0:08 = 0000
+0:0a = 801e
+0:0c = 801f
+0:0e = 801f
+0:10 = 0b0b
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 0606
+0:18 = 0f0f
+0:1a = 0000
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 07c7
+0:2a = 05e5
+0:2c = ac44
+0:2e = ac44
+0:30 = ac44
+0:32 = bb80
+0:34 = 0000
+0:36 = 0907
+0:38 = 0380
+0:3a = 0824
+0:3c = 0000
+0:3e = 0000
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0000
+0:4e = 0000
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0808
+0:66 = 0808
+0:68 = 0000
+0:6a = 4001
+0:6c = 0000
+0:6e = 0003
+0:70 = 0211
+0:72 = 6aa9
+0:74 = 0063
+0:76 = 0001
+0:78 = 8102
+0:7a = 57c0
+0:7c = 414c
+0:7e = 4720
 
->
->> # more /proc/asound/card0/pcm3p/info
->> card: 0
->> device: 3
->> subdevice: 0
->> stream: PLAYBACK
->> id: AU88x0 WT
->> name: wt
->> subname: subdevice #0
->> class: 0
->> subclass: 0
->> subdevices_count: 64
->> subdevices_avail: 64
->>
->>
->> # aplay -D hw:0,3 test.wav
->> Playing WAVE 'test.wav' : Unsigned 8 bit, Rate 11025 Hz, Mono
->> aplay: set_params:857: Sample format non available
->>
->>
->> 4) How can we use "aplay" to play test.wav on the card 0 device 3 ?
 
-> The problem with the WT device is either a bug in the DMA code or a
-> bad route. The WT DMA works almost indentical to the ADB DMA engine,
-> but with its separate set of registers. I have looked over and over
-> uncountable times, without finding any clue. The most uncertainty is
-> in regard of the WT routes. The only thing i know is that each WT bank
-> has 32 channels, each channel with some processing capabilities
-> (pitch, delay, filter, gain, etc) and there are 32 + 6 sources toward
-> the routing bus for each bank. I guess that the first 32 sources are
-> mapped to each individual WT dma channel and the other extra 6 sources
-> are some kind of downmix of the entire bank. But i am still clueless
-> about why having 32 individual sources for each channel, if we have
-> only 32 mixer inputs, and many of them are already being used ? There
-> is no way to make use of all of them, thats why i guess that there
-> must be some downmix of each WT block available somehow.
+======================================================================
 
+----------------------------------------------------------------------
+ slammer - 03-06-05 13:27 
+----------------------------------------------------------------------
+This looks identically like the issue for intel8x0 driver that I reported
+at https://bugtrack.alsa-project.org/alsa-bug/view.php?id=902
+Maybe it is related somehow, however this appeared in the versions around
+1.08 and it's rc. There was no such problem i.e. in 1.07 so i suggest
+checking if it's the case with your card.
 
-http://www.3dsoundsurge.com/drivers/a3d.html#WINDOWS 9x DRIVER ISSUES
-
-
-2) How did you perform your "WT DMA" test ?
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-06-05 01:23 imac           New Issue                                    
+03-06-05 01:23 imac           Distribution              => Debian Sid      
+03-06-05 01:23 imac           Kernel Version            => 2.6.11-rc4 (And many
+many kernels earlier)
+03-06-05 13:21 slammer        Issue Monitored: slammer                     
+03-06-05 13:27 slammer        Note Added: 0003805                          
+======================================================================
 
 
 
