@@ -1,16 +1,14 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: snd_pcm_close hangs
-Date: Mon, 3 Jun 2002 19:48:56 +0200 (CEST)
+From: Frank van de Pol <fvdpol@home.nl>
+Subject: Re: more sample formats?  too little place left.
+Date: Mon, 3 Jun 2002 22:06:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0206031920560.761-100000@summer.quitte>
-References: <Pine.LNX.4.21.0206031646400.761-100000@summer.quitte>
+Message-ID: <20020603200637.GA18082@idefix.fvdpol.home.nl>
+References: <s5h3cw8gzvo.wl@alsa2.suse.de> <007e01c208d2$31938120$0400a8c0@martijn> <s5hlm9wfper.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from post.webmailer.de (natpost.webmailer.de [192.67.198.65])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA26654
-	for <alsa-devel@alsa-project.org>; Mon, 3 Jun 2002 21:41:40 +0200
-In-Reply-To: <Pine.LNX.4.21.0206031646400.761-100000@summer.quitte>
+Content-Disposition: inline
+In-Reply-To: <s5hlm9wfper.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,114 +18,59 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: Martijn Sipkema <msipkema@sipkema-digital.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-me wrote:
 
->>strange, this has to be fixed already.
->>and the filename in the patch you attached seems invalid.
->>could you check whether all the sources are updated?
->>the latest versions are:
->>
->>	alsa-kernel/core/pcm.c 		rcs rev. 1.12
->>	alsa-kernel/core/pcm_nativ.c	rcs rev. 1.13
->>	alsa-kernel/core/pcm_lib.c	rcs rev. 1.12
->
->doing a fresh checkout now, stay tuned.
+Using the mask is only usefull for inquiry of supported formats; if it was
+for specifying a format a simple numeric value would be fine. 
 
-ok. seems my local tree hasn't been following the changes at
-kernel inclusion. i'm really sorry.
+Would extending the bitfield to 64 bits solve the problem for now and
+forever? I suppose it would give us some air, but on the other hand, more
+formats exist in the world, with each different packing and notiation. 
 
-unfortunately the bug remains, it only manifests differently.
+eg. 18 and 20 bits packed in 24 bits or 32 bits stream; floating point
+formats in various flavours like 32 bit 24.0, 32 bit 16.8, 32 bit 0.24 etc.
+- ok, last one is supported as SND_PCM_FORMAT_FLOAT_LE/BE). Not to mention
+future things like the GSM/MPEG/ADPCM encodings etc. 
 
-after initializing the ice (cap + play are linked):
+just thinking out loud... 
 
-[~] cat /proc/asound/ice/pcm0p/sub0/hw_params 
-access: MMAP_INTERLEAVED
-format: S32_LE
-subformat: STD
-channels: 10
-rate: 44100 (44100/1)
-period_size: 128
-buffer_size: 256
-tick_time: 10000
+Frank.
 
-[~] cat /proc/asound/ice/pcm0p/sub0/sw_params 
-tstamp_mode: NONE
-period_step: 1
-sleep_min: 0
-avail_min: 128
-xfer_align: 128
-start_threshold: 4294967295
-stop_threshold: 256
-silence_threshold: 0
-silence_size: 0
-boundary: 1073741824
+On Mon, Jun 03, 2002 at 03:43:56PM +0200, Takashi Iwai wrote:
+> At Fri, 31 May 2002 19:36:54 +0100,
+> Martijn Sipkema wrote:
+> > 
+> > > it seems that USB audio supports 24 bit sample in 3 bytes format.
+> > > and additionally i've found there are 20bit and 18bit sample formats.
+> > > the world is large...
+> > > 
+> > > an arising problem is that the number of formats is limited to 32.
+> > > already 26 format types are used.  the rest are only 6, and not enough
+> > > if we put BE/LE and signed/unsigned for new formats, too.
+> > > 
+> > > how can we solve this?  extend to 64bit?  no, it has too overhead.
+> > > add a new field for special formats?
+> > > 
+> > > perhaps we don't need all of them for such special formats.
+> > > there are no unsigned types for such formats.
+> > > but anyway the left resource is too small.
+> > 
+> > are formats currently a bit in a 'supported formats' flag?
+> 
+> yes.
+> 
+> the problem is that the bitmask is defined as unsigned int, und
+> limitied to 31 bits.
+> 
 
-[~] cat /proc/asound/ice/pcm0p/sub0/status 
-state: PREPARED
-trigger_time: 0.000000
-tstamp      : 1023125218.959946
-delay       : 36548963
-avail       : 0
-avail_max   : 0
------
-hw_ptr      : 0
-appl_ptr    : 256
-
-calling snd_pcm_close() takes a few seconds during which i see
-this:
-
-[~] cat /proc/asound/ice/pcm0p/sub0/status 
-state: DRAINING
-trigger_time: 1023125380.999721
-tstamp      : 1023125381.905192
-delay       : -39746
-avail       : 40002
-avail_max   : 40002
------
-hw_ptr      : 40002
-appl_ptr    : 256
-
-a little later while still in ioctl() --
-
-[~] cat /proc/asound/ice/pcm0p/sub0/status 
-state: DRAINING
-trigger_time: 1023125380.999721
-tstamp      : 1023125383.741754
-delay       : -120739
-avail       : 120995
-avail_max   : 120995
------
-hw_ptr      : 120995
-appl_ptr    : 256
-
-etc etc; then alsa_error_handler reports:
-
-pcm_hw.c:413 (snd_pcm_hw_drain): SNDRV_PCM_IOCTL_DRAIN failed, err =
-Input/output error
-
-and printk says:
-
-Jun  3 19:29:51 localhost kernel: ALSA
-../alsa-kernel/core/pcm_native.c:1093: playback drain error (DMA or
-IRQ trouble?)
-
-and the application then exits normally.
-
-the same setup with stop_threshold = ~0 behaves the same (same printk,
-too), only the alsa_error_handler message reads:
-
-pcm_hw.c:276 (snd_pcm_hw_hw_free): SNDRV_PCM_IOCTL_HW_FREE failed, err
-= File descriptor in bad state
-
-i did both tests (with the different stop_threshold values) with the
-emu8k. it shows exactly the same symptoms: running hw_ptr, delay and
-avail, same alsa_error_handler and printk messages.
-
-tim
-
+-- 
++---- --- -- -  -   -    - 
+| Frank van de Pol                  -o)    A-L-S-A
+| FvdPol@home.nl                    /\\  Sounds good!
+| http://www.alsa-project.org      _\_v
+| Linux - Why use Windows if we have doors available?
 
 _______________________________________________________________
 
