@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA: doc notes additions
-Date: Sat, 05 Oct 2002 04:59:09 +0900
+Subject: Re: multiple devices per card?
+Date: Sat, 05 Oct 2002 05:22:51 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D9DF30D.40603@boosthardware.com>
-References: <200210041828.UAA09561@alsa.alsa-project.org>
+Message-ID: <3D9DF89B.8090604@boosthardware.com>
+References: <20021004193614.30552.qmail@web11503.mail.yahoo.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,25 +16,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: superdubb@telus.net, alsa-devel@lists.sourceforge.net
+To: Guilhem Tardy <guilhem_tardy@yahoo.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-superdubb@telus.net wrote:
-
->        	       	Wilmer superdubb@telus.net
->        	       	Friday, 04 October 2002
-
-> I have Dell CPia 366XT....using ALSA RC3 driver, kernel 2.4.19
+Guilhem Tardy wrote:
+> Hi,
 > 
-> I'm probably going to go back to using the kernel driver....This alsa Driver
-> is crashing on me too...Entire systems locks up when I issue the modprobe snd_nm256
->  command too(in and outside of Xwindows).
+> I am unsure what makes the most sense for multiple pcm channels on the same
+> card:
+>  a) N devices, 1 pcm channel each
+>  b) 1 device, N pcm channels each
 > 
-> Don't know about loading ac97 stuff first as mentioned by previous writer.
-> but don't want to muck around further unless someone has suggestions.
+> In the same vein, is the mixer always one per card?
+> 
 
-This looks like a bug more than a users tip. I have posted it to 
-alsa-devel as feedback.
+well if we have hw:0,0 hw:0,1 hw:0,2
+
+Then it looks like option b to me. But Jaroslav confused me recently by 
+saying something that sounded like a is the case.
+
 
 
 -- 
