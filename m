@@ -1,15 +1,20 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: alsamixer idea
-Date: Thu, 19 Aug 2004 06:04:34 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Thu, 19 Aug 2004 12:28:23 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1092909873.8432.149.camel@krustophenia.net>
-References: <1092897987.8432.98.camel@krustophenia.net>
-	 <s5h657fv4bs.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.58.0408191225170.1779@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0408181538550.24798-100000@studcom.urz.uni-halle.de>
+ <1092842830.13603.3.camel@localhost.localdomain> <20040818181350.2b38e875@mango.fruits.de>
+ <Pine.LNX.4.58.0408181918160.1769@pnote.perex-int.cz>
+ <20040818201535.1f49a128@mango.fruits.de> <Pine.LNX.4.58.0408191050220.1779@pnote.perex-int.cz>
+ <s5h8ycbv4s9.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h657fv4bs.wl@alsa2.suse.de>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BA34420D
+	for <alsa-devel@alsa-project.org>; Thu, 19 Aug 2004 12:35:31 +0200 (MEST)
+In-Reply-To: <s5h8ycbv4s9.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,24 +24,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>, alsa-user@lists.sourceforge.net
+Cc: Florian Schmidt <mista.tapas@gmx.net>, Shaya Potter <spotter@cs.columbia.edu>, Clemens Ladisch <clemens@ladisch.de>, Mauro Romano Trajber <trajber@terra.com.br>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2004-08-19 at 05:56, Takashi Iwai wrote:
-> At Thu, 19 Aug 2004 02:46:28 -0400, 
+On Thu, 19 Aug 2004, Takashi Iwai wrote:
 
-> Another good idea (IIRC James proposed) is to split the
-> volumes/switches between playback and capture and make them
-> switchable.
-> 
+> Can "network sound device" work with the mmap, too?
 
-This actually has the advantage that Windows does it this way, so novice
-users will be a lot less confused.  Peter Zubaj is right in that 99% of
-bug reports from new users involve confusion re: the mixer.  Anything we
-can do in this area is probably worthwhile.
+I think yes, it can, but the real output will be more delayd. So, it won't 
+be much useable for the strict real-time applications.
 
-Lee
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
