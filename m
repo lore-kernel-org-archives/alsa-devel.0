@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - firmware 0000815]: missing DESTDIR support with hotplug dir
-Date: Mon, 14 Feb 2005 20:10:55 +0100
-Message-ID: <e6c0c876f472ee2a4b0344fa6e056abf@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: upmixing line in - emu10k1 sb live 5.1
+Date: Mon, 14 Feb 2005 15:27:19 -0500
+Message-ID: <1108412839.28815.2.camel@krustophenia.net>
+References: <200502140720.j1E7JtHo012669@www4.pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4CDF2229
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 20:10:55 +0100 (MET)
+In-Reply-To: <200502140720.j1E7JtHo012669@www4.pobox.sk>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,69 +16,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Peter Zubaj <pzad@pobox.sk>
+Cc: dwhthompson@yahoo.co.uk, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-02-14 at 08:20 +0100, Peter Zubaj wrote:
+> Hi,
+> 
+> AFAIK there is no way to upmix line in to 5.1 in alsa default config
+> for sb live.
+> 
+> Audigy is diffrent.
+> 
+> Maybe if you use ld10k1, this will do upmix (init_live script).
+> 
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=815> 
-======================================================================
-Reported By:                gvy
-Assigned To:                
-======================================================================
-Project:                    ALSA - firmware
-Issue ID:                   815
-Category:                   
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     feedback
-======================================================================
-Date Submitted:             01-13-2005 20:21 CET
-Last Modified:              02-14-2005 20:10 CET
-======================================================================
-Summary:                    missing DESTDIR support with hotplug dir
-Description: 
-with intoruction of hotplug dir I had to kludge in RPM buildroot into
-configure parameters -- it doesn't belong there, it's rather install-time
-not compile-time (and definitely not configure-time).
+I am working on improving the default DSP config for the SBLive.  There
+are many problems with it, the lack of master volume being the worst.
 
-hardwiring /usr/lib is no good too -- bringing ilbdir in would be better
-too.
-======================================================================
+In order to have enough GPRs to solve this and the master volume problem
+then some features will have to go.  Like the redundant "switch"
+controls (the same thing could be accomplished by setting volume to 0).
 
-----------------------------------------------------------------------
- gvy - 02-14-05 20:09 
-----------------------------------------------------------------------
-Hm, then how should it be done?
-
-----------------------------------------------------------------------
- tiwai - 02-14-05 20:10 
-----------------------------------------------------------------------
-make DESTDIR=$RPM_BUILD_ROOT install
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-13-05 20:21 gvy            New Issue                                    
-01-13-05 20:33 tiwai          Note Added: 0003199                          
-01-13-05 20:48 gvy            Note Added: 0003201                          
-01-13-05 20:52 tiwai          Status                   new => resolved     
-01-13-05 20:52 tiwai          Resolution               open => not an issue
-01-13-05 20:52 tiwai          Assigned To               => tiwai           
-01-13-05 20:52 tiwai          Note Added: 0003203                          
-01-13-05 20:52 tiwai          Assigned To              tiwai =>            
-02-14-05 19:39 tiwai          Status                   resolved => closed  
-02-14-05 19:51 gvy            Status                   closed => feedback  
-02-14-05 19:51 gvy            Resolution               not an issue => reopened
-02-14-05 19:51 gvy            Note Added: 0003608                          
-02-14-05 19:51 gvy            Resolution               reopened => not an issue
-02-14-05 20:04 tiwai          Note Added: 0003609                          
-02-14-05 20:09 gvy            Note Added: 0003610                          
-02-14-05 20:10 tiwai          Note Added: 0003611                          
-======================================================================
-
+Lee
 
 
 
