@@ -1,9 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: USB recording - repetitive peaks
-Date: Tue, 02 Jul 2002 23:28:08 +0900
+Subject: RME+Hammerfall+.asoundrc
+Date: Tue, 02 Jul 2002 23:41:51 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D21B878.8090902@boosthardware.com>
-References: <3D208C5C.36649172@ladisch.de> <s5hhejibem0.wl@alsa2.suse.de>
+Message-ID: <3D21BBAF.7000508@boosthardware.com>
+References: <E17PMuv-0002CF-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,29 +16,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net, tiwai@suse.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Thanks to your patch Takashi we have two people who have been able to 
-record through the quattro.
+I have made a page for an advanced .asoundrc setup which Jeremy Hall 
+submitted for his RME cards.
 
-We have both found that there is a constant repetitive peak in the 
-signal which reminds me of the problems I had with the cmipci for a 
-brief period.
+http://alsa.opensrc.org/index.php?page=RME+Hammerfall+.asoundrc
 
-Thorsten Hass has recorded a perfect example for you which he did using 
-aplay and arecord. It is a sine wave so is easy on the ears.
+Can those who understand this more fully please have a brief read to 
+make sure I have got the facts right?
 
-http://www.thorstenhaas.de/alsa/audio.file
-
-He has also generated a jpeg plotted by an oscilloscope while recording 
-which I can send you if it will help.
-
-He has also asked if there is any chance you will have time to look at 
-this in the two weeks. I believe he has to do some work with his device 
-so needs to make a decision about which OS to use for the job.
-
-
+Thx.
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
