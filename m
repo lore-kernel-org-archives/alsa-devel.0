@@ -1,57 +1,65 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: file.wav -> dsp issue
-Date: Tue, 30 Nov 2004 16:02:48 -0500
-Message-ID: <1101848569.10162.25.camel@krustophenia.net>
-References: <20041130180410.D498B187F@teufel.hartford-hwp.com>
-	 <1101839935.10162.1.camel@krustophenia.net>
-	 <20041130200556.9A346188C@teufel.hartford-hwp.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000694]: USB Audio Card Giving Errors
+Date: Wed, 1 Dec 2004 00:08:32 +0100
+Message-ID: <b978e9b9e7f4b6a6d850636b73d06f95@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <20041130200556.9A346188C@teufel.hartford-hwp.com>
-Sender: alsa-user-admin@lists.sourceforge.net
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: "H.Haines Brown" <brownh@hartford-hwp.com>
-Cc: alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 492882B8
+	for <alsa-devel@alsa-project.org>; Wed,  1 Dec 2004 00:08:32 +0100 (MET)
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2004-11-30 at 15:05 -0500, Haines Brown wrote:
-> > On Tue, 2004-11-30 at 13:04 -0500, Haines Brown wrote:
-> > >      # cat file.wav > /dev/dsp
-> > > 
-> > > it seems to play at half speed (pitch is very low, playing speed very
-> > > slow).  
-> > > 
-> > > Is the command above the best way to do a simple test of sound? Why
-> > > should sending the file to dsp not play correctly?
-> > 
-> > No, that is the way to do it with the deprecated OSS API.  It seems like
-> > a convenient, Unixy way to play sounds but there are many problems with
-> > it.
-> > 
-> > The ALSA way is "aplay file.wav".  Does this work?
-> 
-> Yes, that worked fine. I find that it plays WAV and VOC, but not MID
-> and WMA files (just screeches). Thanks.
 
-Hmm, my point about the OSS api notwithstanding, seems like cat foo.wav
-> /dev/dsp should work, if aplay groks the format.  It seems to be
-getting the sample rate wrong.  I am cc'ing alsa-devel.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=694> 
+======================================================================
+Reported By:                dave-lew99
+Assigned To:                Clemens Ladisch
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   694
+Category:                   USB - usb-audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             12-01-2004 00:08 CET
+Last Modified:              12-01-2004 00:08 CET
+======================================================================
+Summary:                    USB Audio Card Giving Errors
+Description: 
+When booting system with Creative MP3+ USB audio card, errors such as
+snd_usb_audio: Unknown symbol usb_kill_urb 
+snd_usb_lib: unsupported module, tainting kernel are given, these also
+show up in dmesg. 
 
-What's the sample rate of your .wav file?  Do you get the same results
-with other sample rates?
+The onboard sound on my laptop works fine (Intel AC '97). The USB card is
+detected by Yast in the hardware section but refuses to show up as an
+audio card in either alsaconf or the sound section of Yast
+======================================================================
 
-This could be a bug in the OSS emulation layer.
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+12-01-04 00:08 dave-lew99     New Issue                                    
+======================================================================
 
-Lee
 
 
 
