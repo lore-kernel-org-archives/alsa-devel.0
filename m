@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000675]: snd_output_buffer segfault
-Date: Mon, 27 Dec 2004 15:50:27 +0100
-Message-ID: <8237f474e82d1bc3f6584f1a6418c874@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000677]: Audigy2 ZS detection misses my card
+Date: Mon, 27 Dec 2004 15:50:45 +0100
+Message-ID: <ef4b488cd09ce62f579712d3e58122fa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D05A2244
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:50:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC559244
+	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 15:50:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,81 +24,48 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=675> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=677> 
 ======================================================================
-Reported By:                schottstaedt
-Assigned To:                Clemens Ladisch
+Reported By:                m_wright
+Assigned To:                pzad
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   675
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   677
+Category:                   PCI - emu10k1
 Reproducibility:            always
-Severity:                   major
+Severity:                   tweak
 Priority:                   normal
 Status:                     closed
+Distribution:               Gentoo
+Kernel Version:             2.6.9-ck2
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-24-2004 15:00 CET
+Date Submitted:             11-24-2004 19:50 CET
 Last Modified:              12-27-2004 15:50 CET
 ======================================================================
-Summary:                    snd_output_buffer segfault
+Summary:                    Audigy2 ZS detection misses my card
 Description: 
-In Alsa 1.0.6 (and 1.0.7 I think), snd_output_buffer_puts in
-alsa-lib/src/output.c can write to memory it does not own,
-causing segfaults in various unrelated later mallocs.  The
-offending line is 280:
-
-  result = vsnprintf(buffer->buf + buffer->size, size, format, args);
-
-which should be:
-
-  result = vsnprintf(buffer->buf + buffer->size, result, format, args);
-
-There might not actually be "size" bytes available beyond
-buffer->buf+buffer->size --
-the preceding snd_output_buffer_need call only guaranteed "result" bytes.
-
-Another similar bug reported by valgrind is in line 303:
-
-	memcpy(buffer->buf + buffer->size, str, size);
-
-where you actually have "err" bytes available, not "size".
-
-And by the way, I really don't like this bug tracking
-crap -- you should make it easy to report a bug.
-
+Audigy 2 ZS detection in emu10k1_main.c misses my Aud 2 ZS Plat Pro. My
+card has an ID of 0x2001 and code assumes only 0x2002. Attached patch that
+I used to correct.
 ======================================================================
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-24-04 17:35 
+ pzad - 11-24-04 20:01 
 ----------------------------------------------------------------------
-The snd_output_buffer_need() function should have guaranteed that at least
-'size' bytes are available.
-
-Now fixed in CVS with the patch below:
-
---- alsa-lib/src/output.c	20 Jul 2004 15:36:08 -0000	1.21
-+++ alsa-lib/src/output.c	24 Nov 2004 16:31:56 -0000	1.22
-@@ -258,7 +258,7 @@
- 		alloc = 256;
- 	else
- 		alloc = buffer->alloc;
--	while (alloc < size)
-+	while (alloc < buffer->size + size)
- 		alloc *= 2;
- 	buf = realloc(buffer->buf, alloc);
- 	if (!buf)
+This was fixed yesterday in CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-24-04 15:00 schottstaedt   New Issue                                    
-11-24-04 17:32 Clemens LadischStatus                   new => assigned     
-11-24-04 17:32 Clemens LadischAssigned To               => Clemens Ladisch 
-11-24-04 17:35 Clemens LadischStatus                   assigned => resolved
-11-24-04 17:35 Clemens LadischResolution               open => fixed       
-11-24-04 17:35 Clemens LadischNote Added: 0002572                          
+11-24-04 19:50 m_wright       New Issue                                    
+11-24-04 19:50 m_wright       File Added: audigy.patch                     
+11-24-04 19:50 m_wright       Distribution              => Gentoo          
+11-24-04 19:50 m_wright       Kernel Version            => 2.6.9-ck2       
+11-24-04 20:01 pzad           Status                   assigned => resolved
+11-24-04 20:01 pzad           Resolution               open => fixed       
+11-24-04 20:01 pzad           Note Added: 0002581                          
 12-27-04 15:50 tiwai          Status                   resolved => closed  
 ======================================================================
 
