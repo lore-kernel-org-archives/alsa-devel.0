@@ -1,14 +1,14 @@
-From: Glenn Maynard <g_sf@zewt.org>
-Subject: Re: Re: emu10k1 polishing?
-Date: Thu, 12 Feb 2004 04:41:11 -0500
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Creamware Noah, snd-usb-audio capable?
+Date: Thu, 12 Feb 2004 11:03:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040212094110.GB30323@zewt.org>
-References: <S21917AbUBLIpq/20040212084546Z+734@nic.funet.fi>
+Message-ID: <Pine.HPX.4.33n.0402121101520.14784-100000@studcom.urz.uni-halle.de>
+References: <20040211180013.GF6493@fliwatut.scifi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <S21917AbUBLIpq/20040212084546Z+734@nic.funet.fi>
+In-reply-to: <20040211180013.GF6493@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,18 +17,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Frank Barknecht <fbar@footils.org>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Feb 12, 2004 at 10:45:46AM +0200, Juhana Sadeharju wrote:
-> I dislike patches, but I include one below if you insist.
+Frank Barknecht wrote:
 
-You "dislike" patches?  It's the standard way that just about everyone
-in the free software world uses to show changes.  Please get used to
-them. :)
+> Clemens Ladisch hat gesagt: // Clemens Ladisch wrote:
+>
+> > it should be possible to use the MIDI_STANDARD_INTERFACE quirk (see
+> > below).
+>
+> I'd love to test it, but I had to send back the device already. :(
+> Could you test it?
 
--- 
-Glenn Maynard
+I would test it if I actually had the device.
+
+Well, it's in CVS now, so let's pretend it works and see if somebody
+complains.  ;-)
+
+
+Regards,
+Clemens
+
+
 
 
 -------------------------------------------------------
