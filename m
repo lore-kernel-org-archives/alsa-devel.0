@@ -1,22 +1,16 @@
-From: aavips@ambernet.kiev.ua
-Subject: RECIPIENT ! Virus found in message to you !
-Date: Fri, 29 Oct 2004 10:06:03 +0000 (UTC)
+From: alsa-user-admin@lists.sourceforge.net
+Subject: Your message to Alsa-user awaits moderator approval
+Date: Fri, 29 Oct 2004 02:56:35 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200410290954.i9T9sxuS001465@gate.csbi.ru>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="=NEXT=AVPCHECK=2004=303=1099043699=1230=1="
+Message-ID: <E1CNTUp-0003yQ-TM@sc8-sf-list2.sourceforge.net>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from trinity.csbi.ru (trinity.csbi.ru [213.182.181.68])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9F95923A
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 11:54:59 +0200 (MEST)
-Received: from gate.csbi.ru (gate.csbi.ru [10.0.0.1])
-	by trinity.csbi.ru (Postfix) with ESMTP id 026EB2F156F
-	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 13:52:02 +0400 (MSD)
-Received: (from root@localhost)
-	by gate.csbi.ru (8.13.1/8.11.6) id i9T9sxuS001465
-	for alsa-devel@alsa-project.org.KAV; Fri, 29 Oct 2004 13:54:59 +0400 (MSD)
-	(envelope-from aavips@ambernet.kiev.ua)
+Received: from sc8-sf-list2.sourceforge.net (lists.sourceforge.net [66.35.250.206])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8B286243
+	for <alsa-devel@alsa-project.org>; Fri, 29 Oct 2004 11:56:37 +0200 (MEST)
+Received: from localhost ([127.0.0.1] helo=projects.sourceforge.net)
+	by sc8-sf-list2.sourceforge.net with esmtp (Exim 4.30)
+	id 1CNTUp-0003yQ-TM
+	for alsa-devel@alsa-project.org; Fri, 29 Oct 2004 02:56:35 -0700
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,28 +19,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Date: Fri Oct 29 13:54:59 2004
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a MIME-encapsulated message
+Your mail to 'Alsa-user' with the subject
 
---=NEXT=AVPCHECK=2004=303=1099043699=1230=1=
-Content-Type: text/plain
-Content-Transfer-Encoding: US-ASCII
+    RECIPIENT ! Virus found in message to you !
 
-  
-User aavips@ambernet.kiev.ua sent to you mail with virus. 
--------------------------------------
- KAV report:
--------------------------------------
-	infected: I-Worm.Bagle.at
+Is being held until the list moderator can review it for approval.
 
--------------------------------------
-This message redirect to postmaster@csbi.ru 
+The reason it is being held:
 
+    Post by non-member to a members-only list
 
---=NEXT=AVPCHECK=2004=303=1099043699=1230=1=--
+Either the message will get posted to the list, or you will receive
+notification of the moderator's decision.
 
 
 -------------------------------------------------------
