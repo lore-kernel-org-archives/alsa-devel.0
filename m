@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
-Date: Sun, 26 Sep 2004 12:25:18 +0200 (CEST)
+Subject: [ALSA - driver 0000541]: Tascam US-122 drivers fails with jackd
+Date: Sun, 26 Sep 2004 12:47:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040926102518.52991B09D@server.perex-int.cz>
+Message-ID: <20040926104749.937A3B09F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 994C42D2
-	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 12:25:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DE8792DA
+	for <alsa-devel@alsa-project.org>; Sun, 26 Sep 2004 12:47:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,64 +22,51 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000544
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000541
 ======================================================================
-Reported By:                sasa
-Assigned To:                
+Reported By:                roswel
+Assigned To:                karsten
 ======================================================================
-Project:                    ALSA - lib
-Bug ID:                     544
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Bug ID:                     541
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Debian
+Kernel Version:             Linux 2.6.9-rc2
 ======================================================================
-Date Submitted:             09-26-2004 10:44 CEST
-Last Modified:              09-26-2004 12:25 CEST
+Date Submitted:             09-25-2004 16:11 CEST
+Last Modified:              09-26-2004 12:47 CEST
 ======================================================================
-Summary:                    Sound freezes (but can be restarted OK) after kernel locked for a long time
+Summary:                    Tascam US-122 drivers fails with jackd
 Description: 
-When doing an intensive task that locks the kernel (such as fixating
-CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
-stops moving for half a second or so, sound from xmms stops playing until
-I press stop and play again.
-Interesting thing is that this only happens when MMAP is on. When I turn
-it off, the sound freezes for a second and after that continues.
+When i start jackd everything seems allright, but if i try to play some
+audio through jack, like for example with alsaplayer or ardour, nothing
+happen.
 ======================================================================
 
 ----------------------------------------------------------------------
- sasa - 09-26-2004 10:58 CEST 
+ karsten - 09-25-2004 16:22 CEST 
 ----------------------------------------------------------------------
-Sorry, mistake - it occurs when MMAP is ON.
-Additional info:
-Also I should note that I am using NVidia NForce chipset (Asus A7N8X-E D.
-motherboard) and I am using
-acpi=noirq pci=noacpi
-in order to boot my system. And there is sometimes a lost interrupt 11
-(used by IDE and soundcard as well but the lost interrupt is thown during
-IDE initilization so it is probably caused by IDE).
+Does alsaplayer work in alsa mode?
 
 ----------------------------------------------------------------------
- lee - 09-26-2004 12:03 CEST 
+ roswel - 09-26-2004 12:47 CEST 
 ----------------------------------------------------------------------
-Sounds like an XMMS bug.  Does the same thing happen with aplay?
-
-----------------------------------------------------------------------
- sasa - 09-26-2004 12:25 CEST 
-----------------------------------------------------------------------
-I cannot reproduce it with aplay. You are probably right, it is a XMMS
-bug.
-Thanks.
+Yes alsaplayer work perfectly in alsa mode. I've just this problem
+with jackd.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 10:44 sasa           New Bug                                      
-09-26-04 10:58 sasa           Bugnote Added: 0001916                       
-09-26-04 10:59 sasa           Bug Monitored: sasa                          
-09-26-04 12:03 lee            Bugnote Added: 0001918                       
-09-26-04 12:25 sasa           Bugnote Added: 0001919                       
+09-25-04 16:11 roswel         New Bug                                      
+09-25-04 16:11 roswel         Distribution              => Debian          
+09-25-04 16:11 roswel         Kernel Version            => Linux 2.6.9-rc2 
+09-25-04 16:12 roswel         Bug Monitored: roswel                        
+09-25-04 16:22 karsten        Bugnote Added: 0001910                       
+09-26-04 12:47 roswel         Bugnote Added: 0001920                       
 ======================================================================
 
 
