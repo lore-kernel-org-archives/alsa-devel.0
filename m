@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: Getting actual sample rate
-Date: Tue, 10 Jun 2003 13:56:55 -0400
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: RE: Hammerfall DSP System Problems
+Date: Tue, 10 Jun 2003 11:06:04 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E19PnHF-0006fS-00@sc8-sf-list1.sourceforge.net>
-References: <3EE61792.2070702@iis.fhg.de>
+Message-ID: <NDBBLGIKBJENLAMOLFHGOECFCHAB.mknecht@controlnet.com>
+References: <4732869.1055267407970.JavaMail.java@localhost>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Tue, 10 Jun 2003 19:38:26 +0200."
-             <3EE61792.2070702@iis.fhg.de>
+In-Reply-To: <4732869.1055267407970.JavaMail.java@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,37 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eric Allamanche <alm@iis.fhg.de>
-Cc: Martin Langer <martin-langer@gmx.de>, alsa-devel@lists.sourceforge.net
+To: frankgaetano@collegeclub.com
+Cc: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
->Is this is a design flaw? How to tell the input frequency? Need some 
->additionnal hardware?
+>
+>  /sbin/modprobe snd-rawmidi
+> /sbin/modprobe snd-hammerfall-mem
+> /sbin/modprobe snd-hwdep
+> /sbin/modprobe snd-hdsp
+>
+>  After I issue the last command I get the following errors:
+>
+> /lib/modules/2.4.19/kernel/sound/pci/rme9652/snd-hdsp.o: init_module:
+> No such device
+> Hint: insmod errors can be caused by incorrect module parameters,
+> including invalid IO or IRQ parameters
+>
 
-the ALSA h/w parameters are things set by an application (and
-perhaps later read by the same or a different application). 
+I am having the very same problems with my HDSP 9652. What's even stranger
+is, in my case, that for one evening the card worked, at least as far as
+loading the driver. (No sound, but the driver loaded.) I was able to look at
+/proc/asound/card0 (or whatever the directory/device was at the time...) and
+see sensible stuff. I even took some screen shots and sent email to another
+individual as I was debugging why I had no sound.
 
-what ALSA supports (and the hdsp driver in particular; the digi9652 is
-not so good here) is the notion of defining the clock source. if the
-clock source is internal, then some h/w (i think this applies to the
-digi9652) can't tell you the external rate for the ADAT signal. if the
-clock source is external, then you can't set the rate from an
-application. of course, you might want to know what it is. in which
-case, you have to read the relevant control, which is called "External
-Rate" on the hdsp series. unfortunately, an equivalent control does
-not exist for the digi9652 series, though it would be easy to write (i
-would do it if i wasn't so busy with other projects right now).
+Later that evening I powered down. Upon rebooting the next morning it
+failed, and has failed ever since. That was last Thursday evening.
 
-i think it would have been good for ALSA to have considered this more
-early on; as it is, only a few cards support external clocking, and
-the drivers for those cards have had to make it up as they were written.
+I too am using 0.9.4 as provided in the Gentoo emerge, along with a custom
+compiled kernel.
 
->I checked it again, ADAT is only defined for 44.1/48 kHz. I mixed it up 
->with the Hammerfall specifications in the manual. The supported 
->frequencies ranges from 32 to 96kHz (SPDIF mode?)
+Like you I think the HDSP driver understands my firmware revision. I have
+also downgraded and upgraded my firmware without success.
 
-as explained, ADAT can be used up to 96kHz but it halves the number of
-available channels.
+This whole Alsa/HDSP thing is amazingly weird...
+
+- Mark
+
+
 
 
 -------------------------------------------------------
