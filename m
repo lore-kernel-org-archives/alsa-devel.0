@@ -1,22 +1,22 @@
 From: Nishanth Aravamudan <nacc@us.ibm.com>
-Subject: [PATCH 28/39] sound/gus_reset: replace schedule_timeout() with msleep_interruptible()
-Date: Fri, 21 Jan 2005 11:38:05 -0800
-Message-ID: <20050121193805.GI3340__39419.3162829199$1106336489$gmane$org@us.ibm.com>
+Subject: [PATCH 29/39] sound/rawmidi: replace schedule_timeout() with msleep()
+Date: Fri, 21 Jan 2005 11:44:55 -0800
+Message-ID: <20050121194455.GJ3340__37753.5049607561$1106336823$gmane$org@us.ibm.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from e31.co.us.ibm.com (e31.co.us.ibm.com [32.97.110.129])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4256B21B
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:38:09 +0100 (MET)
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com [9.17.195.106])
-	by e31.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0LJc7m4099666
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 14:38:07 -0500
+Received: from e33.co.us.ibm.com (e33.co.us.ibm.com [32.97.110.131])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B53D321B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:45:04 +0100 (MET)
+Received: from westrelay02.boulder.ibm.com (westrelay02.boulder.ibm.com [9.17.195.11])
+	by e33.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0LJj2CO173364
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 14:45:02 -0500
 Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j0LJc77I259114
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:38:07 -0700
+	by westrelay02.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j0LJj2sA447340
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:45:02 -0700
 Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id j0LJc6NY005164
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:38:06 -0700
+	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id j0LJj1Ol022154
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:45:01 -0700
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -35,35 +35,34 @@ Hi,
 
 Please consider applying.
 
-Description: Use msleep_interruptible() instead of custom wait code involving
-schedule_timeout() to guarantee the task delays as expected. This also removes a
-dependence on the value of HZ.
+Description: Use msleep instead of schedule_timeout() to guarantee the task
+delays as expected. This also removes a dependence on the value of HZ.
 
 Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
 
---- 2.6.11-rc1-kj-v/sound/isa/gus/gus_reset.c	2005-01-15 16:55:45.000000000 -0800
-+++ 2.6.11-rc1-kj/sound/isa/gus/gus_reset.c	2005-01-18 13:30:43.000000000 -0800
-@@ -207,7 +207,6 @@ void snd_gf1_stop_voices(snd_gus_card_t 
- 	unsigned long flags;
- 	short i, ramp_ok;
- 	unsigned short ramp_end;
--	long time;
- 
- 	if (!in_interrupt()) {	/* this can't be done in interrupt */
- 		for (i = v_min, ramp_ok = 0; i <= v_max; i++) {
-@@ -227,11 +226,7 @@ void snd_gf1_stop_voices(snd_gus_card_t 
- 			}
- 			spin_unlock_irqrestore(&gus->reg_lock, flags);
- 		}
--		time = HZ / 20;
--		while (time > 0 && !signal_pending(current)) {
--			set_current_state(TASK_INTERRUPTIBLE);
--			time = schedule_timeout(time);
+--- 2.6.11-rc1-kj-v/sound/core/rawmidi.c	2005-01-15 16:55:44.000000000 -0800
++++ 2.6.11-rc1-kj/sound/core/rawmidi.c	2005-01-18 13:24:06.000000000 -0800
+@@ -29,6 +29,7 @@
+ #include <linux/time.h>
+ #include <linux/wait.h>
+ #include <linux/moduleparam.h>
++#include <linux/delay.h>
+ #include <sound/rawmidi.h>
+ #include <sound/info.h>
+ #include <sound/control.h>
+@@ -149,10 +150,8 @@ int snd_rawmidi_drain_output(snd_rawmidi
+ 		/* we need wait a while to make sure that Tx FIFOs are empty */
+ 		if (substream->ops->drain)
+ 			substream->ops->drain(substream);
+-		else {
+-			set_current_state(TASK_UNINTERRUPTIBLE);
+-			schedule_timeout(HZ / 20);
 -		}
-+		msleep_interruptible(50);
++		else
++			msleep(50);
+ 		snd_rawmidi_drop_output(substream);
  	}
- 	snd_gf1_clear_voices(gus, v_min, v_max);
- }
+ 	return err;
 
 
 -------------------------------------------------------
