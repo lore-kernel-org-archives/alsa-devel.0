@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
 Subject: [ALSA - driver 0000375]: SB Live (Value and 5.1), OSS playback fine, ALSA playback distorted
-Date: Sat, 10 Jul 2004 17:36:09 +0200
+Date: Sat, 10 Jul 2004 18:39:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <df75b2770c820f857c67413f69621ad6@bugtrack.alsa-project.org>
+Message-ID: <d2b78b9eb5fa65c0cc0ca905af346a4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -19,7 +19,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -46,7 +46,7 @@ Kernel Version:             2.4.20-gentoo-r8
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Date Submitted:             07-10-2004 17:36 CEST
-Last Modified:              07-10-2004 17:36 CEST
+Last Modified:              07-10-2004 18:39 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
@@ -80,6 +80,12 @@ on the same PC, so it seems like a SB Live! specific issue.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
+----------------------------------------------------------------------
+ azrael7157 - 07-10-2004 18:39 CEST=20
+----------------------------------------------------------------------
+Midi playback via pmidi (using hardware or Timidity) doesn't work either.
+Haven't tried an OSS midi player yet.
+
 Bug History
 Date Modified  Username       Field                    Change            =
  =20
@@ -94,6 +100,10 @@ Date Modified  Username       Field                    Change            =
    =20
 07-10-04 17:36 azrael7157     Kernel Version            =3D> 2.4.20-gento=
 o-r8
+07-10-04 17:37 azrael7157     Bug Monitored: azrael7157                  =
+ =20
+07-10-04 18:39 azrael7157     Bugnote Added: 0001403                     =
+ =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
