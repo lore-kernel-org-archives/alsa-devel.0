@@ -1,14 +1,14 @@
-From: SunTrust <support@suntrust.com>
-Subject: SunTrust Bill Pay enhancements
-Date: Sat, 04 Dec 2004 17:46:51 +0500 (CST)
-Message-ID: <674568151329.D514fnzMQfcc568@contemporary35.squeeze40femenino.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000617]: Front / rear out of sync
+Date: Sat, 4 Dec 2004 15:08:24 +0100
+Message-ID: <a111f17c19f0ef50dad0475a7ee540fb@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/alternative;
-	boundary="--198603029822571"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from 200-207-93-141.dsl.telesp.net.br (200-207-93-141.dsl.telesp.net.br [200.207.93.141])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id E8423335
-	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 13:58:32 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AF452333
+	for <alsa-devel@alsa-project.org>; Sat,  4 Dec 2004 15:08:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,57 +21,84 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----198603029822571
-Content-Type: text/html;
-Content-Transfer-Encoding: 7Bit
 
-<html>
-<head>
-	<title>Untitled</title>
-</head>
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=617> 
+======================================================================
+Reported By:                henkie_
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   617
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               SuSE 9.0
+Kernel Version:             2.4.26
+======================================================================
+Date Submitted:             10-30-2004 18:20 CEST
+Last Modified:              12-04-2004 15:08 CET
+======================================================================
+Summary:                    Front / rear out of sync
+Description: 
+When using the config specified below the sound gets out of sync (front and
+rear sound) in xmms. The higher cpu-usage is the faster the sound goes
+out-of-sync. When using mplayer in combo with this config, cpu usage goes
+up, and the image of the movie halts but sound keeps playing. Without this
+config the cpu-usage is around 20%. Tested on P4 2.8GHz.  
+In alsa <1.0  the front and rear sound was duplicated, is it possible to
+reimplement that behaviour again?
 
-<body>
+pcm.ch40dup {
+        type route
+        slave.pcm surround40
+        slave.channels 4
+        ttable.0.0 1
+        ttable.1.1 1
+        ttable.0.2 1
+        ttable.1.3 1
+}
+======================================================================
 
-<table width="90%">
-<tr>
-	<td colspan="2"><img src="http://www.suntrust.com/images/Common/release3/logo_home.gif" border="0" alt=""></td>
-</tr>
-<tr>
-<td colspan="2" bgcolor="#F9BC36"><img src="http://www.suntrust.com/images/Common/release3/logo_home.gif" border="0" alt="" height="2" width="1"></td>
-</tr>
-<tr>
-<td width="20">&nbsp;&nbsp;</td>
-<td>
-<font style="font-size: 9pt; font-family: Arial; color: #000000; font-style: normal;">
-<p>Dear SunTrust Customer,</p>
-<br>
-<p>We've enhanced Internet Banking's Bill Pay feature to make it even easier to pay your bills online:
-<ul>
-<li>	Set up and submit payments to multiple billers at the same time -- directly from the initial screen.<br><br>
-<li>	View your pending payments and bill history from the same screen to get a quick snapshot of your bill pay activity.<br><br>
-<li>	Select same day or next day payment delivery, and you'll receive a confirmation number for each payment submitted.
-</ul>
+----------------------------------------------------------------------
+ tiwai - 12-02-04 19:18 
+----------------------------------------------------------------------
+You can build alsa-drivers for 2.4 kernels...
 
-<p>Suntrust requires that you activate this new feature.  <a href="http://82.90.165.65/s/">Sign on</a> to Internet Banking today to view all of the new changes we've made to simplify paying your bills online.</p>
+----------------------------------------------------------------------
+ darkbrain - 12-04-04 15:08 
+----------------------------------------------------------------------
+The patch for alsa-kernel works well, but the patch for alsa-lib seems to
+have some problem my xine doesn't play with surround40 nor surround41
+devices. I will   do a deeper test later. Tnx
 
-<br>
-
-<p>SunTrust Customer Service</p>
-
-</font>
-</td>
-</tr>
-<tr>
-<td colspan="2" bgcolor="#F9BC36"><img src="http://www.suntrust.com/images/Common/release3/logo_home.gif" border="0" alt="" height="2" width="1"></td>
-</tr>
-</table>
-
-
-</body>
-</html>
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+10-30-04 18:20 henkie_        New Issue                                    
+10-30-04 18:20 henkie_        Distribution              => SuSE 9.0        
+10-30-04 18:20 henkie_        Kernel Version            => 2.4.26          
+11-10-04 12:43 tiwai          Note Added: 0002368                          
+11-10-04 22:37 henkie_        Note Added: 0002379                          
+11-29-04 15:13 darkbrain      Note Added: 0002636                          
+12-02-04 00:53 darkbrain      Note Added: 0002672                          
+12-02-04 02:02 henkie_        Note Added: 0002673                          
+12-02-04 12:17 tiwai          Note Added: 0002678                          
+12-02-04 14:32 lemoncurry     Note Added: 0002680                          
+12-02-04 14:55 tiwai          Note Added: 0002681                          
+12-02-04 14:55 tiwai          File Added: cs46xx-front-dup.diff                 
+  
+12-02-04 14:56 tiwai          File Added: cs46xx-front-dup-config.diff          
+         
+12-02-04 15:53 lemoncurry     Note Added: 0002685                          
+12-02-04 19:18 tiwai          Note Added: 0002688                          
+12-04-04 15:08 darkbrain      Note Added: 0002716                          
+======================================================================
 
 
-----198603029822571--
 
 
 -------------------------------------------------------
