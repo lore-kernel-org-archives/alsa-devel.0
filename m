@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
-Date: Fri, 13 Aug 2004 01:33:19 +0200 (CEST)
+Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
+Date: Fri, 13 Aug 2004 02:03:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040812233319.C1C0F1102F@server.perex-int.cz>
+Message-ID: <20040813000344.743DB1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 28F46289
-	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 01:33:20 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8063289
+	for <alsa-devel@alsa-project.org>; Fri, 13 Aug 2004 02:03:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,76 +22,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000328
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
 ======================================================================
-Reported By:                aaronkaplan
-Assigned To:                tiwai
+Reported By:                snaketails
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     328
-Category:                   PCI - nm256
+Bug ID:                     435
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.5-1.358
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             06-08-2004 23:13 CEST
-Last Modified:              08-13-2004 01:33 CEST
+Date Submitted:             08-12-2004 02:50 CEST
+Last Modified:              08-13-2004 02:03 CEST
 ======================================================================
-Summary:                    snd-nm256 freezes Dell Latitude LS
+Summary:                    No current support for the ICH6R & ALC880 devices
 Description: 
-My Dell Latitude LS with an NM256AV hangs when I insert the
-snd-nm256 module.
-
-The OSS driver works fine.
-
+As this is a new mobo, there is no driver configuration that supports this
+newer buss interface devices, so there is no sound from the mobo.
+The inability for the mobo to run SATA under Linux is not an issue here,
+as I am using the SiS SATA driver, only issue is sound
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 06-30-2004 16:55 CEST 
+ pzad - 08-12-2004 07:32 CEST 
 ----------------------------------------------------------------------
-Does the attached patch have any effect?
-If not, please show the output of lspci -nv.
-
-----------------------------------------------------------------------
- aaronkaplan - 07-01-2004 16:03 CEST 
-----------------------------------------------------------------------
-No difference with the patch.  I'm attaching the output from lspci.
+I think in ALSA 1.0.6rc2 is driver for HD audio (azx module). Try it.
 
 ----------------------------------------------------------------------
- fridolin - 08-13-2004 01:33 CEST 
+ snaketails - 08-13-2004 02:03 CEST 
 ----------------------------------------------------------------------
-Hi!
-
-
-I have got a similar problem. My computer is a Latitude Cpi-R 400GT.
-
-The machine hangs not immediately after inserting the nm-nm256 module, but
-it freezes always when accessing the soundcard (by invoking alsamixer).
-
-The similarity is, that I have already tried to activate/deactivate the
-old "latitude_workaround"-thing, but this doesn't help.
-
-The older OSS-driver works for me, too. 
-
-
-I'm using the latest stable driver (alsa-driver-1.0.5.tar.bz2) compiled
-over a linux 2.4.24-kernel.
+Thank you, but I am currently using "Compiled-in" ALSA support.
+I guess I will have to remove the Alsa support from the Kernel to be able
+to compile? I may look at doing this, this weekend.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-08-04 23:13 aaronkaplan    New Bug                                      
-06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
-06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
-06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                    
-06-30-04 16:55 tiwai          Bugnote Added: 0001362                       
-06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                    
-07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
-07-01-04 16:03 aaronkaplan    Bugnote Added: 0001370                       
-08-13-04 01:33 fridolin       Bugnote Added: 0001559                       
+08-12-04 02:50 snaketails     New Bug                                      
+08-12-04 02:50 snaketails     Distribution              => Gentoo          
+08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
+08-12-04 07:32 pzad           Bugnote Added: 0001551                       
+08-13-04 02:03 snaketails     Bugnote Added: 0001560                       
 ======================================================================
 
 
