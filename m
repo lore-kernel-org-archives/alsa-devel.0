@@ -1,11 +1,14 @@
-From: "=?gb2312?B?c3Vkb25n?=" <sudong@tcl.com>
-Subject: =?gb2312?B?UmU6IFtBbHNhLWRldmVsXSBQcm9ibGVtIGFib3V0IFBDTSBkZXZpY2U=?=
- =?gb2312?B?IG9uIGlNWDIxIGJvYXJk?=
-Date: Thu, 13 Jan 2005 10:27:34 +0800 (CST)
-Message-ID: <41E5DC96.000001.13262@TCLmail>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000811]: 1.0.8-rc2 base/treble adjustment does not work with "tone" button enabled
+Date: Thu, 13 Jan 2005 06:22:21 +0100
+Message-ID: <f1fd2d50810e51c6ba91cd8cb22fd245@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: Multipart/Alternative; boundary="Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C6BEA2F1
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 06:22:21 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,30 +18,60 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=811> 
+======================================================================
+Reported By:                vinyvat
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   811
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             01-12-2005 18:58 CET
+Last Modified:              01-13-2005 06:22 CET
+======================================================================
+Summary:                    1.0.8-rc2 base/treble adjustment does not work with
+"tone" button enabled
+Description: 
+With 1.8.0-rc2, using any alsa mixer apps (alsamixer, kmix,
+gnome-alsa-mixer), the base/treble adjustment does nothing even when I
+make sure the "Tone" button is clicked.
 
-Q2xlbWVucyB3cm90ZToNCg0KPiBEb2VzIHRoZSBQQ00gZGV2aWNlIGFwcGVhciBpbiAvcHJv
-Yy9hc291bmQvZGV2aWNlcz8NCg0KPiBXaGF0IGlzIHRoZSBleGFjdCBlcnJvciBtZXNzYWdl
-Pw0KDQogIFllYWguIFRoZSBQQ00gZGV2aWNlIGFwcGVhcnMgaW4gL3Byb2MvYXNvdW5kL2Rl
-dmljZXMuIA0KICBUaGUgZXhhY3QgZXJyb3IgbWVzc2FnZSBpcyAiVW5rbm93biBQQ00gaHc6
-MCwwIiAuDQoNClRoYW5rcw0KDQpTdSBkb25nDQo=
---Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu
-Content-Type: text/html; charset="gb2312"
-Content-Transfer-Encoding: base64
+Reproduce:
+/etc/init.d/alsa start
+alsaplayer # to play some music
+alsamixer
 
-Q2xlbWVucyB3cm90ZTo8YnI+PGJyPiZndDsgRG9lcyB0aGUgUENNIGRldmljZSBhcHBlYXIg
-aW4gL3Byb2MvYXNvdW5kL2RldmljZXM/PGJyPjxicj4mZ3Q7IFdoYXQgaXMgdGhlIGV4YWN0
-IGVycm9yIG1lc3NhZ2U/PGJyPjxicj4gIFllYWguIFRoZSBQQ00gZGV2aWNlIGFwcGVhcnMg
-aW4gL3Byb2MvYXNvdW5kL2RldmljZXMuIDxicj4gIFRoZSBleGFjdCBlcnJvciBtZXNzYWdl
-IGlzICZxdW90O1Vua25vd24gUENNIGh3OjAsMCZxdW90OyAuPGJyPjxicj5UaGFua3M8YnI+
-PGJyPlN1IGRvbmc8YnI+PGJyPgoK
---Boundary-=_qpwtrdLmoHKUrGCRdvaWEAjlMuZu--
+adjust base/treble - no difference in sound, even when "tone" is enabled.
+======================================================================
+
+----------------------------------------------------------------------
+ vinyvat - 01-13-05 06:22 
+----------------------------------------------------------------------
+Please close this bug. Cannot reproduce any more with 1.0.8-rc2 ( maybe was
+too late at night ? )
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-12-05 18:58 vinyvat        New Issue                                    
+01-12-05 18:58 vinyvat        Kernel Version            => 2.6.8.1         
+01-13-05 06:22 vinyvat        Note Added: 0003181                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
