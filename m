@@ -1,12 +1,16 @@
-From: David Fries <dfries@mail.win.org>
-Subject: [PATCH] opl3sa2.c more detail on irq allocation fail
-Date: Fri, 9 Jan 2004 20:08:23 -0600
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: 2.6.1 sound oops
+Date: Sat, 10 Jan 2004 19:34:34 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040110020823.GB2399@spacedout.fries.net>
+Message-ID: <Pine.LNX.4.58.0401101931420.1883@pnote.perex-int.cz>
+References: <20040110165754.GB367@elf.ucw.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id TAA16244
+	for <alsa-devel@alsa-project.org>; Sat, 10 Jan 2004 19:34:46 +0100
+In-Reply-To: <20040110165754.GB367@elf.ucw.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,42 +19,26 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Pavel Machek <pavel@suse.cz>
+Cc: kernel list <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I need this patch so in the future if something is taking the irq and
-I don't notice it I'll at least have a message saying so.
+On Sat, 10 Jan 2004, Pavel Machek wrote:
 
-I tried the 2.4.22 kernel and all it would tell me was that the opl3sa
-module couldn't find the hardware.  Finally I went back and added some
-printk messages to track down where the problem was.  It turns out
-that acpi was allocating irq 5 to the pcmcia socket where 2.4.21 and
-before left that interrupt free.  If I had a message like the one
-below I would have had something to look for.  It turns out that
-2.4.23 works fine, it just assigns all the pci devices to use irq 11,
-which works, but isn't optional.
+> Hi!
+> 
+> I got following when trying to play video on 2.6.1... I remmber
+> similar oops in past. Any ideas?
 
-Is this the right place to send patches?
+Try 2.6.1-mm1 and/or toggle CONFIG_FRAME_POINTER settings. It seems that
+GCC has some issues with it.
 
-Index: opl3sa2.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/isa/opl3sa2.c,v
-retrieving revision 1.30
-diff -u -r1.30 opl3sa2.c
---- opl3sa2.c	14 Oct 2003 13:08:14 -0000	1.30
-+++ opl3sa2.c	10 Jan 2004 02:06:31 -0000
-@@ -771,6 +771,7 @@
- 	if ((err = snd_opl3sa2_detect(chip)) < 0)
- 		goto __error;
- 	if (request_irq(xirq, snd_opl3sa2_interrupt, SA_INTERRUPT, "OPL3-SA2/3", (void *)chip)) {
-+		snd_printk(KERN_ERR "Could not allocate interrupt %d\n", xirq);
- 		err = -ENODEV;
- 		goto __error;
- 	}
+						Jaroslav
 
--- 
-David Fries <dfries@mail.win.org>
-http://fries.net/~david/pgpkey.txt
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
