@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000440]: Gateway Solo 250 nma2 - no soundcard detected
-Date: Sat, 14 Aug 2004 19:38:59 +0200 (CEST)
+Subject: [ALSA - driver 0000328]: snd-nm256 freezes Dell Latitude LS
+Date: Sat, 14 Aug 2004 20:04:19 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040814173859.828CA1102F@server.perex-int.cz>
+Message-ID: <20040814180419.C45741102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C39AD1E2
-	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 19:38:59 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2CAC7222
+	for <alsa-devel@alsa-project.org>; Sat, 14 Aug 2004 20:04:20 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,42 +20,99 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000440
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000328
 ======================================================================
-Reported By:                thelight
+Reported By:                aaronkaplan
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     440
+Bug ID:                     328
 Category:                   PCI - nm256
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
 Status:                     assigned
 Distribution:               Fedora Core 2
-Kernel Version:             2.6.6-1.435.2.3
+Kernel Version:             2.6.5-1.358
 ======================================================================
-Date Submitted:             08-14-2004 19:38 CEST
-Last Modified:              08-14-2004 19:38 CEST
+Date Submitted:             06-08-2004 23:13 CEST
+Last Modified:              08-14-2004 20:04 CEST
 ======================================================================
-Summary:                    Gateway Solo 250 nma2 - no soundcard detected
+Summary:                    snd-nm256 freezes Dell Latitude LS
 Description: 
-The laptops specs say it has a 'neomagic nma 2' sound card onboard. From
-what I can tell this is some sort of NeoMagic nm256 equivalent.
+My Dell Latitude LS with an NM256AV hangs when I insert the
+snd-nm256 module.
 
-My main problem is that I simply get no sound. The fedora core 2 program
-system-config-soundcard doesnt actually detect a soundcard at all. Im
-using the 1.0.3 rpms of alsa which came with fedora. 
+The OSS driver works fine.
+
 ======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 06-30-2004 16:55 CEST 
+----------------------------------------------------------------------
+Does the attached patch have any effect?
+If not, please show the output of lspci -nv.
+
+----------------------------------------------------------------------
+ aaronkaplan - 07-01-2004 16:03 CEST 
+----------------------------------------------------------------------
+No difference with the patch.  I'm attaching the output from lspci.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-2004 01:33 CEST 
+----------------------------------------------------------------------
+Hi!
+
+
+I have got a similar problem. My computer is a Latitude Cpi-R 400GT.
+
+The machine hangs not immediately after inserting the nm-nm256 module, but
+it freezes always when accessing the soundcard (by invoking alsamixer).
+
+The similarity is, that I have already tried to activate/deactivate the
+old "latitude_workaround"-thing, but this doesn't help.
+
+The older OSS-driver works for me, too. 
+
+
+I'm using the latest stable driver (alsa-driver-1.0.5.tar.bz2) compiled
+over a linux 2.4.24-kernel.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-2004 12:46 CEST 
+----------------------------------------------------------------------
+I've also tried alsa-driver-1.0.5a, but it shows the same crashing.
+
+----------------------------------------------------------------------
+ fridolin - 08-13-2004 15:17 CEST 
+----------------------------------------------------------------------
+With 1.0.6rc2, the driver doesn't crash any more.
+
+I'm sorry that I haven't tried out this before, but when compiling on a
+slow machine and after tens of reboots, one day goes by very soon.
+
+----------------------------------------------------------------------
+ aaronkaplan - 08-14-2004 20:04 CEST 
+----------------------------------------------------------------------
+I upgraded to kernel 2.6.7 and I no longer have a problem with this driver.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-14-04 19:38 thelight       New Bug                                      
-08-14-04 19:38 thelight       Distribution              => Fedora Core 2   
-08-14-04 19:38 thelight       Kernel Version            => 2.6.6-1.435.2.3 
+06-08-04 23:13 aaronkaplan    New Bug                                      
+06-08-04 23:13 aaronkaplan    Distribution              => Fedora Core 2   
+06-08-04 23:13 aaronkaplan    Kernel Version            => 2.6.5-1.358     
+06-08-04 23:13 aaronkaplan    Bug Monitored: aaronkaplan                    
+06-30-04 16:55 tiwai          Bugnote Added: 0001362                       
+06-30-04 16:56 tiwai          File Added: nm256-dell-test.dif                    
+07-01-04 16:01 aaronkaplan    File Added: lspci.out                        
+07-01-04 16:03 aaronkaplan    Bugnote Added: 0001370                       
+08-13-04 01:33 fridolin       Bugnote Added: 0001559                       
+08-13-04 12:46 fridolin       Bugnote Added: 0001562                       
+08-13-04 15:17 fridolin       Bugnote Added: 0001564                       
+08-14-04 20:04 aaronkaplan    Bugnote Added: 0001565                       
 ======================================================================
 
 
