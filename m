@@ -1,12 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] ymfpci timer
-Date: Mon, 06 Oct 2003 17:58:24 +0200 (METDST)
+From: ritsch@iem.at
+Subject: Re: Scatter-Gather buffer allocation before running on HDSP-MADI ?
+Date: Mon, 06 Oct 2003 19:19:08 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0310061754190.26227-100000@studcom.urz.uni-halle.de>
+Message-ID: <1065460748.3f81a40c61063@iem.at>
+References: <16254.61960.840856.972245@seneca.iemnet> <Pine.LNX.4.53.0310052055350.13267@pnote.perex-int.cz> <s5had8eo4p1.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5had8eo4p1.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,159 +17,188 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thanx that cleared a lot.
 
-This adds support for the timer on ymfpci chips.
+I thought so, 
 
+since I want to allocate once and then leave it, (because I dont want an exlusiv
+use of capture and playback ...)
 
-Index: alsa-kernel/include/ymfpci.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/include/ymfpci.h,v
-retrieving revision 1.10
-diff -u -r1.10 ymfpci.h
---- alsa-kernel/include/ymfpci.h	16 Jun 2003 07:31:38 -0000	1.10
-+++ alsa-kernel/include/ymfpci.h	6 Oct 2003 15:48:35 -0000
-@@ -25,6 +25,7 @@
- #include "pcm.h"
- #include "rawmidi.h"
- #include "ac97_codec.h"
-+#include "timer.h"
- #include <linux/gameport.h>
+Please three more questions:
 
- #ifndef PCI_VENDOR_ID_YAMAHA
-@@ -349,6 +350,7 @@
+1) I found also the function:
 
- 	ac97_t *ac97;
- 	snd_rawmidi_t *rawmidi;
-+	snd_timer_t *timer;
+ snd_malloc_sgbuf_pages(hdspm->pci, wanted, dmab)
 
- 	struct pci_dev *pci;
- 	snd_card_t *card;
-@@ -389,6 +391,7 @@
- int snd_ymfpci_pcm_spdif(ymfpci_t *chip, int device, snd_pcm_t **rpcm);
- int snd_ymfpci_pcm_4ch(ymfpci_t *chip, int device, snd_pcm_t **rpcm);
- int snd_ymfpci_mixer(ymfpci_t *chip, int rear_switch);
-+int snd_ymfpci_timer(ymfpci_t *chip, int device);
- #if defined(CONFIG_GAMEPORT) || defined(CONFIG_GAMEPORT_MODULE)
- int snd_ymfpci_joystick(ymfpci_t *chip);
- #endif
-Index: alsa-kernel/pci/ymfpci/ymfpci.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ymfpci/ymfpci.c,v
-retrieving revision 1.26
-diff -u -r1.26 ymfpci.c
---- alsa-kernel/pci/ymfpci/ymfpci.c	12 Aug 2003 14:10:16 -0000	1.26
-+++ alsa-kernel/pci/ymfpci/ymfpci.c	6 Oct 2003 15:48:35 -0000
-@@ -206,6 +206,10 @@
- 		snd_card_free(card);
- 		return err;
- 	}
-+	if ((err = snd_ymfpci_timer(chip, 0)) < 0) {
-+		snd_card_free(card);
-+		return err;
-+	}
- 	if (chip->mpu_res) {
- 		if ((err = snd_mpu401_uart_new(card, 0, MPU401_HW_YMFPCI,
- 					       mpu_port[dev], 1,
-Index: alsa-kernel/pci/ymfpci/ymfpci_main.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/ymfpci/ymfpci_main.c,v
-retrieving revision 1.41
-diff -u -r1.41 ymfpci_main.c
---- alsa-kernel/pci/ymfpci/ymfpci_main.c	14 Aug 2003 11:05:38 -0000	1.41
-+++ alsa-kernel/pci/ymfpci/ymfpci_main.c	6 Oct 2003 15:48:36 -0000
-@@ -779,7 +779,8 @@
+Can I allocate memory with these before initializing a substream and
+write it to hardware and then set all the buffer data in the 
+substream:
 
- 	status = snd_ymfpci_readw(chip, YDSXGR_INTFLAG);
- 	if (status & 1) {
--		/* timer handler */
-+		if (chip->timer)
-+			snd_timer_interrupt(chip->timer, chip->timer->sticks);
- 	}
- 	snd_ymfpci_writew(chip, YDSXGR_INTFLAG, status);
+  runtime->dma_area = hdspm->p_dmab.area;
+  runtime->dma_addr =  hdspm->p_dmab.addr;
+  runtime->dma_private =  hdspm->p_dmab.private_data;
+  runtime->dma_bytes = hdspm->p_dmab.bytes;
 
-@@ -1699,6 +1700,77 @@
- 	}
+  Do I miss something ?
 
- 	return 0;
-+}
-+
-+
-+/*
-+ * timer
-+ */
-+
-+static int snd_ymfpci_timer_start(snd_timer_t *timer)
-+{
-+	ymfpci_t *chip;
-+	unsigned long flags;
-+	unsigned int count;
-+
-+	chip = snd_timer_chip(timer);
-+	count = timer->sticks - 1;
-+	if (count == 0) /* minimum time is 20.8 us */
-+		count = 1;
-+	spin_lock_irqsave(&chip->reg_lock, flags);
-+	snd_ymfpci_writew(chip, YDSXGR_TIMERCOUNT, count);
-+	snd_ymfpci_writeb(chip, YDSXGR_TIMERCTRL, 0x03);
-+	spin_unlock_irqrestore(&chip->reg_lock, flags);
-+	return 0;
-+}
-+
-+static int snd_ymfpci_timer_stop(snd_timer_t *timer)
-+{
-+	ymfpci_t *chip;
-+	unsigned long flags;
-+
-+	chip = snd_timer_chip(timer);
-+	spin_lock_irqsave(&chip->reg_lock, flags);
-+	snd_ymfpci_writeb(chip, YDSXGR_TIMERCTRL, 0x00);
-+	spin_unlock_irqrestore(&chip->reg_lock, flags);
-+	return 0;
-+}
-+
-+static int snd_ymfpci_timer_precise_resolution(snd_timer_t *timer,
-+					       unsigned long *num, unsigned long *den)
-+{
-+	*num = 1;
-+	*den = 96000;
-+	return 0;
-+}
-+
-+static struct _snd_timer_hardware snd_ymfpci_timer_hw = {
-+	.flags = SNDRV_TIMER_HW_AUTO,
-+	.resolution = 10417, /* 1/2fs = 10.41666...us */
-+	.ticks = 65536,
-+	.start = snd_ymfpci_timer_start,
-+	.stop = snd_ymfpci_timer_stop,
-+	.precise_resolution = snd_ymfpci_timer_precise_resolution,
-+};
-+
-+int snd_ymfpci_timer(ymfpci_t *chip, int device)
-+{
-+	snd_timer_t *timer = NULL;
-+	snd_timer_id_t tid;
-+	int err;
-+
-+	tid.dev_class = SNDRV_TIMER_CLASS_CARD;
-+	tid.dev_sclass = SNDRV_TIMER_SCLASS_NONE;
-+	tid.card = chip->card->number;
-+	tid.device = device;
-+	tid.subdevice = 0;
-+	if ((err = snd_timer_new(chip->card, "YMFPCI", &tid, &timer)) >= 0) {
-+		strcpy(timer->name, "YMFPCI timer");
-+		timer->private_data = chip;
-+		timer->hw = snd_ymfpci_timer_hw;
-+	}
-+	chip->timer = timer;
-+	return err;
- }
+2) If SG_BUF makes continous virtual buffer
+
+   why there is a 
+
+     .pages=snd_pcm_sgbuf_ops_page 
+ 
+   function needed ?
+   what is the purpose of this ?  
+ 
+3) Just for my understanding:
+
+SG allocates scattered physical memory and maps it to
+continous virtual:
+
+when I allocate via 
+
+ snd_malloc_sgbuf_pages(hdspm->pci, wanted, dmab)
+
+I test the memory so get a syslog:
+
+hdspm.c:2788: Preallocated 8192 kBytes
+hdspm.c:2831: dmab(d27b7a84): area=e2db1000, addr=0, bytes = 0 (wanted 4194304),
+private=ce4a25c0
+
+hdspm.c:2834: area Start: e2db1000 End:e31b0ffc diff=4194300
+hdspm.c:2839: phys Start: b65b000 End:f6acffc diff=-67444732
+hdspm.c:2845: bus_to_virt Start: cb65b000 End:cf6acffc diff=-67444732
+
+(src of this see at  the end)
 
 
+Which tells me 
+- virt is ok 4194304 
+- phys is scattered so also any diff number is ok.
+- but bus_to_virt of physical adress should make a continous, but it doesnt - Why ?
 
+Thanx a lot.
 
+mfg winfried
+
+Anhang:
+
+(test sg_memory)
+
+  ...
+
+  if((buf = snd_malloc_sgbuf_pages(hdspm->pci, wanted, dmab)) == NULL){
+    snd_printd("playback SG-buffer allocating error\n");
+    return -EINVAL;
+  }
+
+  snd_printd("area Start: %lx End:%lx diff=%ld\n",
+	     dmab->area,dmab->area+wanted-4,wanted-4);
+  snd_printd("phys Start: %lx End:%lx diff=%ld\n",
+	     snd_pcm_sgbuf_get_addr(sgbuf,0),
+	     snd_pcm_sgbuf_get_addr(sgbuf,wanted-4),
+	     snd_pcm_sgbuf_get_addr(sgbuf,0)
+	     - snd_pcm_sgbuf_get_addr(sgbuf,wanted-4));
+
+  snd_printd("bus_to_virt Start: %lx End:%lx diff=%ld\n",
+	     bus_to_virt(snd_pcm_sgbuf_get_addr(sgbuf,0)),
+	     bus_to_virt(snd_pcm_sgbuf_get_addr(sgbuf,wanted-4)),
+	     bus_to_virt(snd_pcm_sgbuf_get_addr(sgbuf,0))
+	     - bus_to_virt(snd_pcm_sgbuf_get_addr(sgbuf,wanted-4)));
+  ....
+
+> At Sun, 5 Oct 2003 21:01:58 +0200 (CEST),
+> Jaroslav wrote:
+> > 
+> > On Sat, 4 Oct 2003, Winfried Ritsch wrote:
+> > 
+> > >
+> > > Hello !
+> > >
+> > > (A question from an newbie-developer to make it perfect ;-)
+> > >
+> > > I am writing an ALSA-lowleveldriver for the RME HDSP-MADI card.
+> > > (which have 64Audion in and out and an 128in64(= 8192Fader) Mixer
+> > > see http://www.rme-audio.de/hdsp/hdspmadi.htm ) Coding is quite
+> > > complete but I have trouble with the memory management.
+> > >
+> > > The Card uses ScatterGather Buffer, each channel 64kB and this
+> > > has to be asigned (to be safe) before activation, so I want
+> > > to allocate SGbuffer (64+64)*64*1024=8388608 in 4k-blocks.
+> > >
+> > > I do a
+> > >
+> > > snd_pcm_lib_preallocate_pci_pages_for_all(hdspm->pci,
+> pcm,8388608l,8388608l)
+> > >
+> > > after making the pcm_device.
+> > >
+> > > Here the questions:
+> > >
+> > > 1) How can I get the sgbuf pointer ?
+> > >
+> > > ... since in the streams runtime is not set and therefore (besides
+> the
+> > > Documentation says is (snd_pcm_sgbuf_t*)substream->dma_private which
+> I
+> > > couldnt find)
+> > >
+> > >  sgbuf = (snd_pcm_sgbuf_t*)substream->runtime->dma_private;
+> > >
+> > > is not assigned.
+> > >
+> > > but when I activate the card (for MIDI for example) there must be
+> > > memory asigned und I think doing it in hw_params is to late.
+> > 
+> > Note that ALSA has SG routines only for PCM streams and it's lifetime
+> is
+> > limited only for stream lifetime.
+> 
+> well, this is no longer true.  the sg-buffer allocation is handled
+> generally in snd-page-alloc module (although only PCM handlers use it
+> in practice :)
+> and we have preallocation for sg PCM buffers now, too.
+> 
+> >  If hardware needs to allocate a big
+> > buffer at the initialization phase, you have to do it yourself.
+> 
+> the SG buffers should be pre-allocated via
+> snd_pcm_lib_preallocate_sg_pages() and _for_all() functions
+> instead of snd_pcm_lib_preallocate_pci_pages() and co.
+> in addition, in hw_params() callback, you'll need to map the sg-pages
+> like below:
+> 
+> 	struct snd_sg_buf *sgbuf = snd_pcm_substream_sgbuf(substream);
+> 	...
+> 	for_all_pages { /* rewrite as you like */
+> 		/* get the physical address by snd_pcm_sgbuf_get_addr(). */
+> 		/* set this address on the hardware's address table */
+> 		do_my_mapping(snd_pcm_sgbuf_get_addr(sgbuf, offset));
+> 	}
+> 
+> check via82xx.c as an example (or emu10k1 driver as a more complex
+> case).
+> 
+> you can find a brief information in my tutorial ("Non-Contiguous
+> Buffers" section in "Buffer and Memory Management").
+> 
+> 
+> Takashi
+> 
+> 
+> -------------------------------------------------------
+> This sf.net email is sponsored by:ThinkGeek
+> Welcome to geek heaven.
+> http://thinkgeek.com/sf
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@lists.sourceforge.net
+> https://lists.sourceforge.net/lists/listinfo/alsa-devel
+> 
 
 
 -------------------------------------------------------
