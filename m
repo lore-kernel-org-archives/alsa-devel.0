@@ -1,17 +1,16 @@
-From: "Rui Nuno Capela" <rncbc@rncbc.org>
-Subject: Re: Tascam US-224 support: MIDI OK, Audio KO?
-Date: Tue, 30 Mar 2004 09:14:14 +0100 (WEST)
+From: p z oooo <pzad@pobox.sk>
+Subject: Re: Need to know SBLive Chip difference
+Date: Tue, 30 Mar 2004 10:28:19 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <62898.195.245.190.94.1080634454.squirrel@www.rncbc.org>
-References: <44618.195.245.190.94.1080560065.squirrel@www.rncbc.org>
-    <200403292129.04497.annabellesgarden@yahoo.de>
-    <32817.192.168.1.5.1080596468.squirrel@www.rncbc.org>
-    <200403300157.51963.annabellesgarden@yahoo.de>
+Message-ID: <200403300828.i2U8SJK7020343@www1.pobox.sk>
+Reply-To: p z oooo <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200403300157.51963.annabellesgarden@yahoo.de>
+Received: from www1.pobox.sk (www1.pobox.sk [212.5.216.11])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA08983
+	for <alsa-devel@alsa-project.org>; Tue, 30 Mar 2004 10:28:18 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,90 +19,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: guanyim@hotmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Karsten,
+I don't mean alsa-oss-emulation, I mean oss driver from=20
+opensource.creative.com or linux kernel. If it works, than something=20
+is wrong with alsa (I think it will not work).
 
->
-> please try to enable audio out with "us428control -v2 -D hw:1" like this:
->
-> - toggle INPUT MONITOR until us428control says "...Light is 1"
->
+In SB Live up to 2002 was used AC97 codec for front and center/lfe=20
+and another dac for rear channels. I think, that in SB Live 2003=20
+creative started using 6 channel AC97 codec and rear channel are=20
+using this AC97 codec too. I thing, that only some initialization is=20
+needed to get rear channels work (option 1) or rear channels are=20
+connected on diffrent output from emu10k1 and this needs to be found=20
+(option 2).
 
-Yes, it does say "... Light is 1", but NO light on the LED.
-
-
-> - then move Fader3 to max and play some audio.
-> This is just a guess assuming audio out is mapped on us224 internal mixer
-> 2, input monitor channel 1 is mapped on us224 internal mixer 0 and input
-> monitor channel 2 is mapped on us224 internal mixer 1.
->
-
-Nothing is heard.
-
-
-> - Please also try your guitar on both inputs: move faders 1 & 2 to see if
-> sound is routed to the outputs.
->
-
-Again, nothing seems to be routed. No signal appears on output. Have
-tryied on both guitar inputs (A and B), with several combinations and
-fader positions, but can hear a thing.
-
-
->
-> We have to tweak us428control to add real us224 support.
-
-I guess that will be really necessary to have a proper us224control :)
-
-
-> Above is just to verify that the current us428 internal mixer mechanics is
-> usable for the us224.
->
-
-It seems that it is not quite straightforward, isn't it? Is there any
-other US-224 user out there to at least confirm all this? It surely ain't
-nice this feeling of lonelyness ;) but I will prevail =:O
-
-
-> Concerning us224's Lights I'm currently left in the dark....
-
-So do the LEDs ;)
-
-
-> For us428 I found that a 7Byte long USB-Message on pipe 4 is a Lights set
-> command, while a 5Byte long is an internal mixer set command.
-> You could tweak us428control to toggle the 0'th light instead of the 25'th
-> light, which is InputMonitor Light on us428. the 0th light is Select
-> Channel 1 on the us428.
-> Exchange Cus428State.cc Line 118 , 119
-> 				Light[0].Value = StateInputMonitor() ? SelectInputMonitor : Select;
-> 				Light[2].Value = StateInputMonitor() ? MuteInputMonitor : Mute;
-> for
-> 				Light[0].Value = 0x55;
-> 				Light[2].Value = 0xAA;
-> to check light mechanics.
->
-
-I'll try this tonight, rest assured.
-
-
-> If there's still no lights, some usb snooping on windoz might help.
-> I've some specially tuned stuff here which I could send you then.
->
-
-That's of course a very good idea. Please do so ASAP.
-
-I'll be very pleased to follow your instructions and get a thorough
-profile on this. My laptop has a working winxp partition installed and the
-US-224 (audio mixer leds) works there as designed, but that's hardly a
-surprise for anyone :)
-
-Cheers,
--- 
-rncbc aka Rui Nuno Capela
-rncbc@rncbc.org
+Peter Zubaj
+=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
+MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=0ASpolocnost SUN Microsystems uviedla na trh novy server Sun Fire V20z=0Az=
+alozeny procesoroch AMD Opteron.=0AViac informacii najdete na : http://www.=
+somi.sk/sun/v20z.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0A
 
 
 -------------------------------------------------------
