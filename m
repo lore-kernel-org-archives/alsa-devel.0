@@ -1,14 +1,15 @@
-From: "Vrihad Shoonya" <vrihad@softhome.net>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Is there plans to support SiS7019?
-Date: Thu, 19 Aug 2004 19:07:06 +0530 (IST)
+Date: Thu, 19 Aug 2004 15:30:30 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <2903.192.168.0.30.1092922626.squirrel@dev.datamax.co.in>
-References: <34863.192.168.0.10.1092904274.squirrel@dev.datamax.co.in>
-     <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
+Message-ID: <Pine.LNX.4.58.0408191530040.1779@pnote.perex-int.cz>
+References: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
+      <Pine.LNX.4.58.0408191353210.1779@pnote.perex-int.cz>
+ <2891.192.168.0.30.1092922413.squirrel@dev.datamax.co.in>
 Mime-Version: 1.0
-Content-Type: text/plain;charset=iso-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0408191306530.11486-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <2891.192.168.0.30.1092922413.squirrel@dev.datamax.co.in>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,26 +18,30 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Vrihad Shoonya <vrihad@softhome.net>
+Cc: Clemens Ladisch <clemens@ladisch.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 19 Aug 2004, Vrihad Shoonya wrote:
 
+> 
+> >> Google finds a NetBSD patch at
+> >> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+> >
+> > It looks that the driver must be written from scratch, because hardware is
+> > different from SI7018 and SI7012.
+> 
+> That would be pretty big work isn't it? :-( Any estimation of scope and
+> time?
 
-> It might help if we can take a look at the source.
->
-> Google finds a NetBSD patch at
-> <http://www.yasuoka.net/~yasuoka/sis7019.html>, so it's possible.
+One or two weeks for basic functionality.
 
-I can provide the source if you need it. But again it is for OSS
-not alsa.
+						Jaroslav
 
-I want to find out how much time is needed to make the
-driver from scratch if hardware specs are available. I have
-no prior experience on this.
-
--vrihad
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
