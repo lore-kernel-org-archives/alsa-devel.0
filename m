@@ -1,14 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
-Date: Fri, 19 Nov 2004 07:14:17 +0100
-Message-ID: <202e92426cbd7b2a7e05d83802f8788a@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Merging alsa-kernel-1.0.7 into kernel 2.6.9
+Date: Thu, 18 Nov 2004 23:50:59 -0500
+Message-ID: <1100839859.11044.33.camel@krustophenia.net>
+References: <DBFABB80F7FD3143A911F9E6CFD477B002A7F808@hqemmail02.nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CC1211C8
-	for <alsa-devel@alsa-project.org>; Fri, 19 Nov 2004 07:14:17 +0100 (MET)
+In-Reply-To: <DBFABB80F7FD3143A911F9E6CFD477B002A7F808@hqemmail02.nvidia.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,72 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Stephen Warren <SWarren@nvidia.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2004-11-18 at 20:41 -0800, Stephen Warren wrote:
+> I'm working on a project where we don't use modules for the kernel at
+> all - for various reasons such as target environment simplicity - very
+> hard-coded boot scripts, no huge sysvinit based interactive 'desktop'
+> system etc.
+> 
+> We need ALSA support, and specifically, alsa-driver 1.0.7 release fixes
+> some problems for the target hardware we're using.
+> 
+> So, I'm attempting to merge the content of alsa-driver 1.0.7 into the
+> kernel source tree, and to build ALSA support as non-modules.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
-======================================================================
-Reported By:                flink
-Assigned To:                
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   646
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-12-2004 17:02 CET
-Last Modified:              11-19-2004 07:14 CET
-======================================================================
-Summary:                    emu10k1: sound chopped when passthru enabled
-Description: 
-When I play a DVD with AC3 passthru enabled, the signal is correctly send
-to my AC3 decoder but this signal is chopped. I've a little led on my
-decoder to show if dolby digital is enabled or not and this led blinks
-instead of remaining enabled. So the sound is also chopped and a DVD can't
-be 
-watched this way.
-======================================================================
+If the range of hardware you need to support is cmall enough it might be
+easier to start with the ALSA in your kernel tarball and forward port
+any driver fixes you need.
 
-----------------------------------------------------------------------
- rlrevell - 11-18-04 23:34 
-----------------------------------------------------------------------
-Hmm, other users all report this fixes the bug.  Are you _sure_ it works
-with 2.6.7 and not with the 2.6.10-rc2?
+HTH,
 
-I think you might have a different issue.
-
-----------------------------------------------------------------------
- visit0r - 11-19-04 07:14 
-----------------------------------------------------------------------
-You might be right that the problem could be somewhere else, even outside
-ALSA. Maybe somekind of I/O problem? I tried yesterday to reproduce the
-bug without success. I'll try watching couple of DVDs on weekend using
-different input sources and report if the problem occurs again.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-12-04 17:02 flink          New Issue                                    
-11-13-04 22:18 rlrevell       Note Added: 0002403                          
-11-13-04 22:31 rlrevell       File Added: patch                            
-11-13-04 22:33 rlrevell       Note Added: 0002404                          
-11-16-04 00:13 visit0r        Note Added: 0002421                          
-11-16-04 00:24 rlrevell       Note Added: 0002422                          
-11-16-04 21:09 visit0r        Note Added: 0002430                          
-11-17-04 04:06 duanev         Issue Monitored: duanev                      
-11-17-04 07:00 duanev         Note Added: 0002432                          
-11-17-04 08:05 visit0r        Issue Monitored: visit0r                     
-11-17-04 08:09 visit0r        Note Added: 0002434                          
-11-18-04 23:34 rlrevell       Note Added: 0002472                          
-11-19-04 07:14 visit0r        Note Added: 0002476                          
-======================================================================
-
+Lee 
 
 
 
