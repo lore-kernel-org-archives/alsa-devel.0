@@ -1,12 +1,11 @@
-From: Donald M Burns <donald@sequel.demon.co.uk>
-Subject: YMFPCI No midi record.
-Date: Sun, 30 Mar 2003 19:24:15 +0000
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: [PATCH] alsa-lib: added surround51 configuration for CS46xx cards
+Date: Mon, 31 Mar 2003 00:24:28 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303302024.15366.donald@sequel.demon.co.uk>
+Message-ID: <3E876E9C.1070905@cucumelo.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed;
+ boundary="------------080706020503090100070807"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,45 +15,109 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+This is a multi-part message in MIME format.
+--------------080706020503090100070807
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+Hi!
 
-I've just downloaded and installed ALSA 0.9.2 complete with OSS emulation.
-I'm using an Addonics Sound Vision SV550 which is based on the Yamaha
-YMF724F chip, and running Red Hat 7.3.
+With the latest cs46xx patches it's finally posible to have surround51 
+with cs46xx soundcards (only dual CODEC's).
+This patch just updates the alsa-lib/src/conf/cards/CS46xx.conf file.
 
-Whilest all is OK with the PCM and OPL3 bits the MIDI record function does not
-work. This is the contents of /proc/asound/card0/midi0 while playing the 
-synth's keyboard:-
-MPU-401 (UART) 0-0
+$ aplay -D plug:surround51 ... seems to work fine!
 
-Output 0
-  Tx bytes     : 201410
-  Mode         : native
-  Buffer size  : 4096
-  Avail        : 4096
-Input 0
-  Rx bytes     : 0
-  Buffer size  : 4096
-  Avail        : 0
-  Overruns     : 0
+/Benny
 
-I had a similar problem with old OSS driver (ymfpci.c) and tracked it down to
-the fact that only ISA interrupts for the midi were supported by the driver. 
-This means that the driver is OK  for midi on motherboard mounted chips but
-cannot work with PCI cards as there is no way to route an ISA interrupt across
-the PCI bus. I came up with a simple patch which fixed it in the end.
+--------------080706020503090100070807
+Content-Type: text/plain;
+ name="alsa-lib.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="alsa-lib.patch"
 
-I was wondering if we had the same problem with ALSA driver.
+--- alsa-lib/src/conf/cards/CS46xx.conf	Fri Nov 29 15:50:58 2002
++++ ../cvs/alsa-lib/src/conf/cards/CS46xx.conf	Mon Mar 31 00:09:46 2003
+@@ -26,6 +26,18 @@
+ 	device 1
+ }	
+ 
++<confdir:pcm/center_lfe.conf>
++
++CS46xx.pcm.center_lfe.0 {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type hw
++	card $CARD
++	device 3
++}	
++
+ <confdir:pcm/surround40.conf>
+ 
+ CS46xx.pcm.surround40.0 {
+@@ -59,6 +71,53 @@
+ 		{ slave 0 channel 1 }
+ 		{ slave 1 channel 0 }
+ 		{ slave 1 channel 1 }
++	]
++}
++
++<confdir:pcm/surround51.conf>
++
++CS46xx.pcm.surround51.0 {
++	@args [ CARD ]
++	@args.CARD {
++		type string
++	}
++	type multi
++	slaves [
++		{
++			pcm {
++				@func concat
++				strings [
++					"cards.CS46xx.pcm.front.0:CARD=" $CARD
++				]
++			}
++			channels 2
++		}
++		{
++			pcm {
++				@func concat
++				strings [
++					"cards.CS46xx.pcm.rear.0:CARD=" $CARD
++				]
++			}
++			channels 2
++		}
++		{
++			pcm {
++				@func concat
++				strings [
++					"cards.CS46xx.pcm.center_lfe.0:CARD=" $CARD
++				]
++			}
++			channels 2
++		}
++	]
++	bindings [
++		{ slave 0 channel 0 }
++		{ slave 0 channel 1 }
++		{ slave 1 channel 0 }
++		{ slave 1 channel 1 }
++		{ slave 2 channel 0 }
++		{ slave 2 channel 1 }
+ 	]
+ }
+ 
 
-Any comments would be much appreciated.
+--------------080706020503090100070807--
 
-Best Regards,
-
-Donald.
 
 
 -------------------------------------------------------
