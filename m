@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000571]: Doesn't store mixer settings
-Date: Thu, 18 Nov 2004 18:10:20 +0100
-Message-ID: <caa524162eceff5d66a65bf9a2dbaf8a@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000581]: non-blocking write to alsa's OSS drivers eats data
+Date: Thu, 18 Nov 2004 18:09:52 +0100
+Message-ID: <41910d67706b8303925d3ed75de82081@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 52F07230
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 18:10:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 737FF230
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 18:09:52 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,54 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=571> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=581> 
 ======================================================================
-Reported By:                pmatil
+Reported By:                Benjamin Otte
 Assigned To:                tiwai
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   571
-Category:                   alsactl
+Project:                    ALSA - lib
+Issue ID:                   581
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 not an issue
+Resolution:                 duplicate
+Duplicate:                  582
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-07-2004 18:27 CEST
-Last Modified:              11-18-2004 18:10 CET
+Date Submitted:             10-15-2004 15:35 CEST
+Last Modified:              11-18-2004 18:09 CET
 ======================================================================
-Summary:                    Doesn't store mixer settings
+Summary:                    non-blocking write to alsa's OSS drivers eats data
 Description: 
-No errors are produced by the initscripts, however it seems that it doesn't
-save mixer settings. After boot, asound.state is 'zeroed' eg. all sliders
-are down, but unmuted. Running manually alsactl store, asound.state gets
-all the right values, but after next boot / reboot, asound.state is
-'zeroed' again. Asound.state lies in /var/lib/alsa/asound.state
+write() calls in non-blocking mode eat the written data and never return
+-EAGAIN. The attached patch fixes the problem.
+
+Signed-off-by: Benjamin Otte <otte@gnome.org>
 ======================================================================
 Relationships       ID      Summary
 ----------------------------------------------------------------------
-has duplicate       0000566 Doesn't save nor restore mixer settings...
+duplicate of        0000582 non-blocking write to alsa's OSS driver...
 ======================================================================
 
 ----------------------------------------------------------------------
- pmatil - 10-15-04 13:51 
+ Benjamin Otte - 10-15-04 15:40 
 ----------------------------------------------------------------------
-Mkay, after compiling with cs46xx_new_dsp, everything works. Volumes are
-saved and restored and KDE doesn't overwrite them. I don't know was it
-because of cs46xx_new_dsp or the fact that I unchecked the box "save
-volumes" in kmix.
-
-----------------------------------------------------------------------
- tiwai - 10-18-04 17:42 
-----------------------------------------------------------------------
-Ok, now I close this bug.
+Disregard this bug and close it please, it's not an alsalib bug. I've
+refiled it as bug 582 for alsa-driver.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-07-04 18:27 pmatil         New Issue                                    
-10-12-04 14:44 tiwai          Note Added: 0002096                          
-10-12-04 14:49 tiwai          Relationship added       has duplicate 0000566
-10-13-04 12:30 pmatil         Note Added: 0002120                          
-10-13-04 12:53 tiwai          Note Added: 0002121                          
-10-14-04 13:25 pmatil         Note Added: 0002144                          
-10-14-04 15:14 tiwai          Note Added: 0002149                          
-10-14-04 16:26 pmatil         Note Added: 0002154                          
-10-15-04 13:51 pmatil         Note Added: 0002166                          
-10-18-04 17:42 tiwai          Status                   new => resolved     
-10-18-04 17:42 tiwai          Resolution               open => not an issue
-10-18-04 17:42 tiwai          Assigned To               => tiwai           
-10-18-04 17:42 tiwai          Note Added: 0002195                          
-11-18-04 18:10 tiwai          Status                   resolved => closed  
+10-15-04 15:35 Benjamin Otte  New Issue                                    
+10-15-04 15:35 Benjamin Otte  File Added: dont-eat-data.diff                    
+10-15-04 15:40 Benjamin Otte  Note Added: 0002167                          
+10-18-04 17:27 tiwai          Status                   new => resolved     
+10-18-04 17:27 tiwai          Resolution               open => duplicate   
+10-18-04 17:27 tiwai          Relationship added       duplicate of 0000582
+10-18-04 17:27 tiwai          Assigned To               => tiwai           
+11-18-04 18:09 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
