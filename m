@@ -1,18 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: The ALSA Situation
-Date: Sat, 13 Nov 2004 11:42:54 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411131138490.1736@pnote.perex-int.cz>
-References: <200411102113.iAALDLUN001061@localhost.localdomain>
- <Pine.LNX.4.58.0411101426260.2301@ppc970.osdl.org>
- <Pine.LNX.4.58.0411110714280.2179@pnote.perex-int.cz>
- <Pine.LNX.4.58.0411102241240.2301@ppc970.osdl.org> <s5his8cfiot.wl@alsa2.suse.de>
- <Pine.LNX.4.58.0411110855380.2301@ppc970.osdl.org> <s5hhdnwfgbz.wl@alsa2.suse.de>
- <Pine.LNX.4.58.0411111021520.2301@ppc970.osdl.org> <s5hekizfo0n.wl@alsa2.suse.de>
- <Pine.LNX.4.58.0411120741300.2301@ppc970.osdl.org> <20041112230617.41c5073e@mango.fruits.de>
+From: <danny@mailmij.org>
+Subject: Re: period/buffer bug on pmac ?
+Date: Sat, 13 Nov 2004 12:35:21 +0100 (CET)
+Message-ID: <Pine.LNX.4.33.0411131234000.768-100000@luna.ellen.dexterslabs.com>
+References: <Pine.LNX.4.33.0411112023320.16903-100000@luna.ellen.dexterslabs.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041112230617.41c5073e@mango.fruits.de>
+In-Reply-To: <Pine.LNX.4.33.0411112023320.16903-100000@luna.ellen.dexterslabs.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,32 +16,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Florian Schmidt <mista.tapas@gmx.net>
-Cc: Linus Torvalds <torvalds@osdl.org>, Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: danny@mailmij.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 12 Nov 2004, Florian Schmidt wrote:
+On Thu, 11 Nov 2004 danny@mailmij.org wrote:
 
-> Sadly i have no idea about how difficult it would be to code up such a
-> virtual soundcard module, but i suppose some of the
-> resampling/mixing/conversion code in ALSA-lib can be reused. I have never
-> attempted to program a module, so i leave judgement about this idea to the
-> gurus :)
+> 
+> In the process of fixing up the alsa output plugin of bmp a bit I've come 
+> upon a weird problem. The mp3s I was playing played to fast, with a 
+> audible click each few millisecond. This seemed to only happen when the 
+> period size was not a power of 2 (the output plugin used to set 
+> period_time). I've now calculated the period_size myself from the rate and 
+> set it to the nearest power of 2. Which seems to work fine, except in the 
+> case that the mp3 i play is not your regular 441000 kbs encoded, but for 
+> instance 32000. 
+> 
+> No error occurs on setting the rate (and it gets set at 
+> 32000, although I doubt that the card, a pmac snapper, can do this) It 
+> seems that period size and buffersize get downscaled with a factor 
+> 441000/32000. And the weird screwed up sound occurs again with these mp3s. 
+> The strangest thing is that although snd_pcm_params_get_* returns, 
+> for instance, 32000, 5944 and 763 for rate, buffersize and periodsize 
+> respectively, a cat /proc/asound/card0/pcm0p/sub0/hw_params tells me that 
+> actually the rate is 44100 and buffer 8192 and period 1015 (I also checked 
+> on my x86 with sblive, but there the proc entry says that the rate is 
+> 32000, so I assume that card can downsample in hardware?).
+> 
+> Is this a bug in the driver or normal behaviour? If it is the last, how 
+> should I set the periodsize to something that both corresponds with the 
+> users preferenced sample time and with the fact that it apparently, has to 
+> be a power of 2?
+> 
 
-I started coding of the loopback driver which simply makes this:
+Seems everybody is talking about period/buffer size but nobody can tell me 
+whether the above is a bug in alsa or not?
+I can't fix it if I cannot get a hint...
 
-PCM loopback playback device -> PCM loopback capture device
+d.
 
-With this module, we can do easy rerouting for OSS emulation from the 
-kernel space back to the user space and do all necessary extended 
-operation via alsa-lib before samples are sent to real sound hardware.
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
