@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
-Date: Thu, 17 Mar 2005 07:32:01 +0100
-Message-ID: <7428294e204bc90057af9885af6439aa@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000544]: Sound freezes (but can be restarted OK) after kernel locked for a long time
+Date: Thu, 17 Mar 2005 08:13:58 +0100
+Message-ID: <152b42c68cad1e415835825dfe449e86@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C9A77226
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 07:32:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 07E42226
+	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 08:13:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,54 +21,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=544> 
 ======================================================================
-Reported By:                ScottHelmke
-Assigned To:                
+Reported By:                sasa
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   968
-Category:                   aplay/arecord
+Project:                    ALSA - lib
+Issue ID:                   544
+Category:                   pcm - digital audio
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Resolution:                 not an issue
+Fixed in Version:           
 ======================================================================
-Date Submitted:             03-07-2005 18:11 CET
-Last Modified:              03-17-2005 07:32 CET
+Date Submitted:             09-26-2004 10:44 CEST
+Last Modified:              03-17-2005 08:13 CET
 ======================================================================
-Summary:                    arecord/aplay 24-bit nonstandard?
+Summary:                    Sound freezes (but can be restarted OK) after kernel
+locked for a long time
 Description: 
-Using arecord with S24_LE resolution, later tried to import files into
-Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
-32 bit audio from arecord imported just fine.  Ardour developers say that
-problem is with arecord.
-
-
+When doing an intensive task that locks the kernel (such as fixating
+CD-ROM, initializing Lucent modem chipset) when even the mouse pointer
+stops moving for half a second or so, sound from xmms stops playing until
+I press stop and play again.
+Interesting thing is that this only happens when MMAP is on. When I turn
+it off, the sound freezes for a second and after that continues.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-09-05 18:38 
+ jdthood - 03-16-05 22:21 
 ----------------------------------------------------------------------
-I guess you want S24_3LE format instead of S24_LE?
-The former is the 24 bit format packed in 3 bytes while the latter in 4
-bytes.
+Apparently this report can be closed.
 
 ----------------------------------------------------------------------
- ScottHelmke - 03-17-05 07:32 
+ perex - 03-17-05 08:13 
 ----------------------------------------------------------------------
-S24_3LE works fine with Ardour - thanks!
+Ok, let's close it...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-07-05 18:11 ScottHelmke    New Issue                                    
-03-07-05 20:52 perex          Note Added: 0003808                          
-03-07-05 20:58 ScottHelmke    Note Added: 0003810                          
-03-09-05 18:38 tiwai          Note Added: 0003831                          
-03-17-05 07:32 ScottHelmke    Note Added: 0003978                          
+09-26-04 10:44 sasa           New Issue                                    
+09-26-04 10:58 sasa           Note Added: 0001916                          
+09-26-04 10:59 sasa           Issue Monitored: sasa                        
+09-26-04 12:03 lee            Note Added: 0001918                          
+09-26-04 12:25 sasa           Note Added: 0001919                          
+10-09-04 20:02 jtimonen       Note Added: 0002062                          
+10-09-04 20:13 lee            Note Added: 0002063                          
+03-16-05 22:21 jdthood        Note Added: 0003966                          
+03-17-05 08:13 perex          Status                   new => resolved     
+03-17-05 08:13 perex          Resolution               open => not an issue
+03-17-05 08:13 perex          Assigned To               => perex           
+03-17-05 08:13 perex          Note Added: 0003979                          
 ======================================================================
 
 
