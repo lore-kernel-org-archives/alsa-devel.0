@@ -1,12 +1,15 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: [lack of] dynamic detection/loading of modules
-Date: Wed, 26 Feb 2003 22:33:33 -0500
+From: "Ivica Bukvic" <ico@fuse.net>
+Subject: RE: [lack of] dynamic detection/loading of modules
+Date: Wed, 26 Feb 2003 22:58:55 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18oElA-0005cD-00@sc8-sf-list1.sourceforge.net>
-References: <001d01c2de0f$8715e530$aa1f830a@ICO>
+Message-ID: <002201c2de14$8cb157e0$aa1f830a@ICO>
+References: <20030227033057.BEBZ2263.mta02.fuse.net@mail08.voicenet.com>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Wed, 26 Feb 2003 22:22:48 EST."
-             <001d01c2de0f$8715e530$aa1f830a@ICO>
+In-Reply-To: <20030227033057.BEBZ2263.mta02.fuse.net@mail08.voicenet.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,15 +18,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ivica Bukvic <ico@fuse.net>
+To: 'Paul Davis' <paul@linuxaudiosystems.com>
 Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->lists about this and to do it cleanly it would be nice to have available
->in /proc/asound the list of modules currently loaded. That is not
->available today (I think Takashi said he might add that)."
+> cat /proc/modules | grep '^snd'
 
-cat /proc/modules | grep '^snd'
+Thanks for the reply. A couple of questions:
+
+Where do you put this?
+
+How do you trigger it automatically upon connection of a hot-pluggable
+hw (if the stuff is blacklisted)?
+
+How can we make this user-friendly? (i.e. no user interaction -> plug
+'n' use).
+
+Ico
 
 
 
