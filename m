@@ -1,13 +1,16 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000934]: crash in snd-serial-u16550 as non-root user
-Date: Wed, 23 Feb 2005 07:42:22 +0100
-Message-ID: <6733b8612b669e9ac7641ee65e2783cd@bugtrack.alsa-project.org>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: [PATCH 1/5] emu10k1 SB Live: Master volume and
+ front channels via fxbus 8,9
+Date: Wed, 23 Feb 2005 09:22:58 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0502230918440.1748@pnote.perex-int.cz>
+References: <421A3A3A.6070009@glocalnet.net>  <Pine.LNX.4.58.0502220925540.1748@pnote.perex-int.cz>
+ <1109109856.31071.44.camel@krustophenia.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5505E1D4
-	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 07:42:22 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0386D1D6
+	for <alsa-devel@alsa-project.org>; Wed, 23 Feb 2005 09:30:56 +0100 (MET)
+In-Reply-To: <1109109856.31071.44.camel@krustophenia.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,51 +20,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: Mikael Magnusson <mikaelmagnusson@glocalnet.net>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 22 Feb 2005, Lee Revell wrote:
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=934> 
-======================================================================
-Reported By:                laurent
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   934
-Category:                   GENERIC - serial-u16550
-Reproducibility:            always
-Severity:                   crash
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.4.29 and 2.6.10
-======================================================================
-Date Submitted:             02-23-2005 07:42 CET
-Last Modified:              02-23-2005 07:42 CET
-======================================================================
-Summary:                    crash in snd-serial-u16550 as non-root user
-Description: 
-Whenever I try to use a sequencer application (I tried: seq24, museseq,
-rosegarden) as a non-root user, I get a kernel Oops.
+> There are two separate issues that the patch addresses.  One is that
+> unlike the Audigy configuration, the driver does not use separate FX
+> buses for front output and PCM.  So attenuating the front channels will
+> attenuate *all* PCM samples.  This has to be fixed in the driver.  And
+> it's essentially zero cost as the extra FX buses and GPRs are available.
 
-I was using alsa-driver 1.0.8 with the 2.4.29 kernel, and the built-in
-modules for the 2.6.10 kernel.
+Sorry, but I don't understand very well why we need to have "PCM mix" FX
+buses. We can do this "down-mix" in the DSP code, but it's better to do it
+in application. My original DSP code for emu10k1 have only front, rear,
+center+lfe FX buses (6). I must miss something important here.
 
-If you need more information than the stacks traces and lsmod please ask
-and I will do my best to provide them.
-======================================================================
+> The other issue is the lack of a master volume control.  Provided the
+> first issue is addressed, perex is correct in that this can be solved in
+> userspace.
+> 
+> Personally I feel that the entire patch should be applied, until the
+> required abstraction layer exists in alsa-lib.  The second part of the
+> patch can be trivially reverted when this is available.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-02-23-05 07:42 laurent        New Issue                                    
-02-23-05 07:42 laurent        Distribution              => Gentoo          
-02-23-05 07:42 laurent        Kernel Version            => 2.4.29 and 2.6.10
-======================================================================
+Maybe..
 
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
