@@ -1,9 +1,15 @@
-From: Daniel Pouzzner <douzzer@mega.nu>
+From: cw <cw@acidtechno.net>
 Subject: Re: Waveterminal 192M Envy24HT
-Date: Thu, 20 Mar 2003 13:12:04 -0500 (EST)
+Date: 20 Mar 2003 18:28:43 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303201812.h2KIC4oP063534@mail.mega.nu>
+Message-ID: <1048184922.8728.24.camel@localhost.localdomain>
+References: <200303201812.h2KIC4oP063534@mail.mega.nu>
+Reply-To: cw@acidtechno.net
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <200303201812.h2KIC4oP063534@mail.mega.nu>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,23 +18,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: cw@acidtechno.net
+To: Daniel Pouzzner <douzzer@mega.nu>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Unfortunately, the firmware in the Waveterminal 192's has a different
-version number (version 220 or somesuch) than that addressed by those
-patches (version 1), and the firmware is sufficiently different that
-Waveterminals don't work.  You can do amixer stuff, but no actual
-sound.  So it's the vendor specific firmware details that are
-missing.
+So theres no hope unless the vendor will release some data ? 
 
->Excuse my ignorance, but do you mean vendor specific details or chipset
->details ? 
->There is a patch for the Envy24HT here, which i just found in the
->archives if its any use.
->
->http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg05500.html
+If its any use, theres a thread here of from linux-audio-dev, by a  guy
+who got some code out of EgoSys no code for the waveterminal though.
+
+http://eca.cx/lad/2002/06/0167.html
+
+
+chris
+
+
+On Thu, 2003-03-20 at 18:12, Daniel Pouzzner wrote:
+> Unfortunately, the firmware in the Waveterminal 192's has a different
+> version number (version 220 or somesuch) than that addressed by those
+> patches (version 1), and the firmware is sufficiently different that
+> Waveterminals don't work.  You can do amixer stuff, but no actual
+> sound.  So it's the vendor specific firmware details that are
+> missing.
+> 
+> >Excuse my ignorance, but do you mean vendor specific details or chipset
+> >details ? 
+> >There is a patch for the Envy24HT here, which i just found in the
+> >archives if its any use.
+> >
+> >http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg05500.html
+
 
 
 -------------------------------------------------------
