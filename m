@@ -1,16 +1,14 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Re: How to detect whether OSS mixer is emulated by ALSA
-Date: Wed, 9 Apr 2003 21:46:38 +0200
+From: Benny Sjostrand <gorm@cucumelo.org>
+Subject: Re: How to put 16bit none audio PCM data stream into
+ a 32bit none audio S/P-DIF transport stream?
+Date: Wed, 09 Apr 2003 23:17:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304092146.38840.c.esken@cityweb.de>
-References: <200304082022.25993.c.esken@cityweb.de> <E192zdU-0005TJ-00@sc8-sf-list1.sourceforge.net> <s5hadf0qb89.wl@alsa2.suse.de>
+Message-ID: <3E948DEC.2000103@cucumelo.org>
+References: <20030408140230.GA1987@ulima.unil.ch> <E192u0x-0007pF-00@sc8-sf-list1.sourceforge.net> <s5hn0j1q97r.wl@alsa2.suse.de> <3E934193.6090605@cucumelo.org> <20030408205515.GB6940@ulima.unil.ch> <3E933EF6.5030601@superbug.demon.co.uk> <3E93C4CA.4080604@cucumelo.org> <20030409082815.GA14489@ulima.unil.ch>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hadf0qb89.wl@alsa2.suse.de>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,43 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Gregoire Favre <greg@ulima.unil.ch>
+Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Wednesday 09 April 2003 11:19 schrieben Sie:
-> At Tue, 08 Apr 2003 16:27:43 -0400,
 >
-> Paul Davis wrote:
-> > >Well, how should this help?!? It reports this value for any device,
-> > > whether showing up duplicated or not. It doesn't help mapping ALSA
-> > > mixers to ALSA_OSS-Mixers, does it?
-> > >
-> > >For explaining things better I'll show the log of scanning 4
-> > > (sound)cards on 2
-> >
-> > although i am somewhat sympathetic to what you are trying to do, and i
-> > agree that there should be a way to do it more easily than now, i
-> > think that your goal is misplaced.
-> >
-> > you need to pick an audio API, and write a mixer app that uses
-> > it. ALSA's provision of OSS back-compatibility is not there to be used
-> > by programs that use the native ALSA API. either use OSS, or ALSA, and
-> > don't try both.
+>
+>>All tests I've done with xine it always output the AC3 data on 48khz, 
+>>which should work fine.
+>>    
+>>
+>
+>Well, maybe with your receiver you are lucky... we have seen those days
+>in this ml quiete a few people for which it doesn't work with there
+>receivers.
+>And as for me it works under windows, I think there is a problem in the
+>software.
+>  
+>
+What I meant, if you want to output AC3 on other sample rate's than 
+48khz it wont with the current cs46xx driver (44.1 khz AC3 wont work).
 
-That's the theoretical approach - and I agree with you that this is the best 
-way.
+The cs46xx driver can improved in many ways, I'm trying to the best and 
+work on that. (whenever I got time)
 
-> yep, the easiest way would be to detect the alsa mixers at first then
-> run kmix as alsa-native mode if any found.  if no alsa mixer is found,
-> try to probe oss mixers and run in oss mode as fallback.
+It does not surprise me that it works under Windows, there may be many 
+feutures that works under windows, but not under Linux.
 
-That's how kmix is working since some months (years?).
+Maybe the Windows driver supports AC3 with other sample rates then 48khz 
+(if that's the case) or maybe there's another problem.
 
-OK, thanks for all your feedback. So now I know I have not missed a trivial 
-soulution. I'll start to think up a workaround.
-
-Bye,
- Christian
+/Benny
 
 
 
