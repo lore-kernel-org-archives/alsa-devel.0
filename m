@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000698]: Random beeps, ticks and clicks
-Date: Fri, 3 Dec 2004 00:23:20 +0100
-Message-ID: <3d24631de8aa03fe527b3aef78553fc0@bugtrack.alsa-project.org>
+Date: Fri, 3 Dec 2004 00:23:28 +0100
+Message-ID: <e13e5bfe699e8176731780eec6159fa9@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C4B1225E
-	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:23:20 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 20BF525E
+	for <alsa-devel@alsa-project.org>; Fri,  3 Dec 2004 00:23:29 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -80,14 +80,13 @@ downloading large amount of data with high transfer-rates.
 ======================================================================
 
 ----------------------------------------------------------------------
- moonlite - 12-02-04 23:54 
+ moonlite - 12-03-04 00:23 
 ----------------------------------------------------------------------
-Ok.
-I tested shutting my network down and it solved all problems.
-I don't know if this is a bug then?
-It is a rather strange behaviour that the problem rises when using kernels
->2.4.19 but not otherwise.
-Oh well.
+I changed the setting in BIOS, setting IRQ 11 to "reserved". I am not sure
+what that meant but now eth0 is on IRQ 10 instead of sharing with emu10k1
+which is good i guess.
+However that did not help me at all since the random beeps are still there
+:(
 
 ----------------------------------------------------------------------
  moonlite - 12-03-04 00:23 
@@ -97,6 +96,20 @@ what that meant but now eth0 is on IRQ 10 instead of sharing with emu10k1
 which is good i guess.
 However that did not help me at all since the random beeps are still there
 :(
+
+           CPU0       
+  0:     220060          XT-PIC  timer
+  1:       1245          XT-PIC  i8042
+  2:          0          XT-PIC  cascade
+  8:          2          XT-PIC  rtc
+  9:          0          XT-PIC  acpi
+ 10:       2871          XT-PIC  eth0
+ 11:       1504          XT-PIC  EMU10K1
+ 12:      14596          XT-PIC  i8042
+ 14:       9839          XT-PIC  ide0
+ 15:         31          XT-PIC  ide1
+NMI:          0 
+ERR:          0
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -108,6 +121,7 @@ Date Modified  Username       Field                    Change
 12-02-04 23:27 moonlite       Note Added: 0002699                          
 12-02-04 23:54 moonlite       Note Added: 0002700                          
 12-03-04 00:23 moonlite       Note Added: 0002701                          
+12-03-04 00:23 moonlite       Note Added: 0002702                          
 ======================================================================
 
 
