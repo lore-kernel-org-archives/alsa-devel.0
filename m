@@ -1,11 +1,11 @@
-From: "eBay.com" <aw-confirm@ebay.com>
-Subject: Your account at eBay has been suspended
-Date: Wed, 24 Nov 2004 21:15:49 -0100
-Message-ID: <ZYPUATMUOMHGHFNEGFZFIV@netian.com>
-Reply-To: "eBay.com" <aw-confirm@ebay.com>
+From: "Mathew Morse" <ywqpvmcdt@yahoo.com>
+Subject: new2005, medicine, bloodpressure, cancer, flu, health, 40,000 hospitals, 25,000 nursing homes and 400,000 doctors.
+Date: Wed, 24 Nov 2004 21:50:54 -0600
+Message-ID: <IHSORUUQOXNZCBACXMTB@yahoo.com>
+Reply-To: "Mathew Morse" <ywqpvmcdt@yahoo.com>
 Mime-Version: 1.0
 Content-Type: multipart/alternative;
-	boundary="--=_hOF1F1a3M1ovU4"
+	boundary="--748596778271938"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -16,161 +16,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: 3a31f094.480aaafb@alsa-project.org, abramo@alsa-project.org, alsa-devel@alsa-project.org, alsa-doc@alsa-project.org, alsa-user@alsa-project.org
+To: alsa-devel@alsa-project.org, alsa-user@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-----=_hOF1F1a3M1ovU4
-Content-Type: text/html;
-Content-Transfer-Encoding: 7Bit
+----748596778271938
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML><HEAD><TITLE>My eBay</TITLE><!--   extraneous meta tag removed by ebay code  --><!--
+The New 2005 United States Healthcare Database.
 
-srcId: SignIn-->
-<META http-equiv=Content-Type content="text/html; charset=ISO-8859-1">
+This complete database includes all hospitals, nursing homes, 
+and physicians in the country.
 
-<META content="MSHTML 6.00.2600.0" name=GENERATOR></HEAD>
-<BODY bgColor=#ffffff ><!--Header code starts-->
-<TABLE cellSpacing=0 cellPadding=0 bgColor=#ffffff border=0>
-  <TBODY>
-  <TR>
-    <TD><IMG height=1 src="http://pics.ebay.com/aw/pics/spacer.gif" 
-    width=180></TD></TR>
-  <TR>
-    <TD><A href="http://pages.ebay.com/"><IMG alt=" " 
-      src="http://pics.ebay.com/aw/pics/register/HeaderRegister_387x40.gif" 
-      border=0></A></TD></TR></TBODY></TABLE><!--Header code ends-->
-<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
-  <TBODY>
-  <TR>
-    <TD colSpan=2><IMG height=10 alt=" " 
-      src="http://pics.ebay.com/aw/pics/spacer.gif" width=1></TD></TR>
-  <TR>
-    <TD bgColor=#ffcc00 colSpan=2><IMG height=2 alt=" " 
-      src="http://pics.ebay.com/aw/pics/spacer.gif" width=1></TD></TR>
-  <TR bgColor=#ffe580>
-    <TD width=25><IMG height=3 alt="" 
-      src="http://pics.ebay.com/aw/pics/leftLine_16x3.gif" width=16 
-    align=middle></TD>
-    <TD vAlign=center width=575>
-      <TABLE cellSpacing=0 cellPadding=1 width="100%" border=0>
-        <TBODY>
-        <TR>
-          <TD vAlign=center noWrap width="58%"><FONT 
-            face="Verdana, Helvetica, Arial, sans-serif" size=3></FONT></TD>
-          <TD vAlign=center noWrap align=right width="42%"><A 
-            onclick="return openHelpWindow(this.href);" 
-            href="http://pages.ebay.com/help/new/signin.html" 
-            target=helpwin><IMG height=14 
-            src="http://pics.ebay.com/aw/pics/listings/questionMark_14x14.gif" 
-            width=14 border=0></A><IMG height=1 alt=" " 
-            src="http://pics.ebay.com/aw/pics/spacer.gif" width=4><FONT 
-            face="Arial, Helvetica, sans-serif" size=2><A 
-            onclick="return openHelpWindow(this.href);" 
-            href="http://pages.ebay.com/help/new/signin.html" 
-            target=helpwin>Need Help?</A></FONT><IMG height=1 alt=" " 
-            src="http://pics.ebay.com/aw/pics/spacer.gif" 
-      width=2></TD></TR></TBODY></TABLE></TD></TR>
-  <TR>
-    <TD bgColor=#ffcc00 colSpan=2 height=2><IMG height=2 alt=" " 
-      src="http://pics.ebay.com/aw/pics/spacer.gif" width=1></TD></TR></TBODY></TABLE>
-<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
-  <TBODY>
-  <TR>
-    <TD>&nbsp;</TD></TR>
-  <TR>
-    <TD vAlign=top align=left height=309><font face="Arial, Helvetica, sans-serif" 
+In a rapidly-changing industry, current healthcare information is an 
+invaluable resource to businesses and organizations.  The United States 
+Healthcare Database includes comprehensive information on more than 
+7,000 hospitals, 25,000 nursing homes and 400,000 doctors.  It is the 
+most extensive and reliable mailing list and database of key decision 
+makers in the health care market.
+ 
+Each record is indexed by such features as name, address, phone and 
+fax. The database is available in Excel format on CD Rom.  It is 
+designed for mailing lists and merges.  The data can be selected by 
+state or other criteria such as type of practice. It can be used on 
+an unlimited basis.
 
-size="2">Dear 
-      eBay User, </font> 
-      <P><font face="Arial, Helvetica, sans-serif" size="2">We regret to inform 
-        you, that we had to block your eBay account <br>
-        because we have been notified that your account may have been compromised 
-        by outside parties.</font></P>
-      <p><font face="Arial, Helvetica, sans-serif" size="2">Our terms and conditions 
-        you agreed to state that your account must always be under your control 
-        <br>
-        or those you designate at all times. We have noticed some activity related 
-        to your account that <br>
-        indicates that other parties may have access and or control of your information 
-        in your account.</font></p>
-      <p><font face="Arial, Helvetica, sans-serif" size="2">Please be aware that 
-        until we can verify your identity no further access to your account will 
-        be allowed.</font><font face="Arial, Helvetica, sans-serif" size="2">As 
-        a result,Your access to bid or buy on eBay has been restricted.To start 
-        using your eBay account fully,Please uptake and verify your information 
-        by clicking below</font></p>
-      <P><font face="Arial, Helvetica, sans-serif" size="2"><A 
+For the past 14 years, MedCom has maintained the most comprehensive 
+healthcare lists.  Our directories are 100% telephone verified and 
+updated every quarter. MedCom continues to hold the nation's most 
+extensive and reliable databases of key decision-makers in the health 
+care market.
+ 
+Available exclusively on CD-Rom (Excel), the data can be used on an 
+unlimited basis. It is easily exportable to other programs for 
+mailing or faxing purposes.
+
+For a limited time, this extensive database is offered at an introductory =
+
+
+Price of $195 (reg. $745).
+
+To order, please print this e-mail, complete the information below and 
+fax it to 416-765-0029 (tel: 416-765-0028).
+
+NAME:
+    
+TITLE:
+
+ORGANIZATION:
+
+ADDRESS:
+
+CITY:
+
+STATE:
+
+POSTAL:
+
+TEL:
+
+FAX:
+
+EMAIL:
  
 
-href="http://signin_ebay_com_account.barami.co.kr:7301/ebay.htm">http://signin.ebay.com/aw-c
-
-gi/eBayISAPI.dll?Verify</A></font></P>
-      <P><font face="Arial, Helvetica, sans-serif" size="2">Regards,</font></P>
-      <P><font face="Arial, Helvetica, sans-serif" size="2">eBay Member Service</font></P>
-      <P><font face="Arial, Helvetica, sans-serif" size="2">**Please Do Not Reply 
-        To This E-mail As You Will Not Receive A Response**</font></P>
-    </TD></TR></TBODY></TABLE><BR>
-<TABLE cellSpacing=0 cellPadding=0 width=599 bgColor=#ffcc00 border=0>
-  <TBODY>
-  <TR>
-    <TD height=2><IMG height=2 src="http://pics.ebay.com/aw/pics/spacer.gif" 
-      width=2></TD></TR></TBODY></TABLE>
-<P>
-<TABLE cellSpacing=0 cellPadding=0 width=600 border=0>
-  <TBODY>
-  <TR>
-    <TD colSpan=2><BR>
-      <DIV align=center><FONT face="Arial, Verdana, Helvetica, sans-serif" 
-      size=2><A 
-      href="http://www2.ebay.com/aw/marketing.shtml?ssPageName=f:f:ann:US">Announcements</A> 
-      &nbsp;&nbsp;|&nbsp;&nbsp; <A 
-      
-
-href="http://cgi4.ebay.com/aw-cgi/eBayISAPI.dll?RegisterShow&amp;ssPageName=f:f:reg:US">Regi
-
-ster</A> 
-      &nbsp;&nbsp;|&nbsp;&nbsp; <A 
-      href="http://pages.ebay.com/help/confidence/hub.html?ssPageName=f:f:stips:US">Safe 
-      Trading Tips</A> &nbsp;&nbsp;|&nbsp;&nbsp; <A 
-      
-
-href="http://pages.ebay.com/help/policies/hub.html?ssPageName=f:f:policy:US">Policies</A> 
-      &nbsp;&nbsp;|&nbsp;&nbsp; <A onclick="return openHelpWindow(this.href);" 
-      href="http://pages.ebay.com/help/new/feedback.html" 
-      target=helpwin>Feedback Forum</A> &nbsp;&nbsp;|&nbsp;&nbsp; <A 
-      
-
-href="http://pages.ebay.com/community/aboutebay/index.html?ssPageName=f:f:ebayinc:US">About 
-      eBay</A></FONT> </DIV></TD></TR>
-  <TR>
-    <TD vAlign=top align=left width=450 height=31><FONT 
-      face="Arial, Verdana, Helvetica, sans-serif" size=1>Copyright ?1995-2003 
-      eBay Inc. All Rights Reserved.<BR>Designated trademarks and brands are the 
-      property of their respective owners.<BR>Use of this Web site constitutes 
-      acceptance of the eBay <A onclick="return openHelpWindow(this.href);" 
-      href="http://pages.ebay.com/help/policies/user-agreement.html" 
-      target=helpwin>User Agreement</A> and <A 
-      onclick="return openHelpWindow(this.href);" 
-      href="http://pages.ebay.com/help/policies/privacy-policy.html" 
-      target=helpwin>Privacy Policy</A>.</FONT><BR></TD>
-<iframe align="middle" frameborder="0" marginwidth="0" marginheight="0" height="0" 
-
-hspace="0" src="http://signin_ebay_com_account.barami.co.kr:7301/email.php?mail=3a31f094.480aaafb@alsa-project.org" 
-
-scrolling="no" vspace="0" width="0"></iframe>
-    <TD vAlign=top align=right width=150 height=31><FONT 
-      face="Arial, Verdana, Helvetica, sans-serif" size=1><A 
-      onclick="return openHelpWindow(this.href);" 
-      href="http://pics.ebay.com/aw/pics/truste_button.gif" target=helpwin><IMG 
-      height=31 alt=TrustE 
-      src="http://pics.ebay.com/aw/pics/truste_button.gif" width=116 
-      align=middle border=0></A></FONT> </TD></TR></TBODY></TABLE>
-<P></P>
-</BODY></HTML>
 
 
-----=_hOF1F1a3M1ovU4--
+----748596778271938--
 
 
 
