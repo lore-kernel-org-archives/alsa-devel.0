@@ -1,19 +1,12 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: alsa cvs stability problems.
-Date: Sat, 10 Jul 2004 19:52:41 +0100
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
+Date: Sat, 10 Jul 2004 21:45:59 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40F03AF9.8060906@superbug.demon.co.uk>
+Message-ID: <1eff899715f791df7affc49065175b82@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-30.mail.demon.net (anchor-post-30.mail.demon.net [194.217.242.88])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C87FC1AB
-	for <alsa-devel@alsa-project.org>; Sat, 10 Jul 2004 20:51:50 +0200 (MEST)
-Received: from superbug.demon.co.uk ([80.176.146.252] helo=[192.168.1.10])
-	by anchor-post-30.mail.demon.net with esmtp (Exim 3.35 #1)
-	id 1BjMwv-000IBB-0U
-	for alsa-devel@alsa-project.org; Sat, 10 Jul 2004 19:51:49 +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -25,83 +18,92 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am seeing a log to stability problems when using the latest alsa cvs.
-Is anyone else seeing similar problems?
 
-Cheers
-James
+A BUGNOTE has been added to this bug.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0366
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Reported By:                deathpudding
+Assigned To:                pzad
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Project:                    ALSA - driver
+Bug ID:                     366
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:              =20
+Kernel Version:             2.6.7
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Date Submitted:             07-05-2004 09:43 CEST
+Last Modified:              07-10-2004 21:45 CEST
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Summary:                    driver hangs when trying to load a soundfont =
+>8MB
+Description:=20
+The alsa driver and the applications using it hang, unkillable and unable
+to be unloaded, when I try to load a soundfont larger than 8MB. This
+sometimes results in the appearance of a page fault message when shutting
+down. The shutdown is never completed because the disk cannot be
+unmounted, presumably because the alsa driver is still frozen while tryin=
+g
+load the soundfont from it.
 
-Example stack trackes of the problem:
-Jul 10 14:37:18 new kernel: kernel BUG at mm/page_alloc.c:208!
-Jul 10 14:37:18 new kernel: invalid operand: 0000 [#1]
-Jul 10 14:37:18 new kernel: PREEMPT SMP DEBUG_PAGEALLOC
-Jul 10 14:37:18 new kernel: Modules linked in: snd_p16v snd_pcm 
-snd_timer snd_ac97_codec snd soundcore snd_page_alloc nvidia md5 ipv6 
-parport_pc lp parport usbhid uhci_hcd usbcore e1000 sg ide_cd sr_mod cdrom
-Jul 10 14:37:18 new kernel: CPU:    0
-Jul 10 14:37:18 new kernel: EIP:    0060:[<c013f552>]    Tainted: P
-Jul 10 14:37:18 new kernel: EFLAGS: 00210002   (2.6.7)
-Jul 10 14:37:18 new kernel: EIP is at free_pages_bulk+0x23b/0x276
-Jul 10 14:37:18 new kernel: eax: 00000001   ebx: c0384ac0   ecx: 
-00000000   edx: fff9c256
-Jul 10 14:37:18 new kernel: esi: ffffffff   edi: 7ffce12b   ebp: 
-d87f1d54   esp: d87f1d0c
-Jul 10 14:37:18 new kernel: ds: 007b   es: 007b   ss: 0068
-Jul 10 14:37:18 new kernel: Process speaker-test (pid: 12204, 
-threadinfo=d87f0000 task=dc4a4a60)
-Jul 10 14:37:18 new kernel: Stack: c0384700 c0384ac0 00000001 c038498c 
-00000000 c0384ae0 fff9c257 c0384908
-Jul 10 14:37:18 new kernel:        00000000 c1000000 c0384908 00200096 
-ffffffff d87f1d54 c0116365 c0384700
-Jul 10 14:37:18 new kernel:        c1008260 d87f0000 d87f1d84 c013fc28 
-c0384700 00000000 c0384a90 00000000
-Jul 10 14:37:18 new kernel: Call Trace:
-Jul 10 14:37:18 new kernel:  [<c01052ff>] show_stack+0x80/0x96
-Jul 10 14:37:18 new kernel:  [<c0105496>] show_registers+0x15f/0x1ae
-Jul 10 14:37:18 new kernel:  [<c010563f>] die+0xc1/0x186
-Jul 10 14:37:18 new kernel:  [<c0105a55>] do_invalid_op+0xb5/0xb7
-Jul 10 14:37:18 new kernel:  [<c0104fa1>] error_code+0x2d/0x38
-Jul 10 14:37:18 new kernel:  [<c013fc28>] free_hot_cold_page+0x12d/0x146
-Jul 10 14:37:18 new kernel:  [<c01402e1>] __pagevec_free+0x1b/0x24
-Jul 10 14:37:18 new kernel:  [<c0149559>] release_pages+0x83/0x25e
-Jul 10 14:37:18 new kernel:  [<c015b893>] 
-free_pages_and_swap_cache+0x64/0x88
-Jul 10 14:37:18 new kernel:  [<c015383a>] exit_mmap+0x209/0x22f
-Jul 10 14:37:18 new kernel:  [<c011b98a>] mmput+0x85/0xbf
-Jul 10 14:37:18 new kernel:  [<c012124a>] do_exit+0x17d/0x62f
-Jul 10 14:37:18 new kernel:  [<c01217be>] do_group_exit+0x3d/0x177
-Jul 10 14:37:18 new kernel:  [<c012b118>] get_signal_to_deliver+0x38f/0x574
-Jul 10 14:37:18 new kernel:  [<c0104276>] do_signal+0x6c/0xf1
-Jul 10 14:37:18 new kernel:  [<c0104336>] do_notify_resume+0x3b/0x3d
-Jul 10 14:37:18 new kernel:  [<c0104562>] work_notifysig+0x13/0x15
-Jul 10 14:37:18 new kernel:
-Jul 10 14:37:18 new kernel: Code: 0f 0b d0 00 71 97 34 c0 e9 0b ff ff ff 
-0f 0b c3 00 71 97 34
-Jul 10 14:37:18 new kernel:  <6>note: speaker-test[12204] exited with 
-preempt_count 3
-Jul 10 14:37:18 new kernel: Debug: sleeping function called from invalid 
-context at include/linux/rwsem.h:43
-Jul 10 14:37:18 new kernel: in_atomic():1, irqs_disabled():0
-Jul 10 14:37:18 new kernel:  [<c0105333>] dump_stack+0x1e/0x22
-Jul 10 14:37:18 new kernel:  [<c011aee1>] __might_sleep+0xb2/0xd3
-Jul 10 14:37:18 new kernel:  [<c011f222>] profile_exit_task+0x22/0x60
-Jul 10 14:37:18 new kernel:  [<c0121148>] do_exit+0x7b/0x62f
-Jul 10 14:37:18 new kernel:  [<c0105704>] do_divide_error+0x0/0xdd
-Jul 10 14:37:18 new kernel:  [<c0105a55>] do_invalid_op+0xb5/0xb7
-Jul 10 14:37:18 new kernel:  [<c0104fa1>] error_code+0x2d/0x38
-Jul 10 14:37:18 new kernel:  [<c013fc28>] free_hot_cold_page+0x12d/0x146
-Jul 10 14:37:18 new kernel:  [<c01402e1>] __pagevec_free+0x1b/0x24
-Jul 10 14:37:18 new kernel:  [<c0149559>] release_pages+0x83/0x25e
-Jul 10 14:37:18 new kernel:  [<c015b893>] 
-free_pages_and_swap_cache+0x64/0x88
-Jul 10 14:37:18 new kernel:  [<c015383a>] exit_mmap+0x209/0x22f
-Jul 10 14:37:18 new kernel:  [<c011b98a>] mmput+0x85/0xbf
-Jul 10 14:37:18 new kernel:  [<c012124a>] do_exit+0x17d/0x62f
-Jul 10 14:37:18 new kernel:  [<c01217be>] do_group_exit+0x3d/0x177
-Jul 10 14:37:18 new kernel:  [<c012b118>] get_signal_to_deliver+0x38f/0x574
-Jul 10 14:37:18 new kernel:  [<c0104276>] do_signal+0x6c/0xf1
-Jul 10 14:37:18 new kernel:  [<c0104336>] do_notify_resume+0x3b/0x3d
-Jul 10 14:37:18 new kernel:  [<c0104562>] work_notifysig+0x13/0x15
+I found a thread in the alsa-devel archives discussing this problem:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.htm=
+l
+
+I see that the discussed patch has been applied, but I still have this
+problem. I haven't tested with versions prior to 1.0.4 because they did
+not compile with the later library version, but I do know that it was
+working not too long ago (with kernel 2.6.x).
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+----------------------------------------------------------------------
+ vlajsa - 07-10-2004 20:39 CEST=20
+----------------------------------------------------------------------
+To add to this report! Sfxload don't work with alsa 1.0.5, too!
+
+----------------------------------------------------------------------
+ deathpudding - 07-10-2004 21:45 CEST=20
+----------------------------------------------------------------------
+I marked this as a 1.0.5a bug, but it doesn't look like it showed up in t=
+he
+report.
+
+Bug History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+07-05-04 09:43 deathpudding   New Bug                                    =
+ =20
+07-05-04 09:43 deathpudding   Kernel Version            =3D> 2.6.7       =
+   =20
+07-10-04 20:39 vlajsa         Bugnote Added: 0001404                     =
+ =20
+07-10-04 21:45 deathpudding   Bugnote Added: 0001405                     =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
 
 
 -------------------------------------------------------
