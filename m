@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000732]: If PCM is set to norma to mt Sound Blaster Live, It emit a very high frequency sound damaging ears
-Date: Sun, 19 Dec 2004 23:10:49 +0100
-Message-ID: <06ec7cb68fecf0335f73e6ea481b3b21@bugtrack.alsa-project.org>
+Date: Sun, 19 Dec 2004 23:11:40 +0100
+Message-ID: <e94394f04c35e86f9dd74aa0f315dfe0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B2F352B1
-	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 23:10:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 38D562B1
+	for <alsa-devel@alsa-project.org>; Sun, 19 Dec 2004 23:11:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Debian
 Kernel Version:             2.6.10-rc3
 ======================================================================
 Date Submitted:             12-19-2004 15:10 CET
-Last Modified:              12-19-2004 23:10 CET
+Last Modified:              12-19-2004 23:11 CET
 ======================================================================
 Summary:                    If PCM is set to norma to mt Sound Blaster Live, It
 emit a very high frequency sound damaging ears
@@ -60,17 +60,16 @@ version of the code?
 ======================================================================
 
 ----------------------------------------------------------------------
- rlrevell - 12-19-04 23:09 
-----------------------------------------------------------------------
-Are your speakers connected to the analog or digital outputs on the
-soundcard?
-
-----------------------------------------------------------------------
  rlrevell - 12-19-04 23:10 
 ----------------------------------------------------------------------
 It would be better if you could boot the same 2.6.9 kernel that you say
 worked.  In general it's a bad idea to blow away your old kernel if you
 are not sure the new one works.
+
+----------------------------------------------------------------------
+ Eric Valette - 12-19-04 23:11 
+----------------------------------------------------------------------
+They are connected to the Analog output.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -86,6 +85,7 @@ Date Modified  Username       Field                    Change
 12-19-04 23:05 Eric Valette   Note Added: 0002856                          
 12-19-04 23:09 rlrevell       Note Added: 0002857                          
 12-19-04 23:10 rlrevell       Note Added: 0002858                          
+12-19-04 23:11 Eric Valette   Note Added: 0002859                          
 ======================================================================
 
 
