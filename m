@@ -1,16 +1,12 @@
-From: Nicola Orru' <nigu@itadinanta.it>
-Subject: Re: emufxtool, formerly ld10k1
-Date: Wed, 30 Jul 2003 23:50:51 +0200
+From: Eric Dantan Rzewnicki <eric@zhevny.com>
+Subject: novation remote 25 usb midi controller
+Date: Wed, 30 Jul 2003 22:33:38 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030730235051.0401f7ce.nigu@itadinanta.it>
-References: <Pine.LNX.4.44.0307302045290.9821-100000@pnote.perex-int.cz>
-	<Pine.LNX.4.44.0307302054090.9821-100000@pnote.perex-int.cz>
-	<20030730225350.3341ee6e.nigu@itadinanta.it>
+Message-ID: <3F288002.214F08C9@zhevny.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030730225350.3341ee6e.nigu@itadinanta.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,52 +15,98 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa user <alsa-user@lists.sourceforge.net>, linux-audio-user <linux-audio-user@music.columbia.edu>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> > If it is possible, can you guys settle details about linker communication
-> > (and probably finish it)? We can integrate both projects then.
-> 
-> I didn't know about Peter's ld10k1 existence, but it seems to be what I thought initially of emufxtool, before starting to improve the assembly/disassembly core and the file format.
-> 
-> I think it is a good idea, at least there will not duplicated code and, if I understand correctly, emufxtool might use ld10k1 as a "backend" to load patches onto the DSP.
-> 
-> I am just downloading ld10k1 from sf. Will take more than a look at that.
+I have not been successful in getting this keyboard recognized on the
+usb bus, let alone by the usb-audio driver. I'm going to see if I can
+get it working via straight midi into my ymfpci-based guillemot
+maxisound fortissimo. But, can anyone see anything else I can try? I've
+tried to gather as much info as I could think of...maybe I'm just not
+understanding something basic ... Please help.
 
-I took a look at ld10k1/lo10k1. Its architecture is well thought and offers lots of possibilities.
 
-I can remove from emufxtool the "direct" access to the driver by IOCTL and use the pipe to communicate to ld10k1 server.  Before doing that, maybe we should define well the "communication protocol" between clients and server, as suggested by Jaroslav.
+My system is debian testing (sarge) with kernel 2.4.19 with preempt and
+lowlatency patches and the following usb options turned on:
 
-This system solves also the problem of multiple patch loading and code relocation, which my emufxtool solves at compile time (to use more than one patch you have to compile and load them as a whole). The same method could be used by the disassembler code to fetch DSP content (or loader server-side DSP "images").
+CONFIG_USB=m
+CONFIG_USB_DEVICEFS=y
+CONFIG_USB_UHCI_ALT=m
+CONFIG_USB_AUDIO=m
 
-The next step could be a MIDI based loader, that allows you to store/fetch patches using SYSEX messages sent to /dev/sequencer or alsa midi virtual ports, or anything else (a new device that replaces the pipe?), maybe requiring some work on the modules... (Not a choice I can make, anyway...)
+lsusb returns nothing and there is nothing in /proc/bus/usb/devices (
+which I
+guess says the same thing. ) 
 
-I ignore if Peter Zubaj can receive this message, but I think it would be a good idea if we merged our projects into a single one ( : ). A good start may be the definition of the "protocol" above.
+I compiled and installed alsa-0.9.6 drivers, libs, utils and
+envy24control.
+the drivers were configured like this:
 
-The protocol can be "message based", each "message" may be defined, for instance, by primitive types and surrounded by a header/footer standard pair (containing a message id, the length of the message, and something like a checksum to avoid "garbage").
+./configure --with-cards=ice1712,usb-audio --with-sequencer=yes
+--with-oss=no
 
-Client and server "speak" through a sequence of "Request"/"Response" message pairs, usually initiated and closed by the client. 
+I have the following in modules.conf:
 
-I.E. Message: SET PATCH
+#sound specific modules
 
-Offset   Length (in bytes) Type                Value
-   0     2                 unsigned short (*)  0004 (ID_SET_PATCH)
-   2     4		   unsigned (*)        total length of message
-   6     30		   character string    name of the patch
-  36     2		   unsigned short (*)  number of DSP instr.
-....
-length+36 4		   unsigned	       checksum
+alias char-major-116 snd
+alias snd-card-0 snd-ice1712
+alias snd-card-1 snd-usb-audio
 
-(*) endianness to be defined
 
-and so on...
+lsmod looks like this:
 
--- 
-Ciao,
-Nicola
---------------------------------------------------------------------
-* Nicola Orru' - Via Dei Tulipani, 9 - 09034 Assemini (CA) - ITALY *
---------------------------------------------------------------------
+Module                  Size  Used by    Not tainted
+input                   3296   0  (autoclean)
+snd-seq                35088   0  (autoclean)
+snd-usb-audio          36992   0  (unused)
+usbcore                55968   0  [snd-usb-audio]
+snd-ice1712            35656   0 
+snd-pcm                54528   0  [snd-usb-audio snd-ice1712]
+snd-page-alloc          5392   0  [snd-pcm]
+snd-timer              13284   0  [snd-seq snd-pcm]
+snd-ac97-codec         34008   0  [snd-ice1712]
+snd-mpu401-uart         3088   0  [snd-ice1712]
+snd-rawmidi            11616   0  [snd-usb-audio snd-mpu401-uart]
+snd-seq-device          3652   0  [snd-seq snd-rawmidi]
+snd-ice17xx-ak4xxx      1344   0  [snd-ice1712]
+snd-cs8427              5188   0  [snd-ice1712]
+snd-ak4xxx-adda         3372   0  [snd-ice1712 snd-ice17xx-ak4xxx]
+snd-i2c                 2092   0  [snd-ice1712 snd-cs8427]
+snd                    23812   0  [snd-seq snd-usb-audio snd-ice1712
+snd-pcm snd-timer snd-ac97-codec snd-mpu401-uart snd-rawmidi
+snd-seq-device snd-cs8427 snd-ak4xxx-adda snd-i2c]
+
+aconnect -i:
+
+client 0: 'System' [type=kernel]
+    0 'Timer           '
+    1 'Announce        '
+
+acconnect -o:
+<nothing>
+
+lspci:
+00:00.0 Host bridge: Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+(rev 03)
+00:01.0 PCI bridge: Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX AGP bridge
+(rev 03)
+00:07.0 ISA bridge: Intel Corp. 82371AB/EB/MB PIIX4 ISA (rev 02)
+00:07.1 IDE interface: Intel Corp. 82371AB/EB/MB PIIX4 IDE (rev 01)
+00:07.2 USB Controller: Intel Corp. 82371AB/EB/MB PIIX4 USB (rev 01)
+00:07.3 Bridge: Intel Corp. 82371AB/EB/MB PIIX4 ACPI (rev 02)
+00:0a.0 Multimedia audio controller: Yamaha Corporation YMF-744B [DS-1S
+Audio Controller] (rev 02)
+00:0b.0 Multimedia audio controller: IC Ensemble Inc ICE1712 [Envy24]
+(rev 02)
+00:0d.0 Ethernet controller: Accton Technology Corporation SMC2-1211TX
+(rev 10)
+01:00.0 VGA compatible controller: 3Dfx Interactive, Inc. Voodoo 3 (rev
+01)
+
+This box is a PII 400 on a AOpen AX6-BC motherboard.
+
+-Eric Rz.
 
 
 -------------------------------------------------------
