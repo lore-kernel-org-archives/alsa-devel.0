@@ -1,17 +1,15 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: period_size, periods, count parameters
-Date: Fri, 27 Feb 2004 12:18:59 +0100 (MET)
+Subject: Re: how to set the volumn of line input and how to
+ capture data from it ?
+Date: Fri, 27 Feb 2004 12:24:58 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0402271216330.13003-100000@studcom.urz.uni-halle.de>
-References: <1077843957.403e97f588b44@www.imp.polymtl.ca>
+Message-ID: <Pine.HPX.4.33n.0402271223280.13003-100000@studcom.urz.uni-halle.de>
+References: <81409C6755E1D5118B8700D0B7889D3A0279E774@exchhz01.viatech.com.cn>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.Uni-Halle.DE [141.48.3.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA25482
-	for <alsa-devel@alsa-project.org>; Fri, 27 Feb 2004 12:20:11 +0100
-In-reply-to: <1077843957.403e97f588b44@www.imp.polymtl.ca>
+In-reply-to: <81409C6755E1D5118B8700D0B7889D3A0279E774@exchhz01.viatech.com.cn>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,36 +18,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mathieu Rondonneau <mathieu.rondonneau@polymtl.ca>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: "Jiang Jiang (HangZhou)" <JiangJiang@viatech.com.cn>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Mathieu Rondonneau wrote:
+Jiang Jiang (HangZhou) wrote:
+> I find that I can use alsamixer to adjust the volumn of line
+> input. But how can I set the volumn of line input by program?
 
-> Selon Clemens Ladisch <clemens@ladisch.de>:
->
-> > Mathieu Rondonneau wrote:
-> > > I don't understand why count is 1024 ?
-> > > why count is not equal to runtime->period_size (i.e. 16*1024)?
-> >
-> > If your frame size is 4, this is the size of a memory page.  I guess
-> > ALSA wants to copy the data one page at a time, and this is required
-> > if the buffer isn't contiguous.
->
-> How do i know the frame size?
-> Is it the runtime->frame_bits value?
+See the source of the amixer utility.
 
-Yes IIRC
+> And how to capture data from line input?
 
-> I'm using snd_pcm_lib_preallocate_pages_for_all api for memory space allocation.
-> Does it mean the buffer isn't contiguous?
+See the source of the arecord utility.
 
-The buffer usually is contiguous.  But the copy callback is used for
-cases where the real buffer is somewhere else, so it wouldn't need to
-be contiguous.
+> What's more, where can I find the explaniation of every item which
+> alsamixer lists ?
+
+The items in alsamixer depend on the hardware.  What sound card do you
+have?
 
 
-Regards,
+HTH
 Clemens
 
 
