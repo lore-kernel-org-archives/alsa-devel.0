@@ -1,16 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000451]: Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
-Date: Wed, 18 Aug 2004 10:00:12 +0200 (CEST)
+Subject: [ALSA - driver 0000435]: No current support for the ICH6R & ALC880 devices
+Date: Wed, 18 Aug 2004 11:53:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040818080012.4352D1102F@server.perex-int.cz>
+Message-ID: <20040818095358.1C31C1102F@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9CD04279
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 10:00:12 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 5503C18D28
-	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 10:00:12 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 977F9254
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 11:53:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,42 +20,85 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been SUBMITTED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000451
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000435
 ======================================================================
-Reported By:                cuardin
+Reported By:                snaketails
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Bug ID:                     451
-Category:                   alsactl
+Project:                    ALSA - driver
+Bug ID:                     435
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   feature
 Priority:                   normal
 Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.7
 ======================================================================
-Date Submitted:             08-18-2004 10:00 CEST
-Last Modified:              08-18-2004 10:00 CEST
+Date Submitted:             08-12-2004 02:50 CEST
+Last Modified:              08-18-2004 11:53 CEST
 ======================================================================
-Summary:                    Corruption in /etc/asound.state causes alsa to hang when restoring mixer levels during reboot.
+Summary:                    No current support for the ICH6R & ALC880 devices
 Description: 
-If the file /etc/asound.state is corrupted, for example due to a
-file-system corruption after a hard-reboot, the boot process will halt
-when attempting to restore the mixer settings. Pressing Ctrl-C will resume
-the boot process. 
-
-Upon shutdown, the process will halt when attempting to store mixer
-settings requiring a hard reboot.
-
-A work-around is to delete the offending file. 
+As this is a new mobo, there is no driver configuration that supports this
+newer buss interface devices, so there is no sound from the mobo.
+The inability for the mobo to run SATA under Linux is not an issue here,
+as I am using the SiS SATA driver, only issue is sound
 ======================================================================
+
+----------------------------------------------------------------------
+ pzad - 08-12-2004 07:32 CEST 
+----------------------------------------------------------------------
+I think in ALSA 1.0.6rc2 is driver for HD audio (azx module). Try it.
+
+----------------------------------------------------------------------
+ snaketails - 08-13-2004 02:03 CEST 
+----------------------------------------------------------------------
+Thank you, but I am currently using "Compiled-in" ALSA support.
+I guess I will have to remove the Alsa support from the Kernel to be able
+to compile? I may look at doing this, this weekend.
+
+----------------------------------------------------------------------
+ snaketails - 08-16-2004 06:01 CEST 
+----------------------------------------------------------------------
+I recompiled the kernel to allow me to compile the azx module as
+suggested.
+I found I had to change the audio out plug to another location on the rear
+of my system, but the sound is crackly??
+But, at least I do have sound output, and the crackles are only a slight
+annoyance.
+I only have controls for "Master" and "Capture", nothing more.
+
+----------------------------------------------------------------------
+ snaketails - 08-18-2004 04:28 CEST 
+----------------------------------------------------------------------
+Ok, I have the driver installed
+
+the sound is working, but I have crackles, whistles and pops only when
+there is talking or audio above a certain level, it seems there is some
+kind of feedback that is happening as when it does get louder I get more
+and more echo and reverberation in the soundstream, would this be related
+to the drived being in its infancy stages?
+
+----------------------------------------------------------------------
+ tiwai - 08-18-2004 11:53 CEST 
+----------------------------------------------------------------------
+I guess yes, the driver is still in the test stage.
+The mixer code is pretty primitive yet.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-18-04 10:00 cuardin        New Bug                                      
-08-18-04 10:00 cuardin        File Added: asound.state                     
+08-12-04 02:50 snaketails     New Bug                                      
+08-12-04 02:50 snaketails     Distribution              => Gentoo          
+08-12-04 02:50 snaketails     Kernel Version            => 2.6.7           
+08-12-04 07:32 pzad           Bugnote Added: 0001551                       
+08-13-04 02:03 snaketails     Bugnote Added: 0001560                       
+08-16-04 06:01 snaketails     Bugnote Added: 0001569                       
+08-18-04 04:28 snaketails     Bugnote Added: 0001575                       
+08-18-04 11:53 tiwai          Bugnote Added: 0001576                       
 ======================================================================
 
 
