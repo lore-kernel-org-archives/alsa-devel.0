@@ -1,13 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000005]: alsa-driver-1.0.2: unresolved symbols in snd.o
-Date: Tue, 27 Jan 2004 22:48:57 +0100 (CET)
+From: Torsten Mohr <tmohr@s.netic.de>
+Subject: Docu:: Alsa Audio API:: A minimal capture program
+Date: Tue, 27 Jan 2004 22:40:03 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040127214857.09AA54904C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200401272240.03344.tmohr@s.netic.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA19613
-	for <alsa-devel@alsa-project.org>; Tue, 27 Jan 2004 22:49:04 +0100
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,109 +17,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-A BUGNOTE has been added to this bug.
-======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000005
-======================================================================
-Reporter:                   ZlatkO
-Handler:                    perex
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     5
-Category:                   0_compilation problem_!!!
-Reproducibility:            always
-Severity:                   block
-Priority:                   immediate
-Status:                     assigned
-Distribution:               Slackware 8.1
-Kernel Version:             2.4.24
-======================================================================
-Date Submitted:             01-27-2004 21:31 CET
-Last Modified:              01-27-2004 22:48 CET
-======================================================================
-Summary:                    alsa-driver-1.0.2: unresolved symbols in snd.o
-Description: 
-snd.o fails to load due to an unresolved symbol ("sound_class") on a
-Slackware 8.1 system, kernel 2.4.24 (plain vanilla from kernel.org),
-modutils-2.4.16.
+i copied the "minimal capture program" from the
+Alsa page -> Documentation -> Tutorial on using the
+ALSA Audio API -> A minimal capture program.
 
-There is no "sound_class" in the kernel's own
-/usr/src/linux-2.4.24/drivers/sound/sound_core.c - am I supposed to
-replace it with alsa-kernel/sound_core.c? This was not necessary in
-previous ALSA versions.
-======================================================================
+I added "int rate = 44100" and changed the wrong
+parameter "44100" in "snd_pcm_hw_params_set_rate_near"
+to "&rate".
 
-----------------------------------------------------------------------
- perex - 01-27-2004 22:08 CET 
-----------------------------------------------------------------------
-I cannot reproduce this bug, but it might be possible that removing
-of line 'extern struct class_simple *sound_class;' in
-alsa-driver/alsa-kernel/core/sound.c solves this bug.
+bash# gcc capture.c -lasound
+bash# a.out default
 
-Can you confirm?
+But if i add a "sleep(1)" in the "for(i = 0; i < 10; i++)",
+the whole program crashes.
 
-I've recreated new alsa-driver package with date:
 
-Jan 27 22:02 alsa-driver-1.0.2.tar.bz2
+I want to write a program where some chunk of
+data is sampled from time to time, with some delay
+inbetween.  The behaviour above (with sleep(1))
+is a good example for what i want to do.
 
-----------------------------------------------------------------------
- khali - 01-27-2004 22:18 CET 
-----------------------------------------------------------------------
-Doesn't work for me. Even worse, alsa-driver doesn't compile anymore after
-I commented the line out:
+Can anybody tell me what i need to change to make
+the program work ok?
 
-sound.c: In function `snd_register_device_R1f4c5f07':
-sound.c:239: `sound_class' undeclared (first use in this function)
-sound.c:239: (Each undeclared identifier is reported only once
-sound.c:239: for each function it appears in.)
-sound.c: In function `alsa_sound_init':
-sound.c:376: `sound_class' undeclared (first use in this function)
-sound.c: At top level:
-sound.c:41: warning: `device_mode' defined but not used
-make[1]: *** [sound.o] Error 1
-make[1]: Leaving directory `/usr/src/alsa-driver-1.0.2/acore'
-make: *** [compile] Error 1
 
-----------------------------------------------------------------------
- perex - 01-27-2004 22:39 CET 
-----------------------------------------------------------------------
-Ok, can you add '#define sound_class NULL' after removing of suggested line
-(on the same place)? Note that the rebuilt alsa-driver package has this
-fix included.
+Thanks for any hints,
+Torsten.
 
-edited on: 01-27-04 22:39
 
-----------------------------------------------------------------------
- khali - 01-27-2004 22:48 CET 
-----------------------------------------------------------------------
-OK, works fine for me.
-Thanks.
-
-----------------------------------------------------------------------
- ZlatkO - 01-27-2004 22:48 CET 
-----------------------------------------------------------------------
-Works fine here after the second fix (same problem after the first one).
-Thanks! :-)
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-27-04 21:31 ZlatkO         New Bug                                      
-01-27-04 22:08 perex          Bugnote Added: 0000005                       
-01-27-04 22:08 perex          Assigned To               => perex           
-01-27-04 22:08 perex          Status                   new => assigned     
-01-27-04 22:08 perex          Priority                 normal => immediate 
-01-27-04 22:15 perex          Category                 CORE - control => 0_compilation problem_!!!
-01-27-04 22:18 khali          Bugnote Added: 0000007                       
-01-27-04 22:37 perex          Bugnote Added: 0000008                       
-01-27-04 22:39 perex          Bugnote Edited: 0000008                      
-01-27-04 22:48 khali          Bugnote Added: 0000009                       
-01-27-04 22:48 ZlatkO         Bugnote Added: 0000010                       
-======================================================================
 
 
 -------------------------------------------------------
