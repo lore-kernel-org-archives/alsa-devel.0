@@ -1,14 +1,25 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Other types of usb audio devices.
-Date: Sat, 05 Jul 2003 15:27:18 +0100
+From: <jfm3@ouroboros-complex.org>
+Subject: Re: hdsp driver status
+Date: Sat, 5 Jul 2003 08:19:33 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F06E046.2090609@superbug.demon.co.uk>
-References: <Pine.LNX.4.44.0307051556170.21843-100000@pnote.perex-int.cz>
+Message-ID: <33044.24.225.156.130.1057418373.squirrel@webmail.ouroboros-complex.org>
+References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
+        <3F044FF5.2010602@boosthardware.com>
+        <3F0456A5.9000600@boosthardware.com>
+        <1057252106.7192.61.camel@lotte>
+        <32866.81.50.18.84.1057263312.squirrel@www.undata.org>
+        <1057322609.7193.65.camel@lotte>
+        <35616.217.128.161.242.1057324690.squirrel@www.undata.org>
+        <1057325373.10858.77.camel@lotte>
+        <35748.217.128.161.242.1057327134.squirrel@www.undata.org>
+        <1057331014.10858.87.camel@lotte>
+        <36141.24.225.156.130.1057376158.squirrel@webmail.ouroboros-complex.org>
+        <32832.217.128.97.180.1057393794.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0307051556170.21843-100000@pnote.perex-int.cz>
+In-Reply-To: <32832.217.128.97.180.1057393794.squirrel@www.undata.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,62 +28,26 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Sat, 5 Jul 2003, James Courtier-Dutton wrote:
-> 
-> 
->>Hi,
->>
->>The current snd-usb-audio driver assumes that the audio device is 
->>attached to this computer, so it only talks to this endpoint.
->>If I have an audio usb device with USB_CLASS = 0xe0, it will be a 
->>wireless device. I.E. A bluetooth headset.
->>It uses isoc's just like the current snd-usb-audio driver but adds some 
->>extra requirements, in order to open a connection, one needs to also 
->>know the bd address of the destination device  (Like a MAC address for 
->>ethernet) and keep tabs of connection number.
->>The current bluetooth stack I am using is bluez, from the current 2.4.20 
->>  kernel, and it uses network sockets for the audio. I would prefer to 
->>use alsa for sending and receiving audio to/from the headset, with all 
->>other control of the device going via the bluetooth stack.
->>So the question is: -
->>How do I get the bdaddr to alsa so that an application can use 
->>snd_pcm_open with the bluetooth headset, just as if it was a local audio 
->>card.
-> 
-> 
-> I think that there must be a way to determine new devices with the 
-> bluetooth stack, so use the same mechanism as usb or pcmcia:
-> 
-> Register all found audio devices and create appropriate new cards in the 
-> ALSA driver. The application does not know, if it communicates with usb, 
-> bluetooth, PCI or ISA devices so passing some native information for the 
-> transport layer is not our goal.
-> 
-> 						Jaroslav
+That hdsploader patch sort of works. I can get sound out of my Multiface now.
 
-Another approach would be to use some other tool outside alsa to enter 
-the bdaddr, and just present a Playback and Capture PCM to alsa lib.
-I was thinking that the "card" would be the bluetooth usb dongle, and 
-the pcm's would dynamically appear and disappear as the user attaches 
-different bluetooth devices (e.g. headset).
+I ran hdsploader the first time and it failed. I ran it a second time and
+the red light on the Multiface went out, but the hdsploader process never
+finished. In fact, it did not even respond to kill -9. It was idle --
+neither user nor kernel cpus were being used by it as it wedged. But the
+red light on the Multiface was out. So I rebooted Linux, running
+hdsploader now works, and now I can hear sound out of the Multiface.
 
-Does alsa allow for PCMs to appear and disappear?
-E.g. Card appears but no pcms listed in /proc/asound/card0
-User runs a tool (attach-bluetooth-pcm) what sorts out a pairing of 
-bluetooth devices and then creates a PCM device in /proc/asound/card0
-User changes devices, and has to re-run attach-bluetooth-pcm to remove 
-the old PCM, and create a new one of the new device.
-OR: -
-Would a new "card" have to be created for each bluetooth headset?
-Is alsa happy with dynamically adding and removing cards ?
+I still have no idea what I'm doing in terms of managing that gigantic
+mixer. My modules.conf file needs work. Let me see if I can narrow down
+the problem some more, or blame it on cosmic rays, or something.
 
-Cheers
-James
+Much thanks to all.
+
+(jfm3)
+
 
 
 
