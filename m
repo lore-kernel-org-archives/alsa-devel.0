@@ -1,19 +1,18 @@
-From: Simon Blandford <home@simonb.org.uk>
-Subject: Documentation for CS4205? Ref. SPDIF.
-Date: Sun, 05 May 2002 14:54:15 +0100
+From: "Bearcat M. Sandor" <Linux@TheDragonsEdge.com>
+Subject: Re: Beginning ALSA programming otr "Read Any Good
+	Books Lately?
+Date: 03 May 2002 20:34:55 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3CD53987.9000501@simonb.org.uk>
+Message-ID: <1020479695.1158.0.camel@linux>
+References: <Pine.GSO.3.96.1020503141011.26171A-100000@yin.interaccess.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from carbon (carbon.btinternet.com [194.73.73.92])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA08045
-	for <alsa-devel@alsa-project.org>; Sun, 5 May 2002 15:52:33 +0200
-Received: from host217-39-131-79.in-addr.btopenworld.com ([217.39.131.79] helo=simonb.org.uk)
-	by carbon with esmtp (Exim 3.22 #8)
-	id 174MRC-0006CG-00
-	for alsa-devel@alsa-project.org; Sun, 05 May 2002 14:52:30 +0100
+Received: from linux.TheDragonsEdge.com (host12.dsl1.blackfoot.net [12.32.44.12])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id EAA11541
+	for <alsa-devel@alsa-project.org>; Sat, 4 May 2002 04:33:30 +0200
+In-Reply-To: <Pine.GSO.3.96.1020503141011.26171A-100000@yin.interaccess.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,26 +21,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: kevin@kevindumpscore.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Kevin,
 
-I am trying out the new 0.9.0RC1 release of ALSA to see if I can get the 
-SPDIF output to work on a Dell Inspiron 8200. I have seen talkback on 
-the dev list of a patch for this and it seems to have been included in 
-the latest ac97_codec.c file.
+Thanx!! A great place to start..now..where did i put my wallet for these
+inexpensive books..:)
 
-However, the CS4205 is not listed as a supported card nor is it 
-mentioned in the INSTALL file. So what do I do to get this funky card 
-and especially the SPDIF output to work?
+Bearcat
 
-I know Mandrake 8.2 with the old 0.5.x ALSA just treated it as an intel 
-810 sound system. That worked fine, but probably wouldn't help me use 
-SPDIF.
+On Fri, 2002-05-03 at 13:14, Kevin Conder wrote:
+> On Mon, 29 Apr 2002, Bearcat M. Sandor wrote:
+> 
+> > I have the following in mind:
+> >         Creating my own music DSP modes
+> >         
+> > Are there any books that cover programming in these areas?
+> 
+> 	http://shoko.calarts.edu/~glmrboy/musicdsp/dspbooks.html
+> 
+> -- Kevin Conder, kevin@kevindumpscore.com
+> 
+> 
 
-Regards,
-Simon B.
 
 
 _______________________________________________________________
