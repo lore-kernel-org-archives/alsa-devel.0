@@ -1,9 +1,12 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: [PATCH] usbmidi.c: support for SD-20/SD-80/UA-700
-Date: Thu, 15 Aug 2002 09:52:31 +0200 (MEST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: Midiman Quattro USB drivers
+Date: Thu, 15 Aug 2002 17:38:55 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200208150752.g7F7qVU27686@turing.informatik.uni-halle.de>
-Content-Type: text
+Message-ID: <3D5B689F.3060109@boosthardware.com>
+References: <004d01c243f0$b9f8af50$a6ed3b42@eclipse>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -13,62 +16,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Eric Griffis <egriffis@netconcentric.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Index: usb/usbmidi.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbmidi.c,v
-retrieving revision 1.1
-diff -u -r1.1 usbmidi.c
---- usb/usbmidi.c	14 Aug 2002 17:22:18 -0000	1.1
-+++ usb/usbmidi.c	15 Aug 2002 07:48:59 -0000
-@@ -60,10 +60,13 @@
- 		"{Roland/EDIROL,SC-8820},"
- 		"{Roland/EDIROL,SC-8850},"
- 		"{Roland/EDIROL,SC-D70},"
-+		"{Roland/EDIROL,SD-20},"
-+		"{Roland/EDIROL,SD-80},"
- 		"{Roland/EDIROL,SD-90},"
- 		"{Roland/EDIROL,SK-500},"
- 		"{Roland/EDIROL,U-8},"
- 		"{Roland/EDIROL,UA-100(G)},"
-+		"{Roland/EDIROL,UA-700},"
- 		"{Roland/EDIROL,UM-1(S)},"
- 		"{Roland/EDIROL,UM-2(E)},"
- 		"{Roland/EDIROL,UM-4},"
-@@ -1304,6 +1307,21 @@
- 	.ifnum = 0,
- 	.endpoints = {{ -1, 0x003f, 0x003f }}
- };
-+static usbmidi_device_info_t snd_usbmidi_roland_sd20_info = {
-+	.vendor = "EDIROL", .product = "SD-20",
-+	.ifnum = 0,
-+	.endpoints = {{ -1, 0x0003, 0x0007 }}
-+};
-+static usbmidi_device_info_t snd_usbmidi_roland_sd80_info = {
-+	.vendor = "EDIROL", .product = "SD-80",
-+	.ifnum = 0,
-+	.endpoints = {{ -1, 0x000f, 0x000f }}
-+};
-+static usbmidi_device_info_t snd_usbmidi_roland_ua700_info = {
-+	.vendor = "EDIROL", .product = "UA-700",
-+	.ifnum = 3,
-+	.endpoints = {{ -1, 0x0003, 0x0003 }}
-+};
- 
- #define USBMIDI_NONCOMPLIANT_DEVICE(vid, pid, name) \
- 		USB_DEVICE(vid, pid), \
-@@ -1329,6 +1347,9 @@
- 	{ USBMIDI_NONCOMPLIANT_DEVICE(0x0582, 0x0014, roland_um880) },
- 	{ USBMIDI_NONCOMPLIANT_DEVICE(0x0582, 0x0016, roland_sd90) },
- 	{ USBMIDI_NONCOMPLIANT_DEVICE(0x0582, 0x0023, roland_um550) },
-+	{ USBMIDI_NONCOMPLIANT_DEVICE(0x0582, 0x0027, roland_sd20) },
-+	{ USBMIDI_NONCOMPLIANT_DEVICE(0x0582, 0x0029, roland_sd80) },
-+	{ USBMIDI_NONCOMPLIANT_DEVICE(0x0582, 0x002b, roland_ua700) },
- 	{ /* terminator */ }
- };
- 
+Eric Griffis wrote:
+> Hello, people. I've been lurking on this list for a few months and, now 
+> that I have a local linux machine to develop on, am going to horn in and 
+> ask silly questions from time to time.
+>  
+> A month or two ago, I recall a thread regarding attempts to get driver 
+> specs for the m-audio quattro usb. Considering that my quattro is my 
+> primary audio device, and I am not fond of dual booting just to use it 
+> (the windows ASIO drivers are terrible), I am very interested in 
+> developing good drivers for this thing. Has anyone succeeded in getting 
+> the driver specs?
+>  
+> About when that quattro thread was floating around, I met a beta tester 
+> for Midiman. He was looking into getting the specs for me and has since 
+> disappeared. I live about 10 blocks from their headquarters and have 
+> done business with them before (network wiring bids and computer sales 
+> and such), so maybe I should look up the owners business card and start 
+> snooping. I just wanted to check if the specs were public yet or not.
+>  
+
+
+this card is working now. If you look in the docs via the sound card 
+matrix you can ifnd out how to install it. there is even a working 
+asoundrc so that you can use all four channels at one time.
+
+Midi is untested but should work because it is a midisport.
+
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
 
 
 
