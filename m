@@ -1,12 +1,12 @@
-From: Peter L Jones <peter@drealm.org.uk>
-Subject: [2.5.40bk3] Am I missing something?
-Date: Fri, 4 Oct 2002 23:23:47 +0100
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Audiophile 2496 S/PDIF Support
+Date: Sat, 05 Oct 2002 14:36:47 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200210042323.48179@advent.drealm.org.uk>
+Message-ID: <3D9E6C5F.2010306@superbug.demon.co.uk>
+References: <m27kh1djdd.fsf@vador.mandrakesoft.com><20021002145420.6F590146FB@Cantor.suse.de><s5hd6qskhmn.wl@alsa2.suse.de><s5hbs6ckgm0.wl@alsa2.suse.de><20021002174359.1d2395d3.matthias@rpmforge.net><m2zntwn4gx.fsf@vador.mandrakesoft.com><000001c26a6b$bf2da600$0201a8c0@rer> <s5h3crm5szq.wl@alsa2.suse.de> <001501c26bd3$cd7da430$0201a8c0@rer>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,42 +16,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Robert Robinson <robbiex@bellsouth.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Robert Robinson wrote:
 
-I'm running 2.5.40 bitkeeper snapshot #3.  Having finally got as far as 
-building ALSA (ens1371), I can't get any output.
+>Takashi,
+>
+>I had communication from Kysela Jaroslav indicating that the Audiophile 2496
+>driver does support digital I/O.
+>The problem may be that I have not been using an audio interface program
+>that supports the digital option. This choice is never displayed as part of
+>the I/O.
+>Robbie
+>  
+>
+I own a SB Live card, and not an Audiophile 2496, but on the SB Live you 
+use alsamixer to select all the recording sources. Then you run arecord 
+and it records the sound from the multiple sources mixed together.
 
-The driver loads:
-Advanced Linux Sound Architecture Driver Version 0.9.0rc3 (Tue Oct 01 14:40:23 
-2002 UTC).
-Compiled on Oct  4 2002 for kernel 2.5.40bk3.
-  0: [0- 0]: ctl
-  8: [0- 0]: raw midi
- 17: [0- 1]: digital audio playback
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
- 33:       : timer
+The problem with the SB Live is that recording from the SPDIF is always 
+interpolated to 48kHz, some interpolation happens between 48Khz input 
+and the 48Khz of the sound card. In reality the sound quality does not 
+change, but it does cause problems if you are trying to capture an AC3 
+or DTS signal, because the interpolation breaks it.
 
-When /etc/init.d/alsa runs, I get no nasty looking messages anywhere - ens1371 
-loads, alsactl restore runs.  But alsamixer shows all levels zeroed.  And 
-KMix doesn't find any mixers.  Upping the settings in alsamixer doesn't make 
-the soundcard work :-(.
+A good program to test recording in is arecord, which comes with alsa.
 
-What should I be looking at..?
+Cheers
+James
 
-(Oh, and is Documentation/sound/alsa going to get some useful content before 
-2.6 comes out..? :-) )
-
-Btw, the soundcard works fine under 2.4.19 with alsa-driver-0.9.0rc3, so I'm 
-definitely pointing the finger at rc3 that's just been added into 2.5, 
-Jaroslav :-)).  Seriously, what can I do to help get it working?
-
-Regards,
-
--- Peter
 
 
 
