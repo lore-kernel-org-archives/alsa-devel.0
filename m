@@ -1,18 +1,15 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: hammerfall_mem.c - obsolete - to be removed
-Date: Fri, 6 Jun 2003 06:40:50 -0700
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: hammerfall_mem.c - obsolete - to be removed
+Date: Fri, 06 Jun 2003 10:25:44 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGAEKACGAB.mknecht@controlnet.com>
-References: <Pine.LNX.4.44.0306061358020.2783-100000@pnote.perex-int.cz>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Message-ID: <200306061434.QAA03910@alsa.alsa-project.org>
+References: <s5hptlrjszx.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from vivaldi.controlnet.com (hidden-user@mail.controlnet.com [199.108.40.159])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id PAA03236
-	for <alsa-devel@alsa-project.org>; Fri, 6 Jun 2003 15:54:16 +0200
-In-Reply-To: <Pine.LNX.4.44.0306061358020.2783-100000@pnote.perex-int.cz>
+Received: from mail08.voicenet.com (mail08.voicenet.com [207.103.0.34])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id QAA03910
+	for <alsa-devel@alsa-project.org>; Fri, 6 Jun 2003 16:34:38 +0200
+In-reply-to: Your message of "Fri, 06 Jun 2003 14:22:10 +0200."
+             <s5hptlrjszx.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,54 +18,18 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Jaroslav Kysela <perex@suse.cz>, ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav,
-   Is this true with Alsa 0.9.4? Should I remove the loading of this module?
+>> 	I think that hammerfall_mem.c should be removed from the ALSA 
+>> tree, because we have unified preallocation / buffer cache system in 
+>> the snd-page-alloc module (alsa-kernel/core/memalloc.c) which 
+>> completely replaces the original single purpose code.
+>
+>yep, the only thing to do is to test and debug it :)
 
-Thanks,
-Mark
-
-> -----Original Message-----
-> From: alsa-devel-admin@lists.sourceforge.net
-> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Jaroslav
-> Kysela
-> Sent: Friday, June 06, 2003 5:06 AM
-> To: ALSA development
-> Cc: Paul Davis; Takashi Iwai
-> Subject: [Alsa-devel] hammerfall_mem.c - obsolete - to be removed
->
->
-> Hi,
->
-> 	I think that hammerfall_mem.c should be removed from the ALSA
-> tree, because we have unified preallocation / buffer cache system in
-> the snd-page-alloc module (alsa-kernel/core/memalloc.c) which
-> completely replaces the original single purpose code.
->
-> 						Jaroslav
->
-> -----
-> Jaroslav Kysela <perex@suse.cz>
-> Linux Kernel Sound Maintainer
-> ALSA Project, SuSE Labs
->
->
->
->
-> -------------------------------------------------------
-> This SF.net email is sponsored by:  Etnus, makers of TotalView, The best
-> thread debugger on the planet. Designed with thread debugging features
-> you've never dreamed of, try TotalView 6 free at www.etnus.com.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
->
-
-
+and to verify that it has no dependencies on any other module ...
 
 
 -------------------------------------------------------
