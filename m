@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000886]: alsactl store = crash
-Date: Wed, 9 Feb 2005 11:54:17 +0100
-Message-ID: <838536da4ad5ce7de0c43f1c58616751@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000885]: usx2y is unsupported in v 1.08 builds
+Date: Wed, 9 Feb 2005 11:55:54 +0100
+Message-ID: <85504a216462f26fbdce8ed1fd5e2379@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4D11525E
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:54:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D3A7625E
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 11:55:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,72 +23,52 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=886> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=885> 
 ======================================================================
-Reported By:                udasoft
-Assigned To:                
+Reported By:                hamishtpb
+Assigned To:                karsten
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   886
-Category:                   PCI - azx
+Issue ID:                   885
+Category:                   USB - usb-usx2y
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.10
+Status:                     assigned
+Distribution:               Gentoo 2004.3
+Kernel Version:             2.4.28-Gentoo-r5
 ======================================================================
-Date Submitted:             02-06-2005 16:01 CET
-Last Modified:              02-09-2005 11:54 CET
+Date Submitted:             02-06-2005 05:57 CET
+Last Modified:              02-09-2005 11:55 CET
 ======================================================================
-Summary:                    alsactl store = crash
+Summary:                    usx2y is unsupported in v 1.08 builds
 Description: 
-I have a Intel D915PBL Motherboard with High Definition Audio Controller
-(ICH6 Family).
-
-When I save the state of mixer with alsactl, receive this error:
-
-udasoftware root # alsactl  store
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-PREEMPT SMP
-Modules linked in: snd_pcm_oss snd_mixer_oss snd_seq_oss
-snd_seq_midi_event snd_seq snd_seq_device snd_azx snd_hda_codec snd_pcm
-snd_timer snd snd_page_alloc nvidia
-CPU:    0
-EIP:    0060:[<00000000>]    Tainted: P      VLI
-EFLAGS: 00010282   (2.6.10-gentoo-r6)
-EIP is at 0x0
-eax: f2264580   ebx: f705a400   ecx: 00000023   edx: ee59fe4c
-esi: f2264580   edi: ffffffe7   ebp: f705a54c   esp: ee59fe30
-ds: 007b   es: 007b   ss: 0068
-Process alsactl (pid: 16709, threadinfo=ee59f000 task=c191f020)
-Stack: f8b2efca f2264580 ee59fe4c 00000110 f2264600 00000000 f2264664
-00000022
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-              00000000 00000000 00000000 00000000 00000000 00000000
-00000000 00000000
-              Call Trace:
-               [<f8b2efca>] snd_ctl_elem_info+0x7a/0x190 [snd]
-                [<f8b2fffa>] snd_ctl_ioctl+0x25a/0x390 [snd]
-                 [<c016f8ba>] sys_ioctl+0xca/0x230
-                  [<c01031af>] syscall_call+0x7/0xb
-                  Code:  Bad EIP value.
-                   Segmentation fault
+Whever I try to build any 1.0.8 alsa-driver I get "unsupported card error"
+when I set usb-usx2y as my card. I have manually installed 1.0.7 and the
+compile went smoothly.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 02-09-05 11:54 
+ hamishtpb - 02-06-05 15:53 
 ----------------------------------------------------------------------
-Could you try CVS version?
+I forgot to mention that the problem occurs with both Gentoo's own portage
+builds of 1.0.8 and manually downloaded builds.
+
+----------------------------------------------------------------------
+ tiwai - 02-09-05 11:55 
+----------------------------------------------------------------------
+Then I suspect it's gentoo specific.
+What happens if you compile all drivers without passing --with-cards=xxx?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-06-05 16:01 udasoft        New Issue                                    
-02-06-05 16:01 udasoft        Distribution              => Gentoo          
-02-06-05 16:01 udasoft        Kernel Version            => 2.6.10          
-02-09-05 11:54 tiwai          Note Added: 0003544                          
+02-06-05 05:57 hamishtpb      New Issue                                    
+02-06-05 05:57 hamishtpb      Distribution              => Gentoo 2004.3   
+02-06-05 05:57 hamishtpb      Kernel Version            => 2.4.28-Gentoo-r5
+02-06-05 05:57 hamishtpb      Issue Monitored: hamishtpb                    
+02-06-05 15:53 hamishtpb      Note Added: 0003525                          
+02-09-05 11:55 tiwai          Note Added: 0003545                          
 ======================================================================
 
 
