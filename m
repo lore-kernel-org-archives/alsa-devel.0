@@ -1,14 +1,14 @@
-From: "Michele Spinolo" <michele.spinolo@tin.it>
-Subject: Terratec EWS88D and clockword sync (ICE1712)
-Date: Fri, 30 Jul 2004 12:16:25 +0200
+From: <bbennetts@blueyonder.co.uk>
+Subject: Bug 000384 & debugging ALSA drivers.
+Date: Fri, 30 Jul 2004 12:04:22 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <00f601c4761e$456a7e40$0200a8c0@cfd86qjdqauxzj>
-References: <E1Bn7Mu-0000Z4-D0@sc8-sf-list2.sourceforge.net>
+Message-ID: <5B596E67A1B90F48A466D8DF19E1F49703713CF2@ECOWV06M.Telewest.Internal>
 Mime-Version: 1.0
 Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+	charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,12 +20,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Will clockword sync option be added in envy24control on ICE1712 driver while
-running multiple Terratec EWS88D cards?
+Hi all,
 
-Thanks
-Michele
+I was considering trying to debug the above problem in the ymfpci =
+driver.  However, I have never had to work on a driver before and so was =
+wondering if anyone had any tips/suggestions on where to start (e.g. =
+easiest way to debug the kernel etc) also any known stumbling blocks to =
+look out for.  If there's a good doc on the web that'd also be a big =
+help.
 
+Of course if someone has fixed the problem already... ;-)
+
+Thanks in advance, Bry.
 
 
 -------------------------------------------------------
