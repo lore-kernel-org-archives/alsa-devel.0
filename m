@@ -1,15 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [alsa-cvslog] CVS: alsa-kernel/Documentation
- ALSA-Configuration.txt,1.50,1.51
-Date: Fri, 03 Sep 2004 14:58:29 +0200 (METDST)
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Re: User land drivers.
+Date: Fri, 3 Sep 2004 15:11:12 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0409031427510.16124-100000@studcom.urz.uni-halle.de>
-References: <s5hfz5zy1z4.wl@alsa2.suse.de>
+Message-ID: <20040903151112.0aa754c2@mango.fruits.de>
+References: <413456AE.7000007@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <s5hfz5zy1z4.wl@alsa2.suse.de>
+Received: from mail.gmx.net (imap.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 4E90F29A
+	for <alsa-devel@alsa-project.org>; Fri,  3 Sep 2004 14:58:45 +0200 (MEST)
+In-Reply-To: <413456AE.7000007@superbug.demon.co.uk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,39 +20,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: James Courtier-Dutton <James@superbug.demon.co.uk>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > Log Message:
-> > Summary: remove gameport/MIDI support
-> >
-> > snd-intel8x0's gameport/MIDI code has quite a few problems:  the port
-> > addresses cannot be detected reliably (or not at all with newer LPC
-> > bridge devices), joystick port address 0x208 isn't supported, the MIDI
-> > interrupt isn't detected, PnP isn't supported, changing the port
-> > addresses in the LPC bridge configuration doesn't affect the devices
-> > in the Super-I/O chip connected to the LPC bus, and registering this
-> > driver for the LPC bridge PCI device prevents other drivers using the
-> > LPC's PCI id from loading later.
-> >
-> > All these problems can be cured by removing the offending code and
-> > using the proper modules for these devices (ns558/snd-mpu401) instead.
->
-> I agree with removal, but can ns558/mpu401 set up these pci
-> configuration bits for ICH properly?
-
-No, but intel8x0 wasn't able to do this either -- enabling some port
-addresses in the LPC bridge doesn't change the configuration of the
-actual device in the Super-I/O chip.  Only the BIOS knows how to do
-this, so the driver must use PnP information for this.
+On Tue, 31 Aug 2004 11:45:02 +0100
+James Courtier-Dutton <James@superbug.demon.co.uk> wrote:
 
 
-Regards,
-Clemens
+> Would it be possible to have userland processes creating /dev/ files ?
+> Alternatively, could we provide a new plugin method, so we can add 
+> userland PCMs, Mixer, etc.
+> 
+> Any ideas?
 
+have a look for userspace file systems. I suppose many of the techniques
+can be adopted to this..
+
+http://www.circlemud.org/~jelson/software/fusd/
+
+for example
+
+flo
 
 
 -------------------------------------------------------
