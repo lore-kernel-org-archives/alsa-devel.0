@@ -1,12 +1,15 @@
-From: Karsten Wiese <annabellesgarden@yahoo.de>
-Subject: [PATCH]snd-usb-usx2y.patch.0.4.1
-Date: Tue, 30 Dec 2003 14:35:08 +0100
+From: Georgi Georgiev <chutz@gg3.net>
+Subject: Re: Creative/emu10k1 status? (working Line-In2)
+Date: Wed, 31 Dec 2003 06:04:41 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312301435.08262.annabellesgarden@yahoo.de>
+Message-ID: <20031230210440.GB17637@lion.gg3.net>
+References: <S19421AbTKNSdA/20031114183300Z+1380@nic.funet.fi>
+Reply-To: Georgi Georgiev <chutz-dated-1074027884.1287165cfb51@gg3.net>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_M8X8/49wMXOW/A8"
+Content-Type: multipart/mixed; boundary="UlVJffcvxoiEqYs2"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <S19421AbTKNSdA/20031114183300Z+1380@nic.funet.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,150 +18,145 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: kouhia@nic.funet.fi, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
---Boundary-00=_M8X8/49wMXOW/A8
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-Hi Jaroslav,
+> Hello. What is the latest status of Creative/emu10k1 support?
+> 
+> I have Alsa driver where the LiveDrive Line-In2 ("Line LiveDrive 1")
+> on capture bus does not work. We checked the case with Alsa developers
+> but the problem remained. A quick look at the Alsa-Devel archives
+> reveals that others have had the same problem this year.
+> 
+> Before anyone jumps and tell that they are able to record from
+> the Line-In2, I can tell that that is possible via AC97, which
+> is wrong way.
+> 
+>  !! If you think your capture works, mail me and we   !!
+>  !! *verify* it together with my test mixer settings. !!
 
-this fixes 24Bit 4Channel capturing.
-Please commit.
+I was playing with the alsa source in kernel-2.6.0 and after "fixing" a few
+things, my Line-In2 started working as expected.
 
-Thanks,
-Karsten
+This is my testing procedure:
 
---Boundary-00=_M8X8/49wMXOW/A8
-Content-Type: text/x-diff;
-  charset="us-ascii";
-  name="snd-usb-usx2y.patch.0.4.1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename="snd-usb-usx2y.patch.0.4.1"
+- Headset plugged in the Headphones and Mic of the LiveDrive. Card is Live
+  Platinum (with the IEEE1394).
 
-Index: usbusx2y.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2y.c,v
-retrieving revision 1.4
-diff -u -r1.4 usbusx2y.c
---- usbusx2y.c	2 Dec 2003 10:15:02 -0000	1.4
-+++ usbusx2y.c	30 Dec 2003 13:21:03 -0000
-@@ -1,6 +1,10 @@
- /*
-  * usbus428.c - ALSA USB US-428 Driver
-  *
-+2003-12-30 Karsten Wiese
-+	Version 0.4.1:
-+	Fix 24Bit 4Channel capturing for the us428.
-+
- 2003-11-27 Karsten Wiese, Martin Langer
- 	Version 0.4:
- 	us122 support.
-@@ -85,7 +89,7 @@
- 
- 
- MODULE_AUTHOR("Karsten Wiese <annabellesgarden@yahoo.de>");
--MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.4");
-+MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.4.1");
- MODULE_LICENSE("GPL");
- MODULE_CLASSES("{sound}");
- MODULE_DEVICES("{{TASCAM(0x1604), "NAME_ALLCAPS"(0x8001)(0x8007) }}");
-Index: usbusx2yaudio.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-driver/usb/usx2y/usbusx2yaudio.c,v
-retrieving revision 1.4
-diff -u -r1.4 usbusx2yaudio.c
---- usbusx2yaudio.c	5 Dec 2003 08:06:19 -0000	1.4
-+++ usbusx2yaudio.c	30 Dec 2003 13:21:05 -0000
-@@ -141,13 +141,22 @@
-  * copy the data from each desctiptor to the pcm buffer, and
-  * update the current position.
-  */
--static void framecpy_4c(int* p_dma_area, int* cp, int cnt)
-+static void framecpy_4c_16(unsigned char *p_dma_area, unsigned char *cp, int cnt)
- {
- 	do{
--		*p_dma_area = *cp;
--		p_dma_area += 2;
--		cp++;
--	}while (--cnt);
-+		*(int *)p_dma_area = *(int *)cp;
-+		p_dma_area += 8;
-+		cp += 4;
-+	} while (--cnt);
-+}
-+
-+static void framecpy_4c_24(unsigned char *p_dma_area, unsigned char *cp, int cnt)
-+{
-+	do{
-+		memcpy(p_dma_area, cp, 6);
-+		p_dma_area +=  12;
-+		cp += 6;
-+	} while (--cnt);
- }
- 
- static int snd_usX2Y_urb_capt_retire(snd_usX2Y_substream_t *subs,
-@@ -158,6 +167,10 @@
- 	unsigned char	*cp;
- 	int 		i, len, lens = 0, hwptr_done = subs->hwptr_done;
- 	usX2Ydev_t	*usX2Y = subs->stream->usX2Y;
-+	void (*fourc_cpy)(unsigned char* p_dma_area, unsigned char* cp, int cnt) = 0;
-+
-+	if (runtime->channels == 4)
-+		fourc_cpy = usX2Y->stride == 4 ? framecpy_4c_16 : framecpy_4c_24;
- 
- 	for (i = 0; i < NRPACKS; i++) {
- 		cp = (unsigned char*)urb->transfer_buffer + urb->iso_frame_desc[i].offset;
-@@ -200,21 +213,21 @@
- 		/* copy a data chunk */
- 		if ((hwptr_done + len) > runtime->buffer_size) {
- 			int cnt = runtime->buffer_size - hwptr_done;
--			if (runtime->channels != 4) {
-+			if (fourc_cpy) {
-+				unsigned char *p_dma_area = runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : usX2Y->stride);
-+				fourc_cpy(p_dma_area + hwptr_done * usX2Y->stride * 2, cp, cnt);
-+				fourc_cpy(p_dma_area, cp + cnt * usX2Y->stride, len - cnt);
-+			} else {
- 				int blen = cnt * usX2Y->stride;
- 				memcpy(runtime->dma_area + hwptr_done * usX2Y->stride, cp, blen);
- 				memcpy(runtime->dma_area, cp + blen, len * usX2Y->stride - blen);
--			} else {
--				int* p_dma_area = (int*)runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : 1);
--				framecpy_4c(p_dma_area + hwptr_done * 2, (int*)cp, cnt);
--				framecpy_4c(p_dma_area, (int*)cp + cnt, len - cnt);
- 			}
- 		} else {
--			if (runtime->channels != 4) {
--				memcpy(runtime->dma_area + hwptr_done * usX2Y->stride, cp, len * usX2Y->stride);
-+			if (fourc_cpy) {
-+				unsigned char *p_dma_area = runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : usX2Y->stride);
-+				fourc_cpy(p_dma_area + hwptr_done * usX2Y->stride * 2, cp, len);
- 			} else {
--				int* p_dma_area = (int*)runtime->dma_area + (urb->pipe == subs->datapipe[0] ? 0 : 1);
--				framecpy_4c(p_dma_area + hwptr_done * 2, (int*)cp, len);
-+				memcpy(runtime->dma_area + hwptr_done * usX2Y->stride, cp, len * usX2Y->stride);
- 			}
+- Unload all alsa modules and confirm nothing is loaded.... cat
+  /proc/asound/cards says "no cards". My sound-related modules are compiled in
+  the kernel and only the card-specific drivers are modules.
+
+- modprobe snd-emu10k1
+
+- set a few volume levels (all are default, module is freshly loaded and
+  alsactl is not used). I set the headphones, so I can be more than sure that I
+  do not record what I am hearing. The names do not correspond to the original
+  ones, because of the changes to the source.
+
+  amixer cset numid=36,iface=MIXER,name='Headphone Playback Volume',index=1 50,50
+  amixer cset numid=24,iface=MIXER,name='LiveDrive Line1 Capture Volume' 100,100
+  amixer cset numid=25,iface=MIXER,name='LiveDrive Line1 Capture Switch' on,on
+
+  In reality I used alsamixer to set these three values, but for clarity I show
+  the amixer commands here.
+
+- Test recording
+
+  arecord -f cd > out.wav
+  aplay out.wav
+
+Works fine and nothing was heard while recording. AC97 capture level is down,
+Capture switch is off etc.
+
+The exact same procedure does not work using the original sources.
+
+I attach my patch, but it is already too late (it is MORNING already) for me to
+check what exactly "fixed" the problem. The reason I started playing with the
+sources, was because gamix had trouble identifying some of the controls, so I
+decided to change the names to more reasonable values. I also removed the
+indexing of the "LiveDrive Line" controls and it suddenly worked as if by
+magic. I hope some guru creates a more reasonable patch.
+
+One more thing. Happy New Year! I hope this patch makes a bunch of us happy,
+even in its present very ugly state.
+
+-- 
+\    Georgi Georgiev   \  A long memory is the most subversive idea in \
+/     chutz@gg3.net    /  America.                                     /
+\   +81(90)6266-1163   \                                               \
+
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="alsa-emu10k1.patch"
+
+--- linux-2.6.0/sound/pci/emu10k1/emufx.c	2003-12-18 11:58:56.000000000 +0900
++++ linux-2.6.0/sound/pci/emu10k1/emufx.c	2003-12-31 04:52:31.907050521 +0900
+@@ -159,7 +159,7 @@
+ 	/* 0x0f */ "Rear Right",
+ 	/* 0x10 */ "AC97 Front Left",
+ 	/* 0x11 */ "AC97 Front Right",
+-	/* 0x12 */ "ADC Caputre Left",
++	/* 0x12 */ "ADC Capture Left",
+ 	/* 0x13 */ "ADC Capture Right",
+ 	/* 0x14 */ NULL,
+ 	/* 0x15 */ NULL,
+@@ -1897,7 +1897,7 @@
+ 		/* Line LiveDrive Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_LINE1_L + z, gpr + z);
+-		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
++		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line1 Playback Volume", gpr, 0);
+ 		gpr += 2;
+ 	
+ 		/* Line LiveDrive Capture Volume + Switch */
+@@ -1905,8 +1905,8 @@
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_LINE1_L + z, gpr + 2 + z);
+ 			VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
  		}
- 		lens += len;
-@@ -290,7 +303,8 @@
- 	} else {
- 		/* set the buffer pointer */
- 		urb->transfer_buffer = runtime->dma_area + subs->hwptr * usX2Y->stride;
--		subs->hwptr += count;
-+		if ((subs->hwptr += count) >= runtime->buffer_size)
-+			subs->hwptr -= runtime->buffer_size;			
+-		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Capture Volume", gpr, 0);
+-		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
++		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line1 Capture Volume", gpr, 0);
++		snd_emu10k1_init_stereo_onoff_control(controls + i++, "LiveDrive Line1 Capture Switch", gpr + 2, 0);
+ 		gpr += 4;
  	}
- 	spin_unlock_irqrestore(&subs->lock, flags);
- 	urb->transfer_buffer_length = count * usX2Y->stride;
+ 	
+@@ -1928,21 +1928,21 @@
+ 	}
+ 	
+ 	if (emu->fx8010.extin_mask & ((1<<EXTIN_LINE2_L)|(1<<EXTIN_LINE2_R))) {
+-		/* Line LiveDrive Playback Volume */
++		/* Line2 LiveDrive Playback Volume */
+ 		for (z = 0; z < 2; z++)
+ 			VOLUME_ADDIN(icode, &ptr, playback + z, EXTIN_LINE2_L + z, gpr + z);
+-		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
+-		controls[i-1].id.index = 1;
++		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line2 Playback Volume", gpr, 0);
++		//controls[i-1].id.index = 1;
+ 		gpr += 2;
+ 	
+-		/* Line LiveDrive Capture Volume */
++		/* Line2 LiveDrive Capture Volume */
+ 		for (z = 0; z < 2; z++) {
+ 			SWITCH_IN(icode, &ptr, tmp + 0, EXTIN_LINE2_L + z, gpr + 2 + z);
+ 			VOLUME_ADD(icode, &ptr, capture + z, tmp + 0, gpr + z);
+ 		}
+-		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Capture Volume", gpr, 0);
+-		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
+-		controls[i-1].id.index = 1;
++		snd_emu10k1_init_stereo_control(controls + i++, "LiveDrive Line2 Capture Volume", gpr, 0);
++		snd_emu10k1_init_stereo_onoff_control(controls + i++, "LiveDrive Line2 Capture Switch", gpr + 2, 0);
++		//controls[i-1].id.index = 1;
+ 		gpr += 4;
+ 	}
+ 
 
---Boundary-00=_M8X8/49wMXOW/A8--
-
+--UlVJffcvxoiEqYs2--
 
 
 -------------------------------------------------------
