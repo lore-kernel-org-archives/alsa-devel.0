@@ -1,12 +1,14 @@
-From: Rusty Phillips <rustyp@freeshell.org>
-Subject: Re: Omnistudio USB
-Date: Wed, 12 Jan 2005 12:48:47 -0500
-Message-ID: <1105552128.14676.36.camel@localhost>
-References: <Pine.HPX.4.33n.0501121001170.22429-100000@studcom.urz.uni-halle.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000809]: asfxload + aconnect called before dsp used causes dsp to be locked
+Date: Wed, 12 Jan 2005 18:50:30 +0100
+Message-ID: <ef65de31783cc2b925ee2e8eb4081908@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-TYmo38aLMV6O7Enn28Kw"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0501121001170.22429-100000@studcom.urz.uni-halle.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8872B2F7
+	for <alsa-devel@alsa-project.org>; Wed, 12 Jan 2005 18:50:31 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,140 +18,92 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---=-TYmo38aLMV6O7Enn28Kw
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=809> 
+======================================================================
+Reported By:                vinyvat
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   809
+Category:                   PCI - emu10k1
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian testing
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             01-12-2005 09:34 CET
+Last Modified:              01-12-2005 18:50 CET
+======================================================================
+Summary:                    asfxload + aconnect called before dsp used causes
+dsp to be locked
+Description: 
+PS: This bug is present in the alsa version in stock kernel 2.6.8.1 up to
+1.0.8-rc2.
 
-On Wed, 2005-01-12 at 10:02 +0100, Clemens Ladisch wrote:
-> Rusty Phillips wrote:
-> > I recently purchased one, and have been trying to find out
-> > anything I can about getting it to work.  So far all I've gotten
-> > is playback on two channels at 48Khz with alsa (from the 2.6.10
-> > kernel as well as from alsa CVS).
-> 
-> What are the contents of /proc/asound/cardX/stream0?
-> Is there a second output device in the output of "aplay -l"?
-> 
-> 
-> Clemens
-> 
-Oh...sorry to mislead you there.  All four channels "work."  The problem
-is that recording doesn't at all, and neither do higher bitrates.
+For convienience I like to have my wavetable loaded and midi connections
+setup during bootup so I can use my midi keyboard by just turning on the
+computer.
 
-First, aplay -l:
-**** List of PLAYBACK Hardware Devices ****
-card 0: USB [OmniStudio USB], device 0: USB Audio [USB Audio]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: USB [OmniStudio USB], device 1: USB Audio [USB Audio #1]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+This worked OK with stock kernel 2.6.3 ( and whatever alsa version came
+with it ).
 
->From my asoundrc:
-pcm.omni1 {
-        type hw
-        card 0
-        device 0
-}
-ctl.omni1 {
-        type hw
-        card 0
-}
-pcm.omni2 {
-        type hw
-        card 0
-        device 1
-}
-ctl.omni2 {
-        type hw
-        card 0
-}
+Recently upgraded to stock 2.6.8.1 which had the modprobe
+snd-emu10k1-synth freeze bug, but was able to work around this by
+launching my wavetable loading script post the modprobe. Play back from my
+keyboard worked great.
 
-So I tested this with this:
-arecord -D omni1 -r 48000 -t wav -v out.wav -f S24_3LE -c2
-With a microphone plugged into channel 1.  The omnistudio shows signal
-level varying via the LED, so I know I'm getting a signal into the
-device.  However, the result I'm hearing is silence.  
+This is when I began to notice apps that accessed the dsp reporting that
+they were locked out ( and did not produce any sound ). First would be
+arts when kde started up, and then any dvd playing app ( ogle, mplayer,
+xine, all of them setup to use alsa ).
 
-Higher recording rates are even worse - I get a strange "beep" followed
-by static.
+Strangely though, alsaplayer still worked despite the fact that the other
+apps didn't - could it be using some other way of plugin to the emu10k1
+mixer ? 
 
-Attached is /proc/asound/card0/stream0.
+Have tried upgrading to alsa-driver-1.0.7 ( which didn't play any
+wavetable sounds at all - strange ), then to alsa-driver-1.0.8-rc2 ( which
+does play wavetable sounds ) but none of these fixes this problem.
 
-I've found this, which may also refer to the problem in my card (it's
-about the USB Quattro)...unsure.  
-http://www.music.columbia.edu/pipermail/linux-audio-user/2004-June/012737.html
+If I change the order of things - have artsd start up, start a dvd
+playback, and then call asfxload + aconnect, then everything is mixed and
+sounds great.
+======================================================================
 
-Still...I should be getting some kind of signal, shouldn't I?  Thoughts?
+----------------------------------------------------------------------
+ tiwai - 01-12-05 15:16 
+----------------------------------------------------------------------
+Please elaborate the procedure causing the problem.
+Which command sequences did the crash?
 
+----------------------------------------------------------------------
+ vinyvat - 01-12-05 18:50 
+----------------------------------------------------------------------
+Done a little more testing, and this bug is dependant on the size of the
+SF2. the One I put in the "reproduction" notes is huge -
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=31#127 Mb whereas
+if I use a smaller one the bug does not happen.
 
---=-TYmo38aLMV6O7Enn28Kw
-Content-Description: stream0 output
-Content-Disposition: attachment; filename=out
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Will update with exact reproduction steps when I get from work.
 
-M-Audio OmniStudio USB at usb-0000:00:07.2-1, full speed : USB Audio
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-12-05 09:34 vinyvat        New Issue                                    
+01-12-05 09:34 vinyvat        Distribution              => Debian testing  
+01-12-05 09:34 vinyvat        Kernel Version            => 2.6.8.1         
+01-12-05 15:16 tiwai          Note Added: 0003171                          
+01-12-05 18:50 vinyvat        Note Added: 0003175                          
+======================================================================
 
-Playback:
-  Status: Stop
-  Interface 1
-    Altset 4
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 3 OUT (ADAPTIVE)
-    Rates: 11025, 22050, 44100
-  Interface 4
-    Altset 1
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 3 OUT (ADAPTIVE)
-    Rates: 88200, 96000
-  Interface 4
-    Altset 3
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 3 OUT (ADAPTIVE)
-    Rates: 11025, 22050, 44100, 48000
-  Interface 4
-    Altset 4
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 3 OUT (ADAPTIVE)
-    Rates: 11025, 22050, 44100, 48000
-
-Capture:
-  Status: Stop
-  Interface 2
-    Altset 4
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 5 IN (SYNC)
-    Rates: 11025, 22050, 44100
-  Interface 5
-    Altset 1
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 5 IN (SYNC)
-    Rates: 88200, 96000
-  Interface 5
-    Altset 3
-    Format: S24_3LE
-    Channels: 2
-    Endpoint: 5 IN (SYNC)
-    Rates: 11025, 22050, 44100, 48000
-  Interface 5
-    Altset 4
-    Format: S16_LE
-    Channels: 2
-    Endpoint: 5 IN (SYNC)
-    Rates: 11025, 22050, 44100, 48000
-
---=-TYmo38aLMV6O7Enn28Kw--
 
 
 
