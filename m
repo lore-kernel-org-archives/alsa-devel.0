@@ -1,13 +1,16 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: [alsa-cvslog] CVS: alsa-lib/src/pcm pcm.c,1.227,1.228
-Date: Wed, 23 Oct 2002 19:51:25 +0200
+From: tomasz motylewski <T.Motylewski@bfad.de>
+Subject: Re: rc4
+Date: Wed, 23 Oct 2002 20:17:15 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DB6E19D.2241271D@libero.it>
-References: <Pine.LNX.4.33.0210231933090.5772-100000@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.21.0210232011440.321-100000@mailserver.intern.bfad.de>
+References: <s5hvg3t1jhe.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mailserver.intern.bfad.de (mail.bfad.de [212.62.208.67])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA16506
+	for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2002 20:16:03 +0200
+In-Reply-To: <s5hvg3t1jhe.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,61 +19,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+On Wed, 23 Oct 2002, Takashi Iwai wrote:
+
+> > I have just updated to CVS.
+> > 
+> > Debian 2.2
+> > 
+> > I needed to run autoconf; ./configure; make; ./configure; make
 > 
-> On Wed, 23 Oct 2002, Abramo Bagnara wrote:
-> 
-> > Jaroslav Kysela wrote:
-> > >
-> > > Added ommited clear() functions
-> > >
-> > > Index: pcm.c
-> > >  /**
-> > > + * \brief clear snd_pcm_hw_params_t structure
-> > > + * \param obj pointer to structure
-> > > + */
-> > > +void snd_pcm_hw_params_clear(snd_pcm_hw_params_t *obj)
-> > > +{
-> > > +       assert(obj);
-> > > +       memset(obj, 0, snd_pcm_hw_params_sizeof());
-> > > +}
-> >
-> > Why that _clear functions?
-> > What's the expected semantic for "clear"?
-> >
-> > When we designed new API I took in consideration them, but the lack of
-> > usefulness and the ambiguity of semantic has pushed me to avoid them.
-> 
-> Well, you're right that the name is misleading, but wouldn't be good to
-> let to reuse a structure? Perhaps, _init suffix is better.
+> do you mean that the original configure script in rc4 tarball doesn't
+> work?  if yes, it's a bug of rc4 tarball - we have to release rc5...
 
-This is fine if we state in documentation that the object will go in the
-same state than after OBJ_alloca/OBJ_malloc.
+No, I have got CVS version, but did not run cvscompile - my fault.
 
-In this case I think that we have to change the memset in the OBJ_alloca
-and OBJ_malloc function to OBJ_init call.
+But now with the real rc4  tarball and 2.4.9 kernel + Debian 2.2rev7
+./configure
+make
+[...]
+make[3]: Leaving directory `/tmp/alsa-driver-0.9.0rc4/isa/wavefront'
+/tmp/alsa-driver-0.9.0rc4/include/sndversions.h was not updated
+gcc -M -D__KERNEL__ -DMODULE=1 -I/tmp/alsa-driver-0.9.0rc4/include
+-I/lib/modules/2.4.9/build/include -O2 -mpreferred-stack-boundary=2 -march=i686
+-DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer -pipe -DALSA_BUILD
+als100.c azt2320.c cmi8330.c dt019x.c es18xx.c opl3sa2.c sgalaxy.c sscape.c >
+.depend
+sscape.c:500: macro `min' used with only 2 args
+make[2]: *** [fastdep] Error 1
+make[2]: Leaving directory `/tmp/alsa-driver-0.9.0rc4/isa'
+make[1]: *** [dep] Error 1
+make[1]: Leaving directory `/tmp/alsa-driver-0.9.0rc4'
+make: *** [include/sndversions.h] Error 2
 
-That apart there are some OBJs for which the _init function is nonsense.
-snd_pcm_hw_params and snd_pcm_sw_params are among that.
 
-The only sensible initializers for snd_pcm_hw_params are the existing
-snd_pcm_hw_params_any and snd_pcm_hw_params_current.
-Same for snd_pcm_sw_params_current.
+I would say, low priority - 2.4.9 kernel is probably quite exotic at the
+moment.
 
-To resume: I think that your proposal may have some reason for some OBJ
-(but I'm not sure that in this specific ALSA context they exist), but I
-think that to have it for OBJs with sane initializer is wrong.
+alsa-driver-0.9.0rc4 compiles OK on Debian-3.0 with 2.4.20pre8 kernel.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+Best regards,
+--
+Tomek
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
