@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Peter Zubaj <pzad@pobox.sk>
 Subject: Re: Re: [Alsa-user] Re: Re: SB Live! PCM control
-Date: Fri, 11 Feb 2005 11:05:40 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0502111103140.2300@pnote.perex-int.cz>
-References: <420270C1.3000706@voicenet.com> <1107457227.7256.37.camel@krustophenia.net>
- <4202A72C.3000007@superbug.co.uk> <1107645609.7256.73.camel@krustophenia.net>
- <420C0C89.1010008@voicenet.com> <s5hr7jnza3t.wl@alsa2.suse.de>
+Date: Fri, 11 Feb 2005 11:12:46 +0100
+Message-ID: <200502111012.j1BACbHo031054@www4.pobox.sk>
+Reply-To: Peter Zubaj <pzad@pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: TEXT/plain; charset=iso-8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr7jnza3t.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,27 +16,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Adam K Kirchhoff <adamk@voicenet.com>, Lee Revell <rlrevell@joe-job.com>, James Courtier-Dutton <James@superbug.co.uk>, alsa-user@lists.sourceforge.net, alsa-devel <alsa-devel@lists.sourceforge.net>
+To: tiwai@suse.de
+Cc: adamk@voicenet.com, rlrevell@joe-job.com, James@superbug.co.uk, alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 11 Feb 2005, Takashi Iwai wrote:
+>IMO, a "Master" volume should control all volumes as it name stands.
+>If it doesn't control all channels, it should be renmaed at least as
+>"Front".
 
-> IMO, a "Master" volume should control all volumes as it name stands.
-> If it doesn't control all channels, it should be renmaed at least as
-> "Front".
+Problem is, that is hard implement real "Master" on sb live, because
+there are two signal paths for analog inputs. But I think, that
+anything will be better as current state.
 
-Yes, renaming is appropriate. I don't like to have some "abstraction" 
-code in the kernel. In case of SB Live! you must take care about AC97 and 
-DSP setup which is easy to do from the user space and there is a way to
-do it now (via the user space controls).
+Peter Zubaj
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+=0A____________________________________=0A>>> POZOR ZMENA - KONCERT PRESUNU=
+TY NA 28.2.2005=0ARAMMSTEIN, 28.02.2005 o 20,00, Bratislava Incheba, =0AInf=
+o: 0904 666 363, http://www.xl.sk =0A
 
 
 -------------------------------------------------------
