@@ -1,14 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000803]: mixer is all shufled
-Date: Mon, 10 Jan 2005 19:31:19 +0100
-Message-ID: <a41c41cec608c8ab8e9c247119464e19@bugtrack.alsa-project.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+From: domen@coderock.org
+Subject: [patch 1/2] gus_wave.c - vfree() checking cleanups
+Date: Mon, 10 Jan 2005 19:36:35 +0100
+Message-ID: <20050110183635.D3FC21F1ED@trashy.coderock.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1715B29A
-	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 19:31:20 +0100 (MET)
+Received: from trashy.coderock.org (coderock.org [193.77.147.115])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2EB5C2B3
+	for <alsa-devel@alsa-project.org>; Mon, 10 Jan 2005 19:36:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,53 +15,38 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: perex@suse.cz
+Cc: alsa-devel@alsa-project.org, domen@coderock.org, jlamanna@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=803> 
-======================================================================
-Reported By:                rzr
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   803
-Category:                   PCI - ali5451
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.6.10-k7-amiloa
-======================================================================
-Date Submitted:             01-10-2005 19:31 CET
-Last Modified:              01-10-2005 19:31 CET
-======================================================================
-Summary:                    mixer is all shufled
-Description: 
-This AC97 chip is shiped with AmiloA and some other Laptops
 
-On my system the mixer is all shufled, Master is set as PCM2 .. is it
-normal ?
+gus_wave.c vfree() checking cleanups.
 
-Please help to enable MIDI? playback on GNU/Linux (but MIDI works fine
-under Windows) ...
+Signed-off by: James Lamanna <jlamanna@gmail.com>
 
 
-More details at http://rzr.online.fr/q/M5451
-======================================================================
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-10-05 19:31 rzr            New Issue                                    
-01-10-05 19:31 rzr            Distribution              => Debian          
-01-10-05 19:31 rzr            Kernel Version            => 2.6.10-k7-amiloa
-======================================================================
+Signed-off-by: Domen Puncer <domen@coderock.org>
+---
 
 
+ kj-domen/sound/oss/gus_wave.c |    3 +--
+ 1 files changed, 1 insertion(+), 2 deletions(-)
+
+diff -puN sound/oss/gus_wave.c~vfree-sound_oss_gus_wave sound/oss/gus_wave.c
+--- kj/sound/oss/gus_wave.c~vfree-sound_oss_gus_wave	2005-01-10 18:01:07.000000000 +0100
++++ kj-domen/sound/oss/gus_wave.c	2005-01-10 18:01:07.000000000 +0100
+@@ -3126,8 +3126,7 @@ void __exit gus_wave_unload(struct addre
+ 	if (hw_config->slots[5] != -1)
+ 		sound_unload_mixerdev(hw_config->slots[5]);
+ 	
+-	if(samples)
+-		vfree(samples);
++	vfree(samples);
+ 	samples=NULL;
+ }
+ /* called in interrupt context */
+_
 
 
 -------------------------------------------------------
