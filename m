@@ -1,14 +1,14 @@
 From: Russell King <rmk+alsa@arm.linux.org.uk>
-Subject: Re: [PATCH] 1/5 Clean up Linux 2.6.4-rc1 sound/core/Makefile
-Date: Mon, 1 Mar 2004 17:48:56 +0000
+Subject: Re: [PATCH] 1/3 Implement generic device DMA mapping support
+Date: Mon, 1 Mar 2004 17:45:17 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040301174856.K24955@flint.arm.linux.org.uk>
-References: <20040301144231.D24955@flint.arm.linux.org.uk> <s5hhdx8h9jl.wl@alsa2.suse.de>
+Message-ID: <20040301174517.J24955@flint.arm.linux.org.uk>
+References: <20040229223820.C17862@flint.arm.linux.org.uk> <s5heksch8xf.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hhdx8h9jl.wl@alsa2.suse.de>; from tiwai@suse.de on Mon, Mar 01, 2004 at 04:27:42PM +0100
+In-Reply-To: <s5heksch8xf.wl@alsa2.suse.de>; from tiwai@suse.de on Mon, Mar 01, 2004 at 04:41:00PM +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,19 +18,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Alsa Devel list <alsa-devel@lists.sourceforge.net>, Jaroslav Kysela <perex@suse.cz>
+Cc: Jaroslav Kysela <perex@suse.cz>, Alsa Devel list <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Mar 01, 2004 at 04:27:42PM +0100, Takashi Iwai wrote:
-> i vote for inclusion of this patchset.
-> (although we'll have a lot of work for 2.2/2.4 environment...)
+On Mon, Mar 01, 2004 at 04:41:00PM +0100, Takashi Iwai wrote:
+> At Sun, 29 Feb 2004 22:38:20 +0000,
+> Russell King wrote:
+> > 
+> > This is the first shot at this - I've tested it on ARM, covering both
+> > ISA ALSA devices on a PCI machine, and driver model devices on a non-
+> > PCI, non-ISA machine.  However, it needs more testing.  Can people
+> > on alsa-devel please test these patches.
+> > 
+> > This patch adds support for the generic device/driver model to ALSA
+> > for the sole purpose of supporting their DMA mapping functionality.
+> > 
+> > This patch changes snd_malloc_sgbuf_pages() to use this dma mapping
+> > functionality.
+> 
+> thanks for the patch.  using struct device is nice for
+> generalization.
+> 
+> after a short glance, the only drawback i found is that you disabled
+> the single pci page allocation hack for i386.  this was needed to
+> cover the non-atomic page allocation.
+> for example, sb live needs to allocate more than 100MB single pages
+> for the wavetable data.  the allocation with GFP_ATOMIC can fail
+> easily in such a case, althogh there is enough memory after swapping.
+> maybe we can leave this function as another...
 
-I plan to do some more of this over the coming weeks, but I'll pause
-for the time being - I don't want to bloat my local tree with too
-many ALSA changes.  IOW, I'll wait for this set to make their way
-through your good selves and to Linus before submitting any further
-changes of this type.  This will probably mean it'll be after 2.6.4
-has been released.
+I think you've assumed that:
+
++       res = dma_alloc_coherent(dev, PAGE_SIZE << pg, dma, GFP_KERNEL);
+
+in snd_malloc_dev_pages() uses GFP_ATOMIC.  Please look closer.
 
 -- 
 Russell King
