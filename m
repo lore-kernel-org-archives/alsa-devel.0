@@ -1,13 +1,13 @@
-From: Rene Rebe <rene.rebe@gmx.net>
-Subject: [PATCH] pmac mixer update from shadow register on resume and switching
- DRC on headphone plug
-Date: Fri, 30 Jul 2004 16:56:16 +0200
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: [PATCH] Tascam US-224/428 MMC Implementation
+Date: Sun, 1 Aug 2004 21:15:04 +0100 (WEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <410A6190.1020600@gmx.net>
+Message-ID: <32820.192.168.1.8.1091391304.squirrel@192.168.1.8>
+References: <32814.192.168.1.8.1091390483.squirrel@192.168.1.8>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080709030307020609040406"
+Content-Type: multipart/mixed;boundary="----=_20040801211504_62983"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <32814.192.168.1.8.1091390483.squirrel@192.168.1.8>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,183 +17,100 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, Karsten Wiese <annabellesgarden@yahoo.de>, martin-langer@gmx.de, ws@seh.de, Paul Davis <paul@linuxaudiosystems.com>, ardour-dev <ardour-dev@lists.ardour.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---------------080709030307020609040406
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+------=_20040801211504_62983
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
 
-Hi all,
+Hi everybody,
 
-the attached patch improved the pmac driver by implementing updating the 
-mixer from the shadow register after a resume or headphone interrupt, as 
-well as automatically selecting DRC on headphone plug.
+This is my latest patch against the alsa-tools tree (as of todays CVS
+HEAD), regarding the us428control MMC implementation as for the Tascam
+US-224/428 audio/midi USB control surfaces:
 
-For normal line-out one does not want the DRC, but it should 
-automatically be reenabled after the headphone is unplugged: Otherwise 
-the power to the internal speakers is high enought to destroy them 
-(happend once to my iBook - when it still had warrenty ... ;-)
+    us428control now bumps to version 0.4.4.
 
-I needed a work-queue / task-queue since it can not be done in the 
-interrupt context - this is done in the way the OSS driver does it, too. 
-I hope this is acceptable.
+Interesting points are: jog wheel dialing is now alternating between
+spitting out some MMC-Step or MMC-Shuttle messages, depending on transport
+state, instead of those MMC-Locate(s) which was an early implementation
+mistake of mine.
 
-Have fun,
-  René Rebe
+Controlling ardour with (my) US-224 is getting much more fun now :)
 
---------------080709030307020609040406
-Content-Type: text/plain;
- name="alsa-pmac.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="alsa-pmac.patch"
+However, there's still some little annoyances due to my lack of advice
+regarding ardour's Play/Record control behaviour:
 
---- ppc/tumbler.c~	2004-06-16 07:18:52.000000000 +0200
-+++ ppc/tumbler.c	2004-08-01 13:46:48.000000000 +0200
-@@ -16,6 +16,11 @@
-  *   You should have received a copy of the GNU General Public License
-  *   along with this program; if not, write to the Free Software
-  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-+ *
-+ *   Rene Rebe <rene.rebe@gmx.net>:
-+ *     * update from shadow registers on wakeup and headphone plug
-+ *     * automatically toggle DRC on headphone plug
-+ *	
-  */
- 
- 
-@@ -759,12 +764,6 @@
- 	DEFINE_MONO("Tone Control - Treble", treble),
- 	DEFINE_MONO("PCM Playback Volume", pcm),
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	  .name = "DRC Switch",
--	  .info = snd_pmac_boolean_mono_info,
--	  .get = tumbler_get_drc_switch,
--	  .put = tumbler_put_drc_switch
--	},
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "DRC Range",
- 	  .info = tumbler_info_drc_value,
- 	  .get = tumbler_get_drc_value,
-@@ -791,12 +790,6 @@
- 	DEFINE_SNAPPER_MONO("Tone Control - Bass", bass),
- 	DEFINE_SNAPPER_MONO("Tone Control - Treble", treble),
- 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
--	  .name = "DRC Switch",
--	  .info = snd_pmac_boolean_mono_info,
--	  .get = tumbler_get_drc_switch,
--	  .put = tumbler_put_drc_switch
--	},
--	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
- 	  .name = "DRC Range",
- 	  .info = tumbler_info_drc_value,
- 	  .get = tumbler_get_drc_value,
-@@ -826,6 +819,14 @@
- 	.put = tumbler_put_mute_switch,
- 	.private_value = TUMBLER_MUTE_AMP,
- };
-+static snd_kcontrol_new_t tumbler_drc_sw __initdata = {
-+	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+	.name = "DRC Switch",
-+	.info = snd_pmac_boolean_mono_info,
-+	.get = tumbler_get_drc_switch,
-+	.put = tumbler_put_drc_switch
-+};
-+
- 
- #ifdef PMAC_SUPPORT_AUTOMUTE
- /*
-@@ -847,6 +848,33 @@
- 	}
- }
- 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
-+static struct tq_struct device_change;
-+#else
-+static struct work_struct device_change;
-+#endif
-+
-+static void
-+device_change_handler(void *self)
-+{
-+	pmac_t *chip = (pmac_t*) self;
-+	pmac_tumbler_t *mix;
-+
-+	if (!chip)
-+		return;
-+
-+	mix = chip->mixer_data;
-+
-+	/* first set the DRC so the speaker do not explode */
-+	if (chip->model == PMAC_TUMBLER)
-+		tumbler_set_drc(mix);
-+	else
-+		snapper_set_drc(mix);
-+
-+	/* reset the master volume so the correct amplification is applied */
-+	tumbler_set_master_volume(mix);
-+}
-+
- static void tumbler_update_automute(pmac_t *chip, int do_notify)
- {
- 	if (chip->auto_mute) {
-@@ -856,14 +889,29 @@
- 			/* mute speaker */
- 			check_mute(chip, &mix->amp_mute, 1, do_notify, chip->speaker_sw_ctl);
- 			check_mute(chip, &mix->hp_mute, 0, do_notify, chip->master_sw_ctl);
-+			mix->drc_enable = 0;
-+
- 		} else {
- 			/* unmute speaker */
- 			check_mute(chip, &mix->amp_mute, 0, do_notify, chip->speaker_sw_ctl);
- 			check_mute(chip, &mix->hp_mute, 1, do_notify, chip->master_sw_ctl);
-+			mix->drc_enable = 1;
- 		}
--		if (do_notify)
-+		if (do_notify) {
- 			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
- 				       &chip->hp_detect_ctl->id);
-+			snd_ctl_notify(chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
-+			               &chip->drc_sw_ctl->id);
-+		}
-+
-+		/* finally we need to schedule an update of the mixer values
-+		   (master and DRC are enough for now) -ReneR */
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
-+		schedule_task(&device_change);
-+#else
-+		schedule_work(&device_change);
-+#endif
-+
- 	}
- }
- #endif /* PMAC_SUPPORT_AUTOMUTE */
-@@ -1114,11 +1163,21 @@
- 	chip->speaker_sw_ctl = snd_ctl_new1(&tumbler_speaker_sw, chip);
- 	if ((err = snd_ctl_add(chip->card, chip->speaker_sw_ctl)) < 0)
- 		return err;
-+	chip->drc_sw_ctl = snd_ctl_new1(&tumbler_drc_sw, chip);
-+	if ((err = snd_ctl_add(chip->card, chip->drc_sw_ctl)) < 0)
-+		return err;
-+
- 
- #ifdef CONFIG_PMAC_PBOOK
- 	chip->resume = tumbler_resume;
- #endif
- 
-+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,5,0)
-+	INIT_TQUEUE(&device_change, device_change_handler, (void *)chip);
-+#else
-+	INIT_WORK(&device_change, device_change_handler, (void *)chip);
-+#endif
-+
- #ifdef PMAC_SUPPORT_AUTOMUTE
- 	if (mix->headphone_irq >=0 && (err = snd_pmac_add_automute(chip)) < 0)
- 		return err;
+1) Ardour doesn't seem to send out MMC-Play messages when one starts
+transport within it (e.g. by clicking the playback button widget).
+
+2) Ardour doesn't seem to react against MMC-RecordPause, which I assume
+(probably erroneously) it would be equivalent to clicking on its record
+widget button.
+
+3) Sending a MMC-RecordStrobe message to ardour has the strange effect to
+start playback while toggling recording off instantaneously.
+
+AFAICT these issues seems to be specific to ardour (0.9beta18.4), not to
+us428control which is just sending out the proper MMC messages. Or that I
+think.
+
+I would like to settle all this before I'm going off on holidays. Hope
+it's welcome and on time for the imminent alsa dot-6 release :)
+
+Cheers,
+-- 
+rncbc aka Rui Nuno Capela
+rncbc@rncbc.org
 
 
---------------080709030307020609040406--
+------=_20040801211504_62983
+Content-Type: application/x-gzip; name="us428control-0.4.4.patch.gz"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="us428control-0.4.4.patch.gz"
+
+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
+------=_20040801211504_62983--
+
+
 
 
 -------------------------------------------------------
