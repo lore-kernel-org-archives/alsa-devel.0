@@ -1,14 +1,13 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: RE: Driver development: peak metering
-Date: Tue, 13 May 2003 11:25:45 +0200 (CEST)
+From: =?iso-8859-1?Q?St=E9phane_Boulanger?= <stephane.boulanger@fh-bonn-rhein-sieg.de>
+Subject: Opening a device 2 times, loopback interface....
+Date: Tue, 13 May 2003 11:47:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <XFMail.20030513112545.pochini@shiny.it>
-References: <20030513011754.28032.h004.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <CBEIKLKHDDAOGEKMPCGEEEACCAAA.stephane.boulanger@fh-bonn-rhein-sieg.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030513011754.28032.h004.c012.wm@mail.icqmail.com.criticalpath.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,30 +16,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Eliot Blennerhassett <bigblen@icqmail.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Dear List,
 
-On 13-May-2003 Eliot Blennerhassett wrote:
-> Hello,
->
-> Our cards do peak metering of all streams, inputs and
-> outputs.
->
-> Is there such a thing as a peak meter control (read
-> only) in the ALSA driver model?  I can't find anything.
+we=B4re currently developing an end-to-end delay measurement tool, that s=
+hould
+not only measure the network delay, but also the time the application
+(audiostreaming (rat, for example)) needs to calculate the used algorithm=
+s
+(GSM, PCM, whatever). To realize the choosen program design, we need to
+access the soundcard device form two different applications (streaming
+application and the measurement tool) at the same time. More exactly:
 
-Yes, create a control with
-.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE
+- When audiodata is inputted, not only the streaming application should b=
+e
+able to access it, but also our measurement tool (at the same time
+obviously).
 
-You might want to make it also writeable to clear the clip
-condition if your chip has it. There isn't a standard control
-name AFAIK. In my driver I called it "VU-meters" and I return
-an array that contains both level and peak meters.
+- When audiodata is send to the sounddriver (repectively the soundcard), =
+the
+measurement tool should be able to read it (maybe in the form of a copied
+datastream send to the measurement tool).
 
 
-Bye.
+While browing the ALSA documentation, I found some interesting parts abou=
+t
+the loopback interface, that might help us. But is it still contained in =
+the
+0.9 version of ALSA? Moreover, would the loopback interface satisfy our
+needs?
+
+I also found some interesting information about JACK, but using JACK woul=
+d
+require to adopt the streaming application to the JACK interfaces.
+
+In your opinion, what would be the best way to realise the system?
+
+Thanks a lot!
+
+St=E9phane Boulanger
 
 
 
