@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000709]: Recording doesnt work
-Date: Tue, 11 Jan 2005 16:53:47 +0100
-Message-ID: <c22021500f2f4fd91e3f42d05ac8f764@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000714]: On newer xboxes, the xbox=1 workaround does not solve the problem.
+Date: Tue, 11 Jan 2005 16:54:05 +0100
+Message-ID: <f500e52f4c8eeae179aec5acfd667a25@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03DE4290
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:53:47 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B7778290
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 16:54:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,74 +24,86 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=714> 
 ======================================================================
-Reported By:                tigermb
+Reported By:                davidmpye
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   709
-Category:                   PCI - via82xx
+Issue ID:                   714
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             
-Resolution:                 not an issue
+Distribution:               Debian
+Kernel Version:             2.4.28
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             12-05-2004 16:33 CET
-Last Modified:              01-11-2005 16:53 CET
+Date Submitted:             12-08-2004 01:35 CET
+Last Modified:              01-11-2005 16:54 CET
 ======================================================================
-Summary:                    Recording doesnt work
+Summary:                    On newer xboxes, the xbox=1 workaround does not
+solve the problem.
 Description: 
-Soundcard: Multimedia audio controller: VIA Technologies, Inc.
-VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+This is a followup to bug 221, and the workaround that was added to ALSA
+1.0.7.
 
-The recording doesnt work.
-When trying to record, nuthing happens. No errors. Although gnome-meeting
-got an error and wonders if i have permission to device. But i tried it
-under root and i get the same error. arecord give no error, but just
-doesnt do anything.
+Unfortunately, on newer xboxes, the chip reports less info than before,
+making another change necessary - this change is backwards compatible, and
+doesn't break earlier xboxes, of course. 
+
+Please see attached patch.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+related to          0000221 ac97 detect fails on xbox/i8x0
 ======================================================================
 
 ----------------------------------------------------------------------
- tigermb - 12-08-04 17:01 
+ davidmpye - 12-08-04 13:51 
 ----------------------------------------------------------------------
-I installed mandrakes latest kernel whether to see that helped. And the
-problem is gone now. I guess some mandrake thing somehow blocked the
-device. I guess it wasnt a bug. 
-I'm sorry to have bothered you with this.
+Whoops, found a bug in this already!
+
+That line should read:
+
+if ((ac97->scaps&AC97_SCAP_DETECT_BY_VENDOR)==0 && (ac97->id == 0x00000000
+|| ac97->id == 0xffffffff)) {
+
+As it is a one-liner, are you happy for me just to paste this line above,
+or would you like me to regen the patch?
+
+Thanks,
+
+David.
+
+Again,
+
+Signed-off-by: David Pye <dmp@davidmpye.dyndns.org>
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 20:10 
+ tiwai - 12-08-04 20:15 
 ----------------------------------------------------------------------
-OK, now closing.
+Thanks, applied to CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-05-04 16:33 tigermb        New Issue                                    
-12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
-12-06-04 20:59 tiwai          Note Added: 0002735                          
-12-06-04 23:24 tigermb        File Added: asound.state                     
-12-06-04 23:25 tigermb        Note Added: 0002738                          
-12-07-04 14:32 tiwai          Note Added: 0002747                          
-12-07-04 17:59 tigermb        Note Added: 0002750                          
-12-07-04 18:01 tigermb        Note Added: 0002751                          
-12-07-04 18:22 tigermb        File Added: strace.log                       
-12-07-04 18:23 tigermb        Note Added: 0002752                          
-12-07-04 18:28 tiwai          Note Added: 0002754                          
-12-07-04 22:21 tigermb        Note Added: 0002767                          
-12-08-04 12:10 tiwai          Note Added: 0002777                          
-12-08-04 17:01 tigermb        Note Added: 0002788                          
-12-08-04 20:10 tiwai          Status                   new => resolved     
-12-08-04 20:10 tiwai          Resolution               open => not an issue
-12-08-04 20:10 tiwai          Assigned To               => tiwai           
-12-08-04 20:10 tiwai          Note Added: 0002793                          
-12-08-04 20:10 tiwai          Assigned To              tiwai =>            
-01-11-05 16:53 tiwai          Status                   resolved => closed  
+12-08-04 01:35 davidmpye      New Issue                                    
+12-08-04 01:35 davidmpye      Distribution              => Debian          
+12-08-04 01:35 davidmpye      Kernel Version            => 2.4.28          
+12-08-04 01:52 davidmpye      Note Added: 0002772                          
+12-08-04 12:17 tiwai          Note Added: 0002780                          
+12-08-04 12:21 tiwai          Relationship added       related to 0000221  
+12-08-04 13:47 davidmpye      Note Added: 0002783                          
+12-08-04 13:51 davidmpye      Note Added: 0002784                          
+12-08-04 20:15 tiwai          Status                   new => resolved     
+12-08-04 20:15 tiwai          Resolution               open => fixed       
+12-08-04 20:15 tiwai          Assigned To               => tiwai           
+12-08-04 20:15 tiwai          Note Added: 0002794                          
+12-08-04 20:15 tiwai          Assigned To              tiwai =>            
+01-11-05 16:54 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
