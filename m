@@ -1,9 +1,9 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: emu10k1 multichannel playback design (was Re:
 	[PATCH] emu10k1: add interval timer support)
-Date: Sat, 25 Sep 2004 23:19:28 -0400
+Date: Sat, 25 Sep 2004 23:50:30 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1096168767.1357.15.camel@krustophenia.net>
+Message-ID: <1096170629.1357.19.camel@krustophenia.net>
 References: <200409260315.i8Q3FUMg005327@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -32,17 +32,15 @@ On Sat, 2004-09-25 at 23:15, Paul Davis wrote:
 > >it seems like the prepare callback should not loop this way.  Am I doing
 > >something wrong?
 > 
-> i would finish the driver before getting too deeply into this. the
-> interrupt handler is sorta-kinda important :)
-> 
 
-Yes, I just wanted to make sure I have the easy parts right, rather than
-posting a huge patch and saying 'it doesn't work, anyone know why'. 
-Anyway I think I have got it.
+The interrupt handler fortunately was a one liner.  All I have left is
+the pointer callback and it should work.
 
-Thanks,
+I am really amazed at how much better ALSA is than OSS now.  Most of the
+code in the OSS driver is not needed in the ALSA driver because the
+middle layer is so powerful.
 
-Lee 
+Lee
 
 
 
