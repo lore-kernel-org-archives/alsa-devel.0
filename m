@@ -1,11 +1,13 @@
-From: fmoraes@nc.rr.com
-Subject: [PATCH] remove AC97 existing control
-Date: Tue, 22 Mar 2005 07:45:15 -0500
-Message-ID: <cecf51cf0059.cf0059cecf51@southeast.rr.com>
-Reply-To: fmoraes@nc.rr.com
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000226]: Sound hangs after APM resume
+Date: Tue, 22 Mar 2005 15:02:26 +0100
+Message-ID: <c92d8ec8fa93fb26c9fc75091f74c793@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="Boundary_(ID_3h2IZOE2uch35ng4qpQRdA)"
-Content-language: en
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 604DF287
+	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:02:26 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,74 +17,76 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
 
---Boundary_(ID_3h2IZOE2uch35ng4qpQRdA)
-Content-type: text/plain; charset=us-ascii
-Content-transfer-encoding: 7BIT
-Content-disposition: inline
+The following issue has been set as DUPLICATE OF issue 0000305.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=226> 
+======================================================================
+Reported By:                marke
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   226
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               Debian
+Kernel Version:              2.6.5
+======================================================================
+Date Submitted:             04-20-2004 13:07 CEST
+Last Modified:              03-22-2005 15:02 CET
+======================================================================
+Summary:                    Sound hangs after APM resume
+Description: 
+After a suspend/resume of the laptop with the cs46xx chipset the sound no
+longer works. I need to kill all sound apps unload the alsa modules and
+reload them.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000305 sound is locked up after suspend/resume...
+======================================================================
 
-This patch should fix bug report 752 by removing the existing control from the AC97.
+----------------------------------------------------------------------
+ tiwai - 04-20-04 15:14 
+----------------------------------------------------------------------
+already fixed in the recent CVS.
+please give a try.
+
+----------------------------------------------------------------------
+ jdthood - 01-17-05 10:59 
+----------------------------------------------------------------------
+Duplicate of https://bugtrack.alsa-project.org/alsa-bug/view.php?id=305.
+
+----------------------------------------------------------------------
+ jdthood - 03-19-05 16:36 
+----------------------------------------------------------------------
+>  already fixed in the recent CVS.
+
+Nope.  snd-cs46xx still does not restore the sound hardware properly
+after APM suspend on a ThinkPad 600X.
+
+## 536, 226 and 305 can be merged together.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-20-04 13:07 marke          New Issue                                    
+04-20-04 13:07 marke          Distribution              => Debian          
+04-20-04 13:07 marke          Kernel Version            =>  2.6.5          
+04-20-04 13:10 marke          Issue Monitored: marke                       
+04-20-04 15:14 tiwai          Note Added: 0000884                          
+01-17-05 10:59 jdthood        Note Added: 0003227                          
+03-19-05 16:36 jdthood        Note Added: 0004057                          
+03-22-05 15:02 jdthood        Relationship added       duplicate of 0000305
+======================================================================
 
 
-Sign off: Francisco Moraes
-
-
---Boundary_(ID_3h2IZOE2uch35ng4qpQRdA)
-Content-type: text/x-patch; NAME=emu10k1x_mixer.patch
-Content-transfer-encoding: 7BIT
-Content-disposition: attachment; filename=emu10k1x_mixer.patch
-
-Index: alsa-kernel/pci/emu10k1/emu10k1x.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/pci/emu10k1/emu10k1x.c,v
-retrieving revision 1.7
-diff -u -r1.7 emu10k1x.c
---- alsa-kernel/pci/emu10k1/emu10k1x.c	21 Mar 2005 08:13:32 -0000	1.7
-+++ alsa-kernel/pci/emu10k1/emu10k1x.c	22 Mar 2005 12:35:48 -0000
-@@ -1201,6 +1201,25 @@
- 	.put =          snd_emu10k1x_spdif_put
- };
- 
-+static int remove_ctl(snd_card_t *card, const char *name)
-+{
-+	snd_ctl_elem_id_t id;
-+	memset(&id, 0, sizeof(id));
-+	strcpy(id.name, name);
-+	id.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	return snd_ctl_remove_id(card, &id);
-+}
-+
-+static snd_kcontrol_t *ctl_find(snd_card_t *card, const char *name)
-+{
-+	snd_ctl_elem_id_t sid;
-+	memset(&sid, 0, sizeof(sid));
-+	/* FIXME: strcpy is bad. */
-+	strcpy(sid.name, name);
-+	sid.iface = SNDRV_CTL_ELEM_IFACE_MIXER;
-+	return snd_ctl_find_id(card, &sid);
-+}
-+
- static int __devinit snd_emu10k1x_mixer(emu10k1x_t *emu)
- {
- 	int err;
-@@ -1215,6 +1234,11 @@
- 		return -ENOMEM;
- 	if ((err = snd_ctl_add(card, kctl)))
- 		return err;
-+	if ((kctl = ctl_find(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT))) != NULL) {
-+		/* already defined by ac97, remove it */
-+		/* FIXME: or do we need both controls? */
-+		remove_ctl(card, SNDRV_CTL_NAME_IEC958("",PLAYBACK,DEFAULT));
-+	}
- 	if ((kctl = snd_ctl_new1(&snd_emu10k1x_spdif_control, emu)) == NULL)
- 		return -ENOMEM;
- 	if ((err = snd_ctl_add(card, kctl)))
-
---Boundary_(ID_3h2IZOE2uch35ng4qpQRdA)--
 
 
 -------------------------------------------------------
