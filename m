@@ -1,14 +1,14 @@
 From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: [ANN] Open Source US-X2Y firmware
-Date: Tue, 1 Jun 2004 19:51:48 +0200
+Subject: Re: us-122 firwareloader
+Date: Tue, 1 Jun 2004 20:09:18 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040601175147.GA572@tuba.home>
-References: <20040527192622.GA1966@tuba.home> <s5h3c5fsmd1.wl@alsa2.suse.de>
+Message-ID: <20040601180918.GB572@tuba.home>
+References: <E1BUd3Y-0003tD-KA@sc8-sf-list2.sourceforge.net> <40BB5314.9080404@laposte.net> <20040531171809.GA640@tuba.home> <40BBA2FD.1020309@laposte.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5h3c5fsmd1.wl@alsa2.suse.de>
+In-Reply-To: <40BBA2FD.1020309@laposte.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,43 +17,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net, Karsten Wiese <annabellesgarden@yahoo.de>
+To: JoDaY <jo.day@laposte.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 01, 2004 at 10:39:38AM +0200, Takashi Iwai wrote:
-> At Thu, 27 May 2004 21:26:22 +0200,
+On Mon, May 31, 2004 at 11:26:21PM +0200, JoDaY wrote:
 > Martin Langer wrote:
-> > 
-> > 
-> > Hi,
-> > 
-> > if someone is interested in a free (I mean GPL) firmware for the Tascam
-> > US-X2Y devices I can offer an open source replacement for the second stage 
-> > loader alsa-firmware/usx2yloader/tascam_loader.ihx. All three US-X2Y devices
-> > need this file. But I have only tried it out with an US-122 where it works.
-> > 
-> > Be careful. This software comes with ABSOLUTELY NO WARRANTY!
-> > 
-> > http://www.langerland.de/us122/usx2y-fw-0.1.tar.bz2
+> >On Mon, May 31, 2004 at 05:45:24PM +0200, JoDaY wrote:
+> >
+> >>Hi all,
+> >>
+> >>I've 2 install of linux, the first one is the oldest where hotplug
+> >>is able to load firmware when I plug a Tascam us-122.
+> >>But if I use snd-usb-usx2y.o (seen in depmod), hotplug is not able to 
+> >>load the right firmware... The usb led is not lightened :(
+> >
+> >
+> >Sounds like you are using the old tascam-loader instead of usx2yloader. 
+> >Have
+> >you installed both usx2yloader parts (in alsa-tools and alsa-firmware)?
+> >
 > 
-> shall i include this into alsa-firmware?
+> You're right, the one which is able to load the firmware and make the 
+> LED of the card lighting is an old version.
+> 
+> I've tried to change it with alsa-tools and alsa-firmware:
+> 
+> - snd-usb-usx2y module is loading when I plug the us-122 card
+> - I can see "Bus 002 Device 008: ID 1604:8007 Tascam US-122 Audio/Midi 
+> Interface" with lsusb
+> 
+> But the usb LED is always off :(
 
-In which way should it be included?
-- replacing the vendor fw file
-- as alternate fw, maybe with a configure option like 'prefer-free-fw' or so
+ It's still the tascam loader! Check your hotplug configuration. The file
+"tascam_fpga" you're using isn't the one by usx2yloader. You can remove the
+old tascam-loader stuff there. The file "tascam_fpga" from tascam-loader was
+different and it's no longer compatible with ALSA from today.
 
-Another point is that MidiSportLoader.ihx is 100% identical with
-tascam_loader.ihx. Maybe midisport devices work with this loader too. But I
-have no possibility to test it. Then it would be better to remove the ezusb
-stuff from usx2yloader and create a new chip specific tree for all ez-usb
-devices. Or not? 
+> Is the LED off normal ? 
 
-> or should wait for a while until more debugging?
-
-I guess some us224/midisport test would be nice. But on the other hand the
-loader core is built into the chip and my code is not much more than a few
-init lines.
+It goes 'ON' after the second firmware upload. tascam_fpga in the hotplug
+directory starts usx2yloader for this job.
 
 
 martin
