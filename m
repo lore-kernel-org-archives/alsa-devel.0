@@ -1,12 +1,10 @@
-From: "Len Moskowitz" <vze24hrw@verizon.net>
-Subject: PDAudio-CF ALSA Driver Intermittent Failure
-Date: Mon, 29 Sep 2003 18:24:59 -0400
+From: alfp <alfp@adsmr.co.za>
+Subject: RPM Build problem
+Date: 30 Sep 2003 08:30:25 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <005e01c386d8$97d3bd80$1c02a8c0@win98>
-References: <20030928121741.45922701.erikd-alsa@mega-nerd.com> <Pine.LNX.4.53.0309291033310.1362@pnote.perex-int.cz>
+Message-ID: <1064903425.9677.9.camel@didjeridu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,44 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>, Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On the Linux Audio User mailing list, Jamie Lutch wrote:
+Hi
+I'm trying to build RPMs from alsa-driver-0.9.7 (on Mandrake 9), and at
+the end of the process, rpm reports 'installed but unpackaged' files:
+Checking for unpackaged file(s): /usr/lib/rpm/check-files
+/var/tmp/alsa-driver-0.9.7-root
+error: Installed (but unpackaged) file(s) found:
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.dep
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.generic_string
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.ieee1394map
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.isapnpmap
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.parportmap
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.pcimap
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.pnpbiosmap
+   /lib/modules/2.4.21-0.13mdkenterprise/modules.usbmap
 
-[Begin]
+I see that the Makefile runs depmod -a, which creates these files, and
+the alsa-driver.spec lists
+/lib/modules/*/kernel/*
+which does not include these files.
 
-From: Jamie Lutch <jlutch@al...>
- audioio-alsa error
-2003-09-23 20:05
- So I have my setup (pdaudiocf card>ecasound) running fine at 24/96, but
- every once in awhile it just stops mid-stream and gives the following
-error:
+The question is, should they be in the RPM or not? My gutfeel is that
+they are installation-specific and should not be in the RPM. In that
+case, do I modify the Makefile or somehow tell the specfile to delete
+the files before packaging?
 
- (audioio-alsa) Unknown Device State!
+Thanks
+Alf Potgieter
 
- it just scrolls this message frantically, I have to reboot to get the card
- to work again.
+-- 
+alfp <alfp@adsmr.co.za>
 
- any suggestions on where to start troubleshooting? It seems to be random. I
- can sometimes record for hours before it happens, other times it happens
- sooner (like the other night, halfway through the first set of david
-grisman
- quintet :( )
-
- thanks,
- jamie
-
-[End]
-
-Might someone help us with this problem?  What might we do to track down the
-cause of this failure?
-
-
-Len Moskowitz
-Core Sound
-www.core-sound.com
 
 
 
