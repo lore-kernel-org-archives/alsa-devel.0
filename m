@@ -1,15 +1,13 @@
-From: David Olofson <david@olofson.net>
-Subject: Re: Echoaudio drivers
-Date: Thu, 20 Feb 2003 17:03:27 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Re: dmix plugin
+Date: Thu, 20 Feb 2003 17:49:17 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200302201703.27819.david@olofson.net>
-References: <XFMail.20030220164059.pochini@shiny.it>
+Message-ID: <Pine.LNX.4.44.0302201736580.1266-100000@pnote.perex-int.cz>
+References: <3E54978A.D43EC9DE@libero.it>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20030220164059.pochini@shiny.it>
+In-Reply-To: <3E54978A.D43EC9DE@libero.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,29 +16,74 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Abramo Bagnara <abramo.bagnara@libero.it>
+Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 20 February 2003 16.40, Giuliano Pochini wrote:
-[...]
-> According to official docs, 20 and 24bit versions have only a
-> different DAC. The driver always sends data in the same format.
-> I've not looked at the sources yet.
+On Thu, 20 Feb 2003, Abramo Bagnara wrote:
 
-Yes, that seems to be the case. All models use 24 bit signal paths=20
-internally, and they seem to use the same multichannel DMA engine and=20
-stuff as well. There's specific firmware for pretty much every model=20
-in their driver, but on the host side, it seems like it's mostly=20
-about configurations and feature sets.
+> Jaroslav Kysela wrote:
+> > 
+> > On Wed, 19 Feb 2003, Abramo Bagnara wrote:
+> > 
+> > > The results are amazing and I'd say Jaroslav has done some mistakes in
+> > > his handmade asm.
+> > 
+> > I don't think so. It seems that my brain still remembers assembler ;-)
+> > You passed wrong values to my code so it did unaligned accesses.
+> > 
+> > Fixes to make things same:
+> 
+> I've done the needed changes in my version of sum.c to get correct
+> results from asm version, but I'm still unable to get from it good
+> performance numbers.
+> 
+> I'm puzzled...
+> 
+> $ ./sum 2048 8 32768
+> CPU clock: 1460474444.671998
+> mix_areas0: 90773 0.033459%
+> mix_areas1: 141173 0.052036% (1103)
+> mix_areas2: 870134 0.320731% (0)
+> mix_areas3: 343792 0.126722% (0)
 
+1) my asm code used lock prefix so there are huge differences in code for 
+   UP and MP on i386
+2) we need to clear dst and sum buffers to work with same values for all
+   routines
+3) we need to clear the CPU caches
 
-//David Olofson - Programmer, Composer, Open Source Advocate
+I've commited updated alsa-lib/test/code.c which solves all these troubles 
+and I've added next optimizations to my asm routine and results are (not 
+impressive, but I'm better than GCC, especially using MMX 
+saturation instruction):
 
-=2E- The Return of Audiality! --------------------------------.
-| Free/Open Source Audio Engine for use in Games or Studio. |
-| RT and off-line synth. Scripting. Sample accurate timing. |
-`---------------------------> http://olofson.net/audiality -'
-   --- http://olofson.net --- http://www.reologica.se ---
+pnote:/home/perex/alsa/alsa-lib/test # ./code 2048 8 32768
+Scheduler set to Round Robin with priority 99...
+CPU clock: 847.293134Mhz (UP)
+
+Summary (the best times):
+mix_areas0    : 548456
+mix_areas1    : 863636
+mix_areas1_mmx: 629765
+mix_areas2    : 910819
+
+pnote:/home/perex/alsa/alsa-lib/test # ./code 2048 8 32768
+Scheduler set to Round Robin with priority 99...
+CPU clock: 847.293395Mhz (SMP)
+
+Summary (the best times):
+mix_areas0    : 562342
+mix_areas1    : 1705274
+mix_areas1_mmx: 1565539
+mix_areas2    : 1735491
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
