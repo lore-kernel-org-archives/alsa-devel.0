@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000992]: no supported card
-Date: Mon, 14 Mar 2005 21:52:18 +0100
-Message-ID: <cbb5a9b3a2d520471a93d2241a725850@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000993]: Please provide asound_fm.h
+Date: Mon, 14 Mar 2005 22:28:04 +0100
+Message-ID: <b20ed2b7fee5163df427142c11f4a308@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A4B841C0
-	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 21:52:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A36461C0
+	for <alsa-devel@alsa-project.org>; Mon, 14 Mar 2005 22:28:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,35 +23,38 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=992> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=993> 
 ======================================================================
-Reported By:                rav0r
-Assigned To:                perex
+Reported By:                jdthood
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   992
-Category:                   0_compilation problem_!!!
+Project:                    ALSA - lib
+Issue ID:                   993
+Category:                   general
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4
+Status:                     new
 ======================================================================
-Date Submitted:             03-14-2005 21:52 CET
-Last Modified:              03-14-2005 21:52 CET
+Date Submitted:             03-14-2005 22:28 CET
+Last Modified:              03-14-2005 22:28 CET
 ======================================================================
-Summary:                    no supported card
+Summary:                    Please provide asound_fm.h
 Description: 
-I am not sure what model my s.card is. I only know it's ct4830 , 4.1 .Will
-this model ever be supported?
+The submitter of Debian bug report
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=299423 says:
+
+> Please include the header asound_fm.h  This is required to use the
+> OSS compatibility Direct-FM interface (or ALSA DMFM device directly via
+> ioctls, as opposed to using through alsa-lib as normal).
+
+See http://bugs.debian.org/299423 for the full request.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-14-05 21:52 rav0r          New Issue                                    
-03-14-05 21:52 rav0r          Kernel Version            => 2.4             
+03-14-05 22:28 jdthood        New Issue                                    
 ======================================================================
 
 
