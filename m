@@ -1,8 +1,8 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: [PATCH] emu10k1: fix P16V breakage
 	for	non	Audigy2 cards
-Date: Fri, 18 Mar 2005 14:54:34 -0500
-Message-ID: <1111175674.11341.5.camel@mindpipe>
+Date: Fri, 18 Mar 2005 14:56:43 -0500
+Message-ID: <1111175803.11341.8.camel@mindpipe>
 References: <1110950511.19984.9.camel@mindpipe>
 	 <1110950832.19984.13.camel@mindpipe>  <4238A516.7070802@superbug.co.uk>
 	 <1111074813.23171.11.camel@mindpipe>  <423B319A.8080306@superbug.co.uk>
@@ -46,8 +46,8 @@ On Fri, 2005-03-18 at 19:52 +0000, James Courtier-Dutton wrote:
 > cards ?
 > 
 
-Yes it uses the same logic you used to detect the P16V, if (emu->audigy
-&& emu->revision==4) IIRC.
+Also pzad once said he suspected the Audigy1 card also has a P16V.
+Might be worth a try.  But I have no Audigy1 hardware.
 
 Lee
 
