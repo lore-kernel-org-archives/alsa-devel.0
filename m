@@ -1,15 +1,13 @@
 From: matthieu castet <castet.matthieu@free.fr>
-Subject: Re: mpu401_pnp
-Date: Wed, 09 Feb 2005 15:17:20 +0100
-Message-ID: <420A1B70.2090709@free.fr>
-References: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
+Subject: Re: Using specific code for midi/gameport instead of
+ generic one.
+Date: Wed, 09 Feb 2005 15:17:57 +0100
+Message-ID: <420A1B95.9050602@free.fr>
+References: <Pine.HPX.4.33n.0502071626560.3379-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from postfix4-2.free.fr (postfix4-2.free.fr [213.228.0.176])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 19D3A260
-	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 15:17:27 +0100 (MET)
-In-Reply-To: <Pine.HPX.4.33n.0502071640410.3379-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <Pine.HPX.4.33n.0502071626560.3379-100000@studcom.urz.uni-halle.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,16 +18,28 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-could you apply my patch in the cvs or if you don't like it, just 
-correct the bug ?
+Clemens Ladisch wrote:
+> matthieu castet wrote:
+> 
+>>Anyway, we should check if the midi device is found by pnp for these
+>>chips. If it is the case, what happen if mpu401 module is load before
+>>the via module ?
+> 
+> 
+> The I/O ports and the interrupt would already have been taken by the
+> mpu401 module.  However, the MPU-401 interrupt is usually assumed to
+> be an unsharable ISA interrupt, so this would prevent the AC'97
+> controller driver from being loaded.
+> 
+> Are there really any VT686 boards that have PnP information for the
+> MPU-401?
 
-
-Thanks,
+I don't know...
 
 Matthieu
 
