@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000711]: Sound still bad with alsa on sb audigyls / ca0106
-Date: Tue, 7 Dec 2004 21:53:36 +0100
-Message-ID: <95b43cc0fbd3fab2ea281324763a6c73@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000709]: Recording doesnt work
+Date: Tue, 7 Dec 2004 22:21:39 +0100
+Message-ID: <0e68ee8302a298b4ae63468aef7fbcb6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C1B41B5
-	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 21:53:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DEDC83B5
+	for <alsa-devel@alsa-project.org>; Tue,  7 Dec 2004 22:21:39 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,71 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=711> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
 ======================================================================
-Reported By:                scorpion77
-Assigned To:                jcdutton
+Reported By:                tigermb
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   711
-Category:                   PCI - audigyls
+Issue ID:                   709
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9-1.6_FC2custom
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             12-07-2004 18:12 CET
-Last Modified:              12-07-2004 21:53 CET
+Date Submitted:             12-05-2004 16:33 CET
+Last Modified:              12-07-2004 22:21 CET
 ======================================================================
-Summary:                    Sound still bad with alsa on sb audigyls / ca0106
+Summary:                    Recording doesnt work
 Description: 
-Sound is choppy and at wrong speed with both the snd-audigyls from alsa
-1.0.7 and snd-ca0106 from alsa CVS. CVS seems worse, which bugs me since
-last bug report was closed woth a "Use snd-ca0106 from CVS remark"!
-Workaround seems to select (Threaded)OSS as artsd backend instead of Alsa.
-Esd as artsd backend only works / fixes things in 1.0.7, it crashes when
-the CVS version is used.
+Soundcard: Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+
+The recording doesnt work.
+When trying to record, nuthing happens. No errors. Although gnome-meeting
+got an error and wonders if i have permission to device. But i tried it
+under root and i get the same error. arecord give no error, but just
+doesnt do anything.
 ======================================================================
 
 ----------------------------------------------------------------------
- scorpion77 - 12-07-04 21:40 
+ tiwai - 12-07-04 18:28 
 ----------------------------------------------------------------------
-Well should have said 'kind of bugs me' then ;) You have to do quite some
-work just to find out it's probably wise to just stick with the 1.0.7
-snd-audigyls driver because it works better and there doesn't seem to be
-much changes when it comes to features.
+The attached strace shows obviously that the device is blocked.
+It's being used by other applications.  It's not a bug at all.
 
-Most important question would be, is this work in progress and if it is,
-when can I / we expect decent support for this chip, soon or rather on the
-longterm? I can still return the thing and get a better card u know ;)
+If you get the I/O error (this appears after a certain wait time), it
+means the DMA doesn't run properly.  Tuning the "Input Source Select"
+often helps in the case of via82xx.
+
+Also, make sure that you have no strange /etc/asound.conf and ~/.asoundrc
+for testing.  Use the only default configuration.
 
 ----------------------------------------------------------------------
- jcdutton - 12-07-04 21:53 
+ tigermb - 12-07-04 22:21 
 ----------------------------------------------------------------------
-You don't really give me much information do you.
-How about some useful info, like:
-cat /proc/asound/card0/cards
-cat /proc/asound/version
-etc.
-
-I suspect you are trying to play a file at 44.1khz, and the sound card
-does not support that rate(hardware limitation), so alsa-lib tries to
-resample 44.1khz to 48khz.
-That, together with badly written applications that you might be using is
-bound to fail.
-If the media file plays fine in xine, this is not an alsa bug.
+It is strange. Even when i dont run X and dont run any sound related
+programs, its still blocked.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-07-04 18:12 scorpion77     New Issue                                    
-12-07-04 18:12 scorpion77     Distribution              => Fedora Core 2   
-12-07-04 18:12 scorpion77     Kernel Version            => 2.6.9-1.6_FC2custom
-12-07-04 20:24 rlrevell       Note Added: 0002764                          
-12-07-04 21:40 scorpion77     Note Added: 0002765                          
-12-07-04 21:53 jcdutton       Note Added: 0002766                          
+12-05-04 16:33 tigermb        New Issue                                    
+12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
+12-06-04 20:59 tiwai          Note Added: 0002735                          
+12-06-04 23:24 tigermb        File Added: asound.state                     
+12-06-04 23:25 tigermb        Note Added: 0002738                          
+12-07-04 14:32 tiwai          Note Added: 0002747                          
+12-07-04 17:59 tigermb        Note Added: 0002750                          
+12-07-04 18:01 tigermb        Note Added: 0002751                          
+12-07-04 18:22 tigermb        File Added: strace.log                       
+12-07-04 18:23 tigermb        Note Added: 0002752                          
+12-07-04 18:28 tiwai          Note Added: 0002754                          
+12-07-04 22:21 tigermb        Note Added: 0002767                          
 ======================================================================
 
 
