@@ -1,15 +1,15 @@
 From: Thorsten Haas <thorsten.haas@gmx.de>
 Subject: Re: Re: USB recording - repetitive peaks
-Date: Fri, 5 Jul 2002 10:38:36 +0200
+Date: Fri, 5 Jul 2002 11:06:06 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207051038.36780.thorsten.haas@gmx.de>
-References: <3D208C5C.36649172@ladisch.de> <200207050856.26032.thorsten.haas@gmx.de> <3D255A1F.6090505@boosthardware.com>
+Message-ID: <200207051106.06718.thorsten.haas@gmx.de>
+References: <3D208C5C.36649172@ladisch.de> <3D255A1F.6090505@boosthardware.com> <200207051038.36780.thorsten.haas@gmx.de>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
 Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D255A1F.6090505@boosthardware.com>
+In-Reply-To: <200207051038.36780.thorsten.haas@gmx.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,38 +22,71 @@ To: Patrick Shirkey <pshirkey@boosthardware.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 5. Juli 2002 10:34 schrieb Patrick Shirkey:
-> Thorsten Haas wrote:
-> >>>I'm not sure about the sound quality it is definitely better. I will see
-> >>>if I can generate a test tone to use instead of actual music.
-> >
-> > I checked out cvs this morning and compiled. I grabbed my function
-> > generator and fed my quattro usb with some signal; 400Hz, 0,7V
-> > peak-to-peak.
-> >
-> > It's working finely now. (no more peaks)
-> >
-> > I did the same thing some days before. ( Whoever is interested in the
-> > results and the output of the oscilloscope:
-> > http://www.thorstenhaas.de/alsa.php)
->
-> That looks much better.
->
-> We still face the problem of accessing all 4 channels at once. AFAICT in
-> the .asoundrc file the multi interface option does not have the ability
-> to seperately access the channels in non sequential order. Therefore we
-> are currently unable to access all the channels on the card because pcm0
-> and pcm1 point to the same physical channels input 1 and input 2.
->
-> We need to either reorganise the pcm devices for the card or make it
-> possible to secify channels in non sequential order using the multi
-> interface option in a .asoundrc.
+I like to use two soundcards in my system.
 
-I wish I was much more experienced in programming C++ and the structure of 
-ALSA. Actually I am not. So I can hardly follow you what this will mean 
-concerning effort and complexity.
+I have an usb quattro and a trident compatible card. I read the manual at  
+http://www.boosthardware.com/LAU/guide/ and configured modules.conf:#
 
-So, what will it be?
+------------------------- snip --------------------------------------
+### NEW ALSA 0.9 from CVS 2002-07-05
+
+##       General
+# ALSA portion
+  alias char-major-116 snd
+# OSS/Free portion
+  alias char-major-14 soundcore
+
+##      Native Devices: ALSA portion
+# quattro usb
+  alias snd-card-0 snd-usb-audio
+  options snd-usb-audio snd_index=0 snd_id="Q4"
+# sis onboard (trident)
+  alias snd-card-1 snd-card-trident
+  options snd-card-trident snd_index=1 snd_id="SiS"
+
+##      Native Devices: OSS/Free portion
+# OSS Free Portion - Card 1 - quattro usb
+  alias sound-slot-0 snd-card-0
+  alias sound-service-0-0 snd-mixer-oss
+  alias sound-service-0-1 snd-seq-oss
+  alias sound-service-0-3 snd-pcm-oss
+  alias sound-service-0-8 snd-seq-oss
+  alias sound-service-0-12 snd-pcm-oss
+# OSS Free Portion - Card 2 - Trident
+  alias sound-slot-1 snd-card-1
+  alias sound-service-1-0 snd-mixer-oss
+  alias sound-service-1-3 snd-pcm-oss
+  alias sound-service-1-12 snd-pcm-oss
+------------------------- snap --------------------------------------
+
+After that i ran depmod -a and tried
+
+linda:~ # modprobe snd-card-trident
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
+snd_control_unregister_ioctl
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
+snd_switch_remove
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol snd_switch_free
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol snd_switch_add
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
+snd_switch_prepare
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
+snd_info_create_entry
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
+snd_control_register_ioctl
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol snd_switch_new
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: unresolved symbol 
+snd_switch_free_one
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: insmod 
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o failed
+/lib/modules/2.4.10-4GB/misc/snd-rawmidi.o: insmod snd-card-trident failed
+
+Can someone please give me ahint what I did wrong here?
+
+Thorsten
+
+PS: SORRY for the length.
+
 
 
 -------------------------------------------------------
