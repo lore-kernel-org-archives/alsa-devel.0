@@ -1,8 +1,8 @@
 From: "Eliot Blennerhassett" <bigblen@icqmail.com>
-Subject: Filtering of mail to this list/subscription
-Date: Thu, 01 May 2003 18:26:51 -0700 (PDT)
+Subject: To: ALSA Soundcard Matrix maintainer
+Date: Thu, 01 May 2003 19:13:40 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030501182652.15340.h003.c012.wm@mail.icqmail.com.criticalpath.net>
+Message-ID: <20030501191340.13435.h003.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Transfer-Encoding: 7bit
@@ -17,38 +17,44 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: eliot@blennerhassett.gen.nz
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello,
 
-Firstly, I have read
-http://www.alsa-project.org/mailing-lists.php3
+according to the ALSA Soundcard Matrix page:
+"Corrections should be sent to the alsa-devel mailing
+list."
 
-"BIG WARNING: .... Your messages will be silently
-ignored. Complete information is available:"
+so heres one:
+AudioScience cards are missing from the list:
+All cards from
+http://www.audioscience.com/internet/products/products.htm
+except ASI2214 are candidates for an ALSA driver.
 
-However, when my reply to the subscription confirmation
-email just disappears silently,  I cant see how I can
-figure out where it is going, or who to complain to.
+Summary:
 
-Surely it is only from the ALSA listserv end of the
-chain that there is knowledge of the relays that my
-email has passed through to get there,. and which one
-is offending.
+Based on TI TMS320C67xx DSP
+ASI6012
+ASI6122
+ASI6114
+ASI6118
+ASI6244
+ASI5111
 
-Reading http://www.mail-abuse.org, I get the impression
-that people usually get a bounced email saying "Your
-mail has bounced because...."
+Based on Motorola DSP56301 DSP
+ASI4215
+ASI4346
+ASI4344
+ASI4342
 
-AFAIK the direct SMTP server that I am using will not
-be an open relay etc.
+These would currently be highlighted green or grey in
+the matrix.
 
-Can anybody help me?
+thanks
 
-Meanwhile I will limp on with this webmail.  Please
-excuse the inevitable appended advertising...
-
-- Eliot
+Eliot Blennerhassett
+AudioScience
 
 
 
