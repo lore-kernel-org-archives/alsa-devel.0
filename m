@@ -1,14 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Hardware interface constant for Bluetooth
-Date: Tue, 9 Nov 2004 14:10:32 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411091410210.15927@pnote.perex-int.cz>
-References: <1099877050.6896.70.camel@pegasus>  <Pine.LNX.4.58.0411081152120.2162@pnote.perex-int.cz>
-  <1099915428.6896.107.camel@pegasus>  <Pine.LNX.4.58.0411081305260.2162@pnote.perex-int.cz>
- <1100002607.29330.58.camel@pegasus>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000631]: card detected but no sound
+Date: Tue, 9 Nov 2004 14:30:20 +0100
+Message-ID: <dc670c47b8e8bc375f66804bd7ab02a7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1100002607.29330.58.camel@pegasus>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C771815E
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 14:30:20 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,30 +18,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Marcel Holtmann <marcel@holtmann.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 9 Nov 2004, Marcel Holtmann wrote:
 
-> Hi Jaroslav,
-> 
-> > The SNDRV_HWDEP_IFACE_BLUETOOTH definition was added to the ALSA CVS tree.
-> 
-> I checked the CVS HEAD version of the ALSA library and I think it must
-> be added there too. Is this correct or is there another way you keep
-> these in sync between the kernel and the userspace? Looking at the file
-> "include/hwdep.h", I realized that the previous entry for the "EmuX
-> wavetable" is also missing.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=631> 
+======================================================================
+Reported By:                poleta33
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   631
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               gentoo
+Kernel Version:             2.4.26-gentoo
+======================================================================
+Date Submitted:             11-05-2004 16:29 CET
+Last Modified:              11-09-2004 14:30 CET
+======================================================================
+Summary:                    card detected but no sound
+Description: 
+I've installed alsa with alsaconf... everything runs perfectly but I've got
+no sound... (I've tried to unmute amixer with no success).. now i'm
+totally lost... I've got one error on dmesg dealing with JEDEC but cannot
+solve...
 
-Thanks. Fixed now.
+gva1080 distfiles # amixer info
+Card default 'I82801BAICH2'/'Intel 82801BA-ICH2 at 0xdc00, irq 17'
+  Mixer name    : 'Analog Devices AD1885'
+  Components    : 'AC97a'
+  Controls      : 36
+  Simple ctrls  : 25
 
-						Jaroslav
+gva1080 distfiles # ls -l /dev/dsp
+lr-xr-xr-x  1 root root 9 Nov  5 16:24 /dev/dsp -> sound/dsp
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+
+======================================================================
+
+----------------------------------------------------------------------
+ poleta33 - 11-09-04 14:30 
+----------------------------------------------------------------------
+solved... don't know exactly how and why...
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-05-04 16:29 poleta33       New Issue                                    
+11-05-04 16:29 poleta33       Distribution              => gentoo          
+11-05-04 16:29 poleta33       Kernel Version            => 2.4.26-gentoo   
+11-09-04 14:30 poleta33       Note Added: 0002321                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
