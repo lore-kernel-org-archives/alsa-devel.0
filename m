@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000936]: AM_PATH_ALSA does not set prefix properly
-Date: Sat, 26 Feb 2005 03:28:11 +0100
-Message-ID: <760e61c5c1c67fae49b802a925e04ca7@bugtrack.alsa-project.org>
+Subject: [ALSA - WWW server 0000944]: Uniquely identify Creative Soundblaster Live 5.1 and 7.1
+Date: Sat, 26 Feb 2005 04:08:51 +0100
+Message-ID: <dd31bfc8412d5f5a985560901000f058@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BE424243
-	for <alsa-devel@alsa-project.org>; Sat, 26 Feb 2005 03:28:11 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 42A451C1
+	for <alsa-devel@alsa-project.org>; Sat, 26 Feb 2005 04:08:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,64 +21,42 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=936> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=944> 
 ======================================================================
-Reported By:                starling
+Reported By:                drinky76
 Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   936
-Category:                   aconnect
+Project:                    ALSA - WWW server
+Issue ID:                   944
+Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   minor
+Severity:                   tweak
 Priority:                   normal
 Status:                     new
 ======================================================================
-Date Submitted:             02-23-2005 22:39 CET
-Last Modified:              02-26-2005 03:28 CET
+Date Submitted:             02-26-2005 04:08 CET
+Last Modified:              02-26-2005 04:08 CET
 ======================================================================
-Summary:                    AM_PATH_ALSA does not set prefix properly
+Summary:                    Uniquely identify Creative Soundblaster Live 5.1 and
+7.1
 Description: 
-When configure calls AM_PATH_ALSA, it wrongly assumes that
---with-alsa-prefix specifies the location of the library, not the prefix
-of alsa.  In addition, --with-alsa-inc-prefix does not properly modify
-CFLAGS.  The result is that every configure where alsa-lib is installed
-outside the hardcoded include/lib paths fails unconditionally.
+The Creative Labs Soundblaster Live 5.1 card and Creative Labs Soundblaster
+Live 24bit 7.1 cards use different drivers as they have different
+chipsets.
+
+This is not obvious from the matrix and led me (and it seems quite a few
+others) to purchase the wrong card. The 5.1 uses the emu10k1 driver and
+the 7.1 uses the audigyls driver. The Matrix only list the SB Live (no
+version), SB Live PLatinum and SB Live Value. No distinction is made
+between the SB Live 5.1 and SB Live 7.1
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-24-05 22:02 
-----------------------------------------------------------------------
-I'm afraid it's too late to fix this since the macro is being used widely
-now.  Your patch will result in the incompatible configure option  and
-break e.g. for 64bit lib path.
-
-----------------------------------------------------------------------
- starling - 02-26-05 03:28 
-----------------------------------------------------------------------
-I'm not sure how the number of bits per character would break my patch.  As
-for it being an incompatible configure option, I don't see how the current
-configure can work at all.  With the current (unpatched) alsa.m4, any
-installation outside of /usr, of alsa-utils will fail.  With the patch
-applied it changes the interface, but installations into /usr (or
-/usr/local depending on your compiler) will not fail because they are
-checked regardless of which -I/-L flag is passed to the compiler. So the
-only configurations that would not be backwards compatible, and would
-become 'broken', are the configurations that do not work in the first
-place (for no good reason).  Nothing to worry about.
-
-Unless you know something I don't, which is likely.  64-bit whosamawhudda?
- You mean like Unicode paths?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-23-05 22:39 starling       New Issue                                    
-02-23-05 22:39 starling       File Added: alsa.diff                        
-02-24-05 22:02 tiwai          Note Added: 0003726                          
-02-26-05 03:28 starling       Note Added: 0003738                          
+02-26-05 04:08 drinky76       New Issue                                    
 ======================================================================
 
 
