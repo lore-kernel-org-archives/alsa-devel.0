@@ -1,12 +1,10 @@
-From: "Merrony, Stephen (London)" <merronys@exchange.uk.ml.com>
-Subject: Sequencer API Query
-Date: Tue, 4 Feb 2003 17:06:03 -0000
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: ice1712 halts completely
+Date: Wed, 5 Feb 2003 01:29:46 +0200 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <61627AE0C39BD11182D600805FE6527B0A02D67F@lonim26408.uk.ml.com>
+Message-ID: <Pine.LNX.4.44.0302050112240.920-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain;
- charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -19,26 +17,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Guys,
+Has anyone else seen this?
 
-I have an application which is successfully using the sequencer API to read
-and write MIDI events.  
+In the middle of playback my midiman-44 stops processing completely (no
+interrupts, no activity, tried with multiple apps).  Reloading modules
+succeeds, but still no sound. Dmesg shows:
 
-I would like to be able to query the number of MIDI channels available per
-client, but all of snd_seq_port_info_get_midi_channels(),
-snd_seq_port_info_get_midi_voices(), snd_seq_port_info_get_synth_voices()
-return 0.  
+ALSA ../alsa-kernel/core/pcm_lib.c:187: Unexpected hw_pointer value (stream = 0, delta: -629, max jitter = 3276): wrong interrupt acknowledge?
+ALSA ../alsa-kernel/core/pcm_lib.c:2117: playback write error (DMA or IRQ trouble?)
 
-I am using  a Creative SoundBlaster Live!  And it is the wavetable synths I
-am interested in.
+ALSA is a recent version from CVS:
 
-I notice that the input ports correctly return a value of 16 when queried
-with snd_seq_port_info_get_midi_channels().
+/proc/asound/version
+Advanced Linux Sound Architecture Driver Version 0.9.0rc6.
+Compiled on Jan 22 2003 for kernel 2.4.19 (SMP) with versioned symbols.
 
-Regards
-	         Steve
+... I'll continue debugging. Next I'll reboot into non-SMP mode 
+and see if I can reproduce the problem.
 
-
+-- 
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
