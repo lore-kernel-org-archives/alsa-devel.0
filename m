@@ -1,13 +1,12 @@
-From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Subject: Re: [linux-audio-dev] priority inversion & inheritance
-Date: Fri, 12 Jul 2002 03:25:27 +0300 (EEST)
+From: Bruce Paterson <bruce@tele-ip.com>
+Subject: Underruns (borken pipes)
+Date: Fri, 12 Jul 2002 13:22:01 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0207120241160.902-100000@ecabase.localdomain>
-References: <200207112148.XAA10419@www.bluedns.nl>
+Message-ID: <3D2E4B59.60ACA464@tele-ip.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200207112148.XAA10419@www.bluedns.nl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,68 +15,70 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: linux-audio-dev@music.columbia.edu
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-note! cross-posted to alsa-devel; some questions about the
-      korg1212 driver...
 
-On Thu, 11 Jul 2002, Martijn Sipkema wrote:
+I got around my previous problems (readn) in an output/capture
+application with an envy24
+(ice1712) by bypassing the plugin and going straight to hw:0,0. Had to
+change my code a bit
+but it's now **almost** working.
 
->> Ok, I guess here\'s the first real case against const-nframe.
-> I thought i had already mentioned this several time :)
+I'm now running into underrun problems...occasionally.
+I am outputting and capturing at 32 bits, 96000 on 4 input channels and
+1 output (but of course
+using hw:0,0 its actually 10 output & 12 input hard-wired). All IO is
+being stored in RAM buffers
+and I'm not running into swap.
 
-You didn't say it loud enough.. ;)
+Is my machine simply not fast enough ? (700MHz Pentium, 500M RAM) Help
+!!!
 
-[soundcards for which 'sample_rate/interrupt_frequency' is fractional]
->> at least with ALSA you\'d be in trouble anyway as ALSA will wake your
->> driver only when period_count samples are available. If you set
-> Perhaps this could be changed/added in ALSA?
+What I don't understand is this:
 
-Well... I wish you luck in getting that change accepted. :)
+If I put write & read in a loop, with a small 10ms delay, setup both in
+& out to be non-blocking, I
+get only occasional underruns. Underruns are unacceptable in my
+application so I have to completely
+abort. About every 2nd call to read or write gets an EAGAIN, as you
+would expect.
 
->> So like Paul said, do we need to support these soundcards...? For 
->> JACK-style operation both the above scenario are really, really bad.
-> I don\'t have hardware that behaves like this :)
-> But still, the yamahas are a common hardware. Is the korg card the 1212?
-> I think it would still be nice to support these.
+If, however, I use file descriptor polling before read and write; don't
+attempt a write till
+POLLOUT, or a read until POLLIN or POLLPRI, but have the whole lot in a
+big loop so I handle
+either as soon as they require, I get failures EVERY time I run.
+Somewhere about the 5th
+hardware buffer iteration. Underrun is randomly on read or write. Doing
+the code "properly"
+seems to be far worse !
+I never get EAGAIN from read/write in this case, and I haven't seen a
+poll failure yet.
 
-But even with a non-const-nframe, these might still be hopeless cases.  
-As for the korg 1212, it doesn't be a similar case as the yamaha.  Its
-current driver in ALSA CVS seems to have hardcoded values for total buffer
-size and interrupt frequency. The used values are 8 blocks of 1024 sample
-frames (ie. period_size=1024, buffer_size=8192). This is a pretty sucky
-configuration. Unfortunately as part of the driver is implemented as
-DSP-code, changing the default might not be easy.
+Output frame buffer size is 6553, and input 5461, as returned by the
+hardware.
 
-Anyways, I don't have this card myself and have never tested it so the
-above analysis might be totally wrong. So correct me I'm wrong here...
-
->> Basicly same approach is now in used in regards to the nframes issue. If
->> you try to use ecasound with a JACK driver (well, if there was such an
->> driver) with non-const-nframes, ecasound would just raise an error and
->> exit. In a way this makes sense as until I rewrite ecasound (which will
-> Is adding an intermediate buffer for drivers with non-const nframes much work?
-
-Some. I'd have to add code for the ringbuffer. Doesn't sound bad, but for
-me it's a few hundred lines of new code that I have to maintain but very
-likely nobody will ever use. The worst thing is that it would ruin my
-beautiful codebase. ;) I hate having multiple code paths that do
-essentially the same thing. The logic for handling JACK i/o is already
-pretty hairy (connecting the JACK inputs and outputs to the ecasound
-signal graph, master&slave timing modes, handling commands from the
-ecasound ui, commands from jackd, etc, etc).
-
-But again, the problem is really not what I have to do. All major ecasound
-subsystems have been rewritten multiple times. If it needs to be done
-again, I'll do it. But I'm not sure if it as likely that someone will
-rewrite csound, pd, <insert-big-app-here> just to support JACK.
-
+As far as I can see I'm roughly complying with the example code
+/test/pcm.c with transfer method
+"write and wait for room in buffer using poll"
 -- 
- http://www.eca.cx
- Audio software for Linux!
+Cheers,
+Bruce
+-------------------------------------------------------------------
+This email and any files transmitted with it are confidential and
+intended solely for the use of the individual or entity to whom
+they are addressed. If you have received this email in error please
+notify the system manager.
 
+    /\\\/\\\/\\\    /   /      Bruce Paterson          
+   /  \\\ \\\ \\\  /   /    Senior Design Engineer
+  /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
+ /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
+/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
+      Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
+                        WWW:   http://www.tele-ip.com       VK3TJN
+-------------------------------------------------------------------
 
 
 -------------------------------------------------------
