@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000793]: Feature Request SRS
-Date: Sat, 8 Jan 2005 05:16:00 +0100
-Message-ID: <8051a879d49282cf1c8e711f7a4776ae@bugtrack.alsa-project.org>
+Date: Sat, 8 Jan 2005 05:17:45 +0100
+Message-ID: <b7f1bc58df6093fcd3600d18fd825ade@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 826DA22D
-	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 05:16:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 79AA722D
+	for <alsa-devel@alsa-project.org>; Sat,  8 Jan 2005 05:17:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=793> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-08-2005 05:16 CET
-Last Modified:              01-08-2005 05:16 CET
+Last Modified:              01-08-2005 05:17 CET
 ======================================================================
 Summary:                    Feature Request SRS
 Description: 
@@ -49,11 +49,17 @@ Is this even the correct forum to post a request?
 I apologise if it's not
 ======================================================================
 
+----------------------------------------------------------------------
+ gregh - 01-08-05 05:17 
+----------------------------------------------------------------------
+I have set thi swith an incorrect category. It sould be request
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 01-08-05 05:16 gregh          New Issue                                    
 01-08-05 05:16 gregh          Kernel Version            => 2.6.10          
+01-08-05 05:17 gregh          Note Added: 0003127                          
 ======================================================================
 
 
