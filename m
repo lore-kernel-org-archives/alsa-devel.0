@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0001016]: [PATCH] conf.c -- allow to compile with gcc 4.0
-Date: Tue, 29 Mar 2005 15:25:44 +0200
-Message-ID: <26f5cd6bf9fff99f6317dd3647fbed58@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000118]: Soundcard doesn't produce any output
+Date: Tue, 29 Mar 2005 15:31:32 +0200
+Message-ID: <a574a84e63269d4c69b152f1e13e7516@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB2B425E
-	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 15:25:44 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FB1425E
+	for <alsa-devel@alsa-project.org>; Tue, 29 Mar 2005 15:31:33 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,53 +22,74 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1016> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=118> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
+Reported By:                jordi
+Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   1016
-Category:                   general
+Project:                    ALSA - driver
+Issue ID:                   118
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             03-25-2005 15:41 CET
-Last Modified:              03-29-2005 15:25 CEST
+Date Submitted:             03-05-2004 11:53 CET
+Last Modified:              03-29-2005 15:31 CEST
 ======================================================================
-Summary:                    [PATCH] conf.c -- allow to compile with gcc 4.0
+Summary:                    Soundcard doesn't produce any output
 Description: 
-The submitter of Debian bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=300792 has provided this
-patch which allows
-alsa-lib to be built with gcc 4.0.
-
-He says that without the patch, gcc-4.0 stops with an 'invalid 
-storage class' error because it is not allowed to declare a 'static'
-function inside another function.
+This card had been working ok until 0.9.6 or 0.9.7. When I upgraded to
+0.9.8 and until now, the card hasn't been able to produce any output,
+although the driver gets loaded correctly.
+The OSS driver works correctly. It's not, I believe, a muted mixer
+problem.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-29-05 15:25 
+ jdthood - 03-28-05 04:13 
 ----------------------------------------------------------------------
-Already fixed on CVS.
+Submitter: Has this problem been fixed in later versions of ALSA?
+
+----------------------------------------------------------------------
+ mhdyousif - 03-29-05 15:31 
+----------------------------------------------------------------------
+I'm not the submitter but I had the same problem.
+
+I tried version 1.0.8 and found that the problem has been fixed and ALSA
+produces sound as expected (no silence anymore).
+
+Thanks for fixed that.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-25-05 15:41 jdthood        New Issue                                    
-03-25-05 15:41 jdthood        File Added: conf.c-gcc-4.0_20050325jdth1.patch    
-               
-03-29-05 15:25 tiwai          Status                   new => resolved     
-03-29-05 15:25 tiwai          Resolution               open => fixed       
-03-29-05 15:25 tiwai          Assigned To               => tiwai           
-03-29-05 15:25 tiwai          Note Added: 0004243                          
+03-05-04 11:53 jordi          New Issue                                    
+03-06-04 16:06 mhdyousif      Note Added: 0000519                          
+03-08-04 11:48 tiwai          Note Added: 0000529                          
+03-08-04 15:18 mhdyousif      File Added: asound.state                     
+03-08-04 15:22 mhdyousif      Note Added: 0000533                          
+03-08-04 15:27 tiwai          Note Added: 0000534                          
+03-08-04 18:12 mhdyousif      Note Added: 0000536                          
+03-08-04 19:30 jordi          Note Added: 0000537                          
+03-08-04 19:30 jordi          File Added: asound.state                     
+03-10-04 12:26 jordi          Note Added: 0000560                          
+03-10-04 17:44 tiwai          Note Added: 0000562                          
+03-12-04 12:58 bacsa81        File Added: ac97#0-0                         
+03-12-04 12:58 bacsa81        Issue Monitored: bacsa81                     
+03-12-04 12:58 bacsa81        File Added: ac97#0-0+regs                    
+03-12-04 13:00 bacsa81        Note Added: 0000574                          
+03-25-04 18:45 jordi          Note Added: 0000706                          
+05-31-04 18:33 pawlik         Note Added: 0001284                          
+05-31-04 18:34 pawlik         Note Added: 0001285                          
+05-31-04 18:35 pawlik         Note Deleted: 0001285                        
+03-28-05 04:13 jdthood        Note Added: 0004232                          
+03-29-05 15:31 mhdyousif      Note Added: 0004244                          
 ======================================================================
 
 
