@@ -1,13 +1,15 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000857]: intel8x0m does not work on asus a3n laptop
-Date: Thu, 24 Mar 2005 20:25:58 +0100
-Message-ID: <309c6f244472c0eab44f2ddb42bf831d@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: [patch] patch_cm9880.c to support multi-channel
+Date: Thu, 24 Mar 2005 14:30:21 -0500
+Message-ID: <1111692621.8268.21.camel@mindpipe>
+References: <92C0412E07F63549B2A2F2345D3DB515F7D6C6@cm-msg-02.cmedia.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 047AA256
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 20:25:58 +0100 (MET)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Received: from viper.oldcity.dca.net (viper.oldcity.dca.net [216.158.38.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id D772B256
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 20:30:23 +0100 (MET)
+In-Reply-To: <92C0412E07F63549B2A2F2345D3DB515F7D6C6@cm-msg-02.cmedia.com.tw>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,95 +19,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: "\"Tien,  C.L. - =?UTF-8?Q?=E7=94=B0=E6=89=BF=E7=A6=AE=22?=" <cltien@cmedia.com.tw>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, 2005-03-25 at 01:53 +0800, "Tien, C.L. - =E7=94=B0=E6=89=BF=E7=A6=
+=AE" wrote:
+> Summary: <fix multi-channel for model=3D=3Dfull>
+> Signed-off-by: ChenLi Tien<cltien@cmedia.com.tw>
+>=20
+>=20
+> Hi,
+>=20
+> The patch_cm9880.c can't play side/C/B channels from front panel jacks.=
+ I fixed it by adding select pin.
+>=20
+> I also added controls in the allout_init array. I wonder what this mode=
+l for because it is the same as basic_init except the line-in is used as =
+output in allout_init.
+>=20
+> I plan to add controls for 5/6 stacks ,  which lacks front panel but ha=
+s rear 5/6 jacks. Any idea?
+>=20
+> Sincerely,
+> ChenLi Tien
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=857> 
-======================================================================
-Reported By:                mart
-Assigned To:                sashak
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   857
-Category:                   PCI - intel8x0m
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               slackware 10
-Kernel Version:             2.6.10
-======================================================================
-Date Submitted:             01-29-2005 16:43 CET
-Last Modified:              03-24-2005 20:25 CET
-======================================================================
-Summary:                    intel8x0m does not work on asus a3n laptop
-Description: 
-with this laptop, the sound by intel8x0 works ok, but the modem with the 
-alsa-driver intel8x0m and slmodemd 2.9.10 does not.
-slmodemd starts ok, it opens the alsa device hw:1 that is tje modem, but
-when i try to dial a number (i tried with kppp and minicom) the modem does
-dial, but after a while it quits with a NO ANSWER error.
-making some exprtiments, i found that when i connect under windows, if i
-listen to the phone connected to the same line, i can hear the tones
-gererated by the modem, but when i dial under linux i can't hear anything,
-so i think this is a driver issue, the driver that can't make the modem
-produce any sound.
+Was there supposed to be a patch attached?
 
-this is what lspci tells me on that modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000509 Conexant Moden &quot;not ready&quot;
-related to          0000890 no dialtone with modem &amp; strange lo...
-======================================================================
-
-----------------------------------------------------------------------
- mart - 02-04-05 13:10 
-----------------------------------------------------------------------
-uhm,
-/proc/asound/card1/codec97#0/mc97#0-0 doesn't exists,
-but exists 
-/proc/asound/card1/codec97#0/mc97#1-1 that is:
-1-1/0: Conexant id 22
-
-Extended modem ID: codec=1 LIN1
-Modem status     : PRA(GPIO) PRB(res) PRC(ADC1) PRD(DAC1) PRE(ADC2)
-PRF(DAC2) PRG(HADC) PRH(HDAC)
-Line1 rate       : 48000Hz
-
-and a (long) /proc/asound/card1/codec97#0/mc97#1-1+regs
-
-----------------------------------------------------------------------
- metal - 03-24-05 20:25 
-----------------------------------------------------------------------
-I have similar trouble on roverbook w510L. Errors in log:
-semaphore is not ready [0x1][0x701300]
-codec_write 1: semaphore is not ready for register 0x54
-lspci | grep Modem:
-00:1f.6 Modem: Intel Corp. 82801DB (ICH4) AC'97 Modem Controller (rev 03)
-It don't work with kernel 2.6.10, 2.6.11.
-This modem work with kernel 2.4.29 and slamr driver from Smart Link Ltd.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-29-05 16:43 mart           New Issue                                    
-01-29-05 16:43 mart           Distribution              => slackware 10    
-01-29-05 16:43 mart           Kernel Version            => 2.6.10          
-01-29-05 16:44 mart           Issue Monitored: mart                        
-02-03-05 21:55 mart           Note Added: 0003494                          
-02-03-05 23:21 sashak         Note Added: 0003495                          
-02-04-05 13:10 mart           Note Added: 0003501                          
-03-02-05 14:12 perex          Relationship added       related to 0000509  
-03-02-05 15:19 perex          Relationship added       related to 0000890  
-03-24-05 20:25 metal          Note Added: 0004200                          
-======================================================================
-
+Lee
 
 
 
