@@ -1,11 +1,10 @@
-From: "David E. Storey" <dave@tamos.net>
-Subject: hdsp under Linux
-Date: 14 May 2003 07:55:45 -0400
+From: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
+Subject: kernel reboots and possible silencing bug
+Date: Wed, 14 May 2003 14:03:16 +0300 (EEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1052913345.399.24.camel@localhost>
+Message-ID: <Pine.LNX.4.44.0305141351430.20199-100000@ecabase.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -15,22 +14,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-woohoo!
+Hello,
 
-After _months_ of working on custom hacked-up kernels, tweaking
-latencies, grabbing CVS snapshots... I finally have a very slick little
-mobile Linux audio platform. Paul, thank you for your help with regards
-to HDSP support. You rock! I still suffer from a couple skips here and
-there (without being reported as xruns), but so long as there isn't any
-HUGE amount of load on my laptop, everything seems fairly solid. (and as
-long as I'm using real-time scheduling, of course...; I compile a kernel
-as root to test and MOST of the time, get solid playback.)
+ALSA driver 0.9.2 rebuilt from freshrpms.net (fr1) packages results in
+kernel oops and subsequent reboot. Anyone else sees this? Few notes:
 
-Thanks guys.
-d!
+- happens on both cs4281 and usb-audio drivers so
+  shouldn't be a driver specific issue
+- triggered on every application run, and only after
+  a few minutes of operation
+- increase of load makes the bug more likely to occur
+  (-> possibly related to xrun and/or silencing code)
+- happens both on IBM X20 and X21 thinkpads (tested
+  multiple machines) 
+- redhat kernel 2.4.18-27.8.0
+- so far only happens with applications that utilize ALSA's 
+  silencing
+
+I've rebuilt 0.9.3a from sources and with full debug enabled,
+and I so far no oops... Still, I do get the following 
+assert failure:
+
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+ALSA ../alsa-kernel/core/pcm_lib.c:89: BUG? (frames >= runtime->silenced_size) (called from d4910db3)
+
+[demo@localhost src]$ cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 0.9.3a.
+Compiled on May 13 2003 for kernel 2.4.18-27.8.0 with versioned symbols.
+
+--
+ http://www.eca.cx
+ Audio software for Linux!
 
 
 
