@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
-Date: Wed, 19 Jan 2005 17:14:35 +0100
-Message-ID: <ef9a32cde7e575f0f5e675d8fb34950d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000359]: Alsa always uses card0 and does not use card1, even when card0 is a modem
+Date: Wed, 19 Jan 2005 17:22:10 +0100
+Message-ID: <c42dc9178a275ebebb88c9f459261fd8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 339EB26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:14:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B0D3D26D
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 17:22:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,116 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=359> 
 ======================================================================
-Reported By:                footcow
-Assigned To:                tiwai
+Reported By:                davidsrsb
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   666
-Category:                   PCI - azx
+Issue ID:                   359
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Debian
-Kernel Version:             2.6.9
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
+Distribution:               Slackware 10.0
+Kernel Version:             2.4.26
 ======================================================================
-Date Submitted:             11-23-2004 01:31 CET
-Last Modified:              01-19-2005 17:14 CET
+Date Submitted:             07-01-2004 16:26 CEST
+Last Modified:              01-19-2005 17:22 CET
 ======================================================================
-Summary:                    Simply no sound ... no line ... no mixer
+Summary:                    Alsa always uses card0 and does not use card1, even
+when card0 is a modem
 Description: 
-I have compiled the last release : 1.0.7 stable.
-But I do not have any sound, no line ... no mixer ... :(
-
-I have an AsusTek P5GD2 motherboard with lspci -v :
-0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
-Definition Audio Controller (rev 03)
-        Subsystem: Asustek Computer, Inc.: Unknown device 813d
-        Flags: bus master, fast devsel, latency 0, IRQ 16
-        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
-        Capabilities: [50] Power Management version 2
-        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
-Enable-
-        Capabilities: [70]
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
-
-
-The snd_azx module is well loaded :
-lsmod : 
-snd_azx                30920  1
-snd_pcm                95112  1 snd_azx
-snd_timer              25476  1 snd_pcm
-snd                    54500  5 snd_azx,snd_pcm,snd_timer
-snd_page_alloc         10120  1 snd_pcm
-
-If I run alsamixer I get this :
-$ alsamixer
-No mixer elems found
-
-If I run alsamixergui, I get 3 columns:
-Line is emplty and can't change
-Same for Mic
-I can only move values for a third column called Capt.
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000789 With AZX Sound card
+PC is laptop with AC97 DAA (Si3036 modem) detected as card0 and sound is
+Intel 8x0 as card1. Alsamixer has to be run with -c1 option to avoid "no
+mixer elems" error (like bug 338)
+KDE has no sound ( same as bug 353)
 ======================================================================
 
 ----------------------------------------------------------------------
- footcow - 01-15-05 00:21 
+ jdthood - 01-07-05 21:51 
 ----------------------------------------------------------------------
-Perfect sound is back with version 1.8.0 ;o)
-You can close the bug report for me.
+> (BTW, about this kind of discussion for general implementations,
+> I'd like to do on ML rather than on web. I basically hate the
+> web interface...)
+
+OK, let's continue discussion at alsa-devel.
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 17:14 
+ tiwai - 01-19-05 17:22 
 ----------------------------------------------------------------------
-OK, go to Fixed.
+Thomas, could you provide a patch summary, description and signed-off-by to
+apply?
+I'll set the default index -2 for all modem drivers.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-23-04 01:31 footcow        New Issue                                    
-11-23-04 01:31 footcow        Distribution              => Debian          
-11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
-11-23-04 21:49 footcow        Note Added: 0002530                          
-12-08-04 19:54 tiwai          Note Added: 0002791                          
-12-08-04 23:56 footcow        Note Added: 0002795                          
-12-09-04 11:27 tiwai          Note Added: 0002799                          
-12-09-04 11:33 tiwai          File Added: hda-query-fix.diff                    
-12-09-04 11:34 tiwai          Note Added: 0002800                          
-12-09-04 12:11 tiwai          Note Added: 0002801                          
-12-09-04 12:12 tiwai          File Added: hda-loopback-fix.diff                 
-  
-12-09-04 12:12 tiwai          File Added: hda-proc-amp.diff                    
-12-10-04 22:08 footcow        Note Added: 0002808                          
-12-10-04 22:08 footcow        File Added: alsamix.png                      
-12-11-04 17:40 tiwai          Note Added: 0002811                          
-12-12-04 00:58 footcow        Note Added: 0002813                          
-12-12-04 00:59 footcow        File Added: alsamix2.png                     
-12-16-04 18:32 tiwai          Note Added: 0002836                          
-12-16-04 21:06 footcow        Note Added: 0002841                          
-01-07-05 00:44 footcow        Note Added: 0003099                          
-01-07-05 18:04 tiwai          Note Added: 0003107                          
-01-07-05 18:04 tiwai          File Added: azx-debug.diff                    
-01-08-05 01:22 footcow        Note Added: 0003125                          
-01-11-05 16:14 tiwai          Note Added: 0003152                          
-01-11-05 16:15 tiwai          File Added: azx-cmedia-pcm-fix.diff               
-    
-01-11-05 16:16 tiwai          Relationship added       has duplicate 0000789
-01-15-05 00:21 footcow        Note Added: 0003211                          
-01-19-05 17:14 tiwai          Status                   new => resolved     
-01-19-05 17:14 tiwai          Resolution               open => fixed       
-01-19-05 17:14 tiwai          Assigned To               => tiwai           
-01-19-05 17:14 tiwai          Note Added: 0003301                          
+07-01-04 16:26 davidsrsb      New Issue                                    
+07-01-04 16:26 davidsrsb      Distribution              => Slackware 10.0  
+07-01-04 16:26 davidsrsb      Kernel Version            => 2.4.26          
+07-02-04 14:34 pzad           Note Added: 0001374                          
+01-05-05 23:34 jdthood        Note Added: 0003090                          
+01-06-05 17:48 phormix        Note Added: 0003092                          
+01-07-05 18:10 tiwai          Note Added: 0003108                          
+01-07-05 18:28 jdthood        Note Added: 0003112                          
+01-07-05 18:59 jdthood        Note Added: 0003114                          
+01-07-05 18:59 jdthood        Note Added: 0003115                          
+01-07-05 18:59 jdthood        Note Deleted: 0003115                        
+01-07-05 19:00 jdthood        File Added: core_init_index_jdth20050107-1.patch  
+                 
+01-07-05 19:03 jdthood        Note Edited: 0003114                         
+01-07-05 19:18 tiwai          Note Added: 0003116                          
+01-07-05 21:51 jdthood        Note Added: 0003122                          
+01-07-05 21:51 jdthood        Note Edited: 0003114                         
+01-19-05 17:22 tiwai          Note Added: 0003303                          
 ======================================================================
 
 
