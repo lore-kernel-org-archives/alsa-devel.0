@@ -1,10 +1,13 @@
-From: Ben Dooks <ben-alsa@fluff.org>
-Subject: Submitting new ARM audio driver
-Date: Wed, 9 Mar 2005 16:11:25 +0000
-Message-ID: <20050309161125.GC26831@trinity.fluff.org>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000975]: snd-hda-intel, no sound, no master control
+Date: Wed, 9 Mar 2005 17:13:09 +0100
+Message-ID: <b262811e5b77d34a3b567589a7f5d179@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB86E188
+	for <alsa-devel@alsa-project.org>; Wed,  9 Mar 2005 17:13:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -14,18 +17,95 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I have been working on an ALSA driver for the Samsung S3C2410
-(and S3C2440 to be added when DMA has been updated), and would
-like to know the correct way to go about submitting a driver.
 
--- 
-Ben
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=975> 
+======================================================================
+Reported By:                dirk-loesche
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   975
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     resolved
+Distribution:               Suse 9.2
+Kernel Version:             2.6.11.1
+Resolution:                 fixed
+Fixed in Version:           
+======================================================================
+Date Submitted:             03-08-2005 21:57 CET
+Last Modified:              03-09-2005 17:13 CET
+======================================================================
+Summary:                    snd-hda-intel, no sound, no master control
+Description: 
+No sound.
 
-Q:      What's a light-year?
-A:      One-third less calories than a regular year.
+alsaconf:
+I cant hear test sound.
+
+alsamixer:
+Card: HDA Intel                                                           
+                                                         
+Chip: Realtek ALC260                                                      
+                                                         View: Playback   
+                                                                          
+                                       Item: Headphone
+
+Headphon PCM Line CD Mic PC Speak Capture to 100 and unmutem
+Master not presend!
+======================================================================
+
+----------------------------------------------------------------------
+ dirk-loesche - 03-09-05 15:44 
+----------------------------------------------------------------------
+Soundmixer by WindowsXP
+Master 
+Wave 
+SW Synt 
+SPDIF 
+CD Player
+PC Speaker
+Microphon
+
+By Alsamixer no Master
+
+xmms play sound - i cant hear
+CD and Mic silent
+
+
+
+----------------------------------------------------------------------
+ tiwai - 03-09-05 17:13 
+----------------------------------------------------------------------
+Some bugs have been already fixed on CVS.
+
+This controller has no real "Master" volume.  The volume for headphone and
+front line-out are separate.  This is not a bug.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-08-05 21:57 dirk-loesche   New Issue                                    
+03-08-05 21:57 dirk-loesche   Distribution              => Suse 9.2        
+03-08-05 21:57 dirk-loesche   Kernel Version            => 2.6.11.1        
+03-08-05 22:08 dirk-loesche   Issue Monitored: dirk-loesche                    
+03-08-05 22:45 dirk-loesche   Issue End Monitor: dirk-loesche                   
+
+03-09-05 15:42 dirk-loesche   Note Added: 0003827                          
+03-09-05 15:44 dirk-loesche   Note Edited: 0003827                         
+03-09-05 17:13 tiwai          Status                   new => resolved     
+03-09-05 17:13 tiwai          Resolution               open => fixed       
+03-09-05 17:13 tiwai          Assigned To               => tiwai           
+03-09-05 17:13 tiwai          Note Added: 0003828                          
+======================================================================
+
 
 
 
