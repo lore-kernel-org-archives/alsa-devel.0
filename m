@@ -1,12 +1,12 @@
-From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
-Subject: RE: dolby digital output
-Date: Mon, 18 Feb 2002 15:46:17 -0000
-Message-ID: <NGBBLNODKDFPBFMBBFAFOECBCBAA.James@superbug.demon.co.uk>
+From: Steve Harris <S.W.Harris@ecs.soton.ac.uk>
+Subject: Re: dolby digital output
+Date: Mon, 18 Feb 2002 16:13:48 +0000
+Message-ID: <20020218161348.M21938@ecs.soton.ac.uk>
+References: <20020217184735.29659517.plail@web.de> <NGBBLNODKDFPBFMBBFAFMEACCBAA.James@superbug.demon.co.uk> <20020218140812.B21938@ecs.soton.ac.uk> <1014044456.1131.10.camel@insanity>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1014043891.1027.1.camel@insanity>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1014044456.1131.10.camel@insanity>; from node@users.sourceforge.net on Mon, Feb 18, 2002 at 03:00:56 +0000
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,65 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Bob Ham <node@users.sourceforge.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: ALSA Development Mailing List <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-So all I need now, is an Digital Amp with an Ethernet port for all 6 Channel
-PCM, AC3 and DTS output.
-I already have an ethernet card for my PC and a HUB.
+On Mon, Feb 18, 2002 at 03:00:56 +0000, Bob Ham wrote:
+> > AC3 is much
+> > more complicated, and you couldn't feasibly reproduce the encoded output
+> > without having followed the spec (unless I'm missing something).
+> 
+> Assuming you haven't signed (or clicked "yes" on) any agreement in order
+> to get the spec, I can't see what they can legally do.  Unless there's
+> software patents, but those are US-specific anyhow (for the moment) so
+> they don't really matter.
 
-magic.gibson.com must be stupid not to realise that what we really want is
-an AMP with an Ethernet port, not yet another sound card.
+Well, it might be illegal to distribure in the US, and the US has been
+keen to arrest people for breaking US laws in other parts of the world
+before... especially when large corporation are involved.
 
-We could then just connect the AMP to the ethernet port on any PC, and have
-perfect digital quality output.
-Alsa would then not be needed, because once the audio is in packets, it
-would be better to keep it that way in the application.
-
-One could even use Radio Lan technologies, and thus remove all the cabling
-as well.
-
-Cheers
-James
-
-
-> -----Original Message-----
-> From: alsa-devel-admin@lists.sourceforge.net
-> [mailto:alsa-devel-admin@lists.sourceforge.net]On Behalf Of Bob Ham
-> Sent: 18 February 2002 14:51
-> To: James Courtier-Dutton
-> Cc: alsa-devel@lists.sourceforge.net
-> Subject: RE: [Alsa-devel] dolby digital output
->
->
-> On Sun, 2002-02-17 at 18:44, James Courtier-Dutton wrote:
->
-> > A simple 100 Megs Full duplex point to point Ethernet cable can
-> handle just
-> > about anything S/PDIF, USB, SCSI, IDE can throw at it.
->
-> I assume you've seen http://magic.gibson.com/?
->
-> Bob
->
-> --
-> Bob Ham: bob@ham.org
->
-> My music: http://mp3.com/obelisk_uk
-> GNU Hurd: http://hurd.gnu.org/
-> Do your bit for UK drugs law reform: http://www.angeldeclaration.com/
->
-> A pessimist expects the weather to get worse.
-> An optimist hopes it will improve.
-> A realist adjusts the sails.
->
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
+- Steve
 
 _______________________________________________
 Alsa-devel mailing list
