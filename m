@@ -1,20 +1,18 @@
-From: Manuel Jander <manuel.jander@mat.utfsm.cl>
-Subject: [Openal-devel] Software fallback.
-Date: Thu, 08 Jan 2004 01:32:34 -0400
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: DMIX and capture stream
+Date: Thu, 8 Jan 2004 09:33:38 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1073539954.32109.28.camel@localhost>
-References: <1073270749.4149.35.camel@localhost>
-	 <1073320851.18395.109.camel@joe.fatnsoft.com>
-	 <1073354941.10064.15.camel@localhost>
-	 <1073369731.4993.1.camel@joe.fatnsoft.com>
-	 <1073395480.1386.6.camel@localhost>
-	 <21540.198.95.32.195.1073502943.squirrel@www.hibyte.com>
-Reply-To: manuel.jander@mat.utfsm.cl
+Message-ID: <Pine.LNX.4.58.0401080931050.1871@pnote.perex-int.cz>
+References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>
+ <200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com> <s5h1xqe2rjp.wl@alsa2.suse.de>
+ <Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>
+ <20040106223828.39d2c233.mista.tapas@gmx.net> <s5hvfno10r5.wl@alsa2.suse.de>
+ <3FFBFF51.1030002@tin.it> <s5hptdv27pz.wl@alsa2.suse.de> <3FFC1A12.7020901@tin.it>
+ <s5hd69v245x.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <21540.198.95.32.195.1073502943.squirrel@www.hibyte.com>
+In-Reply-To: <s5hd69v245x.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,67 +21,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa Devel list <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Abramo Bagnara <abramo.bagnara@tin.it>, Florian Schmidt <mista.tapas@gmx.net>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Wed, 7 Jan 2004, Takashi Iwai wrote:
 
-I'm cross posting this from OpenAL, since it may have some relevance to
-ALSA.
+> there are two parts to be modified, snd_pcm_open_noupdate() and
+> snd_pcm_slave_conf().  they are the parts which look up "pcm"
+> directive in the configuration.
+> the former is easy.  but the latter function doesn't have stream
+> argument, so it cannot check whether "pcmp" or "pcmc" to check.  and,
+> changing this function will need rewriting all callers...
 
-As some already might know, i'm designing a ALSA - OpenAL interface for
-advanced hardware feature support.
+I agree with Takashi. The configuration scheme will be probably changed in
+the future in favor of the integrated lisp interpreter which allows us to
+better describe the plugin connections and handle the runtime stuff much
+better. So, please, keep things simple. The standalone plugin looks as the 
+best solution for the moment.
 
-As far as i understood, they say that the would prefer to handle any
-kind of resource managing and moire specifically "software fallback"
-functions inside of each driver. I don't know yet much about the "plug"
-extensions, but i remember someone commenting that one can pass PCM data
-through LADSPA plugins with this. I was thinking that maybe such a kind
-of mechanism could be used to route "software fallback" PCM channels
-through appropriate software filters. Could anyone with more knowledge
-comment about that ?
+						Jaroslav
 
-Best Regards
- 
-
-On Wed, 2004-01-07 at 15:15, Garin Hiebert wrote:
-> > OK. I understood. But why is "all hardware sources is good, use hardware
-> > sources until you run out and then software" so bad at all ? I think
-> > that precisely that should be the most desirable behavior.
-> >
-> > For example the now dead A3D API includes a resource manager for
-> > handling this. So the sources that really need spatialization, they get
-> > it in hardware. Other things like ambient sounds and the like get other
-> > normal DMA channels. Only if the preset maximal software sources value
-> > is crossed, the next sources get "virtual" (no hardware nor software
-> > handles them). As soon as a new source is available, the most highest
-> > priority "virtual source" takes it place.
-> 
-> I suppose this would be a good item to put into a FAQ, if we had one (note
-> to self...).
-> 
-> The reason why hardware sources don't "rollover" to software sources is
-> that the transition from one to the other would be noticable in a really
-> bad way.  If you have a 7.1 speaker setup playing X sources with EAX
-> support, you don't want to add one more source and find that it is only
-> spatialized into the front two speakers without reverb -- that would just
-> sound strange.  On top of that, all of a sudden a game's framerate would
-> radically change.  You might be running along at 60 frames per second with
-> hardware sources, and then suddenly the game creates five software sources
-> and the framerate goes down to 45 fps because of the entirely new
-> rendering path being activated.
-> 
-> At some point, the application should deal with voice management anyways
-> -- having an un-constrained number of sources for your application will
-> just lead to miserable performance for no good reason (in that there
-> probably aren't 758 things you really should be listening to at the same
-> time anyways even if they can all be rendered).
-> 
-> Garin
-> 
-> 
-> 
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
