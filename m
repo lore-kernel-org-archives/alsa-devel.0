@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000585]: ALSA should forbid too small buffer sizes
-Date: Mon, 14 Feb 2005 19:34:08 +0100
-Message-ID: <aed9352378f943f348ca5fb7d24f18d1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000499]: no sound through line in
+Date: Mon, 14 Feb 2005 19:36:04 +0100
+Message-ID: <745e1eab0739fe39b36a9b45669c2556@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB4761E2
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:34:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4328248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:36:04 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,53 +23,66 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=585> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=499> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                hombergp
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   585
-Category:                   pcm - digital audio
+Project:                    ALSA - driver
+Issue ID:                   499
+Category:                   PCI - intel8x0
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     closed
-Resolution:                 won't fix
+Distribution:               SuSE 9.1
+Kernel Version:             2.6.5-108
+Resolution:                 not an issue
 Fixed in Version:           
 ======================================================================
-Date Submitted:             10-17-2004 15:28 CEST
-Last Modified:              02-14-2005 19:34 CET
+Date Submitted:             09-13-2004 18:03 CEST
+Last Modified:              02-14-2005 19:36 CET
 ======================================================================
-Summary:                    ALSA should forbid too small buffer sizes
+Summary:                    no sound through line in
 Description: 
-See Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=257797
+Since I upgraded to SuSE 9.1 with alsa 1.0.3
+I cannot use the line in (external mini jackplug)
+input anymore.
+No sound is reproduced through this line in interface.
+I used the line input before under SuSE 8.2 successfully.
 
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=257797
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 10-19-04 16:28 
+ hombergp - 09-13-04 19:49 
 ----------------------------------------------------------------------
-It's hard to define the minimal size because it strongly depends
-on the system and the running condition...
+Consider problem resolved. Resolution: Unmute the line input.
+More specificalities on this problem:
+GNome alsa mixer determines my device as Realtek ALC650 rev 3
+And it shows a lot more features than I was used to under my previous os.
+Do not know if I can connect them all.
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:07 
+ tiwai - 01-13-05 17:23 
 ----------------------------------------------------------------------
-Set this to WONT FIX.
+Closing now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-10-17-04 15:28 jdthood        New Issue                                    
-10-19-04 16:28 tiwai          Note Added: 0002207                          
-01-13-05 17:07 tiwai          Status                   new => resolved     
-01-13-05 17:07 tiwai          Resolution               open => won't fix   
-01-13-05 17:07 tiwai          Assigned To               => tiwai           
-01-13-05 17:07 tiwai          Note Added: 0003188                          
-01-13-05 17:07 tiwai          Assigned To              tiwai =>            
-02-14-05 19:34 tiwai          Status                   resolved => closed  
+09-13-04 18:03 hombergp       New Issue                                    
+09-13-04 18:03 hombergp       Distribution              => SuSE 9.1        
+09-13-04 18:03 hombergp       Kernel Version            => 2.6.5-108       
+09-13-04 18:03 hombergp       Issue Monitored: hombergp                    
+09-13-04 18:04 hombergp       Issue End Monitor: hombergp                    
+09-13-04 19:45 hombergp       Note Added: 0001754                          
+09-13-04 19:49 hombergp       Note Added: 0001755                          
+01-13-05 17:23 tiwai          Status                   new => resolved     
+01-13-05 17:23 tiwai          Resolution               open => not an issue
+01-13-05 17:23 tiwai          Assigned To               => tiwai           
+01-13-05 17:23 tiwai          Note Added: 0003192                          
+01-13-05 17:23 tiwai          Assigned To              tiwai =>            
+02-14-05 19:36 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
