@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000526]: Kernel crash during the module snd-azx load
-Date: Tue, 9 Nov 2004 16:39:44 +0100
-Message-ID: <db7cb2241088be513b9b5752657e2abf@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000510]: Utilization of AC'97 on Aureon 7.1 Space
+Date: Tue, 9 Nov 2004 16:38:32 +0100
+Message-ID: <403db3fa4bdbbd3e0db798939d52ae31@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D7D502B1
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:39:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96FB72B1
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:38:32 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,51 +24,71 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=526> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=510> 
 ======================================================================
-Reported By:                Grazy
+Reported By:                ungod
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   526
-Category:                   PCI - azx
+Issue ID:                   510
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   crash
+Severity:                   feature
 Priority:                   normal
 Status:                     closed
-Distribution:               Debian
-Kernel Version:             2.6.8
+Distribution:               Debian GNU/Linux
+Kernel Version:             3.1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-23-2004 19:33 CEST
-Last Modified:              11-09-2004 16:39 CET
+Date Submitted:             09-21-2004 09:41 CEST
+Last Modified:              11-09-2004 16:38 CET
 ======================================================================
-Summary:                    Kernel crash during the module snd-azx load
+Summary:                    Utilization of AC'97 on Aureon 7.1 Space
 Description: 
-The kernel crash during the load of the snd-azx.
-It is the recursive funtion set_mic_rp_wid_connection wich never end.
+As of now, the Aureon driver lacks the capability to playback both analog
+input channels and the PCM channel, and the input channels have no
+seperate volume control, although the AC'97 chip on the board, STAC9744,
+apparently has the capability.
 
+I tried some commercial OSS drivers, and they worked properly, so I know
+that it is possible.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 09-28-04 23:20 
+ ungod - 09-27-04 20:18 
 ----------------------------------------------------------------------
-Thanks, applied to CVS.
+Oh - my bad. I'll keep that in mind with future patches
+
+----------------------------------------------------------------------
+ tiwai - 09-28-04 19:12 
+----------------------------------------------------------------------
+Ok, let's close this bug now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-23-04 19:33 Grazy          New Issue                                    
-09-23-04 19:33 Grazy          File Added: patch_azx_discover.gz                 
-  
-09-23-04 19:33 Grazy          Distribution              => Debian          
-09-23-04 19:33 Grazy          Kernel Version            => 2.6.8           
-09-28-04 23:20 tiwai          Status                   new => resolved     
-09-28-04 23:20 tiwai          Resolution               open => fixed       
-09-28-04 23:20 tiwai          Assigned To               => tiwai           
-09-28-04 23:20 tiwai          Note Added: 0001960                          
-11-09-04 16:39 tiwai          Status                   resolved => closed  
+09-21-04 09:41 ungod          New Issue                                    
+09-21-04 09:41 ungod          Distribution              => Debian GNU/Linux
+09-21-04 09:41 ungod          Kernel Version            => 3.1             
+09-21-04 11:54 tiwai          Note Added: 0001796                          
+09-23-04 20:45 ungod          Note Added: 0001848                          
+09-23-04 20:47 ungod          Note Edited: 0001848                         
+09-23-04 20:47 ungod          Note Edited: 0001848                         
+09-27-04 00:33 ungod          Note Added: 0001929                          
+09-27-04 00:37 ungod          Note Added: 0001930                          
+09-27-04 00:37 ungod          File Added: aureon-ac97.diff                    
+09-27-04 00:42 ungod          Note Edited: 0001929                         
+09-27-04 00:42 ungod          Note Edited: 0001929                         
+09-27-04 00:44 ungod          Note Edited: 0001929                         
+09-27-04 00:45 ungod          Note Edited: 0001929                         
+09-27-04 16:46 tiwai          Note Added: 0001940                          
+09-27-04 20:18 ungod          Note Added: 0001942                          
+09-28-04 19:12 tiwai          Status                   new => resolved     
+09-28-04 19:12 tiwai          Resolution               open => fixed       
+09-28-04 19:12 tiwai          Assigned To               => tiwai           
+09-28-04 19:12 tiwai          Note Added: 0001954                          
+11-09-04 16:38 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
