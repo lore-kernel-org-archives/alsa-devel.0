@@ -1,12 +1,15 @@
-From: Joel Wiramu Pauling <aenertia@aenertia.net>
-Subject: Gainward Hollywood@home 7.1
-Date: Tue, 29 Jun 2004 00:18:28 +1200
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: Fw: [Alsa-user] alsa lib api docs not on alsa-project.org?
+Date: Mon, 28 Jun 2004 14:54:34 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1088425108.3049.15.camel@rincewind.aenertia.net>
+Message-ID: <20040628145434.0497dceb@mango.fruits.de>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.gmx.net (mail.gmx.net [213.165.64.20])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 541DB290
+	for <alsa-devel@alsa-project.org>; Mon, 28 Jun 2004 14:48:21 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,32 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi There,
 
-I couldn't find this anywhere in the sound card matrix, Is it supported
-by alsa?
 
-I beleive it uses an envy24 ht-s chip. But After reading through this 
-http://www.hexus.net/content/reviews/review.php?dXJsX3Jldmlld19JRD02ODcmdXsX3BhZ2U9NQ==
+Begin forwarded message:
 
-review, I think it does so in a strange manner.
+Date: Sun, 27 Jun 2004 20:32:12 +0200
+From: Florian Schmidt <mista.tapas@gmx.net>
+To: alsa-user@lists.sourceforge.net
+Subject: [Alsa-user] alsa lib api docs not on alsa-project.org?
 
-In your guys opinion which is the best value for money, surround card
-for linux. I would like a card with envy24 chip but they are little out
-of my price range.
 
-I would rather good sound quality over gamming features, but I do need
-5.1 outputs. 
 
-Any feedback appreciated.
+http://www.alsa-project.org/alsa-doc/alsa-lib/index.php
 
-Kind regards
+is very dead for me.. am i the only one?
 
-Joel
+flo
 
+-- 
+Palimm Palimm!
+http://affenbande.org/~tapas/wiki
+
+
+
+-------------------------------------------------------
+This SF.Net email sponsored by Black Hat Briefings & Training.
+Attend Black Hat Briefings & Training, Las Vegas July 24-29 - 
+digital self defense, top technical experts, no vendor pitches, 
+unmatched networking opportunities. Visit www.blackhat.com
+_______________________________________________
+Alsa-user mailing list
+Alsa-user@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/alsa-user
+
+
+
+-- 
+Palimm Palimm!
+http://affenbande.org/~tapas/wiki
 
 
 
