@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001029]: doesn't seem to attach to device
-Date: Thu, 31 Mar 2005 22:18:26 +0200
-Message-ID: <f59a27dfc4ddf5487cbf13e559efb806@bugtrack.alsa-project.org>
+From: Peter Zubaj <pzad@pobox.sk>
+Subject: Re: Audigy2 Microphone capture: alsa-driver-1.0.9rc1
+ works, alsa-driver-1.0.9rc2 doesn't
+Date: Thu, 31 Mar 2005 22:44:53 +0200
+Message-ID: <424C6145.20703@pobox.sk>
+References: <20050330230127.47575.qmail@web52903.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8BF9F254
-	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 22:18:26 +0200 (MEST)
+In-Reply-To: <20050330230127.47575.qmail@web52903.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,88 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Chris Rankin <rankincj@yahoo.com>
+Cc: James Courtier-Dutton <James@superbug.co.uk>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Problem is, that your card was not detected correctly and ac97 mixer 
+initialization is was not run.
+Looks like card identification broke lot of cards and things.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1029> 
-======================================================================
-Reported By:                Meeuw
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   1029
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             03-31-2005 21:57 CEST
-Last Modified:              03-31-2005 22:18 CEST
-======================================================================
-Summary:                    doesn't seem to attach to device
-Description: 
-# lsmod
-Module                  Size  Used by
-snd_seq                52368  0
-snd_via82xx            23968  0
-snd_ac97_codec         78840  1 snd_via82xx
-snd_pcm                83076  2 snd_via82xx,snd_ac97_codec
-snd_timer              22532  2 snd_seq,snd_pcm
-snd_page_alloc          8452  2 snd_via82xx,snd_pcm
-snd_mpu401_uart         7424  1 snd_via82xx
-snd_rawmidi            20352  1 snd_mpu401_uart
-snd_seq_device          8076  2 snd_seq,snd_rawmidi
-snd                    42932  8
-snd_seq,snd_via82xx,snd_ac97_codec,snd_pcm,snd_timer,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-soundcore               8544  1 snd
+Peter Zubaj
 
-kernel config:
-#
-# Sound
-#
-CONFIG_SOUND=m
+Chris Rankin wrote:
 
-#
-# Advanced Linux Sound Architecture
-#
-# CONFIG_SND is not set
-
-#
-# Open Sound System
-#
-# CONFIG_SOUND_PRIME is not set
-
-there are no (relevant) driver messages
-======================================================================
-
-----------------------------------------------------------------------
- Meeuw - 03-31-05 22:18 
-----------------------------------------------------------------------
-from lsmod:
-0000:00:1f.5 Multimedia audio controller: Intel Corp. 82801EB/ER
-(ICH5/ICH5R) AC'97 Audio Controller (rev 02)
-        Subsystem: ASUSTeK Computer Inc. P4P800 Mainboard
-        Flags: bus master, medium devsel, latency 0, IRQ 5
-        I/O ports at e800
-        I/O ports at ee80 [size=64]
-        Memory at febff800 (32-bit, non-prefetchable) [size=512]
-        Memory at febff400 (32-bit, non-prefetchable) [size=256]
-        Capabilities: [50] Power Management version 2
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-31-05 21:57 Meeuw          New Issue                                    
-03-31-05 22:03 Meeuw          Issue Monitored: Meeuw                       
-03-31-05 22:18 Meeuw          Note Added: 0004286                          
-======================================================================
-
+>--- James Courtier-Dutton <James@superbug.co.uk> wrote:
+>  
+>
+>>Chris Rankin wrote:
+>>    
+>>
+>>>I've just compared the results with the alsa-driver-1.0.9rc1 and alsa-driver-1.0.9rc2 tarballs
+>>>with my Audigy2 sound card.
+>>>
+>>>The summary: I can record via the microphone with rc1, but can't with rc2.
+>>>
+>>>The command I'm using is:
+>>>
+>>>$ arecord -d10 -f cd -t wav > test.wav
+>>>
+>>>      
+>>>
+>>What does cat /proc/asound/cards  output?
+>>    
+>>
+>
+>0 [Audigy2        ]: Audigy2 - Sound Blaster Audigy2
+>                     Sound Blaster Audigy2 (rev.4, serial:0x10031102) at 0xccc0, irq 21
+>1 [ICH            ]: ICH4 - Intel 82801DB-ICH4
+>                     Intel 82801DB-ICH4 with AD1981B at 0xffa20400, irq 17
+>2 [WebCam         ]: USB-Audio - USB Device 0x46d:0x8b4
+>                     USB Device 0x46d:0x8b4 at usb-0000:00:1d.1-1, full speed
+>
+>
+>Send instant messages to your online friends http://uk.messenger.yahoo.com 
+>
+>
+>-------------------------------------------------------
+>This SF.net email is sponsored by Demarc:
+>A global provider of Threat Management Solutions.
+>Download our HomeAdmin security software for free today!
+>http://www.demarc.com/Info/Sentarus/hamr30
+>_______________________________________________
+>Alsa-devel mailing list
+>Alsa-devel@lists.sourceforge.net
+>https://lists.sourceforge.net/lists/listinfo/alsa-devel
+>
+>
+>  
+>
 
 
 
