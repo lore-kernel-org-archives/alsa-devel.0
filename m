@@ -1,12 +1,11 @@
-From: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@kth.se>
-Subject: Re: alsa-lib spamming terminal
-Date: Fri, 28 May 2004 18:15:11 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Programming the unknow P16v chip on the Audigy2
+Date: Fri, 28 May 2004 19:49:59 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <yw1xpt8omsts.fsf@kth.se>
-References: <yw1xaczs29y6.fsf@kth.se> <Pine.HPX.4.33n.0405281744340.24462-100000@studcom.urz.uni-halle.de>
+Message-ID: <40B789D7.8060704@superbug.demon.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,20 +18,25 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch <clemens@ladisch.de> writes:
+The Audigy2 has lots of registers for the emu10k2 chip.
+These are accessed by programming
+#define PTR 0x00  /* Indexed register set pointer register        */
+                   /* NOTE: The CHANNELNUM and ADDRESS words can   */
+                   /* be modified independently of each other.     */
+#define DATA 0x04 /* Indexed register set data register           */
 
-> Måns Rullgård wrote:
->> Is there a way to make alsa-lib stop spamming the terminal with error
->> messages, for instance when a non-blocking open fails?
->
-> snd_lib_error_set_handler()
+Basically, one writes the register address to PTR, and then read or 
+write to DATA.
 
-Thanks.  I wonder why I didn't find that when reading the docs.
+On the Audigy2 there is a similar setup for 0x20 and 0x24. I suspect 
+that this is used to program the p16v chip.
 
--- 
-Måns Rullgård
-mru@kth.se
+Had anyone looked into those registers, and tried to guess what they do ?
 
+I might give it a go, once I finish the Audigy LS driver.
+
+Cheers
+James
 
 
 -------------------------------------------------------
