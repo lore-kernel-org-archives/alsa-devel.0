@@ -1,13 +1,16 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: MIDI+USB - one way?
-Date: Sun, 4 Aug 2002 20:50:18 +0200 (CEST)
+Subject: Re: Module names for these cards
+Date: Sun, 4 Aug 2002 21:59:14 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0208042048550.951-100000@pnote.perex-int.cz>
-References: <3D4ABCA6.9E126597@ladisch.de>
+Message-ID: <Pine.LNX.4.33.0208042155380.951-100000@pnote.perex-int.cz>
+References: <3D4AED62.6040102@boosthardware.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3D4ABCA6.9E126597@ladisch.de>
+Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id VAA13187
+	for <alsa-devel@alsa-project.org>; Sun, 4 Aug 2002 21:59:36 +0200
+In-Reply-To: <3D4AED62.6040102@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,42 +19,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, Michal Seta <mis@creazone.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2 Aug 2002, Clemens Ladisch wrote:
+On Sat, 3 Aug 2002, Patrick Shirkey wrote:
 
-> Pedro Lopez-Cabanillas wrote:
-> > It also works for me with OSS emulation:
-> > 
-> > $ ./rawmidi -v -I /dev/midi02
-> > Using:
-> > Input: /dev/midi02
-> > Output: NONE
-> > Read midi in
-> > Press ctrl-c to stop
-> > read fe
-> > read fe
-> > read fe
-> > read fe
-> > read fe
-> > read fe
-> > read fe
-> > Closing
-> > 
-> > But something as simple as:
-> > $ cat /dev/midi02 | od -x
-> > Doesn't work. Nothing received. ?!
+> Can anyone tell me the module name for these cards?
 > 
-> rawmidi.c uses the ALSA library functions to access the rawmidi device.
-> Internally, alsa-lib should use the same read() call as cat, but there
-> seems to be a difference somewhere, maybe in the initialization.
-> I'm looking into it.
+> alesis adat/pcr
 
-Note that the cat utility (od probably too) uses big input buffer. If you 
-want to capture byte-stream, use the dd utility with the block size of 1 
-byte.
+Unsupported.
+
+> Analog Devices AD1845
+
+Unsupported.
+
+> Oak technology Mozart
+
+snd-opti92x-ad1848.o
+
+> Philips  UDA1341TS  h3600-uda1341 iPAQ H3X00 hardware
+
+snd-sa11xx-uda1341.o
 
 						Jaroslav
 
