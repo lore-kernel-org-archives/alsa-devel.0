@@ -1,14 +1,14 @@
-From: Florian Schmidt <mista.tapas@gmx.net>
-Subject: Fw: [linux-audio-user] brasil + linux
-Date: Sat, 27 Nov 2004 11:55:40 +0100
-Message-ID: <20041127115540.06b4299a__11866.6773931638$1101577629$gmane$org@mango.fruits.de>
+From: Sergey Vlasov <vsu@altlinux.ru>
+Subject: Re: [BUG] (via82xx) no sound on VIA 8235 sound card with CMI9739 codec
+Date: Sat, 27 Nov 2004 16:56:39 +0300
+Message-ID: <20041127135639.GB2409@sirius.home>
+References: <m2d5y0tnhe.fsf@vador.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="kXdP64Ggrk/fb43R"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.gmx.net (pop.gmx.de [213.165.64.20])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 3A60425C
-	for <alsa-devel@alsa-project.org>; Sat, 27 Nov 2004 11:53:53 +0100 (MET)
+Content-Disposition: inline
+In-Reply-To: <m2d5y0tnhe.fsf@vador.mandrakesoft.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,73 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org, jackit-devel@lists.sourceforge.net, linux-audio-dev@music.columbia.edu
+To: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 
+--kXdP64Ggrk/fb43R
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Begin forwarded message:
+On Fri, Nov 26, 2004 at 08:32:45PM +0100, Thierry Vignaud wrote:
+> Hardware:
+> =========
+> this card is managed by the snd-via82xx driver.
+> it's named "VIA Technologies|VT8233 [AC97 Audio Controller]".
+> according to /proc/asound/cards, this is a VIA 8235 card with CMI9739
+> codec.
+[skip]
 
-Date: Fri, 26 Nov 2004 19:48:10 -0200
-From: "criscabello ." <criscabello@gmail.com>
-To: linux-audio-user@music.columbia.edu, articuladores@arca.ime.usp.br
-Subject: [linux-audio-user] brasil + linux
+> 		name 'IEC958 Playback Switch'
+> 		value true
 
+> 		name 'IEC958 Output Switch'
+> 		value true
 
-hi all!!
+For some people CMI9739 started working after they turned off
+everything IEC958-related.
 
-my name is criscabello and i=B4m from brasil. please excuse my poor english.
+--kXdP64Ggrk/fb43R
+Content-Type: application/pgp-signature
+Content-Disposition: inline
 
-at first, i'd like to thank all of you linux audio developers who made
-it possible for us to work with free plataforms. all of us,
-brazilians, are very pleased with the result of all your work.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.5 (GNU/Linux)
 
-let me explain.
+iD8DBQFBqIeXW82GfkQfsqIRAjKOAJ4gU2MNDqYewSFscXBgPg+P+F65kgCfQlqI
+h0XBgYDdkKRNaHIJx/0V6tc=
+=tnkZ
+-----END PGP SIGNATURE-----
 
-i work in a government project called "pontos de cultura" (points of
-culture), and it is based in the distribuition of media stations with
-free software to some places who are in a state of digital, or social,
-exclusion at this time (but not much longer, we hope). this project
-has a national scope, and in the beggining of 2005 will be distribute
-more than a hundred (100) media kits, with projections of distributing
-another thousand (1000) in the next two years!
-
-last saturday our group had a meeting with our minister of culture,
-gilberto gil, to showcase some softwares for media production (like
-ardour, audacity, hydrogen, jack, alsa driver, cinerrela, kino,
-etc...), and he was totaly convinced about the possibilities of our
-free software media production kit. He also understood the power of
-collaboration based work and open source development - this article
-from wired magazine=20
-(http://www.wired.com/wired/archive/12.11/linux.html) says more about
-the minister.
-
-oficialy, gil represents our nation, and his opinion represent all
-Brazilian's voices!
-
-at the end of our meeting, we recorded one of his songs using ardour,
-gil is a popular singer in brazil (and the world) and this was his
-first recording using free software. during the session the only thing
-in my mind was: thank you so much paul davis and all the developer
-communities!
-
-you all can listen to the song (and sample and remix it if you like,
-it is distributed under a creative commons license) from here:
-
- in ogg format: http://banto.hipatia.info/maquina-de-ritmo.ogg
- in mp3 format: http://www.pirex.com.br/pirexmp3/maquina-de-ritmo.mp3
-
-this e-mail is to tell everyone that this is just the beginning, we
-have much work to do together (can you imagine the demands from all of
-these people working with our free platform?). and i'm so glad for
-this  momment.
-
-thank you so much.
-criscabello
-
-
-ps. please foward this message for the developments lists.
-
+--kXdP64Ggrk/fb43R--
 
 
 -------------------------------------------------------
