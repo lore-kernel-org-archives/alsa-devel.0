@@ -1,15 +1,11 @@
-From: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
-Subject: Re: direct midi event dispatching
-Date: Mon, 24 May 2004 18:39:12 +0200
+From: Martin Langer <martin-langer@gmx.de>
+Subject: [PATCH] em10k1x fixes
+Date: Mon, 24 May 2004 19:00:54 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200405241839.12853.gilles.degottex@net2000.ch>
-References: <Pine.HPX.4.33n.0405241756370.10397-100000@studcom.urz.uni-halle.de>
+Message-ID: <20040524170054.GA14900@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="3MwIy2ne0vdjdPXF"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0405241756370.10397-100000@studcom.urz.uni-halle.de>
 Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,34 +18,87 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 24 May 2004 18:02, Clemens Ladisch wrote:
-> Gilles D=E9gottex wrote:
-> > Why SND_SEQ_EVENT_NOTE event doesnt accept direct dispatching ?
-> > technicaly, there is surely a reason, but conceptualy, I dont see. Why =
-do
-> > a difference ?
->
-> SND_SEQ_EVENT_NOTE isn't a 'real' event but gets split into two
-> events, SND_SEQ_EVENT_NOTE_ON and _OFF, and the latter must be sent at
-> a later time.  Scheduling events to be sent later requires a timer
-> which isn't avilable without a queue.
-it's a real library programmer problem, yes, but i'm not sure it should be =
-the=20
-problem of a library user. Why dont use an internal and hidden queue ?
 
-> The SND_SEQ_EVENT_NOTE event is the only event that uses the
-> event.data.note.duration field, but you cannot know what the value in
-> this field means without having a timer which specifies how long one
-> timer tick lasts.
-Ok, without units it's a problem for everybody :) and what you think of a=20
-default units ? or accessors of the internal queue ?
+--3MwIy2ne0vdjdPXF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-if you dont like the hidden queue idea, maybe a macro wich auto-fill the ev=
-ent=20
-structure with courrent queuing time could be very usefull !
 
-Regards,
-Gilles
+Hi,
+
+here is a patch with some emu10k1x fixes:
+
+- it adds emu10k1x to the Makefile
+- include sound/info.h added
+- move snd_iprintf to the right position; it compiles now
+- fix typo in snd_iprintf
+
+bye,
+martin
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
+
+--3MwIy2ne0vdjdPXF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="emu.patch"
+
+Index: alsa-driver/pci/Makefile
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/pci/Makefile,v
+retrieving revision 1.24
+diff -u -r1.24 Makefile
+--- alsa-driver/pci/Makefile	8 Apr 2004 16:38:15 -0000	1.24
++++ alsa-driver/pci/Makefile	24 May 2004 15:20:02 -0000
+@@ -11,7 +11,7 @@
+ 
+ clean-files := intel8x0.c
+ 
+-obj-$(CONFIG_SND) += pdplus/
++obj-$(CONFIG_SND) += pdplus/ emu10k1/
+ 
+ snd-hdspm-objs := hdspm.o
+ 
+Index: alsa-driver/pci/emu10k1/emu10k1x.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-driver/pci/emu10k1/emu10k1x.c,v
+retrieving revision 1.1
+diff -u -r1.1 emu10k1x.c
+--- alsa-driver/pci/emu10k1/emu10k1x.c	14 May 2004 13:42:49 -0000	1.1
++++ alsa-driver/pci/emu10k1/emu10k1x.c	24 May 2004 15:20:26 -0000
+@@ -33,6 +33,7 @@
+ #include <sound/initval.h>
+ #include <sound/pcm.h>
+ #include <sound/ac97_codec.h>
++#include <sound/info.h>
+ 
+ MODULE_AUTHOR("Francisco Moraes <fmoraes@nc.rr.com>");
+ MODULE_DESCRIPTION("EMU10K1X");
+@@ -744,10 +745,11 @@
+ 				       snd_info_buffer_t * buffer)
+ {
+ 	emu10k1x_t *emu = snd_magic_cast(emu10k1x_t, entry->private_data, return);
+-	snd_iprintf(buffer, "Registers:\n\n");
+ 	unsigned long value,value1,value2;
+ 	unsigned long flags;
+ 	int i;
++
++	snd_iprintf(buffer, "Registers:\n\n");
+ 	for(i = 0; i < 0x40; i+=4) {
+ 		spin_lock_irqsave(&emu->emu_lock, flags);
+ 		value = inl(emu->port + i);
+@@ -759,7 +761,7 @@
+ 		value = snd_emu10k1x_ptr_read(emu, i, 0);
+ 		value1 = snd_emu10k1x_ptr_read(emu, i, 1);
+ 		value2 = snd_emu10k1x_ptr_read(emu, i, 2);
+-		snd_iprintf(buffer, "%02X: %08lX %08lX %08lX\n", i, value, value, value2);
++		snd_iprintf(buffer, "%02X: %08lX %08lX %08lX\n", i, value, value1, value2);
+ 	}
+ }
+ 
+
+--3MwIy2ne0vdjdPXF--
 
 
 -------------------------------------------------------
