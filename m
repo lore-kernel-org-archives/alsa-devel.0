@@ -1,13 +1,14 @@
 From: Roger Williams <raw@qux.com>
 Subject: Re: CVS
-Date: 17 Jan 2003 13:02:46 -0500
+Date: 17 Jan 2003 13:25:59 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3wul3r6wp.fsf@grouper.coelacanth.com>
+Message-ID: <m3lm1jr5u0.fsf@grouper.coelacanth.com>
 References: <200301171316.06597.pieter.palmers@student.kuleuven.ac.be>
+	<m3wul3r6wp.fsf@grouper.coelacanth.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301171316.06597.pieter.palmers@student.kuleuven.ac.be>
+In-Reply-To: <m3wul3r6wp.fsf@grouper.coelacanth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,13 +22,16 @@ Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 >>>>> Pieter Palmers <pieter.palmers@student.kuleuven.ac.be> writes:
+  >> Is it possible to make a snapshot available?
 
-  > Is it possible to make a snapshot available?
+This is the mirror site I was trying to remember:
 
-For now, you can grab a snapshot of 0.9.0rc6 from
-ftp://ftp.coelacanth.com/pub/audio/alsa-0.9.0rc6.tar.gz
-This is close to being the most recent CVS release (13 January), and
-includes the HDSP MIDI patch to alsa-kernel/pci/rme9652/hdsp.c.
+http://www.tux.org/pub/sites/ftp.alsa-project.org/cvsexport/2003-01-14.tar.bz2
+
+is the latest HEAD snapshot
+
+or grab .../cvsroot/2003-01-14.tar.bz2 -- really gzipped -- for the
+complete CVSROOT.
 
 -- 
 Roger Williams <raw@qux.com>
