@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
-Date: Thu, 16 Dec 2004 18:16:23 +0100
-Message-ID: <7dbb2fa914fb58dbae03be086b8250f7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000610]: Abit AV8 entry required for programs that do not use 48k (Fix inside)
+Date: Thu, 16 Dec 2004 18:11:44 +0100
+Message-ID: <97cd94476b4e85cf5132cbcb81ee2953@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AC0391D8
-	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:16:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 171F5245
+	for <alsa-devel@alsa-project.org>; Thu, 16 Dec 2004 18:11:44 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,96 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=545> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=610> 
 ======================================================================
-Reported By:                vlajsa
-Assigned To:                pzad
+Reported By:                badbunny
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   545
-Category:                   PCI - emu10k1
+Issue ID:                   610
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               
-Kernel Version:             2.6.9-rc2
+Distribution:               Fedora Core 3 X86_64
+Kernel Version:             2.6.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-26-2004 17:34 CEST
-Last Modified:              12-16-2004 18:16 CET
+Date Submitted:             10-27-2004 01:37 CEST
+Last Modified:              12-16-2004 18:11 CET
 ======================================================================
-Summary:                    midi note off ignored?! (i'm not sure that this is
-driver problem - correct me if wrong)
+Summary:                    Abit AV8 entry required for programs that do not use
+48k (Fix inside)
 Description: 
-Using sequencer application (tested with rosegarden) and vkeybd produce
-some strange sustain-like channel-lock effect. With rosegarden midi note
-is played only once (only first that appeared in midi track) and others
-are corrctly sent to alsa but not audiable. That first note is pitch and
-velocity correct. With vkeybd this is some kind wierder - Every played
-note is audiable as it should, but effect is more like deep reverb on most
-instuments piano), and sustan like on looping instruments (organs)!
+For programs such as Doom 3 or aplay (that use 41k channels)...This card in
+it's current state of only accepting 48k streams is not working out for
+these type programs. Adding the following to the whitelist[] in via82xx.c
+resolves this problem:
+
+{ .vendor = 0x147b, .device = 0x1415, .action = VIA_DXS_NO_VRA }, /* Abit
+AV8 */
+
+I have have fully tested this. I also ran using VIA_DXS_ENABLE, but it
+causes a hiss in the sound. So this works the best. Without this users
+whould just have to know to set "dxs_support=4"...I think it's best this
+be in the driver.
+
+Below is lspci output:
+lspci -nvs 00:11.5
+00:11.5 Class 0401: 1106:3059 (rev 60)
+        Subsystem: 147b:1415
+        Flags: medium devsel, IRQ 177
+        I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
+
+lspci -vs 00:11.5
+00:11.5 Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+        Subsystem: ABIT Computer Corp.: Unknown device 1415
+        Flags: medium devsel, IRQ 177
+        I/O ports at e400 [size=256]
+        Capabilities: [c0] Power Management version 2
+
 ======================================================================
 
 ----------------------------------------------------------------------
- vlajsa - 10-20-04 18:22 
+ badbunny - 11-09-04 01:11 
 ----------------------------------------------------------------------
-Please close this one! I've upgraded to 1.0.7rc2 and all seems to be fine
+Summary: Fixed issues with Abit AV8
+
+ Added Abit AV8 sound card to the white list to use
+ VIA_DXS_NO_VRA by default. This resolves issues with
+ programs wanting to use 41k streams. It also fixes
+ gstreamer issue with alsasink module interaction.
+
+Signed-off-by: Jerone Young <jerone@gmail.com>
+
+----------------------------------------------------------------------
+ tiwai - 11-09-04 18:44 
+----------------------------------------------------------------------
+Thanks, the patch was applied to CVS now.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-26-04 17:34 vlajsa         New Issue                                    
-09-26-04 17:34 vlajsa         Kernel Version            => 2.6.9-rc2       
-10-20-04 18:22 vlajsa         Note Added: 0002217                          
-11-10-04 14:05 tiwai          Status                   assigned => resolved
-11-10-04 14:05 tiwai          Resolution               open => fixed       
-12-16-04 18:16 tiwai          Status                   resolved => closed  
+10-27-04 01:37 badbunny       New Issue                                    
+10-27-04 01:37 badbunny       Distribution              => Fedora Core 3 X86_64
+10-27-04 01:37 badbunny       Kernel Version            => 2.6.9           
+10-27-04 03:06 badbunny       Note Added: 0002271                          
+10-27-04 04:23 badbunny       Note Added: 0002272                          
+11-02-04 21:59 badbunny       Note Added: 0002300                          
+11-08-04 03:32 badbunny       Note Added: 0002308                          
+11-08-04 09:02 Clemens LadischNote Added: 0002309                          
+11-09-04 01:07 badbunny       File Added: via82xx_abit_av8.patch                
+   
+11-09-04 01:11 badbunny       Note Added: 0002315                          
+11-09-04 18:44 tiwai          Status                   new => resolved     
+11-09-04 18:44 tiwai          Resolution               open => fixed       
+11-09-04 18:44 tiwai          Assigned To               => tiwai           
+11-09-04 18:44 tiwai          Note Added: 0002332                          
+12-16-04 18:11 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
