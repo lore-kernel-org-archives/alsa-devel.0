@@ -1,20 +1,14 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: hardware channel mixing [EMU10K1 DMA]
-Date: Tue, 07 Sep 2004 00:47:49 -0400
+From: Glenn Maynard <glenn@zewt.org>
+Subject: Re: hardware channel mixing
+Date: Tue, 7 Sep 2004 01:04:59 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094532469.16954.15.camel@krustophenia.net>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-	 <1094254221.6575.94.camel@krustophenia.net>
-	 <1094260793.3727.19.camel@localhost>
-	 <1094408916.4445.13.camel@krustophenia.net>
-	 <Pine.LNX.4.58.0409061347340.8854@linux.local>
-	 <1094503299.29921.78.camel@krustophenia.net>
-	 <1094519360.3727.13.camel@localhost>
+Message-ID: <20040907050458.GZ21120@zewt.org>
+References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de> <Pine.LNX.4.58.0409030913180.9962@pat.dumaisnet.ca> <20040903155801.1ae48548@mango.fruits.de> <Pine.LNX.4.58.0409030957010.9962@pat.dumaisnet.ca>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1094519360.3727.13.camel@localhost>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0409030957010.9962@pat.dumaisnet.ca>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,44 +17,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mjander@users.sourceforge.net
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-09-06 at 21:09, Manuel Jander wrote:
-> On Mon, 2004-09-06 at 16:41, Lee Revell wrote: 
-> > > > It seems like if this were the case, then it would require a workaround
-> > > > similar to the extra voice hack.  Does this seem plausible?
-> > > 
-> > > Maybe. But it forces us to use only two periods per ring buffer.
-> > 
-> > But this is how the hardware was designed to work.  It is ALSA that is
-> > unusual in supporting more than 2 periods per buffer after all.  Is this
-> > really the only reason for the extra voice?  It is good that ALSA
-> > supports this, but forcing it on hardware that was not designed for it
-> > doesn't make sense here.
-> 
-> If the most effective way is to use 2 DMA subbuffers, there are software
-> means to emulate more periods. AFAIK, there is a Crystal CS42xx driver
-> using that scheme, and the Aureal driver does this too (despite the
-> latter supports upto 4 subbuffers).
-> 
+On Fri, Sep 03, 2004 at 10:04:29AM -0400, Patrick Dumais wrote:
+> That's the thing. I'm writing a soft-sampler. meaning that I have multiple
+> samples playing at one time when the user presses the keys on his midi
+> keyboard. I don't like software mixing because I feel I could gain quality
+> by relying on the hardware (am I right?). And I also want my app to go
+> faster by letting the hardware do this job. But I realize that opening 16
+> devices (16voice polyphony for my app) can be ressource consuming, so it's
+> a drawback. I'm not too sure what to do.
 
-OK, I think I got it.  The OSS driver uses the interval timer for
-playback.  The ALSA driver does not use the timer interrupt at all, and
-the OSS driver does not seem to use the channel loop interrupt at all.  
+FYI, I did this in the sound system for StepMania[1]: if the underlying
+sound system supports multiple hardware channels, it'll use them.  If
+it doesn't, it'll just start one stream and do it all in software.  It
+works very well--and this is a game, not a soft-sampler, so it's doing
+a lot of other things, too (like decoding videos and rendering graphics).
 
-The interval timer seems to be intended exactly for this use; I am a bit
-baffled as to why was the channel loop interrupt, a relatively obscure
-feature, was chosen as the playback interrupt source.
+The original reason for this was improving latency in Windows: DirectSound
+has a minimum latency of about ~40ms (which is a joke)--if you don't buffer
+that far ahead, it croaks, but you can start playing new streams faster.
+This isn't a problem with ALSA.
 
-I should have a patch in a day or two to eliminate the extra voice. 
-Looks like this will also allow the driver to support real multichannel
-PCM playback rather than the current kludge of alsa plugins using
-multiple stereo and mono PCMs for 5.1, etc.
+However, a bigger win is that SB cards do hardware resampling.  Since sound
+data for this game comes from any number of sources, there's no consistent
+sample rate; announcer files are often 22khz, songs are usually 44khz with a
+few 48khz oddballs, etc.  With software mixing, we have to resample all of
+this manually, and I havn't found a resampler that can handle it[2].
 
-Lee
+I can play a dozen stereo streams at once, all resampled, and keep plugging
+along at 95FPS (in Windows).  In practice, we probably never will really need
+to resample more than two streams at once during play (we may need to play a
+dozen or more, but most can be preloaded), though those gross cards that only
+support 48khz may need to do three.
 
+Of course, none of this necessarily means hardware mixing is a good approach
+for your application.
+
+[1] www.stepmania.com
+
+[2] FWIW, we need: reasonable quality resampling--good enough for use in a
+game based entirely on music but not "high quality"; very low CPU use,
+preferably under 5% per stereo stream on a typical low-end 1ghz PC; and
+permissively licensed, 2-, 3-clause BSD or MIT, so it can be integrated
+directly into our MIT-licensed code.  I don't know if all of this is
+possible, DSP's not my field.  :)
+
+-- 
+Glenn Maynard
 
 
 -------------------------------------------------------
