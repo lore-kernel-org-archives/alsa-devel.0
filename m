@@ -1,70 +1,54 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: linuxtag 2003 resume
-Date: Tue, 15 Jul 2003 16:23:57 +0200
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F140E7D.9060103@folkwang-hochschule.de>
+From: Chris Meadors <twrchris@hereintown.net>
+Subject: Re: 2.6.0-test1: ALSA problem
+Date: 15 Jul 2003 10:57:55 -0400
+Sender: linux-kernel-owner@vger.kernel.org
+Message-ID: <1058281075.8444.7.camel@clubneon.priv.hereintown.net>
+References: <200307151048.17586.shahamit@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: linux-audio-dev@music.columbia.edu, linux-audio-user@music.columbia.edu, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner+linux-kernel=40quimby.gnus.org@vger.kernel.org>
+In-Reply-To: <200307151048.17586.shahamit@gmx.net>
+To: Amit Shah <shahamit@gmx.net>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi everyone !
+On Tue, 2003-07-15 at 01:18, Amit Shah wrote:
+> I don't know what the problem is exactly, since alsa shows it found one 
+> card... I'm using debian woody with alsa-base installed. Even if alsa shows 
+> one card detected, it doesn't play. (It doesn't recognize /dev/dsp?)
+> 
+> 
+> Advanced Linux Sound Architecture Driver Version 0.9.4 (Mon Jun 09 12:01:18 
+> 2003 UTC).
+> kobject_register failed for Ensoniq AudioPCI (-17)
+> Call Trace:
+>  [<c01f6b8a>] kobject_register+0x32/0x48
+>  [<c0248a1b>] bus_add_driver+0x3f/0xa0
+>  [<c0248e0a>] driver_register+0x36/0x3c
+>  [<c01fb236>] pci_register_driver+0x6a/0x90
+>  [<c04117ba>] alsa_card_ens137x_init+0xe/0x3c
+>  [<c03f86f5>] do_initcalls+0x39/0x94
+>  [<c03f876c>] do_basic_setup+0x1c/0x20
+>  [<c010509b>] init+0x33/0x188
+>  [<c0105068>] init+0x0/0x188
+>  [<c0107145>] kernel_thread_helper+0x5/0xc
+> 
+> ALSA device list:
+>   #0: Intel 82801BA-ICH2 at 0xe800, irq 17
 
-i'm just sitting in train up the beautiful rhine valley on my trip back=20
-from this year's linuxtag, where we had a joint booth for the alsa=20
-project and the linux audio developers.
-it has been great fun, and i think we made some impact :)
-the linuxtag page at http://www.linuxdj.com/audio/lad/eventslt2003.php3=20
-has some more information, and will be updated with more photos and=20
-recordings as i get them. if any of the booth participants has something =
+I see exactly the same thing with my Sound Blaster 16 PCI.
 
-to add, i'll be glad to include it.
+Output of lspci:
 
-thanks to frank neumann who organized our booth for the third time, and=20
-kudos to the linuxtag organizers and especially martin "joey" schulze=20
-for creating a unique and very inspiring linux event.
+02:06.0 Multimedia audio controller: Ensoniq 5880 AudioPCI (rev 02)
+        Subsystem: Ensoniq Creative Sound Blaster AudioPCI128
+        Flags: bus master, slow devsel, latency 96, IRQ 18
+        I/O ports at 3400 [size=64]
+        Capabilities: [dc] Power Management version 1
 
-i'd also like to thank all the LAD folks who lurked on #lad ready to=20
-answer questions from booth visitors, but due to network failures and an =
+I'm also CCing alsa-devel, but I'm not on the list, hopefully a
+moderator will pick this up though.
 
-extremely crowded booth, this did not happen as planned.
-
-we'll be back next year.
-
-regards,
-
-j=F6rn
-
---=20
-All Members shall refrain in their international relations from
-the threat or use of force against the territorial integrity or
-political independence of any state, or in any other manner
-inconsistent with the Purposes of the United Nations.
-	-- Charter of the United Nations, Article 2.4
-
-
-J=F6rn Nettingsmeier
-Kurf=FCrstenstr 49, 45138 Essen, Germany
-http://spunk.dnsalias.org (my server)
-http://www.linuxdj.com/audio/lad/ (Linux Audio Developers)
-
-
-
-
-
-
--------------------------------------------------------
-This SF.Net email sponsored by: Parasoft
-Error proof Web apps, automate testing & more.
-Download & eval WebKing and get a free book.
-www.parasoft.com/bulletproofapps1
+-- 
+Chris
