@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000348]: Used CVS version for audigy ls card.  Volume is always at full even when muted
-Date: Fri, 27 Aug 2004 20:11:21 +0200 (CEST)
+Subject: [ALSA - driver 0000383]: Audigy LS - Capturing from Mic and kernel oops
+Date: Fri, 27 Aug 2004 20:14:48 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827181121.5F2B92C003@server.perex-int.cz>
+Message-ID: <20040827181448.44B7F2C008@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9F67A18F
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:11:53 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 85E811EF
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 20:14:48 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,82 +20,79 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A BUGNOTE has been added to this bug.
+The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000348
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000383
 ======================================================================
-Reported By:                ezelkow1
-Assigned To:                
+Reported By:                Luke
+Assigned To:                pzad
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     348
-Category:                   CORE - control
+Bug ID:                     383
+Category:                   PCI - emu10k1
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
-Kernel Version:             2.6.6-1.435
+Kernel Version:             
+Resolution:                 fixed
 ======================================================================
-Date Submitted:             06-28-2004 06:18 CEST
-Last Modified:              08-27-2004 20:11 CEST
+Date Submitted:             07-13-2004 17:45 CEST
+Last Modified:              08-27-2004 20:14 CEST
 ======================================================================
-Summary:                    Used CVS version for audigy ls card.  Volume is always at full even when muted
+Summary:                    Audigy LS - Capturing from Mic and kernel oops
 Description: 
-I have an audigy ls card.  I had no sound when i first installed fedora
-core 2.  I went applied the patch found at
-:http://www.superbug.demon.co.uk/alsa/  to the 1.0.5a drivers before
-installing the cvs version.  This gave me sound but no control.  Today i
-have updated the cvs version and I still have the same problem.  My volume
-is constantly maxed out, even with all channels muted in alsamixer.  I
-have no other mixer apps running and the volume problem happens in every
-app i use.
+I just updated my cvs repository and rebuilt the snd_audigyls module to
+check if my former reported bugs are fixed.
+Unfortunateley, my kernel oopsed once again.
+
+I tried to capture some voice of my mic with no success. Maybe I don't get
+the explanation in the cvs log. I attached a screenshot to review my
+alsamixer settings. This is what I used to configure it:
+
+"The MIC and LINE IN use the AC97 chip.
+
+The AC97 uses the PLAYBACK(Not CAPTURE) controls in alsamixer for
+controlling CAPTURE. Then, instead of sending that output to the
+speakers, it sends it to the Philips 1361T ADC. This results in high
+quality ADC conversion.
+E.g. For LINE IN capture, set LINE IN playback volume and unmute it.
+Set MASTER volume.
+There is a new control for "CAPTURE feedback into PLAYBACK". If one does
+not want any feedback, leave it at it's minimum."
 ======================================================================
 
 ----------------------------------------------------------------------
- jcdutton - 06-28-2004 13:06 CEST 
+ jcdutton - 07-13-2004 19:40 CEST 
 ----------------------------------------------------------------------
-This driver is still in development. As I find out how things work, I am
-adding to it. If you download audigyls.c and AudigyLS.conf again from
-http://www.superbug.demon.co.uk/alsa/ you will find they have changed.
-The version that has Analog volume controls is "Version: 0.3". See line 4
-of audigyls.c to check version number.
-I am generally uploading new versions of audigyls.c about twice a day.
-
-The only PLAYBACK controls that currently do anything are: -
-Analog Front
-Analog Rear
-Analog Center/LFE
-SPDIF Front
-SPDIF Rear
-SPDIF Center/LFE
-
-For CAPTURE from Mic in or Line in. (The AudigyLS uses the AC97 playback
-channel for capture. The AC97 capture channel is not used at all.)
-Master
-Mic  (The one marked as playback)
-Mic boost
-Line (The one marked as playback)
-Digital/Analog ( switch must be in Analog mode for CAPTURE. )
-CAPTURE feedback into PLAYBACK.
+Fixed in latest cvs.
+Fixed by:
+[alsa-cvslog] CVS: alsa-kernel/core memalloc.c,1.34,1.35
 
 ----------------------------------------------------------------------
- jcdutton - 08-27-2004 20:11 CEST 
+ Luke - 07-14-2004 00:13 CEST 
 ----------------------------------------------------------------------
-Can you please verify which version of the audigyls.c file you have, by
-doing:
-grep Version ./alsa-driver/pci/emu10k1/audigyls.c
+Nice one!
+Works like a charm now!!! *wohoo*
+Thx for your quick support and double-thumbs-up!
 
-It should say:
- * Version: 0.0.14
+----------------------------------------------------------------------
+ jcdutton - 08-27-2004 20:14 CEST 
+----------------------------------------------------------------------
+Fixed in cvs.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-28-04 06:18 ezelkow1       New Bug                                      
-06-28-04 06:18 ezelkow1       Kernel Version            => 2.6.6-1.435     
-06-28-04 13:06 jcdutton       Bugnote Added: 0001345                       
-08-27-04 20:11 jcdutton       Bugnote Added: 0001650                       
+07-13-04 17:45 Luke           New Bug                                      
+07-13-04 17:45 Luke           File Added: audigyoops                       
+07-13-04 17:50 Luke           File Added: audigyscreen.png                    
+07-13-04 19:40 jcdutton       Bugnote Added: 0001415                       
+07-14-04 00:13 Luke           Bugnote Added: 0001416                       
+08-27-04 20:14 jcdutton       Bugnote Added: 0001651                       
+08-27-04 20:14 jcdutton       Resolution               open => fixed       
+08-27-04 20:14 jcdutton       Status                   assigned => resolved
 ======================================================================
 
 
