@@ -1,15 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
-Date: Mon, 27 Sep 2004 14:43:59 +0200 (CEST)
+From: Georgi Georgiev <chutz@gg3.net>
+Subject: Broken AC3 on EMU10K1 since July 2-nd
+Date: Tue, 28 Sep 2004 01:03:14 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0409271433490.1733@pnote.perex-int.cz>
-References: <200409270300.i8R30Ro1016070@localhost.localdomain>
- <4157B56F.9000905@pg.gda.pl>
+Message-ID: <20040927160314.GA16100@lion.gg3.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=iso8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4157B56F.9000905@pg.gda.pl>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,40 +15,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
-Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Sep 2004, Adam Tla=B3ka wrote:
+Hello,
 
-> > ALSA and the entire kernel development team have spent the last 5
-> > years moving things *out* of kernel space. forget ALSA - you will have
-> > a very, very hard time explaining to the kernel crew why this is
-> > actually a good idea.
-> Hmm, actually from my observation this approach (in lib mixing and=20
-> effects) makes more problems and disadventages then doing this in a=20
-> device manner and as a kernel RT thread. I tried to modify AOSS to use=20
-> callbacks (works almost good but scheduling/swapping effects still=20
-> there)
+When trying to play an AC3 sound on my Creative Live I got heavy
+skipping. The "Digital" light on my decoder was flashing for less than a
+second and then remained turned off for a little longer (but still less
+than a second).
 
-Are you using fully loaded ring buffer on the ALSA side with a decent=20
-size?
+I tried different versions of alsa-driver, and versions prior to 1.0.5
+were OK. I thought the problem is related to the fact that the
+passthrough device changed from subdevice 2 to subdevice 3 in version
+1.0.6, but it seems it is unrelated.
 
-> but I found an app which disables SIGIO for example.
+I checked out the CVS in my kernel source tree, and after playing with
+different dates:
 
-It might be solved with the loopback device and a RT mixing daemon.
+cvs up -D "1  Jul 2004" -- sound plays OK
+cvs up -D "2  Jul 2004" -- sound skips heavily
 
-> So now I in a dead end. I think that ALSA lib approach has serious=20
-> compability limitations which could not be solved.
+However, there were a lot of changes between these two versions, some of
+them pretty extensive, especially in the emu10k1 driver.
 
-I don't think that it's something which cannot be solved.
+I sent the AC3 file with:
 
-=09=09=09=09=09=09Jaroslav
+$ ac3dec -C city.ac3 
+Using PCM device 'plug:iec958:{AES0 0x2 AES1 0x82 AES2 0x0 AES3 0x2}'
+AC3 Stream 48.0 KHz 448 kbps
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+but the effect was identical to when using mplayer with -ac hwac3 on a
+DVD for example.
+
+-- 
+ >   Georgi Georgiev    > Love thy neighbor as thyself, but choose      >
+<     chutz@gg3.net    <  your neighborhood. -- Louise Beal            <
+ >  +81(90)6266-1163    >                                               >
 
 
 -------------------------------------------------------
