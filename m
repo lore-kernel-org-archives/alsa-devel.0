@@ -1,14 +1,15 @@
-From: Marcus Andersson <054185595@telia.com>
-Subject: Re: hdsp and midi problems
-Date: Mon, 23 Jun 2003 18:46:35 +0200
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: hdsp and midi problems
+Date: Mon, 23 Jun 2003 09:58:01 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EF72EEB.916B60D9@telia.com>
-References: <NDBBLGIKBJENLAMOLFHGOEPKCIAB.mknecht@controlnet.com>
-		<3EF72262.EF180410@telia.com> <s5h1xxk3ga4.wl@alsa2.suse.de>
+Message-ID: <NDBBLGIKBJENLAMOLFHGCEAFCJAB.mknecht@controlnet.com>
+References: <s5h3ci03gb8.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h3ci03gb8.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,27 +19,40 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Knecht <mknecht@controlnet.com>, alsa-devel@lists.sourceforge.net
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> 
-> hmm, i have no problem at all for compiling.  what problem do you
-> have?
+ > Marcus,
+> >    The HDSP 9652 MIDI interface has (for me under Linux) always
+> dropped lots
+> > of notes. Mostly I find it interesting that it drops note off
+> information
+> > and doesn't seem to drop note-on. I cannot be sure how well it handles
+> > controller information.
+>
+> do you mean dropping notes in reading MIDI?
+> well, IIRC, you reported also that the behavior of MIDI out is
+> strange...  oh sigh.
 
-True, I don't know what the current CVS status is.
+Yes, but I tested Alsa (a long time ago) with both MIDI-IN driving soft
+synths, and then MIDI-IN/MIDI-OUT driving hardware synths and got the same
+'note stuck on' problem. For that reason I say it's a 'MIDI-IN dropped note'
+problem, but certainly I do not know this for sure.
 
-> except for known compiler-check problem in the configure script, i've
-> not heard much about it.  at least, not reported to alsa-devel ML.
-> (a few days ago, there was a missing file, but it was already fixed.)
+>
+> dropping a note is surely a bug of the driver.
+> unless the FIFO overflows, no dropping should happen.
+>
+> btw, could you try the attached patch?
+> (and in-advance-scheduled excuse if it causes a hang-up :)
+>
 
-Then this probably hit me the last time I tried to update. The problem
-with alsa cvs is that, according to my experience, more often than not
-it will not compile. This makes me think twice before I update my tree.
-Developers should make an effort and check their code an extra time,
-because a mistake affects so many.
+I would be happy to try a bit of patching. However, I am on
+Redhat/PlanetCCRMA and Gentoo, both of which provide prebuilt Alsa
+environments. I can try patching the Gentoo one which is pretty recent, but
+it may take a few days before I can get back to you.
 
-Marcus
+
 
 
 -------------------------------------------------------
