@@ -1,12 +1,12 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: aplay won't play on any second sound card
-Date: Sat, 13 Jul 2002 00:02:18 +0900
+Subject: autodetection at install
+Date: Sat, 13 Jul 2002 03:56:43 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D2EEF7A.3020406@boosthardware.com>
-References: <m3adoyr6pr.fsf@ccs.covici.com>
+Message-ID: <3D2F266B.8070807@boosthardware.com>
+References: <m3adoyr6pr.fsf@ccs.covici.com> <3D2EEF7A.3020406@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------010208080100010000080007"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -16,21 +16,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: John Covici <covici@ccs.covici.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-John Covici wrote:
-> Using the rc2 aplay, it doesn't honor -c 1 at all, just plays on card
-> 0.  I even changed the aliases around so what was card1 is now 0, but
-> aplay still only plays on card 0.
-> 
+This is a multi-part message in MIME format.
+--------------010208080100010000080007
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 
-aplay -D hw:0,0 --> card 0 device 0
+I have a small perl script which I am working on. The idea is to autodetect
+a card/s and create a modules.conf based on that either at configure or as
+a seperate process.
 
-aplay -D hw:1,0 --> card 1 device 0 etc...
+Can anyone who is more fluent in perl give me a hint as to how I can 
+compare the output of list_pci to list_modules and return the correct 
+card name and module?
 
--d is for duration of play.
+The script has two subs. They just parse the /proc/pci and the INSTALL 
+file to get the current output. It has to be run from the alsa-driver dir.
+
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
@@ -38,6 +42,68 @@ For the discerning hardware connoisseur
 Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/guide/
 ========================================
+
+--------------010208080100010000080007
+Content-Type: text/plain;
+ name="autocard"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="autocard"
+
+
+
+sub list_pci {
+
+	open (FILE, "/proc/pci") 
+	or die "Cannot open /proc/pci. \n Do you have permission to access this file?";
+   
+    for $linepci (<FILE>) {
+	
+	if ($linepci =~ /Multimedia audio controller/g) {
+   	print $linepci;
+	}
+    }
+
+#    close FILE;
+
+}
+
+sub list_modules {
+
+	open (FILE, "INSTALL") 
+	or die "Cannot open INSTALL. \n Do you have permission to access this file?";
+   
+    	for $linemodule (<FILE>) {
+
+	if ($linemodule =~ /\.o$/) {
+#		print  $linemodule;
+		    	while (<>) {
+				foreach $word ( split ) { 
+	    				# do something with $word here
+	   				print "$linemodule\n" ;
+					} 
+    				}  
+#		print  $linemodule;
+
+		}
+    	}
+
+#    close FILE;
+}
+
+
+# Output to shell
+
+list_modules();
+
+print "\n The modules for the following card/s can be found in the above.\n If your card is not listed below it means it is a PNP (very old)\n or USB card and this script cannot find it.\n\n The modules for ALSA USB support are: \n\n \tsnd-usb-audio\n \tsnd-usb-midi\n\n";
+
+print " These are the cards found on your system:\n\n";
+list_pci();
+print "\n";
+
+
+--------------010208080100010000080007--
 
 
 
