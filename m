@@ -1,15 +1,12 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Re: Alsa-devel digest, Vol 1 #1207 - 14 msgs
-Date: Wed, 4 Jun 2003 15:00:14 -0700
+From: Gorm David Lai <lai@daimi.au.dk>
+Subject: problems with rme digi96/8
+Date: 05 Jun 2003 12:17:32 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGAEFFCGAB.mknecht@controlnet.com>
-References: <Pine.LNX.4.44.0306042302500.2783-100000@pnote.perex-int.cz>
+Message-ID: <1054808252.7022.8.camel@duff>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.44.0306042302500.2783-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,34 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>, Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: Mark Knecht <markknecht@attbi.com>, Alsa-Devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > >
-> >
-> > Have you also symlinked /dev/dsp to /dev/adsp0 as that will allow oss
-> > apps to use the hw:0,1 channel?
->
-> It not required. See to alsa-kernel/Documentation/OSS-Emulation.txt, look
-> for 'dsp_map' and 'adsp_map'.
->
-> 						Jaroslav
->
-Patrick and Jaroslav,
-   Interesting ideas. I'll goo look at these docs this evening.
+Hi, I really hope somebody can help me.
 
-   I think this may specifically be a Via82xx driver problem. If I change
-only one line in modules.conf (snd-via82xx to snd-hdsp) the problem does
-away, so I don't think it's anything specific about my setup, although it
-could have something to do with my specific motherboard I guess.
+We have recently bought a RME Digi96/8 card. This connects via adat to a
+mixing console.
+I have implemented the code in the ALSA 0.9.0 HOWTO for playback. This
+works fine on a sound blaster card in stereo.
+However with the digi96/8 card the mixing console does not get any
+input. The mixing console syncs fine on the adat connection, it just
+does not seem to get any sound input.
 
-   Anyway, thanks for the ideas.
+Any help, would be greatly appreciated as I am getting desperate.
 
-Mark
+Regards
 
-
-
+Gorm - Programmer at Center for Advanced Visualization and Interaction
 
 
 
