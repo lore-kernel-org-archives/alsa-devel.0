@@ -1,15 +1,13 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: mantis bug reports, again
-Date: Thu, 15 Jul 2004 07:52:45 -0400
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000385]: Rate conversion plugin generates noise on frequency reduction
+Date: Thu, 15 Jul 2004 14:07:55 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407151152.i6FBqjEH008489@localhost.localdomain>
-References: <Pine.LNX.4.58.0407151330420.1779@pnote.perex-int.cz>
+Message-ID: <20040715120755.0C16215007@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from out007.verizon.net (out007pub.verizon.net [206.46.170.107])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4BC201EE
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 13:52:48 +0200 (MEST)
-In-reply-to: Your message of "Thu, 15 Jul 2004 13:33:11 +0200."
-             <Pine.LNX.4.58.0407151330420.1779@pnote.perex-int.cz>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 66DEC1EF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:07:55 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,29 +16,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
->On Thu, 15 Jul 2004, Paul Davis wrote:
->
->> it may be nobody's loss, but if i get back from montreal in a week and
->> this list is still filled with mis-encoded email from mantis, i will
->> be forced to unsubscribe from alsa-devel, after being on it for about
->> 5-6 years. i don't know why ALSA's mantis email is doing this - the
->> system set up for Ardour and for JACK do not - but its one of the most
->> irritating aspects of my inbox at the present time and has already
->> been reported twice.
->
->Paul, which mailer client are you using? I can forward mantis mails to 
->another list, but I'd like to fix the problem.
->
->I'm using pine here, but with the SpamAssassin filter, thus I'm not sure,
->if an e-mail format conversion is on the way.
 
-i use MH. i could change the way it handles encoding, but it seems
-unnecessary. there's no reason to be using the "quoted-printable"
-encoding at all. it doesn't help anyone AFAIK.
+The following bug has been ASSIGNED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000385
+======================================================================
+Reported By:                fmoraes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     385
+Category:                   OTHERS
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             07-13-2004 19:46 CEST
+Last Modified:              07-15-2004 14:07 CEST
+======================================================================
+Summary:                    Rate conversion plugin generates noise on frequency reduction
+Description: 
+When reducing the frequency, the pcm_rate plugin causes noise on the output
+data. This has been tested with both the snd-cs46xx and snd-emu10k1x
+drivers and the following .asoundrc can be used to recreate the output in
+a file:
+
+pcm.CS46xx {
+	type hw
+	card 0
+}
+
+pcm.filetest {
+	type file
+	slave {
+		pcm "CS46xx"
+	}
+	file "/home/fmoraes/test-out.raw"
+	format "raw"
+}
+
+pcm.test {
+	type rate
+	slave {
+		pcm "filetest"
+		format "S16_LE"
+		rate 8000
+	}
+}
+
+Playing a 48Khz file will cause noticeable noise on the output (noise is
+more noticeable the lower the target frequency is).
+======================================================================
+
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-13-04 19:46 fmoraes        New Bug                                      
+07-15-04 14:07 perex          Assigned To               => perex           
+07-15-04 14:07 perex          Status                   new => assigned     
+======================================================================
 
 
 -------------------------------------------------------
