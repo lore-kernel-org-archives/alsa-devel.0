@@ -1,13 +1,12 @@
-From: Roger Williams <raw@qux.com>
+From: Paul Davis <paul@linuxaudiosystems.com>
 Subject: Re: hdsp multiface pci.
-Date: 22 Jan 2003 13:30:50 -0500
+Date: Wed, 22 Jan 2003 13:41:11 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m3el75ghph.fsf@grouper.coelacanth.com>
-References: <200301221814.h0MIEnx0013504@spider.tela.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Message-ID: <200301221836.h0MIanx0017277@spider.tela.com>
+References: <m3el75ghph.fsf@grouper.coelacanth.com>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200301221814.h0MIEnx0013504@spider.tela.com>
+In-reply-to: Your message of "22 Jan 2003 13:30:50 EST."
+             <m3el75ghph.fsf@grouper.coelacanth.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +15,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
+To: Roger Williams <raw@qux.com>
 Cc: markknecht@attbi.com, Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->>>>> Paul Davis <paul@linuxaudiosystems.com> writes:
+>Yes, I understand that that's what the driver is _supposed_ to do.
+>That's how it works on my HDSP PCI and Cardbus systems.  But isn't it
+>true that the current driver doesn't actually set up any of those
+>zero-gain connections for the HDSP 9652?
 
-  >> This would explain why snd_hdsp works (i.e. you can playback and
-  >> record through the default I/O), although amixer doesn't do
-  >> anything: the driver doesn't have to set up any default
-  >> connections, because those are part of the FPGA reset state...
+well, it attempts to, but its writing to the wrong registers.
 
-  > actually, the driver does have to set up default connections,
-  > which are zero gain for every possible routing...
+>This is the only point that I was trying to make to Mark -- the
+>default unity-gain connections (i.e. playback -> H/W output) that he
+>has been using are FPGA configuration defaults, not explicitly set up
+>by the driver.
 
-Yes, I understand that that's what the driver is _supposed_ to do.
-That's how it works on my HDSP PCI and Cardbus systems.  But isn't it
-true that the current driver doesn't actually set up any of those
-zero-gain connections for the HDSP 9652?
+correct. i actually don't have any idea what those defaults are.
 
-This is the only point that I was trying to make to Mark -- the
-default unity-gain connections (i.e. playback -> H/W output) that he
-has been using are FPGA configuration defaults, not explicitly set up
-by the driver.
-
--- 
-Roger Williams <raw@qux.com>
-Qux Tool & Die, Middleborough, Massachusetts
-// Omne tulit punctum qui misquit utile dulci //
 
 
 -------------------------------------------------------
