@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: problem in executing the application
-Date: Fri, 2 May 2003 11:48:23 +0200 (CEST)
+From: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Subject: driver problem
+Date: 2 May 2003 12:00:01 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0305021147560.4749-100000@pnote.perex-int.cz>
-References: <20030502031930.25809.qmail@webmail17.rediffmail.com>
+Message-ID: <20030502120001.14973.qmail@webmail18.rediffmail.com>
+Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain;
+	format=flowed
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030502031930.25809.qmail@webmail17.rediffmail.com>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mahendra sp <mahendra_sp@rediffmail.com>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "pzad@pobox.sk" <pzad@pobox.sk>, "jhall@maoz.com" <jhall@maoz.com>
+To: alsa-devel@lists.sourceforge.net
+Cc: pzad@pobox.sk
 List-Id: alsa-devel@alsa-project.org
 
-On 2 May 2003, mahendra  sp wrote:
+hi,
+i  am changing my driver for ES 1938 from ALSA version 0.9.1 to 
+0.5.1
 
-> hi,
-> 
->    when i am trying to execute the latency.c , after complilation 
-> is over when i try to execute it,it says undefined reference to 
-> variuos
-> functions such as snd_pcm_hwparams_any,snd_pcm_hwparams_access   
-> etc.
-> 
->     is there any way to overcome it? i have installed ALSA 1938 
-> 0.9.1 version driver. If not, how to change the functions so as to 
-> execute the program?
+   but while installing driver, it is giving error as version.h 
+file not found at
 
-The library must be compiled as first.
+   /usr/src/linux/include/linux folder. Actually this link is not 
+present.  what to do if i want to install 0.5.1 version?
 
-						Jaroslav
+   thanks,
+regards,
+mahendra
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
 
 
 
