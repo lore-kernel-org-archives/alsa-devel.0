@@ -1,13 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: snd_ prefix for module options
-Date: Sat, 12 Oct 2002 10:56:35 +0200 (CEST)
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: PCM API update
+Date: Sat, 12 Oct 2002 11:12:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0210121055200.1975-100000@pnote.perex-int.cz>
-References: <87ptugepnn.fsf@sulphur.joq.us>
+Message-ID: <3DA7E79A.B07E264A@libero.it>
+References: <Pine.LNX.4.33.0210121049560.1975-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <87ptugepnn.fsf@sulphur.joq.us>
+Received: from smtp1.libero.it (smtp1.libero.it [193.70.192.51])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id LAA28936
+	for <alsa-devel@alsa-project.org>; Sat, 12 Oct 2002 11:13:39 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,49 +19,54 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Jack O'Quin <joq@io.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Peter L Jones <peter@drealm.org.uk>, Karsten Wiese <annabellesgarden@yahoo.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 11 Oct 2002, Jack O'Quin wrote:
-
+Jaroslav Kysela wrote:
 > 
-> > Jack O'Quin wrote:
-> > > Can someone please explain what terrible problem we're trying to solve
-> > > that justifies introducing *any* breakage at all?
-> >  
-> > > ALSA is part of the 2.5 kernel now.  It is mainstream Linux software,
-> > > good technology, needed by many users.  Isn't it about time to start
-> > > thinking and acting that way?
+> On Fri, 11 Oct 2002, Abramo Bagnara wrote:
 > 
-> Takashi Iwai <tiwai@suse.de> writes:
+> > I really don't understand why you've added another ioctl and another
+> > function to replicate in all PCM classes.
+> > snd_pcm_delay existence is enough to implement that.
+> > I'm missing something?
 > 
-> > this is the very reason why "now" i asked.
-> > since the ALSA is now on the official kernel tree, we must follow to
-> > the standard rules, too.  and the snd_ prefix is obviously ugly from
-> > this perspective.
-> > 
-> > if we live alone as external, then we don't have to care - we could do
-> > as we like.  but the mainstream means that such exception has to be
-> > excluded, too, at least before 2.5 turns into the "real mainstream",
-> > i.e. 2.6 (or 3.0).
-> 
-> Are you saying that the "snd_" prefix violates standard Linux kernel
-> rules for device driver options?  Did the kernel developers request
-> this change?
+> You're completely right, but in my eyes, the avail ioctl looks much better
+> for kernel space (it's a base value for computing delay, computing avail
+> from delay needs twice substractions which doesn't look very good).
+> Unfortunately, delay ioctl was first, and we should keep binary
+> compatibility for 2.5, so we should leave both ioctls there. In library,
+> we can remove the delay operation from chains and use avail to compute it
+> as well to simplify code.
 
-Well, they had objections but not major to disallow inclusion of ALSA to 2.5.
-I think that it would be good to follow standard kernel rules in this 
-case.
+No, you can't.
+The semantic of snd_pcm_delay is:
+"How many frames are current application read/write pointer far away
+from 'now' (i.e. real world sound)?"
 
-						Jaroslav
+It's *not* simply equivalent to buffer_size - avail (playback) or avail
+(capture). It's designed to take in account also olatencies introduced
+by other things (network layer, hardware limits, etc.).
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+Although I don't understand why you think that snd_pcm_avail is needed
+when we have the right (and safe) snd_pcm_avail_update, it can be
+implemented calling snd_pcm_delay (so to update hw pointer) and then
+computing the avail count using the mmap'ed counters.
 
+Of course this can't work for chained PCM (and this is why we have
+snd_pcm_avail_update).
+
+I think you should revert your patch (and to force yourself to believe a
+bit more in peer review before important changes although it seems I'm
+beating a dead horse here).
+
+-- 
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
