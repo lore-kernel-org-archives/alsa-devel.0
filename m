@@ -1,12 +1,13 @@
-From: Mikael Magnusson <mikaelmagnusson@glocalnet.net>
-Subject: Re: upmixing line in - emu10k1 sb live 5.1
-Date: Wed, 16 Feb 2005 13:02:13 +0100
-Message-ID: <42133645.6060304@glocalnet.net>
-References: <200502140720.j1E7JtHo012669@www4.pobox.sk> <1108412839.28815.2.camel@krustophenia.net>
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: why do elements disappear?
+Date: Wed, 16 Feb 2005 13:14:04 +0100
+Message-ID: <m2ekfgpur7.fsf@vador.mandrakesoft.com>
+References: <1108501973.2845.87.camel@tux.lan> <s5hll9obxar.wl@alsa2.suse.de>
+	<m2r7jgpvw9.fsf@vador.mandrakesoft.com> <s5hd5v0bu2d.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108412839.28815.2.camel@krustophenia.net>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <s5hd5v0bu2d.wl@alsa2.suse.de> (Takashi Iwai's message of "Wed,
+ 16 Feb 2005 12:52:42 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,46 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
-> On Mon, 2005-02-14 at 08:20 +0100, Peter Zubaj wrote:
-> 
->>Hi,
->>
->>AFAIK there is no way to upmix line in to 5.1 in alsa default config
->>for sb live.
->>
->>Audigy is diffrent.
->>
->>Maybe if you use ld10k1, this will do upmix (init_live script).
->>
-> 
-> 
-> I am working on improving the default DSP config for the SBLive.  There
-> are many problems with it, the lack of master volume being the worst.
-> 
+Takashi Iwai <tiwai@suse.de> writes:
 
-Nice, do you intend to separate the default and front pcm devices? 
-Currently it isn't possible to play one sound on the front speakers and 
-one sound on both front and rear speakers at the same time. My 
-proposition is to use FX 8 and 9 for the front device, as on Audigy.
-
-> In order to have enough GPRs to solve this and the master volume problem
-> then some features will have to go.  Like the redundant "switch"
-> controls (the same thing could be accomplished by setting volume to 0).
+> > > > a mixer app of mine (you know, one of those controlling
+> > > > volumes) is updating itself (if other apps change settings) by
+> > > > continuously running get-volume (et al) on all mixer elements
+> > > > every once in a while (10Hz).
+> > > 
+> > > Well, this isn't a good idea.  You should do update passively via
+> > > poll().  The exception is a control with VOLATILE flag like VU
+> > > meter, which won't send change notification.  But normal controls
+> > > send notification if the value is changed, or the control is
+> > > created/deleted, so that the app can react.
+> > 
+> > is this the same bug that affects totem?
+> > 
+> > see totem's gdb trace at
+> > http://qa.mandrakesoft.com/show_bug.cgi?id=13045 and xine strace at
+> > http://qa.mandrakesoft.com/show_bug.cgi?id=13449
+> > (http://qa.mandrakesoft.com/attachment.cgi?id=2444)
 > 
-> Lee
-> 
-> 
+> They are slightly different problems.  I guess it's indeed a bug of
+> alsa-lib, which was fixed recently on CVS.
 
-Most users probably don't have a live drive and can't use several of the 
-inputs that are activated in the default configuration. What if some of 
-the new features are made optional and can be used only if some of the 
-inputs or outputs are disabled in the extin and extout module parameters?
+could you point to the relevant fix?
 
-/Mikael Magnusson
 
 
 -------------------------------------------------------
