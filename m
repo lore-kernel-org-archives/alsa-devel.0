@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000776]: dissynchronization
-Date: Sun, 2 Jan 2005 13:24:05 +0100
-Message-ID: <86cf06d408dd966958209a2efdfbf243@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000777]: Kernel crashes when using external sound controls
+Date: Sun, 2 Jan 2005 14:49:11 +0100
+Message-ID: <67c654df300f2827771c2dc4f4d19c3e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2096B287
-	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 13:24:06 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DEFB72DA
+	for <alsa-devel@alsa-project.org>; Sun,  2 Jan 2005 14:49:11 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,52 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=776> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=777> 
 ======================================================================
-Reported By:                SergeS
-Assigned To:                tiwai
+Reported By:                jan
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   776
-Category:                   PCI - nm256
+Issue ID:                   777
+Category:                   CORE - control
 Reproducibility:            always
-Severity:                   major
+Severity:                   crash
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             2.4.28
+Status:                     new
+Distribution:               Slackware current
+Kernel Version:             Kernel 2.6.10
 ======================================================================
-Date Submitted:             01-02-2005 13:14 CET
-Last Modified:              01-02-2005 13:24 CET
+Date Submitted:             01-02-2005 14:49 CET
+Last Modified:              01-02-2005 14:49 CET
 ======================================================================
-Summary:                    dissynchronization
+Summary:                    Kernel crashes when using external sound controls
 Description: 
-some times sound repeates bit
-from MPlayer log
-alsa-space: xrun of at least xx.xxxx msecs. resseting stream
-
-if i run MPlayer with oss emulation - all is ok, when i try oss - all is
-ok 
-
-all software witch uses alsa do same error
-
-hardwate: Dell Latitude CSx, NeoMagick NM256ZX
-if need more information - send me email to sergesb@mail.ru
+Since I upgraded from Kernel 2.6.8.1 to 2.6.10 (ALSA 1.0.6) the whole
+system crashes when I try to adjust to sound volume via the external
+volume controls of my laptop. Everything else including the alsamixer
+works as expected. (Whole system crashes means, that I can do nothing, but
+hard reset.)
+I could use these external controls successfully with previous kernel
+versions.
+When I compile the kernel without ALSA support it doesn't crash (I have no
+sound support then of course).
+The soundchip in this laptop is:
+00:08.0 Multimedia audio controller: ESS Technology ES1978 Maestro 2E (rev
+10)
+Please let me know what additional infos you need.
+Thanks in advance
 ======================================================================
-
-----------------------------------------------------------------------
- SergeS - 01-02-05 13:24 
-----------------------------------------------------------------------
-And when i try to unload it i got Segmentation Fault
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-02-05 13:14 SergeS         New Issue                                    
-01-02-05 13:14 SergeS         Kernel Version            => 2.4.28          
-01-02-05 13:24 SergeS         Note Added: 0003045                          
+01-02-05 14:49 jan            New Issue                                    
+01-02-05 14:49 jan            Distribution              => Slackware current
+01-02-05 14:49 jan            Kernel Version            => Kernel 2.6.10   
 ======================================================================
 
 
