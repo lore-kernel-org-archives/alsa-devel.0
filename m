@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000334]: EMU10K1, capturing audio is impossible
-Date: Tue, 9 Nov 2004 16:13:43 +0100
-Message-ID: <2b380f62000281da680c7ddf7bcd9bcb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000637]: Laptop volume control & mute buttons don't work
+Date: Tue, 9 Nov 2004 16:13:17 +0100
+Message-ID: <86d1ebdb50925c6ef9b61fc07a1b2a3a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EEE7C244
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:13:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AB00A244
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 16:13:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,80 +22,75 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been REOPENED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=334> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=637> 
 ======================================================================
-Reported By:                netslayer
-Assigned To:                pzad
+Reported By:                Mark Knecht
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   334
-Category:                   PCI - emu10k1
+Issue ID:                   637
+Category:                   PCI - atiixp
 Reproducibility:            always
-Severity:                   block
+Severity:                   feature
 Priority:                   normal
-Status:                     closed
+Status:                     feedback
 Distribution:               Gentoo
-Kernel Version:             2.6.7rc love-sources
-Resolution:                 not an issue
-Fixed in Version:           
+Kernel Version:             2.6.9-rc2-mm4-VP-S7-noACPI-UMP
 ======================================================================
-Date Submitted:             06-13-2004 23:30 CEST
+Date Submitted:             11-08-2004 18:50 CET
 Last Modified:              11-09-2004 16:13 CET
 ======================================================================
-Summary:                    EMU10K1, capturing audio is impossible
+Summary:                    Laptop volume control & mute buttons don't work
 Description: 
-I have an Audigy (EMU10K2 -- on EMU10K1 drivers). It has worked perfectly
-in 0.9.8, and in 1.0.x I can playback audio fine, but capturing seems
-impossible.
-
-In 0.9.8 I was able to select a capture source in alsamixer by selecting
-it with the space bar. The source had "---" areas above it that meant it
-had the capture ability. In 1.0.x that whole functionality is gone, and I
-see no more way to capture audio. 
-
-I have all my sources up to 100%, and when I plug in an audio to source
-into LINE IN on the Audigy, I hear nor can record anything. If I unmute
-LINE IN in alsamixer, then I hear pass through audio, which I don't want.
-I want to be able to record it, but not hear it through a pass through. 
-
-I know several people with this problem, and I myself have a few of these
-cards dedicated to MythTV PVR boxes, and this problem makes it impossible
-to upgrade ALSA... It's been 6 months since I tried this, and since nobody
-reported it, I thought I would. 
+The Compaq, like may laptops, comes with buttons to increase and decrease
+volume, as well as a mute button. Under Linux these buttons do nothing.
+The mute button is always lit even when sound is coming out. The volume
+control buttons do not adjust volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 08-30-04 12:04 
+ tiwai - 11-09-04 10:35 
 ----------------------------------------------------------------------
-Not response for 2 weeks.
+Usually these buttons are controlled over ACPI.
+In some cases, you can get a key event in X server, then you can configure
+the window manager to do the right thing.
+
+Anyway, this is not a bug or a missing feature of the sound driver.
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 16:13 
+ Mark Knecht - 11-09-04 16:13 
 ----------------------------------------------------------------------
-No response from reporter.
+This was not filed as a bug. It was filed as a feature request. Please do
+not be so dismissive. What did you spend? Maybe 3 seconds and then blew it
+off?
+
+Under Windows the buttons control volume. Pushing the buttons raises or
+lowers volume in the applications. you can see the volume controls go up
+and down. 
+
+Why should Linux *not* work this way? I am requesting that Alsa consider
+how to be more user friendly. I am not filing a bug report. 
+
+If they are already handled under ACPI (which I do not use on my laptop as
+it causes kernel timing problems) then please simply state that Alsa
+already handles this. However, I do not beleive that these specific
+buttons are handled by ACPI, but that's just my guess.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-13-04 23:30 netslayer      New Issue                                    
-06-13-04 23:30 netslayer      Distribution              => Gentoo          
-06-13-04 23:30 netslayer      Kernel Version            => 2.6.7rc love-sources
-06-14-04 01:38 netslayer      Note Added: 0001305                          
-06-14-04 08:19 pzad           Note Added: 0001306                          
-06-28-04 09:15 pzad           Status                   new => assigned     
-06-28-04 09:15 pzad           Assigned To               => pzad            
-08-06-04 15:01 pzad           Note Added: 0001540                          
-08-06-04 15:02 pzad           Status                   assigned => feedback
-08-06-04 15:02 pzad           Description Updated                          
-08-06-04 15:02 pzad           Steps to Reproduce Updated                    
-08-06-04 15:02 pzad           Additional Information Updated                    
-08-30-04 12:04 pzad           Status                   feedback => resolved
-08-30-04 12:04 pzad           Resolution               open => not an issue
-08-30-04 12:04 pzad           Note Added: 0001667                          
-11-09-04 16:13 tiwai          Status                   resolved => closed  
-11-09-04 16:13 tiwai          Note Added: 0002327                          
+11-08-04 18:50 Mark Knecht    New Issue                                    
+11-08-04 18:50 Mark Knecht    Distribution              => Gentoo          
+11-08-04 18:50 Mark Knecht    Kernel Version            =>
+2.6.9-rc2-mm4-VP-S7-noACPI-UMP
+11-09-04 10:35 tiwai          Note Added: 0002317                          
+11-09-04 10:36 tiwai          Resolution               open => not an issue
+11-09-04 10:37 tiwai          Status                   assigned => resolved
+11-09-04 16:13 Mark Knecht    Status                   resolved => feedback
+11-09-04 16:13 Mark Knecht    Resolution               not an issue => reopened
+11-09-04 16:13 Mark Knecht    Note Added: 0002326                          
 ======================================================================
 
 
