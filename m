@@ -1,14 +1,14 @@
-From: "Loc Ho" <loc@pacificconsultants.com>
-Subject: ALSA Memory Allocation Bug
-Date: Wed, 12 May 2004 18:40:05 -0700
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Firmware uploader
+Date: Thu, 13 May 2004 09:22:51 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <D22B281CC561444AA27F7F6C6C9E3E6102F546@mtvs4.pcllc.net>
+Message-ID: <XFMail.20040513092251.pochini@shiny.it>
+References: <s5hzn8gfwzs.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-class: urn:content-classes:message
+In-Reply-To: <s5hzn8gfwzs.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +17,29 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-I developed an custom USB Audio driver. In addition, I am also using the =
-provided USB Audio driver for commercial USB Audio devices. After some =
-testing with the custom USB Audio driver and the provided USB Audio =
-driver, there seem to be a problem with the ALSA memory allocation =
-routine. In file pcm_memory.c function setup_pcm_id, the id is generated =
-using the pcm device ID, stream ID, and substream number. This only =
-guarantee that the memory tag ID is unique for one card. If I have =
-multiple cards, they will not be unique. Am I correct?
+On 10-May-2004 Takashi Iwai wrote:
+> At Sun, 9 May 2004 18:21:21 +0200,
+> Giuliano Pochini wrote:
+>>
+>> I read /linux/Documentation/firmware_class/README infos about the firmware
+>> loader. That loader is not used by any of the alsa drivers. Is there a
+>> reason ? Should I write my own custom loader or is it better using the
+>> firmware-class one ?
+>
+> it's planned to move the ALSA firmware stuff to this new one.
+> but we'll need a compatibility stuff for older kernels.
 
-Thanks,
-Loc
+Ok, I'll start with the new one. It there a "standard" daemon that
+monitors /proc and uploads the firmware when requested ?
+
+
+--
+Giuliano.
 
 
 -------------------------------------------------------
