@@ -1,13 +1,13 @@
-From: Nico Schottelius <nico-linux-alsa@schottelius.org>
-Subject: ali5451
-Date: Sat, 27 Mar 2004 23:13:05 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Badness in remove_proc_entry
+Date: Sun, 28 Mar 2004 09:54:46 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040327221305.GO462@schottelius.org>
+Message-ID: <Pine.LNX.4.58.0403280954360.1828@pnote.perex-int.cz>
+References: <20040327215238.6e3f0762.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="Vr2UxLU0KdcKBaxP"
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20040327215238.6e3f0762.pochini@shiny.it>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,47 +16,25 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Giuliano Pochini <pochini@shiny.it>
+Cc: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sat, 27 Mar 2004, Giuliano Pochini wrote:
 
---Vr2UxLU0KdcKBaxP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> 
+> I'm not sure if this is alsa's fault. It happens when I unload the module.
+> Yup, snd_gina24 is the driver I'm developing, but it also happens with
+> snd-powermac and when I try to load a module for a card I don't have.
 
-Hello!
+It's fixed in 1.0.4rc1.
 
-I can switch PCM on or off, but cannot adjust the volume.
-I am using Linux 2.6.4.
+						Jaroslav
 
-What information do you need from me to debug this?
-
-Nico
-
-00:06.0 Multimedia audio controller: ALi Corporation M5451 PCI AC-Link Cont=
-roller Audio Device (rev 02)
-
-
-
---=20
-Keep it simple & stupid, use what's available.
-pgp: 8D0E E27A          | Nico Schottelius
-http://nerd-hosting.net | http://linux.schottelius.org
-
---Vr2UxLU0KdcKBaxP
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.4 (GNU/Linux)
-
-iD8DBQFAZfxxzGnTqo0OJ6QRAsDrAKDVJ7sDBt7RpWLIpAGmhwo8c61A2wCeIT8i
-ImoW+w5q0tliwNH2YSHr7lA=
-=WxUV
------END PGP SIGNATURE-----
-
---Vr2UxLU0KdcKBaxP--
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
