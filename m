@@ -1,16 +1,15 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: OSS vs ALSA war :-)
-Date: Tue, 10 Aug 2004 09:33:23 +0200 (CEST)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: .hw_free() while audio is running ??
+Date: Tue, 10 Aug 2004 11:14:27 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408100931160.1779@pnote.perex-int.cz>
-References: <200408100636.i7A6aMAo030159@www4.pobox.sk> <411875DF.7030203@free.fr>
+Message-ID: <20040810111427.7815ec73.pochini@shiny.it>
+References: <20040808172946.43212219.pochini@shiny.it>
+	<Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1463F229
-	for <alsa-devel@alsa-project.org>; Tue, 10 Aug 2004 09:36:23 +0200 (MEST)
-In-Reply-To: <411875DF.7030203@free.fr>
+In-Reply-To: <Pine.LNX.4.58.0408082235380.1771@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,33 +18,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: GCZ <geeceezee@free.fr>
-Cc: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 10 Aug 2004, GCZ wrote:
+On Sun, 8 Aug 2004 22:39:57 +0200 (CEST)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-> Peter Zubaj wrote:
-> > http://www.osnews.com/comment.php?news_id=7976
-> 
-> Well, right after I read the article, I downloaded 4Front's OSS drivers, 
-> and my Terratec Aureon 5.1 Sky finally worked as expected. Now I can 
-> listen to PCM, line-in and aux at the same time, play Quake 3 with 
-> sound, etc...
-> 
-> I'm waiting for the trial period to end, then I'll probably will buy 
-> myself a license. $30 is a little bit expensive for a driver (it should 
-> be provided for free by Terratec), but making my sound card work is 
-> worth it.
+> > The call sequence in the logs is:
+> >
+> > pcm_trigger (start)	- of two synced ss's
+> > pcm_hw_free (playback ss)
+> > Crash, nothing more in the logs :(
+> >
+> > trigger(stop) wasn't called before hw_free.
+>
+> You have an SMP machine? The hw_free is protected with the 
+> runtime->status->state checking, but the code is not protected with 
+> spinlock, so I suspect trouble here.
 
-It would be better to debug the driver.
+Yes, this is a dual processor, but I booted with maxcpus=1 and preempt is
+not enabled.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+--
+Giuliano.
 
 
 -------------------------------------------------------
