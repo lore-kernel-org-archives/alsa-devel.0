@@ -1,11 +1,15 @@
-From: Mark Knecht <markknecht@attbi.com>
-Subject: Please explain Alsa Interface MIDI numbering PLEASE!
-Date: 16 Feb 2003 10:52:23 -0800
+From: Pedro Lopez-Cabanillas <plcl@telefonica.net>
+Subject: Re: Please explain Alsa Interface MIDI numbering PLEASE!
+Date: Sun, 16 Feb 2003 20:43:10 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045421543.1370.15.camel@Godzilla>
+Message-ID: <200302162043.11592.plcl@telefonica.net>
+References: <E18kTvV-0001Ti-00@sc8-sf-list2.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-49s3+c1wM0USRh7/c9jE"
+Content-Type: text/plain;
+  charset="iso-8859-15"
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <E18kTvV-0001Ti-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,257 +18,32 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <alsa-devel@lists.sourceforge.net>, Linux-Audio-User <linux-audio-user@music.columbia.edu>
+To: Mark Knecht <markknecht@attbi.com>
+Cc: alsa-devel@lists.sourceforge.net, Rosegarden-Devel <rosegarden-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Sunday 16 February 2003 19:53, Mark Knecht wrote:
+> 2) In the screen shot "with_2x2.png" I've plugged in the MidiSport 2x2.
+> New devices show up in kaconnect. However, instead of showing 2 read
+> ports and 2 write ports, I am getting 4 read ports and no write ports.
+> Please explain why the MidiSport is given the names
+>
+> 72:0 External MIDI 1
+> 72:1 External MIDI 1
+> 72:2 External MIDI 1
+> 72:3 External MIDI 1
+>
+> Shouldn't this be just :0 and :1 for both the read and write ports?
 
---=-49s3+c1wM0USRh7/c9jE
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Yes. This was a bug in snd-usb-audio for 0.9.0rc7, fixed now in ALSA CVS, see:
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg06225.html
 
-Hi,
-   I'm having a great deal of confusion about how Alsa is handling my
-MIDI hardware. This is spilling over into unintended consequences in
-Rosegarden that I think none of us understand. Couple someone with some
-background in this please explain? Thanks.
+Regards,
+Pedro
 
-   I have two 2-port MIDI devices on this system. One is an RME HDSP
-9652 with two MIDI ports, and the other is a hot pluggable MidiSport
-2x2. I attach two screen shots of kaconnect, one with and one without
-the 2x2 plugged in.
-
-   My questions:
-
-1) In the screen shot "without_2x2.png" I see two read ports and two
-write ports. Please explain why they are called 
-
-64:0 External MIDI 0
-64:32 External MIDI 0
-
-Why is my HDSP given the apparent name '64'? Why the :0 and :32? I would
-have thought :0 and :16 would make more sense from a channel numbering
-point of view, or :0 and :1 from an interface point of view. What's
-going on?
-
-2) In the screen shot "with_2x2.png" I've plugged in the MidiSport 2x2.
-New devices show up in kaconnect. However, instead of showing 2 read
-ports and 2 write ports, I am getting 4 read ports and no write ports.
-Please explain why the MidiSport is given the names 
-
-72:0 External MIDI 1
-72:1 External MIDI 1
-72:2 External MIDI 1
-72:3 External MIDI 1
-
-Shouldn't this be just :0 and :1 for both the read and write ports?
-
-I get the feeling that BOTH of the drivers for these devices are hosed.
-What's up with these things?
-
-   I do not understand why Alsa gives these devices numbers in the first
-place, nor how the numbers are assigned.
-
-   How can I change the names that are displayed so that 
-
-"64:0 External MIDI 0" shows the name "HDSP 9652 Port 1"
-
-"64:32 External MIDI 0" shows the name "HDSP 9652 Port 2"
-
-"72:0 External MIDI 1" shows the name "MidiSport 2x2 Port A"
-
-"72:1 External MIDI 1" shows the name "MidiSport 2x2 Port B"
-
-Thanks very, very much in advance,
-Mark
-
-
-
-
---=-49s3+c1wM0USRh7/c9jE
-Content-Disposition: attachment; filename=with_2x2.png
-Content-Type: image/png; name=with_2x2.png
-Content-Transfer-Encoding: base64
-
-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
-
---=-49s3+c1wM0USRh7/c9jE
-Content-Disposition: attachment; filename=without_2x2.png
-Content-Type: image/png; name=without_2x2.png
-Content-Transfer-Encoding: base64
-
-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
-wBL9H+VX2lZptxODAAAAAElFTkSuQmCC
-
---=-49s3+c1wM0USRh7/c9jE--
+-- 
+ALSA Library Bindings for Pascal
+http://alsapas.alturl.com
 
 
 
