@@ -1,12 +1,14 @@
-From: "Yon Mercury" <swirlee@stickist.com>
-Subject: RE: Re: Echo driver
-Date: Wed, 10 Nov 2004 20:45:21 -0700
-Message-ID: <20041111034521.M3689@stickist.com>
-References: <20041109203858.M64061@stickist.com> <XFMail.20041110092710.pochini@shiny.it>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: The ALSA Situation
+Date: Wed, 10 Nov 2004 18:45:32 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411101828320.22793@pnote.perex-int.cz>
+References: <200411100150.iAA1okCE029069@localhost.localdomain>
+ <001e01c4c6ce$77672eb0$0a00000a@eugenia> <Pine.LNX.4.58.0411101152290.9089@pnote.perex-int.cz>
+ <Pine.LNX.4.58.0411100821180.2301@ppc970.osdl.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <XFMail.20041110092710.pochini@shiny.it>
+In-Reply-To: <Pine.LNX.4.58.0411100821180.2301@ppc970.osdl.org>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,38 +18,47 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Giuliano Pochini <pochini@shiny.it>
-Cc: alsa-devel@lists.sourceforge.net
+To: Linus Torvalds <torvalds@osdl.org>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Giuliano,
+On Wed, 10 Nov 2004, Linus Torvalds wrote:
 
-On Wed, 10 Nov 2004 09:27:10 +0100 (CET), Giuliano Pochini wrote
-> I don't know, but nobody who tried an echoaudio card had success.
+> I don't care whether Eugenia has a point in her complaints or not (hey,
+> it's a usability issue, you can make that decision yourself), but I _do_
+> care about technical people making totally bogus arguments. And Jaroslav,
+> that "posix says so" argument is totally and utterly bogus.
 
-Really? Not even you?
+I see in all manual pages for open() on web these sentences:
 
-> Look at this for example:
-> http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12364.html
-> 
-> but other people did try the same trick with no good results,
-> so it's at least bridge-specific or, worse, computer-specific.
+  When opening a block special or character special file that supports 
+  non-blocking opens, such as a terminal device:
 
-If you follow that thread, you get to another, where a second person solves
-his cardbus problem:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12641.html
+    +  If neither O_NDELAY nor O_NONBLOCK is set, the open() function blocks
+       until the device is ready or available.
 
->From the thread, it does seem that different cardbus bridges require special
-tweaks-- but those people seem to be suggesting that it is an issue with the
-Linux PCMCIA implementation and not ALSA. One of their fixes has already been
-implemented into the PCMCIA tree.
+    +  If O_NDELAY or O_NONBLOCK is set, the open() function returns without
+       waiting for the device to be ready or available. Subsequent behavior
+       of the device is device-specific.
 
-What you could do is put out a call for anyone with a CardBus Echo card to
-test your driver. What do you think?
+The word 'available' clearly states the role of the O_NONBLOCK flag. There
+is no specification if availability is restricted to hardware reasons.  
+Applications can still break the busy-wait-loop using SIG_ALARM (or any
+other signal).
 
--Mercury
+Of course, if our interpretation is weak, then we can simply return to the
+"standard" behaviour for the OSS API. While ALSA API documents this
+feature and we use this flag for operation which cannot be substituted
+easily from the applications (except replacing waiting for event with ugly
+polling), I propose to leave the "blocking" behaviour for ALSA
+applications.
 
+						Jaroslav
 
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
