@@ -1,14 +1,12 @@
-From: Tim Hollingsworth <tim@hollingsworth.com.au>
-Subject: period size
-Date: Tue, 30 Mar 2004 22:45:42 +0800
+From: =?iso-8859-1?q?Brian=20Furey?= <brianmfurey@yahoo.co.uk>
+Subject: intel8x0.c
+Date: Tue, 30 Mar 2004 15:56:55 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <EB5AA0AA-8258-11D8-88CD-000A95AB8A40@hollingsworth.com.au>
-References: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de>
-Mime-Version: 1.0 (Apple Message framework v613)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040330145655.64254.qmail@web25102.mail.ukl.yahoo.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0403301505490.25443-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,38 +15,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: ALSA LIST <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi
 
-I am trying to write a pcm app which receives sound over the network 
-and outputs it through the speakers.  The network protocol is udp.  
- From what I can tell, each packet is a single period with interleaved 
-channels.   My problem is that the period size appears to be below the 
-minimum that my hardware will go.  For example:
+Hi all,
+  I have an intel810 onboard soundcard.I am using the
+alsa driver with a VoIP session.
+  The intel8x0.c file has a minimum period byte size
+of 32 bytes with the minimum no. of periods being
+1.The min and max rate is set to 48k. 
 
-rate: 			48000 Hz
-channels:		2
-packet size:	512 bytes
-sample size:	16 bit
+How can I find out what actual(runtime) size period
+the alsa driver is dealing with? 
 
-ok so far... (correct me if I'm wrong)
+Does it use the minimum size as the period size?
 
-period size 	= (packet size * 8) / (channels * sample size)
-			=  (512 * 8) / (16 * 2)
-			= 128
+ Brian.
 
-buffer size	= (whatever i like...? latency/network stability...?)
 
-When I try to set the period size exactly I get an error.  If I set the 
-period size near I get 192.  How do I make this work?  Should I 
-reconfigure the network sound source?  Do I put the packets together 
-into larger periods?  Can alsa do this for me?
 
-cheers
-Tim
 
+	
+	
+		
+___________________________________________________________
+WIN FREE WORLDWIDE FLIGHTS - nominate a cafe in the Yahoo! Mail Internet Cafe Awards  www.yahoo.co.uk/internetcafes 
 
 
 -------------------------------------------------------
