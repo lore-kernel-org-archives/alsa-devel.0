@@ -1,12 +1,14 @@
-From: Paul Davis <paul@linuxaudiosystems.com>
-Subject: Re: patch for hammerfall driver
-Date: Mon, 03 Feb 2003 09:49:59 -0500
+From: Marcus Blomenkamp <Marcus.Blomenkamp@epost.de>
+Subject: design suggestions for minimal-latency full-duplex io?
+Date: Mon, 3 Feb 2003 16:48:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E18fhrT-0007US-00@sc8-sf-list1.sourceforge.net>
-References: <s5hznpdh6zv.wl@alsa2.suse.de>
+Message-ID: <200302031648.48890.Marcus.Blomenkamp@epost.de>
+Mime-Version: 1.0
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: Your message of "Mon, 03 Feb 2003 13:40:52 +0100."
-             <s5hznpdh6zv.wl@alsa2.suse.de>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,46 +17,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "John S. Denker" <jsd@monmouth.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->> To be explicit:  whenever you see a bug, don't just
->> ask how to fix this instance of the bug;  ask what
->> it would take to make sure no bug of this ilk ever
->> occurs again.
->> 
->> In this case:
->>   a) It would help to have some comments in the code
->> saying where the constants are coming from, so that
->> misconceptions can be more easily spotted.
->>   b) It would help to use correctly computed constants
->> such as
+Hi there.
 
-actually, neither would have really helped very much here. i don't
-know who set the values to those that were here before. the values
-were clearly wrong on any reading of the code, and i've thought about
-them on previous readings. the values that were there before were not
-"buggy" - they were completely wrong.
+What is the best way to achieve minimal transport latency in an application=
+=20
+constanty capturing data from one interface and playing it through another.=
+=20
+The purpose of this app would be some kind of software loop-through=20
+converter. My problem domain is that I have my PC connected to an amplifier=
+=20
+through SPDIF while the TV-card is connected to the soundcard only through=
+=20
+analog wires. However my sound chip CMI8738 does not suppport hardware=20
+realtime monitoring from analog input to digital output. So my suggestion w=
+as=20
+to concurrenly read data from the ADC input and write it to SPDIF output.
 
-the problem here was social rather than technical: i never had a
-reason or the time to do anything to answer my questions about the
-values that were there.
+I initially wrote this as an OSS app but i'm slightly dissappointed about t=
+he=20
+minimal IO latency I could reach with the common iterative read/write=20
+mechanism. So I decided to try the ALSA way to reduce the throughput delay.
 
-the last few days have seen me trying to debug some rather deep
-problems with a specific hdsp configuration, and i wanted to run JACK
-with 8192 frame periods. i couldn't do it, and ended up having to go
-back and deal with those numbers so that i could. 
+Is it possible to have both stream pointers working on the same physical=20
+buffer? A slightly delayed start of playback should then give a nice IO=20
+latency. Are there any other approaches viable? Ideally i'd like to get thi=
+s=20
+working while not depending on userspace scheduling heavily.
 
->>   c) When applying the sizeof() operator, don't
->> apply it to general-purpose types such as int, but
->> rather apply it to an object that is provably
->> of the type you care about, in this case something
+Any suggestions/constraints about the following ideas?
+1. traditional blocking read/write in seperate threads
+2. traditional non-blocking read/write in a single thread
+3. asynchronous SIG_IO triggered read/write handling
+4. mmap'ed buffer for read+write
 
-agreed. i had meant to remove the sizeof() from the patch before i
-posted it. 
+Especially for the last candidate i'd appreciate any kind of pseudo-code si=
+nce=20
+i'm not yet quite familiar with ALSA and MMAP audio IO.
 
---p
+Regards, Marcus
+
 
 
 -------------------------------------------------------
