@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000968]: arecord/aplay 24-bit nonstandard?
-Date: Mon, 7 Mar 2005 20:58:53 +0100
-Message-ID: <24e630d440e0d0eb8c72013cdbf1e3a5@bugtrack.alsa-project.org>
+From: Lee Revell <rlrevell@joe-job.com>
+Subject: Re: Broken nforce3 support in ALSA on amd64?
+Date: Mon, 07 Mar 2005 15:06:05 -0500
+Message-ID: <1110225967.935.12.camel@mindpipe>
+References: <1109468746.11523.20.camel@colgate3.iforde.net>
+	 <s5hr7irwpjf.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 010271D2
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 20:58:53 +0100 (MET)
+In-Reply-To: <s5hr7irwpjf.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,60 +17,24 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Ian Forde <ian@duckland.org>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 2005-03-07 at 14:31 +0100, Takashi Iwai wrote:
+> Unfortunately, the datasheet of nforce is not available at all, so we
+> have no chance to fix this problem yet unless you do some reverse
+> engineering (but I never recommend to do that, it's a waste of time).
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=968> 
-======================================================================
-Reported By:                ScottHelmke
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   968
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             03-07-2005 18:11 CET
-Last Modified:              03-07-2005 20:58 CET
-======================================================================
-Summary:                    arecord/aplay 24-bit nonstandard?
-Description: 
-Using arecord with S24_LE resolution, later tried to import files into
-Ardour.  Apparently the 24-bit implemenation by arecord is faulty.  16 and
-32 bit audio from arecord imported just fine.  Ardour developers say that
-problem is with arecord.
+Do you mean reverse engineering Nvidia drivers, or RE in general?  If
+it's the latter I have to disagree strongly.  It't not fast or easy, but
+many ALSA drivers have gained useful features this way.
 
+I strongly encourage reverse engineering proprietary drivers.  Look at
+what James did with the Audigy LS.  And look how much is known about the
+EMU DSP instruction set, all that info is reverse engineered.
 
-======================================================================
-
-----------------------------------------------------------------------
- perex - 03-07-05 20:52 
-----------------------------------------------------------------------
-Ok, so what's the correct behaviour? S24_LE format aligns the used bits to
-left not to right as S32_LE with 24-bit hardware. So, we should probably
-disallow .wav file recording when this format is used for .wav files... Or
-not?
-
-----------------------------------------------------------------------
- ScottHelmke - 03-07-05 20:58 
-----------------------------------------------------------------------
-Alas, I don't know what arecord should be doing exactly... I'm a mere user
-of software these days.  It could just be a header issue.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-03-07-05 18:11 ScottHelmke    New Issue                                    
-03-07-05 20:52 perex          Note Added: 0003808                          
-03-07-05 20:58 ScottHelmke    Note Added: 0003810                          
-======================================================================
-
+Lee
 
 
 
