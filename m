@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: libasound segfault
-Date: Wed, 13 Mar 2002 19:50:05 +0100 (CET)
+From: Paul Davis <pbd@op.net>
+Subject: "plug" PCM device has odd default behaviour
+Date: Wed, 13 Mar 2002 16:44:36 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0203131945500.511-100000@pnote.perex-int.cz>
-References: <200203131403.JAA29811@renoir.op.net>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <200203131403.JAA29811@renoir.op.net>
+Message-ID: <200203132144.g2DLiaP01978@op.net>
+Received: from renoir.op.net (root@renoir.op.net [207.29.195.4])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id WAA14161
+	for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2002 22:43:14 +0100
+Received: from op.net (maxtnt04-137.phlpa.fast.net [209.92.96.137]) by renoir.op.net (o1/$Revision: 1.18 $) with ESMTP id QAA05663 for <alsa-devel@alsa-project.org>; Wed, 13 Mar 2002 16:43:10 -0500 (EST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,47 +15,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Paul Davis <pbd@Op.Net>
-Cc: Jussi Laako <jussi.laako@kolumbus.fi>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 13 Mar 2002, Paul Davis wrote:
+so, you all know jack, i'm sure.
 
-> >(gdb) bt
-> >#0  0x4015e8d7 in snd_pcm_route_convert1_one () from /usr/lib/libasound.so.2
-> >#1  0x40cae5dc in ?? ()
-> >#2  0x012de908 in ?? ()
-> >Error accessing memory address 0xe8c1018b: No such process.
-> >(gdb)
-> >
-> >
-> >When reading plughw after requesting 24-bit format. I expect the output
-> >should be 32-bit words with data in upper 24 bits. 16-bit format works and
+when jack is used with a "plug" PCM device, we end up with duplicated
+channel data even on a 2 channel device. using mmap access, everything
+we write to the channel area for channel 0 shows up on both channel 0
+and channel 1. i don't understand how this could happen. any clues on
+what i should start looking for? my first guess is that the channel
+addresses supplied for mmap access are wrong/duplicated (i haven't
+tried debugging yet).
 
-> >asking for 32-bit format gives shared memory errors.
+obviously, jack works fine with a "hw" PCM device.
 
-Can we see your code? The 32-bit format should work.
-
-> (i was waiting for some insightful comment from jaroslav or abramo :)
-> 
-> no, as I've mentioned several times on LAD, S24_[LB]E is real 24 bit
-> data, not 24-in-32. 24-in-32 is handled by S32_[BL]E, and the msbits
-> value is set in the params struct to indicate where the significant
-> bits are. S32_LE has been used on at least 4 types of ALSA-support
-> with the "hw" device type. I don't know about with "plughw".
-
-It's not true. The 24-bit format (S24_[LB]E) in ALSA uses low three bites 
-(most significant byte is ignored). The physical data layout is 32-bit, too. I 
-don't think that any hardware supports / will support 24-bit samples in three 
-bytes.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+--p
 
 
 _______________________________________________
