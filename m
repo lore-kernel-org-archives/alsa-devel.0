@@ -1,12 +1,11 @@
-From: "Lonnie Mendez" <lmendez19@austin.rr.com>
-Subject: Re: Problem with snd-usb-audio (usbmixer)
-Date: Wed, 18 Aug 2004 10:13:58 -0500
+From: "Martin Langer" <martin-langer@gmx.de>
+Subject: Re: [ALSA - driver 0000454]: cvs site is down
+Date: Wed, 18 Aug 2004 17:37:47 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <001601c48535$fd0dd6c0$0200a8c0@jedi>
-References: <001801c484e8$7640e4e0$0200a8c0@jedi> <20040818154042.GA19866@mffm.ee.unsw.edu.au>
+Message-ID: <17402.1092843467@www19.gmx.net>
+References: <s5hsmakv6dq.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,18 +16,48 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Matt Flax <flatmax@ieee.org>
+To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> At Wed, 18 Aug 2004 16:35:44 +0200 (CEST),
+> bugtrack@alsa-project.org wrote:
+> > 
+> > 
+> > Description: 
+> > cvs -z3 update -dP now gives:
+> > 
+> > cvs [update aborted]: unrecognized auth response from
+> cvs.sourceforge.net:
+> > M PserverBackend::PserverBackend() Connect (Connection refused)
+> > 
+> > It started a few days ago, and had been working properly for months
+> > before.
+> > 
+> > ======================================================================
+> > 
+> > ----------------------------------------------------------------------
+> >  pzad - 08-18-2004 16:35 CEST 
+> > ----------------------------------------------------------------------
+> > And what about this too:
+> > ftp://ftp.alsa-project.org/pub/cvsexport/
+> > For me this was useful, but it is not up to date too. :-(
+> > (last is from 2004/06/02)
+> 
+> Oh that hits again...
+> 
+> I believe we really consider seriously moving from sourceforge to
+> another host.  At least the cvs service has been down too many times.
+> ML seems working fine, though.
 
-> What I was trying to get info about was wether it has a soft mixer or 
-> only hard mixer ... my M-Audio USB card for example only has a hardware 
-> mixer (knobs).
+Except moving new mails to the archive on mail-archive.com. It stopped
+working, too. I guess it was even at the same day (server update).
 
-The device has no physical controls on it.
+martin
 
-http://geocities.com/i0xox0i/lsusboutput.txt
+-- 
+NEU: WLAN-Router für 0,- EUR* - auch für DSL-Wechsler!
+GMX DSL = supergünstig & kabellos http://www.gmx.net/de/go/dsl
 
 
 
