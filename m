@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000767]: crash during ./cvscompile of alsa-utils package
-Date: Mon, 3 Jan 2005 12:12:12 +0100
-Message-ID: <22d91edc840d744fbaf2045d3d29b89e@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000775]: Truble with build of alsa 1.0.8rc1 on 2.6.10!
+Date: Mon, 3 Jan 2005 12:13:18 +0100
+Message-ID: <33a0568382862d9b6a75e7339ab3c55d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D24E12B6
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 12:12:12 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D1EBE2B6
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 12:13:18 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,60 +22,70 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=767> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=775> 
 ======================================================================
-Reported By:                wbrown338
-Assigned To:                
+Reported By:                cyclon
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   767
-Category:                   aconnect
+Project:                    ALSA - driver
+Issue ID:                   775
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             12-31-2004 16:01 CET
-Last Modified:              01-03-2005 12:12 CET
+Date Submitted:             01-02-2005 11:03 CET
+Last Modified:              01-03-2005 12:13 CET
 ======================================================================
-Summary:                    crash during ./cvscompile of alsa-utils package
+Summary:                    Truble with build of alsa 1.0.8rc1 on 2.6.10!
 Description: 
-gcc -shared  .libs/conf.o .libs/confmisc.o .libs/input.o .libs/output.o
-.libs/async.o .libs/error.o .libs/dlmisc.o .libs/socket.o .libs/shmarea.o
-.libs/userfile.o -Wl,--whole-archive control/.libs/libcontrol.a
-mixer/.libs/libmixer.a ordinary_mixer/.libs/libordinarymixer.a
-pcm/.libs/libpcm.a ordinary_pcm/.libs/libordinarypcm.a
-rawmidi/.libs/librawmidi.a timer/.libs/libtimer.a hwdep/.libs/libhwdep.a
-seq/.libs/libseq.a instr/.libs/libinstr.a compat/.libs/libcompat.a
-alisp/.libs/libalisp.a -Wl,--no-whole-archive  -lm -ldl -lpthread 
--Wl,-soname -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
-/usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name
-snd_pcm_hw_params_get_buffer_size_max@ALSA_0.9
-/usr/bin/ld: failed to set dynamic section sizes: Bad value
-collect2: ld returned 1 exit status
-make[2]: *** [libasound.la] Error 1
-make[2]: Leaving directory `/usr/src/alsa/alsa-lib/src'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/usr/src/alsa/alsa-lib/src'
-make: *** [all-recursive] Error 1
+  LD [M]  /root/alsa-driver-1.0.8rc1/pci/nm256/snd-nm256.o
+  CC [M]  /root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr.o
+  CC [M]  /root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.o
+In file included from
+/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.c:25:
+include/linux/firmware.h:11: warning: `struct device' declared inside
+parameterlist
+include/linux/firmware.h:11: warning: its scope is only this definition or
+declaration, which is probably not what you want
+include/linux/firmware.h:15: warning: `struct device' declared inside
+parameterlist
+/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.c: In function
+`pcxhr_setup_firmware':
+/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.c:212: error:
+dereferencing pointer to incomplete type
+make[5]: *** [/root/alsa-driver-1.0.8rc1/pci/pcxhr/pcxhr_hwdep.o] Error 1
+make[4]: *** [/root/alsa-driver-1.0.8rc1/pci/pcxhr] Error 2
+make[3]: *** [/root/alsa-driver-1.0.8rc1/pci] Error 2
+make[2]: *** [_module_/root/alsa-driver-1.0.8rc1] Error 2
+make[1]: *** [modules] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.10-gentoo-r1-na'
+make: *** [compile] Error 2
+
 
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-03-05 12:12 
+ tiwai - 01-03-05 12:13 
 ----------------------------------------------------------------------
-Which architecture?  i386?
-And which gcc version?
+Already fixed in CVS.
+
+You can avoid by adding --with-debug option to configure, too.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-31-04 16:01 wbrown338      New Issue                                    
-01-03-05 12:06 tiwai          Project                  ALSA - utils => ALSA -
-lib
-01-03-05 12:12 tiwai          Note Added: 0003055                          
+01-02-05 11:03 cyclon         New Issue                                    
+01-03-05 12:13 tiwai          Status                   assigned => resolved
+01-03-05 12:13 tiwai          Resolution               open => fixed       
+01-03-05 12:13 tiwai          Note Added: 0003056                          
 ======================================================================
 
 
