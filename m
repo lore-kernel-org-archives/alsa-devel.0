@@ -1,12 +1,16 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: ALSA crash
-Date: Fri, 19 Jul 2002 08:02:34 -0400
+From: John Anderson <panic-alsa@semiosix.com>
+Subject: Re: Problems with USB driver and Swissonic USB Studio
+Date: 19 Jul 2002 14:08:55 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17VWQy-0005Mb-00@usw-sf-list1.sourceforge.net>
-References: <3D37F5B8.AE18A86B@multitech.co.in>
+Message-ID: <1027080536.1767.32.camel@groovious>
+References: <1027074021.1203.15.camel@groovious>
+	<s5hofd4qad8.wl@alsa2.suse.de> <1027076078.1745.20.camel@groovious>
+	<s5hit3cq7zi.wl@alsa2.suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Fri, 19 Jul 2002 16:49:20 +0530."
-             <3D37F5B8.AE18A86B@multitech.co.in>
+In-Reply-To: <s5hit3cq7zi.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,27 +19,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Shaju Abraham <shaju@multitech.co.in>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hi,
->        Pls check the attached file that is dmesg of a ALSA crash. Can
->you pls tell under what conditions this happens?
->
->Another thing ... in pcm_lib.c , for the funtion  snd_pcm_update_hw_ptr.
->, there is a comment that "this should be called with interrupts
->disabled". Can you tell us who is disabling the interrupts just before
->this is called?
->
->Does spin_lock_irq do that?
+On Fri, 2002-07-19 at 13:20, Takashi Iwai wrote:
+> hmm, do you see any kernel messages from alsa drivers?
+> (you might need to compile it via --with-debug=full option.)
+> if there is a message regarding unknown ioctl, then the alsa-library
+> doesn't match with the alsa driver.  something wrong happened during
+> alsa-lib installation, such as wrong path, etc.
 
-sort of. but the main and usually only place where
-snd_pcm_update_hw_ptr is called is from the interrupt handler for the
-audio interface, which is called with interrupts disabled by the
-kernel.
+I did the configure dance for the drivers, with the debug switch.
+Recompiled, installed, and did rmmod -r. The '-r' was the obvious bit I
+forgot last time. Duh.
 
---p
+It works now. Thanks for your help.
+
+bye
+John
+ 
+-- 
+
+Freelance DataDreamer http://www.semiosix.com
+Good Things require a precise lack of control
+
 
 
 -------------------------------------------------------
