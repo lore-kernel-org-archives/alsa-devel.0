@@ -1,14 +1,14 @@
-From: Tom Watson <sdc695@yahoo.com>
-Subject: Digest text (and others)
-Date: Tue, 6 Jul 2004 16:08:51 -0700 (PDT)
+From: Apostolos Dimitromanolakis <apostolos@aei.ca>
+Subject: Re: [PATCH] aureon.c - adc mux, master vol
+Date: Tue, 06 Jul 2004 21:05:44 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040706230851.40876.qmail@web60808.mail.yahoo.com>
-References: <E1Bht8r-0002Fn-BS@sc8-sf-list2.sourceforge.net>
-Reply-To: tsw@johana.com
+Message-ID: <40EB4C68.2090804@aei.ca>
+References: <40E6D4D0.6000206@gmx.at> <s5h4qom93jx.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E1Bht8r-0002Fn-BS@sc8-sf-list2.sourceforge.net>
+In-Reply-To: <s5h4qom93jx.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,27 +20,43 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Is it just me, or are others getting sick of the '=3D' quoted-printable text in
-the bug reports that get forwarded to the alsa-devel list.  Is there some magic
-way to at least make them be un-quoted-printable.  It is VERY annoying, not the
-least difficult to wade thru.
 
-Just subscribe to the digest for a coulpe of days.  You will see exactly what I
-mean.
+I think it would be convenient for the end user  to keep the Master
+volume attenuation on Aureon & Prodigy.  There are seperate analog and
+digital volume controls on the chip and since each DAC has it's analog
+volume control as a mixer element, why not have the master digital
+volume as another control?
 
-Thanks.
+Minor change one could say but imagine someone trying to adjust the
+volume of his 5.1 speaker system while playing a DVD.
 
-=====
--- 
-Tom Watson
-tsw@johana.com
+Apostolos
 
 
-		
-__________________________________
-Do you Yahoo!?
-Yahoo! Mail Address AutoComplete - You start. We finish.
-http://promotions.yahoo.com/new_mail 
+Takashi Iwai wrote:
+
+>Thanks for the patch.  Looks like I forgot to remove/change some
+>things.  It would be nice if you can test aureon boards with the
+>latest changes.
+>
+>The below is the completely rewritten patch.  It includes
+>
+>- Removal of 'Master Playback Volume', which is bogus
+>  (it forces to change all DAC volumes)
+>
+>- Split 'DAC Volumes' to Front/Rear/Center/LFE/Side volumes.
+>  Please test whether the volume element really corresponds to the
+>  assigned output.  Rear and Center/LFE might be swapped.
+>- Fix ADC capture mutx for stereo.
+>
+>
+>thanks,
+>
+>Takashi
+>  
+>
+
+
 
 
 -------------------------------------------------------
