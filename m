@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Tue, 4 Jan 2005 21:38:01 +0100
-Message-ID: <dbf413f988f0d285bfea52b448728de6@bugtrack.alsa-project.org>
+Date: Tue, 4 Jan 2005 22:30:48 +0100
+Message-ID: <80c0e03a1c9310e1552beb9bbc961b45@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D380F2B0
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 21:38:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E81D82BD
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 22:30:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              01-04-2005 21:38 CET
+Last Modified:              01-04-2005 22:30 CET
 ======================================================================
 Summary:                    Master volume only controls front output (emu10k1)
 Description: 
@@ -58,12 +58,6 @@ related to          0000172 Master volume control only controls fro...
 ======================================================================
 
 ----------------------------------------------------------------------
- pzad - 01-04-05 21:29 
-----------------------------------------------------------------------
-But something can be fixed in driver (and this bug can be partially fixed
-in driver for emu10k1, and this is simpler solution).
-
-----------------------------------------------------------------------
  rlrevell - 01-04-05 21:38 
 ----------------------------------------------------------------------
 Peter,
@@ -74,6 +68,21 @@ exactly what the alsavol.sh script does, but inside the driver?
 
 I might try to implement this.  Does it need to be fixed for SBLive and
 Audigy too?
+
+----------------------------------------------------------------------
+ pzad - 01-04-05 22:30 
+----------------------------------------------------------------------
+Audigy is OK - this was fixed in past.
+
+SB Live is worse, because there is not one signal path from analog inputs
+to front speakers, but two (audigy has only one).
+
+If you are interested in fixing this, I can send you how SB Live alsa
+mixer looks now and how it should look after.
+
+This will fix - partially "master" control (this bug repport), spdif
+volume controls (for digital speakers) (another bug report) and signal
+distortion when using bass and treble controls (another bug report).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -97,6 +106,7 @@ Date Modified  Username       Field                    Change
 01-04-05 21:11 rlrevell       Note Added: 0003082                          
 01-04-05 21:29 pzad           Note Added: 0003083                          
 01-04-05 21:38 rlrevell       Note Added: 0003084                          
+01-04-05 22:30 pzad           Note Added: 0003085                          
 ======================================================================
 
 
