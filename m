@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
-Date: Fri, 4 Feb 2005 19:36:03 +0100
-Message-ID: <a56605b67605db9c76ffb98289156f22@bugtrack.alsa-project.org>
+Date: Fri, 4 Feb 2005 19:41:51 +0100
+Message-ID: <e89e8917acb48f42c120b82d99fd0940@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E4CB922F
-	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 19:36:03 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E39C222F
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 19:41:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:               Fedora Core 3
 Kernel Version:             2.6.8-ac8
 ======================================================================
 Date Submitted:             01-25-2005 15:28 CET
-Last Modified:              02-04-2005 19:36 CET
+Last Modified:              02-04-2005 19:41 CET
 ======================================================================
 Summary:                    Intel HDA (C-Media 9880) SPDIF Out
 Description: 
@@ -51,22 +51,6 @@ the command run normally, but no output on spdif out.the same with xmms
 (with ALSA, on hw:0,1).
 
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 02-04-05 15:02 
-----------------------------------------------------------------------
-Don't use "hw:x,y" directly.  As default, the normal PCM output should be
-routed to SPDIF, too.  Make sure "IEC958 Playback Switch" is set, and run
-normally like
-
-  % aplay foo.wav
-
-This won't work with AC3 output.  For AC3 output, use "iec958" or "spdif"
-instead.
-
-Anyway, the value of IEC958 Playback Default looks strange.
-Could you try iecset program in alsa-utils to set up the SPDIF status
-properly?
 
 ----------------------------------------------------------------------
  1g0R - 02-04-05 19:36 
@@ -99,6 +83,14 @@ Endian, Rate 44100 Hz, Channels 6
 
 but i cant hear anything from speakers
 
+----------------------------------------------------------------------
+ tiwai - 02-04-05 19:41 
+----------------------------------------------------------------------
+As I wrote, try to set up the SPDIF status bits properly via iecset before
+running aplay.
+
+Why do you play 6-channel wav file?  SPDIF supports only 2 channels.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -113,6 +105,7 @@ Date Modified  Username       Field                    Change
 01-28-05 19:01 1g0R           Note Added: 0003434                          
 02-04-05 15:02 tiwai          Note Added: 0003507                          
 02-04-05 19:36 1g0R           Note Added: 0003514                          
+02-04-05 19:41 tiwai          Note Added: 0003515                          
 ======================================================================
 
 
