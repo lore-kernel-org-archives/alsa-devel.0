@@ -1,19 +1,19 @@
-From: Thomas Fjellstrom <tfjellstrom@telusplanet.net>
-Subject: Re: final release - Tuesday
-Date: Sun, 9 Mar 2003 16:13:38 -0700
+From: Andrei Boros <andrei@srr.ro>
+Subject: Re: alsa-driver parse error
+Date: Mon, 10 Mar 2003 13:22:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303091613.38425.tfjellstrom@telusplanet.net>
+Message-ID: <3E6C756E.2EDEA9EB@srr.ro>
 References: <Pine.LNX.4.44.0303101113450.1071-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from priv-edtnes44.telusplanet.net (outbound05.telus.net [199.185.220.224])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA27960
-	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2003 12:12:33 +0100
-In-Reply-To: <Pine.LNX.4.44.0303101113450.1071-100000@pnote.perex-int.cz>
-Content-Disposition: inline
+Received: from dingo.srr.ro ([212.54.107.183])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA28115
+	for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2003 12:23:00 +0100
+Received: from srr.ro
+         by dingo.srr.ro (8.9.3/8.9.3) with ESMTP id NAA28246
+         for <alsa-devel@alsa-project.org>; Mon, 10 Mar 2003 13:22:23 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -22,54 +22,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On March 10, 2003 03:15 am, Jaroslav Kysela wrote:
-> On Sun, 9 Mar 2003, Thomas Fjellstrom wrote:
-> > On March 9, 2003 05:13 pm, Jaroslav Kysela wrote:
-> > > Hi all,
-> > >
-> > > 	I have just released the 0.9.0rc8d version of the ALSA driver for
-> > > tests. It should fix the trident problems as Paul noticed. If no major
-> > > bug is reported until Tuesday, I will release the final packages.
-> > >
-> > > 					Have fun,
-> > > 						Jaroslav
-> >
-> > Hey,
-> >
-> > I've brought this up a couple times, and It looked like Takashi was
-> > working on it. I added alsa 0.5 and 0.9x rawmidi support to a library
-> > called Allegro (alleg.sf.net) but since upgrading to alsa 9x (I also just
-> > installed the latest release from alsa-project.org) the midi test app
-> > that comes with allegro (and a midi player of mine...) will eventually
-> > (in a couple minutes) eat up 100% cpu time. The allegro midi system has
-> > no problems with its software synth, in OSS (or so I've heard), Windows,
-> > or any of the other platforms it supports.
->
-> I cannot find 0.9 code in your CVS tree.
 
-Yes.. Thats becasue I couldn't get the driver to work, so I didn't submit all 
-my changes for alsa 0.9. You want me to send you the one driver file? (which 
-won't work on its own in the cvs.. I havent worked on the code in a while, 
-and even a patch I might generate will probably not apply to cvs. I've made a 
-few changes to the configure stuff to automatically detect the alsa version) 
-Or anything?
+CVS update 5 min. ago gives the following error when attempting driver
+compilation with cs46xx and opti92x-ad1848 :
 
-> Note: Don't use the APPEND mode for single-byte writting. This mode is
-> indended for full MIDI messages (including running state) otherwhise there
-> is no guarantee that another application doesn't break the stream with
-> other bytes.
->
+gcc -D__KERNEL__ -DMODULE=1
+-I/serve/install/alsa-cvs/alsa-driver/include  -I/usr/src/linux/include
+-O2 -march=i586 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD  
+-DEXPORT_SYMTAB -c sound.c
+In file included from ../alsa-kernel/core/sound.c:29,
+                 from sound.c:1:
+/serve/install/alsa-cvs/alsa-driver/include/sound/version.h:6: warning:
+`CONFIG_SND_VERSION' redefined
+/serve/install/alsa-cvs/alsa-driver/include/sound/version.h:3: warning:
+this is the location of the previous definition
+In file included from ../alsa-kernel/core/sound.c:29,
+                 from sound.c:1:
+/serve/install/alsa-cvs/alsa-driver/include/sound/version.h:1: parse
+error before `<'
+In file included from
+/serve/install/alsa-cvs/alsa-driver/include/sound/control.h:25,
+                 from ../alsa-kernel/core/sound.c:30,
+                 from sound.c:1:
+/serve/install/alsa-cvs/alsa-driver/include/sound/asound.h:88: parse
+error before `}'
+/serve/install/alsa-cvs/alsa-driver/include/sound/asound.h:804: field
+`iec958' has incomplete type
+make[1]: *** [sound.o] Error 1
+make[1]: Leaving directory `/serve/install/alsa-cvs/alsa-driver/acore'
 
-Ok. I'll get that fixed.
+
+
 
 -- 
-Thomas Fjellstrom
-tfjellstrom@telusplanet.net
-http://strangesoft.net
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
