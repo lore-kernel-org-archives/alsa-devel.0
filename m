@@ -1,13 +1,14 @@
-From: Pavel Roskin <proski@gnu.org>
-Subject: Re: pkg-config for alsa?
-Date: Wed, 2 Oct 2002 09:46:52 -0400 (EDT)
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
+Subject: Re: questions for alsa-devel
+Date: Wed, 02 Oct 2002 16:07:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0210020856250.5153-100000@portland.hansa.lan>
-References: <s5hy99hjdjw.wl@alsa2.suse.de>
+Message-ID: <m27kh1djdd.fsf@vador.mandrakesoft.com>
+References: <200210021357.g92DvYsu010195@smtp.mandrakesoft.com>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hy99hjdjw.wl@alsa2.suse.de>
+In-Reply-To: <200210021357.g92DvYsu010195@smtp.mandrakesoft.com> (Paul
+ Davis's message of "Wed, 02 Oct 2002 09:58:34 -0400")
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,62 +17,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paul Davis <pbd@op.net>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello!
+Paul Davis <pbd@op.net> writes:
 
-I haven't done any development for sound in the userspace, so don't put
-too much weight into my words, but for what it's worth ...
+> > hum, mdk9.0 is compiled with module versionning and we've no
+> > problems (i mean there're bugs but not such problems)
+>
+> this is 8.2 ...
 
-> i'd like to rewrite configure for alsa-utils and alsa-tools to use
-> pkg-config for alsa-lib.  you might have found alsa.pc already in
-> alsa-lib. the only concern is that pkg-config is unlikely installed as a
-> standard tool in most distributions.  but surely pkg-config is the right
-> way to go.
+this means that we compile rc3 with versionning symbols without
+problems, so this answer takashi fear
 
-I would object if portability between operating systems was desired.  But
-since L in ALSA stands for Linux, it's probably a reasonable requirement.
-I believe that somebody should rewrite pkgconfig in shell, so that it
-could be distributed with packages.
+> i have a bit of a problem with all of this. why doesn't ALSA build
+> "out of the box"? the description you've given of what is necessary
+> to get this to work seems (for the most part) to be a bit
+> ridiculous.
 
-I have no problem with giving pkgconfig more exposure, since I'm not aware
-of any alternatives.  It addresses an issue that other tools don't
-address.  For example, libtool doesn't keep path to the headers.  m4
-macros either do wild guessing or resolve to a supplied executable script
-(like glib-config), which is worse than pkgconfig, because pkgconfig
-behaves in a more predictable way than a bunch of little scripts.
+insulting people that take time to answer you has always been a
+constructive & efficient communication way.
 
-> also, how about to add a define "-DALSA_PCM_NEW_HW_PARAMS_API" to cflags
-> in alsa.pc, so that the new PCM API is chosen if someone uses pkg-config
-> ?  there is still alsa.m4 for the older API, so existing applications
-> don't suffer by this.
+> > 4) note that if you boot with a kernel with alsa-0.9.0, all your
+> >    alsa apps won't work unless you use them in oss emulation mode.
+>
+> why is this? note that i never compile ALSA as part of the kernel,
+> and i doubt that i ever will, even when 2.5/2.6/3.0 comes out. i
+> prefer to be able to update my drivers without touching my kernel
+> source.
 
-Maybe it's too late to comment on this, but I don't like the name of that
-define.  What is new today will be old one year later.  Instead of
-inventing new names, it's better to use versions of API.  The application
-would define what API version is expects, and the headers would enable
-corresponding API or report that the given version of API is no longer
-supported.
+the problem will remains the same whatever you compiled the alsa
+modules in the same time you compiled the kernel or as a separate
+pacakge : applications linked with alsa-0.5 library won't be able to
+dialog with alsa-0.9.0 kernel ...
 
-I understand that it would be convenient to force the applications to the 
-new API when they switch to pkgconfig, but it would be even better to have 
-them define the API they except themselves, so that it could later be 
-updated in the right place - in the applications (together with the code
-that needs updating).
+> updating from 8.2 to 9.0 over a 56k link strikes me as a pretty
+> absurd step to take.
 
-While at this issue, is it possible to compile everything from CVS without
-intermediate installs?  I mean, compile alsa-lib against the headers of
-alsa-driver in CVS and alsa-util against alsa-lib in CVS. If it's
-possible, please make sure not to break this functionality.  Otherwise,
-I'd like to see it added (probably through temporary rc files for
-uninstalled library and drivers).
+then, unless you absolutely need the fixes provided by the latest alsa
+driver for your card, there's no point in upgrading it without
+upgrading libalsa and relevant applications...
 
--- 
-Regards,
-Pavel Roskin
+> having to specifically install kernel source to compile ALSA (and
+> presumably other drivers) seems very odd to me. i would understand
+> if ALSA just failed to compile without that step, but i didn't ask
+> for or say no to a kernel source package, and ALSA compiled just
+> fine.
 
+alsa can compile fine as an extra package providing you've kernel
+headers and the right links in /boot and /lib/modules (config, build,
+System.map, ...)
+
+> frankly, i was very suprised to get ALSA 0.5 in mdk8.2. its been
+> publically stated for months and months that 0.5 is no longer under
+> development and is not really supported (though takashi has done a
+> great job with it). i did a quick search with rpmdrake to see if a
+> 0.9.0 rpm was on the installation disks, but i couldn't find it.
+
+mdk8.2 is more than 6 monthes old; i don't have yet time support in
+tcp/ip to download future version of alsa-0.9.0 when only stable
+versions of alsa-0.5.x were out...
+
+the point of alsa-0.5.x integration in mandrake kernel was more
+drivers (there're lots of cards not supported by oss drivers but by
+alsa. eg the fm801 i used to have)
+
+we also put the corresponding alsa libs and tools since they enable
+some more features in some apps.
+
+if you want less drivers and less features, that's your problem.
 
 
 
