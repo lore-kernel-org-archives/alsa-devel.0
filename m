@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000657]: modprobe snd-pcm-oss SIGSEGV with emu10k1 + azx
-Date: Mon, 22 Nov 2004 15:07:17 +0100
-Message-ID: <21ce469965eaf3973a0841cb23de8fbb@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000167]: alsamixer crashes system when snd-ioctl32 is loaded
+Date: Mon, 22 Nov 2004 16:22:24 +0100
+Message-ID: <0f013089baa9adc9fe4ad38275adc4e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EDECE20C
-	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 15:07:31 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 263052B7
+	for <alsa-devel@alsa-project.org>; Mon, 22 Nov 2004 16:22:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,109 +24,104 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=657> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167> 
 ======================================================================
-Reported By:                fejf
+Reported By:                bons78
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   657
-Category:                   CORE OSS - pcm
+Issue ID:                   167
+Category:                   SPARC - cs4231
 Reproducibility:            always
-Severity:                   crash
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.9 (unpatched kernel.org)
+Distribution:               debian/unstable
+Kernel Version:             linux-2.6.4+
 ======================================================================
-Date Submitted:             11-19-2004 11:53 CET
-Last Modified:              11-22-2004 15:07 CET
+Date Submitted:             03-30-2004 00:02 CEST
+Last Modified:              11-22-2004 16:22 CET
 ======================================================================
-Summary:                    modprobe snd-pcm-oss SIGSEGV with emu10k1 + azx
+Summary:                    alsamixer crashes system when snd-ioctl32 is loaded
 Description: 
-i'm using the onboard azx codec (intel 915pgl board) + an emu10k1
-soundcard. the azx codec was detected but i couldn't get sound out of it.
-i only got 2 mixers (master+caputre) with alsa-driver-1.0.6a so i tried to
-upgrade to 1.0.7 - after reboot the following happened:
+alsamixer crashes system hard when snd-ioctl32 is loaded.
+System still responds to some sysrq commands (sync remount boot show) -
+sysrq (term killall) has no effect.
+There's no chance to do any other keyboard input. No logs, no traps, no
+oops. Machine still responds to ping,(even port 22 stays open) but login
+via ssh is not possible. 
 
---------------------------------------------------------------------------
- * Loading ALSA drivers ...
- *   Loading: snd-azx ... [ ok ]
- *   Loading: snd-emu10k1 ... [ ok ]
- *   Loading: snd-seq-oss ... [ ok ]
- *   Loading: snd-pcm-oss ...
-Oops: 0000 [https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
-SMP
-Modules linked in: snd_mixer_oss snd_seq_oss snd_seq_midi_event snd_seq
-snd_emu10k1 snd_rawmidi snd_seq_device snd_ac97_codec snd_util_mem
-snd_hwdep
-snd_azx snd_pcm snd_timer snd snd_page_alloc
-CPU:    1
-EIP:    0060:[<e0899b41>]    Not tainted VLI
-EFLAGS: 00010286   (2.6.9)
-EIP is at snd_azx_cap_select_info+0x3a/0x4d [snd_azx]
-eax: 00000000   ebx: e0931b00   ecx: de2ea000   edx: dd9a7d0c
-esi: 00000000   edi: dd9a7d64   ebp: dd9a7eb8   esp: dd9a7ce4
-ds: 007b   es: 007b   ss: 0068
-Process modprobe (pid: 23438, threadinfo=dd9a6000 task=dad16130)
-Stack: 00000000 dd9a7e1c e092f13a db171a00 dd9a7d0c 00000000 00000000
-00000009
-       00000000 db171a00 00000000 00000000 00000000 00000000 00000000
-00000000
-       00000000 00000000 00000000 00000000 00000000 00000000 00000000
-00000000
-Call Trace:
- [<e092f13a>] snd_mixer_oss_build_input+0x502/0x681 [snd_mixer_oss]
- [<c0391a77>] sound_insert_unit+0x103/0x13c
- [<e092f75f>] snd_mixer_oss_build+0x35/0x60 [snd_mixer_oss]
- [<e092f97b>] snd_mixer_oss_notify_handler+0x1a1/0x24b [snd_mixer_oss]
- [<e088f03b>] alsa_mixer_oss_init+0x3b/0x48 [snd_mixer_oss]
- [<c013ca6c>] sys_init_module+0x188/0x231
- [<c010609f>] syscall_call+0x7/0xb
-Code: 44 24 0c 8d 7a 58 8b 48 5c c7 42 40 03 00 00 00 c7 42 48 01 00 00 00
-0f
-b6 81 3c 02 00 00 89 42 50 8b 42 54 8b b4 81 40 02 00
-00 <ac> aa 84 c0 75 fa 31 c0 8b 34 24 8b 7c 24 04 83 c4 08 c3 53 83
- /etc/init.d/alsasound: line 76: 23438 Segmentation fault     
-/sbin/modprobe
-${DRIVER}                                       [ !! ] *   Loading:
-snd-emu10k1-synth ... [ ok ]
-*   Loading: snd-seq-midi ... [ ok ]
-* Restoring Mixer Levels
---------------------------------------------------------------------------
+alsamixer, of course, is useless without the ioctl32 wrapper loaded - but
+does not crash the system then.
+So I suspect a problem in the ioctl32 wrapper.
 
-trying to restore/saving the mixer levels always hangs the boot
-process/the shell.
 
-btw: the driver from the intel site (Audio: Intel® HD Audio Controller -
-Realtek codec: http://www.intel.com/design/motherbd/gn/gn_drive.htm) works
-fine (i get more mixer chans and sound). it's based on alsa-1.0.5-sth. -
-but then i can't get sound with my emu10k1...
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-22-04 14:39 
+ eradicator - 11-22-04 00:49 
 ----------------------------------------------------------------------
-Yeah azx driver is really unstable for the time being.
-The merge with realtek's driver and more fixes are in progress now.
+Hmm... it would make sense to me to change the userspace struct to pack
+rather than the otherway around because we are using 2 different compilers
+for kernel and userspace code, and those different compilers may padd
+differently.  The latest patch doesn't address that issue (and I'm leaving
+it up to the alsa devs)...
+
+The latest patch applies cleanly against alsa-drier-1.0.7, and it produces
+working modules with linux-2.6.7-gentoo-r14 and vanilla linux-2.6.9.  You
+need to first apply the patch in bug
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=658 to compile sparc
+modules with
+the alsa-driver package.
+
+This final patch is now being used by Gentoo.
+
+sjoerd: Thanks for all your help =)
 
 ----------------------------------------------------------------------
- cevans - 11-22-04 15:07 
+ tiwai - 11-22-04 16:22 
 ----------------------------------------------------------------------
-Hey, just a note to say I finally found a combination to get my Azalia to
-play sound properly!! It's v1.0.6a patched with the recent ALSA CVS commit
-entitled "Summary: Patch to fix broken audio playback". Thanks Takeshi!!
+If I understand correctly, this problem can be better avoided by allocating
+the 64bit struct via comapt_alloc_user_space() and calling ioctl callback
+without set_fs(KERNEL_DS)?  In this way, you can reduce the extra kmalloc.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-19-04 11:53 fejf           New Issue                                    
-11-19-04 11:53 fejf           Kernel Version            => 2.6.9 (unpatched
-kernel.org)
-11-19-04 12:17 eradicator     Issue Monitored: eradicator                    
-11-22-04 14:37 cevans         Note Added: 0002497                          
-11-22-04 14:39 tiwai          Note Added: 0002499                          
-11-22-04 15:07 cevans         Note Added: 0002507                          
+03-30-04 00:02 bons78         New Issue                                    
+03-30-04 00:02 bons78         Distribution              => debian/unstable 
+03-30-04 00:02 bons78         Kernel Version            => linux-2.6.4+    
+04-13-04 19:41 tiwai          Note Added: 0000795                          
+07-04-04 22:32 weeve          Note Added: 0001381                          
+07-05-04 08:09 eradicator     Issue Monitored: eradicator                    
+11-19-04 05:45 weeve          Note Added: 0002474                          
+11-19-04 05:46 weeve          Issue Monitored: weeve                       
+11-19-04 05:55 rlrevell       Note Added: 0002475                          
+11-20-04 10:23 eradicator     Note Added: 0002478                          
+11-20-04 11:14 eradicator     Note Added: 0002479                          
+11-20-04 16:36 sjoerd         File Added: sparc-alsa-cvs.patch                  
+ 
+11-20-04 16:36 sjoerd         Note Added: 0002480                          
+11-20-04 18:15 sjoerd         Issue Monitored: sjoerd                      
+11-21-04 03:05 eradicator     Note Added: 0002482                          
+11-21-04 11:34 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:39 eradicator     Note Added: 0002485                          
+11-21-04 11:49 eradicator     File Added: alsa-driver-1.0.7.ioctl32.patch       
+            
+11-21-04 11:50 eradicator     Note Added: 0002486                          
+11-21-04 11:57 eradicator     Note Added: 0002487                          
+11-21-04 12:54 sjoerd         Note Added: 0002488                          
+11-21-04 17:44 sjoerd         Note Added: 0002489                          
+11-21-04 21:26 eradicator     Note Added: 0002490                          
+11-21-04 21:36 eradicator     Note Added: 0002491                          
+11-21-04 22:46 sjoerd         Note Added: 0002492                          
+11-22-04 00:08 eradicator     Note Added: 0002493                          
+11-22-04 00:14 eradicator     File Added: alsa-driver-1.0.7-ioctl32.patch       
+            
+11-22-04 00:49 eradicator     Note Added: 0002494                          
+11-22-04 16:22 tiwai          Note Added: 0002508                          
 ======================================================================
 
 
