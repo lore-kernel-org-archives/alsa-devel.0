@@ -1,16 +1,13 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: matrix ideas
-Date: Wed, 21 Aug 2002 12:01:46 +0900
+Subject: alsa docs - PHP help
+Date: Wed, 21 Aug 2002 13:43:47 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D63029A.3010508@boosthardware.com>
-References: <20020820215900.GA1522@tuba.home>
+Message-ID: <3D631A83.3000000@boosthardware.com>
+References: <Pine.LNX.4.44.0208061855490.23759-100000@yme.mo.himolde.no> <3D52949C.6030706@boosthardware.com> <3D53606D.3020201@mindcom.fi> <3D5366C4.9050101@boosthardware.com> <3D536705.9040705@mindcom.fi> <3D536C72.10302@boosthardware.com> <3D536DE5.20601@mindcom.fi> <3D537354.2030900@boosthardware.com> <3D537337.4080802@mindcom.fi> <3D537C3C.9000105@boosthardware.com> <3D5B6FE2.1040603@mindcom.fi> <3D5B7BA7.7040502@boosthardware.com> <3D5B7FC5.2030404@mindcom.fi> <3D60EDB4.7080600@boosthardware.com> <3D60EE47.7050704@mindcom.fi> <3D60FA94.4010001@boosthardware.com> <3D610A82.6080709@mindcom.fi> <3D629F9B.8070301@mindcom.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www7.networkshosting.com (www7.networkshosting.com [66.96.128.106])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with SMTP id EAA21837
-	for <alsa-devel@alsa-project.org>; Wed, 21 Aug 2002 04:56:52 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,32 +16,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: martin-langer@gmx.de
-Cc: alsa-devel@alsa-project.org, goemon@anime.net
+To: ALSA Development <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Martin Langer wrote:
-> Hi,
-> 
-> Alsa's soundcard matrix is a collection of rows and you find the same
-> company link in dozens of rows. In my opinion one link would be enough and a
-> solution with bigger blocks should even decrease the big document size. 
-> 
-> I mean something like the sane matrix at
-> http://www.mostang.com/sane/sane-backends.html
->
+Using urlencode on the template doesn't solve the problem for older
+browsers.
 
-Good point. That would make it easier to read.
+Can anyone think of a regex to auto encode the every line in the index 
+page that looks like this:
 
-> Another point I'm wondering about is the dt019x driver. There is no card for
-> this driver in the matrix (Avance ALS007, DT0196).
-> 
-> ... and since release of rc3 the notes "Driver in CVS" are unnecessary.
-> 
+<a
+href="doc-php/template.php3?company=Abit&card=AU10&chip=FM801&module=fm801">Install</a>
 
-Do you know the urls for these cards?
+So that the variables are ulrencoded before the page is rendered?
 
+Otherwise I/future maintainers have to go through every device and hand 
+type it in and any patches that are made too.
 
+Ergh!
+
+I'm thinking of something like
+
+   	if (line = <a href="doc-php/template.php3?...){
+		for (every variable){
+			rewrite as urlencode($variable);
+		}
+	}		
+
+would I then have to use urldecode in the template?
+
+thx.
 
 -- 
 Patrick Shirkey - Boost Hardware Ltd.
@@ -52,6 +53,7 @@ For the discerning hardware connoisseur
 Http://www.boosthardware.com
 Http://www.boosthardware.com/LAU/guide/
 ========================================
+
 
 
 
