@@ -1,144 +1,95 @@
-From: Joern Nettingsmeier <nettings@folkwang-hochschule.de>
-Subject: sblive 4ch output w/ jack - asoundrc magic?
-Date: Thu, 05 Feb 2004 00:08:18 +0100
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <40217B62.5020604@folkwang-hochschule.de>
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: intel8x0 has stopped working.
+Date: Wed, 04 Feb 2004 23:03:50 +0000
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <40217A56.2020808@superbug.demon.co.uk>
+References: <401E8BAE.6010802@superbug.demon.co.uk>	<s5hn081uztv.wl@alsa2.suse.de>	<401EA82D.3060702@superbug.demon.co.uk> <s5hwu72aba0.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, jackit-devel <jackit-devel@lists.sourceforge.net>
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from anchor-post-35.mail.demon.net (anchor-post-35.mail.demon.net [194.217.242.85])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id XAA09566
+	for <alsa-devel@alsa-project.org>; Wed, 4 Feb 2004 23:57:09 +0100
+In-Reply-To: <s5hwu72aba0.wl@alsa2.suse.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-[crossposted to alsa-devel and jackit-devel]
+Takashi Iwai wrote:
+> At Mon, 02 Feb 2004 19:42:37 +0000,
+> James Courtier-Dutton wrote:
+> 
+>>Once thing I have noticed, is that with the alc650, we used to have VRA 
+>>(alsa 0.9.8), but the 1.0.2 intel8x0 driver ignores the VRA and fixes 
+>>itself at 48000.
+> 
+> 
+> yes, the detection of sample rate range seems broken for some codecs.
+> it was completely rewritten using the generic ac97_pcm.c.
+> 
+> could you check the debug messages with the attached patch?
+> 
+> 
+> Takashi
+> 
 
-hi *!
+Here is the output as requested.
+One thing that is good though, is this allowed me to do lots of testing 
+for people that have codecs with fixed rates. If you do get my alc650 
+codec working again with variable rates, please make sure there is some 
+sort of kernel option to fix it to a single rate, for test purposes.
 
-i'd like to use the rear outs of my sblive platinum with jack.
-
-the following works:
-# aplay some.wav -Dfront &
-# aplay someother.wav -Drear
-both signals end up at my mixer as expected, so it seems the devices=20
-are independent.
-
-front is hw:0,0 which is a duplex device.
-rear is hw:0,3 and is playback only.
-
-first and all-important question: are the front and rear out pcm=20
-devices synced in hardware? i suppose so, otherwise they would be=20
-pretty much useless. (if it turns out they aren't, let me know and=20
-ignore the rest of this posting :( )
-
-
-to use all four outs with jack, i dug out some old asoundrc hack=20
-that takashi and jaroslav showed me a while ago:
-
-// combine two devices into one
-pcm.multi {
-         type multi;
-         slaves.a.pcm "hw:0,0";
-         slaves.a.channels 2;
-         slaves.b.pcm "hw:0,3";
-         slaves.b.channels 2;
-         bindings.0.slave a;
-         bindings.0.channel 0;
-         bindings.1.slave a;
-         bindings.1.channel 1;
-         bindings.2.slave b;
-         bindings.2.channel 0;
-         bindings.3.slave b;
-         bindings.3.channel 1;
-}
-
-ctl.multi {
-         type hw;
-         card 0;
-}
-
-// somehow this device is not continous in memory and thus not=20
-mmap()able. jack wants mmap access, and this routing trick should help:
-
-pcm.ttable {
-         type route;
-         slave.pcm "multi";
-         ttable.0.0 1;
-         ttable.1.1 1;
-         ttable.2.2 1;
-         ttable.3.3 1;
-}
-
-ctl.ttable {
-         type hw;
-         card 0;
-}
-
-
-ok. now i can do
-# jackstart -d alsa -d ttable -P
-and i get 4 outs.
-
-
-3 problems remain:
-
-
-* no sound from the rear outs when used with jack in this way :(
-
-* qjackctl goes all haywire with this device: xruns galore. all is=20
-well when i don't use qjackctl and start jackd from the command=20
-line, so it might be a qjackctl problem, but i thought i'd mention=20
-it anyway - maybe the ttable device is not really kosher...
-
-* no input from the first two channels.
-
-
-jack somehow assumes that either all or no channels are duplex. if i=20
-don't use the -P (or non-duplex playback only) flag, it says, "...
-
-nettings@kleineronkel:~> jackstart -d alsa -d ttable
-back from read, ret =3D 1 errno =3D=3D Invalid argument
-jackd 0.94.3
-[...]
-creating alsa driver ...=20
-ttable|ttable|1024|2|48000|0|0|nomon|swmeter|rt|32bit
-ALSA lib pcm_hw.c:1055:(snd_pcm_hw_open) open /dev/snd/pcmC0D3c=20
-failed: No such device
-jackstart: pcm.c:689: snd_pcm_nonblock: Assertion `pcm' failed.
-Aborted
-
-=2E..",  apparently trying to find a capture device for channels 2 and 3.=
-
-
-is there a way to fool jack into believing all are duplex with some=20
-more asoundrc magic? ideally, those two bogus ins would produce=20
-silence, but i don't really care, i don't connect them anyway.
-
-
-thanks in advance,
-
-j=F6rn
-
-
---=20
-"I never use EQ, never, never, never. I previously used to use mic
-positioning but I've even given up on that too."
-	- Jezar on http://www.audiomelody.com
-
-
-J=F6rn Nettingsmeier
-Kurf=FCrstenstr 49, 45138 Essen, Germany
-http://spunk.dnsalias.org (my server)
-http://www.linuxaudiodev.org (Linux Audio Developers)
-
-
+Feb  4 23:00:21 new kernel: PCI: Setting latency timer of device 
+0000:00:1f.5 to 64
+Feb  4 23:00:21 new kernel: get_pslots: rev22 amap emu
+Feb  4 23:00:21 new kernel: get_pslots: AMAP: addr=0, scaps=0xd, 
+ext_id=0x5c7
+Feb  4 23:00:21 new kernel: checking codec 0, slots = 0x3d8 / 0x58
+Feb  4 23:00:21 new kernel: -> capture slots = 0x58
+Feb  4 23:00:21 new kernel: probing pcm 0
+Feb  4 23:00:21 new kernel: .. probing codec 0, slots = 0x3d8, tmp = 0x3d8
+Feb  4 23:00:21 new kernel: .. exclusive tmp = 0x3d8
+Feb  4 23:00:21 new kernel: ..... tmp = 0x3d8
+Feb  4 23:00:21 new kernel: .. rslots = 0x3d8, rate_table = 0, rates = 0x80
+Feb  4 23:00:21 new kernel: --> slots = 0x3d8, rates = 0x80
+Feb  4 23:00:21 new kernel: probing pcm 1
+Feb  4 23:00:21 new kernel: .. probing codec 0, slots = 0x18, tmp = 0x58
+Feb  4 23:00:21 new kernel: .. exclusive tmp = 0x18
+Feb  4 23:00:21 new kernel: ..... tmp = 0x18
+Feb  4 23:00:21 new kernel: .. rslots = 0x18, rate_table = 0, rates = 0xfe
+Feb  4 23:00:21 new kernel: --> slots = 0x18, rates = 0xfe
+Feb  4 23:00:21 new kernel: probing pcm 2
+Feb  4 23:00:21 new kernel: .. probing codec 0, slots = 0x40, tmp = 0x40
+Feb  4 23:00:21 new kernel: .. exclusive tmp = 0x40
+Feb  4 23:00:21 new kernel: ..... tmp = 0x40
+Feb  4 23:00:21 new kernel: .. rslots = 0x40, rate_table = 0, rates = 0x80
+Feb  4 23:00:21 new kernel: --> slots = 0x40, rates = 0x80
+Feb  4 23:00:21 new kernel: probing pcm 3
+Feb  4 23:00:21 new kernel: .. probing codec 0, slots = 0xc00, tmp = 0xc00
+Feb  4 23:00:21 new kernel: .. exclusive tmp = 0xc00
+Feb  4 23:00:21 new kernel: ..... tmp = 0xc00
+Feb  4 23:00:21 new kernel: .. rslots = 0xc00, rate_table = 0, rates = 0xe0
+Feb  4 23:00:21 new kernel: --> slots = 0xc00, rates = 0xe0
+Feb  4 23:00:21 new kernel: probing pcm 4
+Feb  4 23:00:21 new kernel: .. probing codec 0, slots = 0x18, tmp = 0x0
+Feb  4 23:00:21 new kernel: .. exclusive tmp = 0x0
+Feb  4 23:00:21 new kernel: ..... tmp = 0x0
+Feb  4 23:00:21 new kernel: --> slots = 0x0, rates = 0xffffffff
+Feb  4 23:00:21 new kernel: probing pcm 5
+Feb  4 23:00:21 new kernel: .. probing codec 0, slots = 0x40, tmp = 0x0
+Feb  4 23:00:21 new kernel: .. exclusive tmp = 0x0
+Feb  4 23:00:21 new kernel: ..... tmp = 0x0
+Feb  4 23:00:21 new kernel: --> slots = 0x0, rates = 0xffffffff
+Feb  4 23:00:21 new kernel: intel8x0: clocking to 48000
 
 
 
