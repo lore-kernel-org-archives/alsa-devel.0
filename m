@@ -1,15 +1,14 @@
-From: Antonio Willy Malara <behappy@maialone.com>
-Subject: Re: usb-audio
-Date: Mon, 27 Oct 2003 20:53:08 +0100
+From: Zinx Verituse <zinx@epicsol.org>
+Subject: Re: patch, and other via82xx (VT8235) capture problems
+Date: Mon, 27 Oct 2003 15:35:49 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031027195308.GA5219@Zeryn>
-References: <20031027180300.GA5016@Zeryn> <s5hptgi5yx4.wl@alsa2.suse.de>
+Message-ID: <20031027213549.GA22457@bliss>
+References: <20031023044843.GA19701@bliss> <s5hznfr99zs.wl@alsa2.suse.de> <20031024010502.GA22833@bliss> <s5h8yna93qz.wl@alsa2.suse.de> <20031024205918.GA29951@bliss> <20031025143159.GA1176@bliss> <s5hllr76jz2.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-15
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <s5hptgi5yx4.wl@alsa2.suse.de>; from tiwai@suse.de on lun, ott 27, 2003 at 19:16:23 +0100
+In-Reply-To: <s5hllr76jz2.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,45 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 2003.10.27 19:16, Takashi Iwai wrote:
-> > 	/* FIXME: correct endianess and sign? */
-> could you give more information:
-> which program, which device and what format doesn't it work?
+On Mon, Oct 27, 2003 at 11:41:37AM +0100, Takashi Iwai wrote:
+> At Sat, 25 Oct 2003 09:31:59 -0500,
+> Zinx Verituse wrote:
+> >
+[snip]
+> > 
+> > I have more to report on this issue:
+> > When I was recording with 'Line' selected as the 'Input Source',
+> > 'Mic' was the selected recording device, and 'Line' was completely
+> > silent.  Also, I have noticed that if I'm playing something on
+> > hw:0,0, then hw:0,1 fails like recording does.  However, if I try
+> > to play two things to hw:0,0, it works.  And if I try to play
+> > something to hw:0,1 while hw:0,0 is closed, it also works.
+> 
+> well, playing hw:0,0 and hw:0,1 is different from capture.
+> hw:0,0 is the multi-play device (DXS channels) while hw:0,1 is the
+> multi-channel play device for 5.1 outputs.  and you cannot access to
+> both devices at the same time, anyway.
+> 
 
-the system is a powermac, the device is a Griffin iMic, the app is jack 
-version 0.80, the output is:
+Might I suggest that it gives device or resource busy, or blocks on
+open, then? :)  Right now, it's pretending everything is fine, until
+you try to actually play something, then it just sits there doing
+nothing.
 
-Sorry. The audio interface "hw:1"doesn't support either of the two 
-hardware sample formats that jack can use.
-
-that is raised from here (sorry for the wordwrap):
-
-         if ((err = snd_pcm_hw_params_set_format (handle, hw_params, 
-SND_PCM_FORMAT_S32)) < 0) {
-                 if ((err = snd_pcm_hw_params_set_format (handle, 
-hw_params, SND_PCM_FORMAT_S16)) < 0) {
-                         jack_error ("Sorry. The audio interface \"%s\""
-                                     "doesn't support either of the two 
-hardware sample formats that jack can use.",
-                                     device_name);
-                         return -1;
-                 }
-         }
-
-(/drivers/alsa/alsa_driver.c line 293 from the jack 0.80 tree)
-
-i made this test: if i change the SND_PCM_FORMAT_S32 to _S32_LE the app 
-goes forward but alsalib will raise many broken pipe errors and got no 
-sound
-
-hope this will help
-
-> Takashi
-
-willy
+-- 
+Zinx Verituse
 
 
 -------------------------------------------------------
