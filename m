@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000849]: aplay apparently plays mono wav files using OSS, but plays stereo wav files using ALSA
-Date: Mon, 31 Jan 2005 19:01:57 +0100
-Message-ID: <6bbca5f0f79ae93d156608cdd5ad6ce7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000743]: msleep is now defined in linux/include/linux/delay.h causing conflict with macro defined in alsa-driver/include/adriver.h
+Date: Mon, 31 Jan 2005 19:04:17 +0100
+Message-ID: <c7fe2c8a4bd1bce677559bcff7cd1dfa@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8FE17235
-	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 19:01:57 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E88A9235
+	for <alsa-devel@alsa-project.org>; Mon, 31 Jan 2005 19:04:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,55 +22,72 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=849> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=743> 
 ======================================================================
-Reported By:                vapspwi
-Assigned To:                
+Reported By:                jdthood
+Assigned To:                perex
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   849
-Category:                   aplay/arecord
+Project:                    ALSA - driver
+Issue ID:                   743
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     closed
+Distribution:               
+Kernel Version:             
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             01-26-2005 20:15 CET
-Last Modified:              01-31-2005 19:01 CET
+Date Submitted:             12-23-2004 22:10 CET
+Last Modified:              01-31-2005 19:04 CET
 ======================================================================
-Summary:                    aplay apparently plays mono wav files using OSS, but
-plays stereo wav files using ALSA
+Summary:                    msleep is now defined in linux/include/linux/delay.h
+causing conflict with macro defined in alsa-driver/include/adriver.h
 Description: 
-Anytime I play a mono wav file (11, 22, or 44 kHz, 8 or 16 bit) using
-aplay, the output is routed to all 26 playback channels of my HDSP 9652
-card (observed using hdspmixer).  Based on some web research, it appears
-that this is because aplay is using OSS to play the mono wav file.  When I
-play a stereo wav file (11, 22, or 44 kHz, 8 or 16 bit) using aplay, the
-output is routed only to playback channels 1 and 2 of the HDSP 9652,
-apparently because aplay is using ALSA to play the stereo wav file.
+Recent 2.4.29-pre3 patch moves msleep() from include/linux/libata-compat.h
+to include/linux/delay.h.  As a result, alsa-driver 1.0.7 does not
+compile
+on 2.4.29-pre3 because it defines its own msleep macro in
+include/adriver.h.
+Currently the macro is defined inside
+    #if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 6) ... #endif.
+The code seems to be the same in CVS.  I guess this version dependency
+needs to be updated.
+
+
+gcc -D__KERNEL__ -DMODULE=1 -I/usr/src/modules/alsa-driver/include 
+-I/usr/src/linux-2.4.29/include -I/usr/src/linux-2.4.29/include2
+-I/usr/src/linux-2.4.29/include -O2 -mpreferred-stack-boundary=2
+-march=i686 -DLINUX -Wall -Wstrict-prototypes -fomit-frame-pointer
+-Wno-trigraphs -O2 -fno-strict-aliasing -fno-common -pipe -DALSA_BUILD
+-nostdinc -iwithprefix include   -DEXPORT_SYMTAB -c timer.c
+In file included from timer.c:23:
+/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
+"do"
+/usr/src/linux-2.4.29/include/linux/delay.h:57: error: parse error before
+'(' token
+/usr/src/linux-2.4.29/include/linux/delay.h:60: error: parse error before
+'(' token
+make[4]: *** [timer.o] Error 1
+
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-31-05 19:01 
+ tiwai - 12-27-04 15:10 
 ----------------------------------------------------------------------
-I guess you meant aplay instead of alsamixer?
-
-Anyway, aplay has nothing to do with OSS.  It can't.  Never ever.
-
-What is the problem?  The behavior to routing the channels depends on the
-configuration of "plug" layer.  As default, only first channels are copied
-except for mono stream.  You can change this policy in your ~/.asoundrc. 
-See the alsa-lib's reference.
+Fixed on CVS.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-26-05 20:15 vapspwi        New Issue                                    
-01-26-05 20:16 vapspwi        Issue Monitored: vapspwi                     
-01-26-05 23:46 vapspwi        Issue End Monitor: vapspwi                    
-01-31-05 19:01 tiwai          Note Added: 0003455                          
+12-23-04 22:10 jdthood        New Issue                                    
+12-27-04 15:10 tiwai          Status                   assigned => resolved
+12-27-04 15:10 tiwai          Resolution               open => fixed       
+12-27-04 15:10 tiwai          Note Added: 0002960                          
+01-31-05 19:04 tiwai          Status                   resolved => closed  
 ======================================================================
 
 
