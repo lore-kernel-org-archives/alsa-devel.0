@@ -1,8 +1,8 @@
 From: Gorm David Lai <lai@daimi.au.dk>
 Subject: Re: problems with rme digi96/8
-Date: 06 Jun 2003 12:06:33 +0200
+Date: 06 Jun 2003 12:10:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1054893994.2069.47.camel@duff>
+Message-ID: <1054894258.2057.53.camel@duff>
 References: <1054808252.7022.8.camel@duff>  <20030605190335.GB493@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -17,8 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
+
+I just thought of something new. It seems as if the hardware buffer on
+the card gets filled up, but is never emptied anywhere.
+
+The reason is that in the beginning everything seems to go fine, but
+then I suddenly get the following error:
+
+ALSA lib pcm_hw.c:466:(snd_pcm_hw_prepare) SNDRV_PCM_IOCTL_PREPARE
+failed: Device or resource busy
+
+This also happens on the soundblaster card, but there I can see that I
+am still sometimes allowed to pass samples to the card, which makes the
+sound play fine. On the rme digi96/8 card however, after this error
+first happens, no more samples are allowed to be written.
+
+Any idea on how to get the card to play the samples in the buffer? (if
+this is indeed the error).
+
+/Gorm
+
 
 On Thu, 2003-06-05 at 21:03, Martin Langer wrote:
 > On Thu, Jun 05, 2003 at 12:17:32PM +0200, Gorm David Lai wrote:
@@ -53,19 +74,7 @@ On Thu, 2003-06-05 at 21:03, Martin Langer wrote:
 > Alsa-devel@lists.sourceforge.net
 > https://lists.sourceforge.net/lists/listinfo/alsa-devel
 > 
-Well, I test and set only legal settings on the hardware. So every
-setting I set returns success.
 
-I normally use hw:0,1, but just tried with plughw:0,1. Sadly with no
-luck.
-My legal settings do not follow those on the page. The period size seems
-to match, but my only legal buffer size is 4096. This seems to be
-contrary to the info on the page. I also use a sample  size of 16.
-
-I am not the one who installed alsa, but I think it is 0.9.1. The aplay
-version is 0.9.3.
-
-/Gorm
 
 
 
