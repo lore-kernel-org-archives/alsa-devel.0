@@ -1,18 +1,14 @@
-From: Jan Depner <eviltwin69@cableone.net>
-Subject: Re: [linux-audio-dev] Re: Firewire Audio Card Support
-Date: Thu, 18 Nov 2004 16:49:29 -0600
-Message-ID: <1100818169.3464.6.camel@eviltwin>
-References: <31148074.1100630541337.JavaMail.root@scooter.psp.pas.earthlink.net>
-	 <419C9D47.4090606@x-i.net> <200411181515.52218.olaf@solutionworks.de>
-	 <20041118143205.GA21282@login.ecs.soton.ac.uk>
-	 <419CB554.3080709@esitcom.org>
-	 <Pine.LNX.4.58.0411181601440.14962@denise.shiny.it>
-	 <1100809010.10150.5.camel@krustophenia.net>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000646]: emu10k1: sound chopped when passthru enabled
+Date: Thu, 18 Nov 2004 23:34:26 +0100
+Message-ID: <c9dd3ada22a3469fc3cc0127720b8ab5@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1100809010.10150.5.camel@krustophenia.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1FCC81E5
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 23:34:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,33 +18,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: The Linux Audio Developers' Mailing List <linux-audio-dev@music.columbia.edu>
-Cc: Giuliano Pochini <pochini@denise.shiny.it>, Amaury Jacquot <sxpert@esitcom.org>, Audio-User <linux-audio-user@music.columbia.edu>, alsa-devel <alsa-devel@lists.sourceforge.net>, Steve Harris <S.W.Harris@ecs.soton.ac.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-That is a damn good rant!  I agree completely.  Unfortunately I only do
-software :-/
 
-Jan
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=646> 
+======================================================================
+Reported By:                flink
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   646
+Category:                   pcm - digital audio
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             11-12-2004 17:02 CET
+Last Modified:              11-18-2004 23:34 CET
+======================================================================
+Summary:                    emu10k1: sound chopped when passthru enabled
+Description: 
+When I play a DVD with AC3 passthru enabled, the signal is correctly send
+to my AC3 decoder but this signal is chopped. I've a little led on my
+decoder to show if dolby digital is enabled or not and this led blinks
+instead of remaining enabled. So the sound is also chopped and a DVD can't
+be 
+watched this way.
+======================================================================
 
-On Thu, 2004-11-18 at 14:16, Lee Revell wrote:
-> On Thu, 2004-11-18 at 16:09 +0100, Giuliano Pochini wrote:
-> > No, it's not hard because there are a lot of skilled people around, but
-> > the card would be expensive. There was a thread about a project of "open
-> > source" graphic card recently on lkml.
-> 
-> And I posted a [possibly OT] rant to that thread about how this was a
-> waste of time and how you could REALLY make a killing with open sound
-> hardware.
-> 
-> http://lkml.org/lkml/2004/10/23/292
-> 
-> I got one "right on, brother" response via private mail and that was it.
-> But then again half the kernel guys don't have sound cards in their
-> machines ;-)
-> 
-> Lee
-> 
+----------------------------------------------------------------------
+ visit0r - 11-17-04 08:09 
+----------------------------------------------------------------------
+Yes, I'm running kernel in preemptable mode. The patch is applied in the
+version of ALSA in Linux 2.6.10-rc2, it seems. Still, the effect is there,
+but as I said, it's not even close as bad as before. 
+
+Are you sure it fixed it completely? The choppies might not be noticeable
+when you watch the DVD with AC3 only for a minute or two.
+
+----------------------------------------------------------------------
+ rlrevell - 11-18-04 23:34 
+----------------------------------------------------------------------
+Hmm, other users all report this fixes the bug.  Are you _sure_ it works
+with 2.6.7 and not with the 2.6.10-rc2?
+
+I think you might have a different issue.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-12-04 17:02 flink          New Issue                                    
+11-13-04 22:18 rlrevell       Note Added: 0002403                          
+11-13-04 22:31 rlrevell       File Added: patch                            
+11-13-04 22:33 rlrevell       Note Added: 0002404                          
+11-16-04 00:13 visit0r        Note Added: 0002421                          
+11-16-04 00:24 rlrevell       Note Added: 0002422                          
+11-16-04 21:09 visit0r        Note Added: 0002430                          
+11-17-04 04:06 duanev         Issue Monitored: duanev                      
+11-17-04 07:00 duanev         Note Added: 0002432                          
+11-17-04 08:05 visit0r        Issue Monitored: visit0r                     
+11-17-04 08:09 visit0r        Note Added: 0002434                          
+11-18-04 23:34 rlrevell       Note Added: 0002472                          
+======================================================================
+
 
 
 
