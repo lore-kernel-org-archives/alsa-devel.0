@@ -1,14 +1,14 @@
-From: Patrice Tisserand <Patrice.Tisserand@ircam.fr>
-Subject: Re: HDSP MIDI question...
-Date: 07 Aug 2003 09:37:37 +0200
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: Re: anybody else OK with current CVS *and* SMP?
+Date: Thu, 7 Aug 2003 09:18:25 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1060241857.3137.49.camel@localhost.localdomain>
-References: <20030807043553.GA8421@dogsolitude.org>
+Message-ID: <20030807081825.15599.qmail@web40603.mail.yahoo.com>
+References: <3F31FDB1.8070804@mindcom.fi>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030807043553.GA8421@dogsolitude.org>
+In-Reply-To: <3F31FDB1.8070804@mindcom.fi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,29 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: drclaw@dogsolitude.org
-Cc: alsa-devel@lists.sourceforge.net
+To: Antti Boman <antti.boman@mindcom.fi>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2003-08-07 at 06:35, drclaw@dogsolitude.org wrote:
-> Hi, when I run "aconnect -i" it just spits out "Timer" and "Announce", I
-> was wondering how I'm supposed to connect my HDSP (multiface, alsa
-> 0.9.6) midi input to an application.  I know it's functioning because
-> jmax is able to "see" (and use) the HDSP midi ports, but aconnect can't.
-> I was wondering if this was a known difficulty, or if it sounds like I'm
-> doing something wrong. 
-Hi,
-jMax use ALSA RawMidi and Sequencer, so perhaps what you see in jMax is
-only our HDSP Rawmidi ports.
+ --- Antti Boman <antti.boman@mindcom.fi> wrote:
+> Ok, there's a difference compared to my problem. My
+> computer locks up 
+> within a couple of seconds. So, obviously we're not
+> talking about the 
+> same problem. Also, I have to install newer ALSA and
+> JACK to see if the 
+> lock-up is still there.
 
-I'm not sure but it seems that is the job of snd-seq-midi module.
-Could you check if this module is loaded ?
+That's interesting. I use CVS ALSA and SMP (although
+not JACK), and I have been having lock-ups too ever
+since last Sunday evening (3rd August). However, at
+least some of my lock-ups must be hardware related
+because I've had a horrible time fscking my root
+partition afterwards. (But THAT could be caused
+because I can't load my CPUs' microcode until the root
+partition is mounted OK...).
 
-Hope this help.
-Bye
--- 
-Patrice Tisserand <Patrice.Tisserand@ircam.fr>
+I shall try removing ALSA and seeing if that improves
+thing. It would be just my luck to have multiple
+lock-up problems all at once!
 
+Chris
+
+
+________________________________________________________________________
+Want to chat instantly with your online friends?  Get the FREE Yahoo!
+Messenger http://uk.messenger.yahoo.com/
 
 
 -------------------------------------------------------
