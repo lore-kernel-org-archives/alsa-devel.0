@@ -1,16 +1,16 @@
-From: Jaroslav Kysela <perex@suse.cz>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: some more anon cvs funkiness...
-Date: Mon, 7 Jul 2003 14:53:47 +0200 (CEST)
+Date: Mon, 07 Jul 2003 21:45:33 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0307071443500.9539-100000@pnote.perex-int.cz>
-References: <20030707222955.278daca9.erikd-alsa@mega-nerd.com>
+Message-ID: <3F096B6D.9060008@boosthardware.com>
+References: <Pine.LNX.4.44.0307071443500.9539-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate.perex.cz (UNKNOWN@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id OAA01771
-	for <alsa-devel@alsa-project.org>; Mon, 7 Jul 2003 14:54:14 +0200
-In-Reply-To: <20030707222955.278daca9.erikd-alsa@mega-nerd.com>
+Received: from www3.webhosting.cx (IDENT:7r+XXu4YhdfdEEZ7dWdEFsp/IDkmAxXv@www3.webhosting.cx [207.44.248.26])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id QAA02911
+	for <alsa-devel@alsa-project.org>; Mon, 7 Jul 2003 16:09:04 +0200
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,44 +19,38 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Erik de Castro Lopo <erikd-alsa@mega-nerd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 7 Jul 2003, Erik de Castro Lopo wrote:
-
-> On Mon, 7 Jul 2003 13:58:45 +0200 (CEST)
-> Jaroslav Kysela <perex@suse.cz> wrote:
+Jaroslav Kysela wrote:
 > 
-> > On Mon, 7 Jul 2003, Erik de Castro Lopo wrote:
-> > 
-> > > On Mon, 07 Jul 2003 12:25:51 +0200
-> > > Joern Nettingsmeier <nettings@folkwang-hochschule.de> wrote:
-> > > 
-> > > > what's happening ?
-> > > 
-> > > Not sure. I've been having the same issue since Saturday. 
-> > > 
-> > > I lodged a issue with the sf.net people, but it unlikely to be fixed
-> > > until the US comes on line in a couple of hours.
-> > 
-> > Please, guys, make a bug-report for the SF team. Hopefully, they will 
-> > react quickly.
 > 
-> I did, over 24 hours ago. 
+> I am slowly thinking to switch back our CVS repository to our dedicated 
+> server. SF seems overloaded these days.
 > 
-> I think its already too lat to act quickly, maybe they can act soon 
-> intead ;-).
+> 						Jaroslav
+> 
 
-I am slowly thinking to switch back our CVS repository to our dedicated 
-server. SF seems overloaded these days.
+It will be this way until August at the earliest. They are switching 
+systems on the site to cope with massive demand and have fsked the anon 
+cvs until it is ready.
 
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
+
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
