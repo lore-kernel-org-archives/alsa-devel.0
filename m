@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000905]: Creative Labs SB Audigy LS  uses snd-ca0106 driver
-Date: Sat, 12 Feb 2005 23:46:09 +0100
-Message-ID: <a020e31ba88f76e035cd75026c8b5f23@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000901]: The onboard audigyls chip on msi k8 diamond motherboard not recognized. Path supplied.
+Date: Sun, 13 Feb 2005 00:18:53 +0100
+Message-ID: <c83b8ca2f20e6044c135d7ebb117d86e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 84920202
-	for <alsa-devel@alsa-project.org>; Sat, 12 Feb 2005 23:46:09 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E70B41E6
+	for <alsa-devel@alsa-project.org>; Sun, 13 Feb 2005 00:18:53 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,41 +21,60 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=905> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=901> 
 ======================================================================
-Reported By:                adaviel
-Assigned To:                
+Reported By:                kiksen
+Assigned To:                jcdutton
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   905
-Category:                   soundcard matrix
+Project:                    ALSA - driver
+Issue ID:                   901
+Category:                   PCI - ca0106
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-12-2005 23:46 CET
-Last Modified:              02-12-2005 23:46 CET
+Date Submitted:             02-11-2005 23:49 CET
+Last Modified:              02-13-2005 00:18 CET
 ======================================================================
-Summary:                    Creative Labs SB Audigy LS  uses snd-ca0106 driver
+Summary:                    The onboard audigyls chip on msi k8 diamond
+motherboard not recognized. Path supplied.
 Description: 
-The Creative Labs SB card identified by
-PCI Class 0401: 1102:0007
-is supported by the 
-snd-ca0106 driver (not audigyls as implied by the current matrix)
+We'll. The driver fails to load (and dmesg comlaints about a missing AC97)
 
-My current system (FCI) says it's an unknown device. The user said it 
-was an SB Live. But 
-http://pciids.sourceforge.net/iii/?i=1102
-says it's an SB Audigy LS, so I guess that's what it is ...
+Have made a path.
 ======================================================================
+
+----------------------------------------------------------------------
+ sHINOBI - 02-12-05 22:47 
+----------------------------------------------------------------------
+I have the same board, so including it to the future versions of ALSA will
+be highly appreciated :-). I'll try the patch and let you know, if it
+works.
+
+----------------------------------------------------------------------
+ jcdutton - 02-13-05 00:18 
+----------------------------------------------------------------------
+cat /proc/asound/cards
+Does it say: "AudigyLS [Unknown]" after your patch?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-12-05 23:46 adaviel        New Issue                                    
+02-11-05 23:49 kiksen         New Issue                                    
+02-11-05 23:49 kiksen         File Added: msi_audigyls_patch.patch              
+     
+02-11-05 23:49 kiksen         Distribution              => Gentoo          
+02-11-05 23:49 kiksen         Kernel Version            => 2.6.10          
+02-12-05 00:56 jcdutton       Note Added: 0003569                          
+02-12-05 14:36 kiksen         Note Added: 0003571                          
+02-12-05 22:43 sHINOBI        Issue Monitored: sHINOBI                     
+02-12-05 22:47 sHINOBI        Note Added: 0003572                          
+02-13-05 00:18 jcdutton       Note Added: 0003574                          
 ======================================================================
 
 
