@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Tue, 4 Jan 2005 21:11:12 +0100
-Message-ID: <318b4e585084e4eb3c11883a060dc0d2@bugtrack.alsa-project.org>
+Date: Tue, 4 Jan 2005 21:29:06 +0100
+Message-ID: <a07035b35464eb884ae2b6d217f0cf88@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 53AFB298
-	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 21:11:13 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EFD9519E
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 21:29:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -38,7 +38,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              01-04-2005 21:11 CET
+Last Modified:              01-04-2005 21:29 CET
 ======================================================================
 Summary:                    Master volume only controls front output (emu10k1)
 Description: 
@@ -58,11 +58,6 @@ related to          0000172 Master volume control only controls fro...
 ======================================================================
 
 ----------------------------------------------------------------------
- Miwer - 01-04-05 21:01 
-----------------------------------------------------------------------
-Any news on this one?
-
-----------------------------------------------------------------------
  rlrevell - 01-04-05 21:11 
 ----------------------------------------------------------------------
 It's not really a question of "finding the bug", these controls are simply
@@ -72,6 +67,12 @@ bloat the drivers by fixing it there.
 Since the problem can obviously be solved in userspace, and affects more
 than one driver, it seems the fix should be implemented in alsa-lib.  All
 we need is a way to define new controls and link others to them.
+
+----------------------------------------------------------------------
+ pzad - 01-04-05 21:29 
+----------------------------------------------------------------------
+But something can be fixed in driver (and this bug can be partially fixed
+in driver for emu10k1, and this is simpler solution).
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -93,6 +94,7 @@ Date Modified  Username       Field                    Change
 11-25-04 12:46 rpolach        Issue Monitored: rpolach                     
 01-04-05 21:01 Miwer          Note Added: 0003081                          
 01-04-05 21:11 rlrevell       Note Added: 0003082                          
+01-04-05 21:29 pzad           Note Added: 0003083                          
 ======================================================================
 
 
