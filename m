@@ -1,12 +1,12 @@
-From: "Robert Liguori" <liguorir@enroute-computer.com>
-Subject: Developing SIS 962L driver.
-Date: Sat,  5 Jul 2003 12:04:47 -0400
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Tascam US-122
+Date: Sat, 5 Jul 2003 19:56:36 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307051204.AA1763115658@enroute-computer.com>
-Reply-To: <liguorir@enroute-computer.com>
+Message-ID: <20030705175636.GA9519@tuba.home>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,27 +18,27 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
 
-I would like to write a driver for SIS 962L.
+Hi,
 
-I am new at this.  Could anyone please answer the following questions for me?
+anybody interested in an USB firmware loader patch for the Tascam US-122?...
 
-1)  What tools/applications do I need to write a driver.
+http://langerland.de/us122/alsacvs-us122-0.6.patch.gz
 
-2)  Can you give me an example of a complete set of .c and .h files that constitute a new driver, and what application does it get appended to.  Will it become part of the kernel, or will it be maintained as an external mod?
+some remarks:
 
-3)  Where can I get the specs to build this driver.  Exactly what data/specifications do I need.
+- The US-122 was developed by Frontier Design, not Tascam. But for releasing
+their information they need an ok from Tascam. Don't know what will happen
+in this point. In the meantime I've taken an USB sniffer and check my postbox
+from time to time :-)
 
-4)  I am a novice C/C++ programmer.  Will my skillset be sufficient to accomplish this task.
+- After loading this patch the device is usable as usb-powered standalone
+device. ( I hope that I can understand the way of usb/tascam endpoints in the 
+future; full ALSA usage would be a better goal than standalone usage... )
 
-5)  What books or online resources ( in addition to this list ) are available to help me achieve my goal.
 
-6)  Is there any other information that I need to know, that I may not even know to ask about?
-
-Thanks,
-
-Robert Liguori
+have fun!
+martin
 
 
 -------------------------------------------------------
