@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000980]: nforce4/alc850 line-in -> spdif out - solution ???
-Date: Fri, 11 Mar 2005 16:15:51 +0100
-Message-ID: <91a8d154ab9b20163b572df45e23779d@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Fri, 11 Mar 2005 16:17:37 +0100
+Message-ID: <9056f7604e91fa54211362f35d3c4e81@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9CFF11CA
-	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 16:15:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 078F31CA
+	for <alsa-devel@alsa-project.org>; Fri, 11 Mar 2005 16:17:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,57 +23,66 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=980> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                dobromir
-Assigned To:                sashak
+Reported By:                yure
+Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   980
-Category:                   PCI - intel8x0m
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
-Status:                     assigned
-Distribution:               
-Kernel Version:             
+Status:                     new
 ======================================================================
-Date Submitted:             03-11-2005 01:17 CET
-Last Modified:              03-11-2005 16:15 CET
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              03-11-2005 16:17 CET
 ======================================================================
-Summary:                    nforce4/alc850 line-in -> spdif out - solution ???
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-I found in the alc850 spec that setting 12th bit in register 0x6a routes to
-spdif all data from ADC. I write small program that sets this register,
-and this works for me, but I use only 2 speakers configuration.
-Unfortunately I don't have enough 
-knowledge of alsa architecture to write a proper patch.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- dobromir - 03-11-05 16:08 
+ tvignaud - 03-11-05 13:06 
 ----------------------------------------------------------------------
-Ok so bug is in another place, because I cant change the value of iec958,
-it stays on PCM, and I can't change it. Do you have any ideas what to do
-now ?
+does any alsa developer has a clue about what's wrong in bmp/xmms alsa
+patch (which was written by takashi :-))?
 
 ----------------------------------------------------------------------
- tiwai - 03-11-05 16:15 
+ tiwai - 03-11-05 16:17 
 ----------------------------------------------------------------------
-You hit a bug hidden in this control :)
-Try the attached patch.
+This must be the alsa-driver or alsa-lib problem, rather than the app's 
+bug.  I don't figure out yet...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-11-05 01:17 dobromir       New Issue                                    
-03-11-05 08:27 dobromir       Note Added: 0003880                          
-03-11-05 10:19 dobromir       File Added: alc_850_mixer.patch                   
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
 
-03-11-05 10:24 dobromir       Note Added: 0003883                          
-03-11-05 12:11 tiwai          Note Added: 0003884                          
-03-11-05 16:08 dobromir       Note Added: 0003889                          
-03-11-05 16:15 tiwai          Note Added: 0003890                          
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
 ======================================================================
 
 
