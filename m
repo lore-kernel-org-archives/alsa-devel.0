@@ -1,12 +1,18 @@
 From: Guenther Sohler <guenther.sohler@newlogic.com>
-Subject: Re: silent midi in audixy
-Date: Fri, 22 Feb 2002 12:42:04 +0100 (MET)
-Message-ID: <XFMail.20020222124204.guenther.sohler@newlogic.com>
+Subject: Re: DSP code for MIDI Reverb
+Date: Fri, 22 Feb 2002 12:46:59 +0100 (MET)
+Message-ID: <XFMail.20020222124659.guenther.sohler@newlogic.com>
 Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <s5hpu2x7q67.wl@alsa2.suse.de>
+Received: from enterprise2.newlogic.com (enterprise2.newlogic.at [194.208.88.1])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id MAA28348
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2002 12:47:33 +0100
+Received: from enterprise2.newlogic.com (enterprise2 [172.27.1.1])
+	by enterprise2.newlogic.com (8.9.2/8.9.2) with ESMTP id MAA19626
+	for <alsa-devel@alsa-project.org>; Fri, 22 Feb 2002 12:47:00 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.31.0202221147510.489-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,45 +21,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo Jaroslaw,
-
-I think just by now I understand things better.
-I thought the emu10k1 was used on the sb live card and on the audixy card.
-But in fact the audixy chip is the next generation of the emu10k1.
-emu10k1 is used in sblive whereas the audixy chip is used in the creative audixy
-Is this right ?
-> 
-> yes, but the midi engine is identical.  if this makes so big
-> difference, then there must be a (secret) difference between emu10k1
-> and audigy chips.
-I would be very much interested, if pcm music(playing mp3) as approximately the
-same volume as playing weavetable(play midi) on a sb live.
-Just play them simultaniously although it does not sound nice. could you please
-test this for me on your sblive ?
-
-
-> i wonder, too :)  i wrote the driver just based on the code/info from
-> OSS driver.  anyway i'll get an audigy soon, so debugging will
-> be much easier.
-ok, fine :)
-
-
-> which soundfont, and how devices are connected.
-i use a soundfont called gm35revc.sf2 which came with my old awe64
-i also tried the new soundfount ct4 ..... ??? (name not exactly known) which
-was on the current audixy cd. its quite similar in volume!
-i have looked into the samples of gm35revc and they span from -32768 to 32767.
-so all dynamics is used optimally.
-
-> i tried xgmc you attached ago and it seems working fine.
-fine. So I assume its so userfriendly, that others can at least start it
-*lough*
-
-I am look forward to having it to completely working.
+hallo jaroslaw,
+> No, you don't understand this. The wavetable engine sends to reverb and
+> chorus buses samples attenuated as specified in MIDI messages as input for
+> the reverb and chorus effects. These samples HAVE NOT the effects
+> applied at all. It must be implemented in the DSP engine before the signal
+> will be mixed back with the left and right PCM and Music outputs.
+sorry for my misunderstanding. Now I presume i understood it and it seems clear
+for me.
+I presume the TRAM is some sort of big FIFO. 
+Are there and dsp algorithms available how to calculate reverb and chorus
+effects ?
 
 rds guenther
 
