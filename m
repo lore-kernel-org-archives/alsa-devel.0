@@ -1,15 +1,11 @@
-From: "Stephen Hassard" <steve@hassard.net>
-Subject: RE: M-Audio Sonica support
-Date: Mon, 2 Sep 2002 12:35:20 -0700
+From: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
+Subject: alsamixer on cvs
+Date: Mon, 2 Sep 2002 21:40:37 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <000501c252b7$dfc5a500$0500a8c0@shwxp>
-References: <s5hadn0e1ye.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0209022137350.7932-100000@cmn37.stanford.edu>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hadn0e1ye.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,32 +14,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: 'Takashi Iwai' <tiwai@suse.de>, 'Clemens Ladisch' <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > (Unfortunately, the bmAttributes field in the
-> > DFU functional descriptor indicates that the device is only capable
-> > of downloading, not uploading.)
-> > If we have luck, the firmware is stored in a DFU file (not 
-> necessarily
-> > with that name).
-> Stephen, could you check whether any possible file eixsts on windows?
+After installing a new cvs version I'm getting an assertion failure in 
+alsamixer (or amix). 
 
-The closest thing in the archive seems to be a 6k binary, although I'm
-not exactly sure what I'm looking for :P
+# alsamixer
+alsamixer: simple.c:869: simple_add1: Assertion `!simple->ctls[type].elem' 
+failed.
+Aborted
 
-I've placed it here: http://hassard.net/ma005101.bin
+This is with these modules loaded and started happening last Friday:
+# /sbin/lsmod
+Module                  Size  Used by    Tainted: P  
+snd-usb-midi            8688   0  (unused)
+snd-seq-virmidi         5300   0  [snd-usb-midi]
+snd-seq-midi-event      5836   0  [snd-usb-midi snd-seq-virmidi]
+snd-seq                53196   0  [snd-usb-midi snd-seq-virmidi 
+snd-seq-midi-event]
+snd-intel8x0           23648   0 
+snd-ac97-codec         31504   0  [snd-intel8x0]
+snd-pcm                90144   0  [snd-intel8x0]
+snd-timer              16640   0  [snd-seq snd-pcm]
+snd-mpu401-uart         5420   0  [snd-intel8x0]
+snd-rawmidi            19040   0  [snd-seq-virmidi snd-mpu401-uart]
+snd-seq-device          5916   0  [snd-usb-midi snd-seq snd-rawmidi]
+snd                    49064   0  [snd-usb-midi snd-seq-virmidi 
+snd-seq-midi-event snd-seq snd-intel8x0 snd-ac97-codec snd-pcm snd-timer 
+snd-mpu401-uart snd-rawmidi snd-seq-device]
+soundcore               6468   0  [snd]
 
-You can download the Windows 2000/XP drivers here:
-http://www.midiman.net/support/drivers/new/sonica_websetup.exe
-
-If you take a look in your temp files directory while running the
-installer, it seems to have extracted the entire driver (mixed with the
-installed files).
-
-later,
-Steve
+[the usb-midi modules are not doing anything at this point]
+-- Fernando
 
 
 
