@@ -1,14 +1,14 @@
 From: Hartmut Geissbauer <nwgbh@swissonline.ch>
-Subject: Re: Creamware Noah, snd-usb-audio capable?
-Date: Sat, 14 Feb 2004 21:14:07 +0100
+Subject: Re: [Alsa-user] Automatic module loading and /etc/init.d/alsasound
+Date: Sat, 14 Feb 2004 21:21:21 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1076789647.2475.5.camel@chief.local>
-References: <Pine.HPX.4.33n.0402111431430.12076-100000@studcom.urz.uni-halle.de>
+Message-ID: <1076790081.2494.11.camel@chief.local>
+References: <402E5C37.4050506@mbant.de>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0402111431430.12076-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <402E5C37.4050506@mbant.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,77 +20,65 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Clemens
+Hi Martin,
 
-Clemens Ladisch wrote: 
-> Hartmut Geissbauer wrote:
-> > I own a piece of hardware called Noah EX. It's a "tactive
-> > instrument modeller".
-> > My goal is to get this device working with the alsa usb driver,
-> > because the output of lsusb -v leads me to the hope, that it has a
-> > standard usb audio interface.
-> > ...
-> > Interface Descriptor:
-> >   bInterfaceClass         1 Audio
-> >   bInterfaceSubClass      1 Control Device
-> >   ...
-> >   bInterfaceSubClass      2 Streaming       (= PCM)
-> >   ...
-> >   bInterfaceSubClass      3 Non Streaming   (= MIDI)
+Am Sam, den 14.02.2004 schrieb Martin Braun um 18:34:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
 > 
-> Well, this device indeed has standard descriptors.
+> (list moderator: I apologize for sending this mail twice to the
+> moderator queue).
 > 
-> > What I discoverd yet, is that the device is offering two
-> > configurations. And the second is the audio and midi related one.
-> > The first seems to be the configuration "channel".
+> hi alsa-users,
 > 
-> > Feb  5 00:28:33 chief kernel: usb 1-2.4: configuration #1 chosen from 2 choices
+> I recently upgraded from 2.4.24 (everything working fine) to 2.6.2, I
+> used the version of ALSA provided with the kernel.
+> The trouble is, ALSA works BUT only if I insert the modules manually.
+> Now this is pretty annoying, as you can imagine.
+> How can I get my system to insert the modules automatically?
 > 
-> The problem is that the kernel automatically selects the first
-> configuration.  Please try the patch below.
+> Before, /etc/init.d/alsasound started when I booted up and I didn't have
+> to do anything at all. Now,
 > 
+> $ /etc/init.d/alsasound start
 > 
-> HTH
-> Clemens
+> does absolutely nothing at all.
+> 
+> I found this in dmesg:
+> 
+> <dmesg>
+> request_module: failed /sbin/modprobe -- snd-card-0. error = 256
+> PCI: Found IRQ 11 for device 0000:00:0c.0
+> request_module: failed /sbin/modprobe -- snd-card-1. error = 25
+> </dmesg>
+> 
+> this is how my section from modules.conf:
+> <modules>
+> # ALSA portion
+> alias char-major-116 snd
+> alias snd-card-0 snd-emu10k1
+> 
+> # module options should go here
+> 
+> # OSS/Free portion
+> alias char-major-14 soundcore
+> alias sound-slot-0 snd-card-0
+> 
+> # card #1
+> alias sound-service-0-0 snd-mixer-oss
+> alias sound-service-0-1 snd-seq-oss
+> alias sound-service-0-3 snd-pcm-oss
+> alias sound-service-0-8 snd-seq-oss
+> alias sound-service-0-12 snd-pcm-oss
+> </modules>
+> 
 
-sorry for responding that late. I've been out for skiing for a few days.
+sorry for the question. Do you know, that the new module-init-tools
+(former modutils) are using modprobe.conf instead of modules.conf? (for
+kernel 2.6.x)
 
-I tried the patch applying it at last to kernel 2.6.3-rc-2 to get away
-from the unresolved symbol "usb_get_device_descriptor".
-
-So now the dmesg command shows me:
-
-hub 1-2:1.0: port 4, status 101, change 1, 12 Mb/s
-hub 1-2:1.0: debounce: port 4: delay 100ms stable 4 status 0x101
-hub 1-2:1.0: port 4 not reset yet, waiting 10ms
-usb 1-2.4: new full speed USB device using address 3
-usb 1-2.4: new device strings: Mfr=1, Product=2, SerialNumber=0
-drivers/usb/core/message.c: USB device number 3 default language ID
-0x409
-usb 1-2.4: Product: CreamWare Noah Synthesizer
-usb 1-2.4: Manufacturer: CreamWare GmbH
-drivers/usb/core/usb.c: usb_hotplug
-usb 1-2.4: configuration #1 chosen from 2 choices
-usb 1-2.4: registering 1-2.4:1.0 (config #1, interface 0)
-drivers/usb/core/usb.c: usb_hotplug
-snd-usb-audio 1-2.4:1.0: usb_probe_interface
-snd-usb-audio 1-2.4:1.0: usb_probe_interface - got id
-
-The device is not appearing in /proc/asound.
-
-After that action, the usb-stack is stuck. Not recognizing any new
-connects or disconnects. I tried to compile the kernel with ohci (that's
-my controller type) as a module and built in.
-
-The same behaviour appears after removing a M-Audio Midisport4x4 from
-the usb port. It works only one time. (Plugging it in, it is working,
-plug it out, the usb stack is dead)
-So it seems, that there is something wrong with the usb stack in 2.6.x
-
-Hartmut
-
+HTH, Hartmut
 -- 
-
 Hartmut Geissbauer <nwgbh@swissonline.ch>
 
 
