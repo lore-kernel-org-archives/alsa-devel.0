@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 13:01:51 +0100
-Message-ID: <7257506aecc7165a8a8ddf8941b7255f@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 13:03:22 +0100
+Message-ID: <52385474cc651ea08d4887742a6405d0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9ED0D26B
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 13:01:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9960126B
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 13:03:22 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 13:01 CET
+Last Modified:              12-23-2004 13:03 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -77,11 +77,6 @@ ci/cs46xx/cs46xx_lib.c:413:
 -- 
 Thomas Hood
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-23-04 13:01 
-----------------------------------------------------------------------
-I found the problematic part.  it's for the old auto-loading mechanism...
 
 ----------------------------------------------------------------------
  jdthood - 12-23-04 13:01 
@@ -127,6 +122,13 @@ Dec 23 12:55:25 thanatos udev[950]: creating device node '/dev/dsp'
 Dec 23 12:55:25 thanatos udev[961]: creating device node '/dev/audio'
 Dec 23 12:55:25 thanatos udev[970]: creating device node '/dev/mixer'
 
+----------------------------------------------------------------------
+ jdthood - 12-23-04 13:03 
+----------------------------------------------------------------------
+> I found the problematic part.
+
+:)
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -144,6 +146,7 @@ Date Modified  Username       Field                    Change
 12-23-04 12:54 tiwai          Note Added: 0002918                          
 12-23-04 13:01 tiwai          Note Added: 0002919                          
 12-23-04 13:01 jdthood        Note Added: 0002920                          
+12-23-04 13:03 jdthood        Note Added: 0002921                          
 ======================================================================
 
 
