@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000688]: Errors in testing gcc and ld in the sparc and sparc64 sections of the configure file
-Date: Mon, 29 Nov 2004 15:38:08 +0100
-Message-ID: <886c365a92398288c8ee519985211a05@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000682]: alsamixer, rmedigicontrol and rme96 kernel driver
+Date: Mon, 29 Nov 2004 15:39:25 +0100
+Message-ID: <7cb0d64cfbda0da47bc4a5eb51fda2d6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 98A6B2C2
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:38:08 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D76BB2C2
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 15:39:25 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,75 +24,63 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=688> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=682> 
 ======================================================================
-Reported By:                jdthood
-Assigned To:                perex
+Reported By:                d637e16c5433737884c13889afdeaf34
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   688
-Category:                   0_compilation problem_!!!
+Issue ID:                   682
+Category:                   PCI - RME 96
 Reproducibility:            always
-Severity:                   major
+Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
+Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             11-28-2004 19:36 CET
-Last Modified:              11-29-2004 15:38 CET
+Date Submitted:             11-27-2004 00:59 CET
+Last Modified:              11-29-2004 15:39 CET
 ======================================================================
-Summary:                    Errors in testing gcc and ld in the sparc and
-sparc64 sections of the configure file
+Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
 Description: 
-Here is a patch to fix the configure script so that it less incorrectly
-tests gcc and ld functionality on sparc and sparc64.  You will want to fix
-configure.in, of course.
+As it's impossible to use the alsamixer with the rme96 driver here's a
+small patch for it to make it work. (it's not from me, it's from undog
+#alsa on irc.freenode.org)
+
+This patch will break rmedigicontrol, so i made a small patch for
+rmedigicontrol that'll fix this, too.
+
+Adding is trivial, it's just editing 8 lines of source.
+
+
+Regards,
+Matthias
+
+PS: Added patch for rme96.c
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:25 
+ tiwai - 11-29-04 15:28 
 ----------------------------------------------------------------------
-Could you try the CVS version.  The configure script was changed much since
-1.0.7 release.
+The only question is backward compatibility.  I don't mind to change this
+at all.
 
 ----------------------------------------------------------------------
- jdthood - 11-29-04 15:38 
+ martin - 11-29-04 15:39 
 ----------------------------------------------------------------------
-The cvs version still contains these lines:
-
-    test $KCC -m32 -S -o /dev/null -xc /dev/null >/dev/null 2>&1 &&
-IS_EGCS=y
-    test $CROSS_COMPILE$KLD --version 2>&1 | grep 'elf64_sparc' >
-/dev/null && NEW_GAS=y
-
-1. The 'test' does not belong at the beginning of these lines; it's a
-   straightforward syntax error.
-2. Setting IS_EGCS=y causes "-m32" not to be used, so it's peculiar to
-set
-   IS_EGCS=y when the command _succeeds_ with "-m32".
-   (Bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 hides bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=2.)
-3. ld --version does not output a list of supported emulations, but
-   ld -V does output such a list.  The sparc64 section uses "-V".
-
-My guess is that these lines should be:
-
-    $KCC -m32 -S -o /dev/null -xc /dev/null >/dev/null 2>&1 || IS_EGCS=y
-    CROSS_COMPILE$KLD -V 2>&1 | grep 'elf64_sparc' > /dev/null &&
-NEW_GAS=y
-
--- 
-Thomas Hood
+For me it's a bug and not a new design.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 19:36 jdthood        New Issue                                    
-11-28-04 19:36 jdthood        File Added:
-alsa-driver-configure.jdth20041128.patch                    
-11-29-04 15:25 tiwai          Note Added: 0002637                          
-11-29-04 15:38 jdthood        Note Added: 0002641                          
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34New Issue                        
+           
+11-27-04 00:59 d637e16c5433737884c13889afdeaf34File Added: rme96.c.patch        
+           
+11-28-04 18:41 martin         Note Added: 0002628                          
+11-29-04 15:28 tiwai          Note Added: 0002639                          
+11-29-04 15:39 martin         Note Added: 0002642                          
 ======================================================================
 
 
