@@ -1,11 +1,13 @@
-From: John Covici <covici@ccs.covici.com>
-Subject: controls for the ice1712
-Date: Fri, 05 Jul 2002 10:47:11 -0400
+From: Andrew Nesbit <alnesbit@optushome.com.au>
+Subject: Re: controls for the ice1712
+Date: 06 Jul 2002 00:57:51 +1000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <m37kka5j0w.fsf@ccs.covici.com>
+Message-ID: <87bs9mql1s.fsf@anima.lensflare.org>
+References: <m37kka5j0w.fsf@ccs.covici.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <m37kka5j0w.fsf@ccs.covici.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -14,28 +16,21 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: John Covici <covici@ccs.covici.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Could some kind person answer a few questions about the controls of
-the ice1712. 
+John Covici <covici@ccs.covici.com> writes:
 
+> Could some kind person answer a few questions about the controls of
+> the ice1712. 
+> 
+>  I cannot figure out how the alsa controls
+> correspond.
 
-I have the manual for the card and I use it with that other operating
-system all the time, but I cannot figure out how the alsa controls
-correspond.
+Have you compiled the envy24control tool from the alsa-tools package?
 
-What I would like to do more specifically is playback through the
-spdiff out interface, set the sample rate to 44.100 khz, to record I
-have to set the clock and sample rate to spdiff and after recording
-is over set it back to internal.  I usually want to record from the
-sp/diff input as well.
-
-Any assistance would be appreciated.
-
--- 
-         John Covici
-         covici@ccs.covici.com
+Andrew.
 
 
 -------------------------------------------------------
