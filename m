@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000684]: unresolver symbols for gus interwave
-Date: Wed, 29 Dec 2004 14:29:35 +0100
-Message-ID: <a5b940f6de12483bfbc2ee9da9b26455@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000611]: Can't access Digi32 with kernel 2.6.9
+Date: Wed, 29 Dec 2004 14:29:56 +0100
+Message-ID: <4c750f7984fa2824488e5c333f87f089@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 838AC26D
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:29:35 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CA21F26D
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 14:29:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,52 +24,74 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=684> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=611> 
 ======================================================================
-Reported By:                led
-Assigned To:                perex
+Reported By:                spirou
+Assigned To:                martin
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   684
-Category:                   ISA - GUS (classic, max, extreme, interwave)
+Issue ID:                   611
+Category:                   PCI - RME 32
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     closed
-Distribution:               redhat
-Kernel Version:             self compiled 2.4.27 and 2.4.28
+Distribution:               Gentoo Linux
+Kernel Version:             2.6.9-gentoo-r1
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             11-28-2004 14:54 CET
+Date Submitted:             10-27-2004 03:44 CEST
 Last Modified:              12-29-2004 14:29 CET
 ======================================================================
-Summary:                    unresolver symbols for gus interwave
+Summary:                    Can't access Digi32 with kernel 2.6.9
 Description: 
-Since alsa driver 1.0.6 there are unresolved symbols for gus interwave
-driver. I include console report from restarting the driver showing the
-problem. In 1.0.7 version is the same. 1.0.5 works fine.
+The Driver for the digi32 in kernel 2.6.9 doesn't let me access the card.
+All I get is a "Device busy". With 2.6.8 everything is fine.
+lsmod shows the driver as loaded, permissions are the same as with 2.6.8.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-29-04 15:35 
+ martin - 11-28-04 18:35 
 ----------------------------------------------------------------------
-It's the missing dependency in Makefile.
-Fixed on CVS now.
+Can I close this bug? Is it also resolved for you, if you are using newer
+code?
+
+----------------------------------------------------------------------
+ tiwai - 11-29-04 15:53 
+----------------------------------------------------------------------
+Let's move this to resolve/fixed.  If the problem still exists, reopen
+this.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-28-04 14:54 led            New Issue                                    
-11-28-04 14:54 led            File Added: alsa_unresolved_symbols.ascii         
-          
-11-28-04 14:54 led            Distribution              => redhat          
-11-28-04 14:54 led            Kernel Version            => self compiled 2.4.27
-and 2.4.28
-11-28-04 16:31 led            Issue Monitored: led                         
-11-29-04 15:35 tiwai          Status                   assigned => resolved
-11-29-04 15:35 tiwai          Resolution               open => fixed       
-11-29-04 15:35 tiwai          Note Added: 0002640                          
+10-27-04 03:44 spirou         New Issue                                    
+10-27-04 03:44 spirou         Distribution              => Gentoo Linux    
+10-27-04 03:44 spirou         Kernel Version            => 2.6.9-gentoo-r1 
+11-09-04 19:16 tiwai          Note Added: 0002341                          
+11-10-04 02:47 spirou         Note Added: 0002354                          
+11-10-04 11:04 martin         Note Added: 0002360                          
+11-10-04 12:08 tiwai          Note Added: 0002363                          
+11-10-04 22:09 martin         File Added: rme32.stracelog.WRONG.gz              
+     
+11-10-04 22:10 martin         File Added: rme32.stracelog.FINE.gz               
+    
+11-10-04 22:33 martin         Note Added: 0002377                          
+11-10-04 22:37 martin         Note Added: 0002380                          
+11-11-04 15:04 tiwai          Note Added: 0002388                          
+11-11-04 16:11 martin         Note Added: 0002389                          
+11-14-04 15:07 martin         Note Added: 0002408                          
+11-14-04 20:05 martin         File Added: pcmnative.patch                    
+11-14-04 20:17 martin         Note Added: 0002409                          
+11-15-04 04:59 spirou         Note Added: 0002410                          
+11-15-04 20:25 martin         Note Added: 0002420                          
+11-16-04 16:19 tiwai          Note Added: 0002425                          
+11-16-04 23:54 martin         Note Added: 0002431                          
+11-28-04 18:35 martin         Note Added: 0002627                          
+11-29-04 15:53 tiwai          Status                   assigned => resolved
+11-29-04 15:53 tiwai          Resolution               open => fixed       
+11-29-04 15:53 tiwai          Note Added: 0002646                          
 12-29-04 14:29 tiwai          Status                   resolved => closed  
 ======================================================================
 
