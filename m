@@ -1,8 +1,8 @@
-From: Mark Knecht <markknecht@attbi.com>
+From: Roger Williams <raw@qux.com>
 Subject: Re: hdsp multiface pci.
-Date: 19 Jan 2003 16:34:27 +0000
+Date: 19 Jan 2003 21:14:36 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1042994069.1162.33.camel@Godzilla>
+Message-ID: <m3bs2ck1o3.fsf@grouper.coelacanth.com>
 References: <3E2A952E.6060305@boosthardware.com>
 	<1042985569.1663.33.camel@satellite.undata.org>
 	<3E2AC45F.3070601@boosthardware.com>
@@ -11,11 +11,11 @@ References: <3E2A952E.6060305@boosthardware.com>
 	<m3d6mt9is6.fsf@grouper.coelacanth.com>
 	<1042978893.1341.108.camel@Godzilla>
 	<m3ptqskcay.fsf@grouper.coelacanth.com>
+	<1042994069.1162.33.camel@Godzilla>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <m3ptqskcay.fsf@grouper.coelacanth.com>
+In-Reply-To: <1042994069.1162.33.camel@Godzilla>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -24,112 +24,78 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Roger Williams <raw@qux.com>
+To: Mark Knecht <markknecht@attbi.com>
 Cc: Alsa-Devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Roger,
-   This is very, very helpful. Thanks for sharing this info. I am trying
-to do similar things with the HDSP 9652, which is similar but a bit
-different, I'd like to address a couple more things. (Darn...Tennessee
-just scored!) :-(((  7-7
+>>>>> Mark Knecht <markknecht@attbi.com> writes:
 
-   I just want to clearly understand the physical I/O numbering right
-now. Once I've got that I'll ask you a couple of questions about the
-mixer if I may.
+  > This is very, very helpful.
 
-   OK, it appears that the MultiFace has a slightly different numbering
-system for your analog channels, starting with 0-7 instead of what I
-think I have which starts with 1-8. Is this correct?
+What will be "very, very helpful" will be Thomas's TotalMix clone! :)
 
-   If I look at the HDSP amixer info, I seem to start with an index of
-1, not 0. Am I looking at the right stuff? (I've done some sorting to
-make this more readable to me. I have this initial section with 9
-controls, and then 26 sections that are identical to the second area I
-show below, indexing from 1-26. I presume that your first one would
-start with index=0?
+  > ... it appears that the MultiFace has a slightly different
+  > numbering system for your analog channels, starting with 0-7
+  > instead of what I think I have which starts with 1-8.
 
-[mark@Godzilla mark]$ amixer controls
-numid=1,iface=PCM,name='IEC958 Playback Default'
-numid=3,iface=MIXER,name='IEC958 Playback Con Mask'
-numid=4,iface=MIXER,name='IEC958 Playback Pro Mask'
-numid=5,iface=PCM,name='Mixer'
-numid=6,iface=PCM,name='IEC958 Input Connector'
-numid=7,iface=PCM,name='IEC958 Output also on ADAT1'
-numid=8,iface=PCM,name='Preferred Sync Source'
-numid=9,iface=PCM,name='Passthru'
-numid=10,iface=PCM,name='Line Out'
+My "amixer controls" dump looks the same as yours.  I don't know what
+"index=1" means, but it doesn't appear to mean that our cset indexing
+begins at 1.  I've got to assume that Paul or Thomas already know
+everything there is to know about the HDSP mixer, and I hate to
+explore known territory, but when you don't have a map...
 
+  > When you say 'appear to be numbered like this', how did you determine
+  > this? Was it documented somewhere? Or did you have to test yourself?
 
-numid=11,iface=MIXER,name='Chn',index=1
-numid=12,iface=PCM,name='Input Peak',index=1
-numid=13,iface=PCM,name='Output Peak',index=1
-numid=14,iface=PCM,name='Playback Peak',index=1
-numid=15,iface=PCM,name='Playback RMS',index=1
-numid=16,iface=PCM,name='Input RMS',index=1
+Well, it matches Marcus Andersson's notes on the ALSA HDSP page:
 
+    input_source: 0-7 (analog), 16-23 (adat), 24-25 (spdif), 26-51 (playback)
+    output_source: 0-7 (analog), 16-23 (adat) 24-25 (spdif), 26-27 (line out)
 
+I found "output_source" confusing, but it makes sense if I rename it
+"destination".
 
+  > The MultiFace has 18 inputs ... so I would have expected you to list:
 
-On Sun, 2003-01-19 at 22:24, Roger Williams wrote:
-> >>>>> Mark Knecht <markknecht@attbi.com> writes:
->   > Second, where do the inputs numbered 26-33 come from.
-> 
-> As far as the Multiface's analogue I/O goes, channels appear to be
-> numbered like this:
+Some of the numbering is discontinuous (because the Multiface doesn't
+have the Digiface's ADAT2 range of channels), so the full Multiface
+I/O list is:
 
-When you say 'appear to be numbered like this', how did you determine
-this? Was it documented somewhere? Or did you have to test yourself?
+Inputs to HDSP Mixer
+========================================================================
+Multiface analogue inputs 1-8      = amixer source channels 0-7
+Multiface ADAT inputs 1-8          = amixer source channels 16-23
+Multiface SPDIF input              = amixer source channels 24-25
+alsa_pcm:playback_1-26             = amixer source channels 26-51
 
-> 
-> Multiface inputs 1-8               = amixer source channels 0-7
-> Multiface outputs 1-8              = amixer destination channels 0-7
-> Multiface line (headphone) outputs = amixer destination channels 26-27
-> alsa_pcm:playback_1-8              = amixer source channels 26-33
-> 
+Outputs from HDSP Mixer
+========================================================================
+Multiface analogue outputs 1-8     = amixer destination channels 0-7
+Multiface ADAT outputs 1-8         = amixer destination channels 16-23
+Multiface SPDIF output             = amixer destination channels 24-25
+Multiface line (headphone) output  = amixer destination channels 26-27
 
-OK, here's where you throw me. Let me list out what I thought I knew
-about the MultiFace, and then correct me where I'm wrong please.
+Mapping between Multiface inputs and alsa_pcm:capture channels
+========================================================================
+Multiface analogue inputs 1-8      = capture_1-8
+Multiface ADAT inputs 1-8          = capture_9-16
+Multiface SPDIF input              = capture_17-18
 
-The MultiFace has 18 inputs - 8 analog, 8 ADAT, 2 s/pdif, and 20 outputs
-(including the Headphone outs if they are really separate from
-everything else. They may not be...) so I would have expected you to
-list:
+  > In my case I am guessing that my physical I/O numbering will be
 
-(Yea!!! Raiders score! 14-7)
+  > HDSP 9652 ADAT-1 inputs 1-8	   = amixer source channels 1-8
+  > HDSP 9652 ADAT-2 inputs 9-16   = amixer source channels 8-16
+  > HDSP 9652 ADAT-3 inputs 17-24  = amixer source channels 17-24
+  > HDSP 9652 s/pdif inputs 25-26  = amixer source channels 25-26
 
-MultiFace analog inputs 1-8	= amixer source channels 0-7
-MultiFace ADAT inputs 9-16	= amixer source channels W-X (8-16?)
-MultiFace s/pdif inputs 17-18	= amixer source channels Y-Z (17-18?)
+I'm pretty sure that the amixer ranges will be 0-7, 8-15, 16-23, and
+24-25, respectively.  I believe that matches the Digiface (which also
+has its analogue headphone output on 26-27, as I recall).
 
-Basically, to use the 18 inputs, they all must have unique numbers.
-Correct?
-
-MultiFace analog outputs 1-8	= amixer dest. channels 0-7
-MultiFace ADAT outputs 9-16	= amixer dest. channels W-X (8-16?)
-MultiFace s/pdif outputs 17-18	= amixer dest. channels Y-Z (17-18?)
-MultiFace Line outputs 1-2	= amixer dest. channels 26-27
-
-Maybe all of the features of the MultiFace not actually supported in the
-current driver, so you didn't list them, or maybe you just didn't use
-them, so you didn't write them down?
-
-In my case I am guessing that my physical I/O numbering will be as
-follows:
-
-HDSP 9652 ADAT-1 inputs 1-8	= amixer source channels 1-8
-HDSP 9652 ADAT-2 inputs 9-16	= amixer source channels 8-16
-HDSP 9652 ADAT-3 inputs 17-24	= amixer source channels 17-24
-HDSP 9652 s/pdif inputs 25-26	= amixer source channels 25-26
-
-and similar numbering for the outputs.
-
-Do you think this is right? Any other thoughts or comments?
-
-Thanks,
-Mark
-
-
+-- 
+Roger Williams <raw@qux.com>
+Qux Tool & Die, Middleborough, Massachusetts
+// Omne tulit punctum qui misquit utile dulci //
 
 
 -------------------------------------------------------
