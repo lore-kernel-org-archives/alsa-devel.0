@@ -1,14 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: [PATCH] envy24control.[ch] update for hoontech   
- cards.
-Date: Mon, 16 Dec 2002 15:25:26 +0100 (CET)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: possible problems with rc6 aplay
+Date: Mon, 16 Dec 2002 09:29:05 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0212161517540.503-100000@pnote.perex-int.cz>
-References: <20021216001517.2A6C93A9D@sitemail.everyone.net>
-Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Message-ID: <E18NwBf-0003qc-00@sc8-sf-list1.sourceforge.net>
+References: <s5h4r9et6au.wl@alsa2.suse.de>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20021216001517.2A6C93A9D@sitemail.everyone.net>
+In-reply-to: Your message of "Mon, 16 Dec 2002 14:57:45 +0100."
+             <s5h4r9et6au.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,41 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Henry Walpool <apkennedy@firstlinux.net>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Knecht <markknecht@attbi.com>, martin-langer@gmx.de, Alsa-Devel <alsa-devel@lists.sourceforge.net>, swpatrick@earthlink.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 15 Dec 2002, Henry Walpool wrote:
+>the standard alsasound init script can call a card-dependent script
 
-> The Hoontech Media 7.1 card has a consumer/professional option at least
-> under windows. I would assume that with the correct information from
-> hoontech one could program this under alsa. Of course I don't have a
-> clue, I'm just guessing here.
+that reminds me. the last version of the alsasound script that i saw
+did something very dangerous. it seemed to try to install *every*
+snd-card module it could find. if you have a system with an ISA bus,
+this can prove fatal to the system - many ISA device probes will kill
+the machine if the device is not present.
 
-It's possible that newer cards can drive this control via GPIO, but I have 
-no information about the Media 7.1 version.
+the alsasound script should assume, i think, that alsaconf has been
+run, and that only modules listed in /etc/modules.conf or its
+equivalent should be loaded.
 
-						Jaroslav
-
-> --- Jaroslav Kysela <perex@suse.cz> wrote:
-> >On Sat, 14 Dec 2002, Henry Walpool wrote:
-> >
-> >> Added some code to block out the error messages for the hoontech cards
-> >> when someone tries to access the professional/consumer option. I tried
-> >> to get the information from hoontech but no luck. I don't think it would
-> >> be that hard to add the correct code to enable these functions but
-> >> hoontech is not talking unfortunately. Hoontech even stopped responding
-> >> to my e-mails. The last response I got was "e-mail the alsa-developers".
-> >> "They have all the information about hoontech cards already."
-> >
-> >The original hoontech cards have hardwired support (in hardware) for 
-> >consumer mode only.
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+--p
 
 
 -------------------------------------------------------
