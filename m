@@ -1,12 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Re: alsa driver, repeat playback of buffer contents
-Date: Tue, 15 Mar 2005 08:49:35 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503150848280.1743@pnote.perex-int.cz>
-References: <200503141530.20339.random.bits@rogers.com> <yw1xu0ndj2du.fsf@ford.inprovide.com>
- <1110846019.15588.28.camel@mindpipe> <200503142014.37841.mark@vuenyx.com>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] emu10k1: various (mostly trivial) small
+ cleanups
+Date: Tue, 15 Mar 2005 09:07:28 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503150853370.186-100000@studcom.urz.uni-halle.de>
+References: <1110844578.15588.12.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <200503142014.37841.mark@vuenyx.com>
+In-Reply-To: <1110844578.15588.12.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,24 +16,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Cannon <mark@vuenyx.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 14 Mar 2005, Mark Cannon wrote:
+Lee Revell wrote:
+> On Mon, 2005-03-14 at 09:23 +0100, Clemens Ladisch wrote:
+> > BTW: Does the Emu10k1 have some sample/tick counter that runs even if
+> > no PCMs are running?  If so, it would be possible to detect lost timer
+> > interrupts.
+>
+> In practice I have found that interrupts are basically never lost.  The
+> only time I ever saw this happen was when the VIA Unichrome XAA (yep,
+> userspace!) driver had a FIFO related bug where it would temporarily
+> stall the PCI bus.
 
-> How can I send down a short PCM stream, and have the 
-> hardware repeat it until told to stop?
+I saw it when ripping audio from CDs with a 2.4 kernels (does not
+support DMA in this case).
 
-You must always copy the data to right place in the ring buffer unless
-the sound fragment has not exact (or multiple) size of ring buffer.
+> I guess I am wondering whether this would be worth implementing.  Do
+> you think the overhead of reading the wall clock register on every timer
+> interrupt is worth it?
 
-						Jaroslav
+Probably not, when we declare 2.4 obsolete. :)  Drivers that disable
+interrupts for too long _are_ considered broken, after all.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+I'd think the only case where it's really worth it would be if the
+hardware has direct support for this, with a timer overflow counter or
+something like this.
+
+
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
