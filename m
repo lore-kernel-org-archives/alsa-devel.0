@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000377]: AudioTrak MAYA44 USB is detected, but doesn't work.
-Date: Thu, 11 Nov 2004 09:22:25 +0100
-Message-ID: <ab64468e23aa7ef133fd79f23de2eba7@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000608]: module snd-bt87x throws "kernel: Aieee - PCI error!" repeatedly
+Date: Thu, 11 Nov 2004 09:24:35 +0100
+Message-ID: <f14bd8577525383a7ef9c302f777d10d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A3F5625C
-	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 09:22:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 97A9D25C
+	for <alsa-devel@alsa-project.org>; Thu, 11 Nov 2004 09:24:35 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,76 +22,78 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been CLOSED
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=377> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=608> 
 ======================================================================
-Reported By:                TheMuso
+Reported By:                orclex
 Assigned To:                Clemens Ladisch
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   377
-Category:                   USB - usb-audio
+Issue ID:                   608
+Category:                   PCI - bt87x
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Distribution:               Slackware 10.0
-Kernel Version:             2.4.26 and 2.6.7
+Status:                     closed
+Distribution:               debian Linux
+Kernel Version:             2.6.9
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             07-12-2004 05:56 CEST
-Last Modified:              11-11-2004 09:22 CET
+Date Submitted:             10-26-2004 22:08 CEST
+Last Modified:              11-11-2004 09:24 CET
 ======================================================================
-Summary:                    AudioTrak MAYA44 USB is detected, but doesn't work.
+Summary:                    module snd-bt87x throws "kernel: Aieee - PCI error!"
+repeatedly
 Description: 
-With alsa-driver from latest CVS, this card is detected by hotplug, and
-assigned to snd-usb-audio, however it is not detected and set up.
+The audio module snd-bt87x throws repeatedly errors.
+So dmesg lists errors continual:
+Aieee - PCI error! status 0x008008, PCI status 0x8280
+
+/var/log/syslog contains these lines:
+Oct 26 20:53:01 orclex kernel: Aieee - PCI error! status 0x008008, PCI
+status 0x8280
+Oct 26 20:53:36 orclex last message repeated 4 times
+Oct 26 20:54:36 orclex last message repeated 7 times
+Oct 26 20:55:36 orclex last message repeated 4 times
+Oct 26 20:56:36 orclex last message repeated 35 times
+Oct 26 20:57:38 orclex last message repeated 28 times
+Oct 26 20:58:36 orclex last message repeated 37 times
+Oct 26 20:59:36 orclex last message repeated 9 times
+Oct 26 21:00:36 orclex last message repeated 157 times
+Oct 26 21:01:36 orclex last message repeated 48 times
+
+When I remove the snd-bt87x module the error does not appear.
 ======================================================================
 
 ----------------------------------------------------------------------
- TheMuso - 11-10-04 22:36 
+ Clemens Ladisch - 10-27-04 09:12 
 ----------------------------------------------------------------------
-Ok, changing the number to 11 allows the card to work properly. It now
-appears in /proc/asound with all info regarding the card, and the playback
-and capture devices. Alsamixer works, and I can even get sound through
-it.
+"PCI status 0x8xxx" means that there was a parity error on the PCI bus. 
+This error was detected (not caused) by the TV card.
 
-Thanks a lot Clemens, much appreciated.
-
-I guess I have to close this bug now?
+It's possible that the sound card takes the PCI bus when it isn't allowed
+to, or that your chipset doesn't arbitrate the PCI bus correctly.  (The
+latter happens with some VIA chipsets.)
 
 ----------------------------------------------------------------------
- Clemens Ladisch - 11-11-04 09:22 
+ Clemens Ladisch - 10-27-04 18:54 
 ----------------------------------------------------------------------
-Yes.  That is, not anymore. :-)
+I changed the driver to shut up when more than 20 errors have been
+detected.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-07-12-04 05:56 TheMuso        New Issue                                    
-07-12-04 05:56 TheMuso        Distribution              => Slackware 10.0  
-07-12-04 05:56 TheMuso        Kernel Version            => 2.4.26 and 2.6.7
-07-14-04 19:27 Clemens LadischNote Added: 0001418                          
-07-15-04 00:42 TheMuso        Note Added: 0001422                          
-07-15-04 08:59 Clemens LadischNote Added: 0001424                          
-07-15-04 13:41 TheMuso        Note Added: 0001432                          
-07-16-04 16:59 Clemens LadischNote Added: 0001453                          
-07-17-04 03:03 TheMuso        Note Added: 0001455                          
-08-15-04 12:14 TheMuso        Note Added: 0001567                          
-08-20-04 11:18 Clemens LadischNote Added: 0001597                          
-08-22-04 04:01 TheMuso        Note Added: 0001606                          
-09-03-04 03:42 TheMuso        Note Added: 0001685                          
-09-20-04 15:14 TheMuso        Note Added: 0001787                          
-11-10-04 09:54 Clemens LadischFile Added: usb_logging.patch                    
-11-10-04 09:56 Clemens LadischNote Added: 0002358                          
-11-10-04 11:26 TheMuso        Note Added: 0002361                          
-11-10-04 13:49 Clemens LadischNote Added: 0002372                          
-11-10-04 22:36 TheMuso        Note Added: 0002378                          
-11-11-04 09:22 Clemens LadischStatus                   assigned => resolved
-11-11-04 09:22 Clemens LadischResolution               open => fixed       
-11-11-04 09:22 Clemens LadischNote Added: 0002382                          
+10-26-04 22:08 orclex         New Issue                                    
+10-26-04 22:08 orclex         Distribution              => debian Linux    
+10-26-04 22:08 orclex         Kernel Version            => 2.6.9           
+10-27-04 09:12 Clemens LadischNote Added: 0002273                          
+10-27-04 18:54 Clemens LadischStatus                   assigned => resolved
+10-27-04 18:54 Clemens LadischResolution               open => fixed       
+10-27-04 18:54 Clemens LadischNote Added: 0002279                          
+11-11-04 09:24 Clemens LadischStatus                   resolved => closed  
 ======================================================================
 
 
