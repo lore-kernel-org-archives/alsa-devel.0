@@ -1,16 +1,14 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: Re: alsa timer slippage
-Date: Mon, 15 Dec 2003 09:16:03 +0000
+From: Arve Knudsen <aknuds-1@broadpark.no>
+Subject: Re: Query devices in a non-blocking fashion
+Date: Mon, 15 Dec 2003 10:39:27 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312150916.03357.cannam@all-day-breakfast.com>
-References: <E1AVXB7-00025m-JG@sc8-sf-list2.sourceforge.net> <200312150230.33546.plcl@telefonica.net>
+Message-ID: <oprz7uf1i3q1sf88@mail.broadpark.no>
+References: <oprztqwoi4q1sf88@mail.broadpark.no> <200312071919.hB7JJTNk004757@oud.linuxaudiosystems.com> <20031208161936.310df2cb.pochini@shiny.it> <oprzvc5mu3q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312081745340.20863@pnote.perex-int.cz> <oprzvh60rmq1sf88@mail.broadpark.no> <3FDC8D16.6070608@boosthardware.com> <oprz6jjyl7q1sf88@mail.broadpark.no> <Pine.LNX.4.58.0312150952190.28088@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format=flowed; charset=iso-8859-1
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200312150230.33546.plcl@telefonica.net>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0312150952190.28088@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,26 +17,71 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Patrick Shirkey <pshirkey@boosthardware.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 15 Dec 2003 1:30 am, Pedro Lopez-Cabanillas wrote:
-> The ALSA MIDI sequencer can use several timer sources. By default,
-> it uses the Linux system timer functions [...]
-> Other timer sources are PCM devices and the RTC timer.
+On Mon, 15 Dec 2003 09:59:16 +0100 (CET), Jaroslav Kysela <perex@suse.cz>=
+=20
+wrote:
 
-Ah... so that puts Jan's comment into perspective.  I could have been 
-using the soundcard to sync from, but I wasn't.  And indeed, 
-switching the timer for this queue to the first PCM device gives me 
-vastly better results.
+> On Sun, 14 Dec 2003, Arve Knudsen wrote:
+>
+>> On Mon, 15 Dec 2003 01:17:26 +0900, Patrick Shirkey
+>> <pshirkey@boosthardware.com> wrote:
+>>
+>> > If we have a DB of info how would we define the abilities of each=20
+>> device?
+>> >
+>> > I assume this info is available in the driver layer because there is=
+ a
+>> > point where ALSA will return false eg. if a card is not able to run =
+at
+>> > 48000Hz
+>> >
+>> > My opinion is that a simple function could be included in alsactl=20
+>> which
+>> > scans for available devices, makes a list of their abilities. Everyo=
+ne
+>> > uses "post-insert alsactl restore" in the modules.conf file so it=20
+>> would
+>> > be essentially a non issue from a user perspective.
+>> >
+>> > Couldn't this be saved in the config settings for alsactl?
+>> This whole database thing seems like overkill to me, to be honest. Thi=
+s=20
+>> is
+>> dynamic information would best be obtained from cards during operation=
+,
+>> the only problem is that you have to lock the device. A better design=20
+>> would
+>> be to, if possible, allow the configuration space to be read even when=
+ a
+>> device is streaming.
+>>
+>> I dont know the dirty details of writing drivers, but would this be a
+>> problem? Perhaps we could differ between read-locked and write-locked
+>> configuration, so there would be inclusive read access to the device,=20
+>> and
+>> totally exclusive access if it is to be modified.
+>
+> Again, the configuration space is runtime information and it might depe=
+nd
+> if a stream is active for given card. So, information might be useless
+> (different).
+>
+> Again, much better is to give this information from the user space rath=
+er
+> than adding code to the drivers. We may also describe the constraints
+> here.
+Will these constraints be updated during runtime, so they take the device=
+'s
+current state into account, such as samplerate vs number of channels? I
+hope this won't add to the complexity of ALSA-lib, though.
 
-This seems to suggest that the default system-based timer is doing 
-something a bit naive, like assuming it was called back on time 
-without actually checking.
+Regards
 
-
-Chris
-
+Arve Knudsen
 
 
 -------------------------------------------------------
