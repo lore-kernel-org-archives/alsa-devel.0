@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsamixer on cvs (works!)
-Date: Fri, 13 Sep 2002 09:57:22 +0200 (CEST)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Creative Lab's Extigy
+Date: Fri, 13 Sep 2002 10:38:25 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0209130956340.647-100000@pnote.perex-int.cz>
-References: <200209122221.PAA20818@cmn29.stanford.edu>
+Message-ID: <Pine.HPX.4.33n.0209131007120.11125-100000@studcom.urz.uni-halle.de>
+References: <20020912172659.GA20084@undertone.org>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200209122221.PAA20818@cmn29.stanford.edu>
+In-reply-to: <20020912172659.GA20084@undertone.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,46 +17,57 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php=alsa-devel>
-To: Fernando Pablo Lopez-Lezcano <nando@ccrma.Stanford.EDU>
-Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: mark@undertone.org
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 12 Sep 2002, Fernando Pablo Lopez-Lezcano wrote:
+mark@undertone.org wrote:
+> While I appreciate the tremendous work done with the USB audio
+> support, I'm just not getting access to the featureset I want on my
+> extigy (external USB audigy card from cl).
 
-> > > > I just tried cvs and I'm getting an unresolved symbol error
-> > > > on snd.o, pci_alloc_consistent
-> > >
-> > > this is likely because of my last change.
-> > > which kernel are you using?
-> > > perhaps pci_alloc_consistent() is defined as a macro for some other
-> > > function in your kernel.
-> >
-> > I'm using 2.4.20-pre4 + lowlat + preempt + capabilities + acpi
-> > (I think that's all)
-> >
-> > > anyway, i changed the relevant part on cvs.  please try once to
-> > > update.
-> >
-> > I'll try again...
-> 
-> Compiles fine and seems to be working ok (intel8x0). I don't
-> know what the situation was before because I did not look at
-> it, but now there are two ac97 codecs recognized (I guess the
-> second one corresponds to the modem - I'll have to find time
-> to test the modem so verify it works). There is no delay in
-> recognizing them as far as I can tell.
+What features are missing?
 
-Note that modem codecs are only detected. You might send me contents of 
-/proc/asound/card0/intel8x0 and ac97* files to verify, if everything is 
-ok.
+> I admit I do not have much experience writing device drivers. However,
+> I'd like to believe myself to be technically competant enough with the
+> linux kernel to begin doing so. What I'm looking for here are a few
+> pointers and tips for where to start, what code to stare at for a
+> while, etc. The ALSA documentation is pretty good as is, but I think
+> I'd need a little more than that as far as driver development goes.
 
-						Jaroslav
+The current state of ALSA driver development documentation is "Use the
+source, Luke!"  Especially, there's alsa-kernel/drivers/dummy.c as an
+example driver.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project  http://www.alsa-project.org
-SuSE Linux    http://www.suse.com
+I'd suggest to read about generic Linux driver development. There's much
+useful information in the Documentation/ directory of the kernel, and
+there's <http://www.oreilly.com/catalog/linuxdrive2/chapter/book/>.
+
+For a USB audio driver, you have to read (and understand :) the relevant
+parts from the USB specification <http://www.usb.org/developers/docs.html>
+and from the Audio Class specifications
+<http://www.usb.org/developers/devclass_docs.html>. If your brain is still
+working after that :-) , read the files in alsa-kernel/usb/.
+
+> Is it fiesable? Would a driver need to be written from scratch? Could
+> I just hook some extentions into the present usb-audio driver?
+
+If the missing features are something already implemented in the ALSA
+driver but not describes by the USB descriptors, it would be possible to
+extend the quirk mechanism of the driver (currently, it's used for some
+USB MIDI devices). <http://www.cs.umass.edu/~cochran/> mentions the MIDI
+and IR parts of the Extigy have this problem.
+
+> Does Creative Labs even release enough info/specs to write a decent
+> driver?
+
+I didn't find any on their opensource website. I'd guess you'd have to
+sign an NDA.
+
+
+HTH
+Clemens
+
 
 
 
