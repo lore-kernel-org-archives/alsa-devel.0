@@ -1,12 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: usb audio callback questions.
-Date: Sun, 06 Jul 2003 14:21:52 +0100
+From: Ryan Underwood <nemesis-lists@icequake.net>
+Subject: Re: Developing SIS 962L driver.
+Date: Sun, 6 Jul 2003 08:42:43 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3F082270.8030605@superbug.demon.co.uk>
+Message-ID: <20030706134243.GB24005@dbz.icequake.net>
+References: <200307051204.AA1763115658@enroute-computer.com> <20030705185314.GT24005@dbz.icequake.net> <3F07F12E.8090805@esat.kuleuven.ac.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3F07F12E.8090805@esat.kuleuven.ac.be>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,41 +17,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I have a question regarding the callbacks in the usbaudio.c driver.
-The callback is defined as: -
 
-/*
-  * complete callback from data urb
-  */
-static void snd_complete_urb(struct urb *urb, struct pt_regs *regs)
+Hi Pieter,
 
+On Sun, Jul 06, 2003 at 11:51:42AM +0200, Pieter Palmers wrote:
+> 
+> And I personally wouldn't say that writing an ALSA driver is that 
+> easy... I'm working on one myself, and I can assure you that the 
+> framework is pretty complex. You have to understand it first, before you 
+> can use it.
 
-The callback is set up with: -
-u->urb->complete = snd_usb_complete_callback(snd_complete_urb);
+You are right; when I said "not hard", I was meaning "not hard" compared
+to developing an OSS driver, where not only do you have to hit the
+hardware, but you get to do lots of data conversion and memory
+management in your driver.
 
-The issue I have is that urb->complete is of type: -
-struct urb;
-typedef void (*usb_complete_t)(struct urb *);
+I definitely didn't mean to trivialize the task of developing a driver
+of any sort! :)
 
-struct urb
-{
-<snip>
-         usb_complete_t complete;        // pointer to completion routine
-<snip>
-};
-
-So, why is the "struct pt_regs *regs" there ?
-I would think that
-static void snd_complete_urb(struct urb *urb, struct pt_regs *regs)
-should change to
-static void snd_complete_urb(struct urb *urb)
-
-Cheers
-James
-
+See ya,
+-- 
+Ryan Underwood, <nemesis at icequake.net>, icq=10317253
 
 
 -------------------------------------------------------
