@@ -1,11 +1,12 @@
-From: Michael Geis <michaelgeis11@yahoo.com>
-Subject: Re: removing events from queue according to tag
-Date: Thu, 3 Mar 2005 03:17:24 -0800 (PST)
-Message-ID: <20050303111724.80253.qmail@web51902.mail.yahoo.com>
-References: <Pine.HPX.4.33n.0503030853420.29392-100000@studcom.urz.uni-halle.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [ALSA - driver 0000955]: CN-126 - USB 5.1 Audio
+ adapter
+Date: Thu, 3 Mar 2005 12:35:06 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503031232110.20007-100000@studcom.urz.uni-halle.de>
+References: <1109842477.13896.32.camel@ghanima>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-In-Reply-To: <Pine.HPX.4.33n.0503030853420.29392-100000@studcom.urz.uni-halle.de>
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <1109842477.13896.32.camel@ghanima>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,19 +16,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Fruhwirth Clemens <clemens@endorphin.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Salut Clemens!
-That wasnt too bad. : ))
-Thanks a lot. 
+Fruhwirth Clemens wrote:
+> My USB audio class device doesn't show all mixer controls in ALSA.
+> For reference, for other users searching this archive, it's a "Creative
+> USB Sound Blaster Live! 24-bit External".
+> ...
+> I wonder why the snd_usb_create_mixer code does only loop over the
+> OUTPUT_TERMINAL class,
 
-Michael
+Because all other units are (indirectly) connected to an output
+terminal.  We get them when we recursively inspect the respective
+source units.
 
-__________________________________________________
-Do You Yahoo!?
-Tired of spam?  Yahoo! Mail has the best spam protection around 
-http://mail.yahoo.com 
+> My aim is to have controls available for the Line-in mixer, both for
+> recording and for direct re-mixing into the Main Out Plug.
+
+Your device probably doesn't have such controls.  What is the output
+of "lsusb -v" for it?
+
+
+Clemens
+
 
 
 -------------------------------------------------------
