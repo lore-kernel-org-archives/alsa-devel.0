@@ -1,12 +1,12 @@
-From: Benny Sjostrand <gorm@cucumelo.org>
-Subject: Re: [Fwd: Re: [PATCH] cs46xx DAC volume's mechanism
- rewrite, minor bugfixes]
-Date: Mon, 11 Nov 2002 09:56:29 +0100
+From: "Men Muheim" <muheim@gmx.ch>
+Subject: snd_pcm_status_get_trigger_tstamp
+Date: Wed, 13 Nov 2002 11:22:33 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DCF70BD.3020603@cucumelo.org>
-References: <1036972438.4956.0.camel@pete>
+Message-ID: <004601c28afe$94d57aa0$461d8481@profi>
+Reply-To: <men@ife.ee.ethz.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -17,42 +17,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Peter Good <psgood@petesinternet.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->
->
->------------------------------------------------------------------------
->
->Ok, that's fixed the bass problem I had here.
->One thing though. Benny, do you have any idea what these values "should"
->be?
->  
->
-But I still dont understand the problem. And reports are not at all 
-consequent ...
+Hello,
 
->iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
->  
->
-I guess you need to add in .asoundrc:
-iec958 {
-  type hw
-  card 0
-  device 2
+I am having a problem using the function
+snd_pcm_status_get_trigger_tstamp(). I expect the function to return the
+sample time of the latest trigger, which corresponds to the time of the
+first sample in the actual channel area.
+
+Instead the function returns zero in my case. Am I misunderstanding the
+means of the function or is the function not supported in
+alsa-0.9.0beta10?
+
+I appreciate any comments on this...
+
+Regards, Men
+
+
+
+PS: I am using SND_PCM_ACCESS_MMAP_NONINTERLEAVED from
+(http://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_8c-example.ht
+ml#example_test_pcm) and want to get the time of the first sample in the
+actual channel area by calling 
+
+
+void gettimestamp(snd_pcm_t *handle, snd_timestamp_t *timestamp)
+{
+        int err;
+        snd_pcm_status_t *status;
+
+        snd_pcm_status_alloca(&status);
+        if ((err = snd_pcm_status(handle, status)) < 0) {
+                printf("Stream status error: %s\n", snd_strerror(err));
+                exit(0);
+        }
+        snd_pcm_status_get_trigger_tstamp(status, timestamp);
 }
-
-Then maybe someone knows what xine uses the 
-AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2 values to,
-do they need to interfaces to the lowlevel driver ???
-
-/Benny
-
 
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by:ThinkGeek
-Welcome to geek heaven.
-http://thinkgeek.com/sf
+This sf.net email is sponsored by: Are you worried about 
+your web server security? Click here for a FREE Thawte 
+Apache SSL Guide and answer your Apache SSL security 
+needs: http://www.gothawte.com/rd523.html
