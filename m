@@ -1,16 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: M-Audio Qattro USB
-Date: Tue, 18 Jan 2005 07:16:04 +0100
-Message-ID: <1106028964.41eca9a4b23a3@www3.webhosting.cx>
-References: <200501172244.47086.info@michaelhoffer.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000232]: atiixp based sound card hardly functions correctly
+Date: Tue, 18 Jan 2005 08:09:26 +0100
+Message-ID: <bba7c9c3c7c5c9d4745dd849dccbab5c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from www3.webhosting.cx (www3.webhosting.cx [207.44.248.26])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B8909268
-	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 07:16:11 +0100 (MET)
-In-Reply-To: <200501172244.47086.info@michaelhoffer.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1A4F922D
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 08:09:27 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -20,73 +18,115 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Michael Hoffer <info@michaelhoffer.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-It's possible the alsa drivers you are using had a broken implementation.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=232> 
+======================================================================
+Reported By:                fuoco
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   232
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               Gentoo
+Kernel Version:             2.6.6-rc1 (with cvs alsa-driver)
+======================================================================
+Date Submitted:             04-25-2004 21:21 CEST
+Last Modified:              01-18-2005 08:09 CET
+======================================================================
+Summary:                    atiixp based sound card hardly functions correctly
+Description: 
+There was a bug 2 days ago in this driver that caused atiixp: codec read
+timeout errors. The errors are still partly there in some cases even
+though the card is now detected. The card indeed works but only in xmms.
+Tried with many other programs without success: timidity++, xine, mplayer,
+gstreamer, rhythmbox. Even sounds from programs like gaim cause problems.
+The problems are either one of these (or a combination):
+1. program plays but no sound from speakers.
+2. speakers make lot of noise instead of playing the sound.
+3. when stopping the audio the program hungs for some time, and might even
+crash. 
+4. e.g. gaim makes a short sound and the sound doesn't stop repeating
+itself until i unload the modules.
 
-what is the ouput of:
+Errors that I got in dmesg, with some of the problems mentioned:
+codec read timeout (reg 0)
+ALSA /home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/atiixp.c:468:
+atiixp: codec read timeout (reg 3c)
+ALSA /home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/atiixp.c:468:
+atiixp: codec read timeout (reg 1c)
+ALSA
+/home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1791:
+AC'97 2 does not respond - RESET
+ALSA
+/home/gad/downloads/alsa/alsa-driver/alsa-kernel/pci/ac97/ac97_codec.c:1799:
+AC'97 2 access is not valid [0xffffffff], removing mixer.
 
-cat /proc/asound/version
+For more info please ask me.
+======================================================================
+Relationships       ID      Summary
+----------------------------------------------------------------------
+duplicate of        0000202 atiixp works under 2.4.25, fails under ...
+======================================================================
+
+----------------------------------------------------------------------
+ rounin - 01-18-05 07:58 
+----------------------------------------------------------------------
+The card doesn't work anywhere in Fedora Core 3 with the 2.6.10-1.737
+kernel. This is now the third thread about this same issue.
+
+----------------------------------------------------------------------
+ rounin - 01-18-05 08:09 
+----------------------------------------------------------------------
+Booting with pci=noacpi seems to be working though.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+04-25-04 21:21 fuoco          New Issue                                    
+04-25-04 21:21 fuoco          Distribution              => Gentoo          
+04-25-04 21:21 fuoco          Kernel Version            => 2.6.6-rc1 (with cvs
+alsa-driver)
+04-25-04 23:11 fuoco          Note Added: 0000944                          
+04-26-04 11:41 tiwai          Status                   assigned => resolved
+04-26-04 11:41 tiwai          Resolution               open => duplicate   
+04-26-04 11:41 tiwai          Relationship added       duplicate of 0000202
+04-26-04 14:13 perex          Status                   resolved => feedback
+04-26-04 14:13 perex          Resolution               duplicate => reopened
+04-26-04 14:13 perex          Note Added: 0000947                          
+04-26-04 14:13 perex          Status                   feedback => assigned
+04-26-04 14:14 perex          Note Deleted: 0000947                        
+04-27-04 12:25 tiwai          Note Added: 0000959                          
+04-27-04 17:41 fuoco          Note Added: 0000963                          
+04-27-04 17:46 fuoco          Note Added: 0000964                          
+04-27-04 19:06 fuoco          Note Added: 0000965                          
+04-30-04 11:05 tiwai          Note Added: 0000976                          
+04-30-04 11:17 fuoco          Note Added: 0000977                          
+05-01-04 10:44 tiwai          Note Added: 0000997                          
+05-18-04 21:22 fuoco          Note Added: 0001147                          
+05-19-04 20:00 fuoco          Note Added: 0001155                          
+05-22-04 13:29 fuoco          Note Added: 0001168                          
+05-22-04 14:42 fuoco          Note Added: 0001171                          
+05-22-04 21:08 Dezi           Issue Monitored: Dezi                        
+05-25-04 12:49 tiwai          Note Added: 0001204                          
+05-25-04 15:44 fuoco          Note Added: 0001216                          
+05-25-04 16:07 tiwai          Note Added: 0001219                          
+05-26-04 00:38 fuoco          Note Added: 0001242                          
+05-26-04 14:39 tiwai          Note Added: 0001257                          
+01-18-05 07:58 rounin         Note Added: 0003243                          
+01-18-05 08:00 rounin         Issue Monitored: rounin                      
+01-18-05 08:09 rounin         Note Added: 0003244                          
+======================================================================
 
 
-
-Quoting Michael Hoffer <info@michaelhoffer.de>:
-
-> HI!
->
-> I read the Install-Howto for snd-usb-audio on www.alsa-project.org. I u=
-se
-> Gentoo-Linux (kernel 2.6.9). I have the feeling that the .asoundrc file=
- had
-> no effect on my system.
->
-> When I tried to record with a samplerate of 96000 Hz
-> audacity could not open the sounddevice. With 48000 Hz it worked
-> fine in audacity.
->
-> With arecord I get the following error message. It doesn't make a diffe=
-rence
-> if I use other sample rates or sample formates.
-> arecord gives the following output:
->
-> bash-2.05b$ arecord -D quattro -f S24_3LE -r 96000 -c 2 -d 10 test.raw
-> Recording WAVE 'test.raw' : Signed 24 bit Little Endian in 3bytes, Rate=
- 96000
-> Hz, Stereo
-> arecord: set_params:854: Sample format non available
->
-> Thanks for your help!
->
->
-> -------------------------------------------------------
-> The SF.Net email is sponsored by: Beat the post-holiday blues
-> Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
-> It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
->
-
-
- --
- Patrick Shirkey - Boost Hardware Ltd.
- Http://www.boosthardware.com
- Http://www.djcj.org/ - The Linux Audio Users guide
- Http://www.djcj.org/gigs - Gigs Guide Korea
- =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
- Being on stage with the band in front of crowds shouting, "Get off! No!
- We want normal music!", I think that was more like acting than anything
- I've ever done.
-
- Goldie, 8 Nov, 2002
- The Scotsman
 
 
 -------------------------------------------------------
