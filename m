@@ -1,15 +1,15 @@
 From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: config problem
-Date: Wed, 26 Nov 2003 16:33:00 +0100
+Subject: Re: .dimen order ?
+Date: Wed, 26 Nov 2003 17:05:34 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031126163300.4946c69a.pochini@shiny.it>
-References: <20031125191438.45a1f01b.pochini@shiny.it>
-	<s5h65h8z2m2.wl@alsa2.suse.de>
+Message-ID: <20031126170534.5263a461.pochini@shiny.it>
+References: <20031124200810.5f4f55b2.pochini@shiny.it>
+	<Pine.LNX.4.58.0311242123210.9896@pnote.perex-int.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h65h8z2m2.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.58.0311242123210.9896@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,23 +18,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Jaroslav Kysela <perex@suse.cz>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 25 Nov 2003 20:09:57 +0100
-Takashi Iwai <tiwai@suse.de> wrote:
+On Mon, 24 Nov 2003 21:25:00 +0100 (CET)
+Jaroslav Kysela <perex@suse.cz> wrote:
 
-> for building multiple drivers with a common core/library module, you
-> can find an example in isa/sb directory.  there snd-sb-common is
-> shared among several different top-level modules.  (usually, the
-> common module is named snd-xxx-lib, though.)
+> On Mon, 24 Nov 2003, Giuliano Pochini wrote:
+> 
+> > snd_ctl_elem_info_t.dimen contains the dimensions of the array of
+> > controls. AFAIK there are no drivers which use that feature (but mine)
+> > to look for examples. We have to agree about the order of them:
+> > 
+> > Array[d0][d1][d2][d3]
+> > 
+> > or
+> > 
+> > Array[d3][d2][d1][d0]
+> > 
+> > I used the first one. Is it ok ?
+> 
+> It doesn't matter. We need to define the meaning of dimensions at
+> a higher level anyway.
 
-Done, tnx.
+Yes, of course, it's just what I was asking for. Since AFAIK I'm the first one
+that use that feature, I announced my choice. But if you think it's wrong for
+any reason please tell me now. If it's ok, other people may take this mail for
+reference until someone writes the documentation.
 
 
 --
 Giuliano.
+
 
 
 -------------------------------------------------------
