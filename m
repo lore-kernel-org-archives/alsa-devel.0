@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000499]: no sound through line in
-Date: Thu, 13 Jan 2005 17:23:44 +0100
-Message-ID: <fd1fb20024c50120520b282a14b4165f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000609]: No Mixer control for Ouput on CMI9880
+Date: Thu, 13 Jan 2005 17:29:43 +0100
+Message-ID: <e141372978e4f0b5383db701826a8ec0@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D457B309
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:23:44 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 08C34295
+	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:29:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,64 +24,62 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=499> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=609> 
 ======================================================================
-Reported By:                hombergp
+Reported By:                Grazy
 Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   499
-Category:                   PCI - intel8x0
+Issue ID:                   609
+Category:                   PCI - azx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
 Status:                     resolved
-Distribution:               SuSE 9.1
-Kernel Version:             2.6.5-108
-Resolution:                 not an issue
+Distribution:               Debian
+Kernel Version:             2.6.8
+Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             09-13-2004 18:03 CEST
-Last Modified:              01-13-2005 17:23 CET
+Date Submitted:             10-27-2004 00:10 CEST
+Last Modified:              01-13-2005 17:29 CET
 ======================================================================
-Summary:                    no sound through line in
+Summary:                    No Mixer control for Ouput on CMI9880
 Description: 
-Since I upgraded to SuSE 9.1 with alsa 1.0.3
-I cannot use the line in (external mini jackplug)
-input anymore.
-No sound is reproduced through this line in interface.
-I used the line input before under SuSE 8.2 successfully.
-
+The CMI9880 chip on my MotherBoard is detect by the snd-azx module.
+But there is only one mixer control for "Capture" and two mute switch for
+"Line" and "Mic". But nothing to control the output volume.
 ======================================================================
 
 ----------------------------------------------------------------------
- hombergp - 09-13-04 19:49 
+ rlrevell - 12-14-04 22:21 
 ----------------------------------------------------------------------
-Consider problem resolved. Resolution: Unmute the line input.
-More specificalities on this problem:
-GNome alsa mixer determines my device as Realtek ALC650 rev 3
-And it shows a lot more features than I was used to under my previous os.
-Do not know if I can connect them all.
+Since the hardware has no volume control this is not a bug.  Decrease the
+output level in your application to reduce volume.  Or turn your speakers
+down.
 
 ----------------------------------------------------------------------
- tiwai - 01-13-05 17:23 
+ tiwai - 01-13-05 17:29 
 ----------------------------------------------------------------------
-Closing now.
+ALSA 1.0.8 includes softvol PCM plugin.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-09-13-04 18:03 hombergp       New Issue                                    
-09-13-04 18:03 hombergp       Distribution              => SuSE 9.1        
-09-13-04 18:03 hombergp       Kernel Version            => 2.6.5-108       
-09-13-04 18:03 hombergp       Issue Monitored: hombergp                    
-09-13-04 18:04 hombergp       Issue End Monitor: hombergp                    
-09-13-04 19:45 hombergp       Note Added: 0001754                          
-09-13-04 19:49 hombergp       Note Added: 0001755                          
-01-13-05 17:23 tiwai          Status                   new => resolved     
-01-13-05 17:23 tiwai          Resolution               open => not an issue
-01-13-05 17:23 tiwai          Assigned To               => tiwai           
-01-13-05 17:23 tiwai          Note Added: 0003192                          
+10-27-04 00:10 Grazy          New Issue                                    
+10-27-04 00:10 Grazy          Distribution              => Debian          
+10-27-04 00:10 Grazy          Kernel Version            => 2.6.8           
+10-27-04 02:36 cltien         Note Added: 0002270                          
+11-08-04 09:22 madsend        Note Added: 0002310                          
+11-08-04 09:25 madsend        Issue Monitored: madsend                     
+11-08-04 21:02 cltien         Note Added: 0002313                          
+12-12-04 14:01 jdthood        Note Added: 0002814                          
+12-14-04 00:10 gaima          Issue Monitored: gaima                       
+12-14-04 22:21 rlrevell       Note Added: 0002824                          
+01-13-05 17:29 tiwai          Status                   new => resolved     
+01-13-05 17:29 tiwai          Resolution               open => fixed       
+01-13-05 17:29 tiwai          Assigned To               => tiwai           
+01-13-05 17:29 tiwai          Note Added: 0003195                          
 ======================================================================
 
 
