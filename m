@@ -1,8 +1,8 @@
 From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000366]: driver hangs when trying to load a soundfont >8MB
-Date: Sat, 10 Jul 2004 21:45:59 +0200
+Subject: [ALSA - driver 0000373]: Sound in Quake 3 does not work
+Date: Sun, 11 Jul 2004 00:04:29 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1eff899715f791df7affc49065175b82@bugtrack.alsa-project.org>
+Message-ID: <8e4de366e41d0ce00f927d544426d974@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
@@ -24,66 +24,133 @@ A BUGNOTE has been added to this bug.
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0366
+0373
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                deathpudding
-Assigned To:                pzad
+Reported By:                damage
+Assigned To:               =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 Project:                    ALSA - driver
-Bug ID:                     366
-Category:                   PCI - emu10k1
+Bug ID:                     373
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:              =20
-Kernel Version:             2.6.7
+Status:                     new
+Distribution:               Suse Linux 9.1
+Kernel Version:             2.6.5-7.95-default
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-05-2004 09:43 CEST
-Last Modified:              07-10-2004 21:45 CEST
+Date Submitted:             07-09-2004 21:37 CEST
+Last Modified:              07-11-2004 00:04 CEST
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    driver hangs when trying to load a soundfont =
->8MB
+Summary:                    Sound in Quake 3 does not work
 Description:=20
-The alsa driver and the applications using it hang, unkillable and unable
-to be unloaded, when I try to load a soundfont larger than 8MB. This
-sometimes results in the appearance of a page fault message when shutting
-down. The shutdown is never completed because the disk cannot be
-unmounted, presumably because the alsa driver is still frozen while tryin=
-g
-load the soundfont from it.
+I already tried several things to get sound working in Quake 3. It doesn'=
+t=20
+work. Sound in other applications, such as xmms, works without problems.
+My System: SUSE Linux 9.1 Pro 64bit, MSI K8T Neo FIS2R, Athlon 64 3200,
+1GB=20
+RAM, VIA 8237 on board sound
 
-I found a thread in the alsa-devel archives discussing this problem:
-http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg12386.htm=
-l
+I tried it with the ALSA version that comes with the Default Suse Kernel,
+then=20
+with version 1.05a and at the moment I've installed a version from CVS tw=
+o
 
-I see that the discussed patch has been applied, but I still have this
-problem. I haven't tested with versions prior to 1.0.4 because they did
-not compile with the later library version, but I do know that it was
-working not too long ago (with kernel 2.6.x).
+days ago. I loaded the alsa module with dxs_support 0 to 4, that didn't=20
+resolve the issue.
+
+Without changing anything in the ALSA configuration Quake 3 starts and th=
+e
+
+game runs without problems, but there is no sound. The following error=20
+message is displayed when Quake 3 starts.
+------- sound initialization -------
+Could not mmap dma buffer PROT_WRITE|PROT_READ
+trying mmap PROT_WRITE (with associated better compatibility / less=20
+performance code)
+/dev/dsp: Input/output error
+Could not mmap /dev/dsp
+------------------------------------
+
+Enabling direct access to the OSS playback device and disabling the OSS=20
+capture device with=20
+echo "quake3.x86 0 0 direct" > /proc/asound/card0/pcm0p/oss
+echo "quake3.x86 0 0 disable" > /proc/asound/card0/pcm0c/oss
+I get sound in the Quake 3 menu, but as soon as I enter a map the game
+hangs=20
+and the only way to get back to X is to kill the process.
+
+I also tried the user space ALSA OSS wrapper library. With this library I
+only=20
+get some crackling noises in the menu and in the game.
+
+With xrun_debug 1 I get a few of the following messages (at least with th=
+e
+
+actually installed drivers from CVS) in the system log. These messages ar=
+e
+
+also there when I run other applications than Quake 3.
+Jul  8 19:07:48 mordor kernel: ALSA sound/core/pcm_lib.c:199: Unexpected=20
+hw_pointer value [1] (stream =3D 0, delta: -1024, max jitter =3D 8192): w=
+rong=20
+interrupt acknowledge?
+Jul  8 19:07:48 mordor kernel: ALSA sound/pci/via82xx.c:731: invalid=20
+via82xx_cur_ptr, using last valid pointer
+Jul  8 19:08:00 mordor last message repeated 194 times
+
+I don't know whether that has something to do with the problem.
+
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
 ----------------------------------------------------------------------
- vlajsa - 07-10-2004 20:39 CEST=20
+ damage - 07-09-2004 21:46 CEST=20
 ----------------------------------------------------------------------
-To add to this report! Sfxload don't work with alsa 1.0.5, too!
+I did some minor corrections to the uploaded file and uploaded it a secon=
+d
+time, as the comments were wrong.
+
+This bug seems to be related to the following bugs which are filed for
+other sound cards:
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0254
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
+0015
 
 ----------------------------------------------------------------------
- deathpudding - 07-10-2004 21:45 CEST=20
+ tokugawa - 07-11-2004 00:04 CEST=20
 ----------------------------------------------------------------------
-I marked this as a 1.0.5a bug, but it doesn't look like it showed up in t=
-he
-report.
+"I get sound in the Quake 3 menu, but as soon as I enter a map the game
+hangs
+and the only way to get back to X is to kill the process."
+
+Hi, the same here...  i'm going on vacation right now, so i can't help
+much... but:
+
+1) open the pk3 (like baseq3/pak0.pk3) files (these are zip)
+2) move from them music dir to some other (so q3 will not found them)
+3) run q3
+4) tada!! qukae3 works, music hangs the game, without it game works
+5) But there are no 'turn off music' in quake3 (music volume option don't
+work... hangs are happen even if you turn down music completly in
+options), so I just deleted music dirs from my pk3's. (just run zip -vd
+pak0.pk3 'music/*' )
+
+Heh... but you can't play online, because you have a hacked pk3 files...,
+so we have to wait for a real fix
+
+I'm hope that will help in bug hunting. If you can, please confirm that
+behaviour.
 
 Bug History
 Date Modified  Username       Field                    Change            =
@@ -91,13 +158,21 @@ Date Modified  Username       Field                    Change            =
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-05-04 09:43 deathpudding   New Bug                                    =
+07-09-04 21:37 damage         New Bug                                    =
  =20
-07-05-04 09:43 deathpudding   Kernel Version            =3D> 2.6.7       =
-   =20
-07-10-04 20:39 vlajsa         Bugnote Added: 0001404                     =
+07-09-04 21:37 damage         File Added: alsa_q3_debug.txt              =
+     =20
+07-09-04 21:37 damage         Distribution              =3D> Suse Linux 9=
+.1 =20
+07-09-04 21:37 damage         Kernel Version            =3D> 2.6.5-7.95-d=
+efault
+07-09-04 21:41 damage         File Added: alsa_q3_debug.txt              =
+     =20
+07-09-04 21:46 damage         Bugnote Added: 0001396                     =
  =20
-07-10-04 21:45 deathpudding   Bugnote Added: 0001405                     =
+07-09-04 21:50 damage         Bug Monitored: damage                      =
+ =20
+07-11-04 00:04 tokugawa       Bugnote Added: 0001406                     =
  =20
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
