@@ -1,14 +1,14 @@
-From: Abramo Bagnara <abramo.bagnara@tin.it>
-Subject: Re: DMIX and capture stream
-Date: Wed, 07 Jan 2004 16:47:53 +0100
+From: "Ralph Little" <ralph.little@tribaldata.co.uk>
+Subject: RE: VIA82XX & aRTS
+Date: Wed, 7 Jan 2004 15:57:13 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FFC2A29.4080401@tin.it>
-References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>	<200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com>	<s5h1xqe2rjp.wl@alsa2.suse.de>	<Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>	<20040106223828.39d2c233.mista.tapas@gmx.net>	<s5hvfno10r5.wl@alsa2.suse.de>	<3FFBFF51.1030002@tin.it>	<s5hptdv27pz.wl@alsa2.suse.de>	<3FFC1A12.7020901@tin.it>	<s5hd69v245x.wl@alsa2.suse.de>	<3FFC229C.2020200@tin.it> <s5hbrpf22u3.wl@alsa2.suse.de>
+Message-ID: <E73302CFAE1F8D4A908B7B2DD4007DCA0B7A76@TDSCore01.TribalData.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbrpf22u3.wl@alsa2.suse.de>
+Content-Class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,57 +17,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Florian Schmidt <mista.tapas@gmx.net>, alsa-devel@lists.sourceforge.net
+To: p z oooo <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> 
-> 
-> if i understand the code correctly, for defining a pcmp or pcmc as a
-> slave pcm, such as,
-> 
-> 	pcm.foo {
-> 		type plug
-> 		slave {
-> 			pcmp bar_playback
-> 			pcmc bar_capture
-> 		}
-> 	}
-> 
-> snd_pcm_slave_conf() needs to know which one to be used, so that the
-> config subtree (of either pcmp, pcmc or pcm) is passed to
-> snd_pcm_open_slave().
-> 
-> otherwise, you have to define slave pcms always separetly, such as,
-> 
-> 	pcm.foo {
-> 		type plug
-> 		slave {
-> 			pcm bar
-> 		}
-> 	}
-> 	pcmp.bar bar_playback
-> 	pcmc.bar bar_capture
-> 
-> i think it's a big restriction.
+Will do!
 
-As a matter of personal preference I very much prefer this latter form 
-(as it leave capture and playback definition clearly separated as 
-directions are in ALSA API).
+Also saw some possibly related posts related to the sample rate
+converison in OSS support.
+I'll try some different sample rates also.
+I might have the same problem as here:
 
-Under an "objective" point of view: would you really derive from the 
-comparison of the two equivalent alternative syntaxes the feeling of "a 
-big restriction"?
+http://www.mail-archive.com/alsa-devel@lists.sourceforge.net/msg10346.ht
+ml
 
-Technically they're quite the same.
+Am running currently on 0.9.2 and this works fine.
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@tin.it
+Many thanks,
+Ralph
 
-Opera Unica                          Phone: +39.0546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+
+-----Original Message-----
+From: p z oooo [mailto:pzad@pobox.sk]=20
+Sent: 07 January 2004 15:13
+To: Ralph Little
+Cc: alsa-devel@lists.sourceforge.net
+Subject: RE: [Alsa-devel] VIA82XX & aRTS
+
+
+Hi,
+
+Try Threaded OSS (toss) instead of OSS driver in arts.
+
+Peter Zubaj
+
+
+
+____________________________________
+http://www.logofun.pobox.sk - urobte radost svojmu telefonu
+
+
+---------
+Tribal Data Solutions has moved, please visit our website for more =
+details http://www.tribaldata.co.uk.=20
+This e-mail and any attachments are confidential and are sent on the =
+basis of our copyright, e-mail and security policy which can be =
+inspected by visiting http://www.tribaldata.co.uk/policies.asp.
+If you are not the intended recipient, please notify the sender and =
+delete this message. Thank you.
+-----------
 
 
 
