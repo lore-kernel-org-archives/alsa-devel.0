@@ -1,13 +1,13 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000568]: cmipci mpu401 based midi device node not created
-Date: Wed,  6 Oct 2004 00:12:57 +0200 (CEST)
+From: Antonio Willy Malara <behappy@maialone.com>
+Subject: usx2y nightmare
+Date: Wed, 06 Oct 2004 00:38:41 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041005221257.2DD64B0C0@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <1097023122l.2120l.2l@Zeryn>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-15; DelSp=Yes; Format=Flowed
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id AD8C027A
-	for <alsa-devel@alsa-project.org>; Wed,  6 Oct 2004 00:12:57 +0200 (MEST)
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,74 +16,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+i've tried to apply the karsten's patches but i cant manage to get the =20
+kernel compiling, here's what i've done:
 
-The following bug has been SUBMITTED.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000568
-======================================================================
-Reported By:                ChrisWhite
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     568
-Category:                   PCI - cmipci
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.4-gentoo
-======================================================================
-Date Submitted:             10-06-2004 00:12 CEST
-Last Modified:              10-06-2004 00:12 CEST
-======================================================================
-Summary:                    cmipci mpu401 based midi device node not created
-Description: 
-I have the following modules loaded for alsa:
+* got vanilla 2.6.8.1
+* patched with patch-2.6.9-rc3
+* untarred the usx2y_0.8.2+linux-2.6.9-rc2-mm4-S7.tar.gz and copied
+  to the kernel tree
+* configured and compiled the kernel
 
-snd_pcm_oss            47912  0
-snd_mixer_oss          17920  1 snd_pcm_oss
-snd_seq_midi            6560  0
-snd_seq_midi_event      6272  1 snd_seq_midi
-snd_opl3_synth         13828  0
-snd_seq_instr           8192  1 snd_opl3_synth
-snd_seq_midi_emul       6912  1 snd_opl3_synth
-snd_seq                52624  5
-snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq_midi_emul
-snd_ainstr_fm           2560  1 snd_opl3_synth
-snd_cmipci             28164  0
-snd_pcm                85384  2 snd_pcm_oss,snd_cmipci
-snd_opl3_lib            9600  2 snd_opl3_synth,snd_cmipci
-snd_timer              22276  3 snd_seq,snd_pcm,snd_opl3_lib
-snd_hwdep               7812  1 snd_opl3_lib
-snd_mpu401_uart         6400  1 snd_cmipci
-snd_rawmidi            20644  2 snd_seq_midi,snd_mpu401_uart
-snd_seq_device          6920  5
-snd_seq_midi,snd_opl3_synth,snd_seq,snd_opl3_lib,snd_rawmidi
-snd                    50436  15
-snd_pcm_oss,snd_mixer_oss,snd_seq_midi,snd_seq_midi_event,snd_opl3_synth,snd_seq_instr,snd_seq,snd_cmipci,snd_pcm,snd_opl3_lib,snd_timer,snd_hwdep,snd_mpu401_uart,snd_rawmidi,snd_seq_device
-snd_page_alloc
+but there's something i've missed, because:
 
-and I cannot get a /dev/midi or /dev/sound/midi node in my dev filesystem.
- Having the snd_mpu401_uart module loaded, I'd think the node would be
-created once the connection was made.  The current setup is a Radio Shack
-keyboard set under MIDI channel 1 and connected by a MPU401->5 DIN MIDI
-adapter.  I've verified the connections and nothing is wrong.  I've setup
-my card by the cmipci guide provided in the docs.  modules.conf is
-attached with the relevant parts shown.
-======================================================================
+[...]
+  LD [M]  sound/usb/snd-usb-lib.o
+  LD      sound/usb/usx2y/built-in.o
+  CC [M]  sound/usb/usx2y/usbusx2y.o
+  CC [M]  sound/usb/usx2y/usbusx2yaudio.o
+  CC [M]  sound/usb/usx2y/usX2Yhwdep.o
+  CC [M]  sound/usb/usx2y/usx2yhwdeppcm.o
+  LD [M]  sound/usb/usx2y/snd-usb-usx2y.o
+sound/usb/usx2y/usx2yhwdeppcm.o(.text+0x174c): In function =20
+`usX2Y_audio_create':
+: multiple definition of `usX2Y_audio_create'
+sound/usb/usx2y/usbusx2yaudio.o(.text+0x174c): first defined here
+make[3]: *** [sound/usb/usx2y/snd-usb-usx2y.o] Error 1
+make[2]: *** [sound/usb/usx2y] Error 2
+make[1]: *** [sound/usb] Error 2
+make: *** [sound] Error 2
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-06-04 00:12 ChrisWhite     New Bug                                      
-10-06-04 00:12 ChrisWhite     File Added: modules.conf                     
-10-06-04 00:12 ChrisWhite     Distribution              => Gentoo          
-10-06-04 00:12 ChrisWhite     Kernel Version            => 2.6.4-gentoo    
-======================================================================
+someone can help me having a clue with all those patches? :)
+
+wil
+---
+Il jazz e' lasciare che la luce brilli, lasciarla essere.
+		-- Keith Jarrett
+
+
 
 
 -------------------------------------------------------
