@@ -1,15 +1,15 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000384]: Crackly PCM output.
-Date: Sat, 23 Oct 2004 23:55:34 +0200
+Date: Sat, 23 Oct 2004 23:56:13 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <dbc3c3dedb18c7a45a9557ed06afd554@bugtrack.alsa-project.org>
+Message-ID: <289cc508406869ac713dac16bfd14e16@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6C3A01E0
-	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 23:55:34 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2B7BD20E
+	for <alsa-devel@alsa-project.org>; Sat, 23 Oct 2004 23:56:14 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -40,7 +40,7 @@ Distribution:               Gentoo dev sources
 Kernel Version:             2.6
 ======================================================================
 Date Submitted:             07-13-2004 19:28 CEST
-Last Modified:              10-23-2004 23:55 CEST
+Last Modified:              10-23-2004 23:56 CEST
 ======================================================================
 Summary:                    Crackly PCM output.
 Description: 
@@ -49,18 +49,16 @@ sound produced is noise.
 ======================================================================
 
 ----------------------------------------------------------------------
- c0ldevil - 10-23-04 23:27 
-----------------------------------------------------------------------
-Arch Linux Current
-Kernel 2.6.9 custom compiled
-
-Same problem, used that workaround with the OSS module but it still
-doesn't work.
-
-edited on: 10-23-04 23:27
-
-----------------------------------------------------------------------
  c0ldevil - 10-23-04 23:55 
+----------------------------------------------------------------------
+Why is this bug still unassigned? This worked in the 0.5 series and it's an
+old bug. I'm not bitchin', if you need any help with this i'll be glad to
+lend you a hand in what I can.
+
+OSS sucks...sound quality is soooo bad!
+
+----------------------------------------------------------------------
+ c0ldevil - 10-23-04 23:56 
 ----------------------------------------------------------------------
 Why is this bug still unassigned? This worked in the 0.5 series and it's an
 old bug. I'm not bitchin', if you need any help with this i'll be glad to
@@ -81,6 +79,7 @@ Date Modified  Username       Field                    Change
 10-23-04 23:24 c0ldevil       Note Added: 0002257                          
 10-23-04 23:27 c0ldevil       Note Edited: 0002257                         
 10-23-04 23:55 c0ldevil       Note Added: 0002259                          
+10-23-04 23:56 c0ldevil       Note Added: 0002260                          
 ======================================================================
 
 
