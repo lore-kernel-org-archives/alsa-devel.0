@@ -1,14 +1,16 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: PCM hw mixing with volume
-Date: Wed, 10 Mar 2004 18:47:13 +0000
+From: Hartmut Geissbauer <nwgbh@swissonline.ch>
+Subject: Re: Full support for Creamware Noah and SFP
+Date: Wed, 10 Mar 2004 19:40:51 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <404F62B1.30206@superbug.demon.co.uk>
-References: <XFMail.20040310104621.pochini@shiny.it> <1078928193.18054.247.camel@renegade>
+Message-ID: <1078944051.2445.10.camel@chief.local>
+References: <1078875033.13147.42.camel@zauberwald.zeitgeist>
+	 <Pine.HPX.4.33n.0403100909080.2498-100000@studcom.urz.uni-halle.de>
+	 <s5hfzchlzqq.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1078928193.18054.247.camel@renegade>
+In-Reply-To: <s5hfzchlzqq.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,63 +19,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ove Kaaven <ovek@transgaming.com>
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Clemens Ladisch <clemens@ladisch.de>, Willie Sippel <willie@froq.net>, alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Ove Kaaven wrote:
+Takashi Iwai wrote:
+> At Wed, 10 Mar 2004 11:28:39 +0100 (MET),
+> Clemens Ladisch wrote:
+> > 
+> > AFAIK drivers for ATI hardware are developed in a similar way (ATI
+> > gives specs under an NDA, the resulting driver is open source).
+> > 
+> > Takashi, is that right?
+> 
+> yes.  but just make sure that you will release the driver source codes
+> under GPL even after you get the datasheet under NDA.  that is, the
+> information there can be used as a public form.
+> (thus, in many cases, you don't need even NDA - it's just a question
+>  of trust.)
+> 
+> BTW, the firmware binary is not a part of the driver, so it's not
+> necessarily in the GPL form.  it can be distributed as a binary.
+> i think many companies are afraid of opening their DSP source codes
+> rather than the driver codes.  it's no problem if the DSP is apart
+> from the driver.
 > 
 > 
-> Well, the requirements that raised this thread should be fairly clear.
-> For example,
-> 
-> ALTERNATIVE 1
-> 
-> snd_pcm_set_volume(snd_pcm_t* pcm, int volume)
-> 
-> and
-> 
-> snd_pcm_set_pan(snd_pcm_t* pcm, int pan)
-> 
-> using whatever value range makes the most sense, and perhaps some query
-> on whether these controls are available from the pcm info. It's
-> acceptable to have to explicitly ask for these controls using hw_params.
-> The plug plugin could insert the route/volume plugin if these controls
-> are asked for.
-> 
-> ALTERNATIVE 2
-> 
-> snd_pcm_set_volume(snd_pcm_t* pcm, int vol_left, int vol_right)
-> 
-> but I don't expect this to be useful, since there are probably some
-> oddball devices out there that aren't able to control left and right
-> volume independently like this.
-> 
-> ALTERNATIVE 3
-> 
-> Let each PCM channel have its own mixer control, like the EMU10K1
-> currently do. That is, use snd_pcm_info_get_subdevice() to get the
-> index, then look up a volume control with a well-known name and the
-> given index using the snd_ctl API to control the volume of that PCM
-> stream. The name and semantics of that mixer control would have to be
-> standardized and be the same on all devices that are capable of this
-> feature.
+> Takashi
 > 
 
-What about 7.1 surround sound channels. All your suggestions only assume 
-2 PCM channels.
+I think we've to split the theme to different parts.
 
-Although it might seem nice to add this to alsa, it is not exactly a 
-difficult task for the application to do itself.
+- an usb driver for the Noah with the capabilitiy to use both usb
+configurations (control and midi/audio) at the same time.
 
-I suggested exactly what you suggested some time ago (see alsa-devel 
-archives), but recently I have realised that there is little or no point.
-The application will contain a user interface control for the volume, so 
-one might as well adjust the volume in software as well. It is not even 
-very CPU intensive.
+-an another (pci)driver to support the creamware DSP-cards.
 
-Cheers
-James
+- an user-space application to manage the different cards, devices and
+uploadable plugins
+
+As I understood Willie, the drivers aren't a subject of the NDA.
+
+The NDA covers only the details of the user-space application.
+
+Hartmut
+-- 
+Hartmut Geissbauer <nwgbh@swissonline.ch>
+
 
 
 -------------------------------------------------------
