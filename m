@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: emu10k1 bug and patch (0.9.0rc7)
-Date: Fri, 14 Feb 2003 13:49:42 +0100 (CET)
+Date: Fri, 14 Feb 2003 13:51:21 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0302141347360.1222-100000@pnote.perex-int.cz>
-References: <s5hr8abjkii.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.44.0302141349500.1222-100000@pnote.perex-int.cz>
+References: <s5hptpvjjzo.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hr8abjkii.wl@alsa2.suse.de>
+In-Reply-To: <s5hptpvjjzo.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,92 +17,55 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+Cc: Arnaud de Bossoreille de Ribou <arnaud.debossoreille@via.ecp.fr>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, "bozo@via.ecp.fr" <bozo@via.ecp.fr>
 List-Id: alsa-devel@alsa-project.org
 
 On Fri, 14 Feb 2003, Takashi Iwai wrote:
 
-> At Thu, 13 Feb 2003 20:57:40 +0100 (CET),
+> At Thu, 13 Feb 2003 21:30:17 +0100 (CET),
 > Jaroslav wrote:
 > > 
-> > On Thu, 13 Feb 2003, Takashi Iwai wrote:
+> > On Mon, 10 Feb 2003, Arnaud de Bossoreille de Ribou wrote:
 > > 
-> > > At Mon, 10 Feb 2003 18:21:12 +0100,
-> > > Arnaud de Bossoreille de Ribou wrote:
-> > > > 
-> > > > Hi, I discovered a bug in the emu10k1 driver which I'll explain here:
-> > > > 
-> > > > I was developing an application which uses the timestamps given in the
-> > > > status of the device to send S/PDIF data to it. This app worked pretty
-> > > > well except that sometimes I heard sound discontinuities and then a
-> > > > constant time delay between the sound and the video.
-> > > > 
-> > > > I finally found where was the problem, my results is based on the
-> > > > emu10k1-debug.patch file attached. The "frame" argument is equal to 0
-> > > > when the app gets the status of the device. With this patch applied I
-> > > > saw some output on the console exactly at the same time the bug occured.
-> > > > Adding a "else" after the "if" to prevent sw_ready from being updated
-> > > > fixed the problem and the output looked like
-> > > > 
-> > > > ----------------
-> > > > plop 0 -1536 A B
-> > > > plop 0 1536 B A
-> > > > ----------------
-> > > > 
-> > > > where B == A - 1536 (1536 is the period_size). These two lines were
-> > > > repeated a few times during playback.
-> > > > 
-> > > > So the bug looks like a signedness problem since sw_ready is unsigned
-> > > > and there is a while(sw_ready > 0), which explain the constant delay,
-> > > > next in the "snd_emu10k1_fx8010_playback_transfer" function.
+> > > So the bug looks like a signedness problem since sw_ready is unsigned
+> > > and there is a while(sw_ready > 0), which explain the constant delay,
+> > > next in the "snd_emu10k1_fx8010_playback_transfer" function.
 > > > 
-> > > this is because of the incorrect check of boundary-wrap.
-> > > the comparison below must be <= instead of <.
-> > > (or, it can be simply "diff < 0".)
-> > > if there only two periods, the original code cannot detect the
-> > > boundary-wrap.
-> > > 
-> > > 	if (diff) {
-> > > ==>		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
-> > > 			diff += runtime->boundary;
-> > > 		pcm->sw_ready += diff;
-> > > 	}
-> > > 
-> > > sw_ready should be unsigned safely.
-> > > please try the change above with the unsigned sw_ready.
+> > > So the emu10k1.patch file attached fixes the problem and seems not to
+> > > introduce new ones.
 > > 
-> > Not really. Note that the application can move the appl_ptr backward 
-> > (using snd_pcm_rewind()). The problem is that pcm->appl_ptr is updated
-> > wrongly, thus calling function with frames == 0 twice or more causes 
-> > different results. I'm working on a proper fix.
+> > Please, could you try this patch, if it also fixes your problem? Thanks.
 > 
-> ah, rewind take the appl_ptr back...
+> i don't think the patch fixes the original problem.
+> if there are only two periods, the diff will be either period_size or
+> -period_size, i.e. (buffer_size/2) or -(buffer_size/2).
+> 
+> assume the buffer size = 200
+> 	appl_ptr
+> 
+> 	0
+> 
+> 	100	diff = 100 - 0 = 100
+> 
+> 	0	diff = 0 - 100 = -100
+> 
+> 	100
 > 
 > 
-> regarding to another appl_ptr update:
+> >  	if (diff) {
+> >  		if (diff < -(snd_pcm_sframes_t) (runtime->boundary / 2))
+> >  			diff += runtime->boundary;
+> > -		pcm->sw_ready += diff;
+> > +		frames += diff;
+> >  	}
 > 
-> in pcm_lib.c snd_pcm_lib_read1/write1(), appl_ptr is set to 0 if it
-> comes over boundary. 
-> 
-> 		appl_ptr += frames;
-> 		if (appl_ptr >= runtime->boundary) {
-> 			runtime->control->appl_ptr = 0;
-> 		} else {
-> 			runtime->control->appl_ptr = appl_ptr;
-> 		}
-> 
-> i'm not sure it's always safe (whether frame increment is aligned to
-> the boundary size).  is there problem to do like below?
-> 
-> 		if (appl_ptr >= runtime->boundary) {
-> 			runtime->control->appl_ptr = appl_ptr - runtime->boundary;
-> 		} else {
-> 			...
+> and since boundary = buffer_size as default, the above condition will
+> be not satisfied (i.e. diff is equal with -(runtime->boundary/2) and
+> it is never smaller).
 
-Note that boundary = N * buffer_size (it's close to LONG_MAX value).
-Also, read/write code does only the contiguous transfers (they don't 
-crosses the buffer_size). So it's perfectly safe to set the appl_ptr to 
-zero when it is over boundary.
+The boundary is close to LONG_MAX and 'buffer_size * N = boundary'
+condition is always true. We have enough space to detect the proper
+rewind/boundary crosses. Isn't it?
 
 						Jaroslav
 
