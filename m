@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000214]: ac3 passthrough not working
-Date: Mon, 20 Sep 2004 20:18:44 +0200 (CEST)
+From: Iain Kennedy <iain@psand.net>
+Subject: Re: hdspmixer issues
+Date: Mon, 20 Sep 2004 21:09:18 +0100 (BST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040920181844.5C5B64904C@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0409202101350.2974@tallow.psand.net>
+Reply-To: iain@psand.net
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A9DF42F2
-	for <alsa-devel@alsa-project.org>; Mon, 20 Sep 2004 20:18:44 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,212 +15,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+> > I"ve been messing with hdsp (again :-) and found out that my hdspmixer
+> > has very oddly behaving sound meters. While the input (2nd row)
+> > appears to be more or less ok (the yellow peak things kind of fly all
+> > over the place and often drop off below green lines or even completely
+> > dissapear), the analog outputs as well as combined monitoring output
+> > (front 1/4" phono jack on the multiface) only occassionally spike with
+> > a line input (usually only one channel). I am wondering why this is so
+> > since the audio is definitely working ok, but the monitoring of the
+> > outputs simply isn"t working (at least not visually).
+>
+> i"ve been experiencing similar spikes on the analog outputs as ico
+> described. since we had a somehow similar problem with screwed up pci
+> cycles that was caused by incorrect initialisation of the cardbus briges
+> on our machines, i somehow doubt that it"s related to the problem we
+> had.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000214
-======================================================================
-Reported By:                m_stolle
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     214
-Category:                   PCI - intel8x0
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-Distribution:               Debian
-Kernel Version:             2.4.25
-======================================================================
-Date Submitted:             04-16-2004 05:06 CEST
-Last Modified:              09-20-2004 20:18 CEST
-======================================================================
-Summary:                    ac3 passthrough not working
-Description: 
-I have a Dell Inspiron 8200 with an Intel ICH3/Cirrus Logic CS4205 sound
-card.  Unfortunately, the hardware AC3 passthrough does not work. 
-Instead, I only get a high-pitched funny noise.
+> cheers...
 
-The symptoms are the same in mplayer as well as in xine.  Verbose output
-of mplayer provided below:
-======================================================================
+I've been experiencing lack of/sporadic metering on hdspmixer too..
+I'm running Debian testing with kernel 2.6.8 (same effect with 2.6.3),
+with both the debian alsa packages and a locally compiled latest alsa
+version...
 
-----------------------------------------------------------------------
- m_stolle - 09-11-2004 05:25 CEST 
-----------------------------------------------------------------------
-This bug is still present in 2.6.8.1  Am I the only one with this bug?
+I had no such problem using 2.4.xx series kernels, although I was using a
+pre-1.06 version of the alsa drivers..
 
-----------------------------------------------------------------------
- tiwai - 09-13-2004 15:41 CEST 
-----------------------------------------------------------------------
-How about ALSA-1.0.7rc1?  2.6.8.1 includes the older version.
+I really don't want to start rolling my system back to older kernels, but
+if thats what has to happen, so be it.
 
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 05:05 CEST 
-----------------------------------------------------------------------
-I just recompiled alsa 1.0.7rc1
+I've tried fiddling with PCI latencies and I've also tested the hdspmixer
+using OS/X to see whether it is some bizarre heat related h/w problem
+(it's damned hot in this bus!)
 
-still same problem 8-(
+There is no appreciable quality problems with the routed audio, but it's a
+bit disconcerting not being able to see levels (and a bit embarrasing
+doing live events!)
 
-----------------------------------------------------------------------
- stoffel - 09-17-2004 10:45 CEST 
-----------------------------------------------------------------------
-I have the same notebook and the same problem with SuSE 9.0 and alsa 1.06a
-(kernel 2.4.27). So, any solution for that problem ?
+If anybody has any further information on this, or wants me to provide
+more information, let me know.
 
- The 5.1 sound works without passthrough with following entry in
-.xine/config
+Regards,
 
-audio.alsa_a52_device:iec958:AES0=0x4,AES1=0x82,AES2=0x0,AES3=0x2.
-
-First I start mplayer with
-
-#mplayer -ao alsa1x:spdif dvd://
-.
-
-After that I could start xine and my 5.1 Soundsystem works (without
-passthrough !!!)
- 
-I don't know how I get the information for the xine entry. I still probe
-many tools for alsa & co and so I've got the information. Where ? I don't
-know, sorry.
-
-edited on: 09-17-04 10:43
-
-edited on: 09-17-04 10:45
-
-----------------------------------------------------------------------
- m_stolle - 09-17-2004 14:12 CEST 
-----------------------------------------------------------------------
-I have tried recreating those steps, but it still doesn't work.  I first
-start mplayer with exactly the options you describe (no sound though?). 
-Then I edited .xine/config, started xine, switched to 5.1 surround
-(instead of stereo 2.0), restart xine, no more sound.  Redid the mplayer
-command, started xine again, still no sound.
-
-Which version of xine/mplayer are you using?  AFAIK, the alsa1x driver for
-mplayer is not used anymore, it's just alsa ?  My Xine version is 0.99.1,
-my mplayer version is   1.0pre5-3.3.4.
-
-Thanks,
-  Martin
-
-----------------------------------------------------------------------
- stoffel - 09-18-2004 16:55 CEST 
-----------------------------------------------------------------------
-Hello m_stolle,
-
-my mplayer version is  1.0pre4-3.3.1 and it works fine with mplayer and
-the alsa1x:spdif option. With xine (since version 0.98, I beleave) I must
-probe something. Most of the time it will be work, sometime it doesn*t
-;-(. But anytime with mplayer. 
-The 5.1 output by the laptop is on the left side (video and audio -> av
-adapter ). This output I connect with a 5.1 System (loudspeaker with an
-internal 5.1 decoder). Because the passthrough don't work, the 5.1 system
-play the 5.1 sound from the laptop (notebook). The internal decoder of the
-5.1 system will not be use.
-
-Sorry, for the bad english. I need a new course in english.I hope you
-understand me ;-).
-
-stefan
-
-edited on: 09-18-04 16:54
-
-edited on: 09-18-04 16:55
-
-----------------------------------------------------------------------
- m_stolle - 09-18-2004 17:50 CEST 
-----------------------------------------------------------------------
-I think I understand you, but I am not sure what you mean.  The Inspiron
-8.2k does not have a 5.1 output, only a digital S/PDIF output (via dongle
-on the left side).  In general, when playing a DVD using software, there
-are two ways the sound can get out of the computer:  Either a Software
-surround (AC3/DTS) decoder is used and the decoded sound is to a sound
-card with multiple discrete analog outputs (not possible on I8.2k, because
-no such sound card), OR, the digital sound is "passed-through" to the
-S/PDIF and decoded by an external decoder.  I am assuming your speakers
-have a built-in digital decoder and use the S/PDIF output via the dongle. 
-Hence, you _ARE_ using pass-through.  Pass-through means bypassing the
-software decoder and using an external decoder.
-
-Maybe we should take this discussion off this bug-trackign system, can you
-eMail me at mstoll@sus.mcgill.ca ? (In case you are German, you can eMail
-me in German, as I am German, too)
-
-----------------------------------------------------------------------
- tiwai - 09-20-2004 17:44 CEST 
-----------------------------------------------------------------------
-As tests, try ac3dec included in alsa-utils package.
-(Run with -C option.)
-
-This eliminates an ambiguous factor (the difference of apps).
-
-----------------------------------------------------------------------
- stoffel - 09-20-2004 19:55 CEST 
-----------------------------------------------------------------------
-Maybe you are right ;-). The internal decoder is by mplayer or xine. I
-don't know why, but I've got 5.1 Sound over the left output (av - adapter;
-in the middle a yellow plug for video and on the side a same plug for
-audio) without passthrough !!! Our Laptop is a dell inspiron 8200. If I
-switch on passthrough I've got the same ugly noise like you get.
-Sorry is the only thing I can tell you.
-
-----------------------------------------------------------------------
- m_stolle - 09-20-2004 20:18 CEST 
-----------------------------------------------------------------------
-I should clarify:  in general my S/PDIF works.  When I play mp3s, I get
-2-channel PCM output just fine.  Also, when I watch a DVD with
-xine's/mplayer's _SOFTWARE AC3 DECODER_, I get sound out of S/PDIF.  But
-it is _NOT_ 5.1 surround sound.  It is in fact 2-channel PCM stereo,
-downmixed to 2.0 from the decoded 5.1 output by the software decoder.
-
-Depending on Stoffel's stereo system, this sound might still come out of
-all 5 speakers, but it is NOT 5 discrete channels, but rather 2 discrete
-channels output over multiple speakers.
-
-I don't know how ac3dec is going to help at all... ac3dec is a software
-ac3 decoder.  I do NOT want to decode the AC3 stream, since the sound card
-cannot output multiple channels.  It can only PASS-THOUGH that AC3 sound
-on the DVD over the S/PDIF output.  (For example, it is entirely
-impossible to play a game with surround sound on the I8.2k, since it
-cannot output multiple streams, and encoding multiple streams as AC3 and
-outputting over the S/PDIF is too CPU intensive to be done in realtime...
-and no game has support for this.)
-
-So, while I can output a downmixed 2.0 PCM Stereo mix over the S/PDIF, I
-cannot output a full 5.1 AC3 surround signal over S/PDIF. (and I highly
-doubt Stoffel can, either!)
-
-MST
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-04-16-04 05:06 m_stolle       New Bug                                      
-04-16-04 05:06 m_stolle       Distribution              => Debian          
-04-16-04 05:06 m_stolle       Kernel Version            => 2.4.25          
-09-11-04 05:25 m_stolle       Bugnote Added: 0001744                       
-09-13-04 15:41 tiwai          Bugnote Added: 0001747                       
-09-17-04 05:05 m_stolle       Bugnote Added: 0001775                       
-09-17-04 10:21 stoffel        Bugnote Added: 0001776                       
-09-17-04 10:42 stoffel        Bugnote Added: 0001778                       
-09-17-04 10:43 stoffel        Bugnote Edited: 0001776                      
-09-17-04 10:43 stoffel        Bugnote Deleted: 0001778                     
-09-17-04 10:45 stoffel        Bugnote Edited: 0001776                      
-09-17-04 14:12 m_stolle       Bugnote Added: 0001779                       
-09-18-04 16:52 stoffel        Bugnote Added: 0001782                       
-09-18-04 16:54 stoffel        Bugnote Edited: 0001782                      
-09-18-04 16:55 stoffel        Bugnote Edited: 0001782                      
-09-18-04 17:50 m_stolle       Bugnote Added: 0001783                       
-09-20-04 17:44 tiwai          Bugnote Added: 0001791                       
-09-20-04 19:55 stoffel        Bugnote Added: 0001793                       
-09-20-04 20:18 m_stolle       Bugnote Added: 0001794                       
-======================================================================
+Iain
 
 
 -------------------------------------------------------
