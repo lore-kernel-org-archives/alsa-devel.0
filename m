@@ -1,14 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000649]: alsaplayer only works as root
-Date: Mon, 15 Nov 2004 18:10:41 +0100
-Message-ID: <d0413b99bcd061a3adfc28ec06ba671b@bugtrack.alsa-project.org>
+From: Hannu Savolainen <hannu@opensound.com>
+Subject: Re: Implementing ALSA compatibility in OSS
+Date: Mon, 15 Nov 2004 19:31:23 +0200 (EET)
+Message-ID: <Pine.LNX.4.58.0411151859220.9516@zeus.compusonic.fi>
+References: <Pine.HPX.4.33n.0411151354510.12617-100000@studcom.urz.uni-halle.de>
+ <Pine.LNX.4.58.0411151518070.9417@zeus.compusonic.fi>
+ <Pine.LNX.4.58.0411151655090.1751@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E241E24C
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 18:10:41 +0100 (MET)
+In-Reply-To: <Pine.LNX.4.58.0411151655090.1751@pnote.perex-int.cz>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,52 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, 15 Nov 2004, Jaroslav Kysela wrote:
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=649> 
-======================================================================
-Reported By:                mthoro
-Assigned To:                
-======================================================================
-Project:                    ALSA - utils
-Issue ID:                   649
-Category:                   aplay/arecord
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     new
-======================================================================
-Date Submitted:             11-14-2004 15:37 CET
-Last Modified:              11-15-2004 18:10 CET
-======================================================================
-Summary:                    alsaplayer only works as root
-Description: 
-changed permissions on snd devices to 777.  player only works after login
-as root.  after login as user in audio group, player will not work even if
-I log back in as root.  I have to reboot and login as root to get the
-player to work again. gnome cd player works okay, but the alsaplayer is
-great!
-======================================================================
+> On Mon, 15 Nov 2004, Hannu Savolainen wrote:
+>
+> > OSS is a driver API and it's definitely designed to be used directly.
+>
+> It's (and was) a broken idea. We have never ending trouble to reroute your
+> API to ours, because you have not designed a proper library in the user
+> space to handle application requests.
+Interesting point. Do you mean that all Linux drivers for whatever devices
+should have defined their own library interface instead of the using the
+traditional Unix device/file interface?
 
-----------------------------------------------------------------------
- Clemens Ladisch - 11-15-04 18:10 
-----------------------------------------------------------------------
-It seems you're using a system that automatically creates device nodes
-(devfs or udev).  You have to change the devfs/udev configuration so that
-it sets correct permissions.  Ask the debian experts.
+To me this uniform and robust device/file abstraction was the main reason
+to get married with Unix. That happened exactly 20 years ago, btw. It was
+also the reason why I originally designed OSS in this way.
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-11-14-04 15:37 mthoro         New Issue                                    
-11-15-04 18:10 Clemens LadischNote Added: 0002417                          
-======================================================================
+OSS doesn't have it's own library API. Our goal has been to develop  as
+good device drivers as possible and nothing else. As a small company have
+intentionally left all user space development (including libraries) to
+others.
 
+> While you can use alsa-lib to
+> reroute ALSA apps to the OSS driver, we have no such simple way for ALSA
+> -> OSS path. We must do an emulation in the kernel side or use some hacks
+> to do proper rerouting.
+Such is life.
 
+Best regards,
+
+Hannu
+-----
+Hannu Savolainen (hannu@opensound.com)
+http://www.opensound.com (Open Sound System (OSS))
+http://www.compusonic.fi (Finnish OSS pages)
+OH2GLH QTH: Karkkila, Finland LOC: KP20CM
 
 
 -------------------------------------------------------
