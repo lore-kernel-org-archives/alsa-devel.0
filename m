@@ -1,8 +1,11 @@
-From: Daniel Pouzzner <douzzer@mega.nu>
-Subject: Re: Waveterminal 192M Envy24HT
-Date: Thu, 20 Mar 2003 13:57:31 -0500 (EST)
+From: "Pete Barnard" <petebarnard@tiscali.co.uk>
+Subject: SoundCard compatibility question
+Date: Thu, 20 Mar 2003 20:48:26 -0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200303201857.h2KIvVft063936@mail.mega.nu>
+Message-ID: <002101c2ef22$0f249f20$0100a8c0@Pblaptop>
+Mime-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_001E_01C2EF22.0E6EE3B0"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
@@ -12,35 +15,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: cw@acidtechno.net, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->It is not usually difficult to do the reverse engineering 
->and collect a schematic how is the envy chip connected with the I/O chips 
->using a simple voltmeter.
+This is a multi-part message in MIME format.
 
-Umm, I think you underestimate the skills you have amassed that make
-such an operation seem easy to you!
+------=_NextPart_000_001E_01C2EF22.0E6EE3B0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
->I think that the card is green in the matrix, because we have 
->documentation for the master (envy) chip.
+I have just installed Red Hat Linux 7.3 on my pc at work and will be =
+installing the ALSA drivers.  However, the sound card is described as a =
+"SoundMax integrated Audio" (I don't really know much about this card =
+and cannot find it on the ALSA soundcard matrix).   I have read that it =
+is a SoundBlaster compatible card but I haven't had this confirmed.  =
+Does anybody have any suggestions as to how I would get ALSA to work =
+with this card? for example, what lines do I need to put in the =
+/etc/modules.conf file? and what options do I need to type when I do a =
+./configure for the drivers? Are there any external drivers that I need =
+to download etc?
 
-That's what I suspect.
+Failing all this - will I have to replace it with another card that is =
+listed on the ALSA soundcard matrix ??
 
-I just emailed the contact for the esi-pro.com domain (for lack of a
-better contact) as follows:
+Regards,
 
+Pete
 
->Date: Thu, 20 Mar 2003 13:54:16 -0500 (EST)
->To: chesslim@egosys.net
->Subject: Waveterminal 192X tech details
->From: Daniel Pouzzner <douzzer@mega.nu>
->
->A number of people, myself included, are interested in adding
->Waveterminal 192 support to ALSA (the Linux soundcard driver
->backplane).  Can you make available the necessary technical details on
->the Waveterminal 192's firmware?
+------=_NextPart_000_001E_01C2EF22.0E6EE3B0
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Diso-8859-1">
+<META content=3D"MSHTML 6.00.2600.0" name=3DGENERATOR>
+<STYLE></STYLE>
+</HEAD>
+<BODY bgColor=3D#ffffff>
+<DIV><FONT face=3DArial size=3D2>
+<DIV><FONT face=3DArial size=3D2>I have just installed Red Hat Linux 7.3 =
+on my pc at=20
+work and will be installing the ALSA drivers.&nbsp; However, the sound =
+card is=20
+described as a "SoundMax integrated Audio" (I don't really know much =
+about this=20
+card and cannot find it on the ALSA soundcard matrix).&nbsp;&nbsp; I =
+have read=20
+that it is a SoundBlaster compatible card but I haven't had this=20
+confirmed.&nbsp; Does anybody have any suggestions as to how I would get =
+ALSA to=20
+work with this card? for example, what lines do I need to put in the=20
+/etc/modules.conf file? and what options do I need to type when I do a=20
+./configure for the drivers? Are there any external drivers that I need =
+to=20
+download etc?</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Failing all this - will I have to =
+replace it with=20
+another card that is listed on the ALSA soundcard matrix ??</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial size=3D2>Regards,</FONT></DIV>
+<DIV><FONT face=3DArial size=3D2></FONT>&nbsp;</DIV>
+<DIV><FONT face=3DArial =
+size=3D2>Pete</FONT></DIV></FONT></DIV></BODY></HTML>
+
+------=_NextPart_000_001E_01C2EF22.0E6EE3B0--
+
 
 
 -------------------------------------------------------
