@@ -1,18 +1,10 @@
-From: Patrick Shirkey <kotau@firstlinux.net>
-Subject: Re: ALSA is in 2.5!!!
-Date: Thu, 14 Feb 2002 00:07:08 -0800 (PST)
-Message-ID: <20020214080708.CBBEB3ED3@sitemail.everyone.net>
-Reply-To: pshirkey@boosthardware.com
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Status of ALSA documentation?
+Date: Thu, 14 Feb 2002 10:15:48 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202141010360.510-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-Received: from omta05.mta.everyone.net (sitemail3.everyone.net [216.200.145.37])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA18693
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 09:07:21 +0100
-Received: from sitemail.everyone.net (dsnat [216.200.145.62])
-	by omta05.mta.everyone.net (Postfix) with ESMTP id E47E048E6F
-	for <alsa-devel@alsa-project.org>; Thu, 14 Feb 2002 00:07:13 -0800 (PST)
-Content-Disposition: inline
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20020213093203.B9A0036F9@sitemail.everyone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -21,95 +13,49 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: ALSA development <alsa-devel@alsa-project.org>
+To: "pshirkey@boosthardware.com" <pshirkey@boosthardware.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Congratulations. 
+On Wed, 13 Feb 2002, Patrick Shirkey wrote:
 
-It's been a long time coming. Developers, especially Jaroslav, Takashi, Abramo, Frank, Paul, your hard work, investment of energy and creative thinking is deeply appreciated. Through your effort I am able to proudly create musical art that is completely open and free (as in speech). 
-    
-  >@<>@<>@<
-   |  |  |
-   |  |  |
-    \ | /      
-Red ribbon
-    /|\
+> ALSA is not an easy code base to come to grips with so we should apply the kiss rule (keep it simple stupid) to help newbies coders get their heads around it.
+>
+> >From my perspective the comments are not standardised enough. I haven't checked the code for a couple of months but last time I looked each file had a different approach to where and when comments were added.
+>
+> IMO if the developers could agree on a standard layout for every file then new developers would have much more chance of understanding how things work. Simply a matter of repetition.
+>
+> Apart from that what are the job requirements of an ALSA web maintainer and a documentation leader?
+>
+> EG.
+>
+> - How many hours per week are expected?
+> - What are the knowledge requirements?
+> - What are the legalities?
+> - What are the target responsibilties?
+> - What are the benefits?
+>
+> I am interested in the web site maintainer depending on the above requirements.
 
-My assistant will now present you with a bouquet each ;-)
+Actually, our web is based on apache and PHP3 scripts. Perhaps, we can
+move to python (nice language) or PHP4 in future. I've created a CVS
+repository for WWW contents. Each commit automatically updates the WWW
+pages, so we have good management system for web.
 
-Make no mistake that your example has inspired and is continuing to inspire many people.
+If you are interested to reorganize contents of ALSA web site, I can give
+you CVS write access and you can show your ideas in some subdirectory for
+clarification.
 
-To quote Montel Jordan.
+Anyway, I am ready to answer any questions regarding ALSA. It's obvious.
 
-"This is how we do it"
+						Jaroslav
 
-Inclusion in the Kernel adds a huge amount of legitimacy to your work which hopefully in turn will give hardware vendors the reason they need to give you/us the chance to make their products supported in the Linux environment. Now we can say that professional quality multimedia is supported by the whole linux community not just the devoted few.
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
-Once again CONGRATULATIONS!!!!
-
-
-
---
-Patrick Shirkey - Boost Hardware Ltd
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/Linux_Audio_Users_Guide/
-
-
---- Jaroslav Kysela <perex@suse.cz> wrote:
->Hi all,
->
->	the big moment in ALSA existence is here. Linus integrated ALSA
->into 2.5 kernel tree!! The first pre-patch with ALSA will be available
->soon. For impatient hackers: Check http://openlogging.org, click on
->'Sorted by number of lines' and choose 'Linux kernel tree' with domain
->'transmeta.com' and contact 'Unknown'.
->	I would like to send big thank you to all ALSA developers. I am
->looking forward to the future.
->
->						Jaroslav
->
->-----
->Jaroslav Kysela <perex@suse.cz>
->SuSE Linux    http://www.suse.com
->ALSA Project  http://www.alsa-project.org
->
->---------- Forwarded message ----------
->Date: Wed, 13 Feb 2002 12:26:06 -0800 (PST)
->From: Linus Torvalds <torvalds@transmeta.com>
->To: Alan Cox <alan@lxorguk.ukuu.org.uk>
->Cc: David S. Miller <davem@redhat.com>,
->     "ac9410@bellsouth.net" <ac9410@bellsouth.net>,
->     "alan@clueserver.org" <alan@clueserver.org>,
->     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
->Subject: Re: 2.5.4 sound module problem
->
->
->
->On Wed, 13 Feb 2002, Alan Cox wrote:
->>
->> Waste of effort. ALSA will replace the OSS code anyway
->
->In fact, in my tree it right now has replaced it. I'll make a pre-patch
->and try to get the BK tree pushed out.
->
->		Linus
->
->-
->To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
->the body of a message to majordomo@vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
->Please read the FAQ at  http://www.tux.org/lkml/
->
->
->
->_______________________________________________
->Alsa-devel mailing list
->Alsa-devel@lists.sourceforge.net
->https://lists.sourceforge.net/lists/listinfo/alsa-devel
-
-_____________________________________________________________
-Want a new web-based email account ? ---> http://www.firstlinux.net
 
 _______________________________________________
 Alsa-devel mailing list
