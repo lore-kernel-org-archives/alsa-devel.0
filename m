@@ -1,12 +1,12 @@
-From: "James Courtier-Dutton" <James@superbug.demon.co.uk>
-Subject: RE: dolby digital output
-Date: Sun, 17 Feb 2002 18:44:10 -0000
-Message-ID: <NGBBLNODKDFPBFMBBFAFOEAECBAA.James@superbug.demon.co.uk>
+From: Guenther Sohler <guenther.sohler@newlogic.com>
+Subject: Re: Receiving Sequencer Events
+Date: Mon, 18 Feb 2002 06:39:34 +0100 (MET)
+Message-ID: <XFMail.020218063934.guenther.sohler@newlogic.com>
+Reply-To: Guenther Sohler <guenther.sohler@newlogic.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <1013970073.2394.17.camel@samoyed.wuff.dhs.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <Pine.LNX.4.31.0202171737440.520-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,50 +15,53 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Hod McWuff <hod@wuff.dhs.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Hod McWuff [mailto:hod@wuff.dhs.org]
-> Sent: 17 February 2002 18:21
-> To: James Courtier-Dutton
-> Subject: RE: [Alsa-devel] dolby digital output
->
->
->
-> So, the upshot is that thanks to the AC3 latency spec, even with a
-> lightning-fast encoder, it wouldn't work.
->
-> >
-> > I think it would be best for your application to do the mixing.
-> >
->
-> I think you may be right... but that still doesn't solve the additional
-> latency, and digital output is still (unhappily) limited to two channels
-> unless you're playing a canned stream, such as a dvd.
->
-> Any other ideas on how to deal with that, or would an extension to
-> S/PDIF be required?
->
-I think some high speed S/PDIF is available which can do 8 Channel 96Khz 24
-bit audio but very few PC sound cards can do that.
+Thank you very much. I'll implement it like that.
 
-I would have preferred everything to be converted to packet technologies,
-and then we could link all consumer equipment together with Ethernet cables!
-Circuit based technologies are quite complicated because one has to worry
-about clocking and synchronisation all the time.
-With packet, each packet would just have a small header, with Stream ID,
-duration of packet, Packet number, with maybe a timestamp if one needs to
-synchronise two or more different streams together. Also circuit based
-technologies have no error correction.
+rds guenther
 
-A simple 100 Megs Full duplex point to point Ethernet cable can handle just
-about anything S/PDIF, USB, SCSI, IDE can throw at it.
-Maybe that is why there is an IP version of SCSI now.
+On 17-Feb-02 Jaroslav Kysela wrote:
+> On Sun, 17 Feb 2002, Guenther Sohler wrote:
+> 
+>> Hallo List,
+>>
+>> I want to receive midi events from my external midi keyboard.
+>>
+>> Therefore I tried the seq decoder which comes with the alsa package.
+>> This application creates a port and when I connect the midi port to this
+>> listener ports, i can see the events coming from the keyboard.
+>>
+>> That means, If i want to receive events, i have to create a port and connect
+>> it
+>> to the source port(external midi "port") - then receive the events with
+>>
+>> snd_seq_input_event (not sure whether this is the correct name)
+>>
+>> My question: is'nt it possible receiving events without creating a port.
+> 
+> Sorry, but the MIDI router code must know a destination which is given
+> exactly a client+port address. This is concept of the ALSA's sequencer
+> code.
+> 
+>                                               Jaroslav
+> 
+> -----
+> Jaroslav Kysela <perex@suse.cz>
+> Linux Kernel Sound Maintainer
+> ALSA Project  http://www.alsa-project.org
+> SuSE Linux    http://www.suse.com
+> 
 
-Cheers
-James
+Guenther Sohler
+
+NewLogic Technologies AG 
+Millennium Park 6
+A-6890 Lustenau
+                                           Phone: +43-5577-62000-507
+E-Mail: guenther.sohler@newlogic.com       Fax:   +43-5577-62000-988
 
 
 _______________________________________________
