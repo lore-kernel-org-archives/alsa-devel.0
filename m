@@ -1,54 +1,52 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: Re: Pops at start of song
-Date: Thu, 20 Nov 2003 21:02:43 +0100
-Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031120200243.GB3403@tuba.home>
-References: <Pine.LNX.4.58.0311201220330.2668@pnote.perex-int.cz> <NDBBLGIKBJENLAMOLFHGGEOKDNAB.mknecht@controlnet.com>
+From: David Garcia Garzon <dgarcia@iua.upf.es>
+Subject: In progress: User documentation in Spanish
+Date: Thu, 20 Nov 2003 21:10:14 +0100
+Sender: alsa-user-admin@lists.sourceforge.net
+Message-ID: <200311202110.14217.dgarcia@iua.upf.es>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
+Return-path: <alsa-user-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGGEOKDNAB.mknecht@controlnet.com>
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Mark Knecht <mknecht@controlnet.com>
-Cc: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: linux-audio-dev-request@music.columbia.edu, alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> > Ok, it's a thing that we would like to eliminate, but when I tried to
-> > figure what's going on in the past, I wasn't successful. The best
-> > thing to
-> > measure if ALSA sends a wrong sample sequence to the output is to use the
-> > digital I/O (S/PDIF or profi IEC958) for on playback side and capture the
-> > whole stream on the other side.
-> >
-> > It seems to me, that some audio hardware (in the analog path) does not
-> > have compensation for the big volume change at the start or stop of the
-> > PCM stream. In this case, the application must do this compensation itself
-> > to avoid the clicks. It's difficult to do the stream modification in the
-> > driver.
+I am currently working on a 'no-compilation, no-installation, no-programming'
+user manual for Alsa-Jack-Ladspa.
 
-just an idea from rme32:
+I wanted to bring some friends of mine to Linux. They use Windows based music
+software, so i intended to do some introduction (in spanish) to the
+capababilities of Alsa-Jack-Ladspa(-Ladcca?) arquitecture for final users.
+Due to the initial intent I did it in Spanish. Now it seems language was a
+wrong choice. Most related documentation is full of programming and
+installation details and I think that it is a globally needed documentation.
+So i plan to do it more general and translate it but only after the structure
+would get  some degree of stability.
 
-I know this start click from my Digi32. But this card has an register bit
-called "mute". Setting it, will switch to digital mute (=zeros) of the
-output. The driver set this bit on each playback_prepare and playback_stop
-and there's no click anymore:)
+The current (Spanish) draft is located at:
+http://www.salleurl.edu/~is04069/Modders/Docs/alsadoc.html
+Most mature sections are 'General arquitecture', 'Sequencer' and 'Config
+ files syntax'. Maybe, some alsa hacker who undestand Spanish (Jordi? Nando?)
+ could review them. I have lot's of questions, since i had to figure out a
+ lot of things from code or from proposals (which i don't know if they
+ finally get implemented as explained). But I will ask those questions only
+ to the developers lists. That's the correct audience by now, isn't it?
 
-I don't have the docs about the hdsp hardware. Perhaps they have no longer
-this register bit in the hdsp hardware, but the hdsp driver authors should
-know much more about their register bits than I. 
+-- 
+David García Garzón <david.garcia@removespam.iua.upf.es>
+Phone: 034 93 542 21 99
+Music Technology Group, Institut Universitari de l'Audiovisual
+Universitat Pompeu Fabra
 
-...it's just an idea.
-
-martin
 
 
 -------------------------------------------------------
