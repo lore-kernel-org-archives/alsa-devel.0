@@ -1,12 +1,11 @@
-From: Paul Davis <pbd@op.net>
-Subject: Re: I want to help
-Date: Fri, 12 Apr 2002 23:25:59 -0400
+From: Kasparek Tomas <xkaspa06@stud.fee.vutbr.cz>
+Subject: Mixer controls - simple x extended
+Date: Sat, 13 Apr 2002 14:45:01 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E16wE9x-0000wM-00@usw-sf-list1.sourceforge.net>
-References: <3CB69373.8070605@tabi.org>
+Message-ID: <Pine.BSF.4.44.0204131438350.60325-100000@fest.stud.fee.vutbr.cz>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Fri, 12 Apr 2002 02:57:39 CDT."
-             <3CB69373.8070605@tabi.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,18 +14,30 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Timur Tabi <timur-linux@tabi.org>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->Hi, I'm looking to help the ALSA project.  I have six years' experience 
->developing audio device drivers for DOS, OS/2, and Windows, so I want to 
->create a new audio driver for ALSA.  Is there any particular piece of 
->hardware that needs to be supported that no one is working on?
+Hi all,
 
-USB.
+I just changed the type of some mixer controls in UDA1341 driver to
+enumerate. With "amixer" it works fine, showing correct names for all
+states. But with "alsamixer" enumarated controls are not showed anymore.
 
-Search the archives of the list first. There are at least two ways to
-do it. The archives contain several discussions on the topic.
+I find, this is because alsamixer uses "simple controls". Is it possible
+to setup enumerated controls as simple? Or is there any other way to show
+enumarated controls in "alsamixer"?
 
---p
+I thought about rewriting "alsamixer" for "extended" controls, displaying
+enumerates as bar with it's index value and printing actual text field at
+the end of "Item:" line at the left top corner of alsamixer.
+Do you like this solution, or does it cause some troubles? (well, better
+should be to just simply enable enumerated controls in actual alsamixer :)
+
+Bye
+
+--
+
+	Tomas Kasparek (sioux, xkaspa06)
+ 	 tomas.kasparek@[seznam.cz,volny.cz]
+	 linux@fit.vutbr.cz
+	student FIT VUT Brno
