@@ -1,147 +1,124 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000749]: Buzz from ALSA setup
-Date: Mon, 27 Dec 2004 22:29:22 +0100
-Message-ID: <5f02a87d19898cad4b7e25934ae58ca1@bugtrack.alsa-project.org>
+From: "Rui Nuno Capela" <rncbc@rncbc.org>
+Subject: Re: [Alsa-devel] Notes on 1.0.8-rc1 (and post-rc1)
+Date: Mon, 27 Dec 2004 21:44:10 -0000 (WET)
+Message-ID: <32856.192.168.1.5.1104183850.squirrel@192.168.1.5>
+References: <s5hfz1rd592.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 501ED1EB
-	for <alsa-devel@alsa-project.org>; Mon, 27 Dec 2004 22:29:22 +0100 (MET)
-Sender: alsa-devel-admin@lists.sourceforge.net
-Errors-To: alsa-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-devel@lists.sourceforge.net>
-List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
-	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed;boundary="----=_20041227214410_86167"
+Return-path: <alsa-user-admin@lists.sourceforge.net>
+In-Reply-To: <s5hfz1rd592.wl@alsa2.suse.de>
+Sender: alsa-user-admin@lists.sourceforge.net
+Errors-To: alsa-user-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-user@lists.sourceforge.net>
+List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
+	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net, alsa-user@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+------=_20041227214410_86167
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8bit
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=749> 
-======================================================================
-Reported By:                misnagid
-Assigned To:                pzad
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   749
-Category:                   PCI - emu10k1
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora FC3
-Kernel Version:             2.6.9
-======================================================================
-Date Submitted:             12-26-2004 15:37 CET
-Last Modified:              12-27-2004 22:29 CET
-======================================================================
-Summary:                    Buzz from ALSA setup
-Description: 
-I get an almost constant buzz from speakers when I've tried to use ALSA. 
-Have followed your directions from the online web page directions to the
-letter.  Still buzz.
-Have brought all sound levels up ising alsamixer and Kmix.  Of no help. 
-Have tried everything I've seen about this problem.
-OnBoard NVidia audio from Asus A7N8X-E Deluxe disabled.  Using emu10k1
-driver for installed Creative Labs Audigy 2 soundcard. This is a brand new
-successful in all other regards install of Fedora FC3.
+Takashi Iwai wrote:
+> Hi,
+>
+> as you might have already noticed, ALSA 1.0.8-rc1 was released
+> recently.  Some major changes are listed below...
+>
 
-======================================================================
+I guess this simple one below is however still missing.
 
-----------------------------------------------------------------------
- pzad - 12-27-04 22:00 
-----------------------------------------------------------------------
-My name is Peter Zubaj
 
-I give up.
 
-Last things you can try:
-mute "External amplifier" - I don't think, this will help.
+Karsten Wiese wrote:
+>Rui Nuno Capela wrote:
+> Hi,
+>
+> While testing the new snd-usb-usx2y 0.8.7 hwdep pcm interface on my
+> Tascam US-224, and feeding it via aplay -D hw:N,2 samefile.wav, I've
+> come to face a couple of issues I would like to report here.
+>
+> The first one is about a repeatable kernel crash happening on my SUSE
+> 9.2 Pro box (P4/HT), but also on my Mdk 10.1 laptop (P4/UP), everytime I
+> try to aplay against the hw:N,2 device (N=soundcard index). See below
+> for the whole data and the proper oops dumps. As every kernel crash, the
+> system is left in a very dangerous and unstable state, so that this
+> particular issue should be addressed ASAP.
 
-aplay -D hw:0 some.wav
+OK, that one is fixed by attached patch.
+Takashi: Please apply with
+>>>>>>
+Summary: return -EBUSY from snd_usX2Y_usbpcm_open(),
+  if the associated hwdep device is not opened.
 
-----------------------------------------------------------------------
- misnagid - 12-27-04 22:29 
-----------------------------------------------------------------------
-Tried your last suggestion.  Didn't work.
+It now works as originally intended. Had forgotten a pair of parenthesis.
 
-Can you PLEASE have your supervisor give me a call??  Collect is fine.
-Nothing about you.  You've tried hard.  I just need some suggestions.
+Signed-off-by: Karsten Wiese <annabellesgarden@yahoo.de>
+<<<<<<
 
-I always had problems before but they were all solveable.  This times the
-first that I couldn't get it solved myself and neither even you guys.
-Since I just had Mepis working, it can't ne a totally hardware issue.
-Seems to be a Fedora issue, possibly as it relates to my hardware.
-But since I had Debian working, Mepis working, and other distro's working
+------=_20041227214410_86167
+Content-Type: text/x-diff; name="snd-usb-usx2y.patch.0.8.7.1"
+Content-Transfer-Encoding: 8bit
+Content-Disposition: attachment; filename="snd-usb-usx2y.patch.0.8.7.1"
 
-on this hardware, seems to be an FC3 issue.
-I'd like to get some recommendations.  Over the phone would just be a lot
-easier than email, ok??
-
-248-827-3004
-
-1) Try a new install of FC3?
-2) What else try?
-
-Thanks,
-Jerry
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-26-04 15:37 misnagid       New Issue                                    
-12-26-04 15:37 misnagid       Distribution              => Fedora FC3      
-12-26-04 15:37 misnagid       Kernel Version            => 2.6.9           
-12-26-04 15:58 pzad           Note Added: 0002935                          
-12-26-04 16:31 misnagid       Note Added: 0002936                          
-12-26-04 16:44 misnagid       Note Added: 0002937                          
-12-26-04 16:56 pzad           Note Added: 0002938                          
-12-26-04 17:47 misnagid       Note Added: 0002939                          
-12-26-04 18:07 misnagid       Note Added: 0002940                          
-12-26-04 18:17 misnagid       Note Added: 0002942                          
-12-26-04 18:38 misnagid       Note Added: 0002943                          
-12-26-04 19:27 pzad           Note Added: 0002944                          
-12-26-04 19:44 misnagid       File Added: test.state                       
-12-26-04 19:44 misnagid       Note Added: 0002945                          
-12-26-04 20:02 misnagid       Note Added: 0002946                          
-12-26-04 20:09 misnagid       Note Added: 0002947                          
-12-26-04 20:22 pzad           File Added: newtest.state                    
-12-26-04 20:27 pzad           Note Added: 0002948                          
-12-26-04 20:32 pzad           Note Added: 0002949                          
-12-26-04 20:59 misnagid       Note Added: 0002950                          
-12-26-04 21:11 misnagid       Note Added: 0002951                          
-12-26-04 21:19 pzad           Note Added: 0002952                          
-12-26-04 21:22 pzad           Note Added: 0002953                          
-12-26-04 21:43 misnagid       Note Added: 0002954                          
-12-26-04 21:47 pzad           Note Added: 0002955                          
-12-26-04 22:18 misnagid       Note Added: 0002956                          
-12-26-04 23:46 misnagid       Note Added: 0002957                          
-12-27-04 10:46 pzad           Note Added: 0002958                          
-12-27-04 16:33 misnagid       Note Added: 0002964                          
-12-27-04 16:34 misnagid       File Added: test2.state                      
-12-27-04 16:38 misnagid       Note Added: 0002965                          
-12-27-04 16:45 pzad           Note Added: 0002966                          
-12-27-04 16:58 misnagid       Note Added: 0002967                          
-12-27-04 16:58 misnagid       File Added: test3.state                      
-12-27-04 17:42 misnagid       Note Added: 0002968                          
-12-27-04 17:57 misnagid       Note Added: 0002969                          
-12-27-04 18:16 pzad           Note Added: 0002970                          
-12-27-04 18:43 misnagid       Note Added: 0002971                          
-12-27-04 19:27 misnagid       Note Added: 0002972                          
-12-27-04 21:09 misnagid       Note Added: 0002975                          
-12-27-04 21:31 pzad           Note Added: 0002976                          
-12-27-04 21:47 misnagid       Note Added: 0002977                          
-12-27-04 21:49 misnagid       Note Added: 0002978                          
-12-27-04 22:00 pzad           Note Added: 0002979                          
-12-27-04 22:29 misnagid       Note Added: 0002980                          
-======================================================================
+Index: alsa-kernel/usb/usx2y/usbusx2y.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usx2y/usbusx2y.c,v
+retrieving revision 1.7
+diff -U3 -r1.7 usbusx2y.c
+--- alsa-kernel/usb/usx2y/usbusx2y.c	2 Dec 2004 14:41:21 -0000	1.7
++++ alsa-kernel/usb/usx2y/usbusx2y.c	14 Dec 2004 18:26:02 -0000
+@@ -1,6 +1,10 @@
+ /*
+  * usbusy2y.c - ALSA USB US-428 Driver
+  *
++2004-12-14 Karsten Wiese
++	Version 0.8.7.1:
++	snd_pcm_open for rawusb pcm-devices now returns -EBUSY if called without rawusb's hwdep device being open.
++
+ 2004-12-02 Karsten Wiese
+ 	Version 0.8.7:
+ 	Use macro usb_maxpacket() for portability.
+@@ -139,7 +143,7 @@
+ 
+ 
+ MODULE_AUTHOR("Karsten Wiese <annabellesgarden@yahoo.de>");
+-MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.8.7");
++MODULE_DESCRIPTION("TASCAM "NAME_ALLCAPS" Version 0.8.7.1");
+ MODULE_LICENSE("GPL");
+ MODULE_SUPPORTED_DEVICE("{{TASCAM(0x1604), "NAME_ALLCAPS"(0x8001)(0x8005)(0x8007) }}");
+ 
+Index: alsa-kernel/usb/usx2y/usx2yhwdeppcm.c
+===================================================================
+RCS file: /cvsroot/alsa/alsa-kernel/usb/usx2y/usx2yhwdeppcm.c,v
+retrieving revision 1.1
+diff -U3 -r1.1 usx2yhwdeppcm.c
+--- alsa-kernel/usb/usx2y/usx2yhwdeppcm.c	8 Dec 2004 19:29:21 -0000	1.1
++++ alsa-kernel/usb/usx2y/usx2yhwdeppcm.c	14 Dec 2004 18:26:04 -0000
+@@ -22,7 +22,7 @@
+  It provides the alsa kernel half of the usx2y-alsa-jack driver pair.
+  The pair uses a hardware dependant alsa-device for mmaped pcm transport.
+  Advantage achieved:
+-         The usb_hcd places reads/writes pcm data into dma-memory.
++         The usb_hc moves pcm data from/into memory via DMA.
+          That memory is mmaped by jack's usx2y driver.
+          Jack's usx2y driver is the first/last to read/write pcm data.
+          Read/write is a combination of power of 2 period shaping and
+@@ -568,7 +568,7 @@
+ 					 snd_pcm_substream_chip(substream))[substream->stream];
+ 	snd_pcm_runtime_t	*runtime = substream->runtime;
+ 
+-	if (!subs->usX2Y->chip_status & USX2Y_STAT_CHIP_MMAP_PCM_URBS)
++	if (!(subs->usX2Y->chip_status & USX2Y_STAT_CHIP_MMAP_PCM_URBS))
+ 		return -EBUSY;
+ 
+ 	runtime->hw = SNDRV_PCM_STREAM_PLAYBACK == substream->stream ? snd_usX2Y_2c :
+------=_20041227214410_86167--
 
 
 
