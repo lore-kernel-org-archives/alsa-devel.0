@@ -1,11 +1,8 @@
-From: "Gupta, Kshitij" <kshitij@ti.com>
-Subject: new alsa driver for ti omap chip
-Date: Thu, 12 Feb 2004 12:56:04 +0530
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Re: emu10k1 polishing?
+Date: Thu, 12 Feb 2004 10:45:46 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <F509E6111989D311B63700805FA761DA09F28EC1@DBDE01>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Message-ID: <S21917AbUBLIpq/20040212084546Z+734@nic.funet.fi>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,19 +12,73 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "'alsa-devel@lists.sourceforge.net'" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+>From: p z oooo <pzad@pobox.sk>
+>
+>>2. Alsamixer shows obscure names
+>You could rename it in alsa-driver/alsa-kernel/pci/emu10k1/emufx.c
+>and send patch here.
 
-	I am trying to write an alsa driver for a tsc2101 codec on a arm
-based SOC.  The control interface between the SOC and the tsc2101 codec is
-via SPI. 
-And the data interface is a I2S interface.  Can some one suggest a good
-starting point to start such a driver.  
-does sound/drivers/dummy.c makes sense for such a driver ???
-warm regards
--kshitij
+I dislike patches, but I include one below if you insist.
+Just don't apply the patch to the latest Alsa, because I have
+alsa-driver-1.0.0pre3. (Sorry cannot download latest version; maybe
+next year...)
+
+Now the names are better but not perfect:
+
+ Line2/Mic2 LiveDrive
+ Line2/Mic2 LiveDrive Capture
+ Aux2 LiveDrive
+ Aux2 LiveDrive 1           should be:  Aux2 LiveDrive Capture
+
+Why the last comes out wrong?
+
+Regards,
+Juhana
+
+ == cut ==
+
+1914c1914
+< 		/* Line LiveDrive Playback Volume */
+---
+> 		/* Line2/Mic2 LiveDrive Playback Volume */
+1917c1917
+< 		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
+---
+> 		snd_emu10k1_init_stereo_control(controls + i++, "Line2/Mic2 LiveDrive Playback Volume", gpr, 0);
+1920c1920
+< 		/* Line LiveDrive Capture Volume + Switch */
+---
+> 		/* Line2/Mic2 LiveDrive Capture Volume + Switch */
+1925,1926c1925,1926
+< 		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Capture Volume", gpr, 0);
+< 		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
+---
+> 		snd_emu10k1_init_stereo_control(controls + i++, "Line2/Mic2 LiveDrive Capture Volume", gpr, 0);
+> 		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line2/Mic2 LiveDrive Capture Switch", gpr + 2, 0);
+1948c1948
+< 		/* Line LiveDrive Playback Volume */
+---
+> 		/* Aux2 LiveDrive Playback Volume */
+1951c1951
+< 		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Playback Volume", gpr, 0);
+---
+> 		snd_emu10k1_init_stereo_control(controls + i++, "Aux2 LiveDrive Playback Volume", gpr, 0);
+1955c1955
+< 		/* Line LiveDrive Capture Volume */
+---
+> 		/* Aux2 LiveDrive Capture Volume */
+1960,1961c1960,1961
+< 		snd_emu10k1_init_stereo_control(controls + i++, "Line LiveDrive Capture Volume", gpr, 0);
+< 		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Line LiveDrive Capture Switch", gpr + 2, 0);
+---
+> 		snd_emu10k1_init_stereo_control(controls + i++, "Aux2 LiveDrive Capture Volume", gpr, 0);
+> 		snd_emu10k1_init_stereo_onoff_control(controls + i++, "Aux2 LiveDrive Capture Switch", gpr + 2, 0);
+
+
+ == end ==
 
 
 -------------------------------------------------------
