@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: cs46xx - Terratec DMX XFire 1024
-Date: Sat, 04 Jan 2003 13:04:06 +0900
+From: Troy Benjegerdes <hozer@hozed.org>
+Subject: Re: ymfpci, big-endian, and spdif out
+Date: Sat, 4 Jan 2003 12:44:35 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E165D36.3050208@boosthardware.com>
-References: <200301031441.PAA01933@alsa.alsa-project.org>
+Message-ID: <20030104184435.GM28177@altus.drgw.net>
+References: <20030103042233.GK28177@altus.drgw.net> <Pine.LNX.4.33.0301031054130.500-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.33.0301031054130.500-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +17,61 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mail@richardstevens.de, alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-mail_NoSPaM_@richard_NOSPAM_stevens.de wrote:
-> The following has been submitted as a note for the documentation of cs46xx. 
-
->        	       	Richard Stevens   
->        	       	Friday, 03 January 2003</td>
-
-> Terratec DMX XFire 1024:
+On Fri, Jan 03, 2003 at 10:54:44AM +0100, Jaroslav Kysela wrote:
+> On Thu, 2 Jan 2003, Troy Benjegerdes wrote:
 > 
-> The DMX XFire 1024 doesn't get initialized correctly the first time 
-> the alsa modules are loaded. Sound is heavily distorted. Usually 
-> reloading the modules solves this problem. One can do that 
-> autmatically by loading, unloading and reloading the modules in 
-> the bootscripts.
-> 		        
+> > I have a mac G4 (running debian testing), a ymfpci card (MaxiSound
+> > Fortissimo) with optical TOSlink out, and a yamaha HTR-5540 receiver with
+> > digital optical TOSlink input.
+> > 
+> > I'm trying to get xine or some other DVD player to output AC/3 sound to 
+> > the receiver for watching dvd's, and I have a couple of problems.
+> > 
+> > 1) xmms (and xine 2-channel sound) works with OSS emulation, but is static
+> > 	with native ALSA drivers. This seems like some endian problem
+> > 
+> > 2) spdif out does not seem to work. Here are some of the messages from 
+> > xine:
+> > 
+> > audio_alsa_out : supported modes are 8bit mono stereo (4-channel not enabled in
+> > xine config) (5-channel not enabled in xine config) (5.1-channel not enabled in
+> > xine config) a/52 and DTS pass-through
+> > 
+> > 
+> > audio_out: stream audio format is 48000 kHz sampling rate, 16 bits. mode is 1.
+> > audio_alsa_out: Audio Device name = 
+> > iec958:AES0=0x6,AES1=0x82,AES2=0x0,AES3=0x2
+> > audio_alsa_out: Number of channels = 2
+> > audio_alsa_out: pcm hw_params failed: No such device or ALSA lib 
+> > pcm_hw.c:292:(snd_pcm_hw_hw_params) SNDRV_PCM_IOCTL_HW_PARAMS failed: No 
+> > such device or addressALSA lib pcm_hw.c:292:(snd_pcm_hw_hw_params) 
+> > SNDRV_PCM_IOCTL_HW_PARAMS failed: No such device or address
+> > 
+> > 
+> > So where do I get started to fix this? 
+> > 
+> > Also, where can I get some short raw AC3 encoded sounds to test with 
+> > something like aplay?
+> 
+> We have command-line ac3dec in our alsa-tools package.
+> 
+> 						Jaroslav
 
-
-
+So what is the simplest command line options and .asoundrc config file 
+setup I should try to verify if SPDIF AC/3 output works? I also need to 
+get a short AC3 encoded sound file somewhere.. are there some directions 
+or a FAQ on how to extract an AC3 sound file from a DVD?
 
 -- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
-
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
-
-Goldie, 8 Nov, 2002
-The Scotsman
-
+Troy Benjegerdes | master of mispeeling | 'da hozer' |  hozer@drgw.net
+-----"If this message isn't misspelled, I didn't write it" -- Me -----
+"Why do musicians compose symphonies and poets write poems? They do it
+because life wouldn't have any meaning for them if they didn't. That's 
+why I draw cartoons. It's my life." -- Charles Schulz
 
 
 -------------------------------------------------------
