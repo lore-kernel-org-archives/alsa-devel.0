@@ -1,13 +1,13 @@
-From: Kevin Conder <kwconder@yahoo.com>
-Subject: Re: Re: documentation or lack thereof
-Date: Tue, 10 Dec 2002 21:37:15 -0800 (PST)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: soundcard matrix: broken links etc.
+Date: Wed, 11 Dec 2002 14:27:53 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20021211053715.41569.qmail@web21007.mail.yahoo.com>
-References: <E18Lut8-0005PF-00@sc8-sf-list2.sourceforge.net>
+Message-ID: <3DF6CCD9.8080503@boosthardware.com>
+References: <E18LQai-0006m2-00@sc8-sf-list1.sourceforge.net> <3DF62B82.4070700@boosthardware.com> <3DF66A89.5030403@monmouth.com> <3DF6A875.90107@boosthardware.com> <3DF6B9A5.3010807@monmouth.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18Lut8-0005PF-00@sc8-sf-list2.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,41 +16,51 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: "John S. Denker" <jsd@monmouth.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-> > on the other hand, having more documentation is almost always a
-> > good thing. now, where are the volunteers?
+John S. Denker wrote:
+
+> However, the apparently non-deprecated version
+>   http://www.alsa-project.org/alsa-doc/
+> contains almost as many broken links etc.
+> Here's the summary:
 > 
-> Lot's of possible flames here but the main thing is that the 
-> people who do understand the alsa-driver well enough are either 
-> too busy to find the time or have justifiable reservations 
-> about getting their prose online.
+>  Code Occurrences  What to do
+>  200     1         There are broken fragments which must be fixed.
+>  301     1         You should update the link.
+>  302     28        Usually nothing.
+>  401     4         The link is not public. You'd better specify it.
+>  403     1         The link is forbidden! This needs fixing.
+>  404     57        The link is broken. Fix it NOW!
+>  405     1         The server does not allow HEAD requests.
+>  500     37        Either the hostname is incorrect or ...
 > 
-> Unfortunately the people like myself are not in a position to 
-> edit large amounts of code documentation which we scour from 
-> the lists. I can however do a reasonable attempt at formatting 
-> the stuff. However I don't have much time or inclination to 
-> learn docbook at the moment so it wouldn't be a standard format.
+> Interested parties may grab the details from
+>   http://www.av8n.net/~jsd/alsa/checked-links2.html
+>   http://www.av8n.net/~jsd/alsa/checked-links2.html.gz
 > 
-> AFAIK there is only one other person round here who has the 
-> motivation and skills to do the docbook work and he must be 
-> busy at the moment or found other things to do.
 
-Perhaps you're referring to me... It's true that I am busy with the
-Alternative Csound Reference Manual these days. But I will help convert
-ALSA documentation to DocBook/SGML (or Docbook/XML), if asked. I'm
-currently helping Takashi with his HOWTO.
+Thanks for that. If you have the inclination to send in a patch that 
+would be very appreciated. Otherwise it will have to wait for me to get 
+some more time.
 
 
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-=====
--- kwconder at yahoo dot com
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
-__________________________________________________
-Do you Yahoo!?
-Yahoo! Mail Plus - Powerful. Affordable. Sign up now.
-http://mailplus.yahoo.com
+Goldie, 8 Nov, 2002
+The Scotsman
+
 
 
 -------------------------------------------------------
