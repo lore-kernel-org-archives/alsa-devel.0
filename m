@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000704]: low input levels
-Date: Mon, 6 Dec 2004 20:56:24 +0100
-Message-ID: <e5306cb8b529e42bca378a648d4c82d3@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000709]: Recording doesnt work
+Date: Mon, 6 Dec 2004 20:59:36 +0100
+Message-ID: <b1f0422d5eba85b9e89d79c95d1584bc@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A7EC92FA
-	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:56:25 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F8752FA
+	for <alsa-devel@alsa-project.org>; Mon,  6 Dec 2004 20:59:37 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,14 +24,14 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=704> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=709> 
 ======================================================================
-Reported By:                spamatica
+Reported By:                tigermb
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   704
-Category:                   PCI - ice1712
+Issue ID:                   709
+Category:                   PCI - via82xx
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
@@ -39,29 +39,39 @@ Status:                     new
 Distribution:               
 Kernel Version:             
 ======================================================================
-Date Submitted:             12-03-2004 21:46 CET
-Last Modified:              12-06-2004 20:56 CET
+Date Submitted:             12-05-2004 16:33 CET
+Last Modified:              12-06-2004 20:59 CET
 ======================================================================
-Summary:                    low input levels
+Summary:                    Recording doesnt work
 Description: 
-As was noted recently on Linx audio user. It seems atleast the DELTA cards
-(I've got a Delta 44) have too low input level. Others reported that it
-differs when running the same card in windows. Myself I run it exclusively
-in Linux and have found that recording external signals I have to turn the
-volume for the external (pro) equipment, to max to get a reasonably high
-signal.
+Soundcard: Multimedia audio controller: VIA Technologies, Inc.
+VT8233/A/8235/8237 AC97 Audio Controller (rev 60)
+
+The recording doesnt work.
+When trying to record, nuthing happens. No errors. Although gnome-meeting
+got an error and wonders if i have permission to device. But i tried it
+under root and i get the same error. arecord give no error, but just
+doesnt do anything.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-06-04 20:56 
+ tiwai - 12-06-04 20:59 
 ----------------------------------------------------------------------
-Are "IPGA Analog Capture Volume" adjusted properly?
+"Doesn't do anything" means that you get silent data?
+
+If so, it's likely a mixer configuration problem.
+Attach /etc/asound.state.
+
+Hint: don't forget to raise "Capture Volume", turn on "Capture Switch",
+and choose the appropriate "Capture Source".  Then, choose "Input1" for
+"Input Source Select" control.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-03-04 21:46 spamatica      New Issue                                    
-12-06-04 20:56 tiwai          Note Added: 0002734                          
+12-05-04 16:33 tigermb        New Issue                                    
+12-05-04 16:34 tigermb        Issue Monitored: tigermb                     
+12-06-04 20:59 tiwai          Note Added: 0002735                          
 ======================================================================
 
 
