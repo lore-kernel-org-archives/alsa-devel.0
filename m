@@ -1,13 +1,14 @@
-From: Unknown <unknown@unknown.invalid>
-Subject: Banned file: document.pif in mail from you
-Date: Tue,  4 Jan 2005 19:32:06 +0000 (GMT)
-Message-ID: <20050104193204.491ABD004750@mailgateway.advance-internet.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000784]: CMI 9739A PCM does not allow volume control only on/off (when on starts with full volume)
+Date: Tue, 4 Jan 2005 20:34:12 +0100
+Message-ID: <ddebb6337798729288c7a0b6e4c1a41b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: multipart/report; report-type=delivery-status;
-    charset=utf-8;
-    boundary="----------=_1104867126-15599-3"
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-From: MAILER DAEMON <>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EEE90294
+	for <alsa-devel@alsa-project.org>; Tue,  4 Jan 2005 20:34:12 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,61 +18,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format...
 
-------------=_1104867126-15599-3
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: base64
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=784> 
+======================================================================
+Reported By:                ajir
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   784
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             01-04-2005 20:34 CET
+Last Modified:              01-04-2005 20:34 CET
+======================================================================
+Summary:                    CMI 9739A PCM does not allow volume control only
+on/off (when on starts with full volume)
+Description: 
+This issue was studied before but without any effect. Some says that this
+codec has different hadrware and it can not be controled.BUT WINDOWS
+DRIVER CAN CONTROL damn VOLUME. Please can it be fixed?
+======================================================================
 
-QkFOTkVEIEZJTEVOQU1FIEFMRVJUCgpZb3VyIG1lc3NhZ2UgdG86IGZvcmVz
-dHBvbnlAZW50ZXJwcmlzZS5uZXQKd2FzIGJsb2NrZWQgYnkgb3VyIFNwYW0g
-RmlyZXdhbGwuIFRoZSBlbWFpbCB5b3Ugc2VudCB3aXRoIHRoZSBmb2xsb3dp
-bmcgc3ViamVjdCBoYXMgTk9UIEJFRU4gREVMSVZFUkVEOgoKU3ViamVjdDog
-UmU6IFJlOiBUaGFua3MhCgpBbiBhdHRhY2htZW50IGluIHRoYXQgbWFpbCB3
-YXMgb2YgYSBmaWxlIHR5cGUgdGhhdCB0aGUgU3BhbSBGaXJld2FsbCBpcyBz
-ZXQgdG8gYmxvY2suCgoK
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-04-05 20:34 ajir           New Issue                                    
+01-04-05 20:34 ajir           Kernel Version            => 2.6.8.1         
+======================================================================
 
-------------=_1104867126-15599-3
-Content-Type: message/delivery-status
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Delivery error report
 
-Reporting-MTA: dns; mailgateway.advance-internet.com
-Received-From-MTA: smtp; mailgateway.advance-internet.com ([127.0.0.1])
-Arrival-Date: Tue,  4 Jan 2005 19:32:06 +0000 (GMT)
-
-Final-Recipient: rfc822; forestpony@enterprise.net
-Action: failed
-Status: 5.7.1
-Diagnostic-Code: smtp; 550 5.7.1 Message content rejected, id=15599-01-108 - BANNED: document.pif
-Last-Attempt-Date: Tue,  4 Jan 2005 19:32:06 +0000 (GMT)
-
-------------=_1104867126-15599-3
-Content-Type: text/rfc822-headers
-Content-Disposition: inline
-Content-Transfer-Encoding: 7bit
-Content-Description: Undelivered-message headers
-
-Received: from enterprise.net (p508E28F9.dip.t-dialin.net [80.142.40.249])
-	by mailgateway.advance-internet.com (Spam Firewall) with ESMTP id 491ABD004750
-	for <forestpony@enterprise.net>; Tue,  4 Jan 2005 19:32:04 +0000 (GMT)
-From: alsa-devel@lists.sourceforge.net
-To: forestpony@enterprise.net
-Subject: Re: Re: Thanks!
-Date: Tue, 4 Jan 2005 20:32:15 +0100
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="----=_NextPart_000_0000_00001ABF.00004A94"
-X-Priority: 3
-X-MSMail-Priority: Normal
-Message-Id: <20050104193204.491ABD004750@mailgateway.advance-internet.com>
-
-------------=_1104867126-15599-3--
 
 
 -------------------------------------------------------
