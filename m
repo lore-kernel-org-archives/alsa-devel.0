@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000653]: poor microphone recording quality on pcicmi
-Date: Thu, 18 Nov 2004 19:54:48 +0100
-Message-ID: <6a71922c13c1824376eee037013ea249@bugtrack.alsa-project.org>
+Date: Thu, 18 Nov 2004 20:01:14 +0100
+Message-ID: <8855fbbf6c001d6dfdc4100e4bc18118@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 495B4249
-	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 19:54:48 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C013211
+	for <alsa-devel@alsa-project.org>; Thu, 18 Nov 2004 20:01:15 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9-gentoo-r4
 ======================================================================
 Date Submitted:             11-18-2004 10:58 CET
-Last Modified:              11-18-2004 19:54 CET
+Last Modified:              11-18-2004 20:01 CET
 ======================================================================
 Summary:                    poor microphone recording quality on pcicmi
 Description: 
@@ -67,12 +67,6 @@ Under Windows, sound quality is a lot better with the same setup.
 ======================================================================
 
 ----------------------------------------------------------------------
- pbienst - 11-18-04 19:36 
-----------------------------------------------------------------------
-Yes, all 3 of them behave like that. But changing the driver source as I
-did should have done the trick too?
-
-----------------------------------------------------------------------
  tiwai - 11-18-04 19:54 
 ----------------------------------------------------------------------
 No, the last argument is the inverse - you just flipped the meaning of 0
@@ -82,6 +76,14 @@ It seems that all existing mixer switches have no influence on your
 problem at all.  No matter which combination, it's liekly useless.
 
 Sorry, simply lack of hardware information.  I can't do any more.
+
+----------------------------------------------------------------------
+ pbienst - 11-18-04 20:01 
+----------------------------------------------------------------------
+Well, I don't think we have explored all options then, since I haven't been
+able to set the "MICBST", "EMUCB" and "VADMIC3" mixer switches.
+
+Which lines in the driver do I need to change to set these?
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -96,6 +98,7 @@ Date Modified  Username       Field                    Change
 11-18-04 19:33 tiwai          Note Added: 0002461                          
 11-18-04 19:36 pbienst        Note Added: 0002462                          
 11-18-04 19:54 tiwai          Note Added: 0002467                          
+11-18-04 20:01 pbienst        Note Added: 0002468                          
 ======================================================================
 
 
