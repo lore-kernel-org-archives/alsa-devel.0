@@ -1,14 +1,17 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000750]: no sound since 2.6.8.1
-Date: Tue, 28 Dec 2004 02:20:38 +0100
-Message-ID: <d000c08c47fd2ef7017fb00ce1968339@bugtrack.alsa-project.org>
+From: Better than Napster <suggest@indiagospel.net>
+Subject: Downl0ad Clay and Ruben
+Date: Tue, 28 Dec 2004 14:52:36 -0200
+Message-ID: <9E56A9AD.77759@entergy.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7Bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0ECBF269
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 02:20:38 +0100 (MET)
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3F78F269
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 02:22:51 +0100 (MET)
+Received: from adsl-69-209-61-215.dsl.chcgil.ameritech.net (adsl-69-209-61-215.dsl.chcgil.ameritech.net [69.209.61.215])
+	by gate.perex.cz (Perex's E-mail Delivery System) with SMTP id EE0C5400A8
+	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 02:22:41 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,45 +24,59 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
-The following issue has been SUBMITTED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=750> 
-======================================================================
-Reported By:                aquarichy
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   750
-Category:                   PCI - via82xx
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Slackware 10
-Kernel Version:             2.6.9+
-======================================================================
-Date Submitted:             12-28-2004 02:20 CET
-Last Modified:              12-28-2004 02:20 CET
-======================================================================
-Summary:                    no sound since 2.6.8.1
-Description: 
-Sound using a kernel.org 2.6.8.1 kernel with ALSA built-in worked.  When I
-compile  any newer stable kernel, there is no sound.  Compilation executes
-without complaints.  No Sound related options change.  I have even tried
-saying No to all the new options 2.6.9 and .10 provided in fear that one
-of those might be interfering, but nada.  
-======================================================================
+Un limited
+Music and MP 3 songs
+Movies
+Games
+Software
+TV Shows
+Song Lyrics
+Audio Books
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-04 02:20 aquarichy      New Issue                                    
-12-28-04 02:20 aquarichy      Distribution              => Slackware 10    
-12-28-04 02:20 aquarichy      Kernel Version            => 2.6.9+          
-======================================================================
+Download anything you could possibly want 
+in three simple, fast, and easy steps
+START DOWNLOADING NOW
+This service is Safe, Secure and Legal
+
+http://www.notyesterdaysnews.com/xmas.html
+
+If you are a beginner, no need to worry,
+we will show you how to do it from start to finish
+We have made it so easy, you will be downloading anything 
+you could possibly want  
+This Service Comes with
+
+More  Bonuses
+
+DVD Copying Software
+MP3 Burning Software
+Anti-Virus Software
+Game Copying Software
+Pop-Up, Spyware, Adware Killer Software
+
+http://www.notyesterdaysnews.com/xmas.html
+
+Even More Benefits : 
+
+Latest FileSharing Software
+In-Depth Visual Tutorials
+Internet History Cleaner
+Privacy Protection Software
+Access to 90000000 Songs
+Unlimited Technical Support
+Stay Legal  Do not Get Sued
+
+Check out to Join Now and Start Downloading in Minutes
+
+http://www.notyesterdaysnews.com/xmas.html
 
 
+regards
+Cole Spicer
+Promotional Manager
+Internet Download Center
 
 
 -------------------------------------------------------
