@@ -1,8 +1,8 @@
 From: Jeremy Hall <jhall@maoz.com>
 Subject: Re: rme9652: possible deadlock
-Date: Mon, 28 Apr 2003 04:23:12 -0400 (EDT)
+Date: Mon, 28 Apr 2003 04:25:28 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304280823.h3S8NCUh029997@sith.maoz.com>
+Message-ID: <200304280825.h3S8PSi8030008@sith.maoz.com>
 References: <3EA7B654.2090108@libero.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -22,17 +22,11 @@ To: Abramo Bagnara <abramo.bagnara@libero.it>
 Cc: Jaroslav Kysela <perex@suse.cz>, Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Will this fix allow both CPUs to run snd_pcm_period_elapsed() and friends 
-concurrently and then if XRUN is encountered grab the group lock, or will 
-one stream run at a time, in effect only allowing one card to process at a 
-time?
+now I see your fix is in CVS, but I currently compile alsa into the kernel 
+to aid in gdb.  Is it possible to compile alsa-kernel directly into the 
+kernel? Does it have the irqreturn_t stuff in CVS?
 
-Maybe I misunderstand this code, but my understanding is that this moves 
-the pointer along in the ringbuffer.  Since two cards in a pcm_multi can 
-use different areas, they should be able to process() at the same time, 
-until XRUN is encountered, then the "right" thing should happen according 
-to maintaining sample-synch.  My understanding is this can't happen 
-currently with alsa and this is unfortunate.
+Is there some doc I have shamelessly not read that explains this answer?
 
 _J
 
@@ -86,17 +80,6 @@ In the new year, Abramo Bagnara wrote:
 > Opera Unica                          Phone: +39.546.656023
 > Via Emilia Interna, 140
 > 48014 Castel Bolognese (RA) - Italy
-> 
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by:ThinkGeek
-> Welcome to geek heaven.
-> http://thinkgeek.com/sf
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
 > 
 
 
