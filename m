@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000930]: Ego Sys Juli@ does not work at all
-Date: Thu, 24 Feb 2005 21:27:17 +0100
-Message-ID: <b545872e4238f8848f76f8a3f1cdd511@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000933]: ALS4000 chipset dont sounds fine, the sound is too slow and dont play everything.
+Date: Thu, 24 Feb 2005 23:29:47 +0100
+Message-ID: <b1e062c4e0d59f80f6860d88472cc23e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 926B6228
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 21:27:17 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6A14D224
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 23:29:47 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,99 +23,74 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=930> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=933> 
 ======================================================================
-Reported By:                lingis
-Assigned To:                perex
+Reported By:                segnini75
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   930
-Category:                   PCI - ice1724
+Issue ID:                   933
+Category:                   PCI - als4000
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Ubuntu 4.10
-Kernel Version:             2.6.8.1-3-386
+Status:                     new
+Distribution:               Kanotix - Debian/sid
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             02-22-2005 00:32 CET
-Last Modified:              02-24-2005 21:27 CET
+Date Submitted:             02-22-2005 14:08 CET
+Last Modified:              02-24-2005 23:29 CET
 ======================================================================
-Summary:                    Ego Sys Juli@ does not work at all
+Summary:                    ALS4000 chipset dont sounds fine, the sound is too
+slow and dont play everything.
 Description: 
-When trying to load ice1724 driver, nothing happens:
+The modconf info about snd-als4000 retuns:
 
-sudo modprobe snd-ice1724
-dmesg | tail -n 20
-bt878: Bt878 AUDIO function found (0).
-ACPI: PCI interrupt 0000:00:0d.1[A] -> GSI 11 (level, low) -> IRQ 11
-bt878(0): Bt878 (rev 2) at 00:0d.1, irq: 11, latency: 32, memory:
-0xe3000000
-8139cp: 10/100 PCI Ethernet driver v1.2 (Mar 22, 2004)
-8139cp: pci dev 0000:00:0f.0 (id 10ec:8139 rev 10) is not an 8139C+
-compatible
-chip
-8139cp: Try the "8139too" driver instead.
-8139too Fast Ethernet driver 0.9.27
-ACPI: PCI interrupt 0000:00:0f.0[A] -> GSI 11 (level, low) -> IRQ 11
-eth0: RealTek RTL8139 at 0xe400, 00:50:fc:44:75:5d, IRQ 11
-eth0:  Identified 8139 chip type 'RTL-8139C'
-eth0: link up, 100Mbps, full-duplex, lpa 0x41E1
-NET: Registered protocol family 10
-Disabled Privacy Extensions on device c02cc0c0(lo)
-IPv6 over IPv4 tunneling driver
-ACPI: Power Button (FF) [PWRF]
-ACPI: Sleep Button (CM) [SLPB]
-eth0: no IPv6 routers present
-bttv0: timeout: drop=58 irq=7964/193355, risc=16103024, bits: HSYNC OFLOW
-FDSR
-bttv0: reset, reinitialize
-bttv0: PLL: 28636363 => 35468950 . ok
+Jevus@box:~$ modinfo snd-als4000
+filename:      
+/lib/modules/2.6.10-kanotix-8/kernel/sound/pci/snd-als4000.ko
+author:         Bart Hartgers <bart@etpmod.phys.tue.nl>
+description:    Avance Logic ALS4000
+license:        GPL
+vermagic:       2.6.10-kanotix-8 preempt 586 gcc-3.3
+depends:       
+snd-sb-common,gameport,snd-pcm,snd-opl3-lib,snd-mpu401-uart,snd
+alias:          pci:v00004005d00004000sv*sd*bc*sc*i*
+parm:           joystick_port:Joystick port address for ALS4000 soundcard.
+(0 = disabled)
+parm:           enable:Enable ALS4000 soundcard.
+parm:           id:ID string for ALS4000 soundcard.
+parm:           index:Index value for ALS4000 soundcard.
+--------------------------------------------------------------------
+NOTE: This card works fine in windows
 
-cat /proc/asound/cards
---- no soundcards ---
+Plase solve that problems (Note. Is not working on any version of ALSA
+drivers actually, all have same problem.
 
-
-
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-related to          0000908 suport for ESI <a href="mailto:Juli@ -"...
+Thanks!- Jesus Segnini
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 02-22-05 09:26 
+ tiwai - 02-24-05 22:06 
 ----------------------------------------------------------------------
-The driver for Juli@ is work in progress and preliminary version is
-available in CVS only (probably not functional at all).
+It sounds like an interrupt problem.  Can you try to turn off ACPI once?
 
 ----------------------------------------------------------------------
- bennoA - 02-24-05 21:27 
+ segnini75 - 02-24-05 23:29 
 ----------------------------------------------------------------------
-Hi,
-
-i have recording and playback working, using the driver from CVS (checkout
-on Feb-22).
-
-I have two problems now: the process/kernel-thread "snd-ak4114/0" consumes
-about 60% CPU. The other (minor?) problem is that i do not understand the
-mixer-setting.
-
-/Benno
+Turning ACPI off dont works :( another idea? thanks!.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-22-05 00:32 lingis         New Issue                                    
-02-22-05 00:32 lingis         Distribution              => Ubuntu 4.10     
-02-22-05 00:32 lingis         Kernel Version            => 2.6.8.1-3-386   
-02-22-05 00:45 lingis         Issue Monitored: lingis                      
-02-22-05 09:26 perex          Note Added: 0003685                          
-02-22-05 09:26 perex          Status                   new => assigned     
-02-22-05 09:26 perex          Assigned To               => perex           
-02-22-05 09:29 perex          View Status              private => public   
-02-22-05 10:07 perex          Relationship added       related to 0000908  
-02-24-05 21:27 bennoA         Note Added: 0003724                          
+02-22-05 14:08 segnini75      New Issue                                    
+02-22-05 14:08 segnini75      Distribution              => Kanotix - Debian/sid
+02-22-05 14:08 segnini75      Kernel Version            => 2.6.10          
+02-22-05 17:15 segnini75      Note Added: 0003705                          
+02-22-05 17:16 segnini75      Note Edited: 0003705                         
+02-22-05 18:26 segnini75      Issue Monitored: segnini75                    
+02-24-05 22:06 tiwai          Note Added: 0003728                          
+02-24-05 23:29 segnini75      Note Added: 0003731                          
 ======================================================================
 
 
