@@ -1,14 +1,14 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: direct midi event dispatching
-Date: Mon, 24 May 2004 15:24:05 +0200 (METDST)
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: line in not supported Audigy and Audigy2 ?
+Date: Mon, 24 May 2004 14:32:17 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0405241516030.10397-100000@studcom.urz.uni-halle.de>
-References: <200405241504.48676.gilles.degottex@net2000.ch>
+Message-ID: <40B1F961.4080700@superbug.demon.co.uk>
+References: <200405240748.i4O7m3Nj010688@www3.pobox.sk>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=ISO-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200405241504.48676.gilles.degottex@net2000.ch>
+In-Reply-To: <200405240748.i4O7m3Nj010688@www3.pobox.sk>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,32 +17,35 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Gilles =?iso-8859-1?q?D=E9gottex?= <gilles.degottex@net2000.ch>
+To: Peter Zubaj <pzad@pobox.sk>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Gilles D=E9gottex wrote:
-> > > but when I flush the output, I got an error: "Invalid argument"
->
->     snd_seq_ev_set_direct(&ev);
->     ev.type =3D SND_SEQ_EVENT_NOTE;
->     ev.data.note.duration =3D 1000;
+Peter Zubaj wrote:
+> Hi,
+> 
+> If you think Line In on back side of card then:
+> 
+> try to unmute and set volume for
+> Line In
+> Analog Mix (best 100 %)
+> Front (best 100 %)
+> Master (best 100 %)
+> 
+> I am sure that it works on audigy 1.
+> 
+> Peter Zubaj
+> 
+> 
 
-NOTE events must be sent through a queue because they need a timer so
-that the NOTE_OFF event can be scheduled at the appropriate time.
+It needs the "Line In" playback slider turned up.
+It also needs the "Analog Mix" capture slider turned up.
 
-When not using a queue, you have to send the NOTE_ON and NOTE_OFF
-events seperately.
+I was confused by thinking that the "Line in" playback slider had 
+anything to do with recording.
 
->     snd_seq_ev_set_subs(&ev);
-
-I hope some other port is subscribed to this one.  :-)
-
-
-HTH
-Clemens
-
-
+Cheers
+James
 
 
 
