@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000282]: ES1688 driver assumes inappropriate port for OPL3; no way to change
-Date: Mon, 4 Apr 2005 22:23:45 +0200
-Message-ID: <2a033b1a8c22899d7ba26b6548bac165@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000298]: Unable to play S/P-DIF or surround sound
+Date: Mon, 4 Apr 2005 22:29:00 +0200
+Message-ID: <5f9132fbd9c943d26c0c5fa7c219af0c@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4E394211
-	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 22:23:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1265E1CF
+	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 22:29:01 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,71 +22,156 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=282> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=298> 
 ======================================================================
-Reported By:                jessleah
+Reported By:                bhess
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   282
-Category:                   ISA - es1688
+Issue ID:                   298
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   major
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               Debian GNU/Linux 3.0 (Woody) for i386
-Kernel Version:             2.4.25
+Status:                     resolved
+Distribution:               Suse 9.0
+Kernel Version:             2.4.21-144
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
-Date Submitted:             05-19-2004 05:22 CEST
-Last Modified:              04-04-2005 22:23 CEST
+Date Submitted:             05-22-2004 21:14 CEST
+Last Modified:              04-04-2005 22:29 CEST
 ======================================================================
-Summary:                    ES1688 driver assumes inappropriate port for OPL3;
-no way to change
+Summary:                    Unable to play S/P-DIF or surround sound
 Description: 
-On a ThinkPad 560 (which uses an ES1688 chip), the OPL3 should use the port
-range 0x388-0x38b. However, ALSA 1.0.4 for some reason assumes that the
-port you specify for the ES1688 (i.e. 0x220, in my case) is the base port
-of the OPL3 chip, which is just plain wrong.
+I'm trying to use spdif on my VIA EPIA-V board.
+ 
+When I test with "./speaker-test -Dsurround51 -c 6"
+I'm getting the message:
+ALSA lib pcm.c:1851:(snd_pcm_open_conf) 
+Invalid type for PCM surround51 definition (id: surround51, value:
+cards.pcm.surround51)
+Playback open error: Invalid argument
 
-I go:
-modprobe snd-es1688-lib
-modprobe snd-mpu401-uart
-modprobe snd-opl3-lib
-modprobe snd-es1688 port=0x220 irq=7 dma8=1 mpu_port=0x330 mpu_irq=9
 
-And when I cat /proc/ioports | grep -i opl, I get:
+My setup (output from alsamixer):
+Card: VIA 82C686A/B rev40
+Chip: VIA Technologies VIA1612A                    
 
-0220-0221 : OPL2/3 (left)
-0222-0223 : OPL2/3 (right)
+But this chip is built into the south bridge VT8231 of my VIA EPIA-V.
 
-Needless to say, MIDI doesn't work!
 
-The OSS/Free driver works fine with my OPL3, and the same command (cat
-/proc/ioports | grep -i opl) yields:
+The info files look this way:
+/proc/asound/card0/pcm0p/info   /proc/asound/card0/pcm0p/sub0/info        
 
-0388-038b : Yamaha OPL3
+card: 0                         card: 0                                   
 
-MIDI works fine with the OSS/Free driver.
+device: 0                       device: 0                                 
 
-Heeeeeeeeeeeeeeeeeeeeeeeeelp...
+subdevice: 0                    subdevice: 0                              
+
+stream: PLAYBACK                stream: PLAYBACK                          
+
+id: VIA 82C686A/B rev40         id: VIA 82C686A/B rev40                   
+
+name: VIA 82C686A/B rev40       name: VIA 82C686A/B rev40                 
+
+subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0     
+     subname: subdevice https://bugtrack.alsa-project.org/alsa-bug/view.php?id=0
+                    
+
+class: 0                        class: 0                                  
+
+subclass: 0                     subclass: 0                               
+
+subdevices_count: 1             subdevices_count: 1                       
+
+subdevices_avail: 1             subdevices_avail: 1                       
+
+                                                                          
+
+
+It seems that alsa tries to open the definition file cards.VIA686A, which
+is not
+provided by alsa. When I add the line "VIA686A cards.VIA8233A" to
+aliases.conf, 
+the command
+
+./speaker-test -Dsurround51 -c 2 
+
+works fine.
+
+Yet, the next command yields
+
+./speaker-test -Dsurround51 -c 4
+Playback device is surround51
+Stream parameters are 44100Hz, S16_LE, 4 channels
+Sine wave rate is 440.0000Hz
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+How can I fix this?
+
+Cheers
+Beat
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-04-05 22:23 
+ tiwai - 05-27-04 11:47 
 ----------------------------------------------------------------------
-It isn't apparent to me that anything has been done about this.
+could you try 1.0.5?
+
+----------------------------------------------------------------------
+ bhess - 05-28-04 19:51 
+----------------------------------------------------------------------
+It's working with 1.0.5rc1!
+
+So far, I was able to play two channel output
+./speaker-test -Dspdif -c2
+Playback device is spdif
+Stream parameters are 44100Hz, S16_LE, 2 channels
+Sine wave rate is 440.0000Hz
+period_size=1200, buffer_size=4800
+  - Front Left
+  - Front Right
+  - Front Left
+
+
+
+
+When I try 4 channels, I get 
+
+./speaker-test -Dspdif -c4
+Playback device is spdif
+Stream parameters are 44100Hz, S16_LE, 4 channels
+Sine wave rate is 440.0000Hz
+Channels count (4) not available for playbacks: Invalid argument
+Setting of hwparams failed: Invalid argument
+
+
+I suppose this is a limit of my sound chip, isn't it?
+
+Thanks for your help
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-05-19-04 05:22 jessleah       New Issue                                    
-05-19-04 05:22 jessleah       Distribution              => Debian GNU/Linux 3.0
-(Woody) for i386
-05-19-04 05:22 jessleah       Kernel Version            => 2.4.25          
-05-19-04 14:20 jessleah       Issue Monitored: jessleah                    
-04-04-05 22:23 jdthood        Note Added: 0004331                          
+05-22-04 21:14 bhess          New Issue                                    
+05-22-04 21:14 bhess          Distribution              => Suse 9.0        
+05-22-04 21:14 bhess          Kernel Version            => 2.4.21-144      
+05-24-04 15:05 tiwai          Note Added: 0001186                          
+05-24-04 21:50 bhess          Note Added: 0001197                          
+05-25-04 12:43 tiwai          Note Added: 0001203                          
+05-26-04 11:42 bhess          Note Added: 0001246                          
+05-26-04 13:34 tiwai          Note Added: 0001250                          
+05-26-04 19:54 bhess          Note Added: 0001260                          
+05-27-04 11:47 tiwai          Note Added: 0001263                          
+05-28-04 19:51 bhess          Note Added: 0001271                          
+04-04-05 22:29 jdthood        Status                   new => resolved     
+04-04-05 22:29 jdthood        Resolution               open => fixed       
 ======================================================================
 
 
