@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000819]: Patch to make Dummy driver a loopback device
-Date: Thu, 20 Jan 2005 06:37:32 +0100
-Message-ID: <dc6da21004a95f746b249119c8993f9b@bugtrack.alsa-project.org>
+Date: Thu, 20 Jan 2005 08:39:54 +0100
+Message-ID: <8a56dd844b4dd608f67cce5f7dc34c59@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 48D8D22D
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 06:37:32 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9C64B233
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 08:39:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             01-15-2005 02:26 CET
-Last Modified:              01-20-2005 06:37 CET
+Last Modified:              01-20-2005 08:39 CET
 ======================================================================
 Summary:                    Patch to make Dummy driver a loopback device
 Description: 
@@ -50,24 +50,18 @@ patch is against the dummy driver in the 2.6.10 linux kernel.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 17:11 
-----------------------------------------------------------------------
-Thanks for the patch.  First, please provide a bit more detailed
-description of the patch, and signed-off-by line, as described in News
-page.
-
-The internal buffer should be card specific and shouldn't be a static
-array of such a big size.  Use vmalloc() and allocate/free it dynamically
-for each card instance.
-
-But, I think it'd be better to copy directly from the playback buffer to
-the capture buffer without an intermediate buffer.
-
-----------------------------------------------------------------------
  tschneider - 01-20-05 06:37 
 ----------------------------------------------------------------------
 Ah, very good. Thank you for reviewing the patch.  I will submit a new
 patch when I get these changes implemented and tested.
+
+----------------------------------------------------------------------
+ perex - 01-20-05 08:39 
+----------------------------------------------------------------------
+Note that I started really similar work (although it's unfinished in ALSA
+CVS).
+The new module has name snd-aloop.o. So, I suggest to leave the dummy
+driver as simple as possible and create a new aloop module.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -78,6 +72,7 @@ Date Modified  Username       Field                    Change
 01-15-05 02:26 tschneider     Kernel Version            => 2.6.10          
 01-19-05 17:11 tiwai          Note Added: 0003300                          
 01-20-05 06:37 tschneider     Note Added: 0003323                          
+01-20-05 08:39 perex          Note Added: 0003324                          
 ======================================================================
 
 
