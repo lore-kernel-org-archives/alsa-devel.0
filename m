@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000645]: azx driver is a bit broken
-Date: Wed, 8 Dec 2004 19:52:21 +0100
-Message-ID: <6eadb2124f54ac9a70ff1cdfd2963e21@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000666]: Simply no sound ... no line ... no mixer
+Date: Wed, 8 Dec 2004 19:54:09 +0100
+Message-ID: <8659a4e88625f47b2ea563b9a9af80e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8C1C73C4
-	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 19:52:21 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4EDD63C5
+	for <alsa-devel@alsa-project.org>; Wed,  8 Dec 2004 19:54:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,100 +24,84 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=645> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=666> 
 ======================================================================
-Reported By:                russell
+Reported By:                footcow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   645
+Issue ID:                   666
 Category:                   PCI - azx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               Debian/Ubuntu
-Kernel Version:             2.6.8.1
+Distribution:               Debian
+Kernel Version:             2.6.9
 ======================================================================
-Date Submitted:             11-12-2004 16:58 CET
-Last Modified:              12-08-2004 19:52 CET
+Date Submitted:             11-23-2004 01:31 CET
+Last Modified:              12-08-2004 19:54 CET
 ======================================================================
-Summary:                    azx driver is a bit broken
+Summary:                    Simply no sound ... no line ... no mixer
 Description: 
-The azx driver doesn't work well on the hardware which I have. It pretty
-much doesn't work at all in OSS emulation mode. The following patch
-improves its stability on my machine enormously (although it is still not
-100%), and makes OSS emulation work nicely. As a side effect, the code is
-simplified, and to my fairly untrained eyes seems a bit more efficient.
+I have compiled the last release : 1.0.7 stable.
+But I do not have any sound, no line ... no mixer ... :(
 
-There are also a number of fixes in this patch which make the driver work
-more like my understanding of the Intel "High Definition Audio
-Specification Revision 1.0" document, and my limited understanding of the
-ALSA system. These include:
+I have an AsusTek P5GD2 motherboard with lspci -v :
+0000:00:1b.0 0403: Intel Corp. 82801FB/FBM/FR/FW/FRW (ICH6 Family) High
+Definition Audio Controller (rev 03)
+        Subsystem: Asustek Computer, Inc.: Unknown device 813d
+        Flags: bus master, fast devsel, latency 0, IRQ 16
+        Memory at cccf4000 (64-bit, non-prefetchable) [size=16K]
+        Capabilities: [50] Power Management version 2
+        Capabilities: [60] Message Signalled Interrupts: 64bit+ Queue=0/0
+Enable-
+        Capabilities: [70]
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=10 [0091]
 
- - ALSA buffer size now matches the Cyclic Buffer Length (length of entire
-buffer)
- - ALSA period size now matches size of each BDL, the number of BDLs are
-properly set, and the BDLEs are not changed during playback (as suggested
-in the azx spec)
 
-The #define'd STREAM_REST_BIT was renamed to STREAM_RESET_BIT (because
-that's what it is).
+The snd_azx module is well loaded :
+lsmod : 
+snd_azx                30920  1
+snd_pcm                95112  1 snd_azx
+snd_timer              25476  1 snd_pcm
+snd                    54500  5 snd_azx,snd_pcm,snd_timer
+snd_page_alloc         10120  1 snd_pcm
 
-This is a patch to azx.c only, and is against the current CVS version
-(1.11).
+If I run alsamixer I get this :
+$ alsamixer
+No mixer elems found
 
-I have not done *ANY* work on the capture side of things -- most of my
-diffs for output can probably be translated almost directly for input.
+If I run alsamixergui, I get 3 columns:
+Line is emplty and can't change
+Same for Mic
+I can only move values for a third column called Capt.
 
-There are some other issues which should be addressed in this driver. Off
-the top of my head:
- - Will pci_set_dma_mask() be needed if the card is not capable of 64 bit
-addressing? Perhaps.
- - The mixer code in 1.0.7rc2 causes a crash on my system, I have pointed
-this out to Clemens Ladisch in email. I will work on this problem soon if
-nobody else has the time. Commenting out the mixer initialisation code is
-working well for me at the moment :)
- - The driver still does not work 100%. When my system is very idle, I get
-repeated sections of sound. I used to get a LOT of static, but with my
-changes it now just sounds like ALSA is never updating the buffer. I'm
-completely baffled by this, any suggestions for me to try, or hints on
-debugging this sort of behaviour would be appreciated!
-
-And one issue which I am unclear on, what does the fifo_size field in the
-snd_pcm_hardware_t struct actually define?
 ======================================================================
 
 ----------------------------------------------------------------------
- pforai - 12-05-04 23:46 
+ footcow - 11-23-04 21:49 
 ----------------------------------------------------------------------
-anyone got news?
+I can give you more details .. just tell me what kind of details you need
+...
+Or if you want me to test specific things ... just ask.
 
 ----------------------------------------------------------------------
- tiwai - 12-08-04 19:52 
+ tiwai - 12-08-04 19:54 
 ----------------------------------------------------------------------
-The new driver is now on CVS.  Give it a try.
-(But, wait for a while until sourceforge's anon cvs tree is sync'ed.)
+Try the ALSA CVS version.  The driver is updated.
+
+If you still have no mixers, please show the contents of
+/proc/asound/card0/codec* file(s).
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-12-04 16:58 russell        New Issue                                    
-11-12-04 16:58 russell        File Added: azx.c.diff                       
-11-12-04 16:58 russell        Distribution              => Debian/Ubuntu   
-11-12-04 16:58 russell        Kernel Version            => 2.6.8.1         
-11-12-04 17:30 russell        Note Added: 0002399                          
-11-15-04 22:28 Grazy          Issue Monitored: Grazy                       
-11-23-04 21:53 footcow        Note Added: 0002531                          
-11-27-04 16:04 pforai         Note Added: 0002615                          
-11-27-04 16:06 pforai         Note Edited: 0002615                         
-11-27-04 19:32 tiwai          Note Added: 0002617                          
-11-28-04 12:39 pforai         Note Added: 0002622                          
-11-28-04 12:48 pforai         Note Edited: 0002622                         
-11-28-04 12:49 pforai         Issue Monitored: pforai                      
-12-02-04 22:24 swarren        Issue Monitored: swarren                     
-12-05-04 23:46 pforai         Note Added: 0002724                          
-12-08-04 19:52 tiwai          Note Added: 0002790                          
+11-23-04 01:31 footcow        New Issue                                    
+11-23-04 01:31 footcow        Distribution              => Debian          
+11-23-04 01:31 footcow        Kernel Version            => 2.6.9           
+11-23-04 21:49 footcow        Note Added: 0002530                          
+12-08-04 19:54 tiwai          Note Added: 0002791                          
 ======================================================================
 
 
