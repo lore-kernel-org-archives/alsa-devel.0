@@ -1,13 +1,14 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: ALSA docs
-Date: Fri, 26 Jul 2002 02:51:16 +0900
+From: Mark Rages <markrages@mlug.missouri.edu>
+Subject: Re: DTMF recognition
+Date: Thu, 25 Jul 2002 14:26:20 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D403A94.2070308@boosthardware.com>
-References: <E17XlTw-00041v-00@usw-sf-list1.sourceforge.net> <3D402F7D.3010405@boosthardware.com>
+Message-ID: <20020725192620.GA16882@mlug.missouri.edu>
+References: <200207251412.59730.do1ypv@linux> <E17Xjod-0005Qf-00@usw-sf-list1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <E17Xjod-0005Qf-00@usw-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +17,37 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-Cc: alsa-devel@lists.sourceforge.net
+To: Paul Davis <pbd@op.net>
+Cc: Philipp Vollmer <vollmer.philipp@t-online.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I'm looking into ways to automate the modules options component file for 
-  the docs.
+On Thu, Jul 25, 2002 at 10:45:27AM -0400, Paul Davis wrote:
+> >Hello to all,
+> >
+> >who has already done DTMF recognition with ALSA ( OSS )?
+> >I searched for examples in google, but I have found that
+> >only in TODO lists ;-(.
+> >
+> >Is this so difficult or why doesn't exist anything about that?
+> 
+> its a relatively trivial FFT problem. use FFTW to analyse the signal,
+> then look for two predominant frequencies, and check their values
+> against a table.
+> 
 
-At the moment I am considering using perl or mysql. Does anyone know 
-which is easier to setup to do the following.
+This is hardly an ALSA problem... linux-audio-devel maybe?
 
-Parse the INSTALL file for a module name.
-Return the info for that module.
+I have some Matlab/Octave code to do this. I wrote it for a DSP class.
+I used the Goertzel algorithm. I could actually get pretty good rejection 
+of false activation this way.
 
-Then either
+Email me if you want the code.
 
-Write the module info to a temp file which is inserted into the template
-
-  or
-
-insert the module info into the template.
-
-The problem with mysql is that I would need access to the database. The 
-good thing is that it wouldn't have to get the info everytime a webpage 
-was accessed only when the info changed. (I think)
+Regards,
+Mark Rages
+markrages@mlug.missouri.edu
 
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
 
 
 
