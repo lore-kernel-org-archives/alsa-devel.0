@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Mon, 14 Feb 2005 19:40:18 +0100
-Message-ID: <724db23af6ed4a235ef5abf2c1784250@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000861]: Inserting module returns no errors, but /proc/asound/cards is still empty
+Date: Mon, 14 Feb 2005 19:41:35 +0100
+Message-ID: <c130f498006f101d73a4c82687801943@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E1B6B249
-	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:40:18 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0E772248
+	for <alsa-devel@alsa-project.org>; Mon, 14 Feb 2005 19:41:36 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,90 +21,71 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been CLOSED
+The following issue has been RESOLVED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=432> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=861> 
 ======================================================================
-Reported By:                Cyrille
-Assigned To:                sashak
+Reported By:                olsonle
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   432
-Category:                   PCI - atiixp-modem
+Issue ID:                   861
+Category:                   ISA - cs4236
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     closed
-Distribution:               Slackware 10
-Kernel Version:             2.4.24
+Status:                     resolved
+Distribution:               Gentoo
+Kernel Version:             2.6.10
 Resolution:                 fixed
 Fixed in Version:           
 ======================================================================
-Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              02-14-2005 19:40 CET
+Date Submitted:             01-30-2005 00:44 CET
+Last Modified:              02-14-2005 19:41 CET
 ======================================================================
-Summary:                    Impossible de se connecter : NODIALTONE
+Summary:                    Inserting module returns no errors, but
+/proc/asound/cards is still empty
 Description: 
-I've got a TOSHIBA SATELITTE A30 222 laptop
-Sound card and modem are based upon ATI IXP
-But I'm not able to run modem in spite of the differents bug-report on
-ALSA web site
-(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
--
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
- -
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
-) and on Unixtrix.com (http://www.unixtrix.com/)
+Inserting snd-cs4236 module appears to be successful.  In fact, lsmod shows
+that the modules have indeed been loaded.  However, /proc/asound/cards
+still reads "--- no soundcards ---".  Checking dmesg, as well as
+/var/log/kernel/current, shows the following error messages:
 
-Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
--, I'm always in the same situation : compilation is OK, modem driver OK
-but I'm not able to connect : NODIALTONE
-======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000422 snd-atiixp-modem driver: No CARRIER/DIA...
+[kernel] kobject_register failed for snd_page_alloc (-17)
+[kernel] kobject_register failed for snd (-17)
+[kernel] kobject_register failed for snd_timer (-17)
+[kernel] kobject_register failed for snd_pcm (-17)
+[kernel] kobject_register failed for snd_rawmidi (-17)
+[kernel] kobject_register failed for snd_cs4236 (-17)
+
+Running amixer of course fails as well, with a "no such device" error.
+
+Kernel .config file is attached.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 08-28-04 22:37 
+ olsonle - 02-14-05 19:40 
 ----------------------------------------------------------------------
-Also run ATX3 command before ATDT.
+Updating to a later kernel build (2.6.10-gentoo-r6) seems to make the
+problem go away.  Works for me.
 
 ----------------------------------------------------------------------
- sashak - 01-14-05 22:12 
+ tiwai - 02-14-05 19:41 
 ----------------------------------------------------------------------
-Solved as reported in bug 816
-(https://bugtrack.alsa-project.org/alsa-bug/view.php?id=816)
+Moved to FIXED.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-04 19:02 Cyrille        New Issue                                    
-08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
-08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
-08-08-04 19:02 Cyrille        Issue Monitored: Cyrille                     
-08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
-08-25-04 19:11 sashak         Note Added: 0001624                          
-08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
-08-26-04 01:18 netstar        Note Added: 0001630                          
-08-26-04 18:54 netstar        Note Added: 0001634                          
-08-26-04 21:46 Cyrille        Note Added: 0001636                          
-08-26-04 21:47 Cyrille        Note Added: 0001637                          
-08-27-04 15:41 Cyrille        Note Added: 0001644                          
-08-27-04 19:33 tiwai          Assigned To              tiwai => sashak     
-08-28-04 04:24 netstar        Note Added: 0001660                          
-08-28-04 04:33 netstar        File Added: slmodemd.tar.gz                    
-08-28-04 04:40 netstar        File Added: slmodemd-fixed.tar.gz                 
-  
-08-28-04 13:49 Cyrille        Note Added: 0001661                          
-08-28-04 19:49 netstar        Note Added: 0001662                          
-08-28-04 22:37 sashak         Note Added: 0001663                          
-08-29-04 12:10 sashak         Relationship added       has duplicate 0000422
-01-14-05 22:12 sashak         Note Added: 0003210                          
-01-14-05 22:17 sashak         Status                   assigned => resolved
-01-14-05 22:17 sashak         Resolution               open => fixed       
-02-14-05 19:40 tiwai          Status                   resolved => closed  
+01-30-05 00:44 olsonle        New Issue                                    
+01-30-05 00:44 olsonle        File Added: .config                          
+01-30-05 00:44 olsonle        Distribution              => Gentoo          
+01-30-05 00:44 olsonle        Kernel Version            => 2.6.10          
+02-14-05 19:40 olsonle        Note Added: 0003603                          
+02-14-05 19:41 tiwai          Status                   new => resolved     
+02-14-05 19:41 tiwai          Resolution               open => fixed       
+02-14-05 19:41 tiwai          Assigned To               => tiwai           
+02-14-05 19:41 tiwai          Note Added: 0003604                          
 ======================================================================
 
 
