@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000635]: Unknown symbol snd_verbode_printk, MC'97 0 converters and GPIO not ready (0x1)
-Date: Tue, 9 Nov 2004 20:12:39 +0100
-Message-ID: <9a5ec8a6c54e2d5f49c8f755cc9878c4@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000626]: Oops on cat /dev/urandom > /dev/dsp
+Date: Tue, 9 Nov 2004 20:14:00 +0100
+Message-ID: <99e66a90b653598fe65c59e0bc9f2db8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 68B26236
-	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 20:12:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2EC8C2B4
+	for <alsa-devel@alsa-project.org>; Tue,  9 Nov 2004 20:14:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,73 +24,75 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=635> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=626> 
 ======================================================================
-Reported By:                betak
-Assigned To:                
+Reported By:                Luke-Jr
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   635
-Category:                   PCI - via82xx
+Issue ID:                   626
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   minor
+Severity:                   crash
 Priority:                   normal
-Status:                     new
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             11-07-2004 21:41 CET
-Last Modified:              11-09-2004 20:12 CET
+Date Submitted:             11-03-2004 15:14 CET
+Last Modified:              11-09-2004 20:14 CET
 ======================================================================
-Summary:                    Unknown symbol snd_verbode_printk, MC'97 0
-converters and GPIO not ready (0x1)
+Summary:                    Oops on cat /dev/urandom > /dev/dsp
 Description: 
-I tried to install kernel-2.6.9 with alsa-driver-1.0.7rc2. I use Fedora
-Core 2  on my Fujitsu - Siemens Lifebook C1020 ( technical dokumentation -
-see http://212.52.234.17/index.cfm?fuseaction=dspcontent&lid=11&page=2 )
-When I try to load module snd_via82xx first , I am not able to load second
-modul - snd_via82xx. I recieve following message "Unknown symbol
-snd_verbode_printk" and modul is not loded.
-But when I tried to load sdn_via82xx_modem  first, then I recieve
-following message "MC'97 0 converters and GPIO not ready (0x1)".
-Snd_via82xx_modem is loaded , but I am not able to setup them.
-Any useful information from my system are attached.
-Can you help me to setup this modem driver  ? How can I create /dev/modem
-... ?
+Oops: kernel access of bad area, sig: 11
+[https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1]
+NIP: D253BD20 LR: D253C634 SP: CE547DB0 REGS: ce547d00 TRAP: 0300    Not
+tainted
+MSR: 00009032 EE: 1 PR: 0 FP: 0 ME: 1 IR/DR: 11
+DAR: D254203C, DSISR: 40000000
+TASK = c07c77d0[7282] 'cat' THREAD: ce546000Last syscall: 4
+GPR00: 000007FC CE547DB0 C07C77D0 CF7B7B40 CFC38980 C063C8E0 00000200
+00000B03
+GPR08: 00000001 D2541840 000007FC D2541880 CF7B7B24 1001C140 00000000
+00000000
+GPR16: 00000001 CFC38980 C063C8E0 00000000 00000000 10015080 00000001
+00000000
+GPR24: 00000000 CFC400A0 CFC38980 D253BCD8 CFC38980 CF7B7BB0 CF7B7B40
+00000B03
+NIP [d253bd20] resample_expand+0x48/0x3a8 [snd_pcm_oss]
+LR [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+Call trace:
+ [d253c634] rate_transfer+0x7c/0x98 [snd_pcm_oss]
+ [d2539020] snd_pcm_plug_write_transfer+0x1cc/0x2a0 [snd_pcm_oss]
+ [d2534518] snd_pcm_oss_write2+0xb4/0x12c [snd_pcm_oss]
+ [d2536c94] snd_pcm_oss_write+0x220/0x26c [snd_pcm_oss]
+ [c0058320] vfs_write+0x114/0x13c
+ [c0058424] sys_write+0x4c/0x90
+ [c00063a0] ret_from_syscall+0x0/0x44
 
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-has duplicate       0000634 Unknown symbol snd_verbode_printk, MC'9...
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-09-04 18:37 
+ tiwai - 11-09-04 19:41 
 ----------------------------------------------------------------------
-The unknown symbol is weird.  How did you install the ALSA system?
+Could you try to comiple with the frame pointer?
+It's just to be sure, since the similar bug was fixed (avoided) by
+compiling with the frame pointer....
 
 ----------------------------------------------------------------------
- betak - 11-09-04 20:12 
+ Luke-Jr - 11-09-04 20:14 
 ----------------------------------------------------------------------
-cd /usr/src
-tar xvjf alsa-driver-1.0.7rc2.tar.bz2
-./configure --with-kernel=/mnt/hda14/usr.src.hda17/linux-2.6.9
-make
-make install
-./snddevices
-
-less /proc/config.gz attached
+Not sure how to do that. I'd rather not do anything outside of the normal
+.config stuff, if possible.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-11-07-04 21:41 betak          New Issue                                    
-11-07-04 21:41 betak          File Added: alsa.txt                         
-11-07-04 21:41 betak          Distribution              => Fedora Core 2   
-11-07-04 21:41 betak          Kernel Version            => 2.6.9           
-11-09-04 18:28 tiwai          Relationship added       has duplicate 0000634
-11-09-04 18:37 tiwai          Note Added: 0002331                          
-11-09-04 20:12 betak          Note Added: 0002350                          
+11-03-04 15:14 Luke-Jr        New Issue                                    
+11-09-04 18:51 tiwai          Note Added: 0002334                          
+11-09-04 19:22 Luke-Jr        Note Added: 0002345                          
+11-09-04 19:41 tiwai          Note Added: 0002349                          
+11-09-04 20:14 Luke-Jr        Note Added: 0002351                          
 ======================================================================
 
 
