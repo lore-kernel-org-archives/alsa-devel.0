@@ -1,17 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Quattro MIDI
-Date: Wed, 23 Oct 2002 09:37:31 +0200 (METDST)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: alsa-lib-0.9.0rc4
+Date: Wed, 23 Oct 2002 09:42:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0210230913550.5856-100000@studcom.urz.uni-halle.de>
-References: <s5hbs5m30yi.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.33.0210230941280.5772-100000@pnote.perex-int.cz>
+References: <3DB5D296.4020006@t-online.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mailgate.uni-halle.de (mlucom8.urz.Uni-Halle.DE [141.48.10.118])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA23719
-	for <alsa-devel@alsa-project.org>; Wed, 23 Oct 2002 09:37:34 +0200
-In-reply-to: <s5hbs5m30yi.wl@alsa2.suse.de>
+In-Reply-To: <3DB5D296.4020006@t-online.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,81 +16,48 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Patrick Shirkey <pshirkey@boosthardware.com>, ALSA development <alsa-devel@alsa-project.org>
+To: Wolfgang Teichmann <wal_teichmann@t-online.de>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Clemens Ladisch wrote:
-> > It seems the USB subsystem only loads the first id_table entry it finds
-> > for each interface. As a quick fix, remove the Quattro entry from
-> > usbquirks.h, but I'm going to write a patch to use both pcm and MIDI.
->
-> ok, i'll remove it.
+On Wed, 23 Oct 2002, Wolfgang Teichmann wrote:
 
-The Quattro id_table entry matches both PCM and MIDI interfaces because I
-removed the interface class from most entries nine days ago. I did this
-because my Roland SC-8820 didn't hotplug because the kernel didn't pass
-the interface class to the hotplug scripts because the device class isn't
-zero. However, devices with different interfaces do have device class zero
-(well, I hope they do :), so using the interface class for matching
-shouldn't prevent hotplugging for these devices.
+> Hallo,
+> 
+> I have problems to compile alsa-lib-0.9.0rc4 (RedHat 8.0)
+> 
+> 
+> make[2]: Wechsel in das Verzeichnis Verzeichnis 
+> /mnt/archiv/AAA/SOUND/ALSA/stable/alsa-lib-0.9.0rc4/src
+> /bin/sh ../libtool --mode=link gcc  -g -O2 -Wl,--version-script=Versions 
+> -o libasound.la -rpath /usr/lib -version-info 2:0:0 conf.lo confmisc.lo 
+> input.lo output.lo async.lo error.lo dlmisc.lo control/libcontrol.la 
+> mixer/libmixer.la pcm/libpcm.la                       
+> rawmidi/librawmidi.la timer/libtimer.la               hwdep/libhwdep.la 
+> seq/libseq.la instr/libinstr.la               compat/libcompat.la -lm 
+> -ldl -lpthread              
+> rm -fr .libs/libasound.la .libs/libasound.* .libs/libasound.*
+> gcc -shared  conf.lo confmisc.lo input.lo output.lo async.lo error.lo 
+> dlmisc.lo -Wl,--whole-archive control/.libs/libcontrol.al 
+> mixer/.libs/libmixer.al pcm/.libs/libpcm.al rawmidi/.libs/librawmidi.al 
+> timer/.libs/libtimer.al hwdep/.libs/libhwdep.al seq/.libs/libseq.al 
+> instr/.libs/libinstr.al compat/.libs/libcompat.al 
+> -Wl,--no-whole-archive  -lm -ldl -lpthread -lc  -Wl,-soname 
+> -Wl,libasound.so.2 -o .libs/libasound.so.2.0.0
+> /usr/bin/ld: .libs/libasound.so.2.0.0: undefined versioned symbol name 
+> snd_pcm_hw_params_get_rate_min@ALSA_0.9.0rc4
 
-This patch adds interface class matching for some devices with both PCM
-and MIDI interfaces.
+Seems like that something is broken, but we need to figure what. Anyway, 
+you can build library with './configure --with-versioned=no'. It should 
+work for all binutils, but it's not a very nice solution.
 
+						Jaroslav
 
-Regards,
-Clemens
-
-
-Index: usbquirks.h
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/usb/usbquirks.h,v
-retrieving revision 1.4
-diff -u -r1.4 usbquirks.h
---- usbquirks.h	22 Oct 2002 16:17:55 -0000	1.4
-+++ usbquirks.h	23 Oct 2002 07:11:51 -0000
-@@ -72,7 +72,7 @@
- 	}
- },
- {
--	USB_DEVICE(0x0499, 0x1004),
-+	USB_DEVICE_VENDOR_SPEC(0x0499, 0x1004),
- 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
- 		.vendor_name = "Yamaha",
- 		.product_name = "UW500",
-@@ -126,7 +126,7 @@
- 	}
- },
- {
--	USB_DEVICE(0x0499, 0x100a),
-+	USB_DEVICE_VENDOR_SPEC(0x0499, 0x100a),
- 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
- 		.vendor_name = "Yamaha",
- 		.product_name = "EOS BX",
-@@ -464,9 +464,8 @@
- 		.data = (void*) 9
- 	}
- },
--#if 0 // FIXME
- {
--	USB_DEVICE(0x0763, 0x2001),
-+	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2001),
- 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
- 		.vendor_name = "M-Audio",
- 		.product_name = "Quattro",
-@@ -475,9 +474,8 @@
- 		.data = (void*) 1
- 	}
- },
--#endif // FIXME
- {
--	USB_DEVICE(0x0763, 0x2003),
-+	USB_DEVICE_VENDOR_SPEC(0x0763, 0x2003),
- 	.driver_info = (unsigned long) & (const snd_usb_audio_quirk_t) {
- 		.vendor_name = "M-Audio",
- 		.product_name = "AudioPhile",
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
