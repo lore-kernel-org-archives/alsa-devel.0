@@ -1,10 +1,10 @@
-From: "Prakash K. Cheemplavam" <PrakashKC@gmx.de>
-Subject: quake3 and alsa trouble: resampler probably doesn't work properly?
-Date: Sun, 04 Jan 2004 19:06:33 +0100
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Unique card identifier ?
+Date: Sun, 4 Jan 2004 19:46:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FF85629.5070507@gmx.de>
+Message-ID: <20040104194636.27178be0.pochini@shiny.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -15,62 +15,16 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
 
-I am using nforce2 with intel8x0 compiled into 2.6.1-rc1-mm1 based kernel.
+I have to save the settings of the mixer and I need a unique name for each
+card. Does snd_ctl_card_info_get_id() return different ids if there are two
+identical cards ?
 
-if you just start quake3 then you will have no sound. If you apply the 
-famous cat "bla direct" > /bla/pcm/bla (and the other disable for 
-capture), then sound reappears. Ok. But as soon as I load a map (except 
-the very first one) quake will "soft freeze" ie you will hear a portion 
-of sound getting repeated and quake3 as such seems to be frozen. But you 
-can simple kill it and the rest of the system is not affected. I then 
-compiled debug into alsa and got this assert error in the "soft freeze":
-
-ALSA sound/core/pcm_lib.c:61: BUG? (runtime->silence_filled <= 
-runtime->buffer_size) (called from c030c7ad)
-
-(I got this error with alsa0.9.8, which can be provoked if you set 
-soundspeed to something high in the quake config, setting it to 0 quake 
-works with alsa 0.9.8, but not with latest alsa)
-
-I treid setting the other alsa-oss options (read in the alsa 
-Documentation about alsa-oss) , as well, but didn't help. I noticed that 
-the "whole-frag" option didn't appear, even if I cat it into the proc 
-setting. might that be the problem? I looked into the source and this 
-option isn't there, so docs are not up to date.
-
-
-
-So, I have an idea, what is wrong with alsa1.x. When using alsa 0.9.8:
-
-------- sound initialization -------
-------------------------------------
------ Sound Info -----
-sound system is muted
-1 stereo
-32768 samples
-16 samplebits
-1 submission_chunk
-22050 speed
-0x46a0c000 dma buffer
-No background file.
-
-
-and quake3 works. Whereas with alsa1.x speed is set to 48000, no matter 
-what I set in the config file. Furthermore *if* I set sndspeed to 48000 
-then quake3 hangs also with alsa 0.9.8.
-
-So my conclusion: There is something wrong with alsa resampler. This 
-also can be seen in other instances and reports users have filed in. I 
-hope this gets fixed soon.
-
-Thanx,
-
-Prakash
+--
+Giuliano.
 
 
 -------------------------------------------------------
