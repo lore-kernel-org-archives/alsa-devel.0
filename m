@@ -1,14 +1,14 @@
-From: zeb@zebulon.org.uk
-Subject: Re: Terratec Aureon Sky/Space
-Date: Sat, 24 May 2003 08:36:58 GMT
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: Audigy 2 support - update
+Date: Sat, 24 May 2003 14:13:01 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030524083658.25011.qmail@carbon.larknet.co.uk>
-References: <3ECE134E.50005@backendmedia.com>
+Message-ID: <3ECF6FDD.3090107@superbug.demon.co.uk>
+References: <20030523051240.GA10831@www.angiotech.com>	 <1053675028.18540.70.camel@rivendell.home.local>	 <20030524004334.GA15947@www.angiotech.com> <1053747456.6906.1.camel@rivendell.home.local>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3ECE134E.50005@backendmedia.com> 
+In-Reply-To: <1053747456.6906.1.camel@rivendell.home.local>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,24 +20,35 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Florian Zwoch writes:
-
-> to Takashi:
-> some stupid used our mailserver for spamming which lead to heavily 
-> blocking of my emails. well, i hope that was the reason you didnt respond 
-> to my email anymore =) 
+Florin Andrei wrote:
+> On Fri, 2003-05-23 at 17:43, Stephen Hassard wrote:
 > 
+>>On Fri, May 23, 2003 at 12:30:28AM -0700, Florin Andrei wrote:
+>>
+>>>On Thu, 2003-05-22 at 22:12, Stephen Hassard wrote:
+>>>How about MIDI output?
+>>
+>>MIDI output seems to work fine too.
+> 
+> 
+> Thank you Stephen!
+> 
+> And thanks to the ALSA developers. Now i'll go ahead and buy an Audigy2.
+> Yeah, it's going to be a Platinum, yeah, maybe a few gizmos on the front
+> panel won't work (we'll see), but as long as there is at least one pair
+> of MIDI in/out that works, i'm happy.
+> 
+> Keep up the good work!
+> 
+I have heard reports that the SPDIF passthru does not work, so you will 
+not be able to use external AC3 and DTS decoders.
 
-Hi Florian
-Actually I obtained these information directly from Terratec : they sent me 
-the PIN numbers and corrections. It has to be noticed when companies are 
-very keen to assist the Open Source community and deliver their specs. I 
-posted them on the list, check the archives, or send me a mail if you want 
-them too.
-Anyway, thanks for the information. 
+Can anyone verify this?
 
 Cheers
-Eric
+James
+
+
 
 
 -------------------------------------------------------
