@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000548]: Format not supported by Webcam
-Date: Tue, 28 Sep 2004 16:26:27 +0200 (CEST)
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Tue, 28 Sep 2004 10:57:26 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928142627.67C5339006@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200409281457.i8SEvQNX023126@localhost.localdomain>
+References: <4159659B.2020702@pg.gda.pl>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CBBD230A
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 16:26:27 +0200 (MEST)
+In-reply-to: Your message of "Tue, 28 Sep 2004 15:22:35 +0200."
+             <4159659B.2020702@pg.gda.pl>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,210 +15,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: =?UTF-8?B?QWRhbSBUbGHFgmth?= <atlka@pg.gda.pl>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+>current ALSA could not meet my requirements because of 
+>swapping/scheduling effects which makes distorted sound in normal non RT 
+>apps. Doing just a few more calls doesn't help in this case ;-[.
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000548
-======================================================================
-Reported By:                djtm
-Assigned To:                Clemens Ladisch
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     548
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   trivial
-Priority:                   normal
-Status:                     assigned
-Distribution:               Debian
-Kernel Version:             2.6.8.1-ck6
-======================================================================
-Date Submitted:             09-28-2004 15:57 CEST
-Last Modified:              09-28-2004 16:26 CEST
-======================================================================
-Summary:                    Format not supported by Webcam
-Description: 
-1 [webcam         ]: USB-Audio - USB Device 0x46d:0x8b4
-                     USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full
-speed
+oh c'mon. thats not ALSA. the *kernel* can't meet your
+requirements. ALSA has nothing to do with it. OSS apps and drivers
+can't change the way the kernel schedules tasks. the same broken
+device drivers will coexist with any kernel-side API that you
+propose. you're mistaking where these issues exist.
 
-Only supports: 16_le, 44100, mono.
-======================================================================
+>> you'd rather move the cost so that its in the
+>> kernel or a library rather than be in your code. that's the best i can
+>> understand so far.
+>Yes - that's the point. Common operations like format changeing, 
+>resampling, remixing and additional effects should be done
+>in one place not in every app by itself.
 
-----------------------------------------------------------------------
- Clemens Ladisch - 09-28-2004 16:13 CEST 
-----------------------------------------------------------------------
-Please show the contents of /proc/asound/card1/stream0.
+  ***   -lasound  ****
 
-edited on: 09-28-04 16:13
+>I want to have possibility of doing cat file.wav > /dev/dsp
+>and play it with 5.1 or 2 speakers or with headphones with special 
 
-----------------------------------------------------------------------
- djtm - 09-28-2004 16:24 CEST 
-----------------------------------------------------------------------
-USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full speed : USB Audio
+and you want this to work with no clicks or pops? and it will, i'm
+guessing, because you think that /dev/dsp is somehow going to
+magically know that it should use the maximum size buffer when used
+with no parameters?
 
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 2
-    URBs = 5 [ 4 4 4 4 4 ]
-    Packet Size = 46
-    Momentary freq = 22050 Hz
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 44100
-  Interface 2
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 22050
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 11025
-  Interface 2
-    Altset 4
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 8000
+>stereo  effects applied just by one click or keypress on special mixer 
+>app on the fly without restarting anything and fiddling with config 
 
-These do work.
-Though with:
-"(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,02 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 1,87 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long."
-(ecasound)
+special mixer app eh? for which audio interface? who wrote it? does it
+work with my foobar GH8782 audio chipset?
 
-48000, 32000 are not rejected, but played faster/slower than 44100.
+>files and program execution arguments.
+>Current ALSA design is not user friendly and rather not meets these end 
+>user requirements. May be it should be only for audio profs?
 
-----------------------------------------------------------------------
- djtm - 09-28-2004 16:26 CEST 
-----------------------------------------------------------------------
-(now with 48000khz)
-ecasound -f 16,1,48000 -i:alsa,hw:1,0 -o:alsa,default -D
+ALSA is not particularly friendly for audio profs. its not
+particularly friendly to *anyone*. but that is a completely different
+issue than the design of the API.
 
-USB Device 0x46d:0x8b4 at usb-0000:00:02.1-2, full speed : USB Audio
-
-Capture:
-  Status: Running
-    Interface = 2
-    Altset = 1
-    URBs = 5 [ 4 4 4 4 4 ]
-    Packet Size = 90
-    Momentary freq = 44100 Hz
-  Interface 2
-    Altset 1
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 44100
-  Interface 2
-    Altset 2
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 22050
-  Interface 2
-    Altset 3
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 11025
-  Interface 2
-    Altset 4
-    Format: S16_LE
-    Channels: 1
-    Endpoint: 4 IN (NONE)
-    Rates: 8000
-
-
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 8,96 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 9,11 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 30,73 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 11,68 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 1,41 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 10,66 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 13,59 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 1,17 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 6,06 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,49 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 7,76 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 1,00 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 12,17 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 28,51 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 13,82 ms long.
-(audioio-alsa3) warning! playback underrun - samples lost!  Break was at
-least 0,01 ms long.
-
-Ecasound bug?
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-09-28-04 15:57 djtm           New Bug                                      
-09-28-04 15:57 djtm           Distribution              => Debian          
-09-28-04 15:57 djtm           Kernel Version            => 2.6.8.1-ck6     
-09-28-04 16:13 Clemens LadischBugnote Added: 0001950                       
-09-28-04 16:13 Clemens LadischBugnote Edited: 0001950                      
-09-28-04 16:24 djtm           Bugnote Added: 0001952                       
-09-28-04 16:26 djtm           Bugnote Added: 0001953                       
-======================================================================
+--p
 
 
 -------------------------------------------------------
