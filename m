@@ -1,13 +1,13 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
+From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: current buglets
-Date: Thu, 15 Aug 2002 23:39:27 +0900
+Date: Fri, 16 Aug 2002 09:28:36 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3D5BBD1F.6050906@boosthardware.com>
-References: <s5hbs84tesw.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.33.0208160928170.728-100000@pnote.perex-int.cz>
+References: <3D5C737C.5060207@boosthardware.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <3D5C737C.5060207@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,88 +16,46 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Patrick Shirkey <pshirkey@boosthardware.com>
+Cc: Takashi Iwai <tiwai@suse.de>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> Hi,
-> 
-> how about to gather the bugs of the current driver and list them as
-> known bugs on the web?
-> it would be nice to see such things on alsa or wiki's card page,
-> so that users can know that you are not alone :)
-> 
+On Fri, 16 Aug 2002, Patrick Shirkey wrote:
 
-I have an idea for how to do this nicely. We can have a seperate page 
-and also embed them into the alsa-docs. I will get back to you.
+> Takashi Iwai wrote:
+> > At Fri, 16 Aug 2002 00:46:02 +0900,
+> > Patrick Shirkey wrote:
+> > 
+> >>Takashi Iwai wrote:
+> >>
+> >>>Hi,
+> >>>
+> >>>how about to gather the bugs of the current driver and list them as
+> >>>known bugs on the web?
+> >>>it would be nice to see such things on alsa or wiki's card page,
+> >>>so that users can know that you are not alone :)
+> >>>
+> >>
+> >>Done. There is a link ot hte page in the matrix and any card that has a 
+> >>reference in the file has it dsplayed on it's personal install docs page.
+> > 
+> >  
+> > hmm, i got:
+> > 
+> > 	Fatal error: Failed opening required '../../components/head.php3' in /home/alsa/www/alsa-doc/index.php3 on line 2
+> > 
+> 
+> Works here using mozilla, netcape, lynx.
 
-> 
-> known bugs i know of (and am working on) are:
-> 
-> OSS emulation
-> - Wine OSS (mmap) is not working. (A workaround already known.)
-> 
-> nm256
-> - driver often hangs up at boot time.
-> 
-> intel8x0
-> - driver hangs up at "alsactl restore" on SMP (ICH4 only?)
-> - master/master mono mixer elements disappear sometime on ICH4.
-> - no 2nd/3rd codec support.
-> 
-> powermac
-> - playback is not audible on screamer until mic-boost is touched.
-> 
-> opl3sa2
-> - on (some?) notebooks, pcm is not audible until pcm mixer is
->   touched. 
-> 
-> cmi8330
-> - is broken.
-> 
-> trident
-> - pcm is not audible on some SIS7012 notebooks.
-> 
-> ice1712
-> - frontbox of TerraTec DMX 6-Fire not working.
-> 
-> via8233
-> - (possible) noises.  (VIA8233A only?)
-> 
-> usb-audio
-> - ambiguous control names on some devices.
-> 
-> emu10k1
-> - MIDI on SB live drive not working properly.
-> - wavetable drops notes sometimes.  (a good test example wanted.)
-> 
-> 
-> if you know more bugs, which is reproducable, please let me know.
-> 
-> 
-> Takashi
-> 
-> 
-> -------------------------------------------------------
-> This sf.net email is sponsored by: OSDN - Tired of that same old
-> cell phone?  Get a new here for FREE!
-> https://www.inphonic.com/r.asp?r=sourceforge1&refcode1=vs3390
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
-> 
+Because I've fixed this problem ;-)
 
+						Jaroslav
 
-
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-For the discerning hardware connoisseur
-Http://www.boosthardware.com
-Http://www.boosthardware.com/LAU/guide/
-========================================
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project  http://www.alsa-project.org
+SuSE Linux    http://www.suse.com
 
 
 
