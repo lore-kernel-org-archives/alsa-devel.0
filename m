@@ -1,13 +1,14 @@
-From: Tim Goetze <tim@quitte.de>
+From: Brian Victor <bhv1@psu.edu>
 Subject: Re: General Guidelines?  (MIDI)
-Date: Thu, 16 Jan 2003 16:32:05 +0100 (CET)
+Date: Thu, 16 Jan 2003 12:23:59 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0301161630050.665-100000@summer.quitte>
-References: <20030116134157.GA31876@bhv1.adelphia.net>
+Message-ID: <20030116172359.GA32330@bhv1.adelphia.net>
+References: <20030116134157.GA31876@bhv1.adelphia.net> <Pine.LNX.4.21.0301161630050.665-100000@summer.quitte>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030116134157.GA31876@bhv1.adelphia.net>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.21.0301161630050.665-100000@summer.quitte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,32 +17,41 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Brian Victor <bhv1@psu.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Brian Victor wrote:
+On Thu, Jan 16, 2003 at 04:32:05PM +0100, Tim Goetze wrote:
+>afaik, you should use snd_seq_event_output() instead of
+>snd_seq_event_output_direct() -- the latter is supposed
+>to by-pass the queue for instant transmission.
 
->On Thu, Jan 16, 2003 at 08:39:23AM +0100, Clemens Ladisch wrote:
->>Brian Victor wrote:
->>> Monitoring /proc/asound/seq/queues shows the events being queued, but as
->>> soon as the queue starts, all 400 notes leave the queue instantly; none
->>> are played.
+I've tried both, actually.  output() does not show any queued events in
+/proc/asound/seq/queues; output_direct() does.  miniArp.c uses
+output_direct, and seems to work.  Neither produces any output in my
+test program.
 
-afaik, you should use snd_seq_event_output() instead of
-snd_seq_event_output_direct() -- the latter is supposed
-to by-pass the queue for instant transmission.
+I've removed all attachments to wxWindows, so anyone should be able to
+compile my test program.  So I don't have to keep sending snippits out
+of context, the code is here:
 
-you may want to look at alsa-lib/test/playmidi1.c for
-another reference.
+http://www.personal.psu.edu/users/b/h/bhv1/nowx.cc      or
+http://www.personal.psu.edu/users/b/h/bhv1/nowx.cc.html (syntax colored)
+(g++ nowx.cc -o nowx -lasound)
 
->(Which begs another question: what does PPQ stand for?  Something per
->quarter?)
+>you may want to look at alsa-lib/test/playmidi1.c for
+>another reference.
 
-ticks/quarter (aka 'parts per quarter').
+That could be useful, but at a glance I don't see anything important in
+there that I'm not doing.  This is really perplexing me.
 
-hth, tim
+>>(Which begs another question: what does PPQ stand for?  Something per
+>>quarter?)
+>ticks/quarter (aka 'parts per quarter').
 
+I figured it was something like that.  Thanks.
+
+-- 
+Brian
 
 
 -------------------------------------------------------
