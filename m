@@ -1,16 +1,14 @@
-From: Nathaniel Gray <n8gray@caltech.edu>
-Subject: Re: Alsa 0.9.0, intel8x0 staticky mess
-Date: Mon, 28 Apr 2003 11:25:54 -0700
+From: Abramo Bagnara <abramo.bagnara@libero.it>
+Subject: Re: rme9652: possible deadlock
+Date: Mon, 28 Apr 2003 21:15:00 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200304281125.54305.n8gray@caltech.edu>
-References: <200304260114.22164.n8gray@caltech.edu> <s5hznmayd6e.wl@alsa2.suse.de>
+Message-ID: <3EAD7DB4.6060105@libero.it>
+References: <Pine.LNX.4.44.0304282013310.1603-100000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hznmayd6e.wl@alsa2.suse.de>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.44.0304282013310.1603-100000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,42 +17,102 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: Jeremy Hall <jhall@maoz.com>, "paul@linuxaudiosystems.com" <paul@linuxaudiosystems.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Monday 28 April 2003 06:16 am, Takashi Iwai wrote:
-> Nathaniel Gray wrote:
-> > Any sounds played end up degenerating into static fuzz after a
-> > short period of time.  Occasionally I can successfully play a few
-> > seconds of a song with XMMS, but usually it's impossible.  The OSS
-> > intel8x0 driver doesn't have this problem, but I'd like to use Jack
-> > so I'm hoping to get Alsa going successfully.
->
-> do you see any kernel messages?
+Jaroslav Kysela ha scritto:
+> On Mon, 28 Apr 2003, Abramo Bagnara wrote:
+> 
+> 
+>>Jaroslav Kysela ha scritto:
+>>
+>>>>CPU1:
+>>>>
+>>>>read_lock(link_manager);	read_lock(link_manager);
+>>>>spin_lock(s1);			spin_lock(s2);
+>>>>if (stream_in_group)		if (stream_in_group)
+>>>>	spin_lock(group);		spin_lock(group); /* Waiting */
+>>>>spin_lock(s2); /* BOOM! */
+>>>>
+>>>>I guess that 3rd version will be the one I propose ;-)
+>>>
+>>>
+>>>Yep, it is in CVS now ;-) Except I don't use trylock...
+>>>
+>>>read_lock(link_manager);
+>>>spin_lock(stream);
+>>>....
+>>>if (stream_in_group) {
+>>>    spin_lock(group);
+>>>    spin_unlock(stream);
+>>>}
+>>>....
+>>>link_for_each(s) {	/* note that streams are locked in defined order now */
+>>>    if (stream_in_group)
+>>>        spin_lock(s);
+>>>}
+>>>....
+>>>list_for_each(s) {
+>>>    if (stream_in_group)
+>>>        spin_unlock(s);
+>>>}
+>>>....
+>>>if (stream_in_group) {
+>>>    spin_lock(stream);
+>>>    spin_unlock(group);
+>>>}
+>>>....
+>>>spin_unlock(stream);
+>>>read_unlock(link_manager);
+>>
+>>CPU1:				CPU2:
+>>read_lock(link_manager);	read_lock(link_manager);
+>>spin_lock(s1);			spin_lock(s2);
+>>spin_lock(group);		spin_lock(group); // waiting
+>>spin_unlock(s1);
+>>//inside list_for_each
+>>spin_lock(s1);
+>>spin_lock(s2); // BOOM!
+>>
+>>I fear you cannot avoid trylock ;-)
+> 
+> 
+> And this scenario:
+> 
+> read_lock(link_manager);
+> spin_lock(s1);
+> if (stream_in_lock) {
+>   spin_unlock(s1);
+>   spin_lock(group);
+> }
 
-No kernel messages.  
+It's unsafe (just like my solution) but without a way to knows that 
+stream state might be changed (unlike my solution).
 
-Things have improved somewhat.  I upgraded to BIOS A05 for my machine 
-and that helped a bit, but I still get the problem about once per song 
-in xmms and I can even trigger it with a little script:
-	while cat /proc/apm; do echo ''; done
+An example: on enter of snd_pcm_update_hw_ptr_interrupt stream state is 
+RUNNING but on exit it might be XRUN.
 
-(I saw the previous posts that seemed to suggest this was a bad 
-interaction with apm.)
+The only way to solve all that is to accurately invalid any implicitly 
+cached info across call to functions that promoting a single stream lock 
+to a group lock have waited on group lock.
 
-It doesn't happen on every read from /proc/apm.  Some cause a slight 
-skip in xmms, some cause no skip at all, and some make the entire 
-remainder of the song go staticky.  I could understand either of the 
-first two problems but I don't understand what would mess things up far 
-past the time of the disruption.
+Of course you might enlarge this criteria to "across call to functions 
+that might promote a single stream lock to a group lock". In this case 
+your solution is fine too.
 
-What else can I do to track down the problem?  I'm fine with C and I'm 
-not a complete stranger to the kernel but I've never written or worked 
-on a device driver.
+As a side note I've noted that almost all calls to SND_PCM_ACTION take 
+the single lock just before. This is definitely a non sense: taking the 
+group lock at 1st is the right solution. This imply to have two 
+SND_PCM_ACTION: one for already locked groups and another for lock 
+promotion.
+
 -- 
->>>-- Nathaniel Gray -- Caltech Computer Science ------>
->>>-- Mojave Project -- http://mojave.cs.caltech.edu -->
+Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+
+Opera Unica                          Phone: +39.546.656023
+Via Emilia Interna, 140
+48014 Castel Bolognese (RA) - Italy
 
 
 
