@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000733]: No sound with Hercules Game Theater XP
-Date: Thu, 23 Dec 2004 16:23:36 +0100
-Message-ID: <8e7bc8a6b64720d293f358403661385f@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 18:14:43 +0100
+Message-ID: <5b98637387592aa3adf59441f58aeec4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 645A9251
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 16:23:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C38D52B0
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 18:14:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.6.8.1-12mdk
 ======================================================================
 Date Submitted:             12-19-2004 20:05 CET
-Last Modified:              12-23-2004 16:23 CET
+Last Modified:              12-23-2004 18:14 CET
 ======================================================================
 Summary:                    No sound with Hercules Game Theater XP
 Description: 
@@ -199,19 +199,6 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- sherington - 12-22-04 18:42 
-----------------------------------------------------------------------
-Tried with 1.0.8rc1.
-
-Still no luck.
-
-When it (xmms) does play, which isn't that often, it now seems to me that
-it plays the same few milliseconds of sound over and over.
-
-With mplayer, it now seems to play the first few seconds of a movie with
-sound before the whole thing grinds to a halt and becomes unstable.
-
-----------------------------------------------------------------------
  tiwai - 12-23-04 16:23 
 ----------------------------------------------------------------------
 If the sound repeats, the first suspecious thing is the wrong IRQ routing. 
@@ -221,6 +208,24 @@ corresponding IRQ increases when you playback.
 If it's so, try to turn off ACPI via "acpi=off" boot option.  There are
 other better (more finer) boot options to control such stuff.
 
+----------------------------------------------------------------------
+ sherington - 12-23-04 18:14 
+----------------------------------------------------------------------
+Thanks so much tiwai for pointing me in the right direction.
+
+I disabled ACPI in my BIOS, booted up, and sound worked fine in KDE, no
+stutter, and very nice quality.
+
+Movies also played fine with mplayer with no slowdown or instability.
+
+MP3 playback with XMMS was screwed until I cleared the Mmap mode checkbox
+in the advanced settings of the ALSA plugin.
+
+So, in short, you've helped me completely solve my problem.
+
+I guess it's clearly not an ALSA bug, so apologies for that, and thank you
+very much for helping me solve this problem.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -229,6 +234,7 @@ Date Modified  Username       Field                    Change
 12-19-04 20:06 sherington     Issue Monitored: sherington                    
 12-22-04 18:42 sherington     Note Added: 0002910                          
 12-23-04 16:23 tiwai          Note Added: 0002925                          
+12-23-04 18:14 sherington     Note Added: 0002926                          
 ======================================================================
 
 
