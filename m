@@ -1,15 +1,11 @@
-From: Matthias Weiss <matthias.weiss@inode.at>
-Subject: Re: Debugging driver modules
-Date: Sun, 1 Dec 2002 15:27:44 +0100
+From: pdq808@t-online.de (Reiner Klenk)
+Subject: Delta 410 status
+Date: Sun, 1 Dec 2002 17:58:47 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <6302.49866885624$1038753109@news.gmane.org>
-References: <1038695263.19113.12.camel@vermin2.joe.net> <E18IBVD-0004hD-00@sc8-sf-list1.sourceforge.net>
-Reply-To: matthias.weiss@inode.at
+Message-ID: <Pine.LNX.4.44.0212011741360.1314-100000@gin.nowhere.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <E18IBVD-0004hD-00@sc8-sf-list1.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +14,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Nov 30, 2002 at 12:38:20PM -0500, Paul Davis wrote:
-> >I have a STAudio DSP24 mkII and I have noticed that recent changes(after
-> >NOV 13) in the CVS creates an ICE1712 driver that locks up my kernel.
-> >Instead of just complaining about this problem I thought I might try to
-> >narrow down the location in the driver that is causing the lockup.
-> >
-> >Does anyone have any tips on debugging the driver modules? Is anyone
-> >using a debugger to do this? I have looked at UML, but I am not sure if
-> >there is a way to access the sound hardware with it.
-> 
-> use the "single" kernel option on the boot command line. this will
-> shorten start up times considerably. once you're at the shell prompt,
-> mount any necessary filesystems by hand, modprobe the drivers, and
-> test using a console window. i generally find that this shortens the
-> crash-reboot-edit-recompile-reboot-crash cycle by a factor of at least
-> three. mount any filesystems that don't need to be writable with the
-> "ro" option so that any crash leaves them untouched.
+Greetings,
 
-Couldn't "user mode linux" be used to avoid the "reboot" stage?
+I have been fiddling around with a Midiman Delta 410 over the weekend. I
+get some sort of playback but is is severly clipped. I believe there is a
+typo in ak4524.c in inits_ak4529[]. Register 0x00 should be initialized to
+0x0c for i2s mode according to the data sheet (need to set DIF1 as well as
+DIF0). I corrected this but that didn't help. My suspicion is that the
+envy24 chip is not talking to the ak4529 at all (i.e. the control path via
+the envy24 gpio is not working) since I also can't set or read the Volume
+Controls with envy24control or amixer, however, the mixer elements that 
+control the envy24 chip directly (routing, digital mix, meter readout) are 
+all OK.
 
-matthias
+Is this what I should currently (0.9rc6) expect or is it just me? 
+
+Thanks,
+Reiner
+
 
 
 -------------------------------------------------------
