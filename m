@@ -1,14 +1,18 @@
-From: Abramo Bagnara <abramo.bagnara@tin.it>
-Subject: Re: DMIX and capture stream
-Date: Wed, 07 Jan 2004 16:15:40 +0100
+From: Eckhard Jokisch <e.jokisch@u-code.de>
+Subject: Re: sbLive! -Drive digital IOs exchanged?
+Date: Wed, 7 Jan 2004 16:29:48 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3FFC229C.2020200@tin.it>
-References: <Pine.LNX.4.58.0401051113381.8705@tomservo.workpc.tds.net>	<200401051741.i05HfCXl007120@dhin.linuxaudiosystems.com>	<s5h1xqe2rjp.wl@alsa2.suse.de>	<Pine.LNX.4.58.0401061105040.8705@tomservo.workpc.tds.net>	<20040106223828.39d2c233.mista.tapas@gmx.net>	<s5hvfno10r5.wl@alsa2.suse.de>	<3FFBFF51.1030002@tin.it>	<s5hptdv27pz.wl@alsa2.suse.de>	<3FFC1A12.7020901@tin.it> <s5hd69v245x.wl@alsa2.suse.de>
+Message-ID: <200401071629.51672.e.jokisch@u-code.de>
+References: <200401071322.i07DM0wx012574@www4.pobox.sk>
+Reply-To: e.jokisch@u-code.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain;
+  charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hd69v245x.wl@alsa2.suse.de>
+In-Reply-To: <200401071322.i07DM0wx012574@www4.pobox.sk>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,39 +21,32 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Florian Schmidt <mista.tapas@gmx.net>, alsa-devel@lists.sourceforge.net
+To: p z oooo <pzad@pobox.sk>
+Cc: alsa-devel@lists.sourceforge.net, tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> At Wed, 07 Jan 2004 15:39:14 +0100,
-> Abramo Bagnara wrote:
-> 
->>
->>I don't see your point, can you show me an example of what you mean?
->>
->>AFAICS the only code that need to be changed is the PCM definition lookup.
-> 
-> 
-> there are two parts to be modified, snd_pcm_open_noupdate() and
-> snd_pcm_slave_conf().  they are the parts which look up "pcm"
-> directive in the configuration.
-> the former is easy.  but the latter function doesn't have stream
-> argument, so it cannot check whether "pcmp" or "pcmc" to check.  and,
-> changing this function will need rewriting all callers...
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I definitely don't see why you think snd_pcm_slave_conf need to be 
-changed. It does not need to know about pcmp/pcmc variants.
+On 07 Jan 2004 14:22  p z oooo wrote :
+> Hi,
+>
+> And maybe both coaxial and optical inputs are on one EMU10k1 input
+> marked as "IEC958 Optical".
+> This is maybe same for Audigy. Can some one verify this ???
+>
+YES - this is true !!=20
+So the "IEC958 Coaxial" is lost in space somehow.
+Takashi: Any idea about that?
 
-I'm missing something?
+Eckhard
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@tin.it
-
-Opera Unica                          Phone: +39.0546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
+iD8DBQE//CXviF9FD4kCbGQRAp+5AJ4qauoiYjdL+0t+vUgNXkb45cMpLACfVW+Z
+1medP7WOlJJKoZT1wDCGVf8=3D
+=3DQNLg
+=2D----END PGP SIGNATURE-----
 
 
 
