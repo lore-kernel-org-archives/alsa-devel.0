@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000234]: Sound problems with APM Suspend/Resume on HP Omnibook 4150
-Date: Mon, 4 Apr 2005 16:14:01 +0200
-Message-ID: <ce8d095d02ac4de9f5f81c65363c2349@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000881]: Distorted sound with enabled dmix plugin
+Date: Mon, 4 Apr 2005 16:15:52 +0200
+Message-ID: <6dc3fa77532238deb96c16e66d755632@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B09DF1FA
-	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 16:14:01 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 848551FA
+	for <alsa-devel@alsa-project.org>; Mon,  4 Apr 2005 16:15:52 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,84 +24,70 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=234> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=881> 
 ======================================================================
-Reported By:                mtvoid
+Reported By:                yure
 Assigned To:                
 ======================================================================
-Project:                    ALSA - driver
-Issue ID:                   234
-Category:                   ISA - ad1848
+Project:                    ALSA - lib
+Issue ID:                   881
+Category:                   pcm - digital audio
 Reproducibility:            always
-Severity:                   major
+Severity:                   minor
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.5
 ======================================================================
-Date Submitted:             04-26-2004 10:09 CEST
-Last Modified:              04-04-2005 16:14 CEST
+Date Submitted:             02-03-2005 12:25 CET
+Last Modified:              04-04-2005 16:15 CEST
 ======================================================================
-Summary:                    Sound problems with APM Suspend/Resume on HP
-Omnibook 4150
+Summary:                    Distorted sound with enabled dmix plugin
 Description: 
-I have an HP Omnibook 4150 notebook. It is reported to have a Crystal Sound
-chipset, and sound support works with both the CS423x and the AD1848
-driver modules. I am using the snd-ad1848 driver with the following
-settings: port=0x534 irq=7 dma1=1. The sound works alright with this, but
-it seems the driver has trouble dealing with a system that has resumed
-from an APM suspend state. After resuming, the sound samples play with
-breaks and repetitions. Often, the following is printed into the syslog:
-kernel: mce_down [0x534]: serious init problem - codec still busy
-
-Note: This is observed even if I do not load any sound modules at bootup,
-do a suspend/resume, and then load the drivers. It seems that after
-resume, the card is put in a state different from before, which the driver
-is unable to handle.
+After 10-20 minutes listening music with xmms or beep-media-player I hear
+distorted sound. Appear noise.
+This problem is appear when enabled dmix plugin through configuration file
+~/.asoundrc.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 04-03-05 20:01 
+ tiwai - 03-29-05 16:21 
 ----------------------------------------------------------------------
-Submitter: Has there been any progress on this issue?
-
-> Note: This is observed even if I do not load any sound
-> modules at bootup, do a suspend/resume, and then load
-> the drivers. It seems that after resume, the card is put
-> in a state different from before, which the driver is
-> unable to handle.
-
-This suggests that the driver is/was not initializing the hardware
-properly.
+OK, now fixed on CVS.
 
 ----------------------------------------------------------------------
- mtvoid - 04-04-05 16:14 
+ yure - 04-04-05 16:15 
 ----------------------------------------------------------------------
-I now use the snd-cs4232 module. Sound plays fine, but the system cannot
-recover from a suspend with it, even if all sound modules have been
-unloaded beforehand. This doesn't bother me that much now, because I use
-the Software Suspend 2 patch to hibernate my system, and sound continues
-to work after resuming from hibernation. But the drivers do have problems
-handling APM suspend/resume on the Omnibook 4150.
-
-This is printed into the syslog when I do a modprobe snd-cs4232:
-kernel: ALSA sound/isa/cs423x/cs4231_lib.c:1053: cs4231: port = 0x534, id
-= 0xa
-kernel: ALSA sound/isa/cs423x/cs4231_lib.c:1059: CS4231: VERSION (I25) =
-0x80
-kernel: ALSA sound/isa/cs423x/cs4231_lib.c:386: cs4231_mce_down - auto
-calibration time out (1)
-
-Let me know if there is any diagnostic / debugging information that I can
-provide to further help with this issue.
+After a week of testing I have such results: sound distorted only once.
+It's not 100% fix.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-04-26-04 10:09 mtvoid         New Issue                                    
-04-26-04 10:09 mtvoid         Kernel Version            => 2.6.5           
-04-03-05 20:01 jdthood        Note Added: 0004315                          
-04-04-05 16:14 mtvoid         Note Added: 0004326                          
+02-03-05 12:25 yure           New Issue                                    
+02-04-05 10:39 yure           Note Added: 0003497                          
+02-04-05 10:39 yure           Issue Monitored: yure                        
+02-04-05 14:53 tiwai          Note Added: 0003506                          
+02-04-05 15:30 yure           Note Added: 0003508                          
+02-04-05 15:36 yure           Note Added: 0003509                          
+02-23-05 13:35 yure           Note Added: 0003711                          
+02-23-05 19:23 tiwai          Note Added: 0003713                          
+02-23-05 19:23 tiwai          File Added: pcm-silent-fix.diff                   
+
+02-23-05 19:24 tiwai          Note Added: 0003714                          
+02-23-05 19:33 tiwai          Note Added: 0003715                          
+02-24-05 22:09 tiwai          Note Added: 0003729                          
+02-24-05 22:09 tiwai          File Added: bmp-0.9.7-alsa-fixes.patch            
+       
+02-25-05 10:36 yure           Note Added: 0003732                          
+02-28-05 15:00 tvignaud       Note Added: 0003744                          
+02-28-05 15:22 yure           Note Added: 0003745                          
+02-28-05 15:26 warly          Note Added: 0003746                          
+03-11-05 13:06 tvignaud       Note Added: 0003887                          
+03-11-05 16:17 tiwai          Note Added: 0003891                          
+03-23-05 20:46 tiwai          Note Added: 0004187                          
+03-23-05 20:47 tiwai          File Added: dmix-slowptr.diff                    
+03-25-05 14:56 tvignaud       Note Added: 0004206                          
+03-29-05 16:21 tiwai          Note Added: 0004246                          
+04-04-05 16:15 yure           Note Added: 0004327                          
 ======================================================================
 
 
