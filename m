@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000829]: powerpc: "confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from incompatible pointer type"
-Date: Wed, 19 Jan 2005 14:31:26 +0100
-Message-ID: <ece56c1ebe1b3ae33e71ca13b2660eb8@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000802]: ymfpci seems to export wrong values for period_count/period_size/buffer_size
+Date: Wed, 19 Jan 2005 14:32:14 +0100
+Message-ID: <4e114d77078e9e87837548df15e39dd7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 370CE24F
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:31:27 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0F4924F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:32:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,67 +24,64 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=829> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=802> 
 ======================================================================
-Reported By:                jdthood
+Reported By:                slomosnail
 Assigned To:                
 ======================================================================
-Project:                    ALSA - lib
-Issue ID:                   829
-Category:                   alisp
+Project:                    ALSA - driver
+Issue ID:                   802
+Category:                   PCI - ymfpci
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             01-17-2005 09:21 CET
-Last Modified:              01-19-2005 14:31 CET
+Date Submitted:             01-10-2005 18:42 CET
+Last Modified:              01-19-2005 14:32 CET
 ======================================================================
-Summary:                    powerpc: "confmisc.c:879: warning: passing arg 2 of
-`snd_config_get_pointer' from incompatible pointer type"
+Summary:                    ymfpci seems to export wrong values for
+period_count/period_size/buffer_size
 Description: 
-Making all in alisp
-[...]
-if /bin/sh ../libtool --mode=compile powerpc-linux-gcc -DHAVE_CONFIG_H -I.
--I. -I../include -I../include  -D__ppc__  -g -Wall -O2 -MT confmisc.lo -MD
--MP -MF ".deps/confmisc.Tpo" \
-  -c -o confmisc.lo `test -f 'confmisc.c' || echo './'`confmisc.c; \
-then mv -f ".deps/confmisc.Tpo" ".deps/confmisc.Plo"; \
-else rm -f ".deps/confmisc.Tpo"; exit 1; \
-fi
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c  -fPIC -DPIC -o .libs/confmisc.o
-confmisc.c: In function `snd_func_private_pcm_subdevice':
-confmisc.c:879: warning: passing arg 2 of `snd_config_get_pointer' from
-incompatible pointer type
- powerpc-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../include -I../include
--D__ppc__ -g -Wall -O2 -MT confmisc.lo -MD -MP -MF .deps/confmisc.Tpo -c
-confmisc.c -o confmisc.o >/dev/null 2>&1
-
+See here: http://bugzilla.gnome.org/show_bug.cgi?id=162024
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-18-05 16:49 
+ LeRoutier - 01-18-05 13:28 
 ----------------------------------------------------------------------
-Also on mips.  See
-http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=mips&stamp=1106048896&file=log&as=raw
-for the full mips build log.
+gst-plugins CVS now uses those min/max probing functions :
+snd_pcm_hw_params_get_[rate/periods/period_size]_[min/max]
+
+to probe the hardware caps.
+
+unfortunatly, it seems that they return garbage for this driver :
+period_count : MIN= 0 & MAX=204522253
+period_size  : MIN=22 & MAX=4294967295
+buffer_size  : MIN=10 & MAX=4294967294
+
+so, unless i misused them in gst-plugins probing code, values this driver
+return are bad. (ad period_count < 3 won't work with this hardware)
+
+i used those on my own hardware, and i got (nforce2/i810_ac97)
+hw:0	 from 1 to 1024 (real device)
+plughw:0 from 0 to 4294967295 (software device)
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:31 
+ tiwai - 01-19-05 14:32 
 ----------------------------------------------------------------------
-The warning is very cosmetic.  You can ignore it.
-Will fix in the later version.
+The values are really bogus.
+Could you create a small testcase to reproduce this?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-17-05 09:21 jdthood        New Issue                                    
-01-17-05 09:30 jdthood        Note Added: 0003224                          
-01-17-05 11:26 jdthood        Note Added: 0003233                          
-01-18-05 16:49 jdthood        Note Added: 0003251                          
-01-19-05 14:31 tiwai          Note Added: 0003269                          
+01-10-05 18:42 slomosnail     New Issue                                    
+01-11-05 16:48 tiwai          Note Added: 0003156                          
+01-18-05 13:28 LeRoutier      Note Added: 0003248                          
+01-18-05 14:40 LeRoutier      Issue Monitored: LeRoutier                    
+01-19-05 14:32 tiwai          Note Added: 0003270                          
 ======================================================================
 
 
