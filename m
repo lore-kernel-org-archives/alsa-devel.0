@@ -1,13 +1,13 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000007]: alsa-kernel/pci does NOT contain bt87x driver
-Date: Wed, 28 Jan 2004 06:52:50 +0100 (CET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: cs46xx capture dropout on busy systems
+Date: Wed, 28 Jan 2004 09:16:24 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040128055250.95B8E2D050@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <Pine.LNX.4.58.0401280913480.2015@pnote.perex-int.cz>
+References: <5.2.1.1.0.20040127224801.00a8b6b0@pop3.fone.net>
+Mime-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id GAA32580
-	for <alsa-devel@alsa-project.org>; Wed, 28 Jan 2004 06:52:56 +0100
+In-Reply-To: <5.2.1.1.0.20040127224801.00a8b6b0@pop3.fone.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,61 +16,65 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Perry Scott <perry@ezlink.com>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, 27 Jan 2004, Perry Scott wrote:
 
-A BUGNOTE has been added to this bug.
-======================================================================
-http://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000007
-======================================================================
-Reporter:                   yahoo
-Handler:                    
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     7
-Category:                   OTHERS
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             01-28-2004 05:01 CET
-Last Modified:              01-28-2004 06:52 CET
-======================================================================
-Summary:                    alsa-kernel/pci does NOT contain bt87x driver
-Description: 
-alsa-kernel/pci does NOT contain bt87x driver it is however 
-present in alsa-driver/pci.
-======================================================================
+> [2.4.23]
+> 
+> I've been chasing a capture dropout in the old OSS cs46xx driver 
+> (drivers/sound/cs46xx.c) for the past two months (evenings and weekends), 
+> and I finally nailed it.  I looked over at the ALSA driver, and I think I 
+> see the same problem there as well.  I traced the peek/poke(PD1_CBA) from 
+> the update_ptr routine to the read routine, so I'm pretty confident the bug 
+> is there.
+> 
+> Briefly, I'm doing 8-channel recording, using 4 TB Santa Cruz 
+> cards.  Occasionally, one of the cards loses a chunk of data.  I traced the 
+> problem to the 4k dma buffer size.  The IRQ updates the capture pointer, 
+> but it only has a 1/44th second real-time latency before it loses data.  If 
+> the read doesn't get reposted by the application within that time, data 
+> will be lost.  All it really takes is a busy system - either an IRQ from 
+> another card, or another thread getting in the way.
+> 
+> I fixed the problem in the OSS driver by copying the 4k ping-pong into a 
+> larger buffer, which is then drained by read().  Essentially, I implemented 
+> the Scatter/Gather in the ISR.  It's not pretty, but it 
+> works.  (Incidentally, if anyone has found the Cirrus documentation on 
+> cs46xx capture S/G, I'd be most appreciative.  The only document I found in 
+> the ALSA documentation archive glibly said that S/G is "complicated" and 
+> that 1/44th second should be OK - yeah, right.)
+> 
+> This problem is likely to affect *any* sound card with a 4k dma 
+> ping-pong.  I'm not sure if the cs46xx is the only pathological case out 
+> there, but I wouldn't be surprised if there are others.  The really 
+> disturbing thought is that ALSA itself has real-time issues because 4k is a 
+> common dma size (say it isn't so!)
+> 
+> I'm a couple weeks away from porting my application to ALSA, so if someone 
+> else wants to load up a bunch of sound cards, feel free.  I'm finding the 
+> bug injecting a sine wave into the four cards, then looking for large 
+> deltas from one sample to the next.
+> 
+> Comments?
 
-----------------------------------------------------------------------
- alexzapatka - 01-28-2004 06:46 CET 
-----------------------------------------------------------------------
-got tired of having to compile the kernel then recompile ALSA just for this
-driver, so here is a quick patch to add it. one file contains the latest
-ALSA bk patch from the ftp.alsa-project.org site
-(alsa-bk-2004-01-25-plus-bt87x-audio.patch.bz2), the other is just the
-patch that assumes you have ALREADY installed the latest bkpatch from the
-site (alsa-bt87x-audio.patch.bz2), it probably wont work unless you have
-2.6's alsa upgraded to 1.0.1 atleast, but who knows?
+Yes, we effectively use large buffer as well. Look to indirect_pointer()  
+routines - we copy data from the 4k DMA buffer here. So you can have for
+example 128k buffer. Of course, the 4k (resp. 2k limit for one chunk) is
+limit only for interrupt latency, but if your system is well tuned, it
+should be ok. In other words, we do things in same way as you use in the 
+OSS code.
 
-----------------------------------------------------------------------
- alexzapatka - 01-28-2004 06:52 CET 
-----------------------------------------------------------------------
-sorry... get the ones marked "new"... typo in the last ones...
+Note that the most of soundcards have at least 64k DMA buffer for samples.
 
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-01-28-04 05:01 yahoo          New Bug                                      
-01-28-04 06:43 alexzapatka    File Added: alsa-bk-2004-01-25-plus-bt87x-audio.patch.bz2                    
-01-28-04 06:43 alexzapatka    File Added: alsa-bt87x-audio.patch.bz2                    
-01-28-04 06:46 alexzapatka    Bugnote Added: 0000011                       
-01-28-04 06:52 alexzapatka    Bugnote Added: 0000012                       
-======================================================================
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
