@@ -1,16 +1,9 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000561]: Sound disappear
-Date: Sun,  3 Oct 2004 02:23:38 +0200 (CEST)
+From: "thewade" <pdman@aproximation.org>
+Subject: Re: Alsa and hdspmixer segfault
+Date: Sat, 2 Oct 2004 22:44:45 -0600
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041003002338.30EE74800E@server.perex-int.cz>
-Content-Type: text/plain; charset=iso-8859-1
+Message-ID: <200410030444.i934ijUa004509@sanctuary.aproximation.org>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 63EA1241
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:23:38 +0200 (MEST)
-Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
-	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id 34E98260DC
-	for <alsa-devel@alsa-project.org>; Sun,  3 Oct 2004 02:23:38 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -19,91 +12,69 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+> > Should I rebuild fltk?
+> 
+> Not always, but what shows the stack trace?
 
-A BUGNOTE has been added to this bug.
-======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000561
-======================================================================
-Reported By:                ungod
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Bug ID:                     561
-Category:                   PCI - ice1724
-Reproducibility:            random
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
-======================================================================
-Date Submitted:             10-03-2004 02:22 CEST
-Last Modified:              10-03-2004 02:23 CEST
-======================================================================
-Summary:                    Sound disappear
-Description: 
-Sometimes, at completely random occasions, all sound suddently disappear.
-At rare occasions, the sound will appear again shortly after, at first at
-very low, but then again at full volume.
-It may often go days before the problem occurs, and then sometimes it
-happens all the time.
+I rebuilt fltk from source, then rebuilt hdspmixer.
 
-I've attempted to do some researching myself, and I quickly noticed that
-by just reinitializing the WM8770 chip with a user-space program, the
-sound would reappear, but then again I noticed that the CS8415A chip is
-disabled when it happens (apparently this is the only chip besides the
-ICE1724 that you may actually read from).
-The STAC9744 is apparently also reset as the volume must be changed in the
-mixer before any sound can come from there.
+I started with fltk-1.1.5rc2. That built but had many warnings. I
+moved the libraries installed by fltk-1.1.4-1.1.fc2.dag.x86_64.rpm
+and re-ran ldconfig. I then rebuilt and ran hdspmixer but had the
+same error as before, line 68 in hdspmixer.cxx (see end of email).
 
-The few times the whole thing occour while I am not listening to music,
-I've noticed that you actually hear the click from the headphone relay, so
-I think that this whole issue is related to some improper handeling of the
-GPIO pins. If they are all switched to zero at some point, this would
-reset all chips connected to the ICE1724, however, I tried adding debug
-info every time a GPIO related function was called, but there never was
-any such debug message prior to the fault.
+I tried to rebuild fltk-1.2.x but it didnt build.
+Then I tried fltk-2.0.x and that built fine, but hdspmixer
+complained about the declaration (or lack thereof) of many items.
 
-Natually it is extremely difficult to fix such a problem when it is as
-random as it is. Actually when using the 4Front OSS drivers, I've
-sometimes experienced the same thing, however their drivers aren't
-flawless either, I imagine. In fact, when I at first got the card, I
-thought it was broken, since the ALSA drivers produced no sound (reversed
-volume control etc.) and the OSS only worked for a couple of minutes until
-all sound disappeared. At all time, the optical output was fully
-functional.
+What should I do?
+Thanks!
+-thewade
 
-Anyway, I do not expect to see the problem solved just like that, and I
-intend to continue attempting to resolve the bug myself. It would however
-be nice to know whether I am the only one at all experiencing the problem,
-as it may in fact then be a hardware problem or (though most unlikely) a
-conflict between existing hardware.
+hdspmixer build error with fltk-2.0.x:
+hdspmixer.cxx:29:31: FL/Fl_Preferences.H: No such file or directory
+In file included from HDSPMixerCard.h:30,
+                 from hdspmixer.cxx:31:
+HDSPMixerWindow.h:28:26: FL/Fl_Scroll.H: No such file or directory
+HDSPMixerWindow.h:29:24: FL/Fl_Menu.H: No such file or directory
+In file included from HDSPMixerWindow.h:48,
+                 from HDSPMixerCard.h:30,
+                 from hdspmixer.cxx:31:
+HDSPMixerSetup.h:30:32: FL/Fl_Round_Button.H: No such file or directory
+In file included from HDSPMixerWindow.h:48,
+                 from HDSPMixerCard.h:30,
+                 from hdspmixer.cxx:31:
+HDSPMixerSetup.h:46: error: ISO C++ forbids declaration of `Fl_Round_Button\' with no type
+HDSPMixerSetup.h:46: error: expected `;\' before \'*\' token
+(etcetera, etcetera...)
 
-The problem occur on all versions of ALSA starting from 1.0.5 (haven't
-tried anyone older than that) and including the latest CVS (synchronize
-often and compile daily as I am also working on other issues and lacking
-features of the ice1724)
-======================================================================
-
-----------------------------------------------------------------------
- ungod - 10-03-2004 02:23 CEST 
-----------------------------------------------------------------------
-Oh, completly forgot to mention.
-
-The card is a Terratec Aureon 7.1 Space (PCB rev. 1.4)
-
-And I haven't tried the Windows drivers (no Windows installed) so I can't
-say if they're better
-
-Bug History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-03-04 02:22 ungod          New Bug                                      
-10-03-04 02:23 ungod          Bugnote Added: 0002008                       
-======================================================================
+back trace of hdspmixer and fltk-1.1.4-1.1.fc2.dag.x86_64.rpm:
+#0  0x0000003092b6d075 in cb2 () from /usr/lib64/libfltk.so.1.1
+#1  0x0000003092b6cc56 in innards () from /usr/lib64/libfltk.so.1.1
+#2  0x0000003092b6cdf0 in fl_draw_image () from /usr/lib64/libfltk.so.1.1
+#3  0x0000003092b6d34c in fl_draw_pixmap () from /usr/lib64/libfltk.so.1.1
+#4  0x0000003092b6d099 in fl_draw_pixmap () from /usr/lib64/libfltk.so.1.1
+#5  0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
+#6  0x00000000004126b0 in HDSPMixerIOMixer::draw (this=0x58b0a0) at HDSPMixerIOMixer.cxx:79
+#7  0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
+#8  0x0000003092b3d275 in Fl_Group::draw_children () from /usr/lib64/libfltk.so.1.1
+#9  0x0000003092b3d2d4 in Fl_Group::draw () from /usr/lib64/libfltk.so.1.1
+#10 0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
+#11 0x0000003092b5041b in Fl_Scroll::draw_clip () from /usr/lib64/libfltk.so.1.1
+#12 0x0000003092b50bb6 in Fl_Scroll::draw () from /usr/lib64/libfltk.so.1.1
+#13 0x0000003092b3d37e in Fl_Group::draw_child () from /usr/lib64/libfltk.so.1.1
+#14 0x0000003092b3d275 in Fl_Group::draw_children () from /usr/lib64/libfltk.so.1.1
+#15 0x0000003092b3d2d4 in Fl_Group::draw () from /usr/lib64/libfltk.so.1.1
+#16 0x0000003092b60dda in Fl_Window::draw () from /usr/lib64/libfltk.so.1.1
+#17 0x0000003092b36f09 in Fl_Double_Window::flush () from /usr/lib64/libfltk.so.1.1
+#18 0x0000003092b36e0b in Fl_Double_Window::flush () from /usr/lib64/libfltk.so.1.1
+#19 0x0000003092b2af29 in Fl::flush () from /usr/lib64/libfltk.so.1.1
+#20 0x0000003092b2abdd in Fl::wait () from /usr/lib64/libfltk.so.1.1
+#21 0x0000003092b2acde in Fl::run () from /usr/lib64/libfltk.so.1.1
+#22 0x000000000040c489 in main (argc=1, argv=0x7fbffff838) at hdspmixer.cxx:86
 
 
 -------------------------------------------------------
