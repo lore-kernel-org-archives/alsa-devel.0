@@ -1,13 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000275]: envy24control for ice1724?
-Date: Tue, 22 Mar 2005 15:12:13 +0100
-Message-ID: <edc4e2f797591cd516d84547bdcf46da@bugtrack.alsa-project.org>
+From: Janina Sajka <janina@rednote.net>
+Subject: Re: No dmix with HDSP Multiface
+Date: Wed, 23 Mar 2005 10:59:08 -0500
+Message-ID: <20050323155908.GW8178@rednote.net>
+References: <20050322180510.GA8180@rednote.net> <s5hfyymqwjo.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 81A1328B
-	for <alsa-devel@alsa-project.org>; Tue, 22 Mar 2005 15:12:13 +0100 (MET)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <s5hfyymqwjo.wl@alsa2.suse.de>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,63 +16,68 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Takashi Iwai writes:
+> At Tue, 22 Mar 2005 13:05:10 -0500,
+> Janina Sajka wrote:
+> > 
+> > I have 1.0.9RC1 compiled and installed--but cannot get dmix to work. Am
+> > I going about it wrong? Or are there still known issues with dmix using
+> > RME hardware? Mine is a HDSP Multiface. Here's what I get:
+> >... snip snip ...
+ 
+> The dmix PCM definition was slightly changed recently.  It no longer
+> takes SLAVE argument but CARD, DEV and SUBDEV.  For hw:0,0, it's like
+> 	dmix:CARD=0,DEV=0,RATE=48000
+> 
+> The default card and device are both 0, and the default rate is 48000,
+> in the case above, you don't need to pass arguments.  Just run like
+> 
+> 	% aplay -Dplug:dmix foo.wav
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=275> 
-======================================================================
-Reported By:                BugBuster
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   275
-Category:                   PCI - ice1724
-Reproducibility:            always
-Severity:                   feature
-Priority:                   normal
-Status:                     resolved
-Distribution:               
-Kernel Version:             
-Resolution:                 won't fix
-Fixed in Version:           
-======================================================================
-Date Submitted:             05-14-2004 19:04 CEST
-Last Modified:              03-22-2005 15:12 CET
-======================================================================
-Summary:                    envy24control for ice1724?
-Description: 
-It would be nice if we could use envy24control for ice1724 cards. 
-======================================================================
+Still no sound, though:
 
-----------------------------------------------------------------------
- tiwai - 05-18-04 20:40 
-----------------------------------------------------------------------
-the app would be an overkill.  ice1724 doesn't have so many functions
-like ice1712 (e.g. no VU meter)...
+#aplay -Dplug:dmix Any_Dream_Will_Do.wav
+ALSA lib pcm_direct.c:741:(snd_pcm_direct_initialize_slave) unable to
+install hw params
+ALSA lib pcm_dmix.c:728:(snd_pcm_dmix_open) unable to initialize slave
+aplay: main:508: audio open error: Device or resource busy
 
-----------------------------------------------------------------------
- jdthood - 03-19-05 09:39 
-----------------------------------------------------------------------
-Looks like this one can be closed.
+PS: I'm also unable to address the mixer on the Multiface via amixer.
+amixer contents includes:
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-05-14-04 19:04 BugBuster      New Issue                                    
-05-18-04 20:40 tiwai          Note Added: 0001143                          
-03-19-05 09:39 jdthood        Note Added: 0004023                          
-03-22-05 15:12 jdthood        Status                   new => resolved     
-03-22-05 15:12 jdthood        Resolution               open => won't fix   
-======================================================================
+numid=5,iface=HWDEP,name='Mixer'
+  ; type=INTEGER,access=rw---,values=3,min=0,max=65536,step=1
+  : values=0,0,65535
 
+But, this was set using hdspmixer. I cannot seem to divine what
+incantation to use to affect anything on numid=5 from the command line.
+
+Is this possibly related?
+
+				Janina
+
+> 
+> 
+> Takashi
+
+-- 
+
+Janina Sajka				Phone: +1.202.494.7040
+Partner, Capital Accessibility LLC	http://www.CapitalAccessibility.Com
+
+Chair, Accessibility Workgroup		Free Standards Group (FSG)
+janina@freestandards.org		http://a11y.org
+
+If Linux can't solve your computing problem, you need a different problem.
 
 
 
 -------------------------------------------------------
-SF email is sponsored by - The IT Product Guide
-Read honest & candid reviews on hundreds of IT Products from real users.
-Discover which products truly live up to the hype. Start reading now.
-http://ads.osdn.com/?ad_id=6595&alloc_id=14396&op=click
+This SF.net email is sponsored by: 2005 Windows Mobile Application Contest
+Submit applications for Windows Mobile(tm)-based Pocket PCs or Smartphones
+for the chance to win $25,000 and application distribution. Enter today at
+http://ads.osdn.com/?ad_id=6882&alloc_id=15148&op=click
