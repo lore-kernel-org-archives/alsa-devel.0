@@ -1,79 +1,45 @@
-From: Gene Heskett <gene.heskett@verizon.net>
-Subject: Re: Best sound card producers for linux
-Date: Tue, 2 Dec 2003 17:01:27 -0500
-Sender: alsa-user-admin@lists.sourceforge.net
-Message-ID: <200312021701.27422.gene.heskett@verizon.net>
-References: <3FCD0604.4090004@web.de>
-Reply-To: gene.heskett@verizon.net
+From: Thomas Charbonnel <thomas@undata.org>
+Subject: Re: Intel8x0 problems with rc1
+Date: Tue, 02 Dec 2003 23:46:22 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <3FCD163E.7040702@undata.org>
+References: <3FCB855F.7080505@undata.org>	<s5hd6b8fl1s.wl@alsa2.suse.de>	<s5h8ylwfk40.wl@alsa2.suse.de>	<3FCC7EC4.6050200@undata.org>	<s5hn0abe7vm.wl@alsa2.suse.de>	<3FCC9A49.3070300@undata.org> <s5h3cc3dxrb.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-user-admin@lists.sourceforge.net>
-In-Reply-To: <3FCD0604.4090004@web.de>
-Content-Disposition: inline
-Errors-To: alsa-user-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:alsa-user@lists.sourceforge.net>
-List-Help: <mailto:alsa-user-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-user>,
-	<mailto:alsa-user-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-user>
-To: Dennis Jansen <Dennis.Jansen@web.de>, alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <s5h3cc3dxrb.wl@alsa2.suse.de>
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday 02 December 2003 16:37, Dennis Jansen wrote:
->Dear Developers,
->
->as the support by sound card producers is very important for a
-> driver to work completely and perfectly it would be nice for us
-> users to know, which companies supply the most information and help
-> out most during writing the drivers. That could be shown on the
-> homepage for users as a buying orientation.
->I think it is important that users are encouraged to buy their
-> soundcard for linux, too.
->
->So please you developers - support us, the users, and help yourself
-> by telling us which companies cooperate best.
->This should encourage the ones that don't as well as give the users
-> an aid in buying a linux-friendly card.
->And it's not much work for you guys to just post it on the webpage.
->
->If you find that to help out a lot, then consider creating a
->certificate-logo for linux audio support by ALSA.
->For that certificate a license could be bought from companies for
->supported cards. That fee then can help the development of more and
->better audio drivers.
->
->I hope my suggestions are new, effective and easy to realize.
->
->Thanks to all OpenSource developers-
->for all your work already,
->for reading this mail,
->for everything!
->
->Dennis Jansen
->Berlin, Germany
+Takashi Iwai wrote :
+> please try the attached patch.
+> possibly this isn't a fix, but it will print debug messages while
+> probing and opening the pcm.
+> 
+> 
+> Takashi
+> 
 
-I'll second that motion in a heartbeat, Dennis.  Its a very good idea.
+Takashi, I applied your patch but nothings shows up in my logs.
+I even replaced all the KERN_DEBUG by KERN_EMERG, and still nothing.
+The only thing I get is this :
+ALSA intel8x0.c:568: codec_semaphore: semaphore is not ready [0x1][0x300100]
+ALSA intel8x0.c:599: codec_read 0: semaphore is not ready for register 0x56
+Is it possible that your code never gets called ? You seem also to be 
+investigating about spdif, but my card does not have spdif output.
 
-The same basic idea can also be applied, and I wish it were, to video 
-cards.  I've been burnt a couple of times on those rascals.  In 
-either case, it would be nice if, in asking the vendor if he is going 
-to support linux, to be able to quote a url where his support 
-performance so far is rated.  It might encourage better support once 
-their legal beagles report that 'well, its the truth, whats to sue 
-for?'
+Thomas
 
--- 
-Cheers, Gene
-AMD K6-III@500mhz 320M
-Athlon1600XP@1400mhz  512M
-99.27% setiathome rank, not too shabby for a WV hillbilly
-Yahoo.com attornies please note, additions to this message
-by Gene Heskett are:
-Copyright 2003 by Maurice Eugene Heskett, all rights reserved.
 
 
 
