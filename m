@@ -1,16 +1,15 @@
-From: Jose Alberto Reguero <jareguero@telefonica.net>
-Subject: Re: AC3 output problem with via82xx
-Date: Fri, 5 Sep 2003 10:29:07 +0200
+From: "Max Mozok" <elephant@os2.kiev.ua>
+Subject: [PATCH]alsa\alsa-kernel\pci\ac97\ac97_codec.c
+Date: Fri, 05 Sep 2003 13:25:35 +0300 (EET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200309051029.07130.jareguero@telefonica.net>
-References: <200309041932.05033.jareguero@telefonica.net> <200309042301.35462.jareguero@telefonica.net> <3F57B36C.60108@superbug.demon.co.uk>
+Message-ID: <200309051024.h85AOWBk074958@elvis.cps.com.ua>
+References: <Pine.LNX.4.53.0309042012160.6731@pnote.perex-int.cz>
+Reply-To: "Max Mozok" <elephant@os2.kiev.ua>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="koi8-r"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3F57B36C.60108@superbug.demon.co.uk>
-Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.53.0309042012160.6731@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,51 +18,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James Courtier-Dutton <James@superbug.demon.co.uk>
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>, Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-El Jueves, 4 de Septiembre de 2003 23:49, James Courtier-Dutton escribi=F3:
-> lists.sourceforge.net
->
->
-> Fecha:
-> Ayer 23:49:32
->
-> Jose Alberto Reguero wrote:
-> > El Jueves, 4 de Septiembre de 2003 20:31, Takashi Iwai escribi=F3:
-> >>At Thu, 4 Sep 2003 19:32:05 +0200,
-> >>
-> >>Jose Alberto Reguero wrote:
-> >>>I have a problem with ogle 0.9.1 and alsa 0.9.6 with AC3 output.
-> >>>My Sound card is VIA 8235 whith AC97 CODEC Realtek ALC650.
-> >>>
-> >>>ERROR[ogle_audio]: Unable to update the IEC958 control: No such file or
-> >>>directory
-> >>
-> >>try cvs version.
-> >>bunch of fixes for ALC650 have been done.
-> >
-> > With the cvs version don't work.
-> >
-> > Jose Alberto Reguero
->
-> Can you try using xine (xine.sf.net) to play the DVD instead.
-> It appears that AC3 passthru only works in native alsa mode, and does
-> not work in OSS emulation mode.
-> I don't know if ogle uses oss or alsa native mode, but I know that xine
-> can do both, so you might have more luck with xine.
->
-> Cheers
-> James
->
-Ogle uses alsa native mode.
-I try xine but if i select a52_pass_through in setup audio there is not sou=
-nd.
+On Thu, 4 Sep 2003 20:12:38 +0200 (CEST), Jaroslav Kysela wrote:
 
-Thanks.
+        /* FIXME: C-Media chips have no PCM volume!! */
+        if (/*ac97->id == 0x434d4941 ||*/
+            ac97->id == 0x434d4942 ||
+            ac97->id == 0x434d4961)
+Line 1368:
+snd_ac97_write_cache(ac97, AC97_PCM, 0x9f1f); //(Mute)
 
-Jose Alberto Reguero
+should be:
+snd_ac97_write_cache(ac97, AC97_PCM, 0x0); //(Unmute)
+
+In accordance with CMI9739 6CH Audio Codec SPEC_Ver12.pdf
+
+No PCM volume, but it should be unmute, is it?
+
+
+
+Yours sincerely,
+		Max V. Mozok
+-----------------------------------------------------------------------------------------
+E-mail: elephant[AT]os2.kiev.ua
+
 
 
 
