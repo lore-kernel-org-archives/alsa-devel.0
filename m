@@ -1,17 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Fw: [Bugme-new] [Bug 1708] New: alsa gus max driver destroying
- data in filesystems
-Date: Sat, 20 Dec 2003 10:27:29 +0100 (CET)
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: New hardware - New developer / tester
+Date: Sat, 20 Dec 2003 18:53:23 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312201021530.8959@pnote.perex-int.cz>
-References: <20031219192218.072a9429.akpm@osdl.org>
+Message-ID: <3FE41C13.6040802@boosthardware.com>
+References: <3FE193CB.8070308@comcast.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id KAA07775
-	for <alsa-devel@alsa-project.org>; Sat, 20 Dec 2003 10:31:56 +0100
-In-Reply-To: <20031219192218.072a9429.akpm@osdl.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,64 +16,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Andrew Morton <akpm@osdl.org>
-Cc: ALSA development <alsa-devel@alsa-project.org>, jtorres@sia.es
+To: Doug <nostar@comcast.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 19 Dec 2003, Andrew Morton wrote:
-
-> umm, we're calling schedule() from a hard IRQ.
-
-Oops. It wasn't intented. The patch bellow should solve this problem.
-Andrew, what's the best method to send you all the new ALSA code?
-We have many fixes for the PCM OSS emulation code and various drivers
-were updated.
-
-Our BK repository is at http://linux-sound.bkbits.net/linux-sound.
-
-
-Index: gus_pcm.c
-===================================================================
-RCS file: /cvsroot/alsa/alsa-kernel/isa/gus/gus_pcm.c,v
-retrieving revision 1.17
-diff -u -r1.17 gus_pcm.c
---- gus_pcm.c	17 Nov 2003 10:23:40 -0000	1.17
-+++ gus_pcm.c	20 Dec 2003 09:28:11 -0000
-@@ -334,9 +334,11 @@
- 					snd_gf1_poke(gus, pos++, *buf++ ^ invert);
- 			}
- 		}
--		schedule_timeout(1);
--		if (signal_pending(current))
--			return -EAGAIN;
-+		if (count > 0 && !in_interrupt()) {
-+			schedule_timeout(1);
-+			if (signal_pending(current))
-+				return -EAGAIN;
-+		}
- 	}
- 	return 0;
- }
-
-> Date: Fri, 19 Dec 2003 14:39:34 -0800
-> From: bugme-daemon@osdl.org
-> To: bugme-new@lists.osdl.org
-> Subject: [Bugme-new] [Bug 1708] New: alsa gus max driver destroying data in filesystems
+Doug wrote:
+> Hi,
 > 
+> My goal is to become ridiculously involved in linux audio, mainly (at 
+> least for now) device driver development.  I have an EZBus audio 
+> device/control surface/mixer, and an EZ8 ADAT I/O card (www.event1.com). 
+>  My goal was to write an ALSA driver for the EZ8 card and EZbus for use 
+> with Ardour/JACK to do 8 track live recording and be a 100% open source 
+> band (we are currently using XP / Cubase).  The snd-usb-audio works with 
+> the EZBus already, and how suprised I was to get sound out of the EZ8 
+> card using the ice1712 driver.  There is some noise there, and neither 
+> with alsamixer nor envy24control could I get any type of level control. 
+>  Theres lots that need to be adapted to the EZ8 I think (channel 
+> assignments/levels, clock source, sample rate, etc), so thats what I 
+> would like to do as I learn device driver programming and linux audio. 
+> Right now I'm deep into the Oreilly Linux Device Drivers book, and 
+> browsing the ALSA developers docs.
 > 
-> http://bugme.osdl.org/show_bug.cgi?id=1708
+> So, here are my questions:
 > 
->            Summary: alsa gus max driver destroying data in filesystems
->     Kernel Version: 2.6.0
->             Status: NEW
->           Severity: high
->              Owner: drivers_sound@kernel-bugs.osdl.org
->          Submitter: jtorres@sia.es
+> Is there a process for registering devices in the matrix and determining 
+> how 'functional' is enough to be considered 'supported'?  Do I just 
+> shout loudly, 'EZBus works!' ? :)
+> 
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+If you could send an html addition to the appropriate manufacturer that 
+would be helpful. Otherwise just these:
+
+manufacturer, card name, chip, module name, needs midi firmware
+
+> Do any of the existing ice1712 developers have chip documentation I 
+> could have?  Is it allowed / polite / acceptable for me to tear into the 
+> existing ice1712 code and learn from it, then either use code from it to 
+> create this driver or add complete EZ8 functionality to the existing 
+> driver?
+> 
+
+Probably best to start with that and ask some questions as you go.
+
+> I assume this is the list to ask driver specific questions, which I'm 
+> sure I will have alot of as I dive into kernel land?
+> 
+
+yes.
+
+> I read the home site asking for testers, I have alot of PC hardware at 
+> my disposal, do developers just post requests for people to test code as 
+> the need arises?
+> 
+
+There are times when people need testing done. Just monitor this list.
+
+> Sorry about my generally 'clueless' disposition, but I guess I have to 
+> start somewhere :)
+> 
+
+Welcome aboard.
+
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
+
+
+  Apparently upon the beginning of the barrage, the donkey broke 
+discipline and panicked, toppling the cart. At that point, the rockets 
+disconnected from the timer, leaving them strewn around the street. 
+Tethered to the now toppled cart, the donkey was unable to escape before 
+the arrival of U.S. troops.
+
+United Press International
+Rockets on donkeys hit major Baghdad sites
+
+By P. MITCHELL PROTHERO
+Published 11/21/2003 11:13 AM
+
 
 
 -------------------------------------------------------
