@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000432]: Impossible de se connecter : NODIALTONE
-Date: Fri, 27 Aug 2004 19:33:18 +0200 (CEST)
+Subject: [ALSA - driver 0000453]: it is impossible to select spdif as capture source
+Date: Fri, 27 Aug 2004 19:39:58 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040827173318.738F82C008@server.perex-int.cz>
+Message-ID: <20040827173958.854752C003@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id BD10D1E5
-	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:33:18 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DB1941E5
+	for <alsa-devel@alsa-project.org>; Fri, 27 Aug 2004 19:39:58 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,105 +20,69 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following bug has been ASSIGNED.
+A BUGNOTE has been added to this bug.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000432
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000453
 ======================================================================
-Reported By:                Cyrille
-Assigned To:                sashak
+Reported By:                Andrew
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Bug ID:                     432
-Category:                   PCI - atiixp-modem
+Bug ID:                     453
+Category:                   PCI - ice1724
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
-Status:                     assigned
-Distribution:               Slackware 10
-Kernel Version:             2.4.24
+Status:                     new
+Distribution:               
+Kernel Version:             
 ======================================================================
-Date Submitted:             08-08-2004 19:02 CEST
-Last Modified:              08-27-2004 19:33 CEST
+Date Submitted:             08-18-2004 13:16 CEST
+Last Modified:              08-27-2004 19:39 CEST
 ======================================================================
-Summary:                    Impossible de se connecter : NODIALTONE
+Summary:                    it is impossible to select spdif as capture source
 Description: 
-I've got a TOSHIBA SATELITTE A30 222 laptop
-Sound card and modem are based upon ATI IXP
-But I'm not able to run modem in spite of the differents bug-report on
-ALSA web site
-(https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000422
--
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
- -
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000417
-) and on Unixtrix.com (http://www.unixtrix.com/)
-
-Even if I do like Ronis or Netstar say -bugtrack.alsa-project :
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000418
--, I'm always in the same situation : compilation is OK, modem driver OK
-but I'm not able to connect : NODIALTONE
+There are no anything spdif-input-related among
+capture source enumeration.
 ======================================================================
 
 ----------------------------------------------------------------------
- sashak - 08-25-2004 19:11 CEST 
+ tiwai - 08-25-2004 19:55 CEST 
 ----------------------------------------------------------------------
-There is similar problem - some BIOSes doesn't report valid MODEM_PRESENT
-bit in ATI_REG_CMD register (reg 003, bit 27 - look in
-'/proc/asound/card1/atiixp'). Device behaviuor in this case is identical
-to reported here - DMA works ok, line still be disconnected.
+Did you use 'iec958' pcm?
 
-Uploaded patch solves the problem.
+    % arecord -Diec958 -fdat foo.wav
 
 ----------------------------------------------------------------------
- netstar - 08-26-2004 01:18 CEST 
+ Andrew - 08-25-2004 23:47 CEST 
 ----------------------------------------------------------------------
-Additional problems with patch when applied to alsa CVS.  All conditions
-necessary are met.
+A dat fromat doesn't work: "Sample format non available"
+I have tried
+
+arecord -Diec958 -fs32_LE -r48000 -c2 -d600 foo.wav
+
+Format/rate are accepted, but the resulted file is empty.
+I use aureon 7.1.
+
+While filing the isuue, I have thought about capture selecting via
+mixer Capture Source control. Does this (others?) control influence
+to shown above command working?
 
 ----------------------------------------------------------------------
- netstar - 08-26-2004 18:54 CEST 
+ tiwai - 08-27-2004 19:39 CEST 
 ----------------------------------------------------------------------
-Forget that, now working fine, congratulations.
+You can use'plug:iec958' for 16bit conversion.
 
-----------------------------------------------------------------------
- Cyrille - 08-26-2004 21:46 CEST 
-----------------------------------------------------------------------
-Concretrely, does it mean the current version of alsa driver will not run
-with this hardware ?
-Thanx
-
-----------------------------------------------------------------------
- Cyrille - 08-26-2004 21:47 CEST 
-----------------------------------------------------------------------
-Oups, I've got not see the last Netstar message...
-I try to test it...
-
-----------------------------------------------------------------------
- Cyrille - 08-27-2004 15:41 CEST 
-----------------------------------------------------------------------
-Hello
-I have try Sashak's tip but the upload patch don't solve the problem.
-Always the same error message : NODIALTONE.
-(with alsa-driver/lib/... 1.0.6 ; test with slmodem-2.9.9 unless patch and
-with Ronis's patch).
-At your mind, is there really no hope to run it ?
+"Capture Source" shouldn't affect the digital input.
+It might be a wrong CS8415 initialization sequence in the driver...
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-08-08-04 19:02 Cyrille        New Bug                                      
-08-08-04 19:02 Cyrille        Distribution              => Slackware 10    
-08-08-04 19:02 Cyrille        Kernel Version            => 2.4.24          
-08-08-04 19:02 Cyrille        Bug Monitored: Cyrille                       
-08-25-04 19:04 sashak         File Added: atiixp_modem.patch                    
-08-25-04 19:11 sashak         Bugnote Added: 0001624                       
-08-26-04 01:16 netstar        File Added: debugging.tar.gz                    
-08-26-04 01:18 netstar        Bugnote Added: 0001630                       
-08-26-04 18:54 netstar        Bugnote Added: 0001634                       
-08-26-04 21:46 Cyrille        Bugnote Added: 0001636                       
-08-26-04 21:47 Cyrille        Bugnote Added: 0001637                       
-08-27-04 15:41 Cyrille        Bugnote Added: 0001644                       
-08-27-04 19:33 tiwai          Assigned To              tiwai => sashak     
+08-18-04 13:16 Andrew         New Bug                                      
+08-25-04 19:55 tiwai          Bugnote Added: 0001625                       
+08-25-04 23:47 Andrew         Bugnote Added: 0001628                       
+08-27-04 19:39 tiwai          Bugnote Added: 0001648                       
 ======================================================================
 
 
