@@ -1,13 +1,14 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: emu10k1.h + ctl id
-Date: Mon, 16 Aug 2004 14:10:24 +0200
+From: =?ISO-8859-1?Q?Ren=E9_Rebe?= <rene@rocklinux-consulting.de>
+Subject: Re: [Alsa-user] alsa-1.0.6
+Date: Mon, 16 Aug 2004 14:04:58 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408161210.i7GCANKT004457@www7.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
+Message-ID: <4120A2EA.8010006@rocklinux-consulting.de>
+References: <20040816.122326.74756645.Meino.Cramer@gmx.de> <Pine.LNX.4.53.0408161229110.23861@yvahk01.tjqt.qr>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.53.0408161229110.23861@yvahk01.tjqt.qr>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,19 +17,46 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-I will use this new header from alsa-lib in new ld10k1 release.
+Hi,
 
-(looks like it is missing in Makefile.am)
+Jan Engelhardt wrote:
 
-Peter Zubaj
+>>Taking a look at the frist message I found in asound.h the following
+>>piece of code:
+>>
+>>
+>>struct sndrv_hwdep_dsp_image {
+>>	unsigned int index;		/* W: DSP index */
+>>	unsigned char name[64];		/* W: ID (e.g. file name) */
+>>	unsigned char __user *image;	/* W: binary image */  !!!!!!!!!!
+>>	size_t length;			/* W: size of image in bytes */
+>>	unsigned long driver_data;	/* W: driver-specific data */
+>>};
+>>
+>>
+>>"!!!!!!" marks the line, in which gcc 3.3.4 fails.
+>>
+>>Is it due to that "__user" ?
+> 
+> 
+> From a programmer's point of view, I would say look up where __user is defined.
+> If not, just try removing __user.
 
+linux/compiler.h
 
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
+Either ALSA is compiler against the wrong kernel headers (outdated, e.g. 
+2.4) or a #include <linux/compiler.h> is missing ;-)
+
+Sincerely yours,
+   René Rebe
+
+--
+René Rebe - Europe/Germany/Berlin
+   rene@rocklinux.org rene@rocklinux-consulting.de
+http://www.rocklinux.org http://www.rocklinux-consulting.de
 
 
 -------------------------------------------------------
