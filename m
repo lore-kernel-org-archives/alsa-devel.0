@@ -1,14 +1,12 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: ALSA sequencer event types?
-Date: Tue, 9 Dec 2003 16:14:51 +0000
+From: Lars Heineken <Lars.Heineken@gmx.de>
+Subject: Request for change in /usr/share/alsa/cards/ICE1712.conf
+Date: Tue, 09 Dec 2003 16:44:46 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312091614.51285.cannam@all-day-breakfast.com>
+Message-ID: <3FD5EDEE.3040402@gmx.de>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,19 +18,52 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Is there any documentation for the squillions of interesting-looking 
-event types defined in snd_seq_event_type?  I'm only familiar at all 
-with the MIDI-based types, and I've failed to find anything referring 
-to most of the others except for the trivial generated documentation.
+Hi !
 
-I'm particularly intrigued by the SND_SEQ_EVENT_INSTR_* types which 
-look suspiciously like they might be intended for something useful 
-such as enabling soft-synths or samplers to report on their available 
-program or patch sets.  Are they?  Do any applications use them?
+I tried some capturing through the spdif input today, and it didn't
+worked, but after some googleing found this mail from jaroslav:
 
+| Known bug. The problem is that playback and capture channels are
+| assymetric for the envy24 chip and we cannot define dual configuration
+| separate for playback and capture.
+|
+| You may change the line in /usr/share/alsa/cards/ICE1712.conf from
+|
+| slave.channels 10
+|
+| to
+|
+| slave.channels 12
+|
+| and capture will work, but playback will failure.
+|
+| Or define new S/PDIF PCM for capture in ~/.asoundrc:
+|
+| pcm.spdif_cap {
+|         ... copy contents of ICE1712.pcm.iec958.0 {} from ICE1712.conf
+here ...
+|         ... and replace 10 with 12 ...
+| }
 
-Chris
+After setting the value to "12" I could capture AND playback !
+
+I suggest to set the value to 12 as default, would that be OK ?
+
+Regards,
+
+Lars.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
+
+iD8DBQE/1e3urp9JEomxNXERAkUQAJsH5zPeSr5CfzGC9mqDQIcxCLwIFgCfUrgU
+XAPtjT6cPRmgA2nl3sUWgX0=
+=aCTT
+-----END PGP SIGNATURE-----
 
 
 
