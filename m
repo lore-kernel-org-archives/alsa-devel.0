@@ -1,16 +1,13 @@
-From: Zenaan Harkness <zen@getsystems.com>
-Subject: Re: can't compile
-Date: 24 Sep 2002 10:43:55 +1100
+From: "David Shust" <dshust@bemail.org>
+Subject: Patch: YMF753 AC '97
+Date: Mon, 23 Sep 2002 21:28:09 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1032824635.488.18.camel@zen8100a>
-References: <1032676882.752.116.camel@zen8100a>
-	<1032735604.473.34.camel@zen8100a>
-	<20020923131019.2332c921.ketelaars@wanadoo.nl>
+Message-ID: <200209240428.g8O4S9321071@mail12.bigmailbox.com>
 Mime-Version: 1.0
 Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: binary
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20020923131019.2332c921.ketelaars@wanadoo.nl>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,29 +16,31 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchives/forum.php?forum=alsa-devel>
-To: Frans Ketelaars <ketelaars@wanadoo.nl>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Yes, that's it.
+I've written a patches for the 0.9.0rc2 and 0.9.0rc3 ac97-codec driver in order to support the Yamaha YMF753. This chip is used in the Toshiba Satellite 5000. Support is provided for S/PDIF output, enhanced (wide) stereo, and the non-standard tone controls. All features appear to work.
 
-On Tue, 2002-09-24 at 00:10, Frans Ketelaars wrote:
-> On 23 Sep 2002 10:00:04 +1100
+Grab it here: www.shustring.net
 
-> > > TIA
-> > > Zen
-> 
-> See http://www.alsa-project.org/ :
-> 
-> Latest News     page 1 of 4    2002-08-22  Note for compiling alsa-driver-0.9.0rc3:
->  Please remove the file - alsa-driver-0.9.0rc3/include/linux/isapnp.h - before 
-> running the configure script.
+I would be delighted to have this merged with the ALSA driver, provided that my copyright notice is left intact. It is only written to the console if and when the YMF753 is actually detected: ALSA AC'97 patch for Yamaha YMF753 (c) David Shust <dshust@shustring.com>
 
-I'd compiled it on another machine multiple times, so I didn't think to
-go check the web page again. Thanks to all,
+Is this an unreasonable request?
 
-Zen
+Regards,
+David Shust
 
+
+------------------------------------------------------------
+Free, BeOS-friendly email accounts: http://BeMail.org/
+BeOS News and Community: http://www.BeGroovy.com/
+
+
+---------------------------------------------------------------------
+Express yourself with a super cool email address from BigMailBox.com.
+Hundreds of choices. It's free!
+http://www.bigmailbox.com
+---------------------------------------------------------------------
 
 
 -------------------------------------------------------
