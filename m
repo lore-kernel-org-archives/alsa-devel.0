@@ -1,14 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 2.6: sound/isa/gus/gus_lfo.c is unused (fwd)
-Date: Mon, 7 Mar 2005 13:15:59 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0503071310140.1751__2886.37413546002$1110198383$gmane$org@pnote.perex-int.cz>
-References: <20050306224159.GQ5070@stusta.de>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Re: ALC658 rev 0 - a problem with Rear Right
+Date: Mon, 7 Mar 2005 14:10:14 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503071406300.27740-100000@studcom.urz.uni-halle.de>
+References: <20050307122800.GA27123@localdomain>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8E7391CD
-	for <alsa-devel@alsa-project.org>; Mon,  7 Mar 2005 13:27:07 +0100 (MET)
-In-Reply-To: <20050306224159.GQ5070@stusta.de>
+In-Reply-To: <20050307122800.GA27123@localdomain>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,31 +15,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adrian Bunk <bunk@stusta.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Dan Aloni <da-x@colinux.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, 6 Mar 2005, Adrian Bunk wrote:
+Dan Aloni wrote:
+> The problem was introduced in the following changeset, which
+> was supposed to cleanup things but accidently broke something.
+>
+> "[ALSA] Clean up and fix stereo mutes" :
 
-> Hi Jaroslav,
-> 
-> I didn't receive any answer regarding this question.
-> 
-> Any comments or shall I send a patch to remove this file?
+Most AC'97 codecs have one mute bit for both channels, but some can
+have one for each channel (that's called "stereo mute").
 
-Yes, the file is unused, but it's a library for wavetable stuff which has 
-not been ported from my linux ultra sound project yet.
+It seems the new driver enables the stereo mute bits, but then forgets
+to unmute the second channel.
 
-I removed this file in our CVS tree, so it will be removed also in ALSA BK 
-tree in next merge.
+Does anything happen if you toggle both mute bits in alsamixer?
 
-					Thanks,
-						Jaroslav
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Regards,
+Clemens
+
 
 
 -------------------------------------------------------
