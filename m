@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - lib 0000154]: Master volume only controls front output (emu10k1)
-Date: Thu, 17 Feb 2005 22:59:39 +0100
-Message-ID: <d39608faa0350a3a5628435dcb00f8b2@bugtrack.alsa-project.org>
+Date: Thu, 17 Feb 2005 23:28:09 +0100
+Message-ID: <cc5e0a512f54d3935f710e53274e85de@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 584F126E
-	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 22:59:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B9B45251
+	for <alsa-devel@alsa-project.org>; Thu, 17 Feb 2005 23:28:09 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -37,7 +37,7 @@ Priority:                   normal
 Status:                     assigned
 ======================================================================
 Date Submitted:             03-23-2004 17:31 CET
-Last Modified:              02-17-2005 22:59 CET
+Last Modified:              02-17-2005 23:28 CET
 ======================================================================
 Summary:                    Master volume only controls front output (emu10k1)
 Description: 
@@ -58,13 +58,6 @@ related to          0000172 Master volume control only controls fro...
 ======================================================================
 
 ----------------------------------------------------------------------
- adamk75 - 02-17-05 22:01 
-----------------------------------------------------------------------
-Just checking to see if there's an update on the status of this bug yet?
-
-Adam
-
-----------------------------------------------------------------------
  rlrevell - 02-17-05 22:59 
 ----------------------------------------------------------------------
 Please check the recent postings for alsa-user and alsa-devel lists before
@@ -73,6 +66,20 @@ being worked on,  and no, it's not fixed yet.
 
 If you want to pay me to work on this, please mail me privately. 
 Otherwise be patient.
+
+----------------------------------------------------------------------
+ adamk75 - 02-17-05 23:28 
+----------------------------------------------------------------------
+I've been waiting since early last year.  I thought I was being patient
+:-)
+
+Anyway, I was only asking because the thread back and forth on alsa-devel
+and alsa-user about the problem stopped almost a week ago.  Since the
+volume levels of alsa-devel and alsa-user are way too high for me, I
+figured I'd check up here.
+
+Anyway, the driver has been broken for so long, I can certainly wait a
+little longer.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -106,6 +113,7 @@ Date Modified  Username       Field                    Change
 02-03-05 20:20 rlrevell       Note Added: 0003493                          
 02-17-05 22:01 adamk75        Note Added: 0003642                          
 02-17-05 22:59 rlrevell       Note Added: 0003646                          
+02-17-05 23:28 adamk75        Note Added: 0003647                          
 ======================================================================
 
 
