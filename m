@@ -1,18 +1,12 @@
-From: Nicolas =?iso-8859-1?q?H=FCppelsh=E4user?= <nh@emlix.com>
-Subject: Re: Float sample format
-Date: Fri, 5 Nov 2004 08:33:52 +0100
-Message-ID: <E1CPyba-0008S3-1P@mailer.emlix.com>
-References: <Pine.HPX.4.33n.0411041550420.25979-100000@studcom.urz.uni-halle.de>
-Reply-To: nh@emlix.com
+From: Jose Alberto Reguero <jareguero@telefonica.net>
+Subject: VIA 8237 AD1980 Surround 5.1
+Date: Fri, 5 Nov 2004 09:06:50 +0100
+Message-ID: <200411050906.50688.jareguero@telefonica.net>
 Mime-Version: 1.0
 Content-Type: text/plain;
   charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mail.emlix.com (mail.emlix.com [193.159.217.188])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A477721D
-	for <alsa-devel@alsa-project.org>; Fri,  5 Nov 2004 08:33:55 +0100 (MET)
-In-Reply-To: <Pine.HPX.4.33n.0411041550420.25979-100000@studcom.urz.uni-halle.de>
 Content-Disposition: inline
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
@@ -23,39 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 04 November 2004 15:52, Clemens Ladisch wrote:
-> Nicolas H=FCppelsh=E4user wrote:
-> > What are the sample value ranges used when having sample format float(l=
-e)
-> > or double(le)?
->
-> Between -1 and 1. (LE/BE doesn't make any difference.)
->
-> > When playing, the sound is loudest when using the whole range the type
-> > offers.
->
-> Really?  What sound card lets you play inifinitely loud samples? :-)
-
-;-)  Well, in fact for playback I use [FLT_MIN,FLT_MAX] and it turned out t=
-o=20
-be louder than [-1,1] on the Duo USB Audiosport (and in fact when playing t=
-he=20
-first time I had to pull down my ear-phones - that means the sound is=20
-approximatly infinitely loud).
-
-Viele Gruesse / best regards
-        Nicolas Hueppelshaeuser
-
-=2D-
-nicolas hueppelshaeuser, emlix gmbh, http://www.emlix.com,
-mailto:nh@emlix.com
-fon +49 551 30664 -0, fax -11, bahnhofsallee 1b, 37081 g=F6ttingen, germany
-
-emlix - your embedded linux partner
+MB: K8V SE Deluxe
+CPU: AMD64
+Asla driver from cvs.
+Alsa lib from cvs.
+The channel center and LFE ar swapped in surround 5.1.
+I apply the patch:
+        ttable.1.1 1
+        ttable.2.4 1
+        ttable.3.5 1
+-       ttable.4.2 1
+-       ttable.5.3 1
++       ttable.4.3 1
++       ttable.5.2 1
+        slave.pcm {
+                type hooks
+                slave.pcm {
+in the file:
+/etc/alsa/cards/VIA8237.conf
+and it works.
+Also the mixer controls Center an LFE ar swapped.
+Thanks.
+Jose Alberto Reguero
 
 
 -------------------------------------------------------
