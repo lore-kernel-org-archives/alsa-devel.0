@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000927]: Support for Creative SB Audigy 2 ZS Notebook
-Date: Sun, 20 Feb 2005 08:53:29 +0100
-Message-ID: <b6a7d8436bda82212008f542fa19d955@bugtrack.alsa-project.org>
+Date: Sun, 20 Feb 2005 12:32:09 +0100
+Message-ID: <6f5dd58862dd3cd510814c11e07f8fb2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6DF0321E
-	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2005 08:53:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 25AF9208
+	for <alsa-devel@alsa-project.org>; Sun, 20 Feb 2005 12:32:10 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=927> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             02-20-2005 08:53 CET
-Last Modified:              02-20-2005 08:53 CET
+Last Modified:              02-20-2005 12:32 CET
 ======================================================================
 Summary:                    Support for Creative SB Audigy 2 ZS Notebook
 Description: 
@@ -49,10 +49,17 @@ I haven't heard any positive reports yet...
 Thank you!
 ======================================================================
 
+----------------------------------------------------------------------
+ jcdutton - 02-20-05 12:32 
+----------------------------------------------------------------------
+No support yet. I need someone to donate a card to me, so that I can
+reverse engineer it.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 02-20-05 08:53 gflash         New Issue                                    
+02-20-05 12:32 jcdutton       Note Added: 0003673                          
 ======================================================================
 
 
