@@ -1,12 +1,14 @@
-From: Reimar =?utf-8?b?RMO2ZmZpbmdlcg==?= <Reimar.Doeffinger@stud.uni-karlsruhe.de>
-Subject: Re: Memleak with mixer? Or incorrect code?
-Date: Tue, 18 Jan 2005 20:15:15 +0000 (UTC)
-Message-ID: <loom.20050118T211231-999@post.gmane.org>
-References: <20050112112320.GA5411@rz.uni-karlsruhe.de> <s5hpt09i7fp.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000490]:  Choppy sound when playing on Acer TravelMate 2000
+Date: Tue, 18 Jan 2005 21:25:40 +0100
+Message-ID: <ab1f2ecb6a78088e452137be5ef2069a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 655E520F
+	for <alsa-devel@alsa-project.org>; Tue, 18 Jan 2005 21:25:40 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,25 +18,81 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai <tiwai <at> suse.de> writes:
-> At Wed, 12 Jan 2005 12:23:20 +0100,
-> Reimar D=C3=B6ffinger wrote:
-> > the attached code consumes more and more memory when I run it (with a=
-lsa
-> > 1.0.3 as included in SuSE 9.1).
-[...]
-> > Any hints on that??
->=20
-> Yep, it hits a memory leak bug.
-> The patch below should fix it.
 
-Saw it is in CVS now. Thanks for fixing.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=490> 
+======================================================================
+Reported By:                feixm
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   490
+Category:                   PCI - atiixp
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     assigned
+Distribution:               linuxfromscratch, everything compiled from original
+sources
+Kernel Version:             2.6.8.1
+======================================================================
+Date Submitted:             09-08-2004 21:16 CEST
+Last Modified:              01-18-2005 21:25 CET
+======================================================================
+Summary:                     Choppy sound when playing on Acer TravelMate 2000
+Description: 
+Hello,
 
-Greetings,
-Reimar D=C3=B6ffinger
+when playing any audio file from my new Acer TravelMate 2000, the sound is
+very choppy. I tried playing using xmms, mplayer and others. From lspci I
+see, it is an ATI IXP 150. I understand that this bugreport alone won't
+help you guys, so if I can give any more info, pls let me know.
+
+When playing movies with mplayer, I see lots of messages like:
+
+alsa-play: xrun of at least 0,131 msecs. resetting stream%  0%  0,0% 1 0
+0%
+alsa-play: xrun of at least 0,026 msecs. resetting stream 0%  0%  0,0% 7 0
+0%
+
+These appear even more where skipping back and forward in the movie.
+
+I found, that playing movies through SDL helps a little, but sound is
+still choppy and cannot be listened to.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 01-18-05 11:32 
+----------------------------------------------------------------------
+Try 1.0.8.  Some hardwares have a bug in reading DMA pointer register.  The
+latest ALSA version has a workaround.
+
+----------------------------------------------------------------------
+ rlrevell - 01-18-05 21:25 
+----------------------------------------------------------------------
+I think this is an mplayer bug.  I get the same behavior - it's unusable
+with ALSA output because they reset the stream on every xrun, and xruns
+are inevitable because they don't use a separate RT thread for audio.
+
+Try oss emulation, mplayer -ao oss.  This works for me.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-08-04 21:16 feixm          New Issue                                    
+09-08-04 21:16 feixm          Distribution              => linuxfromscratch,
+everything compiled from original sources
+09-08-04 21:16 feixm          Kernel Version            => 2.6.8.1         
+01-18-05 07:56 rounin         Note Added: 0003242                          
+01-18-05 07:59 rounin         Issue Monitored: rounin                      
+01-18-05 08:09 rounin         Note Added: 0003245                          
+01-18-05 11:32 tiwai          Note Added: 0003247                          
+01-18-05 21:25 rlrevell       Note Added: 0003260                          
+======================================================================
 
 
 
