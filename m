@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000583]: xruns when playing audio or video files
-Date: Fri, 15 Oct 2004 19:29:38 +0200 (CEST)
+Date: Fri, 15 Oct 2004 20:28:11 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041015172938.F39383B007@server.perex-int.cz>
+Message-ID: <20041015182811.5E1C23B007@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4C8861E3
-	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 19:29:39 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C3D68311
+	for <alsa-devel@alsa-project.org>; Fri, 15 Oct 2004 20:28:11 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -38,7 +38,7 @@ Distribution:               Gentoo Linux
 Kernel Version:             2.6.9_rc4
 ======================================================================
 Date Submitted:             10-15-2004 16:27 CEST
-Last Modified:              10-15-2004 19:29 CEST
+Last Modified:              10-15-2004 20:28 CEST
 ======================================================================
 Summary:                    xruns when playing audio or video files
 Description: 
@@ -107,6 +107,14 @@ know.  Do other users of that program report the same issue?
 There are many, many apps out there with buggy ALSA support but good OSS
 support.  Try a known good app like aplay or alsaplayer.
 
+----------------------------------------------------------------------
+ KAtiOS - 10-15-2004 20:28 CEST 
+----------------------------------------------------------------------
+Humm.. yes but since mplayer seems to be working ok with audio files, I
+don't think alsaplayer will help.
+I just tested, I have xrun with a video played with mplayer (acpi off)
+Any video player I could test?
+
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -119,6 +127,7 @@ Date Modified  Username       Field                    Change
 10-15-04 19:12 KAtiOS         Bugnote Added: 0002171                       
 10-15-04 19:24 KAtiOS         Bugnote Added: 0002172                       
 10-15-04 19:29 lee            Bugnote Added: 0002173                       
+10-15-04 20:28 KAtiOS         Bugnote Added: 0002174                       
 ======================================================================
 
 
