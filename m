@@ -1,19 +1,13 @@
-From: Chris Cannam <cannam@all-day-breakfast.com>
-Subject: Re: mantis bug reports, again
-Date: Thu, 15 Jul 2004 13:38:03 +0100
+From: noreply@alsa-project.org
+Subject: [ALSA - driver 0000371]: dmix does not work with snd-cs46xx driver
+Date: Thu, 15 Jul 2004 14:10:18 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200407151338.03983.cannam@all-day-breakfast.com>
-References: <200407151128.i6FBSPwt008216@localhost.localdomain>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040715121018.7AFE315009@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from anchor-post-37.mail.demon.net (anchor-post-36.mail.demon.net [194.217.242.86])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 26E321EF
-	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:11:00 +0200 (MEST)
-In-Reply-To: <200407151128.i6FBSPwt008216@localhost.localdomain>
-Content-Disposition: inline
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CB0AB1EF
+	for <alsa-devel@alsa-project.org>; Thu, 15 Jul 2004 14:10:18 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,18 +16,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday 15 Jul 2004 12:28 pm, Paul Davis wrote:
-> mis-encoded email from mantis
 
-Why do you say it's mis-encoded?  It looks like valid RFC 1341/2045 
-MIME quoted-printable to me and my mail reader.
+The following bug has been ASSIGNED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000371
+======================================================================
+Reported By:                fmoraes
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     371
+Category:                   PCI - cs46xx
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             2.6.6-1.435.2.3
+======================================================================
+Date Submitted:             07-09-2004 15:59 CEST
+Last Modified:              07-15-2004 14:10 CEST
+======================================================================
+Summary:                    dmix does not work with snd-cs46xx driver
+Description: 
+When trying to use dmix with the snd-cs46xx driver, no output is produced.
+======================================================================
 
-
-Chris
-
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+07-09-04 15:59 fmoraes        New Bug                                      
+07-09-04 15:59 fmoraes        Kernel Version            => 2.6.6-1.435.2.3 
+07-15-04 14:10 perex          Assigned To               => perex           
+07-15-04 14:10 perex          Status                   new => assigned     
+======================================================================
 
 
 -------------------------------------------------------
