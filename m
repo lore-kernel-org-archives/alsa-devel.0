@@ -1,13 +1,13 @@
-From: Eduard Bloch <eb@zombie.inka.de>
-Subject: [snd-intel8x0] distortion on PCM volume >> 50%
-Date: Sun, 30 Nov 2003 11:03:43 +0100
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: signal loss recovery
+Date: Sun, 30 Nov 2003 11:17:57 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031130100343.GA12681@zombie.inka.de>
+Message-ID: <Pine.LNX.4.58.0311301117190.21602@pnote.perex-int.cz>
+References: <D7AA4A37-21F8-11D8-8A08-00039393D25E@gigagig.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <D7AA4A37-21F8-11D8-8A08-00039393D25E@gigagig.org>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,55 +16,33 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Burris Ewell <dalsa@gigagig.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Fri, 28 Nov 2003, Burris Ewell wrote:
 
-I have some problems with a ac97 based sound card (Notebook built-in)
-where the kernel driver works fine (except of not beeing able to
-resample on-the-fly).
+> I am writing a simple capture program using 0.9.8 and a PDAudioCF card. 
+>   I want to recover gracefully when the A/D converter stops and starts 
+> sending signal during capture.   When signal is lost, I call 
+> snd_pcm_start periodically until the signal returns  and continue 
+> capture.  On odd numbered starts (first, third, fifth stop/start of A/D 
+> converter) everything recovers normally and I continue to capture the 
+> output of the converter.  However, on even numbered starts (second, 
+> fourth, sixth stop/start of A/D converter) I capture full scale white 
+> noise.
+> 
+> I'm probably not doing something right.  Any pointers or suggestions 
+> will be greatly appreciated.
 
-When I set the PCM mixer volume to more then 50%, I hear few sound
-fragments. If I go over 75% I hear them all the time and on 100% PCM,
-the sound is full of scratching fragments. You can get an example
-catched with microphone on
-http://sites.inka.de/W1752/alsa-distortion.ogg and the original is on
-www.vorbis.com/music/Mists_of_Time-4T.ogg . First I suspected a speaker
-problem since it sounds very similar to overloud speaker setting, but it
-is not!
+Can you send me your code? I'll try give a look to this problem.
 
-Another problem is more complicated to describe. With programs that use
-the native ALSA device access, I hear very quiet but annoying
-crackling/ticking sound every 2-5 seconds. Only hearable with low volume
-music. When I use programs that work over snd-pcm-oss emulation, the
-repeating cracling is not there, but it comes every 3-5 minutes in
-another form: I hear many sound ticks passing in 2-3 seconds, followed
-by changed sound frequency for 3-5 seconds, then the out normalises
-again.
+						Jaroslav
 
-The hardware part is claimed to be manufactured by Yamaha (AC-XG) but
-lspci identifies it as:
-
-00:1f.5 Multimedia audio controller: Intel Corp. 82801CA/CAM AC'97 Audio =
-Controller (rev 02)
-
-Sharing the IRQ with other onboard components:
-
- 11:    3489538          XT-PIC  usb-uhci, usb-uhci, eth0, Toshiba Americ=
-a Info Systems ToPIC95 PCI to Cardbus Bridge with ZV Support, Toshiba Ame=
-rica Info Systems ToPIC95 PCI to Cardbus Bridge with ZV Support (#2), ohc=
-i1394, Intel 82801CA-ICH3
-
-The described problem appears with every ALSA version I can remember (>=3D=
- 0.9).
-
-MfG,
-Eduard.
---=20
-Hab ich mir selber ausgedacht.
-F=FCr bl=F6de Spr=FCche brauch ich kein Programm.
-		-- Anita Frieda Reimann
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
