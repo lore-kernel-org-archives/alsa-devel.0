@@ -1,14 +1,14 @@
 From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: emu10k1 driver broken in CVS
-Date: Tue, 15 Mar 2005 23:59:52 -0500
-Message-ID: <1110949192.19837.3.camel@mindpipe>
+Date: Wed, 16 Mar 2005 00:09:05 -0500
+Message-ID: <1110949745.19984.2.camel@mindpipe>
 References: <1110947679.19739.3.camel@mindpipe>
 	 <4237BAA8.3020405@machinehasnoagenda.com>
-	 <1110948410.19837.0.camel@mindpipe>
+	 <1110948410.19837.0.camel@mindpipe>  <1110949192.19837.3.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1110948410.19837.0.camel@mindpipe>
+In-Reply-To: <1110949192.19837.3.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,22 +22,14 @@ To: Shayne O'Connor <forums@machinehasnoagenda.com>
 Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2005-03-15 at 23:46 -0500, Lee Revell wrote:
-> On Wed, 2005-03-16 at 15:48 +1100, Shayne O'Connor wrote:
-> > after compiling, i tried inserting the alsa modules and got a whole
-> > bunch of errors ... when rebooting back into xfce4.2, it just froze at
-> > the splash screen ... had to boot into an earlier kernel and re-install
-> > the Planet CCRMA alsa modules.
-> 
-> It must be the "Fix corrupted voice allocation" patch
+On Tue, 2005-03-15 at 23:59 -0500, Lee Revell wrote:
+> It's not this one.  The problem must be the P16V patch.  But that should
+> have no effect on emu10k1...
 
-It's not this one.  The problem must be the P16V patch.  But that should
-have no effect on emu10k1...
+OK, found the bug.  The interrupt handler checks the IPR2 register even
+on non-Audigy2 cards resulting in an infinite loop.
 
-I see that we allocate DMA buffer for the P16V even on non-Audigy2
-cards.  That's clearly wrong but should not cause a lockup.
-
-Hmm...
+Patch forthcoming.  We really need an -rc2 ASAP, this is a nasty bug.
 
 Lee
 
