@@ -1,14 +1,12 @@
-From: Jon Ellis <ashura666@mac.com>
-Subject: Re: Fwd: arecord bug?
-Date: Wed, 19 Mar 2003 18:49:22 +0900
+From: Andrei Boros <andrei@srr.ro>
+Subject: sequencer module problems
+Date: Wed, 19 Mar 2003 12:45:16 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <0FFFF579-59F0-11D7-BB3C-0003934489D0@mac.com>
-References: <s5hk7ewu7kc.wl@alsa2.suse.de>
-Mime-Version: 1.0 (Apple Message framework v551)
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Message-ID: <3E784A3C.133F177B@srr.ro>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hk7ewu7kc.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -20,28 +18,77 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tuesday, March 18, 2003, at 10:29  PM, Takashi Iwai wrote:
->
-> i guess it reached to 32bit int limit (401*60*4*44100).
-> so far, aplay/arecord doesn't support more than size_t max, which is
-> 32bit on i386.
+First of all, my make is 3.77 and lacks support for the  $(if
+CONDITION,THEN-PART[,ELSE-PART])
+function. So I tried to replace it by some sort of equivalent selected
+by existing conditionals. 
 
-Yep, that was my guess too. Is this something anyone is interested in 
-fixing?
+As make does not support the syntax below, it ignore it. 
 
-A couple of ideas:
+in alsa-driver/alsa-kernel/core/seq:
+#
+# this function returns:
+#   "m" - CONFIG_SND_SEQUENCER is m
+#   <empty string> - CONFIG_SND_SEQUENCER is undefined
+#   otherwise parameter #1 value
+#
 
-i) move up to 64bits
-ii) start using segments
+sequencer = $(if $(subst y,,$(CONFIG_SND_SEQUENCER)),$(if $(1),m),$(if
+$(CONFIG_SND_SEQUENCER),$(1)))
 
-If anyone who knows the code is interested in working with me i'd be 
-happy to help find the right fix. Not sure that i have the time to 
-learn the codebase from scratch right now...
 
-Anyone?
+After reading some docs, I understand the following:
+CONFIG_SND_SEQUENCER=m (actually set to anything but "y") -> if $(1) is
+defined -> sequencer=m
+CONFIG_SND_SEQUENCER=y -> sequencer=$(1), since the subsequent test will
+always see it defined.
+CONFIG_SND_SEQUENCER undefined -> sequencer = 
 
-j.
 
+I checked the configure script and CONFIG_SND_SEQUENCER is set to "m" if
+--with-sequencer=yes or is left undefined otherwise. So any other value
+for CONFIG_SND_SEQUENCER is not possible. 
+
+I checked that Makefile again and I see that all calls to the function
+sequencer add $(RAWMIDI_OBJS), only some add $(OPL3_OBJS) and some add
+individual modules. 
+
+Then I believe the following could be done:
+
+-obj-$(CONFIG_SND_SEQUENCER) += snd-seq.o snd-seq-device.o
++obj-$(CONFIG_SND_SEQUENCER) += snd-seq.o snd-seq-device.o
+$(RAWMIDI_OBJS)
+
+Then, 
+
+# Toplevel Module Dependency
+obj-$(CONFIG_SND_VIRMIDI) += snd-seq-virmidi.o snd-seq-midi-event.o
+ifeq ($(CONFIG_SND_SEQUENCER),m)
+obj-$($(CONFIG_SND_SERIAL_U16550)) +=
+obj-$($(CONFIG_SND_MTPAV)) += 
+obj-$($(CONFIG_SND_MPU401)) += 
+obj-$($(CONFIG_SND_ALS100)) += $(OPL3_OBJS)
+obj-$($(CONFIG_SND_AZT2320)) += $(OPL3_OBJS)
+obj-$($(CONFIG_SND_DT019X)) += $(OPL3_OBJS)
+[snip]
+obj-$($(CONFIG_SND_CS46XX)) += 
+obj-$($(CONFIG_SND_EMU10K1)) += snd-seq-midi-emul.o snd-seq-virmidi.o
+obj-$($(CONFIG_SND_TRIDENT)) += snd-seq-midi-emul.o snd-seq-instr.o
+obj-$($(CONFIG_SND_YMFPCI)) += $(OPL3_OBJS)
+obj-$($(CONFIG_SND_USB_AUDIO)) += 
+obj-$($(CONFIG_SND_HDSP)) += 
+endif
+
+obj-m := $(sort $(obj-m))
+
+Then, the sequencer function above is no longer needed.
+
+
+-- 
+ing. Andrei Boros
+mailto:andrei@srr.ro / +40-21-303-1870
+Centrul pt. Tehnologia Informatiei
+Societatea Romana de Radiodifuziune
 
 
 -------------------------------------------------------
