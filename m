@@ -1,12 +1,11 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: alsa-driver CVS configure.in broken
-Date: Sat, 6 Nov 2004 16:00:16 +0100 (CET)
-Message-ID: <Pine.LNX.4.58.0411061559420.8536@pnote.perex-int.cz>
-References: <20041106115713.95297.qmail@web52908.mail.yahoo.com>
+From: "ubaldo" <ubaldo@eja.it>
+Subject: using a single stereo output from two distinct sources
+Date: Sat, 06 Nov 2004 17:04:11 +0100
+Message-ID: <20041106160411.25864.qmail@webmail2.aruba.it>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; format=flowed; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20041106115713.95297.qmail@web52908.mail.yahoo.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,27 +15,17 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Chris Rankin <rankincj@yahoo.com>
-Cc: Lee Revell <rlrevell@joe-job.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 6 Nov 2004, Chris Rankin wrote:
 
->  --- Lee Revell <rlrevell@joe-job.com> wrote: 
-> > Can you send a patch with the change?  I have been
-> > having problems building from CVS also.
-> 
-> My email client will probably mangle this, but you get
-> the idea:
+Hi, 
 
-The problem should be fixed in CVS now for all cases.
+my problem is that I have a single stereo output and I would like to use the 
+left channel from a program and the right one from another, how can I open 
+twice the "same" soundcard? 
 
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Thanx.
 
 
 -------------------------------------------------------
