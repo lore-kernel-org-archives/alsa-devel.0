@@ -1,9 +1,10 @@
-From: Paul Davis <pbd@Op.Net>
-Subject: Re: .asoundrc - share device
-Date: Thu, 28 Feb 2002 09:52:26 -0500
-Message-ID: <200202281452.JAA09207@renoir.op.net>
-In-reply-to: Your message of "Thu, 28 Feb 2002 15:56:11 +0200."
-             <Pine.LNX.4.44.0202281544350.3739-100000@ecabase.localdomain>
+From: Juhana Sadeharju <kouhia@nic.funet.fi>
+Subject: Re: Status of ALSA documentation?
+Date: Thu, 28 Feb 2002 21:57:44 +0200
+Message-ID: <20020228195744Z30613-778+732@nic.funet.fi>
+References: <E16foSl-0000MV-00@usw-sf-list1.sourceforge.net>
+In-reply-to: <E16foSl-0000MV-00@usw-sf-list1.sourceforge.net>
+	(alsa-devel-request@lists.sourceforge.net)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -12,25 +13,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Kai Vehmanen <kai.vehmanen@wakkanet.fi>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: pshirkey@boosthardware.com
 List-Id: alsa-devel@alsa-project.org
 
->Another currently available option is to use the pcm_shm plugin which
->outputs audio to a separate aserver process (see alsa-lib/aserver). This
->plugin does work, but like pcm_share, hasn't been widely used yet. But
->it's the only working ALSA alternative for concurrent pcm access at the
->moment.
+>From: Jaroslav Kysela <perex@suse.cz>
+>
+>> I think that simply for working on this, Patrick should be made
+>> webmaster for alsa-project.org. The simple fact that he has bothered
+>
+>It's fine with me. I offered write access to WWW tree to him a few days 
+>ago.
 
-thanks Kai. the "shm" device type is the one i have always been
-referring to when i have used the term "share". apologies for the
-confusion. 
+Great. Just let me know when I can start sending material for
+the new version of the Alsa webpages! (But please let me know if
+there will no be any face lift for those pages.)
 
---p
+Best regards,
 
-ps. in case anyone finds Kai's last sentence via Google, let me add 
-    "concurrent pcm access *to hardware that does not support it*" so
-    that nobody thinks that ALSA can't do this in the simple cases :)
+Juhana
 
 _______________________________________________
 Alsa-devel mailing list
