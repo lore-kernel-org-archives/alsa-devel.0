@@ -1,11 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Open device with mode read/write
-Date: Fri, 4 Feb 2005 16:55:22 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0502041653370.13899-100000@studcom.urz.uni-halle.de>
-References: <20050204155040.54746.qmail@web25107.mail.ukl.yahoo.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000883]: Odd Mixer Controls with i810 on Fujitsu S6210
+Date: Fri, 4 Feb 2005 17:53:14 +0100
+Message-ID: <0a8e09f08ff07710d29dff84ff370046@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <20050204155040.54746.qmail@web25107.mail.ukl.yahoo.com>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id EA3AF1ED
+	for <alsa-devel@alsa-project.org>; Fri,  4 Feb 2005 17:53:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,29 +17,173 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Laurielle LEA <lauriellelea@yahoo.fr>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Laurielle LEA wrote:
-> agent.
-> I would like to open the device in read/write open
-> mode.
->
-> To write it's :
-> snd_pcm_open (&audio_hdl, ALSA_DEVICE,
-> SND_PCM_STREAM_PLAYBACK,0);
-> And to read it's:
-> snd_pcm_open (&audio_hdl, ALSA_DEVICE,
-> SND_PCM_STREAM_CAPTURE,0);
->
-> But how can I open with PLAYBACK and CAPTURE stream?
 
-Just use two handles.  A PCM handle always is for only one direction.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=883> 
+======================================================================
+Reported By:                tonym
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   883
+Category:                   PCI - intel8x0
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+Distribution:               Gentoo
+Kernel Version:             2.6.10
+======================================================================
+Date Submitted:             02-04-2005 12:35 CET
+Last Modified:              02-04-2005 17:53 CET
+======================================================================
+Summary:                    Odd Mixer Controls with i810 on Fujitsu S6210
+Description: 
+I have some very odd mixer controls with my integrated i810 audio
+lspci -v -n -s 00:1f.5
+0000:00:1f.5 Class 0401: 8086:24c5 (rev 03)
+        Subsystem: 10cf:1253
+        Flags: bus master, medium devsel, latency 0, IRQ 11
+        I/O ports at 1c00
+        I/O ports at 18c0 [size=64]
+        Memory at d0100c00 (32-bit, non-prefetchable) [size=512]
+        Memory at d0100800 (32-bit, non-prefetchable) [size=256]
+        Capabilities: [50] Power Management version 2
 
 
-HTH
-Clemens
+List of controls and what they do:
+control.2 Master Playback Volume - no effect (so l/r doesn't work either)
+control.4 Headphone Playback Volume - controls all vol, headphones and
+speakers
+control.6 Master Mono Playback Volume - no effect
+control.8 PC Speaker Playback Volume - no effect
+control.23 PCM Playback Volume - Works as should
+control.33 External Amplifier - disables the builtin speakers, headphones
+still work
+
+Other controls I deemed irrelevent...
+
+I suspect this is just a quirk of this laptop, but I don't know what info
+you need, so please ask me.
+======================================================================
+
+----------------------------------------------------------------------
+ tiwai - 02-04-05 13:02 
+----------------------------------------------------------------------
+Try ac97_quirk=hp_only option.  If this works, attach the output of "lspci
+-nv" and the contents of /proc/asound/card0/codec97#0/* files.
+
+(BTW "PC Speaker" controls the internal beep sound routing.)
+
+----------------------------------------------------------------------
+ tonym - 02-04-05 17:53 
+----------------------------------------------------------------------
+ac97_quirk=1 works (don't think alsa-1.0.6 in 2.6.10 supports hp_only),
+thanks.
+
+First post contains lspci -nv, here is the other files:
+0-0/0: SigmaTel STAC9750/51
+
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 20-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +0dB [+0dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : off
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=1 AMAP DSA=0 VRA
+Extended status  : VRA
+PCM front DAC    : 44100Hz
+PCM ADC          : 48000Hz
+
+...and...
+
+0:00 = 6a90
+0:02 = 9f1f
+0:04 = 1c1c
+0:06 = 801f
+0:08 = 0000
+0:0a = 0016
+0:0c = 801f
+0:0e = 0007
+0:10 = 9f1f
+0:12 = 9f1f
+0:14 = 9f1f
+0:16 = 9f1f
+0:18 = 0000
+0:1a = 0505
+0:1c = 0000
+0:1e = 0000
+0:20 = 0000
+0:22 = 0000
+0:24 = 0000
+0:26 = 000f
+0:28 = 0601
+0:2a = 0001
+0:2c = ac44
+0:2e = 0000
+0:30 = 0000
+0:32 = bb80
+0:34 = 0000
+0:36 = 0000
+0:38 = 0000
+0:3a = 0000
+0:3c = 0000
+0:3e = 0100
+0:40 = 0000
+0:42 = 0000
+0:44 = 0000
+0:46 = 0000
+0:48 = 0000
+0:4a = 0000
+0:4c = 0003
+0:4e = ffff
+0:50 = 0000
+0:52 = 0000
+0:54 = 0000
+0:56 = 0000
+0:58 = 0000
+0:5a = 0000
+0:5c = 0000
+0:5e = 0000
+0:60 = 0000
+0:62 = 0000
+0:64 = 0000
+0:66 = 0000
+0:68 = 0000
+0:6a = 0000
+0:6c = 0002
+0:6e = 1000
+0:70 = 0000
+0:72 = 0000
+0:74 = 0800
+0:76 = 0000
+0:78 = 0000
+0:7a = 0000
+0:7c = 8384
+0:7e = 7650
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-04-05 12:35 tonym          New Issue                                    
+02-04-05 12:35 tonym          Distribution              => Gentoo          
+02-04-05 12:35 tonym          Kernel Version            => 2.6.10          
+02-04-05 13:02 tiwai          Note Added: 0003498                          
+02-04-05 17:53 tonym          Note Added: 0003510                          
+======================================================================
+
 
 
 
