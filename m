@@ -1,13 +1,13 @@
-From: Marcel Holtmann <marcel@holtmann.org>
-Subject: Re: External PCM plugin SDK
-Date: Wed, 09 Feb 2005 15:37:49 +0100
-Message-ID: <1107959869.13863.62.camel@pegasus>
-References: <s5hd5vau4c3.wl@alsa2.suse.de>
-	 <1107958458.13863.43.camel@pegasus>  <s5hvf91stls.wl@alsa2.suse.de>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - lib 0000897]: test/timer.c malfunctions with snd-rtctimer
+Date: Wed, 9 Feb 2005 15:45:05 +0100
+Message-ID: <c2859c1e21039c22355806e2d7907c93@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hvf91stls.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E3270260
+	for <alsa-devel@alsa-project.org>; Wed,  9 Feb 2005 15:45:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,71 +17,49 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
 
-> > > I now commited a patch to add the external PCM plugin SDK to
-> > > alsa-lib.  This allows you to create ALSA PCM plugin outside the
-> > > alsa-lib tree.  It's still a draft version, and currently only the I/O
-> > > plugin (e.g. for implementation of user-space driver) is provided.
-> > > The filter-type plugin SDK (e.g. for effects) and the control plugin
-> > > SDK will follow later.
-> > > 
-> > > No documentation yet.  Look at the code :)
-> > > 
-> > > Example I/O plugins are found in alsa-plugins tree.  So far, two
-> > > plugins, OSS and JACK plugins.  The former one is the plugin to
-> > > emulate ALSA API with the OSS driver.  The latter is almost identical
-> > > with the one in alsa-lib/src/pcm/ext.
-> > > 
-> > > I think this SDK can be used for better implementaion of BT-SCO and
-> > > FireWire.
-> > 
-> > I wrote a quick and dirty prototype using SBC over RFCOMM for now.
-> 
-> Wow.
+The following issue has been SUBMITTED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=897> 
+======================================================================
+Reported By:                phunge
+Assigned To:                
+======================================================================
+Project:                    ALSA - lib
+Issue ID:                   897
+Category:                   timer
+Reproducibility:            always
+Severity:                   minor
+Priority:                   normal
+Status:                     new
+======================================================================
+Date Submitted:             02-09-2005 15:45 CET
+Last Modified:              02-09-2005 15:45 CET
+======================================================================
+Summary:                    test/timer.c malfunctions with snd-rtctimer
+Description: 
+I'm trying to learn how to use the ALSA timer API for getting a hi-res
+interrupt in a program of mine. When I compile test/timer.c, it runs
+correctly using the default system timer. However, when I try to specify
+the RTC timer by modprobing snd-rtctimer and running
 
-it is putting the PCM data into the SBC encoder and then sending it to
-the RFCOMM socket. This is not the standard for high quality audio over
-Bluetooth, but my Aiptek headphone supports this stuff. For now this is
-easier than dealing with A2DP and AVDTP.
+./timer class=1 sclass=0 card=0 device=1 subdevice=0
 
-The SCO support for the headsets is another story.
+the program fails (output under "additional information").
 
-> >  It is
-> > working with aplay and the alsaplayer, but not with xmms or beep. Are
-> > there any known problem with these ALSA plugins?
-> 
-> Which xmms/bmp are you using?
-> I fixed ALSA plugins of xmms and bmp recently, so it might have been
-> fixed.  For testing, you can try the one in SUSE's rpms from STABLE.
+/dev/rtc is readable and I can run the RTC test from
+http://stommel.tamu.edu/~baum/linux-kernel/rtc.txt
+so I think the problem is in alsa.
+======================================================================
 
-The XMMS is version 1.2.10 and BMP is version 0.9.7. In what versions
-are the ALSA plugins fixed. I will build it from source.
-
-> Do you have buffer or period size constraints?
-
-Oh yes, that is the point where I am not sure what I am doing. The SBC
-is a codec like MP3 and actually I have no idea what are the best values
-here. These are software soundcards.
-
-> > We also talked about making these IO plugins visible when ALSA is
-> > listing its hardware devices. Is this possible now?
-> 
-> No, it's still in planning.
-> We'll need to define a usable API first...
-
-What about a flags variable in snd_pcm_ioplug for activating it. This is
-generic and for me this is enough, because both Bluetooth IO plugins are
-virtual soundcards and they should always be listed. Or maybe list IO
-plugins in general.
-
-Regards
-
-Marcel
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-09-05 15:45 phunge         New Issue                                    
+======================================================================
 
 
 
