@@ -1,14 +1,12 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - lib 0000585]: ALSA should forbid too small buffer sizes
-Date: Thu, 13 Jan 2005 17:07:42 +0100
-Message-ID: <7b186fde7fdd5ce8677d3be9207f379c@bugtrack.alsa-project.org>
+From: Reimar =?utf-8?b?RMO2ZmZpbmdlcg==?= <Reimar.Doeffinger@stud.uni-karlsruhe.de>
+Subject: Re: [Fwd: Re: [MPlayer-dev-eng] AV out of sync with "-ao alsa" in gmplayer, mplayer works ok]
+Date: Thu, 13 Jan 2005 15:10:50 +0000 (UTC)
+Message-ID: <loom.20050113T160235-955@post.gmane.org>
+References: <1104311474.2984.2.camel@krustophenia.net> <yw1x1xd976fz.fsf@inprovide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 450C2272
-	for <alsa-devel@alsa-project.org>; Thu, 13 Jan 2005 17:07:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,59 +16,94 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-The following issue has been RESOLVED.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=585> 
-======================================================================
-Reported By:                jdthood
-Assigned To:                tiwai
-======================================================================
-Project:                    ALSA - lib
-Issue ID:                   585
-Category:                   pcm - digital audio
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     resolved
-Resolution:                 won't fix
-Fixed in Version:           
-======================================================================
-Date Submitted:             10-17-2004 15:28 CEST
-Last Modified:              01-13-2005 17:07 CET
-======================================================================
-Summary:                    ALSA should forbid too small buffer sizes
-Description: 
-See Debian bug https://bugtrack.alsa-project.org/alsa-bug/view.php?id=257797
+M=C3=A5ns Rullg=C3=A5rd <mru <at> inprovide.com> writes:
+> Lee Revell <rlrevell <at> joe-job.com> writes:
+> > OK, I trolled the mplayer dev list, and got this response.=20
+> >
+> > Are Reimar's statements about memory leaks valid?
+>=20
+> No.  I regularly run my player under valgrind, and it reports no ALSA
+> related leaks.  I also run the same player for weeks on end, and the
+> memory usage stays below 4MB, after opening, playing a bit, and
+> closing the sound device thousands of times.
 
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=257797
-======================================================================
+And how about opening and closing the mixer thousands of times? I posted =
+a
+stripped-down sample code that ahould show the problem a few days ago...
 
-----------------------------------------------------------------------
- tiwai - 10-19-04 16:28 
-----------------------------------------------------------------------
-It's hard to define the minimal size because it strongly depends
-on the system and the running condition...
+> > On Tue, Dec 28, 2004 at 10:55:33PM -0500, Lee Revell wrote:
+[...]
+> >> What's the deal?  Why is it so hard for the mplayer developers to ge=
+t
+> >> ALSA support right?  I hack on ALSA a lot, so if there is some probl=
+em
+> >> with the ALSA API, we would like to hear about it on the mailing lis=
+t.
+> >
+> > Yes, please fix the huge memory leak with ALSA output,
+>=20
+> Never seen that one.  Could be a leak in mplayer's ALSA support, of
+> course.
 
-----------------------------------------------------------------------
- tiwai - 01-13-05 17:07 
-----------------------------------------------------------------------
-Set this to WONT FIX.
+Well, I didn't say that it was in the ALSA lib. I only said I think so ;-=
+)
 
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-10-17-04 15:28 jdthood        New Issue                                    
-10-19-04 16:28 tiwai          Note Added: 0002207                          
-01-13-05 17:07 tiwai          Status                   new => resolved     
-01-13-05 17:07 tiwai          Resolution               open => won't fix   
-01-13-05 17:07 tiwai          Assigned To               => tiwai           
-01-13-05 17:07 tiwai          Note Added: 0003188                          
-======================================================================
+> > especially when changing the volume (it is cause by the call to
+> > snd_mixer_load, but I couldn't find an ALSA function that frees that
+> > memory again snd_mixer_free has absolutely no effect  ).  Also
+> > the problem is more that the Gui is not well supported.
+> >
+> >> Or do you all just use OSS still?
+> >
+> > The OSS interface is actually a lot nicer, so yes it is supported bet=
+ter.
+>=20
+> LOL
 
+Well, maybe it's just because whoever wrote ao_alsa in MPlayer did it the=
+ wrong
+way, but compare the size of ao_alsa.c and ao_oss.c and you'll probably s=
+ee what
+I meant...
+
+[...]
+> > mixing, no way to use it without getting into synchronization hell
+> > because it uses threads,
+>=20
+> Oh, never forget that the mplayer folks hate threads.
+
+Yep, and it's not entirely unjustified...
+
+> > hundreds of function calls to initialize it, and those memory leaks
+> > that to my best knowledge seem to come from the alsa lib (my best
+> > guess is that this is because like in conf.c, in _snd_config_make
+> > pointers are overwritten without being freed first).  What makes it
+> > a bit difficult to use it that it's quite difficult to find the
+> > function that is supposed to free things again, they e.g.  often
+> > aren't located directly below the allocation function in the
+> > headers, and that there is a snd_mixer_load function but no
+> > snd_mixer_unload as I would expect it.
+>=20
+> OK, the documentation could be better.
+
+Well, that's true for most projects, certainly including MPlayer ;-)
+I have to admit I only looked at the headers, I didn't look for/download =
+the
+documentation, but I'm not the maintainer of that code anyway...
+
+> > All these things together made me give up on ALSA.
+>=20
+> I'll skip the insult this time.
+
+Thanks :-)
+
+Greetings,
+Reimar D=C3=B6ffinger
 
 
 
