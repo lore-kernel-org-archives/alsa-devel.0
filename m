@@ -1,30 +1,14 @@
-From: Martin Habets <errandir_news@mph.eclipse.co.uk>
-Subject: Re: How to build alsa-driver for sparc?
-Date: Tue, 28 Sep 2004 01:25:21 +0100
+From: =?ISO-8859-2?Q?Adam_Tla=B3ka?= <atlka@pg.gda.pl>
+Subject: Re: Re: [Alsa-user] AD1985 full-duplex(?)
+Date: Tue, 28 Sep 2004 07:11:44 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040928002520.GA8552@palantir8>
-References: <20040927191437.GA436@palantir8> <s5hllev1nxa.wl@alsa2.suse.de>
+Message-ID: <4158F290.3050301@pg.gda.pl>
+References: <200409270300.i8R30Ro1016070@localhost.localdomain> <4157B56F.9000905@pg.gda.pl> <Pine.LNX.4.58.0409271433490.1733@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mra04.ex.eclipse.net.uk (mra04.ex.eclipse.net.uk [212.104.129.139])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id A34C52E7
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 02:25:23 +0200 (MEST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mra04.ex.eclipse.net.uk (Postfix) with ESMTP id D10A6133756
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 01:19:45 +0100 (BST)
-Received: from mra04.ex.eclipse.net.uk ([127.0.0.1])
- by localhost (mra04.ex.eclipse.net.uk [127.0.0.1]) (amavisd-new, port 10024)
- with LMTP id 10959-01-6 for <alsa-devel@alsa-project.org>;
- Tue, 28 Sep 2004 01:19:45 +0100 (BST)
-Received: from palantir8.mph.eclipse.net (unknown [81.168.73.77])
-	by mra04.ex.eclipse.net.uk (Postfix) with ESMTP id 308C4133AA9
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 01:19:45 +0100 (BST)
-Received: from mhabets by palantir8.mph.eclipse.net with local (Exim 3.36 #1 (Debian))
-	id 1CC5o1-0004AA-00
-	for <alsa-devel@alsa-project.org>; Tue, 28 Sep 2004 01:25:21 +0100
-Content-Disposition: inline
-In-Reply-To: <s5hllev1nxa.wl@alsa2.suse.de>
+In-Reply-To: <Pine.LNX.4.58.0409271433490.1733@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -33,76 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@suse.cz>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Takashi,
+ >>I tried to modify AOSS to use
+>>callbacks (works almost good but scheduling/swapping effects still 
+>>there)
+> Are you using fully loaded ring buffer on the ALSA side with a decent 
+> size?
+No because of low latency mixing requirements. Buffer is filled with two 
+periods of data at the beginning and the callback refills it to maintain 
+delay to be about this size.
 
-Yes this works (and in record-breaking time!), but revealed another problem
-when running configure:
+>>but I found an app which disables SIGIO for example.
+> It might be solved with the loopback device and a RT mixing daemon.
+But now? Just ,,Enjoy The Silence''.
 
-checking for which soundcards to compile driver for... ./configure: line 8479: ((: ( test y = y -o y = m ) ||
-      ( test  = y -o  = m ): missing `)' (error token is "y = y -o y = m ) ||
-      ( test  = y -o  = m )")
-./configure: line 8491: ((: ( test y = y -o y = m ) ||
-      ( test  = y -o  = m ): missing `)' (error token is "y = y -o y = m ) ||
-      ( test  = y -o  = m )")
-./configure: line 8502: ((: ( test y = y -o y = m ) ||
-      ( test  = y -o  = m ): missing `)' (error token is "y = y -o y = m ) ||
-      ( test  = y -o  = m )")
-all
+> I don't think that it's something which cannot be solved.
+Maybe, but clock is ticking, compability is broken
+and MS Windows system still is a better solution
+in sound area. I personally want to offer Linux solution as a desktop 
+multimedia system but at this time I just can't.
+Sorry to say that.
 
-configure has:
-  if test "$card" = "all" -o "$card" = "sun-amd7930"; then
-    if ((( test "$CONFIG_SPARC32" = "y" -o "$CONFIG_SPARC32" = "m" ) ||
-      ( test "$CONFIG_SPARC64" = "y" -o "$CONFIG_SPARC64" = "m" ))) &&
-      ( test "$CONFIG_SBUS" = "y" -o "$CONFIG_SBUS" = "m" ); then
+Evolution is what is going in the nature. From my point of view (and 
+many others for sure) I don't need a new API. I just need better 
+functionality and some additional features expanding existing API.
 
-The "((" puts bash into math mode... The first patch attached circumvents
-this problem.
-After that it turned out CONFIG_SBUS was not set either in toplevel.config,
-and the 2nd patch is my attempt to resolve that.
+OK. If you don't want mixing in kernel space doing this and other 
+effects in some special RT daemon looks like step in right direction.
+If an app could comunicate with it through /dev interface it could be 
+unchanged and compability will be saved.
 
-Thanks!
-Martin
+Regards
 
-        Signed-off-by: Martin Habets <errandir_news@mph.eclipse.co.uk>
-
---- alsa-driver-1.0.7rc1/utils/mod-deps.c.orig	2004-09-28 00:46:20.791040341 +0100
-+++ alsa-driver-1.0.7rc1/utils/mod-deps.c	2004-09-28 00:47:02.581559194 +0100
-@@ -929,10 +929,10 @@
- 			if (cond->not)
- 				printf(" ! ");
- 			for (j = 0; j < cond->left; j++)
--				printf("(");
-+				printf("( ");
- 			printf("( test \"$CONFIG_%s\" = \"y\" -o \"$CONFIG_%s\" = \"m\" )", cond->name, cond->name);
- 			for (j = 0; j < cond->right; j++)
--				printf(")");
-+				printf(" )");
- 			put_if = 1;
- 			cond_prev = cond;
- 		}
---- alsa-driver-1.0.7rc1/configure.in.orig	2004-09-28 01:13:47.546782281 +0100
-+++ alsa-driver-1.0.7rc1/configure.in	2004-09-28 01:13:21.190059795 +0100
-@@ -683,6 +683,9 @@
- CONFIG_ISA=probe
- fi
- 
-+dnl Check for SBUS support...
-+CHECK_KERNEL_CONFIG(CONFIG_SBUS, [SBUS support in kernel])
-+
- dnl Check processor type...
- AC_MSG_CHECKING(for processor type)
- CONFIG_X86=
-@@ -1042,6 +1045,7 @@
- AC_SUBST(CONFIG_PPC)
- AC_SUBST(CONFIG_SPARC32)
- AC_SUBST(CONFIG_SPARC64)
-+AC_SUBST(CONFIG_SBUS)
- AC_SUBST(CONFIG_ISA)
- AC_SUBST(CONFIG_PARISC)
- AC_SUBST(CONFIG_SND_BIT32_EMUL)
+-- 
+Adam Tla/lka      mailto:atlka@pg.gda.pl    ^v^ ^v^ ^v^
+System  & Network Administration Group           ~~~~~~
+Computer Center,  Gdansk University of Technology, Poland
+PGP public key:   finger atlka@sunrise.pg.gda.pl
 
 
 -------------------------------------------------------
