@@ -1,14 +1,13 @@
-From: rob buse <rcbuse@filter24.org>
-Subject: [announce] seq24-0.3.0 release.
-Date: Mon, 16 Sep 2002 02:22:04 -0400
+From: Pavel Roskin <proski@gnu.org>
+Subject: Re: driver
+Date: Mon, 16 Sep 2002 02:46:30 -0400 (EDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020916062204.GC11914@filter24.mshome.net>
-Reply-To: rcbuse@filter24.org
+Message-ID: <Pine.LNX.4.44.0209160237100.10903-100000@portland.hansa.lan>
+References: <200209151235.g8FCZCV25607@www.k.ro>
 Mime-Version: 1.0
-Content-Type: text/plain; format=flowed; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <200209151235.g8FCZCV25607@www.k.ro>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +16,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net, linux-audio-user@music.columbia.edu
+To: parintele <dulamaa9@k.ro>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello!
 
-Hello my fellow linux users,
+>    Hi.Could you help me with via ac97 audio driver?
+>    Thank you.
 
-I have just released v0.3.0 of my midi sequencer.  Several people have 
-been waiting
-for its ability to record midi, well, now you have it.
+I don't know if anybody provides technical support for ALSA.  If somebody
+does, maybe it's a good idea to put a link on the website.  Some users are
+simply uncapable of writing proper bugreports, but they may be willing to
+pay to have their problems solved.
 
-http://www.filter24.org/seq24/
+That said, the VIA driver in the CVS version of ALSA works fine for me.  
+It was broken for some time, but now it's fixed.
 
-New screen shots are up too..
+-- 
+Regards,
+Pavel Roskin
 
-cheers,
-.rob 
-----------------------------------------------------------
-music + technology                     http://filter24.org
 
 
 -------------------------------------------------------
