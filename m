@@ -1,15 +1,14 @@
-From: Andreas Mohr <andi@rhlx01.fht-esslingen.de>
-Subject: Re: OSS SNDCTL_DSP_GETISPACE, non-blocking read: messy :-\
-Date: Mon, 27 Oct 2003 13:11:58 +0100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Simple alsa sequencer question
+Date: Mon, 27 Oct 2003 13:14:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20031027121158.GA30019@rhlx01.fht-esslingen.de>
-References: <20031025200221.GA6415@rhlx01.fht-esslingen.de> <s5hbrs27uu6.wl@alsa2.suse.de>
-Reply-To: andi@rhlx01.fht-esslingen.de
+Message-ID: <Pine.HPX.4.33n.0310271312410.29105-100000@studcom.urz.uni-halle.de>
+References: <20031025024106.3aad73cc.rpav@mephle.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hbrs27uu6.wl@alsa2.suse.de>
+In-reply-to: <20031025024106.3aad73cc.rpav@mephle.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,39 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
+To: Ryan Pavlik <rpav@mephle.com>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
+Ryan Pavlik wrote:
+> but when I subscribe to a port, and I've done this:
+>         :
+>     snd_seq_port_subscribe_set_queue(subs, 1);
+>     snd_seq_port_subscribe_set_time_update(subs, 1);
+>     snd_seq_port_subscribe_set_time_real(subs, 1);
+>         :
+> Shouldn't I get numbers in ev->time.time.tv_*?  I'm just getting
+> zeros... what did I miss? ;)
 
-On Mon, Oct 27, 2003 at 01:01:37PM +0100, Takashi Iwai wrote:
-> At Sat, 25 Oct 2003 22:02:21 +0200,
-> Andreas Mohr wrote:
-> > Or, as a short summary:
-> > The application is perfectly well aware of how many bytes there are left
-> > to read (from calling SNDCTL_DSP_GETISPACE) and then does a read() with
-> > this amount of bytes, however since the ALSA OSS layer attempts to read
-> > this byte amount in blocks of runtime->oss.period_bytes bytes from the sound
-> > device, we ARTIFICIALLY cause a -EAGAIN to be returned due to insufficient
-> > available data, thus potentially confusing many OSS applications.
-> > 
-> > Now what to do here?
-> 
-> this problem is a bit touch, because the ALSA OSS layer does the
-> sample-rate conversion, etc.
-> when the sample rate is converted between 44.1kHz and 48kHz, some
-> round error may happen and it will be accumulated.   hence, the size
-> will be different between two cases: reading a whole period once and
-> reading a period by multiple calls.
-> 
-> i'll take a more deeper look...
-Ah, thanks! (also for the explanation given above)
+The second parameter of ..._set_queue is the id of the queue to get
+the time from. Probably queue #1 doesn't exist, or isn't running when
+the events get delivered.
 
-Given that 1.0 is approaching, it'd certainly be useful to get such a
-problem fixed ;-)
 
-Andreas Mohr
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
