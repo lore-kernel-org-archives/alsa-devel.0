@@ -1,11 +1,11 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Extra Emu10k1 documentation that may be helpful
-Date: Tue, 15 Mar 2005 09:29:40 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0503150917550.186-100000@studcom.urz.uni-halle.de>
-References: <42361B9E.2080604@sbcglobal.net>
+Subject: Re: Using hardware timers for the ALSA sequencer
+Date: Tue, 15 Mar 2005 09:55:29 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503150932200.186-100000@studcom.urz.uni-halle.de>
+References: <1110845236.15588.23.camel@mindpipe>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-In-Reply-To: <42361B9E.2080604@sbcglobal.net>
+In-Reply-To: <1110845236.15588.23.camel@mindpipe>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -15,22 +15,37 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: James <whitetigerx7@sbcglobal.net>
-Cc: alsa-devel@lists.sourceforge.net
+To: Lee Revell <rlrevell@joe-job.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-James wrote:
-> echo "Defining Pmidi Default Sequencer Port: /usr/bin/pmidi -p 65:0"
-> /usr/bin/pmidi -p 65:0 &
+Lee Revell wrote:
+> How hard would it be to get the sequencer to prefer the hardware timer
+> by default and fall back to the system timer otherwise?
 
-What is this supposed to do?  pmidi will just play the specifified
-files (none in this case) to port 65:0, and then exit.
+Probably not very hard -- registering a hardware timer would change
+the default timer, or something like that.
 
-To set the default port, set the ALSA_OUTPUT_PORTS environment
-variable.
+> Probably would not be noticeable for a MIDI keyboard, but for
+> applications like sending MIDI clock/MTC, the system timer
+> resolution can be inadequate.
+
+For USB MIDI ports, 1000 Hz is adequate, and that is the system timer
+resolution on 2.6 kernels.
+
+The theoretical upper limit for other ports would be the MIDI bit
+clock, i.e., 31250 Hz. :)
+
+> Would this be a good idea?
+
+I think the only application where a higher resolution would be useful
+would be sending MIDI clock/MTC, and we would want a kernel module for
+this to prevent _any_ scheduling latencies.  A special module like
+this could easily have its own mechanism for selecting the timer to
+use.
 
 
-HTH
+Regards,
 Clemens
 
 
