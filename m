@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
-Date: Tue, 11 Jan 2005 15:04:26 +0100
-Message-ID: <53e7db391752e675808253443a9fd579@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000807]: No sound w/ ASRock K7S41GX
+Date: Tue, 11 Jan 2005 15:50:17 +0100
+Message-ID: <045d5f974043bfb018fa1c978699a3ed@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7C2D22D7
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 15:04:26 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 45AD02D7
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 15:50:17 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,77 +24,82 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=726> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=807> 
 ======================================================================
-Reported By:                vassili
+Reported By:                ndarlow
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   726
+Issue ID:                   807
 Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   feature
+Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               debian
-Kernel Version:             2.6.8, custom build
+Distribution:               Gentoo GNU/Linux
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-15-2004 17:26 CET
-Last Modified:              01-11-2005 15:04 CET
+Date Submitted:             01-11-2005 14:33 CET
+Last Modified:              01-11-2005 15:50 CET
 ======================================================================
-Summary:                    headphone output on the docking station (Dell
-Lattitude D400) does not work
+Summary:                    No sound w/ ASRock K7S41GX
 Description: 
-Support of a headphone jack on the docking station is missing.
+I was able to get sound with alsa-driver upto 1.0.6a on
+gentoo-sources-2.4.26 and gentoo-dev-sources-2.6.9 (kernel-bundled ALSA).
 
-Hardware: Dell Latitude D400 with docking station, 
-Intel 82810DB AC97 Audio
+With gentoo-dev-sources-2.6.10 (kernel-bundled ALSA) and alsa-driver 1.0.7
+I don't get any sound output.
+
+For alsa-driver 1.0.6a, and below, sndstat identified the mixer device as
+a C-Media Electronics device id=0x83. For the kernel-bundled ALSA in
+gentoo-dev-sources-2.6.10 and alsa-driver 1.0.7 the mixer device is
+identified as a CMI9761.
+
+For the working configurations I only had to unmute, and set volume, for
+Master and PCM to get sound.
+
+I have tried enabling all outputs, sources and switches on the non-working
+configurations with no result. I have also tried ac97_quirk between 0 and
+4 without result.
+
+I cannot revert to alsa-driver 1.0.6a as it now fails to compile under
+gentoo-dev-sources-2.6.10 so I am willing to undertake any diagnostic work
+to make the latest stable build function.
 ======================================================================
 
 ----------------------------------------------------------------------
- vassili - 01-11-05 13:15 
+ tiwai - 01-11-05 15:32 
 ----------------------------------------------------------------------
-registers and asound.state are in the attached file codecs
-$ cat  /proc/asound/card0/codec97#0/ac97#0-0
+Just make sure: Could you control Master volume and mute switch properly on
+the older version?  Does PCM volume have any effect?
 
-0-0/0: SigmaTel STAC9750/51
-
-Capabilities     : -headphone out-
-DAC resolution   : 20-bit
-ADC resolution   : 20-bit
-3D enhancement   : SigmaTel 3D Enhancement
-
-Current setup
-Mic gain         : +20dB [+20dB]
-POP path         : pre 3D
-Sim. stereo      : off
-3D enhancement   : on
-Loudness         : off
-Mono output      : MIX
-Mic select       : Mic1
-ADC/DAC loopback : off
-Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
-Extended status  : SPCV SPDIF=10/11 SPDIF VRA
-PCM front DAC    : 44100Hz
-PCM ADC          : 48000Hz
-SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+I thought that this codec has no master volume/mute control and no PCM
+volume control, too but only PCM mute switch works...
 
 ----------------------------------------------------------------------
- tiwai - 01-11-05 15:04 
+ ndarlow - 01-11-05 15:50 
 ----------------------------------------------------------------------
-How about /etc/asound.state?  Please upload it instead of pasting.
+Gentoo has 1.0.8rc1 in masked status but it does work.
+
+You are correct. Master and PCM volume adjustments have no effect and PCM
+mute does work.
+
+Interestingly, the Master, PCM, Surround, Center and LFE volumes adopt a
+value of 77 after unmuting Master and PCM and restarting alsamixer.
+
+I guess we can mark this one as fixed and close. Master volume must be
+adjusted at the speakers, I suppose :-)
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-15-04 17:26 vassili        New Issue                                    
-12-15-04 17:26 vassili        Distribution              => debian          
-12-15-04 17:26 vassili        Kernel Version            => 2.6.8, custom build
-01-07-05 19:56 tiwai          Note Added: 0003120                          
-01-11-05 13:02 vassili        File Added: codecs                           
-01-11-05 13:11 vassili        Note Added: 0003144                          
-01-11-05 13:15 vassili        Note Added: 0003145                          
-01-11-05 15:04 tiwai          Note Added: 0003147                          
+01-11-05 14:33 ndarlow        New Issue                                    
+01-11-05 14:33 ndarlow        File Added: asound.state                     
+01-11-05 14:33 ndarlow        Distribution              => Gentoo GNU/Linux
+01-11-05 14:33 ndarlow        Kernel Version            => 2.6.10          
+01-11-05 15:03 tiwai          Note Added: 0003146                          
+01-11-05 15:32 tiwai          Note Added: 0003148                          
+01-11-05 15:50 ndarlow        Note Added: 0003149                          
 ======================================================================
 
 
