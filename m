@@ -1,62 +1,77 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [Alsa-devel] Re: [PATCH] snd_pcm_hw_params_set_rate_near val
- pointer
-Date: Wed, 03 Mar 2004 13:33:35 +0100 (MET)
-Sender: jackit-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403031324170.12080-100000@studcom.urz.uni-halle.de>
-References: <87smgrdr1z.fsf@sulphur.joq.us>
+From: Bauke Jan Douma <bjdouma@xs4all.nl>
+Subject: How
+Date: Wed, 3 Mar 2004 14:06:20 +0100
+Sender: alsa-devel-admin@lists.sourceforge.net
+Message-ID: <20040303130620.GA22561@xs4all.nl>
+Reply-To: bjdouma@xs4all.nl
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
-Return-path: <jackit-devel-admin@lists.sourceforge.net>
-In-reply-to: <87smgrdr1z.fsf@sulphur.joq.us>
-Errors-To: jackit-devel-admin@lists.sourceforge.net
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Post: <mailto:jackit-devel@lists.sourceforge.net>
-List-Help: <mailto:jackit-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/jackit-devel>,
-	<mailto:jackit-devel-request@lists.sourceforge.net?subject=subscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=jackit-devel>
-To: Samuel S Chessman <chessman@tux.org>
-Cc: Jack O'Quin <joq@io.com>, "[jackit-devel]" <jackit-devel@lists.sourceforge.net>, alsa-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: do@xs4all.nl, I@xs4all.nl, redirect@xs4all.nl, Light Sound Netherlands <sound@xs4all.nl>, JAN_STRAVER <to@xs4all.nl>, 2nd@xs4all.nl, soundcard@xs4all.nl, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jack O'Quin wrote:
+Hi,
 
-> Samuel S Chessman <chessman@tux.org> writes:
->
-> > This is caused by snd_pcm_hw_params_set_rate_near parameter val needing
-> > to be a pointer, and alsa_driver passing in the frame rate instead.
-> >
-> > This occurs against current CVS of alsa. (2004-03-02)
->
-> I think this is the wrong fix, Sam.
->
-> Apparently, that parameter was changed in ALSA between 0.9 and 1.0.
-> For compatibility with the maximum number of systems, the JACK
-> alsa_driver is still compiled using ALSA_PCM_OLD_HW_PARAMS_API, which
-> selects the older (non-pointer) interface.
+I have two soundcards in my system, a cmipci(card) and
+an intel8x0 (on board).
+cmicpi is /dev/dsp0, intel8x0 is /dev/dsp1.
 
-To elaborate on this:  both ALSA 0.9 and 1.0 support both versions of
-these functions, and allow selecting between them by defining
-ALSA_PCM_OLD_HW_PARAMS_API or ALSA_PCM_NEW_HW_PARAMS_API.  Without one
-of these symbols defined, the default would be the old API when
-compiling with 0.9 headers and the new one with 1.0 headers.  All
-versions of the library are binary compatible with both old and new
-applications.
+In .asoundrc I have:
+pcm.cmipci   { type hw ; card 0 ; device 0 }
+ctl.cmipci   { type hw ; card 0 ; device 0 }
+pcm.intel8x0 { type hw ; card 1 ; device 0 }
+ctl.intel8x0 { type hw ; card 1 ; device 0 }
 
-> So, maybe this is an ALSA bug in emulating the older interface?
+I have the audio cable of my CD/ROM drive wired onto the
+cmipci.  Attached to line-out of the cmipci is just my
+headphones.
 
-In theory, this should not happen.
+I also have a TV-card.
+An audio cable runs from the TV-card to the intel8x0.
+Attached to line-out of the intel8x0 is a speaker set.
 
-Sam, which version of ALSA are your ALSA headers/libraries from?
+So when I play an audio CD (with cdctrl or xmcd or xmms)
+I usually listen to the audio on the headphones.  This is
+intentional, because it suits me best.  TV audio goes to
+the speaker set.
 
+However, occasionally I want to have the audio from a CD
+redirected to the speaker set.
+Right now, to accomplish this I do something like:
 
-Regards,
-Clemens
+$> cdrdao read-cd --driver generic-mmc --device /dev/sg0 --datafile /dev/stdout dummy-toc | \
+   dd conv=swab | \
+   aplay -D intel8x0 -f cd /dev/stdin
 
+   or:
 
+$> cdda2wav -S 1 -t 1+12 -D /dev/sg0 -O wav - | \
+   aplay -D intel8x0 -f cd /dev/stdin
+
+These work without a problem, for the better part.
+But I was wondering if this cannot be done a bit more
+elegantly with some configuration in ~/.asoundrc, such
+that I can call aplay directly with that device as
+parameter to -D.
+
+I fiddled with that a bit and using the mixer, but could
+not get it to work that way.
+
+Can this be done at all, and if so is there anyone who
+has an ~/.asoundrc fragment that will make it work?
+
+Thanks for any tips.
+
+BJ
 
 
 -------------------------------------------------------
