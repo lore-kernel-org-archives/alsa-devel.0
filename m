@@ -1,15 +1,20 @@
 From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: Re: [PATCH] remove emu10k1 pops/clicks at the    
-	beginning and end of playback (fwd)
-Date: Sat, 05 Mar 2005 13:39:30 -0500
-Message-ID: <1110047970.12201.5.camel@mindpipe>
-References: <Pine.LNX.4.58.0503040932460.1739@pnote.perex-int.cz>
-	 <1109960235.6442.9.camel@mindpipe> <d0bqba$esi$1@sea.gmane.org>
-	 <4229925C.6020009@superbug.co.uk>  <d0c5th$a56$1@sea.gmane.org>
+Subject: Re: Re: intel 8x0 went silent in 2.6.11
+Date: Sat, 05 Mar 2005 14:00:47 -0500
+Message-ID: <1110049247.12201.11.camel@mindpipe>
+References: <4227085C.7060104@drzeus.cx>
+	 <29495f1d05030309455a990c5b@mail.gmail.com>
+	 <Pine.LNX.4.62.0503031342270.19015@krusty.vfxcomputing.com>
+	 <1109875926.2908.26.camel@mindpipe>
+	 <Pine.LNX.4.62.0503031356150.19015@krusty.vfxcomputing.com>
+	 <1109876978.2908.31.camel@mindpipe>
+	 <Pine.LNX.4.62.0503031527550.30702@krusty.vfxcomputing.com>
+	 <20050303154929.1abd0a62.akpm@osdl.org> <4227ADE7.3080100@drzeus.cx>
+	 <4228D013.8010307@drzeus.cx>
 Mime-Version: 1.0
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <d0c5th$a56$1@sea.gmane.org>
+In-Reply-To: <4228D013.8010307@drzeus.cx>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -19,33 +24,53 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jindrich Makovicka <makovick@kmlinux.fjfi.cvut.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Pierre Ossman <drzeus-list@drzeus.cx>
+Cc: Andrew Morton <akpm@osdl.org>, Mark Canter <marcus@vfxcomputing.com>, nish.aravamudan@gmail.com, linux-kernel@vger.kernel.org, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2005-03-05 at 12:46 +0100, Jindrich Makovicka wrote:
-> James Courtier-Dutton wrote:
-> > If it is of interest, the PCI transfers happen in blocks of 64 BYTES.
-> > So, if the playback pointer is in the middle of a block of 64 BYTES, and 
-> > you wish to send new samples to the card, without missing any of them, 
-> > you should start sending them at the next 64 bytes boundry.
+On Fri, 2005-03-04 at 22:16 +0100, Pierre Ossman wrote:
+> Pierre Ossman wrote:
+> > Andrew Morton wrote:
+> > 
+> >> Mark Canter <marcus@vfxcomputing.com> wrote:
+> >>  
+> >>
+> >>> To close this issue out of the LKML and alsa-devel, a bug report has 
+> >>> been written.
+> >>>
+> >>> It appears to be an issue with the 'headphone jack sense' (as kde 
+> >>> labels it).  The issue is in the way the 8x0 addresses the docking 
+> >>> station/port replicator's audio output jack.  The mentioned quick fix 
+> >>> does not work for using the ds/pr audio output, but does resolve it 
+> >>> for a user that is only using headphones/internal speakers.
+> >>>   
+> >>
+> >>
+> >> But there was a behavioural change: applications which worked in 2.6.10
+> >> don't work in 2.6.11, is that correct?
+> >>
+> >> If so, the best course of action is to change the kernel so those
+> >> applications work again.  Can that be done?
+> >>
+> >>  
+> >>
+> > Yes. Speakers worked in 2.6.10 and stopped working in 2.6.11. This could 
+> > be changed by setting the default for the two new volumes to muted. I 
+> > don't know how this affects the issue with the docking station or the 
+> > bug that this is supposed to solve though.
+> > 
 > 
-> AFAIK, emupcm (at least the part I try to fix) operates in DMA busmaster 
-> mode, so "sending" samples is out of its jurisdiction. It just sets up 
-> looping over the DMA buffer and lets the card do the rest.
+> It seems I spoke too soon. The defaults picked by the driver are 
+> actually fine. It seems to be alsactl store/restore that did something 
+> strange when coming from an older kernel.
 > 
-> FX8010 & ASIO is a different story, but I really don't know much in this 
-> matter.
 
-There's nothing magic about the ASIO implementation(s) for this card.
-They work the same way as the multichannel devices in the Linux driver,
-which is the same as the normal PCM devices, via DMA bus mastering.
+So is there a bug or not?  Mark seems to be the only one affected.
 
-You are probably referring to the "FX8010 PCM" aka "Raw S/PDIF PCM".
-This one is different, because it creates a special PCM for AC3
-passthrough using emu10k1 DSP code.
+It's important to follow up, because these so-called "ALSA regressions"
+are generating bad press.
 
-Lee 
+Lee
 
 
 
