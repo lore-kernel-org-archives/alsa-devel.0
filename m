@@ -1,15 +1,15 @@
 From: Jaroslav Kysela <perex@suse.cz>
 Subject: Re: Problem with RME 9632 and Plug
-Date: Wed, 4 Aug 2004 12:53:53 +0200 (CEST)
+Date: Wed, 4 Aug 2004 12:56:28 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0408041252140.1857@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0408041254060.1857@pnote.perex-int.cz>
 References: <200408040018.i740ITg5017942@localhost.localdomain>
  <Pine.LNX.4.58.0408040935080.1857@pnote.perex-int.cz> <s5h8ycvqltj.wl@alsa2.suse.de>
- <Pine.LNX.4.58.0408041218030.1857@pnote.perex-int.cz> <4110BAE0.6070309@wildgooses.com>
+ <Pine.LNX.4.58.0408041218030.1857@pnote.perex-int.cz> <s5h657zqjtq.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4110BAE0.6070309@wildgooses.com>
+In-Reply-To: <s5h657zqjtq.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,24 +18,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Ed Wildgoose <lists@wildgooses.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Paul Davis <paul@linuxaudiosystems.com>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Paul Davis <paul@linuxaudiosystems.com>, Ed Wildgoose <lists@wildgooses.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 4 Aug 2004, Ed Wildgoose wrote:
+On Wed, 4 Aug 2004, Takashi Iwai wrote:
 
-> Ahh, yes, I see now.  The max period size SHOULD be 8192.  For some 
-> reason when I request anything larger than 2048, I only get 2048...  I 
-> have tried asking for exactly 8192, and "_near" 8192 with the same results.
-> 
-> I will try giving the machine a reboot in case something has grabbed the 
-> card and it's ended up in a funny state which might be causing this.  
-> However, I can currently happily choose 512, 1024, and 2048 period 
-> sizes, but nothing larger.
+> Well, HDSP needs at least 14 non-interleaved channels, so we'll need
+> anyway the conversion for normal apps like mplayer.  Then no external
+> timinig source would be needed.
 
-It's better to send us a dump from /proc/asound/card0/pcm0p/sub0/* files
-to verify the correct values. But I guess that resampling might be 
-involved, so the final frame count is smaller from the application view.
+I don't undestand this. As far as I know, RME cards have 64kB ring buffer 
+for all voices and the two periods constraint is for all voices. Thus 
+there is no correlation between the used channel count and period size.
+The timing is same.
 
 						Jaroslav
 
