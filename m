@@ -1,13 +1,12 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: snd-ens1371 driver failed assert
-Date: Wed, 20 Nov 2002 11:25:24 +0100 (CET)
+From: drclaw@dogsolitude.org
+Subject: HDSP Line Out Volume Control?
+Date: Wed, 20 Nov 2002 10:19:34 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.33.0211201125150.1437-100000@pnote.perex-int.cz>
-References: <200211192212.26739.plcl@telefonica.net>
+Message-ID: <20021120151934.GA4999@dogsolitude.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <200211192212.26739.plcl@telefonica.net>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,35 +15,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Pedro Lopez-Cabanillas <plcl@telefonica.net>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 19 Nov 2002, Pedro Lopez-Cabanillas wrote:
+Hi, I've got an HDSP (Multiface + Cardbus) and I can't figure out how to
+get output on the line out that isn't either 0% or 100%.  Basically, if
+I don't use the module option "line_outs_monitor=1" I can't hear
+anything, but if I do use it, the volume is cranked and distorted.
+Also, what exactly is the "matrix mixer"?  Is this related to the
+problem of this "matrix mixer" being so complex?  
 
-> Hi,
-> 
-> The following lines are from my syslog after "modprobe snd-ens1371" with 
-> current CVS alsa drivers:
-> 
-> PCI: Found IRQ 9 for device 00:11.0
-> ALSA ../alsa-kernel/core/control.c:227: BUG? (!(kcontrol->access & (1<<1)) || 
-> kcontrol->put != ((void *)0)) (called from ca8f67a6)
-> 
-> Mixer works, though. (With too much controls, i don't know what they are).
+Thanks,
 
-Fixed in CVS. Thanks.
-
-						Jaroslav
-
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
-
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 
 -------------------------------------------------------
-This sf.net email is sponsored by: To learn the basics of securing 
-your web site with SSL, click here to get a FREE TRIAL of a Thawte 
-Server Certificate: http://www.gothawte.com/rd524.html
+This sf.net email is sponsored by: 
+Battle your brains against the best in the Thawte Crypto 
+Challenge. Be the first to crack the code - register now: 
+http://www.gothawte.com/rd521.html
