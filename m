@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000726]: headphone output on the docking station (Dell Lattitude D400) does not work
-Date: Tue, 11 Jan 2005 13:11:23 +0100
-Message-ID: <e40dcd7e2e6fa0cd341e285e662c3fa7@bugtrack.alsa-project.org>
+Date: Tue, 11 Jan 2005 13:15:51 +0100
+Message-ID: <405871fa0396392308f48cac2e1d1df2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 86ABE2EA
-	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 13:11:23 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id DC9CF2E2
+	for <alsa-devel@alsa-project.org>; Tue, 11 Jan 2005 13:15:51 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               debian
 Kernel Version:             2.6.8, custom build
 ======================================================================
 Date Submitted:             12-15-2004 17:26 CET
-Last Modified:              01-11-2005 13:11 CET
+Last Modified:              01-11-2005 13:15 CET
 ======================================================================
 Summary:                    headphone output on the docking station (Dell
 Lattitude D400) does not work
@@ -50,12 +50,6 @@ Support of a headphone jack on the docking station is missing.
 Hardware: Dell Latitude D400 with docking station, 
 Intel 82810DB AC97 Audio
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 01-07-05 19:56 
-----------------------------------------------------------------------
-Which codec?  Attach the contents of /proc/asound/card0/codec97#0/* files
-(and /etc/asound.state).
 
 ----------------------------------------------------------------------
  vassili - 01-11-05 13:11 
@@ -70,6 +64,34 @@ Master (internal speaker of the laptop) - working OK
 Headphone on the laptop - working OK
 digital out on the docking station - untested
 
+----------------------------------------------------------------------
+ vassili - 01-11-05 13:15 
+----------------------------------------------------------------------
+registers and asound.state are in the attached file codecs
+$ cat  /proc/asound/card0/codec97#0/ac97#0-0
+
+0-0/0: SigmaTel STAC9750/51
+
+Capabilities     : -headphone out-
+DAC resolution   : 20-bit
+ADC resolution   : 20-bit
+3D enhancement   : SigmaTel 3D Enhancement
+
+Current setup
+Mic gain         : +20dB [+20dB]
+POP path         : pre 3D
+Sim. stereo      : off
+3D enhancement   : on
+Loudness         : off
+Mono output      : MIX
+Mic select       : Mic1
+ADC/DAC loopback : off
+Extended ID      : codec=0 rev=1 AMAP DSA=0 SPDIF VRA
+Extended status  : SPCV SPDIF=10/11 SPDIF VRA
+PCM front DAC    : 44100Hz
+PCM ADC          : 48000Hz
+SPDIF Control    : Consumer PCM Category=0x2 Generation=1 Rate=48kHz
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -79,6 +101,7 @@ Date Modified  Username       Field                    Change
 01-07-05 19:56 tiwai          Note Added: 0003120                          
 01-11-05 13:02 vassili        File Added: codecs                           
 01-11-05 13:11 vassili        Note Added: 0003144                          
+01-11-05 13:15 vassili        Note Added: 0003145                          
 ======================================================================
 
 
