@@ -1,13 +1,14 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: Question
-Date: Wed, 3 Mar 2004 23:18:17 +0100 (CET)
+From: Russell King <rmk+alsa@arm.linux.org.uk>
+Subject: Re: runtime->dma_addr
+Date: Wed, 3 Mar 2004 23:10:26 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0403032301350.567@autumn>
-References: <20040303214409.ZMLB23746.tomts5-srv.bellnexxia.net@sympatico.ca>
+Message-ID: <20040303231026.C15007@flint.arm.linux.org.uk>
+References: <F509E6111989D311B63700805FA761DA09F2905D@DBDE01> <Pine.LNX.4.58.0403031928440.2089@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20040303214409.ZMLB23746.tomts5-srv.bellnexxia.net@sympatico.ca>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.58.0403031928440.2089@pnote.perex-int.cz>; from perex@suse.cz on Wed, Mar 03, 2004 at 07:29:19PM +0100
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,41 +17,45 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: jacqueslen@sympatico.ca
-Cc: alsa-devel@lists.sourceforge.net
+To: Jaroslav Kysela <perex@suse.cz>
+Cc: "Gupta, Kshitij" <kshitij@ti.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-[jacqueslen@sympatico.ca]
+On Wed, Mar 03, 2004 at 07:29:19PM +0100, Jaroslav Kysela wrote:
+> On Wed, 3 Mar 2004, Gupta, Kshitij wrote:
+> > hi,
+> > 	Can someone please explain me what is  the difference between
+> > runtime->dma_addr and runtime->dma_area
+> > 
+> > where runtime = substream->runtime
+> > 
+> > I am getting a very strange problem where I am getting a rumtime->dma_addr
+> > value as 0 while runtime->dma_area is a proper value.  
+> > Any hints will be helpful
+> 
+> dma_area is virtual address (visible from the CPU view)
+> dma_addr is the physical bus address (visible from the hardware)
 
->Hullo, I can't seem to find how to create MIDI channel mode messages
->(like "reset all controllers" or "all notes off"), nor can I find out
->how to create many MIDI meta events (like "text event" or "copyright
->notice" or "sequence name"), I've been able to find out how to create
->some events at
->http://www.alsa-project.org/alsa-doc/alsa-lib/group___seq_middle.html
->, but not very many. Anyone have any ideas?
+Not quite true - dma_addr is the bus address.
 
-ad 1: standard MIDI controller specs can be found all over the 'net,
-but the best thing is to consult the target device documentation.
-if the device receiving the controller event interprets it as an
-'omni' event, it will simply ignore the event channel, and so would
-you.
+Linux has three memory spaces: virtual, physical and bus.  The value
+returned from dma_alloc_coherent/pci_alloc_consistent has always been
+this magical "bus" address which may be unique to the device it's
+being programmed into.
 
-to prepare controller event data, i use:
+This is why DMA-mapping.txt says:
 
-    snd_seq_event_t packet;
+  pci_alloc_consistent returns two values: the virtual address which you
+  can use to access it from the CPU and dma_handle which you pass to the
+  card.
 
-    packet.type = SND_SEQ_EVENT_CONTROLLER;
-    packet.data.control.channel = channel;
-    packet.data.control.param = controller;
-    packet.data.control.value = value;
+rather than calling dma_handle the "physical" address.
 
-ad 2: afaik, you can't send meta events via the ALSA sequencer. they
-only make sense within a MIDI file.
-
-cheers,
-
-tim
+-- 
+Russell King
+ Linux kernel    2.6 ARM Linux   - http://www.arm.linux.org.uk/
+ maintainer of:  2.6 PCMCIA      - http://pcmcia.arm.linux.org.uk/
+                 2.6 Serial core
 
 
 -------------------------------------------------------
