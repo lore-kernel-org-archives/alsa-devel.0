@@ -1,14 +1,14 @@
-From: Pavel Machek <pavel@suse.cz>
-Subject: driver model type fixes for ALSA
-Date: Fri, 28 Jan 2005 19:35:59 +0100
-Message-ID: <20050128183559.GA9199@elf.ucw.cz>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000848]: Intel HDA (C-Media 9880) SPDIF Out
+Date: Fri, 28 Jan 2005 19:01:45 +0100
+Message-ID: <f56ba0fc35e3220a6aa3ba3e4b70f2b6@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from amd.ucw.cz (gprs213-105.eurotel.cz [160.218.213.105])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 9FB1C206
-	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 19:36:24 +0100 (MET)
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5F2B206
+	for <alsa-devel@alsa-project.org>; Fri, 28 Jan 2005 19:01:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,525 +18,337 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz, alsa-devel@alsa-project.org, linux-pm@osdl.org, tiwai@suse.de
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
 
-suspend() routines no longer get u32 as their parameter (they get
-pm_message_t, which is u32 for now, but will change in 2.6.12 or
-so). This fixes ALSA to notice this, and uses constants with right
-types where appropriate. It results in no code changes. [Best results
-will be when patching against latest -mm, you may get some warnings if
-you patch it into older kernel, but it should still do the right
-thing.] Please apply,
-							Pavel
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=848> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   848
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.8-ac8
+======================================================================
+Date Submitted:             01-25-2005 15:28 CET
+Last Modified:              01-28-2005 19:01 CET
+======================================================================
+Summary:                    Intel HDA (C-Media 9880) SPDIF Out
+Description: 
+When i set in modprobe.conf the options snd-xxx model=full_dig, there is no
+output signal on SPDIF (Coax).
+I try:
+aplay -D hw:0,1 (<--digital out) else.wav
+the command run normally, but no output on spdif out.the same with xmms
+(with ALSA, on hw:0,1).
 
---- clean/sound/core/init.c	2005-01-22 02:47:30.000000000 +0100
-+++ linux/sound/core/init.c	2005-01-19 11:59:14.000000000 +0100
-@@ -719,7 +719,7 @@
-  * handler and from the control API.
-  */
- int snd_card_set_pm_callback(snd_card_t *card,
--			     int (*suspend)(snd_card_t *, unsigned int),
-+			     int (*suspend)(snd_card_t *, pm_message_t),
- 			     int (*resume)(snd_card_t *, unsigned int),
- 			     void *private_data)
- {
-@@ -765,7 +765,7 @@
-  * from the ALSA's common PM handler and from the control API.
-  */
- int snd_card_set_dev_pm_callback(snd_card_t *card, int type,
--				 int (*suspend)(snd_card_t *, unsigned int),
-+				 int (*suspend)(snd_card_t *, pm_message_t),
- 				 int (*resume)(snd_card_t *, unsigned int),
- 				 void *private_data)
- {
-@@ -778,7 +778,7 @@
- }
- 
- #ifdef CONFIG_PCI
--int snd_card_pci_suspend(struct pci_dev *dev, u32 state)
-+int snd_card_pci_suspend(struct pci_dev *dev, pm_message_t state)
- {
- 	snd_card_t *card = pci_get_drvdata(dev);
- 	int err;
---- clean/sound/drivers/vx/vx_core.c	2005-01-22 02:49:22.000000000 +0100
-+++ linux/sound/drivers/vx/vx_core.c	2005-01-28 19:18:10.000000000 +0100
-@@ -718,7 +718,7 @@
- /*
-  * suspend
-  */
--static int snd_vx_suspend(snd_card_t *card, unsigned int state)
-+static int snd_vx_suspend(snd_card_t *card, pm_message_t state)
- {
- 	vx_core_t *chip = card->pm_private_data;
- 	unsigned int i;
---- clean/sound/isa/ad1848/ad1848_lib.c	2005-01-22 02:48:59.000000000 +0100
-+++ linux/sound/isa/ad1848/ad1848_lib.c	2005-01-28 19:18:10.000000000 +0100
-@@ -644,7 +644,7 @@
- }
- 
- #ifdef CONFIG_PM
--static int snd_ad1848_suspend(snd_card_t *card, unsigned int state)
-+static int snd_ad1848_suspend(snd_card_t *card, pm_message_t state)
- {
- 	ad1848_t *chip = card->pm_private_data;
- 
---- clean/sound/isa/cs423x/cs4231_lib.c	2005-01-22 02:47:30.000000000 +0100
-+++ linux/sound/isa/cs423x/cs4231_lib.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1394,7 +1394,7 @@
- #endif
- }
- 
--static int snd_cs4231_pm_suspend(snd_card_t *card, unsigned int state)
-+static int snd_cs4231_pm_suspend(snd_card_t *card, pm_message_t state)
- {
- 	cs4231_t *chip = card->pm_private_data;
- 	if (chip->suspend)
---- clean/sound/isa/es18xx.c	2005-01-22 02:47:49.000000000 +0100
-+++ linux/sound/isa/es18xx.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1612,7 +1612,7 @@
- 
- /* Power Management support functions */
- #ifdef CONFIG_PM
--static int snd_es18xx_suspend(snd_card_t *card, unsigned int state)
-+static int snd_es18xx_suspend(snd_card_t *card, pm_message_t state)
- {
- 	es18xx_t *chip = card->pm_private_data;
- 
---- clean/sound/isa/opl3sa2.c	2005-01-22 02:49:12.000000000 +0100
-+++ linux/sound/isa/opl3sa2.c	2005-01-28 19:18:10.000000000 +0100
-@@ -529,7 +529,7 @@
- 
- /* Power Management support functions */
- #ifdef CONFIG_PM
--static int snd_opl3sa2_suspend(snd_card_t *card, unsigned int state)
-+static int snd_opl3sa2_suspend(snd_card_t *card, pm_message_t state)
- {
- 	opl3sa2_t *chip = card->pm_private_data;
- 
---- clean/sound/oss/ali5455.c	2005-01-22 02:48:45.000000000 +0100
-+++ linux/sound/oss/ali5455.c	2005-01-28 19:18:10.000000000 +0100
-@@ -3528,7 +3528,7 @@
- }
- 
- #ifdef CONFIG_PM
--static int ali_pm_suspend(struct pci_dev *dev, u32 pm_state)
-+static int ali_pm_suspend(struct pci_dev *dev, pm_message_t pm_state)
- {
- 	struct ali_card *card = pci_get_drvdata(dev);
- 	struct ali_state *state;
---- clean/sound/oss/cs4281/cs4281_wrapper-24.c	2005-01-22 02:47:48.000000000 +0100
-+++ linux/sound/oss/cs4281/cs4281_wrapper-24.c	2005-01-28 19:18:10.000000000 +0100
-@@ -27,7 +27,7 @@
- #include <linux/spinlock.h>
- 
- static int cs4281_resume_null(struct pci_dev *pcidev) { return 0; }
--static int cs4281_suspend_null(struct pci_dev *pcidev, u32 state) { return 0; }
-+static int cs4281_suspend_null(struct pci_dev *pcidev, pm_message_t state) { return 0; }
- 
- #define free_dmabuf(state, dmabuf) \
- 	pci_free_consistent(state->pcidev, \
---- clean/sound/oss/cs46xx.c	2005-01-22 02:49:21.000000000 +0100
-+++ linux/sound/oss/cs46xx.c	2005-01-28 19:18:10.000000000 +0100
-@@ -388,7 +388,7 @@
- static int cs46xx_powerup(struct cs_card *card, unsigned int type);
- static int cs461x_powerdown(struct cs_card *card, unsigned int type, int suspendflag);
- static void cs461x_clear_serial_FIFOs(struct cs_card *card, int type);
--static int cs46xx_suspend_tbl(struct pci_dev *pcidev, u32 state);
-+static int cs46xx_suspend_tbl(struct pci_dev *pcidev, pm_message_t state);
- static int cs46xx_resume_tbl(struct pci_dev *pcidev);
- 
- #ifndef CS46XX_ACPI_SUPPORT
-@@ -5774,7 +5774,7 @@
- #endif
- 
- #if CS46XX_ACPI_SUPPORT
--static int cs46xx_suspend_tbl(struct pci_dev *pcidev, u32 state)
-+static int cs46xx_suspend_tbl(struct pci_dev *pcidev, pm_message_t state)
- {
- 	struct cs_card *s = PCI_GET_DRIVER_DATA(pcidev);
- 	CS_DBGOUT(CS_PM | CS_FUNCTION, 2, 
---- clean/sound/oss/cs46xxpm-24.h	2005-01-22 02:48:58.000000000 +0100
-+++ linux/sound/oss/cs46xxpm-24.h	2005-01-28 19:18:10.000000000 +0100
-@@ -36,7 +36,7 @@
- * for now (12/22/00) only enable the pm_register PM support.
- * allow these table entries to be null.
- */
--static int cs46xx_suspend_tbl(struct pci_dev *pcidev, u32 state);
-+static int cs46xx_suspend_tbl(struct pci_dev *pcidev, pm_message_t state);
- static int cs46xx_resume_tbl(struct pci_dev *pcidev);
- #define cs_pm_register(a, b, c)  NULL
- #define cs_pm_unregister_all(a) 
---- clean/sound/oss/esssolo1.c	2005-01-22 02:47:15.000000000 +0100
-+++ linux/sound/oss/esssolo1.c	2005-01-28 19:18:10.000000000 +0100
-@@ -2257,7 +2257,7 @@
- }
- 
- static int
--solo1_suspend(struct pci_dev *pci_dev, u32 state) {
-+solo1_suspend(struct pci_dev *pci_dev, pm_message_t state) {
- 	struct solo1_state *s = (struct solo1_state*)pci_get_drvdata(pci_dev);
- 	if (!s)
- 		return 1;
---- clean/sound/oss/i810_audio.c	2005-01-22 02:48:35.000000000 +0100
-+++ linux/sound/oss/i810_audio.c	2005-01-28 19:18:10.000000000 +0100
-@@ -3457,7 +3457,7 @@
- }
- 
- #ifdef CONFIG_PM
--static int i810_pm_suspend(struct pci_dev *dev, u32 pm_state)
-+static int i810_pm_suspend(struct pci_dev *dev, pm_message_t pm_state)
- {
-         struct i810_card *card = pci_get_drvdata(dev);
-         struct i810_state *state;
---- clean/sound/oss/maestro3.c	2005-01-22 02:48:48.000000000 +0100
-+++ linux/sound/oss/maestro3.c	2005-01-28 19:18:10.000000000 +0100
-@@ -375,7 +375,7 @@
-  * I'm not very good at laying out functions in a file :)
-  */
- static int m3_notifier(struct notifier_block *nb, unsigned long event, void *buf);
--static int m3_suspend(struct pci_dev *pci_dev, u32 state);
-+static int m3_suspend(struct pci_dev *pci_dev, pm_message_t state);
- static void check_suspend(struct m3_card *card);
- 
- static struct notifier_block m3_reboot_nb = {
-@@ -2777,12 +2777,12 @@
- 
-     for(card = devs; card != NULL; card = card->next) {
-         if(!card->in_suspend)
--            m3_suspend(card->pcidev, 3); /* XXX legal? */
-+            m3_suspend(card->pcidev, PMSG_SUSPEND); /* XXX legal? */
-     }
-     return 0;
- }
- 
--static int m3_suspend(struct pci_dev *pci_dev, u32 state)
-+static int m3_suspend(struct pci_dev *pci_dev, pm_message_t state)
- {
-     unsigned long flags;
-     int i;
---- clean/sound/oss/trident.c	2005-01-22 02:48:35.000000000 +0100
-+++ linux/sound/oss/trident.c	2005-01-28 19:18:10.000000000 +0100
-@@ -487,7 +487,7 @@
- static struct trident_channel *ali_alloc_pcm_channel(struct trident_card *card);
- static void ali_restore_regs(struct trident_card *card);
- static void ali_save_regs(struct trident_card *card);
--static int trident_suspend(struct pci_dev *dev, u32 unused);
-+static int trident_suspend(struct pci_dev *dev, pm_message_t unused);
- static int trident_resume(struct pci_dev *dev);
- static void ali_free_pcm_channel(struct trident_card *card, unsigned int channel);
- static int ali_setup_multi_channels(struct trident_card *card, int chan_nums);
-@@ -3723,7 +3723,7 @@
- }
- 
- static int
--trident_suspend(struct pci_dev *dev, u32 unused)
-+trident_suspend(struct pci_dev *dev, pm_message_t unused)
- {
- 	struct trident_card *card = pci_get_drvdata(dev);
- 
---- clean/sound/oss/ymfpci.c	2005-01-22 02:48:27.000000000 +0100
-+++ linux/sound/oss/ymfpci.c	2005-01-28 19:18:10.000000000 +0100
-@@ -2074,7 +2074,7 @@
- /*
-  */
- 
--static int ymf_suspend(struct pci_dev *pcidev, u32 unused)
-+static int ymf_suspend(struct pci_dev *pcidev, pm_message_t unused)
- {
- 	struct ymf_unit *unit = pci_get_drvdata(pcidev);
- 	unsigned long flags;
---- clean/sound/pci/ali5451/ali5451.c	2005-01-22 02:48:58.000000000 +0100
-+++ linux/sound/pci/ali5451/ali5451.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1894,7 +1894,7 @@
- }
- 
- #ifdef CONFIG_PM
--static int ali_suspend(snd_card_t *card, unsigned int state)
-+static int ali_suspend(snd_card_t *card, pm_message_t state)
- {
- 	ali_t *chip = card->pm_private_data;
- 	ali_image_t *im;
---- clean/sound/pci/atiixp.c	2005-01-22 02:48:20.000000000 +0100
-+++ linux/sound/pci/atiixp.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1392,7 +1392,7 @@
- /*
-  * power management
-  */
--static int snd_atiixp_suspend(snd_card_t *card, unsigned int state)
-+static int snd_atiixp_suspend(snd_card_t *card, pm_message_t state)
- {
- 	atiixp_t *chip = card->pm_private_data;
- 	int i;
-@@ -1406,7 +1406,7 @@
- 	snd_atiixp_aclink_down(chip);
- 	snd_atiixp_chip_stop(chip);
- 
--	pci_set_power_state(chip->pci, 3);
-+	pci_set_power_state(chip->pci, PCI_D3hot);
- 	pci_disable_device(chip->pci);
- 	return 0;
- }
-@@ -1417,7 +1417,7 @@
- 	int i;
- 
- 	pci_enable_device(chip->pci);
--	pci_set_power_state(chip->pci, 0);
-+	pci_set_power_state(chip->pci, PCI_D0);
- 	pci_set_master(chip->pci);
- 
- 	snd_atiixp_aclink_reset(chip);
---- clean/sound/pci/atiixp_modem.c	2005-01-22 02:49:16.000000000 +0100
-+++ linux/sound/pci/atiixp_modem.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1108,7 +1108,7 @@
- /*
-  * power management
-  */
--static int snd_atiixp_suspend(snd_card_t *card, unsigned int state)
-+static int snd_atiixp_suspend(snd_card_t *card, pm_message_t state)
- {
- 	atiixp_t *chip = card->pm_private_data;
- 	int i;
-@@ -1122,7 +1122,7 @@
- 	snd_atiixp_aclink_down(chip);
- 	snd_atiixp_chip_stop(chip);
- 
--	pci_set_power_state(chip->pci, 3);
-+	pci_set_power_state(chip->pci, PCI_D3hot);
- 	pci_disable_device(chip->pci);
- 	return 0;
- }
-@@ -1133,7 +1133,7 @@
- 	int i;
- 
- 	pci_enable_device(chip->pci);
--	pci_set_power_state(chip->pci, 0);
-+	pci_set_power_state(chip->pci, PCI_D0);
- 	pci_set_master(chip->pci);
- 
- 	snd_atiixp_aclink_reset(chip);
---- clean/sound/pci/cs4281.c	2005-01-22 02:48:58.000000000 +0100
-+++ linux/sound/pci/cs4281.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1376,7 +1376,7 @@
- 
- static int snd_cs4281_chip_init(cs4281_t *chip); /* defined below */
- #ifdef CONFIG_PM
--static int cs4281_suspend(snd_card_t *card, unsigned int state);
-+static int cs4281_suspend(snd_card_t *card, pm_message_t state);
- static int cs4281_resume(snd_card_t *card, unsigned int state);
- #endif
- 
-@@ -2037,7 +2037,7 @@
- 
- #define CLKCR1_CKRA                             0x00010000L
- 
--static int cs4281_suspend(snd_card_t *card, unsigned int state)
-+static int cs4281_suspend(snd_card_t *card, pm_message_t state)
- {
- 	cs4281_t *chip = card->pm_private_data;
- 	u32 ulCLK;
---- clean/sound/pci/cs46xx/cs46xx_lib.c	2005-01-22 02:46:59.000000000 +0100
-+++ linux/sound/pci/cs46xx/cs46xx_lib.c	2005-01-28 19:18:10.000000000 +0100
-@@ -3704,7 +3704,7 @@
-  * APM support
-  */
- #ifdef CONFIG_PM
--static int snd_cs46xx_suspend(snd_card_t *card, unsigned int state)
-+static int snd_cs46xx_suspend(snd_card_t *card, pm_message_t state)
- {
- 	cs46xx_t *chip = card->pm_private_data;
- 	int amp_saved;
---- clean/sound/pci/es1938.c	2005-01-22 02:48:28.000000000 +0100
-+++ linux/sound/pci/es1938.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1381,7 +1381,7 @@
- };
- 
- 
--static int es1938_suspend(snd_card_t *card, unsigned int state)
-+static int es1938_suspend(snd_card_t *card, pm_message_t state)
- {
- 	es1938_t *chip = card->pm_private_data;
- 	unsigned char *s, *d;
---- clean/sound/pci/es1968.c	2005-01-22 02:48:34.000000000 +0100
-+++ linux/sound/pci/es1968.c	2005-01-19 11:59:14.000000000 +0100
-@@ -2404,7 +2404,7 @@
- /*
-  * PM support
-  */
--static int es1968_suspend(snd_card_t *card, unsigned int state)
-+static int es1968_suspend(snd_card_t *card, pm_message_t state)
- {
- 	es1968_t *chip = card->pm_private_data;
- 
---- clean/sound/pci/intel8x0.c	2005-01-22 02:48:22.000000000 +0100
-+++ linux/sound/pci/intel8x0.c	2005-01-22 21:25:20.000000000 +0100
-@@ -2309,7 +2309,7 @@
- /*
-  * power management
-  */
--static int intel8x0_suspend(snd_card_t *card, unsigned int state)
-+static int intel8x0_suspend(snd_card_t *card, pm_message_t state)
- {
- 	intel8x0_t *chip = card->pm_private_data;
- 	int i;
---- clean/sound/pci/intel8x0m.c	2005-01-22 02:48:19.000000000 +0100
-+++ linux/sound/pci/intel8x0m.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1078,7 +1078,7 @@
- /*
-  * power management
-  */
--static int intel8x0m_suspend(snd_card_t *card, unsigned int state)
-+static int intel8x0m_suspend(snd_card_t *card, pm_message_t state)
- {
- 	intel8x0_t *chip = card->pm_private_data;
- 	int i;
---- clean/sound/pci/maestro3.c	2005-01-22 02:48:21.000000000 +0100
-+++ linux/sound/pci/maestro3.c	2005-01-19 11:59:14.000000000 +0100
-@@ -2385,7 +2385,7 @@
-  * APM support
-  */
- #ifdef CONFIG_PM
--static int m3_suspend(snd_card_t *card, unsigned int state)
-+static int m3_suspend(snd_card_t *card, pm_message_t state)
- {
- 	m3_t *chip = card->pm_private_data;
- 	int i, index;
---- clean/sound/pci/nm256/nm256.c	2005-01-22 02:48:48.000000000 +0100
-+++ linux/sound/pci/nm256/nm256.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1267,7 +1267,7 @@
-  * APM event handler, so the card is properly reinitialized after a power
-  * event.
-  */
--static int nm256_suspend(snd_card_t *card, unsigned int state)
-+static int nm256_suspend(snd_card_t *card, pm_message_t state)
- {
- 	nm256_t *chip = card->pm_private_data;
- 
---- clean/sound/pci/trident/trident_main.c	2005-01-22 02:48:28.000000000 +0100
-+++ linux/sound/pci/trident/trident_main.c	2005-01-28 19:18:10.000000000 +0100
-@@ -48,7 +48,7 @@
- static int snd_trident_pcm_mixer_free(trident_t *trident, snd_trident_voice_t * voice, snd_pcm_substream_t *substream);
- static irqreturn_t snd_trident_interrupt(int irq, void *dev_id, struct pt_regs *regs);
- #ifdef CONFIG_PM
--static int snd_trident_suspend(snd_card_t *card, unsigned int state);
-+static int snd_trident_suspend(snd_card_t *card, pm_message_t state);
- static int snd_trident_resume(snd_card_t *card, unsigned int state);
- #endif
- static int snd_trident_sis_reset(trident_t *trident);
-@@ -3921,7 +3921,7 @@
- }
- 
- #ifdef CONFIG_PM
--static int snd_trident_suspend(snd_card_t *card, unsigned int state)
-+static int snd_trident_suspend(snd_card_t *card, pm_message_t state)
- {
- 	trident_t *trident = card->pm_private_data;
- 
---- clean/sound/pci/via82xx.c	2005-01-22 02:48:48.000000000 +0100
-+++ linux/sound/pci/via82xx.c	2005-01-19 11:59:14.000000000 +0100
-@@ -1895,7 +1895,7 @@
- /*
-  * power management
-  */
--static int snd_via82xx_suspend(snd_card_t *card, unsigned int state)
-+static int snd_via82xx_suspend(snd_card_t *card, pm_message_t state)
- {
- 	via82xx_t *chip = card->pm_private_data;
- 	int i;
---- clean/sound/pci/via82xx_modem.c	2005-01-22 02:48:58.000000000 +0100
-+++ linux/sound/pci/via82xx_modem.c	2005-01-28 19:18:10.000000000 +0100
-@@ -1034,7 +1034,7 @@
- /*
-  * power management
-  */
--static int snd_via82xx_suspend(snd_card_t *card, unsigned int state)
-+static int snd_via82xx_suspend(snd_card_t *card, pm_message_t state)
- {
- 	via82xx_t *chip = card->pm_private_data;
- 	int i;
---- clean/sound/pci/ymfpci/ymfpci_main.c	2005-01-22 02:48:48.000000000 +0100
-+++ linux/sound/pci/ymfpci/ymfpci_main.c	2005-01-28 19:18:10.000000000 +0100
-@@ -2142,7 +2142,7 @@
- };
- #define YDSXGR_NUM_SAVED_REGS	ARRAY_SIZE(saved_regs_index)
- 
--static int snd_ymfpci_suspend(snd_card_t *card, unsigned int state)
-+static int snd_ymfpci_suspend(snd_card_t *card, pm_message_t state)
- {
- 	ymfpci_t *chip = card->pm_private_data;
- 	unsigned int i;
---- clean/sound/pcmcia/pdaudiocf/pdaudiocf.c	2005-01-22 02:47:32.000000000 +0100
-+++ linux/sound/pcmcia/pdaudiocf/pdaudiocf.c	2005-01-28 19:18:10.000000000 +0100
-@@ -342,7 +342,7 @@
- 		link->state |= DEV_SUSPEND;
- 		if (chip) {
- 			snd_printdd(KERN_DEBUG "snd_pdacf_suspend calling\n");
--			snd_pdacf_suspend(chip->card, 0);
-+			snd_pdacf_suspend(chip->card, PMSG_SUSPEND);
- 		}
- 		/* Fall through... */
- 	case CS_EVENT_RESET_PHYSICAL:
---- clean/sound/pcmcia/pdaudiocf/pdaudiocf.h	2005-01-22 02:46:44.000000000 +0100
-+++ linux/sound/pcmcia/pdaudiocf/pdaudiocf.h	2005-01-28 19:18:10.000000000 +0100
-@@ -134,7 +134,7 @@
- int snd_pdacf_ak4117_create(pdacf_t *pdacf);
- void snd_pdacf_powerdown(pdacf_t *chip);
- #ifdef CONFIG_PM
--int snd_pdacf_suspend(snd_card_t *card, unsigned int state);
-+int snd_pdacf_suspend(snd_card_t *card, pm_message_t state);
- int snd_pdacf_resume(snd_card_t *card, unsigned int state);
- #endif
- int snd_pdacf_pcm_new(pdacf_t *chip);
---- clean/sound/pcmcia/pdaudiocf/pdaudiocf_core.c	2005-01-22 02:47:31.000000000 +0100
-+++ linux/sound/pcmcia/pdaudiocf/pdaudiocf_core.c	2005-01-28 19:18:10.000000000 +0100
-@@ -255,7 +255,7 @@
- 
- #ifdef CONFIG_PM
- 
--int snd_pdacf_suspend(snd_card_t *card, unsigned int state)
-+int snd_pdacf_suspend(snd_card_t *card, pm_message_t state)
- {
- 	pdacf_t *chip = card->pm_private_data;
- 	u16 val;
---- clean/include/sound/core.h	2005-01-22 02:49:19.000000000 +0100
-+++ linux/include/sound/core.h	2005-01-19 11:59:14.000000000 +0100
-@@ -26,6 +26,7 @@
- #include <asm/semaphore.h>		/* struct semaphore */
- #include <linux/rwsem.h>		/* struct rw_semaphore */
- #include <linux/workqueue.h>		/* struct workqueue_struct */
-+#include <linux/pm.h>			/* pm_message_t */
- 
- /* Typedef's */
- typedef struct timespec snd_timestamp_t;
-@@ -206,18 +207,18 @@
- 	wake_up(&card->power_sleep);
- }
- int snd_card_set_pm_callback(snd_card_t *card,
--			     int (*suspend)(snd_card_t *, unsigned int),
-+			     int (*suspend)(snd_card_t *, pm_message_t),
- 			     int (*resume)(snd_card_t *, unsigned int),
- 			     void *private_data);
- int snd_card_set_dev_pm_callback(snd_card_t *card, int type,
--				 int (*suspend)(snd_card_t *, unsigned int),
-+				 int (*suspend)(snd_card_t *, pm_message_t),
- 				 int (*resume)(snd_card_t *, unsigned int),
- 				 void *private_data);
- #define snd_card_set_isa_pm_callback(card,suspend,resume,data) \
- 	snd_card_set_dev_pm_callback(card, PM_ISA_DEV, suspend, resume, data)
- #ifdef CONFIG_PCI
- #ifndef SND_PCI_PM_CALLBACKS
--int snd_card_pci_suspend(struct pci_dev *dev, u32 state);
-+int snd_card_pci_suspend(struct pci_dev *dev, pm_message_t state);
- int snd_card_pci_resume(struct pci_dev *dev);
- #define SND_PCI_PM_CALLBACKS \
- 	.suspend = snd_card_pci_suspend,  .resume = snd_card_pci_resume
+======================================================================
 
- 
--- 
-People were complaining that M$ turns users into beta-testers...
-...jr ghea gurz vagb qrirybcref, naq gurl frrz gb yvxr vg gung jnl!
+----------------------------------------------------------------------
+ nc - 01-28-05 03:07 
+----------------------------------------------------------------------
+I am also having the same issues - when I unmute 'IEC958' with alsamixer,
+the 'Optical' light comes on on my receiver, but I can't get any audio out
+with 'aplay -D hw:0,1 <file>'. This is on a Debian unstable box with Alsa
+1.0.8.
+
+My motherboard is a MSI 915P board, I'm using the integrated audio. Audio
+seems to work ok from line out.
+
+chromium:/proc/asound/card0# cat /proc/asound/card0/codec#0
+Codec: C-Media CMI9880
+Address: 0
+Vendor Id: 0x434d4980
+Subsystem Id: 0x0
+Revision Id: 0x90402
+Default PCM: rates 0x540, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x80 0x80
+Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x80 0x80
+Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x80 0x80
+Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x80 0x80
+  PCM: rates 0x000, bits 0x00, types 0x5
+Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals: 0x80 0x80
+  PCM: rates 0x160, bits 0x02, types 0x0
+  Connection: 9
+     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals: 0x80 0x80
+  PCM: rates 0x160, bits 0x02, types 0x0
+  Connection: 9
+     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
+  PCM: rates 0x160, bits 0x0e, types 0x0
+  Connection: 1
+     0x13
+Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01014110: Line Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x03
+Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01813100: Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x04
+Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01a19100: Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x05
+Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x081033f: IN OUT HP
+  Pin Default 0x01011114: Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x06
+Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x02214000: HP Out at Ext Front
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x02a19000: Mic at Ext Front
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0863: IN
+  Pin Default 0x19330000: CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01450000: SPDIF Out at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x07
+Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
+  Pincap 0x0830: IN OUT
+  Pin Default 0x41c50000: SPDIF In at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01016112: Line Out at Ext Rear
+    Conn = 1/8, Color = Orange
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x41011116: Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+  Amp-Out vals: 0x0f
+
+----------------------------------------------------------------------
+ 1g0R - 01-28-05 19:01 
+----------------------------------------------------------------------
+I want to use coaxial spdif out.
+Here is my cat /proc/asound/card0/codec#0.
+I get no error message, but no sound too on spdif.
+
+[igor@skynet VIDEO_TS]$ cat /proc/asound/card0/codec#0
+Codec: C-Media CMI9880
+Address: 0
+Vendor Id: 0x434d4980
+Subsystem Id: 0x0
+Revision Id: 0x90002
+Default PCM: rates 0x540, bits 0x0e, types 0x1
+Default Amp-In caps: N/A
+Default Amp-Out caps: ofs=0x00, nsteps=0x00, stepsize=0x00, mute=1
+Node 0x03 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x04 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x05 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x06 [Audio Output] wcaps 0x405: Stereo Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x00 0x00
+Node 0x07 [Audio Output] wcaps 0x615: Stereo Digital Amp-Out
+  Amp-Out caps: N/A
+  Amp-Out vals: 0x80 0x80
+  PCM: rates 0x000, bits 0x00, types 0x5
+Node 0x08 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals: 0x80 0x80
+  PCM: rates 0x160, bits 0x02, types 0x0
+  Connection: 9
+     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+Node 0x09 [Audio Input] wcaps 0x10051b: Stereo Amp-In
+  Amp-In caps: ofs=0x00, nsteps=0x1e, stepsize=0x05, mute=1
+  Amp-In vals: 0x80 0x80
+  PCM: rates 0x160, bits 0x02, types 0x0
+  Connection: 9
+     0x0b 0x0c 0x0d 0x0e 0x0f 0x10 0x11 0x1f 0x20
+Node 0x0a [Audio Input] wcaps 0x100791: Stereo Digital
+  PCM: rates 0x160, bits 0x0e, types 0x0
+  Connection: 1
+     0x13
+Node 0x0b [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01014010: Line Out at Ext Rear
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x03
+Node 0x0c [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01813000: Line In at Ext Rear
+    Conn = 1/8, Color = Blue
+  Pin-ctls: 0x20: IN
+  Connection: 1
+     0x04
+Node 0x0d [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01a19000: Mic at Ext Rear
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 1
+     0x05
+Node 0x0e [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x081033f: IN OUT HP
+  Pin Default 0x01011014: Line Out at Ext Rear
+    Conn = 1/8, Color = Black
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 1
+     0x06
+Node 0x0f [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x82214100: HP Out at Ext Front
+    Conn = 1/8, Color = Green
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x10 [Pin Complex] wcaps 0x400581: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x82a19100: Mic at Ext Front
+    Conn = 1/8, Color = Pink
+  Pin-ctls: 0x24: IN
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x11 [Pin Complex] wcaps 0x400001: Stereo
+  Pincap 0x0863: IN
+  Pin Default 0x19330000: CD at Int ATAPI
+    Conn = ATAPI, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x12 [Pin Complex] wcaps 0x400301: Stereo Digital
+  Pincap 0x0810: OUT
+  Pin Default 0x01450000: SPDIF Out at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x40: OUT
+  Connection: 1
+     0x07
+Node 0x13 [Pin Complex] wcaps 0x400281: Stereo Digital
+  Pincap 0x0830: IN OUT
+  Pin Default 0x01c50000: SPDIF In at Ext Rear
+    Conn = Optical, Color = Unknown
+  Pin-ctls: 0x00:
+Node 0x14 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x15 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x16 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x17 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x18 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x19 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1a [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1b [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1c [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1d [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1e [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x1f [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01016012: Line Out at Ext Rear
+    Conn = 1/8, Color = Orange
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x20 [Pin Complex] wcaps 0x400181: Stereo
+  Pincap 0x0833f: IN OUT HP
+  Pin Default 0x01012016: Line Out at Ext Rear
+    Conn = 1/8, Color = Grey
+  Pin-ctls: 0xc0: OUT HP
+  Connection: 4
+     0x03 0x04 0x05 0x06
+Node 0x21 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x22 [Vendor Defined Widget] wcaps 0xf00000: Mono
+Node 0x23 [Beep Generator Widget] wcaps 0x70000c: Mono Amp-Out
+  Amp-Out caps: ofs=0x0f, nsteps=0x0f, stepsize=0x0b, mute=1
+  Amp-Out vals: 0x05
+[igor@skynet VIDEO_TS]$
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-25-05 15:28 1g0R           New Issue                                    
+01-25-05 15:28 1g0R           Distribution              => Fedora Core 3   
+01-25-05 15:28 1g0R           Kernel Version            => 2.6.8-ac8       
+01-25-05 18:04 jbrsubscribe   Note Added: 0003408                          
+01-25-05 18:05 jbrsubscribe   Issue Monitored: jbrsubscribe                    
+01-25-05 18:14 jbrsubscribe   Note Added: 0003409                          
+01-28-05 02:56 nc             Issue Monitored: nc                          
+01-28-05 03:07 nc             Note Added: 0003423                          
+01-28-05 19:01 1g0R           Note Added: 0003434                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
