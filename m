@@ -1,13 +1,16 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: RE:[PATCH] emufx: reduce stack usage
-Date: Tue, 1 Jul 2003 12:29:54 +0200
+From: Nicos Gollan <gtdev@spearhead.de>
+Subject: Re: Hercules Gamesurround Fortissimo III 7.1
+Date: Tue, 1 Jul 2003 14:11:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307011029.MAA10666@www7.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <200307011411.24645.gtdev@spearhead.de>
+References: <200306271848.20758.gtdev@spearhead.de> <200306281504.24313.gtdev@spearhead.de> <vh38yri5zvt.fsf@rovflue.ii.uib.no>
 Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <vh38yri5zvt.fsf@rovflue.ii.uib.no>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,22 +20,24 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: perex@suse.cz, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Thanks,
+On Tuesday 01 July 2003 12:01, Ronny V. Vindenes wrote:
+> Are you sure it's not just the card that is dead/dying? I've been
+> running the card since last year without any problems, except the
+> "distortion at full pcm volume" problem.
 
-I don't need TRAM_POKE (TRAM_PEEK) now (in as10k1 is no way to tell=20
-init values for tram), maybe later.
+The card is working perfectly in Windows, no matter what I do (music, games, 
+...). The only time that I saw similar problemis in Windows was when I had 
+the card running with the stock drivers (Win2k, SP3) where sound was dying 
+after a short time, but that was solved with the drivers on the CD. So I 
+don't think it's a hardware problem.
 
-Peter Zubaj=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D REKLAMA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislus=
-enstva=0ADigitalny fotoaparat Olympus =B5300 v cenach uz od 16.100,- Sk bez=
- DPH=0ANavstivte nas na adrese http://www.somi.sk/akcie.php=0A=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=0A
+Or perhaps it is a known problem that the drivers can work around.
+
+-- 
+Got Backup?
+
 
 
 -------------------------------------------------------
