@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000987]: new chipset
-Date: Sat, 12 Mar 2005 22:49:34 +0100
-Message-ID: <f9164108a312ed9b09ca4fd2ac4eca9d@bugtrack.alsa-project.org>
+Date: Sat, 12 Mar 2005 22:55:42 +0100
+Message-ID: <25ca42f3d8871907853390f649cec33d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 466891C3
-	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 22:49:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C63931C3
+	for <alsa-devel@alsa-project.org>; Sat, 12 Mar 2005 22:55:42 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -21,7 +21,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=987> 
 ======================================================================
@@ -39,7 +39,7 @@ Distribution:               debian useing pure64 sid
 Kernel Version:             2.6.10-9-amd64-k8
 ======================================================================
 Date Submitted:             03-12-2005 22:49 CET
-Last Modified:              03-12-2005 22:49 CET
+Last Modified:              03-12-2005 22:55 CET
 ======================================================================
 Summary:                    new chipset
 Description: 
@@ -59,6 +59,11 @@ Model 1009 Rev 00000000 Serial 10091462
 
 ======================================================================
 
+----------------------------------------------------------------------
+ mitchix - 03-12-05 22:55 
+----------------------------------------------------------------------
+Sorry this is Dup of 901
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -66,6 +71,7 @@ Date Modified  Username       Field                    Change
 03-12-05 22:49 mitchix        Distribution              => debian useing pure64
 sid
 03-12-05 22:49 mitchix        Kernel Version            => 2.6.10-9-amd64-k8
+03-12-05 22:55 mitchix        Note Added: 0003899                          
 ======================================================================
 
 
