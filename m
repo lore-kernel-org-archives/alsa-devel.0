@@ -1,14 +1,13 @@
-From: Carlo Wood <carlo@alinoe.com>
-Subject: Re: OSS layer doesn't ignore xruns.
-Date: Wed, 16 Jul 2003 02:11:56 +0200
+From: "Eliot Blennerhassett" <bigblen@icqmail.com>
+Subject: (no subject)
+Date: Tue, 15 Jul 2003 18:55:10 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030716001156.GA10503@alinoe.com>
-References: <20030715120100.GA20739@alinoe.com> <Pine.LNX.4.44.0307152022090.27533-200000@pnote.perex-int.cz>
+Message-ID: <20030715185511.19935.h007.c012.wm@mail.icqmail.com.criticalpath.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.44.0307152022090.27533-200000@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,33 +16,67 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 15, 2003 at 08:31:50PM +0200, Jaroslav Kysela wrote:
-> Well, in case of urgent help we have something called as SuSE 
-> professional services. You can eventually buy our time, otherwise
-> you will have to wait for our free timeslot (if any).
+The problem I am seeking help on is not an ALSA problem per-se, but as I am
+working on an ALSA driver I thought I'd start here...
+any suggestions for a more appropriate forum will be gratefully accepted.
 
-Like you, I volunteer to code Open Source.  In my case 60 hours/week
-with zero pay.  No need to rub into my face that you don't get paid.
-As I said before, I am not doing this for myself.  There also wasn't
-any hurry (except the deadline of the release of kernel 2.6 imho,
-for which this better had be fixed) - I just wanted to know if someone
-was looking into it.
 
-> I looked to the problem and it seems that the overrun state is handled 
-> differently in the OSS API than ALSA implemented. It seems that the stream 
-> is not stopped but rather the oldest period (fragment) is discarded.
-> 
-> The new code (plus some optimization) is in the ALSA CVS tree. The patch 
-> is attached to this e-mail.
+Background info:
+I have a lowlevel driver that works fine when I used semaphores to prevent
+conention for my hardware.  Access was soley via ioctl into my driver.
 
-Thanks for the patch.  I couldn't have wished a better reply ;).
+I have to change the semaphore to a spinlock now that I also call basically the
+same entry point from a timer routine in my ALSA driver.
 
--- 
-Carlo Wood <carlo@alinoe.com>
+When I record from the card the data is read from the card into a userspace
+buffer
+
+    ptr,size = <Buffer pointer,size received from user application>
+
+    fs = get_fs();
+    set_fs(get_ds());
+    /* Ensure that the data buffer is resident in memory.  */
+    if (!access_ok (wrflag ? VERIFY_WRITE : VERIFY_READ, ptr, bytes))
+    {
+        set_fs(fs);
+        return -EFAULT;
+     }
+
+    /* Inside here is the spinlock, and a copy to the ptr mentioned above */
+    HPI_MessageF (gphHpiSubsys, &hm, &hr, file );
+    
+    set_fs(fs);
+    
+Problem:
+The single change from semaphore to spinlock results in a kernel panic when I
+try to record from my card:
+	Unable to handle kernel paging request at virtual address ...
+
+    
+Question:
+Notwithstanding bad style etc, am I doing something that is fundamentally wrong
+in using a userspace buffer when I am inside a spinlock i.e. in interrupt
+context?  (In the same way as I must not use a semaphore in interrupt context)
+
+Could it be that when I try to write to the buffer it causes a page fault, which
+cannot be handled in interrupt context?
+But I thought that access_ok call should take care of making sure the buffer is
+in memory...
+
+
+TIA for any insights you may have.
+
+Eliot Blennerhassett
+AudioScience Inc.
+--
+Junk footer beyond this point. Read at your own risk.
+
+
+-------------------------------------------------------------
+Sign up for ICQmail at http://www.icq.com/icqmail/signup.html
 
 
 -------------------------------------------------------
