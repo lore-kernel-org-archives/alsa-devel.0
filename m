@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000984]: No Sound
-Date: Wed, 23 Mar 2005 16:02:35 +0100
-Message-ID: <0b5eafd80a660cdc8ecca99f944fe482@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000981]: I don't get any sound on nforce 3 (AMD64 plataform).
+Date: Wed, 23 Mar 2005 16:00:45 +0100
+Message-ID: <f63eb66fe7ec0d8baadc54588aeb883e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 1734027A
-	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:02:36 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 5F562211
+	for <alsa-devel@alsa-project.org>; Wed, 23 Mar 2005 16:00:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,77 +23,59 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=984> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=981> 
 ======================================================================
-Reported By:                mailavj
-Assigned To:                tiwai
+Reported By:                soulhunter
+Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   984
-Category:                   CORE - pcm
+Issue ID:                   981
+Category:                   PCI - intel8x0
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
-Status:                     feedback
-Distribution:               Debian
-Kernel Version:             2.6.7-2
+Status:                     new
+Distribution:               Debian and Gentoo.
+Kernel Version:             2.6.11
 ======================================================================
-Date Submitted:             03-12-2005 19:09 CET
-Last Modified:              03-23-2005 16:02 CET
+Date Submitted:             03-12-2005 01:48 CET
+Last Modified:              03-23-2005 16:00 CET
 ======================================================================
-Summary:                    No Sound
+Summary:                    I don't get any sound on nforce 3 (AMD64 plataform).
 Description: 
-my sound card is Sound MAX integrated Audio with Intel D865 GBF
-motherboard..
-i'm not getting sound output..
-kernel version is 2.6.7-2 and my alsa driver version is 1.0.6-a
-Is there any way to get sound out put on this card using this driver.. 
-please help
+>From kernel version 2.6.9 and up I don't get any sound.  I currently use
+2.6.8.1 (where the sound works just fine).
 
+I even tried to compile 2.6.11 with only snd_intel8x0 as module: nothing.
+
+I have no idea what is going on, yes I looked at the volume settings, and
+unmuted the master and pcm channels.  The sound application seems to be
+"playing", but I get no sound.
+
+My motherboard is a Chaintech VNF250.
 ======================================================================
-Relationships       ID      Summary
-----------------------------------------------------------------------
-duplicate of        0000970 No Sound
-======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 03-18-05 18:14 
+ tiwai - 03-16-05 13:03 
 ----------------------------------------------------------------------
-Apart from that the system is old -- you should check the mixer
-configuration at first.
+Please attach /etc/asound.state and the contents of
+/proc/asound/card0/codec97#0/* files (please use attachments).
 
 ----------------------------------------------------------------------
- jdthood - 03-23-05 16:02 
+ jdthood - 03-23-05 16:00 
 ----------------------------------------------------------------------
-Please send the output of 
-
-   lsmod
-   uname -a
-   lspci
-   cat /proc/asound/version
-   cat /proc/asound/cards
+This could have something to do with the index numbers assigned to the
+drivers.  Please send the output of /proc/asound/cards.  Are you sure you
+are directing sound output to the right card?
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-12-05 19:09 mailavj        New Issue                                    
-03-16-05 13:00 tiwai          Note Added: 0003952                          
-03-16-05 14:56 tiwai          Relationship added       duplicate of 0000970
-03-16-05 14:56 tiwai          Duplicate ID             0 => 970            
-03-16-05 14:56 tiwai          Status                   new => resolved     
-03-16-05 14:56 tiwai          Resolution               open => duplicate   
-03-16-05 14:56 tiwai          Assigned To               => tiwai           
-03-16-05 14:56 tiwai          Assigned To              tiwai =>            
-03-17-05 18:49 mailavj        Distribution              => Debian          
-03-17-05 18:49 mailavj        Kernel Version            => 2.6.7-2         
-03-17-05 18:49 mailavj        Status                   resolved => feedback
-03-17-05 18:49 mailavj        Resolution               duplicate => reopened
-03-17-05 18:49 mailavj        Note Added: 0003981                          
-03-17-05 18:49 mailavj        Assigned To               => tiwai           
-03-17-05 18:50 mailavj        Note Added: 0003982                          
-03-17-05 18:55 rlrevell       Note Added: 0003983                          
-03-18-05 18:14 tiwai          Note Added: 0003999                          
-03-23-05 16:02 jdthood        Note Added: 0004169                          
+03-12-05 01:48 soulhunter     New Issue                                    
+03-12-05 01:48 soulhunter     Distribution              => Debian and Gentoo.
+03-12-05 01:48 soulhunter     Kernel Version            => 2.6.11          
+03-16-05 13:03 tiwai          Note Added: 0003953                          
+03-23-05 16:00 jdthood        Note Added: 0004168                          
 ======================================================================
 
 
