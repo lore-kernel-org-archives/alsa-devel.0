@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000665]: Build failure in /usr/src/alsa/alsa-driver/acore/init.c
-Date: Tue, 23 Nov 2004 18:20:48 +0100
-Message-ID: <ae1fc1e274b7832df0fe82b1a1215708@bugtrack.alsa-project.org>
+Date: Tue, 23 Nov 2004 18:27:55 +0100
+Message-ID: <61e6b7b671982834554f5417bbe5083b@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 478AF2BD
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 18:20:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 218FD2C1
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 18:27:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             11-22-2004 19:31 CET
-Last Modified:              11-23-2004 18:20 CET
+Last Modified:              11-23-2004 18:27 CET
 ======================================================================
 Summary:                    Build failure in
 /usr/src/alsa/alsa-driver/acore/init.c
@@ -67,11 +67,6 @@ profile)
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 11-23-04 17:44 
-----------------------------------------------------------------------
-Did you update both alsa-driver and alsa-kernel trees?
-
-----------------------------------------------------------------------
  ronis - 11-23-04 18:20 
 ----------------------------------------------------------------------
 Yes.   Basically, the first think I do is to run "cvs -z3 update -dP" from
@@ -91,6 +86,14 @@ FLAGS=( "--with-debug=no --with-gnu-ld"
 
 (the FLAGS are what I configure with in each,  and then run make)
 
+----------------------------------------------------------------------
+ tiwai - 11-23-04 18:27 
+----------------------------------------------------------------------
+Hmm, it works fine on my system.  At least there should be no rejected
+files.  So, I suspect that your tree is somehow broken.
+
+Try once cvs clean checkout.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -99,6 +102,7 @@ Date Modified  Username       Field                    Change
 11-23-04 16:52 ronis          Note Added: 0002523                          
 11-23-04 17:44 tiwai          Note Added: 0002524                          
 11-23-04 18:20 ronis          Note Added: 0002525                          
+11-23-04 18:27 tiwai          Note Added: 0002526                          
 ======================================================================
 
 
