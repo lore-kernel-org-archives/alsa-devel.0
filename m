@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000330]: Is Audigy 2 supported by ALSA?
-Date: Wed, 13 Oct 2004 08:12:45 +0200 (CEST)
+Subject: [ALSA - WWW server 0000412]: Matrix does not show that Ensoniq 5880 uses ens1371 driver
+Date: Wed, 13 Oct 2004 08:16:54 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041013061245.484041B00B@server.perex-int.cz>
+Message-ID: <20041013061654.8C1BD1B00B@server.perex-int.cz>
 Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8DEFB2B9
-	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:12:45 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E5118210
+	for <alsa-devel@alsa-project.org>; Wed, 13 Oct 2004 08:16:54 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,49 +22,43 @@ List-Id: alsa-devel@alsa-project.org
 
 The following bug has been RESOLVED.
 ======================================================================
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000330
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_advanced_page.php?bug_id=0000412
 ======================================================================
-Reported By:                digthemdeep
+Reported By:                oanjao
 Assigned To:                perex
 ======================================================================
 Project:                    ALSA - WWW server
-Bug ID:                     330
+Bug ID:                     412
 Category:                   soundcard matrix
 Reproducibility:            always
-Severity:                   minor
+Severity:                   major
 Priority:                   normal
 Status:                     resolved
 Resolution:                 fixed
 ======================================================================
-Date Submitted:             06-10-2004 01:40 CEST
-Last Modified:              10-13-2004 08:12 CEST
+Date Submitted:             07-29-2004 00:31 CEST
+Last Modified:              10-13-2004 08:16 CEST
 ======================================================================
-Summary:                    Is Audigy 2 supported by ALSA?
+Summary:                    Matrix does not show that Ensoniq 5880 uses ens1371 driver
 Description: 
-Audigy 2 is not listed in the soundcard matrix, however it is claimed by
-opensource.creative.com that ALSA supports these cards (almost all of
-them). (Also I find it hard to believe that Audigy 2 is not in the
-matrix... perhaps the matrix is just out of date?)
-
-I wonder if there might also be some Terratec (like Phase 88) products not
-listed which are, in fact, supported. Is E-Mu entirely unsupported? It's
-too bad, I've heard good things about E-Mu.
+Please add the Ensoniq 5880 chipset to the list.  It uses the snd-ens1371
+driver.
 ======================================================================
 
 ----------------------------------------------------------------------
- perex - 10-13-2004 08:12 CEST 
+ perex - 10-13-2004 08:16 CEST 
 ----------------------------------------------------------------------
-Yes, but the support is limited (no 96kHz) added to matrix.
+Added also to Ensoniq table - 5880 is Creative value for newer versions of
+Ensoniq chips.
 
 Bug History
 Date Modified  Username       Field                    Change              
 ======================================================================
-06-10-04 01:40 digthemdeep    New Bug                                      
-06-10-04 02:21 digthemdeep    Bug Monitored: digthemdeep                    
-10-13-04 08:12 perex          Bugnote Added: 0002111                       
-10-13-04 08:12 perex          Assigned To               => perex           
-10-13-04 08:12 perex          Resolution               open => fixed       
-10-13-04 08:12 perex          Status                   new => resolved     
+07-29-04 00:31 oanjao         New Bug                                      
+10-13-04 08:16 perex          Bugnote Added: 0002112                       
+10-13-04 08:16 perex          Assigned To               => perex           
+10-13-04 08:16 perex          Resolution               open => fixed       
+10-13-04 08:16 perex          Status                   new => resolved     
 ======================================================================
 
 
