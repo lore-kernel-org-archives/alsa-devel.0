@@ -1,13 +1,16 @@
-From: Peter Zubaj <pzad@pobox.sk>
-Subject: Re: emu10k1 + audigy
-Date: Wed, 18 Aug 2004 12:35:06 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000452]: Rate control sticks in IEC958 value
+Date: Wed, 18 Aug 2004 12:51:49 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200408181035.i7IAZ5oW013133@www3.pobox.sk>
-Reply-To: Peter Zubaj <pzad@pobox.sk>
-Mime-Version: 1.0
-Content-Type: TEXT/plain; charset=iso-8859-2
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Message-ID: <20040818105149.91A951102F@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E15A825D
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 12:51:49 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id A115B18CF4
+	for <alsa-devel@alsa-project.org>; Wed, 18 Aug 2004 12:51:49 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,45 +19,44 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Then, what way I should follow ???
 
->>=20
->> Hi,
->>=20
->> Question: How to add full support for audigy DSP to emu10k1 driver ???
->>
->> Audigy has 2 times more GPRs as sb live.=20
->> Audigy has 2 times more istruction as sb live.
->> Audigy has more tram lines as sb live (192 internal vs. 128 on sb
->> live, 64 external vs. 32 on sb live).
->>=20
->> I use attached patch (audigy_v4.diff) to do this, but this will break
->> binary compatibility for other app (user of emu10k1 hwdep).
->
->
->I don't think this is a big problem because there is no proper
->(completed) app for emu10k1 hwdep yet  :)=20
->
->> Uses usnigned short instead unsigned char, some members are longer, ...
->>=20
->> Is there better way to do this (support for audigy) ?
->> I would like to have audigy support in alsa cvs.
->
->
->Defining another ioctl for audigy is an option if the binary
->compatibility really matters.
->
->
->Takashi
+The following bug has been SUBMITTED.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000452
+======================================================================
+Reported By:                Andrew
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     452
+Category:                   PCI - ice1724
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             
+======================================================================
+Date Submitted:             08-18-2004 12:51 CEST
+Last Modified:              08-18-2004 12:51 CEST
+======================================================================
+Summary:                    Rate control sticks in IEC958 value
+Description: 
+After setting Multi Track Internal Clock control
+to IEC958 value, this control sticks in this value.
+It is impossible to change the control value to any
+other of the enumerated values. Rebooting does not
+help here. All audio apps do not work now.
+======================================================================
 
-
-
-=0A____________________________________=0Ahttp://www.logofun.pobox.sk - uro=
-bte radost svojmu telefonu=0A
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+08-18-04 12:51 Andrew         New Bug                                      
+======================================================================
 
 
 -------------------------------------------------------
