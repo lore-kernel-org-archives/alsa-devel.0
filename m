@@ -1,12 +1,16 @@
-From: jhall@UU.NET (Jeremy Hall)
-Subject: Re: when did the rme9652 driver break?
-Date: Wed, 20 Feb 2002 02:49:22 -0500 (EST)
-Message-ID: <QQmczn03614.200202200749@neserve0.corp.us.uu.net>
+From: Voluspa <voluspa@bigfoot.com>
+Subject: Re: A volume my mother would have liked ;-)
+Date: Wed, 20 Feb 2002 09:13:52 +0100
+Message-ID: <20020220091352.2912c331.voluspa@bigfoot.com>
+References: <20020219203712.7982523a.voluspa@bigfoot.com>
+	<XFMail.20020219203746.guenther.sohler@newlogic.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <QQmcxa10325.200202191538@neserve0.corp.us.uu.net> from Jeremy Hall
- at "Feb 19, 2002 10:38:22 am"
+Received: from oden.fish.net (h139n1fls24o900.telia.com [213.66.143.139])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA12557
+	for <alsa-devel@alsa-project.org>; Wed, 20 Feb 2002 09:10:00 +0100
+In-Reply-To: <XFMail.20020219203746.guenther.sohler@newlogic.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,61 +19,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jeremy Hall <jhall@UU.NET>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
+To: Guenther Sohler <guenther.sohler@newlogic.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Tue, 19 Feb 2002 20:37:46 +0100 (MET)
+Guenther Sohler wrote:
 
-Actually there appear to be some wierd cases where the driver can still
-cause XRUNS, but these may not be alsa-related things.  Do you have an
-idea where this might be coming from if in alsa? (but don't spend flocks
-of time on it, just a quick think over it)
+> i have the same problem with my audixy card. midi output is far too silent.
 
-_J
+Stay right where you are :-) Compiling kernel 2.5.5 took away my sound (in RealPlayer8) and replaced it with 1-second-static-BEEP-1-second-static-BEEP-etc ad infinitum. Mute button/volume slider still unaffecting the sound.
 
-In the new year, Jeremy Hall wrote:
-> ah yes, now works GREAT! operating with 1.12 of the rme9652.c
-> 
-> _J
-> 
-> In the new year, Takashi Iwai wrote:
-> > At Tue, 19 Feb 2002 10:03:42 -0500 (EST),
-> > Jeremy Hall wrote:
-> > > 
-> > > Hi,
-> > > 
-> > > What is going on? my computer goes on vacation for a week and when it
-> > > returns and updates its CVS, alsa now locks the kernel when I try to use
-> > > the rme9652 card.  Jack whines about loads of xruns, which get larger as
-> > > time goes by, resulting in a system crash that must be hard-reset.
-> > > 
-> > > When were these unstable changes introduced so I may revert back to a more
-> > > stable build?
-> > > 
-> > > Other apps besides jack can cause the computer to lock as well.
-> > 
-> > oops, sorry, perhaps my fault.  a typo was introduced in fixes for
-> > non-intel architectures.
-> > 
-> > now fixed on cvs.  please give a try.
-> > 
-> > 
-> > Takashi
-> > 
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> > 
-> 
-> 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> 
+Same config as 2.5.5-pre1 and native OSS still broken:
 
+depmod: *** Unresolved symbols in /lib/modules/2.5.5/kernel/sound/oss/sound.o
+depmod:         virt_to_bus_not_defined_use_pci_map
+
+Regards,
+Mats Johannesson
+Sweden
 
 _______________________________________________
 Alsa-devel mailing list
