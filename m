@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000650]: emu10k1 load fail with CT4760 SBLive! OEM
-Date: Mon, 15 Nov 2004 11:59:28 +0100
-Message-ID: <81449df94baa16d34ac871f7115ce382@bugtrack.alsa-project.org>
+Date: Mon, 15 Nov 2004 12:20:16 +0100
+Message-ID: <36c4f8944b0af9a4277bdf4cfd0162f3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (unknown [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 24CCF284
-	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 11:59:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D0BEE214
+	for <alsa-devel@alsa-project.org>; Mon, 15 Nov 2004 12:20:16 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=650> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             2.4.27
 ======================================================================
 Date Submitted:             11-15-2004 11:59 CET
-Last Modified:              11-15-2004 11:59 CET
+Last Modified:              11-15-2004 12:20 CET
 ======================================================================
 Summary:                    emu10k1 load fail with CT4760 SBLive! OEM
 Description: 
@@ -78,11 +78,19 @@ thanks,
 giovanni.
 ======================================================================
 
+----------------------------------------------------------------------
+ pancogi - 11-15-04 12:20 
+----------------------------------------------------------------------
+excuse me for my(?) error.
+it is not a compilation error.
+the module fail to load and go.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 11-15-04 11:59 pancogi        New Issue                                    
 11-15-04 11:59 pancogi        Kernel Version            => 2.4.27          
+11-15-04 12:20 pancogi        Note Added: 0002411                          
 ======================================================================
 
 
