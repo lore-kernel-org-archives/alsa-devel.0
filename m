@@ -1,15 +1,12 @@
-From: "Mark Knecht" <mknecht@controlnet.com>
-Subject: RE: Hammerfall DSP System Problems
-Date: Tue, 10 Jun 2003 13:02:57 -0700
+From: Paul Davis <paul@linuxaudiosystems.com>
+Subject: Re: Getting actual sample rate
+Date: Tue, 10 Jun 2003 16:26:56 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <NDBBLGIKBJENLAMOLFHGCECJCHAB.mknecht@controlnet.com>
-References: <20030610183131.76A8A3EFBF@vivaldi.controlnet.com>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
+Message-ID: <E19PpcQ-0007ZN-00@sc8-sf-list1.sourceforge.net>
+References: <1055274355.469.113.camel@localhost>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <20030610183131.76A8A3EFBF@vivaldi.controlnet.com>
+In-reply-to: Your message of "10 Jun 2003 15:45:55 EDT."
+             <1055274355.469.113.camel@localhost>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,43 +15,17 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Paul Davis <paul@linuxaudiosystems.com>
-Cc: frankgaetano@collegeclub.com, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: "David E. Storey" <dave@tamos.net>
+Cc: alsa <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-> >
-> >Later that evening I powered down. Upon rebooting the next morning it
-> >failed, and has failed ever since. That was last Thursday evening.
->
-> the same thing happened to me a week ago. i have, as usual, not had
-> time to investigate further.
->
+>hey, uh... is there something like this for the HDSP? I was going to
+>write something, but if someone already has, I'd rather not re-invent
+>the wheel... otherwise, I'll get a crackin'!
 
-Well, it is actually quite comforting to know that folks with far more
-experience than I sometimes see the same strange behaviors!
-
-> >
-> >This whole Alsa/HDSP thing is amazingly weird...
->
-> at the moment, i regret that we made the move to user-space loading of
-> the "firmware" when we did. i think now that it was a mistake to do it
-> at that time. it has caused a fundamental change in the way the driver
-> sets up, but it came at a time when we weren't confident that setup
-> was working for various cases.
-
-I'm sure that it will get worked out. I think Joshua is currently having
-some good successes with the HDSP 9652, and I'm currently learning how to
-modify a Gentoo ebuild to accomplish doing a patch. I also have (after more
-pain than I wish to recount) Windows on this Gentoo box in a dual boot
-config, and have the RME firmware tools to upgrade and downgrade, so I think
-I'm almost set to be able to try this stuff out again.
-
-I'm sure over the next few weeks and months this will get straightened out.
-:-)
-
-Mark
-
-
+thomas's code works on the hdsp i think, and is easily adapted to the
+digi9652. he also has written totalmix for linux. i don't know why he
+hasn't released it yet. thomas?
 
 
 -------------------------------------------------------
