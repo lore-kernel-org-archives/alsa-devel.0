@@ -1,17 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: snd_pcm_wait()  More details required.
-Date: Wed, 24 Mar 2004 08:58:36 +0100 (MET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Problems running latencytest: "error setting freq
+ 1024"
+Date: Wed, 24 Mar 2004 09:17:12 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0403240854480.20041-100000@studcom.urz.uni-halle.de>
-References: <Pine.LNX.4.58.0403231440050.2186@pnote.perex-int.cz>
+Message-ID: <Pine.LNX.4.58.0403240916440.1860@pnote.perex-int.cz>
+References: <20040323205352.GA3246@fliwatut.scifi>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
-Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from mlucom10.urz.uni-halle.de (mlucom10.urz.uni-halle.de [141.48.3.4])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id IAA16084
-	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2004 08:58:45 +0100
-In-reply-to: <Pine.LNX.4.58.0403231440050.2186@pnote.perex-int.cz>
+Received: from gate2.perex.cz (UNKNOWN@194.149.109.108.adsl.nextra.cz [194.149.109.108])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id JAA16490
+	for <alsa-devel@alsa-project.org>; Wed, 24 Mar 2004 09:18:21 +0100
+In-Reply-To: <20040323205352.GA3246@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -20,32 +20,33 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: James Courtier-Dutton <James@superbug.demon.co.uk>, ALSA development <alsa-devel@alsa-project.org>
+To: Frank Barknecht <fbar@footils.org>
+Cc: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Tue, 23 Mar 2004, Clemens Ladisch wrote:
-> > The following test program shows strange behaviour:
->
-> Thanks. It's fixed in CVS now.
+On Tue, 23 Mar 2004, Frank Barknecht wrote:
 
-The second problem persists, i.e., snd_pcm_wait() returns although the
-pcm isn't actually ready:
+> Hallo,
+> 
+> I'd like to test my system's 2.6.4 latency using Takashi's
+> http://www.alsa-project.org/~iwai/latencytest-0.5.2.tar.gz
+> suite. 
+> 
+> Building and installing so far went fine, I can run all the tests but
+> no output is created. But I get a spurious error message which could be
+> the reason for this. If I run "measure" by hand as it is called by
+> "run_tests" like this: 
+> $ measure -p ./out/x11.png -o ./out/x11.out -c 0 -f 1024 -n 2 -t 2
+> I get this error message: "error setting freq 1024"
 
-$ ./waittest dmix:hw:0
-12000 frames written
-pcm is not ready!
-6000 frames written
-6000 frames written
-6000 frames written
-...
+Frequency should be equal or greater than 5000Hz.
 
+						Jaroslav
 
-Regards,
-Clemens
-
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 -------------------------------------------------------
