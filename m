@@ -1,14 +1,12 @@
-From: Marcel Holtmann <marcel@holtmann.org>
+From: Thierry Vignaud <tvignaud@mandrakesoft.com>
 Subject: Re: External PCM plugin SDK
-Date: Wed, 09 Feb 2005 18:27:16 +0100
-Message-ID: <1107970036.13863.77.camel@pegasus>
-References: <s5hd5vau4c3.wl@alsa2.suse.de>
-	 <1107958458.13863.43.camel@pegasus> <s5hvf91stls.wl@alsa2.suse.de>
-	 <1107959869.13863.62.camel@pegasus>  <s5hoeetsqua.wl@alsa2.suse.de>
+Date: Wed, 09 Feb 2005 18:36:46 +0100
+Message-ID: <m2brat4oup.fsf@vador.mandrakesoft.com>
+References: <s5hd5vau4c3.wl@alsa2.suse.de> <1107958458.13863.43.camel@pegasus>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
-In-Reply-To: <s5hoeetsqua.wl@alsa2.suse.de>
+Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <1107958458.13863.43.camel@pegasus> (Marcel Holtmann's message
+ of "Wed, 09 Feb 2005 15:14:18 +0100")
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,68 +16,20 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Marcel Holtmann <marcel@holtmann.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Marcel Holtmann <marcel@holtmann.org> writes:
 
-> > it is putting the PCM data into the SBC encoder and then sending it to
-> > the RFCOMM socket. This is not the standard for high quality audio over
-> > Bluetooth, but my Aiptek headphone supports this stuff. For now this is
-> > easier than dealing with A2DP and AVDTP.
-> > 
-> > The SCO support for the headsets is another story.
+> > I think this SDK can be used for better implementaion of BT-SCO
+> > and FireWire.
 > 
-> ... and we'll need control plugin for mixers, too.
+> I wrote a quick and dirty prototype using SBC over RFCOMM for
+> now. It is working with aplay and the alsaplayer, but not with xmms
+> or beep. Are there any known problem with these ALSA plugins?
 
-and I need full duplex IO and volume control inside the same plugin for
-the headset/handsfree support.
-
-> > The XMMS is version 1.2.10 and BMP is version 0.9.7. In what versions
-> > are the ALSA plugins fixed. I will build it from source.
-> 
-> The patch isn't in the released version.  IIRC, they were applied to
-> CVS, though.
-
-I checked the latest XMMS CVS and even it segfaults or I get an error:
-
-xmms: pcm_params.c:2294: sndrv_pcm_hw_params: Assertion `err >= 0' failed.
-
-Looks like a problem on my side.
-
-> > > Do you have buffer or period size constraints?
-> > 
-> > Oh yes, that is the point where I am not sure what I am doing. The SBC
-> > is a codec like MP3 and actually I have no idea what are the best values
-> > here. These are software soundcards.
-> 
-> You don't have to set them if the hardware has no restriction.
-> Usually, the period size defines the interrupt period.  In the case of
-> user-space driver, it corresponds to the expected poll period, etc.
-
-I can skip IOPLUG_HW_PERIOD_BYTES and IOPLUG_HW_PERIODS, but I must set
-IOPLUG_HW_BUFFER_BYTES, because otherwise it segfaults even with aplay.
-
-> > > > We also talked about making these IO plugins visible when ALSA is
-> > > > listing its hardware devices. Is this possible now?
-> > > 
-> > > No, it's still in planning.
-> > > We'll need to define a usable API first...
-> > 
-> > What about a flags variable in snd_pcm_ioplug for activating it. This is
-> > generic and for me this is enough, because both Bluetooth IO plugins are
-> > virtual soundcards and they should always be listed. Or maybe list IO
-> > plugins in general.
-> 
-> This sounds good.  I'll add like the following:
-
-Let's take an unsigned long to handle more than 32 flags ;)
-
-Regards
-
-Marcel
-
+will you consider releasing your code for testing?
 
 
 
