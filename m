@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000742]: Control devices created before driver ready for devices to be opened
-Date: Thu, 23 Dec 2004 10:42:51 +0100
-Message-ID: <773294d83f8fb7e9e1f656dbfc06a6e6@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 12:05:06 +0100
+Message-ID: <eefd0cd6a1cfec6388cbdb430639afd2@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 969732AC
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 10:42:51 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 348B2262
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 12:05:07 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:
 Kernel Version:             
 ======================================================================
 Date Submitted:             12-22-2004 16:24 CET
-Last Modified:              12-23-2004 10:42 CET
+Last Modified:              12-23-2004 12:05 CET
 ======================================================================
 Summary:                    Control devices created before driver ready for
 devices to be opened
@@ -77,11 +77,6 @@ ci/cs46xx/cs46xx_lib.c:413:
 -- 
 Thomas Hood
 ======================================================================
-
-----------------------------------------------------------------------
- tiwai - 12-22-04 16:59 
-----------------------------------------------------------------------
-Try the attached patch.
 
 ----------------------------------------------------------------------
  jdthood - 12-23-04 10:42 
@@ -168,6 +163,17 @@ Dec 23 10:22:48 thanatos udev[21107]: creating device node '/dev/dsp'
 Dec 23 10:22:48 thanatos udev[21119]: creating device node '/dev/audio'
 Dec 23 10:22:48 thanatos udev[21127]: creating device node '/dev/mixer'
 
+----------------------------------------------------------------------
+ tiwai - 12-23-04 12:05 
+----------------------------------------------------------------------
+This can't be fixed from the driver side.  It's a problem of udev.
+udev is triggered assynchronously from the modprobe caller. As a result,
+alsactl is called before udev is finished.
+
+Unfortunately, there is no way to synchronize udev operation.  The
+solution would be to use hotplug to configure the sound stuff instead of
+static init script.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -176,6 +182,7 @@ Date Modified  Username       Field                    Change
 12-22-04 17:00 tiwai          File Added: control-device-fix.diff               
     
 12-23-04 10:42 jdthood        Note Added: 0002911                          
+12-23-04 12:05 tiwai          Note Added: 0002912                          
 ======================================================================
 
 
