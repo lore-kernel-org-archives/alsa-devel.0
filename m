@@ -1,13 +1,14 @@
-From: "Robert Rozman" <rozman@fri.uni-lj.si>
-Subject: Bug in sis7012 driver - or probably I'm doing something wrong ?
-Date: Sat, 24 Apr 2004 10:59:31 +0200
+From: James Courtier-Dutton <James@superbug.demon.co.uk>
+Subject: Re: migrating from old to new alsa-api
+Date: Sat, 24 Apr 2004 16:52:36 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <024601c429db$ce113f70$6500a8c0@Lapitopi>
+Message-ID: <408A8D44.7030405@superbug.demon.co.uk>
+References: <Pine.LNX.4.56.0404221556500.4307@spring>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.56.0404221556500.4307@spring>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,109 +17,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: barat@medien.uni-weimar.de
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I have Asus pundit with sis7012 sound device and alsa 1.0.4 under Suse 9.0.
-I've got advice how to use this 6 channel device as 3 stereo channels but
-there seems something not to be right (it could be my mistake).
-
-
-Now I do:
-
-- alsaplayer with mp3 file on device plug:a
-- aplay -D plug:ch12 (funny is that plug:a doesn't work)
-- everything is ok and mixed properly
-
-- but if I start another alsaplayer on plug:b (probably also plug:c would be
-the same), then aplay produces sound that is "interleaved" in short chunks
-and also sound from alsaplayer on plug:b is also heard in addition to
-original mp3 and aplay sound.
-
-Am I doing something worng or is this somkind of bug or limitation of alsa
-driver ?
-
-Thanks in advance,
-
-Robert.
+barat@medien.uni-weimar.de wrote:
+> Hi,
+> i need some clarifying about how the defines ALSA_PCM_OLD_HW_PARAMS_API 
+> etc. behaves.
+> for alsa-1.x its clear that if the app uses the new api i have to define 
+> ALSA_PCM_NEW_HW_PARAMS_API, but what is for the case if i have an app with 
+> the new api and the user uses only alsa9? is alsa1.x then backwards 
+> compatible?
+> 
+> regards
+> 
+> Zsolt Barat
+> 
 
 
-I have /etc/asound.conf :
-pcm_slave.sis {
-pcm "hw:0"
-channels 6
-rate 48000
-buffer_size 4096 # make these sizes smaller for lower latency
-period_size 2048
-periods 0
-period_time 0
-}
+ALSA_PCM_NEW_HW_PARAMS_API etc. is for use with alsa0.9.x
+That define is assumed to be the default for alsa1.x.x
 
-pcm.ch12 {
-type dmix
-ipc_key 47110815
-slave sis
-bindings.0 0
-bindings.1 1
-}
+ALSA_PCM_OLD_HW_PARAMS_API is for use with alsa1.x.x to make it behave 
+like "alsa0.9.x without the ALSA_PCM_NEW_HW_PARAMS_API".
 
-pcm.ch34 {
-type dmix
-ipc_key 47110815
-slave sis
-bindings.0 2
-bindings.1 3
-}
-
-pcm.ch56 {
-type dmix
-ipc_key 47110815
-slave sis
-bindings.0 4
-bindings.1 5
-}
-
-
-pcm.a {
-type plug
-slave.pcm ch12
-}
-
-pcm.b {
-type plug
-slave.pcm ch34
-}
-
-pcm.c {
-type plug
-slave.pcm ch56
-}
-
-pcm.dmixerALL {
-type dmix
-ipc_key 47110815
-slave sis
-    bindings.0 0
-    bindings.1 1
-    bindings.2 2
-    bindings.3 3
-    bindings.4 4
-    bindings.5 5
-}
-
-pcm.channelALL {
-    type plug
-    slave.pcm "dmixerALL"
-    ttable.0.0 1
-    ttable.1.1 1
-    ttable.0.2 1
-    ttable.1.3 1
-    ttable.0.4 1
-    ttable.1.5 1
-}
------------------------------------------
+Summary: -
+To make your code work with bother alsa 0.9.x and 1.x.x, use 
+ALSA_PCM_NEW_HW_PARAMS_API etc. and then write your code to the 1.x.x api.
 
 
 
