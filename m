@@ -1,16 +1,15 @@
-From: "Desmond Murdock" <dmurdock_cq@standbild.de>
-Subject: (no subject)
-Date: Fri, 22 Oct 2004 13:42:19 +0000
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000594]: Sound level is extremely low
+Date: Thu, 21 Oct 2004 23:19:10 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <878501c4b83c$fdd46e69$4bb3c872@email.uophx.edu>
+Message-ID: <fb25378d3669af46f6afaed41567eb30@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from email.uophx.edu (evrtwa1.ar5-4.15.142.149.evertwa1.dsl-verizon.net [4.15.142.149])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id F0B89339
-	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 22:53:02 +0200 (MEST)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B261E33B
+	for <alsa-devel@alsa-project.org>; Thu, 21 Oct 2004 23:19:10 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,16 +21,29 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<b>Always wanted an expensive watch such as a Rolex?<br>
-Stop dreaming and check out these bargains at throw away prices.<p></b>
 
-<b>This week only special:</b> REAL GOLD 18K Replicas from $75-$250<p>
-<a href=3D"http://qngsyyboqq.beud.com/replica/gagabob/dmeppcbocjf">CLlCK =
-HERE to view brochure</a>
-<p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br><p><br>
-<a href=3D"http://fntjbwdhbu.beud.com/z.php">no thanks</a>
-</html>
+The following issue has been SUBMITTED.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D594>=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Issue History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+10-21-04 23:19 danstef        New Issue                                  =
+ =20
+10-21-04 23:19 danstef        Kernel Version            =3D> 2.4.20      =
+   =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
 
 
 
