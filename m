@@ -1,13 +1,14 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000731]: snd-ioctl32 problems on sparc linux
-Date: Wed, 16 Mar 2005 11:41:43 +0100
-Message-ID: <b2ca34557f14e34507d08ebe7861891f@bugtrack.alsa-project.org>
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [PATCH] miroSOUND PCM12 driver
+Date: Wed, 16 Mar 2005 11:51:46 +0100 (MET)
+Message-ID: <Pine.HPX.4.33n.0503161138550.28424-100000@studcom.urz.uni-halle.de>
+References: <20050313103317.GA2280@tuba>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 96DC4227
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 11:41:43 +0100 (MET)
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C21616F
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 11:52:12 +0100 (MET)
+In-Reply-To: <20050313103317.GA2280@tuba>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,102 +18,63 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: Martin Langer <martin-langer@gmx.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Martin Langer wrote:
+> The tenth birthday of this card is coming soon and now it's time to get
+> an ALSA driver for the miroSOUND PCM12 :)
+>
+> Any comments?
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=731> 
-======================================================================
-Reported By:                eradicator
-Assigned To:                
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   731
-Category:                   CORE - pcm
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     new
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r10
-======================================================================
-Date Submitted:             12-19-2004 13:21 CET
-Last Modified:              03-16-2005 11:41 CET
-======================================================================
-Summary:                    snd-ioctl32 problems on sparc linux
-Description: 
-Some 32bit alsa programs fail on sparc64, but when these programs are
-compiled in 64bit mode, they work fine.  Same version of alsa-lib in both
-cases.
+> +++ alsa-driver/isa/opti9xx/Makefile	Fri Mar 11 18:51:05 2005
+> +obj-$(CONFIG_SND_MIRO) += snd-miro.o snd-opti92x-cs4231.o
+
+Is there any reason for the dependency on the snd-opti92x-cs4231
+driver?
+
+> MODULE_SUPPORTED_DEVICE("{{miroSOUND,PCM1 pro}, "
+> 			"{miroSOUND,PCM12}, "
+> 			"{miroSOUND,PCM20 Radio}}");
+
+The first entry in each pair should be the vendor name.
+
+> static int wss;                                 /* unknown range */
+> static int ide;                                 /* unknown range */
+
+"unknown"? :-)
+
+> int snd_miro_mixer(miro_t * miro)
+> ...
+> 	switch (miro->hardware) {
+>         case OPTi9XX_HW_82C924:
+> 		strcpy(card->mixername, "ACI & OPTi924");
+>         case OPTi9XX_HW_82C929:
+> 		strcpy(card->mixername, "ACI & OPTi929");
+> 	default:
+> 		strcpy(card->mixername, "ACI & OPTi9xx");
+> 	}
+
+The default case cannot happen (bwahaha!), so it might make sense to
+put a snd_BUG() in there.
+
+> - OPL4 support is still missing, because I'm still waiting for response
+> of my broken OPL4 chip. :(
+
+Is it broken with the snd-opti92x-cs4231 driver, too?
+
+> - I never saw any docs about the cards. All knowledge is taken from ACI
+> driver (OSS) and OPTi9xx (ALSA) drivers.
+
+There are OPTi manuals on the ALSA FTP server.
 
 
-32bit $ timidity -Os Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mid 
-...
-Text: Reset All Controller
-Now Loading..ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR
-failed: Broken pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-Terminated sig=0x02
+Otherwise, it looks fine.
 
-The strace can be found in bug
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=167 as I originally
-mentioned it there. 
-When doing this, you hear the first tone, and then the failed ioctl occur
-(so it's not on the first one)...
 
-32bit $ aoss mpg123 Final\ Fantasy\ 7\ -\ Aerith\'s\ Theme.mp3
-System lockup... I just noticed this one, so I haven't been able to debug,
-but I'm betting it's more get_fs() == KERNEL_DS and accessing __user mem
-problems...
-using alsa-oss version 1.0.7
-
-======================================================================
-
-----------------------------------------------------------------------
- eradicator - 03-16-05 11:23 
-----------------------------------------------------------------------
-Ok, I haven't been able to play much with sound on sparc64 for a while
-until recently...  xmms provides another test case here...
-
-OSS output plays nicely via the oss emulation in-kernel
-ALSA output results in the following out to the console (no sound
-obviously):
-ALSA lib pcm_hw.c:146:(sync_ptr1) SNDRV_PCM_IOCTL_SYNC_PTR failed: Broken
-pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-
-** WARNING **: alsa_mmap_audio(): snd_pcm_start() failed: Broken pipe
-ALSA lib pcm_hw.c:563:(snd_pcm_hw_start) SNDRV_PCM_IOCTL_START failed:
-Broken pipe
-<this is repeated until canceled>
-
-This is with linux-2.6.11's in-kernel drivers and alsa-lib-1.0.7
-
-----------------------------------------------------------------------
- eradicator - 03-16-05 11:41 
-----------------------------------------------------------------------
-Also, removing the snd-seq-oss and using 'aoss xmms' worked as well.  I
-have alsa-oss-1.0.8 on my system.
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-19-04 13:21 eradicator     New Issue                                    
-12-19-04 13:21 eradicator     Distribution              => Gentoo          
-12-19-04 13:21 eradicator     Kernel Version            => 2.6.9-gentoo-r10
-12-21-04 18:44 tiwai          Note Added: 0002901                          
-12-22-04 07:39 eradicator     Note Added: 0002907                          
-12-22-04 11:58 tiwai          Note Added: 0002908                          
-03-16-05 11:23 eradicator     Note Added: 0003936                          
-03-16-05 11:41 eradicator     Note Added: 0003938                          
-======================================================================
-
+Regards,
+Clemens
 
 
 
