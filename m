@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0001007]: no audio in - unable to record
-Date: Sun, 27 Mar 2005 11:56:25 +0200
-Message-ID: <177257c66d68582aea97ce7dff030850@bugtrack.alsa-project.org>
+Date: Sun, 27 Mar 2005 13:36:10 +0200
+Message-ID: <bec077a3a77e0a786bfcec7a8b52bbb7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3685E231
-	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 11:56:25 +0200 (MEST)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 03C1F22E
+	for <alsa-devel@alsa-project.org>; Sun, 27 Mar 2005 13:36:10 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -39,7 +39,7 @@ Distribution:
 Kernel Version:             2.6.11.5
 ======================================================================
 Date Submitted:             03-22-2005 21:44 CET
-Last Modified:              03-27-2005 11:56 CEST
+Last Modified:              03-27-2005 13:36 CEST
 ======================================================================
 Summary:                    no audio in - unable to record
 Description: 
@@ -48,28 +48,19 @@ full
 ======================================================================
 
 ----------------------------------------------------------------------
- msillence - 03-23-05 10:09 
-----------------------------------------------------------------------
-Hi,
-
-Fair enough no fixes without docs, could you change the support status
-though as I bought this card as it was shown as supported. Could save a
-few other people the same pain.
-Also for future reference I suspect that the problem lies with being able
-to switch the input as the same connector is used for digital in and
-analogue in...
-
--- 
-Thanks,
-M
-
-----------------------------------------------------------------------
  Alinoe - 03-27-05 11:56 
 ----------------------------------------------------------------------
 >  Could save a few other people the same pain.
 
 Too late for me :/
 DAMN :-((
+
+----------------------------------------------------------------------
+ msillence - 03-27-05 13:36 
+----------------------------------------------------------------------
+I've signed up at the creative labs forum asking for documentation, maybe
+other people suffering the same problem could do the same (in a polite
+way). It seemed to work for other hardware specs...
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -82,6 +73,7 @@ Date Modified  Username       Field                    Change
 03-23-05 10:09 msillence      Resolution               open => reopened    
 03-23-05 10:09 msillence      Note Added: 0004153                          
 03-27-05 11:56 Alinoe         Note Added: 0004220                          
+03-27-05 13:36 msillence      Note Added: 0004221                          
 ======================================================================
 
 
