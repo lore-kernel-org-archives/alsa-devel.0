@@ -1,11 +1,11 @@
-From: Michael Corlett <ad@corlett.plus.com>
-Subject: ISA pnp & kernel 2.6
-Date: Wed, 11 Feb 2004 21:57:35 +0000
+From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
+Subject: intel8x0 CVS - warnings in console log
+Date: Wed, 11 Feb 2004 22:09:07 +0000 (GMT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <402AA54F.3050705@gremlin>
+Message-ID: <20040211220907.58647.qmail@web40608.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,57 +18,40 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-I have an ISA pnp card (opti931) which stopped working when I
-installed kernel 2.6 and the problem is as follows:
+I have just noticed these errors in my console log
+(with the few line immediately before):
 
-The kernel function that sets and activates the card is
-isapnp_set_resources (in drivers/pnp/isapnp/core.c) and for
-each resource, it is checking that the correct flag is set
-before writing to the port (i.e. IORESOURCE_IO, IORESOURCE_IRQ,
-IORESOURCE_DMA, IORESOURCE_MEM) however, these flags are never
-being set because the driver code is just using
-pnp_init_resource_table followed by pnp_resource_change for each
-setting and so the configuration is never written to the card.
-(I believe that the equivalent code in 2.4 just checked for
-flags != 0).
+Feb 11 20:01:58 twopit kernel: PCI: Setting latency
+timer of device 0000:00:1f.5 to 64
+Feb 11 20:01:59 twopit kernel:
+intel8x0_measure_ac97_clock: measured 49371 usecs
+Feb 11 20:01:59 twopit kernel: intel8x0: clocking to
+48000
+Feb 11 21:47:31 twopit kernel: ALSA
+/home/chris/Programs/alsa/alsa-driver/pci/intel8x0.c:817:
+intel8x0: unknown IRQ bits 0x100 (sta_mask=0xe0)
+Feb 11 21:47:32 twopit last message repeated 8 times
 
-As I see it, there are four options:
+I am running Linux 2.6.2 with the latest CVS drivers.
+The chip in question is the on-board Intel
+82801AA-ICH, Cirrus Logic CS4299 rev 4, running as my
+second sound device.
 
-1) Manually set the flags in the driver code (this is what I have
-    done temporarily to get the card working).
+This is the first time that I have noticed these
+errors.
 
-
-2) Change the test in isapnp_set_resources to
-
-    ((flags & IORESOURCE_xx) | (~flags & IORESOURCE_AUTO))
-
-    as anything that has been auto-allocated should have the
-    appropriate flag set.
-
-
-3) Change pnp_resource_change to clear IORESOURCE_UNSET and change
-    the test in isapnp_set_resources to
-
-    (~flags & IORESOURCE_UNSET)
-
-
-4) In the driver, use something else apart from pnp_resource_change
-    (i.e. is there now a preferred method for filling in the
-    settings).
-
-
-I prefer 3) or else 2) but are there any reasons not to do this?
-Any advice welcome.
-
-
-Michael.
+Cheers,
+Chris
 
 
 
-
-
-
+	
+	
+		
+___________________________________________________________
+BT Yahoo! Broadband - Free modem offer, sign up online today and save £80 http://btyahoo.yahoo.co.uk
 
 
 -------------------------------------------------------
