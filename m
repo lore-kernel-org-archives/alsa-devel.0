@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000846]: Can't hear sound from one of the surround speaker, while other is working (speakers are functional).
-Date: Thu, 10 Mar 2005 13:17:02 +0100
-Message-ID: <8df4c9ccf747664cec84e3674f27c2be@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000902]: Some channels not working
+Date: Thu, 10 Mar 2005 13:20:28 +0100
+Message-ID: <10496f8e9424d818aa205b50aaf2c153@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D4737154
-	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 13:17:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 69382148
+	for <alsa-devel@alsa-project.org>; Thu, 10 Mar 2005 13:20:28 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,74 +23,133 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=846> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=902> 
 ======================================================================
-Reported By:                Envel
+Reported By:                slammer
 Assigned To:                
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   846
+Issue ID:                   902
 Category:                   PCI - intel8x0
-Reproducibility:            always
+Reproducibility:            have not tried
 Severity:                   major
 Priority:                   normal
 Status:                     new
-Distribution:               
-Kernel Version:             2.6.8.1
+Distribution:               Slackware
+Kernel Version:             2.6.11-rc2
 ======================================================================
-Date Submitted:             01-24-2005 13:44 CET
-Last Modified:              03-10-2005 13:17 CET
+Date Submitted:             02-12-2005 00:02 CET
+Last Modified:              03-10-2005 13:20 CET
 ======================================================================
-Summary:                    Can't hear sound from one of the surround speaker,
-while other is working (speakers are functional).
+Summary:                    Some channels not working
 Description: 
-With options "Line-In as surround" and "Duplicate front" the right surround
-speaker is not working, while others are functional. After uninstalling
-ALSA 1.0.8 and installing againg ALSA 1.0.7 with the same mixer
-configuration the error is not occures. SoundCard: nForce2 Audio Codec,
-Driver: snd-intel8x0, 4 speakers.
-p.s. sorry for my English.
+I wanted to get my Creative Inspire 5300 5.1 analog surround speaker set
+working  with my souncard working on linux.
+I use speaker-test for testing the speakers under linux. I have to add
+that they're working fine in Windows (tested each speaker using nvMixer).
+I have two independent sockets for LFE/Center and Rear channels (they're
+not shared with Mic and Line in as in some other products e.g. Epox
+8RDA+).
+I've noticed that the surround51 pcm defined in
+/usr/share/alsa/NFORCE.conf does some routing on the stream - namely swaps
+LFE/Center with rear channels and that seems right, because hw:0,0 tested
+by speaker-test plays them incorrectly. So when doing my test, creating
+own pcms and else I had it on my mind.
+
+However what this bug report is all about is that I can't get any sound
+playing from the first channel through anything connected to the socket
+originally (according to the MoBo manual) used for LFE/Center neither
+using the surround51 nor hw:0,0 pcm. I also tried to make my own pcm but
+the diagnosis is the 
+same.
+
+Here are the facts:
+My speakers connected just the way they work in Windows.
+
+$speaker-test -c6 -Dsurround51
+Playback device is surround51
+Stream parameters are 48000Hz, S16_LE, 6 channels
+Sine wave rate is 440.0000Hz
+Rate set to 48000Hz (requested 48000Hz)
+Buffer size range from 3 to 5461
+Period size range from 3 to 5461
+Periods = 4
+Buffer time size 2525
+To choose buffer_size = 5460
+To choose period_size = 1365
+was set period_size = 1365
+was set buffer_size = 5460
+ 0 - Front Left            # I hear the beep correctly from correct
+speaker
+ 4 - Center                # I hear the beep correctly from correct
+speaker
+ 1 - Front Right           # I hear the beep correctly from correct
+speaker
+ 3 - Rear Right            # No sound ;(((
+ 2 - Rear Left             # I hear the beep correctly from correct
+speaker
+ 5 - LFE                   # I hear the beep correctly from correct
+speaker (yes it's quiet, but I''m sure it comes from the Subwoofer only)
+
+When I create my own pcm that reroutes the 3rd channel to some other - it
+plays from the position where routed, but nothing ever gets played from
+that muted channel when routed there - hence my diagnosis.
+When I use hw:0,0 the situation's the same except the LFE/Center and Rear
+sockets are swapped, as stated before.
+
+Moreover if I turn the switches "Mic as Center" and "Line-in as surround"
+"on" to use it the Epox way, and plug my jacks where stated, the case is
+similar but even worse, since it won't play ANY of the first channels
+(i.e. Rear Right and LFE from surround51 pcm) at both sockets. Second
+channels (Center and Rear Left) work just fine.
+
+Or maybe it has something to do with settings for capture, because I
+haven't used it and played with it at all? Let me know if they can affect
+it and if so, I think there should be some notice somewhere (on the
+module's istalation manual), because I couldn't find any.
+
+Additionally when tried to play with the "Swap surround slot" option there
+was a thought of another may-be-issue that came to me. Namely when i turn
+the option "on" and physically do the swap, the "Duplicate Front" option
+duplicates front channels still to the Unswapped plug i.e. I hear the
+channels through the Center/LFE channels. I think that the "Duplicate
+front"  switch should be affected by the "Swap surround" switch. Don't You
+think so?
+
+I'm in a dead end right now and quite desperate. I also am interested in
+making Linux work on more hardware!
+
 ======================================================================
 
 ----------------------------------------------------------------------
- slammer - 03-10-05 11:55 
+ stephenv - 03-04-05 01:56 
 ----------------------------------------------------------------------
-Have you read "Compilation from CVS sources" section in alsa-lib/INSTALL
-and alsa-driver/INSTALL  ?
+This looks exactly like what is reported in 0000846. But so far, nothing
+has been done to fix it. Think I am going to have to splurge on an
+audigy2.
 
 ----------------------------------------------------------------------
- slammer - 03-10-05 13:17 
+ slammer - 03-10-05 13:20 
 ----------------------------------------------------------------------
-I confirm it too. CVS version fixes my issue reported in 902 so I guess
-it's the same bug ;)
-Great job guys!
+CVS version fixes the issue. And yes - I guess it's the same issue as
+reported in 846
+Thanks for your great job guys!
+I realy appreciate what you're doing for the community!!!!
+I'm planning to follow your example!
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-24-05 13:44 Envel          New Issue                                    
-01-24-05 13:44 Envel          Kernel Version            => 2.6.8.1         
-01-25-05 15:18 tiwai          Note Added: 0003402                          
-01-28-05 08:17 ivantheviking  Issue Monitored: ivantheviking                    
-01-28-05 08:19 ivantheviking  File Added: asound.state                     
-01-28-05 08:20 ivantheviking  File Added: ac97#0-0                         
-01-28-05 08:21 ivantheviking  File Added: ac97#0-0+regs                    
-01-28-05 08:30 ivantheviking  Note Added: 0003424                          
-01-29-05 17:13 ivantheviking  Note Added: 0003438                          
-03-01-05 00:03 stephenv       Issue Monitored: stephenv                    
-03-01-05 00:06 stephenv       Note Added: 0003752                          
-03-02-05 01:19 ivantheviking  Note Edited: 0003438                         
-03-04-05 22:53 slammer        Note Added: 0003802                          
-03-04-05 22:55 slammer        Issue Monitored: slammer                     
-03-07-05 00:12 stephenv       File Added: svs.tar                          
-03-08-05 18:43 jor            Issue Monitored: jor                         
-03-08-05 19:03 jor            Note Added: 0003816                          
-03-09-05 18:43 tiwai          Note Added: 0003834                          
-03-09-05 18:43 tiwai          Note Added: 0003835                          
-03-09-05 19:24 jor            Note Added: 0003845                          
-03-10-05 03:27 stephenv       Note Added: 0003847                          
-03-10-05 11:55 slammer        Note Added: 0003848                          
-03-10-05 13:17 slammer        Note Added: 0003850                          
+02-12-05 00:02 slammer        New Issue                                    
+02-12-05 00:02 slammer        Distribution              => Slackware       
+02-12-05 00:02 slammer        Kernel Version            => 2.6.11-rc2      
+02-12-05 00:43 slammer        Issue Monitored: slammer                     
+02-25-05 12:44 slammer        Note Added: 0003733                          
+02-28-05 21:51 slammer        Note Added: 0003750                          
+03-03-05 20:07 slammer        Note Added: 0003791                          
+03-04-05 01:56 stephenv       Note Added: 0003794                          
+03-06-05 13:31 slammer        Note Edited: 0003791                         
+03-10-05 13:20 slammer        Note Added: 0003851                          
 ======================================================================
 
 
