@@ -1,16 +1,13 @@
-From: Hanno =?ISO-8859-15?Q?B=F6ck?= <hanno@gmx.de>
-Subject: Re: configure and compile errors (possibly because of
- gcc 3.3)
-Date: Fri, 20 Jun 2003 19:31:13 +0200
+From: Frank Lauterwald <frank_lauterwald@web.de>
+Subject: Bug in via82xx (or rather in the hardware)
+Date: Fri, 20 Jun 2003 19:55:11 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030620193113.43123592.hanno@gmx.de>
-References: <20030619132925.68cb59bd.hanno@gmx.de>
-	<Pine.HPX.4.33n.0306200912570.9190-100000@studcom.urz.uni-halle.de>
+Message-ID: <200306201955.11358.frank_lauterwald@web.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="pgp-sha1"; boundary="=.w(7yv_OXlQc8Ef"
+Content-Type: text/plain;
+  charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0306200912570.9190-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -19,62 +16,112 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
---=.w(7yv_OXlQc8Ef
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-> > Kernel compiler: gcc-Version 3.3 (Gentoo Linux 1.4, PVR 3.3)
-> > Used compiler:   gcc (GCC) 3.3 (Gentoo Linux 1.4, PVR 3.3)
-> > ...
-> > Decoded kernel compiler: type=3Dgcc-Version version=3D3.3
-> > Decoded used compiler:   type=3Dgcc         version=3D3.3
-> >
-> > Well, the kernel compiler and the used compiler are definitely the
-> > same.
->=20
-> Well, the identification strings aren't (not exactly).
+there seem to be quite some buggy via8233-chipsets around (they are handl=
+ed by=20
+the via82xx-driver). I'd propse a workaround in the drivers.
 
-It seems the detection routine of the configure-script contains bugs.
-I'm not the only one with this problem. There are at least two bugs in
-the gentoo-bugzilla containing the same problem:
-http://bugs.gentoo.org/show_bug.cgi?id=3D22841
-http://bugs.gentoo.org/show_bug.cgi?id=3D21990
 
-> > checking for kernel version... 2.4.21-ac1
-> > ...
-> > serialmidi.c: In function `open_tty': serialmidi.c:158: error:
-> > invalid operands to binary >
->=20
-> The -ac patch changes the count field's type to atomic_t. Change the
-> offending line to:
->=20
-> 	if (atomic_read(&tty->count) > 1) {
+Problem description:
+=09The sound in most applications is so noisy that you can hardly hear th=
+e=20
+music.=09This problem applies to all alsa versions I have tested (some ha=
+ve=20
+noise on one channel only). The only distribution on which I got sound=20
+working was SuSE 8.1 (with a  2.4.19-Kernel patched by them). However I h=
+ave=20
+not looked at what changes they made to the alsa code. The noise seems to=
+ be=20
+played about every time the soundcard's buffer is refreshed (more exactly=
+:=20
+playing noise seems to be tied to the chip's interrupts (one snippet of w=
+hite=20
+noise or one click or whatever is played every time the interrupt handler=
+ is=20
+called)). This is however just an impression and may be wrong.
 
-Okay, now I know how to workaround the bugs for me. Will they be
-fixed in future alsa-versions?
+Possible cause:
+=09As far as I can tell, the 8233-chip (at least the one in my notebook) =
+or some=20
+other chip involved does not properly support sample-rates other than 480=
+00.=20
+While most sample rates do work, some don't (e.g. 44.1 kHz which most app=
+s=20
+try to use)
+Some other people suggest things like forcing apps to use 48kHz (see e.g.=
+=20
+http://www.alsa-project.org/alsa-doc/doc-php/template.php3?company=3DVIA&=
+card=3D&chip=3Dvia8235&module=3Dvia82xx)=20
+too. This actually works and leaves the impression that the card should b=
+e=20
+forced to 48k whenever possible.
+Another theory suggests to look at the pcm buffer stuff (because noise se=
+ems=20
+to be tied to hardware interrupts). Maybe the interrupt to change buffers=
+ is=20
+triggered at the wrong moment. Have not investigated this and does not se=
+em=20
+too probable to me.
 
---=20
-Hanno B=F6ck - hanno@gmx.de
+Suggestion:
+=09The problem can be solved by forcing the chip to always play at 48 kHz=
+=2E I'm=20
+not familiar with the code so I do not know where the best place to chang=
+e it=20
+would be, One possibility, however, is to add the following line to=20
+sound/pci/via82xx.c in method snd_via82xx_mixer_new around line 1485 (for=
+ the=20
+alsa version shipped with linux kernel 2.5.69):
 
-"Immer wenn man die Meinung der Mehrheit teilt, ist es Zeit sich zu
-besinnen." Mark Twain
+=09if (chip->chip_type !=3D TYPE_VIA686) {
+=09=09/* use slot 10/11 */
+=09=09snd_ac97_update_bits(chip->ac97, AC97_EXTENDED_STATUS, 0x03 << 4, 0=
+x03 <<4);
+=09        // BEGIN OF ADDED CODE
+=09=09// clear the bit that allows sampling rates other than 48000
+=09=09if (chip->chip_type !=3D TYPE_VIA8233) {
+=09=09=09snd_ac97_update_bits(chip->ac97, AC97_EXTENDED_STATUS, AC97_EA_V=
+RA , 0x00);
+=09=09}
+=09        // END OF ADDED CODE
+=09}
 
---=.w(7yv_OXlQc8Ef
-Content-Type: application/pgp-signature
+If there are objections or if most 8233-chips work correctly, this could =
+be=20
+#ifdef'ed with some kind of CONFIG_WORKAROUND_BUGGY8233 option or the lik=
+e.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.2.2 (GNU/Linux)
+Although this code snippet does not add any regressions for me, it is  cl=
+ear=20
+that it is just a workaround. I'd of course be happy if someone found a=20
+"real" solution.
 
-iD8DBQE+80Tlr2QksT29OyARAul8AJ4ucRNPOiMkeGl6him+ZPS1LWlLSACeMP1c
-UPC2j1M61Y9DeHy7ofvWbkY=
-=ciVE
------END PGP SIGNATURE-----
+If there are any questions, I'll be happy to provide more information
 
---=.w(7yv_OXlQc8Ef--
+Cheers,
+=09Frank
+
+
+---- appendix: output of lspci -nvv for the device in question
+00:11.5 Class 0401: 1106:3059 (rev 30)
+        Subsystem: 14ff:0403
+        Control: I/O+ Mem- BusMaster- SpecCycle- MemWINV- VGASnoop- ParEr=
+r-=20
+Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=3Dmedium >TAbort=
+-=20
+<TAbort- <MAbort- >SERR- <PERR-
+        Interrupt: pin C routed to IRQ 5
+        Region 0: I/O ports at 1000 [size=3D256]
+        Capabilities: [c0] Power Management version 2
+                Flags: PMEClk- DSI- D1- D2- AuxCurrent=3D0mA=20
+PME(D0-,D1-,D2-,D3hot-,D3cold-)
+                Status: D0 PME-Enable- DSel=3D0 DScale=3D0 PME-
+
 
 
 -------------------------------------------------------
