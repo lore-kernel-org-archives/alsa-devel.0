@@ -1,23 +1,14 @@
-From: Nishanth Aravamudan <nacc@us.ibm.com>
-Subject: [PATCH 31/39] sound/wavefront_synth: insert set_current_state() before schedule_timeout()
-Date: Fri, 21 Jan 2005 11:49:29 -0800
-Message-ID: <20050121194929.GL3340__16543.2616755881$1106337090$gmane$org@us.ibm.com>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
+Date: Fri, 21 Jan 2005 20:53:05 +0100
+Message-ID: <f25ec9ea5f92d4c708181687f97fd0ee@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from e33.co.us.ibm.com (e33.co.us.ibm.com [32.97.110.131])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4061D1FF
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:49:33 +0100 (MET)
-Received: from d03relay04.boulder.ibm.com (d03relay04.boulder.ibm.com [9.17.195.106])
-	by e33.co.us.ibm.com (8.12.10/8.12.9) with ESMTP id j0LJnVCO273670
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 14:49:31 -0500
-Received: from d03av02.boulder.ibm.com (d03av02.boulder.ibm.com [9.17.195.168])
-	by d03relay04.boulder.ibm.com (8.12.10/NCO/VER6.6) with ESMTP id j0LJnV7I321604
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:49:31 -0700
-Received: from d03av02.boulder.ibm.com (loopback [127.0.0.1])
-	by d03av02.boulder.ibm.com (8.12.11/8.12.11) with ESMTP id j0LJnULe001242
-	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 12:49:30 -0700
-Content-Disposition: inline
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 4428921B
+	for <alsa-devel@alsa-project.org>; Fri, 21 Jan 2005 20:53:06 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -27,30 +18,109 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: alsa-devel@alsa-project.org, kernel-janitors@lists.osdl.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-Please consider applying.
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=822> 
+======================================================================
+Reported By:                1g0R
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   822
+Category:                   PCI - azx
+Reproducibility:            always
+Severity:                   feature
+Priority:                   normal
+Status:                     feedback
+Distribution:               FC3
+Kernel Version:             2.6.10-ac8
+======================================================================
+Date Submitted:             01-16-2005 19:06 CET
+Last Modified:              01-21-2005 20:53 CET
+======================================================================
+Summary:                    CMI9880 (IHDA) alsamixer no controll
+Description: 
+The compile went fine.
+I have sound,with alsa.In alsamixer all trigger on 0, but i have sound.
+I cant raise the trigger.
+No SPDIF out.
+======================================================================
 
-Description: Insert set_current_state() before schedule_timeout(). Without the
-insertion, schedule_timeout() returns immediately, resulting in an effective
-busy-wait.
+----------------------------------------------------------------------
+ tiwai - 01-21-05 12:15 
+----------------------------------------------------------------------
+Your configuration seems confused.  Let's simplify the testing:
 
-Signed-off-by: Nishanth Aravamudan <nacc@us.ibm.com>
+- First, remove the multi-card configuration and configure the single
+card.  For example, run alsaconf.
 
---- 2.6.11-rc1-kj-v/sound/isa/wavefront/wavefront_synth.c	2005-01-15 16:55:45.000000000 -0800
-+++ 2.6.11-rc1-kj/sound/isa/wavefront/wavefront_synth.c	2005-01-18 13:38:54.000000000 -0800
-@@ -1751,6 +1751,7 @@ wavefront_should_cause_interrupt (snd_wa
- 	outb (val,port);
- 	spin_unlock_irq(&dev->irq_lock);
- 	while (1) {
-+		set_current_state(TASK_INTERRUPTIBLE);
- 		if ((timeout = schedule_timeout(timeout)) == 0)
- 			return;
- 		if (dev->irq_ok)
+- Check /proc/asound/cards whether only Intel HDA appears there.
+
+- Remove /etc/asound.conf and ~/.asoundrc if exists.  Try the default
+configuration.
+
+- Then, run "aplay foo.wav".
+
+- If this works, run alsamixer.  See whether PCM volume appears.  Adjust
+the PCM volume.
+
+- If aplay works, now try xmms.  Start xmms, choose ALSA output plugin,
+and choose "default" for output.
+
+----------------------------------------------------------------------
+ 1g0R - 01-21-05 20:53 
+----------------------------------------------------------------------
+I make a clean in alsa, and start from the begining.
+Then i get this message:
+[root@skynet lib]# aplay accessed.wav
+ALSA lib pcm.c:1939:(snd_pcm_open_conf) Cannot open shared library
+/usr/lib/alsa-lib/libasound_module_pcm_softvol.so
+aplay: main:508: audio open error: No such file or directory
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+01-16-05 19:06 1g0R           New Issue                                    
+01-16-05 19:06 1g0R           Distribution              => FC3             
+01-16-05 19:06 1g0R           Kernel Version            => 2.6.10-ac8      
+01-17-05 15:05 tiwai          Status                   new => resolved     
+01-17-05 15:05 tiwai          Resolution               open => not an issue
+01-17-05 15:05 tiwai          Assigned To               => tiwai           
+01-17-05 15:05 tiwai          Note Added: 0003235                          
+01-17-05 15:05 tiwai          Assigned To              tiwai =>            
+01-17-05 16:43 1g0R           Status                   resolved => feedback
+01-17-05 16:43 1g0R           Resolution               not an issue => reopened
+01-17-05 16:43 1g0R           Note Added: 0003238                          
+01-17-05 16:43 1g0R           Assigned To               => tiwai           
+01-18-05 14:01 1g0R           Note Added: 0003249                          
+01-18-05 14:01 1g0R           Issue Monitored: 1g0R                        
+01-18-05 17:57 tiwai          Note Added: 0003254                          
+01-19-05 13:33 1g0R           Note Added: 0003264                          
+01-19-05 14:25 tiwai          Note Added: 0003265                          
+01-19-05 14:36 1g0R           Note Added: 0003272                          
+01-19-05 14:40 tiwai          Note Added: 0003275                          
+01-19-05 14:59 1g0R           Note Added: 0003280                          
+01-19-05 15:16 tiwai          Note Added: 0003281                          
+01-19-05 15:46 1g0R           Note Added: 0003289                          
+01-19-05 16:08 tiwai          Note Added: 0003290                          
+01-19-05 16:25 1g0R           Note Added: 0003291                          
+01-19-05 18:39 1g0R           File Added: asound.state                     
+01-19-05 18:39 1g0R           File Added: codec#0                          
+01-19-05 18:40 1g0R           Note Added: 0003315                          
+01-19-05 18:44 tiwai          Note Added: 0003316                          
+01-19-05 21:53 1g0R           Note Added: 0003318                          
+01-19-05 21:58 1g0R           Note Added: 0003319                          
+01-20-05 00:13 1g0R           File Added: alsamixer.png                    
+01-20-05 00:18 1g0R           File Added: alsamixer.jpg                    
+01-21-05 12:15 tiwai          Note Added: 0003345                          
+01-21-05 20:53 1g0R           Note Added: 0003352                          
+======================================================================
+
+
 
 
 -------------------------------------------------------
