@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0001012]: TI AC97 volume bit 5 sets bits 0-4
-Date: Thu, 24 Mar 2005 19:15:34 +0100
-Message-ID: <40ab13a88b224a2075853144f3a460f6@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0001013]: Sound is not working on the MacMini
+Date: Thu, 24 Mar 2005 19:27:03 +0100
+Message-ID: <9639aad928475477dcf768c54d680ee7@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 7655425D
-	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:15:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3BD6325D
+	for <alsa-devel@alsa-project.org>; Thu, 24 Mar 2005 19:27:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,40 +23,58 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1012> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1013> 
 ======================================================================
-Reported By:                Daniel
-Assigned To:                
+Reported By:                timing
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   1012
-Category:                   OTHERS
+Issue ID:                   1013
+Category:                   PPC - powermac
 Reproducibility:            always
-Severity:                   trivial
+Severity:                   feature
 Priority:                   normal
-Status:                     new
-Distribution:               
-Kernel Version:             
+Status:                     assigned
+Distribution:               Ubuntu
+Kernel Version:             2.6.11.5
 ======================================================================
-Date Submitted:             03-24-2005 19:15 CET
-Last Modified:              03-24-2005 19:15 CET
+Date Submitted:             03-24-2005 19:27 CET
+Last Modified:              03-24-2005 19:27 CET
 ======================================================================
-Summary:                    TI AC97 volume bit 5 sets bits 0-4
+Summary:                    Sound is not working on the MacMini
 Description: 
-Since ALSA driver 1.0.8 the width of the volume controls is probed to be 6
-bits.
-The Texas Instruments datasheet contains a footnote for the 5th and 13th
-bit of register 2 and the 5th bif of register 6, 12 and 14 saying:
-"Special function volume settings. If bit is set, then the 5 volume bits
-implemented are set to all ones."
-check_volume_resolution in ac97_codec.c should check if setting bit 5 (13)
-results in bits 0-4 (8-12) set.
+Sound is not working on the MacMini. When loading the dmasound_pmac i get
+the following error:
+
+FATAL: Error inserting dmasound_pmac
+(/lib/modules/2.6.11.5/kernel/sound/oss/dmasound/dmasound_pmac.ko): No
+such device
+
+When trying to play music i get an "maybe your device is busy?" error.
+
+I've found a solution on the ubuntuforums(
+http://www.ubuntuforums.org/showthread.php?t=12748 )
+
+it says:
+
+To manually apply the patch (just as easy in this case),
+just open the file linux/sound/ppc/pmac.c in an editor,
+and search for OAKeylargo.
+Where it says SNAPPER right below, you change to SCREAMER (in uppercase).
+(In kernel 2.6.10 it's at line 967). 
+
+this solution is very minimal, the alsamixer is slow, and my computer
+hangs for a couple of seconds before the start of every new process (when
+opening a new window in gnome etc.). When i edit pmac.c in the old way my
+system runs normal again.
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-03-24-05 19:15 Daniel         New Issue                                    
+03-24-05 19:27 timing         New Issue                                    
+03-24-05 19:27 timing         Distribution              => Ubuntu          
+03-24-05 19:27 timing         Kernel Version            => 2.6.11.5        
 ======================================================================
 
 
