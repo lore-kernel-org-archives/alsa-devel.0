@@ -1,13 +1,11 @@
-From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000752]: ALSA > 1.0.5a does not load, failed with error -16
-Date: Thu, 17 Mar 2005 03:20:45 +0100
-Message-ID: <1775fca404a68fa4cdef0947f64d3d80@bugtrack.alsa-project.org>
+From: Raymond <rayau@netvigator.com>
+Subject: Re: Re: au8830 - front / rear channels swapped after first play and
+ Surround40
+Date: Thu, 17 Mar 2005 11:23:08 +0800
+Message-ID: <4238F81C.30405@netvigator.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
-Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id CF7011F9
-	for <alsa-devel@alsa-project.org>; Thu, 17 Mar 2005 03:20:45 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,154 +15,39 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: openvortex-dev@nongnu.org
 List-Id: alsa-devel@alsa-project.org
 
+> >  No, thats not a bug. Thats normal.
+>
+>
+> AFAIK the FIFO error occurs only one time, the first time data is
+> being DMA'ed. It could be that this error is some kind of data
+> underrun, and it does only happen once, because we never flush the
+> FIFO's when stopping a stream. Remaining data in the FIFO's may be
+> messing the channel deinterlacer, because the amount of data loaded in
+> the fifo is random, generating a random offset. Since the the PCI bus
+> is 32 bit wide, that problem would not affect stereo streams, because
+> one 32 bit transaction maps to two 16 bit samples. Only where a frame
+> is more that 32bits, this problem would become apparent. This is just
+> a theory, but maybe it could be worth a try, to enforce a absolute
+> flush of the FIFO data when stopping a DMA stream.
 
-A NOTE has been added to this issue.
-======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=752> 
-======================================================================
-Reported By:                Q3Man
-Assigned To:                fmoraes
-======================================================================
-Project:                    ALSA - driver
-Issue ID:                   752
-Category:                   PCI - emu10k1x
-Reproducibility:            always
-Severity:                   major
-Priority:                   normal
-Status:                     assigned
-Distribution:               Gentoo
-Kernel Version:             2.6.9-gentoo-r9
-======================================================================
-Date Submitted:             12-28-2004 05:12 CET
-Last Modified:              03-17-2005 03:20 CET
-======================================================================
-Summary:                    ALSA > 1.0.5a does not load, failed with error -16
-Description: 
-I'm having some problems with alsa since 1.0.6a. Previously I just had the
-later versions masked, but now various kde packages require the latest
-alsa, so I'm having to tackle it now. ALSA seems to start normally,
-however I get this error in dmesg: 
-EMU10K1X: probe of 0000:00:09.0 failed with error -16. 
+The "vortex: IRQ fifo error" message happen once when the first play is
+a stereo or 4 channels sound and it do not happen when the first play is
+a MONO sound on my au8830.
 
-I also get this error when running alsamixer: 
-alsamixer: function snd_ctl_open failed for default: No such device 
+Using "vortex_adbdma_stopfifo()" instead of vortex_adbdma_pausefifo()"
+in snd_vortex_pcm_trigger() (just like the last version of au88x0 in
+alsa-driver before it merged into alsa-kernel) seem to fix the
+front/rear channels swap when playing 4 channels sound in au8830.
 
-And similar ones in other alsa programs. 
+However the message "vortex: IRQ fifo error" will appear more than once
+in the kernel log, it is quite annoying when a lot of these message is
+displayed on the screen (not always) during the shutdown of the linux.
 
-Again, 1.0.5a runs fine, 1.0.6a and above do not. I've taken a look at the
-code and it seems that the error is vaguely interrupt related, but I could
-not find the code that produces error -16. I've swapped interrupts around
-and disabled non-essential devices (usb, serial, parallel ports, removed
-network cards and sound cards - although that last one proved slightly
-less than helpful :) I've changed from having my bios manage irq's to
-having the OS handle them with zero success. 
 
-I've looked around for that error code in google for the last few weeks -
-since the release of 1.0.6a with limited success. Nothing relevant to my
-situation. 
-
-Important configs and error messages:
-$ lspci -v |grep audio -A4
-0000:00:09.0 Multimedia audio controller: Creative Labs [SB Live! Value]
-EMU10k1X
-        Subsystem: Creative Labs: Unknown device 1003
-        Flags: bus master, medium devsel, latency 32, IRQ 12
-        I/O ports at d000
-        Capabilities: [dc] Power Management version 2
-(It is an actual EMU10k1X and not the Dell bastardized version)
-
-$ /etc/init.d/alsasound start; dmesg |tail -n1
- * Loading ALSA drivers...
- * Using ALSA OSS emulation
- * Loading: snd-mixer-oss
- * Loading: snd-pcm-oss
- * Loading: snd-seq-oss
- * Running card-dependent scripts
- * Restoring Mixer Levels                                                
-[ ok ]
-EMU10K1X: probe of 0000:00:09.0 failed with error -16
-
-$ uname -a
-Linux tobin1 2.6.9-gentoo-r9
-https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Mon Dec 27 16:06:33 PST
-2004 i686 AMD
-Athlon(tm) XP 2500+ AuthenticAMD GNU/Linux
-
-If anyone needs any other config information, please let me know. Again,
-it works perfectly fine in 1.0.5a, the problems only appear in later
-versions.
-
-======================================================================
-
-----------------------------------------------------------------------
- fmoraes - 03-17-05 01:45 
-----------------------------------------------------------------------
-Try adding the debug lines between the if's in the probe function like
-this:
-
-snd_printk(KERN_INFO "Before calling midi\n");
-
-Then, recompile, install and try to modprobe again. Then use dmesg to see
-if the messages.
-
-----------------------------------------------------------------------
- Q3Man - 03-17-05 03:20 
-----------------------------------------------------------------------
-Well, I placed about a dozen lines similar to:
-snd_printk(KERN_INFO "before snd_card_new check\n");
-
-and recompiled/reinstalled/rebooted for good measure. I get absoultly _no_
-output from the printk's in dmesg. I get nothing in my kernel logs. In
-fact, nothing in any of the logs at all. I even changed the
-alsa_card_emu10k1x_init function like this:
-static int __init alsa_card_emu10k1x_init(void)
-{
-        int err;
-        snd_printk(KERN_INFO "init alsa_card\n");
-        if ((err = pci_module_init(&driver)) > 0) {
-                snd_printk(KERN_INFO "pci_module_init failed!\n");
-                return err;
-        }
-        return 0;
-}
-
-and I don't see either message at any point. I'm guessing that the error
-has to be generated before the module even gets loaded. Is there a file
-that loads before snd-emu10k1x.ko when I modprobe it? Is something else
-linked to it to load the module that I can take a look at?
-
-Issue History
-Date Modified  Username       Field                    Change              
-======================================================================
-12-28-04 05:12 Q3Man          New Issue                                    
-12-28-04 05:12 Q3Man          File Added: einfo                            
-12-28-04 05:12 Q3Man          Distribution              => Gentoo          
-12-28-04 05:12 Q3Man          Kernel Version            => 2.6.9-gentoo-r9 
-12-28-04 05:22 Q3Man          Issue Monitored: Q3Man                       
-01-03-05 12:10 tiwai          Note Added: 0003054                          
-01-03-05 12:39 eradicator     Issue Monitored: eradicator                    
-01-03-05 17:30 Q3Man          Note Added: 0003071                          
-01-16-05 14:54 fmoraes        Note Added: 0003216                          
-01-18-05 00:44 Q3Man          Note Added: 0003240                          
-01-20-05 02:23 Q3Man          Note Added: 0003322                          
-01-20-05 19:12 tiwai          Note Added: 0003332                          
-01-21-05 05:11 Q3Man          Note Added: 0003337                          
-01-21-05 11:14 tiwai          Note Added: 0003341                          
-01-22-05 23:24 fmoraes        Note Added: 0003382                          
-03-09-05 02:57 fmoraes        Note Added: 0003821                          
-03-15-05 17:34 Q3Man          Note Added: 0003916                          
-03-15-05 22:32 Q3Man          Note Added: 0003918                          
-03-16-05 02:09 fmoraes        Note Added: 0003927                          
-03-16-05 03:32 Q3Man          Note Added: 0003930                          
-03-16-05 04:06 fmoraes        Note Added: 0003931                          
-03-16-05 04:53 Q3Man          Note Added: 0003932                          
-03-16-05 05:19 Q3Man          Note Added: 0003933                          
-03-17-05 01:45 fmoraes        Note Added: 0003976                          
-03-17-05 03:20 Q3Man          Note Added: 0003977                          
-======================================================================
 
 
 
