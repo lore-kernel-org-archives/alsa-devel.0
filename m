@@ -1,13 +1,13 @@
-From: tomasz motylewski <T.Motylewski@bfad.de>
-Subject: unterminated conditionals: @HAVE_JACK_TRUE@
-Date: Thu, 20 Feb 2003 20:23:35 +0100 (CET)
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: LOCK macro
+Date: Thu, 20 Feb 2003 20:24:10 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.21.0302201956530.17762-100000@mailserver.intern.bfad.de>
-References: <E18lvNx-0000A6-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.44.0302202024051.1266-100000@pnote.perex-int.cz>
+References: <200302201849.h1KIn9a27814@linuxaudiosystems.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E18lvNx-0000A6-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <200302201849.h1KIn9a27814@linuxaudiosystems.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +16,23 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: Paul Davis <paul@linuxaudiosystems.com>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 20 Feb 2003, Paul Davis wrote:
 
-Debian woody, current cvs:
+> $prefix/include/alsa/iatomic.h defines LOCK but doesn't #undef it. it
+> would be nice if it did.
 
-./build  prep
-Pre-configuring alsa-driver
-make: Nothing to be done for `all-deps'.
-Pre-configuring alsa-lib
-src/pcm/Makefile.am:6: JACK_PLUGIN multiply defined in condition
-automake: src/pcm/Makefile.am: unterminated conditionals: @HAVE_JACK_TRUE@
-src/pcm/Makefile.am:9: warning: automake does not support conditional
-definition of JACK_PLUGIN in libpcm_la_SOURCES
+Done.
 
-Then after ./build config I get in alsa-lib/src/pcm/Makefile
+						Jaroslav
 
-@HAVE_JACK_TRUE@else !HAVE_JACK
-@HAVE_JACK_TRUE@endif !HAVE_JACK
-
-@HAVE_JACK_TRUE@all: libpcm.la
-
-
-
-Best regards,
---
-Tomasz Motylewski
-
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
 
 
