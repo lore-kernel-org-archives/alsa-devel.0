@@ -1,12 +1,14 @@
-From: Stuffed Crust <pizza@shaftnet.org>
-Subject: Selectable async notification signal?
-Date: Sun, 7 Apr 2002 23:45:48 -0400
+From: Maarten de Boer <mdeboer@iua.upf.es>
+Subject: Re: How to send data trough rawmidi ?
+Date: Mon, 8 Apr 2002 09:20:03 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020407234548.A14312@shaftnet.org>
+Message-ID: <20020408092003.01101e29.mdeboer@iua.upf.es>
+References: <20020407164211.E1822@pengouin.univ-valenciennes.fr>
+	<Pine.LNX.4.21.0204071707250.761-100000@summer.quitte>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-md5;
-	protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+In-Reply-To: <Pine.LNX.4.21.0204071707250.761-100000@summer.quitte>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,40 +17,22 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Tim Goetze <tim@quitte.de>, Alsa-devel@lists.sourceforge.net, charles.fleche@meletu.univ-valenciennes.fr
 List-Id: alsa-devel@alsa-project.org
 
+> so essentially you skip alsalib and interact with the driver only. i
+> have found this to be the least painful way of dealing with raw MIDI
+> streams.
 
---ikeVEW9yuYc//A+q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Tim, I think this is very bad advice, especially on the alsa-dev
+mailinglist!
 
-How painful would it be to add an API call to set the async notification
-signal to be something other than SIGIO?
+Charles, you might want to have a look at the documentation:
 
-I'm getting select()s blocking indefinately because of this.  While
-changing a #define works for my local alsa-lib tree, it doesn't help
-anyone who needs to use my code.
+http://www.alsa-project.org/alsa-doc/alsa-lib/group___raw_midi.html#a6
 
- - Pizza
---=20
-Solomon Peachy                                    pizzaATfucktheusers.org
-I ain't broke, but I'm badly bent.                           ICQ# 1318344
-Patience comes to those who wait.
-    ...It's not "Beanbag Love", it's a "Transanimate Relationship"...
+You can see there that the first argument is for the input handler, and
+the second for the output handler. Also, I think you don't want to open
+the stream full duplex. Write only would do.
 
---ikeVEW9yuYc//A+q
-Content-Type: application/pgp-signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.0.6 (GNU/Linux)
-Comment: For info see http://www.gnupg.org
-
-iD8DBQE8sRJsysXuytMhc5ERAhZXAJ9gTTWHCdm4L1qE2+UYlMbaNdMqlACbBkx+
-KdKy6Dw6JQ3eB+nnMZkSpkY=
-=MUCB
------END PGP SIGNATURE-----
-
---ikeVEW9yuYc//A+q--
+Maarten
