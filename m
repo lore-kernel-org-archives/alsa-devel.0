@@ -1,13 +1,15 @@
-From: Abramo Bagnara <abramo.bagnara@libero.it>
-Subject: Re: Re: dmix plugin
-Date: Wed, 19 Feb 2003 11:20:09 +0100
+From: Martin Langer <martin-langer@gmx.de>
+Subject: rules for /proc/asound [was: VIA EPIA (VT1612A) and SPDIF]
+Date: Wed, 19 Feb 2003 11:30:16 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E535A59.63721BE2@libero.it>
-References: <Pine.LNX.4.44.0302182159440.1636-100000@pnote.perex-int.cz>
+Message-ID: <20030219103016.GF3246@tuba.home>
+References: <3E52CD2B.7090505@lemur.sytes.net>
+Reply-To: martin-langer@gmx.de
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <3E52CD2B.7090505@lemur.sytes.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,34 +18,45 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: Jaroslaw Sobierski <fycio@gucio.com>, "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
+On Tue, Feb 18, 2003 at 07:17:47PM -0500, Mathias Kretschmer wrote:
 > 
-> I've implemented the whole transfer and mix loop in assembly and it works
-> without any drastic impact on CPU usage. I tried to optimize the assembler
-> part as much as I can, but if some assembler guru want to give a glance,
-> I'll appreciate it. The function is named mix_areas1() in
-> alsa-lib/src/pcm/pcm_dmix.c.
+> [root@musicbox root]# cat /proc/asound/card0/ac97#0
+> 0-0/0: VIA Technologies VIA1612A
+> 
+> Capabilities     : -headphone out-
+> DAC resolution   : 18-bit
+> ADC resolution   : 18-bit
+> 3D enhancement   : Reserved 27
+> 
+> Current setup
+> Mic gain         : +0dB [+0dB]
+> POP path         : pre 3D
+> Sim. stereo      : off
+> 3D enhancement   : off
+> Loudness         : off
+> Mono output      : MIX
+> Mic select       : Mic1
+> ADC/DAC loopback : off
+> Extended ID      : codec=0 rev=0 AMAP DSA=0 SPDIF VRA
+> Extended status  : SPDIF=3/4 SPDIF VRA
+> PCM front DAC    : 44100Hz
+> PCM ADC          : 48000Hz
+> SPDIF Control    : Consumer PCM Copyright Category=0x2 Generation=1 
+> Rate=48kHz
+> 
 
-one comment:
 
-It's better to execute interleaved check once and not in mix_areas
-
-one objection:
-
-I doubt very much that you gain anything coding the mixing loop in
-assembler, you've data showing that?
+Are there any rules for /proc/asound/cardX/XXX status files? Has it to be
+readable by an external script? I think using standard control names can be 
+one point. Are there other things I have to think about? Or is it still an
+area without rules?
 
 
--- 
-Abramo Bagnara                       mailto:abramo.bagnara@libero.it
+martin
 
-Opera Unica                          Phone: +39.546.656023
-Via Emilia Interna, 140
-48014 Castel Bolognese (RA) - Italy
 
 
 -------------------------------------------------------
