@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000733]: No sound with Hercules Game Theater XP
-Date: Thu, 23 Dec 2004 18:14:43 +0100
-Message-ID: <5b98637387592aa3adf59441f58aeec4@bugtrack.alsa-project.org>
+Date: Thu, 23 Dec 2004 18:17:00 +0100
+Message-ID: <a7f99fabcc5ca4e81951fd4aa7bcd28f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id C38D52B0
-	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 18:14:43 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8AC862B0
+	for <alsa-devel@alsa-project.org>; Thu, 23 Dec 2004 18:17:00 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,12 +22,12 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A NOTE has been added to this issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=733> 
 ======================================================================
 Reported By:                sherington
-Assigned To:                
+Assigned To:                tiwai
 ======================================================================
 Project:                    ALSA - driver
 Issue ID:                   733
@@ -35,12 +35,14 @@ Category:                   PCI - cs46xx
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
+Status:                     resolved
 Distribution:               
 Kernel Version:             2.6.8.1-12mdk
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             12-19-2004 20:05 CET
-Last Modified:              12-23-2004 18:14 CET
+Last Modified:              12-23-2004 18:16 CET
 ======================================================================
 Summary:                    No sound with Hercules Game Theater XP
 Description: 
@@ -199,16 +201,6 @@ Thanks.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 12-23-04 16:23 
-----------------------------------------------------------------------
-If the sound repeats, the first suspecious thing is the wrong IRQ routing. 
-It's often related with ACPI.  Check whether /proc/interrupts count of the
-corresponding IRQ increases when you playback.
-
-If it's so, try to turn off ACPI via "acpi=off" boot option.  There are
-other better (more finer) boot options to control such stuff.
-
-----------------------------------------------------------------------
  sherington - 12-23-04 18:14 
 ----------------------------------------------------------------------
 Thanks so much tiwai for pointing me in the right direction.
@@ -226,6 +218,11 @@ So, in short, you've helped me completely solve my problem.
 I guess it's clearly not an ALSA bug, so apologies for that, and thank you
 very much for helping me solve this problem.
 
+----------------------------------------------------------------------
+ tiwai - 12-23-04 18:16 
+----------------------------------------------------------------------
+OK, let's move this to FIXED.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -235,6 +232,10 @@ Date Modified  Username       Field                    Change
 12-22-04 18:42 sherington     Note Added: 0002910                          
 12-23-04 16:23 tiwai          Note Added: 0002925                          
 12-23-04 18:14 sherington     Note Added: 0002926                          
+12-23-04 18:16 tiwai          Status                   new => resolved     
+12-23-04 18:16 tiwai          Resolution               open => fixed       
+12-23-04 18:16 tiwai          Assigned To               => tiwai           
+12-23-04 18:16 tiwai          Note Added: 0002927                          
 ======================================================================
 
 
