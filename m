@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - driver 0000754]: parameter mpu_port dissapeared from 1.0.6 to 1.0.7 midi device is ot detected
-Date: Tue, 28 Dec 2004 23:56:34 +0100
-Message-ID: <bc8eedf533472388a44c031a7f95ad6d@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000755]: get error when trying to build 1.0.5 drivers with kernel 2.6.10
+Date: Wed, 29 Dec 2004 00:50:02 +0100
+Message-ID: <45b7cf6d643739370b25d0ed690dde5d@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 927F618C
-	for <alsa-devel@alsa-project.org>; Tue, 28 Dec 2004 23:56:34 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E59192D1
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 00:50:02 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -24,50 +24,61 @@ List-Id: alsa-devel@alsa-project.org
 
 The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=754> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=755> 
 ======================================================================
-Reported By:                jmfrank
-Assigned To:                
+Reported By:                wschrep
+Assigned To:                perex
 ======================================================================
 Project:                    ALSA - driver
-Issue ID:                   754
-Category:                   PCI - intel8x0
+Issue ID:                   755
+Category:                   0_compilation problem_!!!
 Reproducibility:            always
 Severity:                   major
 Priority:                   normal
-Status:                     new
-Distribution:               Debian/GNU Linux
-Kernel Version:             2.6.9
+Status:                     assigned
+Distribution:               knoppmyth r4v5
+Kernel Version:             2.6.10
 ======================================================================
-Date Submitted:             12-28-2004 23:56 CET
-Last Modified:              12-28-2004 23:56 CET
+Date Submitted:             12-29-2004 00:50 CET
+Last Modified:              12-29-2004 00:50 CET
 ======================================================================
-Summary:                    parameter mpu_port dissapeared from 1.0.6 to 1.0.7
-midi device is ot detected
+Summary:                    get error when trying to build 1.0.5 drivers with
+kernel 2.6.10
 Description: 
-Dear Developer,
-this is my first filed bug ever, so I might not have done everything
-correct.
-I never got midi running on my p4p800 Deluxe mainboard also it worked on a
-P4C800 Deluxe Board with the same configuration. Difference is a 865 to
-875 in Chip-Version.
-Now Midi isn't detected anymore since the midi support is gone completly,
-without an update in the documentation.
+make -C /lib/modules/2.6.10/build
+SUBDIRS=/root/alsa/alsa-driver-1.0.5/kbuild modules
+make[1]: Entering directory `/usr/src/linux-2.6.10'
+  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/hwdep.o
+  CC [M]  /root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o
+/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: initializer
+element is not constant
+/root/alsa/alsa-driver-1.0.5/acore/memalloc.c:54: error: (near
+initialization for `__param_arr_enable.num')
+make[3]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore/memalloc.o]
+Error 1
+make[2]: *** [/root/alsa/alsa-driver-1.0.5/kbuild/../acore] Error 2
+make[1]: *** [_module_/root/alsa/alsa-driver-1.0.5/kbuild] Error 2
+make[1]: Leaving directory `/usr/src/linux-2.6.10'
+make: *** [compile] Error 2
+root@mythtv:~/alsa/alsa-driver-1.0.5 # uname -r
+2.6.10
+root@mythtv:~/alsa/alsa-driver-1.0.5 # gcc --version
+gcc (GCC) 3.3.2 20030812 (Debian prerelease)
+Copyright (C) 2003 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is
+NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.
 
-This no I do not hear any sound issue. I want to access a midi-keyboard.
-I am willing to do testing for you.
 
-Many thanks for your assistance.
-
-Johannes Frank
 ======================================================================
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-28-04 23:56 jmfrank        New Issue                                    
-12-28-04 23:56 jmfrank        Distribution              => Debian/GNU Linux
-12-28-04 23:56 jmfrank        Kernel Version            => 2.6.9           
+12-29-04 00:50 wschrep        New Issue                                    
+12-29-04 00:50 wschrep        Distribution              => knoppmyth r4v5  
+12-29-04 00:50 wschrep        Kernel Version            => 2.6.10          
 ======================================================================
 
 
