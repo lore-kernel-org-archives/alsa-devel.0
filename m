@@ -1,13 +1,14 @@
-From: Tim Goetze <tim@quitte.de>
-Subject: Re: Which API for MIDI?
-Date: Wed, 10 Dec 2003 12:06:45 +0100 (CET)
+From: Giuliano Pochini <pochini@shiny.it>
+Subject: Re: Query devices in a non-blocking fashion
+Date: Wed, 10 Dec 2003 12:26:53 +0100 (CET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312101134390.527@autumn>
-References: <Pine.HPX.4.33n.0312101057320.12636-100000@studcom.urz.uni-halle.de>
+Message-ID: <XFMail.20031210122653.pochini@shiny.it>
+References: <oprzvc5mu3q1sf88@mail.broadpark.no>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.HPX.4.33n.0312101057320.12636-100000@studcom.urz.uni-halle.de>
+In-Reply-To: <oprzvc5mu3q1sf88@mail.broadpark.no>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,52 +17,28 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Clemens Ladisch <clemens@ladisch.de>
-Cc: Denis de Leeuw Duarte <denis@cyozlab.com>, alsa-devel@lists.sourceforge.net
+To: Arve Knudsen <aknuds-1@broadpark.no>
+Cc: alsa-devel@lists.sourceforge.net, Paul Davis <paul@linuxaudiosystems.com>
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
 
->Denis de Leeuw Duarte wrote:
->> I'm starting work on a new midi sequencing app, but I'm a bit confused by
->> the different API options ALSA offers. I've been reading whatever snippets
->> I can find on the web, mostly mailing list archives, and if I understand
->> correctly my options are basically the rawmidi API and the alsa sequencer
->> API. With the former I must handle all timing myself in user space and
->> with the latter this is all done by ALSA, is that a correct description?
->
->Yes. And the sequencer can connect/route between ports, and supports
->ports handled by userspace apps.  The user of your sequencer won't be
->happy if it's restricted to rawmidi ports.
+On 08-Dec-2003 Arve Knudsen wrote:
+> Wether its done via the control or pcm interface, it'd be good to have a
+> loose coupling between configuration and streams, so one could could access
+> configuration space without locking a stream don't you think?
 
-more things to consider:
+Yes, of course. Perhaps it can be done already with the current API. I
+never investigated how the configuration process works, but I know the
+driver can define rule functions to manage complex hw constraints.
+Maybe you can change the snd_pcm_hardware_t structure according to the
+new setting from those functions. I mean, the application calls
+snd_pcm_hw_params_set_rate_near(96000);
+The hw_rule function is called, which does pcmhw.channels_max=12;
+Paul, Jaroslav, is it possible/legal ?
 
-* what kind(s) of sync-to-external will you need?
-* do you want to receive/send MIDI sysex data?
 
-last time i checked, the latter was impossible to do via the sequencer
-API (please correct if things have changed). afaik, the former isn't
-always easy to do with the sequencer either.
-
-i've ended up supporting both raw and sequencer access to MIDI ports,
-dropping the sequencer timing and queue mechanisms in order to gain
-flexibility in sync and tempo matters. of course that requires
-realtime threading for MIDI i/o to achieve stable timing.
-
->> My question is: if my first priority is to have stable, reliable timing
->> and performance, which API should I choose, taking the current state of
->> the alsa sequencer code into consideration?
->
->The current state of the sequencer _code_ is just fine.  It's the
->documentation you'll have problems with (but the rawmidi docs aren't
->better).
-
-i found the sequencer API to be well-documented. it's somewhat lacking
-in code examples, but there are quite a few applications out there
-that use it (pmidi for a start maybe, and then we have rosegarden,
-muse etc).
-
-tim
+--
+Giuliano.
 
 
 -------------------------------------------------------
