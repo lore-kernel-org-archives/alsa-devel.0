@@ -1,12 +1,14 @@
-From: noreply@alsa-project.org
-Subject: [ALSA - driver 0000386]: usb speakers don't show up in /proc/asound/cards
-Date: Tue, 13 Jul 2004 21:09:58 +0200
+From: Martin Langer <martin-langer@gmx.de>
+Subject: Re: Testers needed: memio-mmap patch (rme32,rme96,nm256)
+Date: Tue, 13 Jul 2004 21:54:42 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <c2dcc04e5a0b98539f1d0d895edbde03@bugtrack.alsa-project.org>
+Message-ID: <20040713195442.GA18453@tuba.home>
+References: <s5hllikor62.wl@alsa2.suse.de> <20040620101135.GA755@tuba.home> <s5hd63fallg.wl@alsa2.suse.de> <20040701201326.GA567@tuba.home> <s5hzn6i8tf5.wl@alsa2.suse.de> <20040705184731.GA564@tuba.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Content-Disposition: inline
+In-Reply-To: <20040705184731.GA564@tuba.home>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -15,71 +17,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@alsa-project.org
+To: alsa-devel@lists.sourceforge.net
+Cc: Takashi Iwai <tiwai@suse.de>, pilo.c@wanadoo.fr
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 05, 2004 at 08:47:31PM +0200, Martin Langer wrote:
+> On Fri, Jul 02, 2004 at 02:50:22PM +0200, Takashi Iwai wrote:
+> > At Thu, 1 Jul 2004 22:13:26 +0200,
+> > Martin Langer wrote:
+> >  
+> > > FYI: The situation is that I get only silence in fullduplex_mode after a
+> > > short time. But nevertheless in the beginning it is correct.
+> > 
+> > How about the attached patch?
+> 
+> Fine, there's no longer silence via the indirect way. But I'm still unhappy
+> because the resulting data fragments on playback and capturing aren't clean.
+> I mean there are often capturing fragments in the playback data; and OTOH 
+> you can get playback fragments during capturing. And the length of this
+> fragments and the winning data type (playback or capture) seems to be chaotic
+> for my ears.
 
-The following bug has been SUBMITTED.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=3D000=
-0386
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Reported By:                hadess
-Assigned To:                Clemens Ladisch
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Project:                    ALSA - driver
-Bug ID:                     386
-Category:                   USB - usb-audio
-Reproducibility:            always
-Severity:                   minor
-Priority:                   normal
-Status:                     assigned
-Distribution:               Fedora Core 2
-Kernel Version:             2.6.7-bk19
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Date Submitted:             07-13-2004 21:09 CEST
-Last Modified:              07-13-2004 21:09 CEST
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Summary:                    usb speakers don't show up in /proc/asound/ca=
-rds
-Description:=20
-My USB speakers don't show up in /proc/asound/cards, even though
-snd_usb_audio is loaded, and playback working with them.
+If I understand the fullduplex mode correct: then playback is sometimes the
+winning process and another time it is capturing. I guess the code works
+fine if playback wins the race. But if capturing is the winner, the playback
+buffer isn't prefilled and the capture data will also be used in playback.
 
-I think this causes problem with "aplay -l" which doesn't list  the
-devices, and also seems to be a problem for "gnome-alsamixer" which will
-not show the mixer for that device.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-
-Bug History
-Date Modified  Username       Field                    Change            =
- =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-07-13-04 21:09 hadess         New Bug                                    =
- =20
-07-13-04 21:09 hadess         Distribution              =3D> Fedora Core =
-2  =20
-07-13-04 21:09 hadess         Kernel Version            =3D> 2.6.7-bk19  =
-   =20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+I don't see a rule that says: prefill the playback buffer before you run
+capturing. But perhaps I'm totally blind at the moment.
 
 
+martin
+
+
+
+-- 
+                                     Living on earth may be expensive,
+                   but it includes an annual free trip around the sun. 
 
 
 -------------------------------------------------------
