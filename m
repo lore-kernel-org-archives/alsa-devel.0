@@ -1,8 +1,8 @@
 From: Jaroslaw Sobierski <fycio@gucio.com>
-Subject: Re: S/PDIF on AD1980 patch
-Date: Mon, 17 Feb 2003 08:01:27 -0800
+Subject: Re: Re: dmix plugin
+Date: Mon, 17 Feb 2003 08:18:07 -0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1045497687.3e5107575caeb@webmail3.namezero.com>
+Message-ID: <1045498687.3e510b3fb134e@webmail3.namezero.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 8bit
@@ -15,29 +15,40 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: perex@suse.cz
-Cc: tiwai@suse.de, alsa-devel@lists.sourceforge.net
+To: T.Motylewski@bfad.de
+Cc: perex@suse.cz, abramo.bagnara@libero.it, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-
->> 
->> Here's the patch I promised. I had some trouble compiling the CVS version
->> (not the drivers but libs, still don't know why), but I supplemented with
->[...]
 >
->Send us unified diff, please. It's more readable to verify the contents.
+>Well, but when adding a+b we have no idea that that overlow will be compensated
+>by next very big negative sample. Also mixing signals which already fill 90% of
+>dynamic range is not a good idea. My "fix" is heuristic - it works for
+>occasional _small_ overflows like 0x4100+0x4000 -> 0x7fff is much better than
+>0x8100. 
 >
+>The idea of dmix as I understand it is that buffer is already in the native
+>format for the sound card. So if sound card supports 24 bit, OK. But then
+>people will start mixing 24 bit samples :-)
+>
+>> AFAIK most hardware does not mix by reducing volume before the sum. On the
+>> contrary, it is usually summed "as is" to a wider register, and often even so
+>
+>And here our "wider register" is 16bit. That means end users should not expect
+>too much if thay mix full power signals on it.
+>
+>BTW. If you have uncorrelated signals, then to mix 4 signals it may be good
+>enough to reduce the amplitude of them just factor 2, because power will drop
+>factor 4. Ocassionally there will be overrruns, but 0x7fff limit will make it
+>almost not hearable. Not a correct fix, but I can assure you that it works in
+>standard cases :-)
 
-Will do. Once I get home :-). 
-I thought since I'm only adding lines anyway it's more compact, but you're
-right, it's easier to see it in context.
-
-Another question though. I still cannot get the AC3 pass-through to work.
-I assume the spdif source must be set to AC-Link (which is hw-reset default 
-anyway), and I figure all other stuff should be set by alsa (like Category
-Code, etc.). I have no problem with AC3 on emu10k1, so I guess mplayer is
-requesting correct stream params from alsa. Yet on AC97 I can't get it to 
-work (amp keeps indicating a PCM stream). Any suggestions what to look for?
+That's a good point. As long as we're dealing with 2 or 3 channels we probably
+can do with saturating. But we should consider adding a shift right by one
+(after adding, before saturation) once we have 4 channels, by two at 8 
+channels, or something similar.
+Otherwise we will start getting some ugly clipping artifacts. The problem is,
+this can cause a (noticable) sudden drop in volume when a "threshold" client
+connects/disconnects. We could ramp, but that's a multiplication...
 
 --------------
 Fycio (J.Sobierski)
