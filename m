@@ -1,15 +1,13 @@
-From: holborn <holborn@telefonica.net>
-Subject: alsa_seq & threads
-Date: Thu, 3 Jul 2003 16:35:23 +0100
+From: Patrick Shirkey <pshirkey@boosthardware.com>
+Subject: Re: hdsp driver status
+Date: Fri, 04 Jul 2003 00:47:01 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200307031635.24018.holborn@telefonica.net>
-Reply-To: holborn@telefonica.net
+Message-ID: <3F044FF5.2010602@boosthardware.com>
+References: <32847.81.50.18.84.1057230774.squirrel@www.undata.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,50 +16,47 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Thomas Charbonnel <thomas@undata.org>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Thomas Charbonnel wrote:
+> 
+> Remaining:
+> * HDSP9652: the matrix mixer isn't yet handled right.
+> * Rev11 + Multiface: either the firmware file is wrong or the io-box
+> firmware upload scenario has changed for this card revision. Has anyone
+> ever had success with this combination (or rev11 + Digiface) ?
+> 
 
-Hi!
+I am using multiface which hasn't been flashed. I have upgraded to a 
+newer kernel (2.4.21) (0.9.4 tarball) and now I don't get the error 
+about finding hwdep when I run hdsploader but there is still no sound 
+coming from the device.
 
-Sorry for the english ....
+My friend tells me that in windows it will always have the WC button on 
+when it is working correctly.
 
-I'm still developing an app using seqmidi interface .... i'm not really sure 
-about that but if i open: 
+In this case after running hdsploader the box flashes and then all the 
+lights turn off.
 
-snd_seq_open (&seq_handle1, "default", SND_SEQ_OPEN_INPUT, 0);
-snd_seq_open (&seq_handle2, "default", SND_SEQ_OPEN_OUTPUT,0);
+This device has worked with older versions of the alsa drivers.
 
-and in the main program i start two threads .... the second one consume 100% 
-of CPU time even if this thread dont do nothing only loops. That happens also 
-in another app i was developped. The program runs ... but .... 
 
-Valgrind tells :
 
-==19806== Thread 2:
-==19806== Syscall param ioctl(generic) contains uninitialised or unaddressable 
-byte(s)
-==19806==    at 0x40623304: ioctl (in /lib/libc-2.3.1.so)
-==19806==    by 0x4054E23F: snd_seq_get_client_pool (in 
-/usr/lib/libasound.so.2.0.0)
-==19806==    by 0x4054EC71: snd_seq_set_client_pool_output (in 
-/usr/lib/libasound.so.2.0.0)
-==19806==    by 0x805116C: GMO::init_queue() (in 
-/home/holborn/gmorgan/src/gmorgan)
-==19806==    Address 0x449A89C4 is on thread 2's stack
 
-but ... i'm musicien ... not programmer ... i dont know what to do ...
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+Http://www.boosthardware.com
+Http://www.djcj.org - The Linux Audio Users guide
+========================================
 
-Another thing is ... any posibility to include more examples in the 
-documentation, they help ....
+Being on stage with the band in front of crowds shouting, "Get off! No! 
+We want normal music!", I think that was more like acting than anything 
+I've ever done.
 
-Any help?
-
-thanks.
-
-Josep
-
- 
+Goldie, 8 Nov, 2002
+The Scotsman
 
 
 
