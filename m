@@ -1,13 +1,14 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: ALSA mixing capability
-Date: Thu, 11 Dec 2003 11:01:59 +0100 (CET)
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: Alsa sequencer port type flags
+Date: Thu, 11 Dec 2003 11:18:05 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0312111056270.20863@pnote.perex-int.cz>
-References: <3FD83DC2.6090502@pg.gda.pl>
+Message-ID: <Pine.HPX.4.33n.0312101536120.776-100000@studcom.urz.uni-halle.de>
+References: <200312101335.39428.dgarcia@iua.upf.es>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <3FD83DC2.6090502@pg.gda.pl>
+In-reply-to: <200312101335.39428.dgarcia@iua.upf.es>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,80 +17,77 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Adam Tla/lka <atlka@pg.gda.pl>
+To: David Garcia Garzon <dgarcia@iua.upf.es>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 11 Dec 2003, Adam Tla/lka wrote:
+David Garcia Garzon wrote:
+> SND_SEQ_PORT_TYPE_SPECIFIC Hardware specific port
 
-> Welcome
-> 
-> I'm using ALSA 1.0.0rc2 on snd_intel8x0 and .asoundrc:
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> pcm.mix {
->         type dmix
->         ipc_key 321456  # any unique value
->         ipc_key_add_uid true
->         slave {
->                 pcm "hw:0,0"
->                 periods 0
->                 period_time 0
->                 period_size 1024  # must be power of 2
->                 buffer_size 4096  # ditto
->         }
->         bindings {
->                 0 0
->                 1 1
->         }
-> }
-> ctl.mix { type hw card 0 }
-> pcm.dsp0 { type plug slave.pcm "mix" }
-> ctl.mixer0 { type hw card 0 }
-> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> My problem:
-> 
-> when using wavplay with OSS ALSA emulation playing 22050 and 11025 Hz 
-> .wav files works OK
-> but with AOSS lib using pcm.dsp0 defined above I can't play 11025 Hz 
-> .wav file:
-> 
-> $ aoss wavplay lburn2.wav
-> Pathname:       lburn2.wav
-> Device:         /dev/dsp
-> Sampling Rate:  11025 Hz
-> Mode:           Mono
-> Samples:        5999
-> Bits:           8
-> 
-> Unable to set audio sampling rate
-> 
-> but 22050 HZ .wav is played correctly.
-> 
-> So my question is how properly compose .asoundrc file so we could mix 
-> all sound sources which use ALSA natively
-> through -Dmix virtual device and OSS apps routed through AOSS lib? Is 
-> this possible? Is this explained somewhere?
+something hardware-specific (obviously :-)
 
-If you use mostly 44.1kHz material (or multiple of this rate), then 
-explicitly set the 44.1kHz rate in pcm.dmix section (rate 44100). Note
-that your hardware must support this rate.
+> SND_SEQ_PORT_TYPE_MIDI_GENERIC Generic MIDI device
 
-Anyway, it seems like a bug.
+Understands MIDI events/commands.
 
-> Next case is a possibility to create a  virtual mixer so ctl.mix 
-> virtually sets level of particular source before mixing
-> it with others sources so playind applications could set volumen of only 
-> his source. Is that possible?
+> SND_SEQ_PORT_TYPE_MIDI_GM General MIDI compatible device
+> SND_SEQ_PORT_TYPE_MIDI_GS GS compatible device
+> SND_SEQ_PORT_TYPE_MIDI_XG XG compatible device
+> SND_SEQ_PORT_TYPE_MIDI_MT32 MT-32 compatible device
 
-I know about this problem and it will be fixed one day.
+Support for these standards.  Not necessarily full support, and the
+availability of instruments may depend on loaded soundfonts, but basic
+things like bank selection and drum channel selection should work.
 
-						Jaroslav
+This is not set for external ports like MPU-401 which may have a
+compatible device connected to them.
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SuSE Labs
+> SND_SEQ_PORT_TYPE_SYNTH Synth device
+
+Device can playback sound via the SAMPLE_* events.  (The OPL3 driver
+sets this flag too, so either this driver or my description is wrong.)
+
+> SND_SEQ_PORT_TYPE_DIRECT_SAMPLE Sampling device (supporting download)
+
+Can download instrument samples (SND_SEQ_EVENT_INSTR_PUT etc.)
+
+> SND_SEQ_PORT_TYPE_SAMPLE Sampling device (sample can be downloaded at any time)
+
+No ALSA driver sets this.  I don't know what "at any time" means; the
+INSTR_* events _can_ be sent at any time.
+
+> SND_SEQ_PORT_TYPE_APPLICATION Application (sequencer/editor)
+
+This port is (usually) controlled by the user, and not by events sent
+to it.
+
+> But which are the implications of setting up a port with such flags?
+> - Are they merely informative?
+
+Yes.
+
+> - Will Alsa coerce or enhance the port usage depending on that type?
+
+No.  ALSA never looks at these flags, except when someone wants to
+read port information.
+
+> - Can the user see that information in any way?
+
+It isn't even shown in the proc files AFAIK.
+
+
+> What is the use, in a programmer view, of alsa sequencer port type
+> flags?
+
+Not much.  They're more or less useless for automatic selection/
+filtering of ports.  It may be possible to show them to the user, but
+they won't be accurate in every case.
+
+
+HTH
+Clemens
+
+
 
 
 -------------------------------------------------------
