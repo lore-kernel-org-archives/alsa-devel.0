@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000721]: System stops completely when playing audio
-Date: Fri, 31 Dec 2004 16:25:38 +0100
-Message-ID: <1c7a40b00b057d61c4afa0b70e22fc53@bugtrack.alsa-project.org>
+Date: Fri, 31 Dec 2004 16:31:24 +0100
+Message-ID: <0405c6e08593927d632f480be16cb66a@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 242E22AB
-	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 16:25:39 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 6F31B313
+	for <alsa-devel@alsa-project.org>; Fri, 31 Dec 2004 16:31:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               Gentoo
 Kernel Version:             2.6.9
 ======================================================================
 Date Submitted:             12-12-2004 13:58 CET
-Last Modified:              12-31-2004 16:25 CET
+Last Modified:              12-31-2004 16:31 CET
 ======================================================================
 Summary:                    System stops completely when playing audio
 Description: 
@@ -49,25 +49,6 @@ the USB-LED of the 428 lights up. When I try to play audio (e.g. with
 aplay or XMMS), the computer immedeately stops working. All I can do is to
 push the reset-button. No log-entrys, nothing.
 ======================================================================
-
-----------------------------------------------------------------------
- spirou - 12-30-04 18:59 
-----------------------------------------------------------------------
-Thank you. It's getting mysterious...:
-us428control: cannot open hwdep hw:0
-us428control: cannot open hwdep hw:1
-us428control: cannot open hwdep hw:2
-us428control: cannot open hwdep hw:3
-us428control: cannot open hwdep hw:4
-us428control: cannot open hwdep hw:5
-us428control: cannot open hwdep hw:6
-us428control: cannot open hwdep hw:7
-us428control: no US-X2Y-compatible cards found
-
-I swear, it's a US-428! ;)
-With WinXP it works OK.
-
-Could this be a firmware-problem?
 
 ----------------------------------------------------------------------
  karsten - 12-31-04 16:25 
@@ -80,6 +61,16 @@ $ lsmod
 $ ls -al /dev/snd/
 $ for XX in $(find /proc/asound/ -type f) ; do echo;echo $XX; cat $XX;
 done;
+
+----------------------------------------------------------------------
+ karsten - 12-31-04 16:31 
+----------------------------------------------------------------------
+maybe also usx2yloader didn't run / exist?
+it has to be called before.
+Complete sequence goes like this:
+$ usx2yloader
+$ modprobe snd-seq
+$ us428control
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -98,6 +89,7 @@ Date Modified  Username       Field                    Change
 12-30-04 14:53 karsten        Note Added: 0003020                          
 12-30-04 18:59 spirou         Note Added: 0003023                          
 12-31-04 16:25 karsten        Note Added: 0003026                          
+12-31-04 16:31 karsten        Note Added: 0003027                          
 ======================================================================
 
 
