@@ -1,12 +1,14 @@
-From: Nikhil Deo <nikhil_deo@usa.net>
-Subject: Re: [Re: Configuring the mixer]
-Date: Wed, 28 Apr 2004 17:17:29 -0400
+From: =?ISO-8859-1?Q?Erik_Inge_Bols=F8?= <knan@mo.himolde.no>
+Subject: Re: pcm_ladspa and multichannel filters
+Date: Wed, 28 Apr 2004 23:44:32 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <508iDbVRd8672S02.1083187049@uwdvg002.cms.usa.net>
+Message-ID: <Pine.LNX.4.56-Maildir.0404282327060.21234@yme.midgardsormen.net>
+References: <Pine.LNX.4.56-Maildir.0404230141120.1216@yme.midgardsormen.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: 8BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <Pine.LNX.4.56-Maildir.0404230141120.1216@yme.midgardsormen.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,111 +20,104 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Just wanted to mention that I was able to do this yesterday <grin>. I had=
- to
-find all the mixer groups. Their params told me that only Mic-In was bein=
-g
-captured, both channels. If I started capturing both channels of Line-In,=
- I
-could not capture Mic-In at all as mentioned by clemens. But to my deligh=
-t I
-could capture left channel of Line-In and right channel of Mic-In by
-configuring the appropriate Mixer group structure's 'capture' element pro=
-perly
-and send it to the mixer and it came out Line-out on the required channel=
-s
-respectively. =
+On Fri, 23 Apr 2004, Erik Inge Bolsø wrote:
+>See subject. Has anyone got this working? I've followed the examples and
+>got a few different filters working (chorus, delay), but am having trouble
+>with more complex ones - and suspect a bug in alsa-lib.
+>
+>Current ALSA CVS version, as of a few hours ago.
+>
+>The plugin in question is from swh-plugins-0.4.3.tar.gz. Had the same
+>problem with a plugin from ladspa's cmt_src_1.15.tgz
+>
+>The .asoundrc below
+>
+>pcm._novoice {
+>        type ladspa
+>        slave.pcm "plughw:0,0";
+>        path "/usr/local/lib/ladspa";
+>        playback_plugins [
+>                {
+>                        label karaoke
+>                        policy none
+>                        input {
+>                                controls
+>                                {
+>                                        "Vocal volume (dB)" -30
+>                                }
+>                                bindings
+>                                {
+>                                        0 "Left in"
+>                                        1 "Right in"
+>                                }
+>                        }
+>                        output {
+>                                bindings
+>                                {
+>                                        0 "Left out"
+>                                        1 "Right out"
+>                                }
+>                        }
+>                }
+>        ]
+>}
+>
+>pcm.novoice {
+>        type plug
+>        slave.pcm "_novoice";
+>}
+>
+>gives me
+>
+>knan@monster:~$ aplay -Dnovoice PCM1.wav
+>Playing WAVE 'PCM1.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
+>ALSA lib pcm_ladspa.c:439:(snd_pcm_ladspa_allocate_instances) Unable to
+>connect input port of plugin 'Karaoke' channel 1 depth 0
+>aplay: set_params:880: Unable to install hw params:
+>ACCESS:  RW_INTERLEAVED
+>FORMAT:  S16_LE
+>SUBFORMAT:  STD
+>SAMPLE_BITS: 16
+>FRAME_BITS: 32
+>CHANNELS: 2
+>RATE: 44100
+>PERIOD_TIME: (74285 74286)
+>PERIOD_SIZE: 3276
+>PERIOD_BYTES: 13104
+>PERIODS: (2 3)
+>BUFFER_TIME: (148594 148595)
+>BUFFER_SIZE: 6553
+>BUFFER_BYTES: 26212
+>TICK_TIME: 10000
+>
+>
+>I've tried tracing it in gdb, but gdb keeps playing tricks on me - so no
+>luck yet.
+>
+>At one point, in snd_pcm_ladspa_connect_plugin, I saw
+>the parameters "plugin" and "io" resolve to the same address, but haven't
+>been able to reproduce yet. plugin->input looked correct, though.
 
+Red herring. printf's show that this was gdb playing tricks.
 
-Now I am off to my next step: trying to separate the left and right chann=
-el
-data from a buffer that I have captured/read. If you have not figured out=
+I get this, though.
 
-already, I am trying to use an echo cancellor and after I separate out th=
-is
-left and right channels I would feed it to the echo-can software. =
+snd_pcm_ladspa_connect_plugin: io->port_bindings_size: 2
+snd_pcm_ladspa_connect: instance->channel = 0, channel = 0
+snd_pcm_ladspa_connect_plugin: io->port_bindings_size: 2
+snd_pcm_ladspa_connect: instance->channel = 0, channel = 1
+ALSA lib pcm_ladspa.c:455:(snd_pcm_ladspa_allocate_instances) Unable to
+connect input port of plugin 'Karaoke' channel 1 depth 0
+aplay: set_params:880: Unable to install hw params:
 
+Hmmm. On second reading, it seems alsa-lib only handles mono-input and
+mono-output ladspa plugins, even though the config parser is smart enough
+to understand the concept of multichannel plugins. Damn.
 
-Any idea how the captured buffer stores the different channels that I nee=
-d to
-extract?
-
-Thanks in advance. =
-
-
-
- =
-
-
-Clemens Ladisch <clemens@ladisch.de> wrote:
-
-> Nikhil Deo wrote:
-> > It is to be done on QNX
-> =
-
-> By now, QNX's API is completely different.
-> =
-
-> > I need to capture input from the mic AND the line in.
-> =
-
-> This will work only if your hardware supports this.  Many sound cards
-> can select exactly one input for recording.
-> =
-
-> > Then I need to output the mic input on the Right-LineOut and
-> > leftLineIn on leftLineOut. (right line in can be ignored)
-> =
-
-> This is easy once you have captured the data.
-> =
-
-> =
-
-> Another possibility would be to configure the mixer to route the
-> inputs as you want them.  Again, this is dependent on the capabilities
-> of your hardware/drivers.
-> =
-
-> > in 2, my mixer group was input gain and although it seemed to be
-recording
-> > something, I could not figure out what it was. How do I make it take =
-the
-input
-> > from  mic in only?
-> =
-
-> In ALSA, most cards have a mixer control "Capture Source" which allows
-> to select between several input.  Some cards have "Capture Volume"
-> controls for each input and mix all together.
-> =
-
-> =
-
-> HTH
-> Clemens
-> =
-
-> =
-
-> =
-
-> =
-
-> -------------------------------------------------------
-> This SF.net email is sponsored by: The Robotic Monkeys at ThinkGeek
-> For a limited time only, get FREE Ground shipping on all orders of $35
-> or more. Hurry up and shop folks, this offer expires April 30th!
-> http://www.thinkgeek.com/freeshipping/?cpg=3D12297
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/alsa-devel
-> =
-
-
-
-
+--
+Erik I. Bolsø | email: <knan at mo.himolde.no>
+The UNIX philosophy basically involves giving you enough rope to
+hang yourself.  And then a couple of feet more, just to be sure.
 
 
 -------------------------------------------------------
