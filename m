@@ -1,14 +1,14 @@
-From: =?iso-8859-1?q?Chris=20Rankin?= <rankincj@yahoo.com>
-Subject: Re: [BUG] alsa-lib leaves sound device open for child processes
-Date: Fri, 7 Feb 2003 19:46:28 +0000 (GMT)
+From: "Brian J. Tarricone" <bjt23@ece.cornell.edu>
+Subject: Re: [Alsa-user] sb live dma buffer alloc failure?
+Date: Fri, 07 Feb 2003 14:46:14 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030207194628.20880.qmail@web40604.mail.yahoo.com>
-References: <20030207153720.1410d9e6.sebastian_kapfer@web.de>
+Message-ID: <3E440D06.8090803@ece.cornell.edu>
+References: <3E40BA0F.9070600@ece.cornell.edu> <s5hadh8e23e.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <20030207153720.1410d9e6.sebastian_kapfer@web.de>
+In-Reply-To: <s5hadh8e23e.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,38 +17,36 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Sebastian Kapfer <sebastian_kapfer@web.de>, alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
- --- Sebastian Kapfer <sebastian_kapfer@web.de> wrote:
->> Setting FD_CLOEXEC automatically doesn't make the
-> library less powerful.
-> You can still unset the flag yourself __if you
-> really need the feature__
-> of inherited ALSA FD's. But wouldn't FD_CLOEXEC be
-> the "reasonable
-> default" setting, which is correct for 99% of all
-> applications?
+Takashi Iwai wrote:
 
-Most of those "99% of all applications" don't spawn
-child processes at all and so don't care one way or
-another. (And did you know that 98.68% of all
-statistics are invented ;-)?)
+>which kernel version are you using?
+>
+2.4.20 - it's a heavily patched one, tho (out of gentoo's portage).  
+should i try a vanilla kernel?
 
-All of the remaining applications should be
-considering what will happen to their resources on
-exec(), and I see no reason why careless programmers
-should have a few of their bugs swept under the rug
-for them.
+>the new code on rc7 simply tries allocation via vmalloc().
+>if it fails, it means that the system resource is really exhausted.
+>or, there might be memory leak or so...
+>  
+>
+hmm...  well, rc7 has locked for me very shortly after system startup, 
+top reports plenty (>200mb) free, so this shouldn't be a free resource 
+issue.  it seems to only occur if i try to rapidly open and close the 
+device (when i say 'rapidly' i mean about once per second for about 
+10-25 seconds).
 
-Chris
+it's sub-ideal, but i'm using esd for now (with a really high timeout 
+for releasing the pcm device) to avoid the excessive reopening behaviour.
 
+thanks for your help - please let me know of any other ways i can try to 
+gather information.
 
-__________________________________________________
-Do You Yahoo!?
-Everything you'll ever need on one web page
-from News and Sport to Email and Music Charts
-http://uk.my.yahoo.com
+    -brian
+
 
 
 -------------------------------------------------------
