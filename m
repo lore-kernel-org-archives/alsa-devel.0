@@ -1,17 +1,12 @@
-From: Eckhard Jokisch <e.jokisch@u-code.de>
-Subject: Re: emufx.c bug/LiveDrive capture is finally working
-Date: Wed, 3 Dec 2003 15:55:10 +0100
+From: Jeremy Hall <jhall@maoz.com>
+Subject: intel8x0: sample rate problems in playback
+Date: Wed, 3 Dec 2003 10:06:52 -0500 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200312031555.10835.e.jokisch@u-code.de>
-References: <S31578AbTLATvA/20031201195101Z+6734@nic.funet.fi>
-Reply-To: e.jokisch@u-code.de
+Message-ID: <200312031506.hB3F6q9Y011232@sith.maoz.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-15"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <S31578AbTLATvA/20031201195101Z+6734@nic.funet.fi>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -23,19 +18,18 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
->
-> Now we should look at why LiveDrive "midi-in" does not work.
-> It looks like there is no driver for it. There seem to be only
-> a driver for the midi at the rear panel.
-As far as I remeber it worked half a year ago.. no?
+I tried to run realplayer after taking a massive CVS update, and now alsa 
+seems to try to up-sample the material, causing a tinny effect.
 
->
-> Regards,
-> Juhana
-Greets
-Eckhard Jokisch
+and now with today's CVS, I get:
 
+error in snd_ac97_set_rate: cidx=0, reg=0x2e, rate=48000
+
+and no discernable difference in audio, it works ok.
+
+_J
 
 
 -------------------------------------------------------
