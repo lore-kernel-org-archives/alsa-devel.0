@@ -1,14 +1,14 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: alsa-seq queue events
-Date: Sat, 16 Aug 2003 13:25:52 +0200 (METDST)
+Subject: Re: ADATPCR Drivers
+Date: Sat, 16 Aug 2003 13:51:14 +0200 (METDST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.HPX.4.33n.0308161323000.28205-100000@studcom.urz.uni-halle.de>
-References: <200308141920.30197.holborn@telefonica.net>
+Message-ID: <Pine.HPX.4.33n.0308161326560.28205-100000@studcom.urz.uni-halle.de>
+References: <14c.22dbd497.2c6f63e3@aol.com>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-reply-to: <200308141920.30197.holborn@telefonica.net>
+In-reply-to: <14c.22dbd497.2c6f63e3@aol.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,24 +17,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: holborn <holborn@telefonica.net>
+To: ROOTLOOP@aol.com
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-holborn wrote:
-> When i queue a event
-> if tick is earlier than the actual tick alsa-seq play the event?
+Debbie wrote:
+> This is a message for Jaymz Julian or whomever may be the appropriate person
+> to address this to at this time. I am looking for win2000 drivers for the
+> ADATPCR card.
 
-yes
+Alesis' web page says that Windows 2000 isn't supported.
 
-> when alsa-seq sends note-off for this event?   in tick+length?  or in "actual
-> tick" + length?
+And I don't think Jaymz will be able to help you:
+<http://www.geocrawler.com/archives/3/12349/2001/12/50/7359975/>
 
-A note events behaves like two separately scheduled note-on and
-note-off events, so it's tick+length.
+> Perhaps someone could tell me how I might modify my win98 drivers
+> to be used with win2k.
+
+You can't; W2K uses a completely different driver achitecture.
+
+I suggest to dump the ADAT/PCR and to buy some other card.
 
 
-HTH
+Regards,
 Clemens
 
 
