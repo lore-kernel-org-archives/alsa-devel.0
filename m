@@ -1,14 +1,13 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: Help with supporting Emu10k1x  and question
-Date: Sun, 22 Feb 2004 14:09:01 +0000
+From: "Eliad Lubovsky" <eliad@smlink.com>
+Subject: unsubscribe eliad@smlink.com
+Date: Sun, 22 Feb 2004 17:42:22 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <4038B7FD.6000308@superbug.demon.co.uk>
-References: <BAY10-F84ueolj8Jecd00000c83@hotmail.com> <40380089.9040806@superbug.demon.co.uk> <4038AD54.5020702@netzero.net>
+Message-ID: <54640173AF52D411B1A400508BC2992B02A143EA@smmail.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative;
+	boundary="----_=_NextPart_001_01C3F95A.7630FA40"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <4038AD54.5020702@netzero.net>
+content-class: urn:content-classes:message
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,47 +16,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Francisco Moraes <fmoraes74@netzero.net>
-Cc: Bastien Aracil <findbastien@hotmail.com>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Francisco Moraes wrote:
-> 
->>
->> From what I can see for the emu10k1x (aka. sb Live 5.1 from Dell) is 
->> almost exactly the same as the Audigy LS.
->>
->> It is a very simple device, and the driver should be based more like 
->> the  snd-intel8x0 driver than the snd-emu10k1 driver.
->> It has no dsp, and no hardware mixing, and is a single open device. 
->> Very similar to the intel8x0 feature wise.
->>
->> If someone will send me a sample sound card, I will get it working.
-> 
-> 
-> 
-> I cannot send you my card but I will try a driver on it without a 
-> problem as I have already been experimenting. I can also try to send you 
-> my changed emu10k1 driver (with almost everything disabled but pcm and 
-> ac97).
-> 
-> Let me know.
-> 
-> Francisco
-> 
-> 
+This is a multi-part message in MIME format.
 
-I think you would do better basing your driver on the intel8x0.c code, 
-and drop the emu10k1 code effort.
-The emu10k1x and sb audigy ls are nothing like the emu10k1 or emu10k2.
+------_=_NextPart_001_01C3F95A.7630FA40
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
-Send me the code you already have, and I will help correct it.
-Just tell me if you have the Dell SB Live (aka. emu10k1x) or the SB 
-Audigy LS.
+unsubscribe  eliad@smlink.com
 
-Cheers
-James
+Eliad Lubovsky=20
+Software Engineer=20
+Smart Link Ltd.=20
+Natanya 42504, Israel=20
+Tel: 972-9-8638093, Fax: 972-9-8656552=20
 
+=20
+
+------_=_NextPart_001_01C3F95A.7630FA40
+Content-Type: text/html;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Diso-8859-1">
+
+
+<META content=3D"MSHTML 6.00.2800.1106" name=3DGENERATOR></HEAD>
+<BODY>
+<DIV>unsubscribe&nbsp;<SPAN class=3D661514115-22022004><A=20
+href=3D"mailto:eliad@smlink.com">eliad@smlink.com</A></SPAN></DIV>
+<P><FONT face=3D"Comic Sans MS" color=3D#000080 size=3D2>Eliad =
+Lubovsky</FONT>=20
+<BR><FONT face=3D"Comic Sans MS" color=3D#000080 size=3D2>Software =
+Engineer</FONT>=20
+<BR><FONT face=3D"Comic Sans MS" color=3D#000080 size=3D2>Smart Link =
+Ltd.</FONT>=20
+<BR><FONT face=3D"Comic Sans MS" color=3D#000080 size=3D2>Natanya 42504, =
+Israel</FONT>=20
+<BR><FONT face=3D"Comic Sans MS" color=3D#000080 size=3D2>Tel: =
+972-9-8638093, Fax:=20
+972-9-8656552</FONT> </P>
+<DIV>&nbsp;</DIV></BODY></HTML>
+
+------_=_NextPart_001_01C3F95A.7630FA40--
 
 
 -------------------------------------------------------
