@@ -1,13 +1,13 @@
 From: tom burkart <alsa@aussec.com>
-Subject: Re: Getting actual sample rate
-Date: Wed, 11 Jun 2003 14:48:44 +1000 (EST)
+Subject: Re: Oops with snd-ymfpci and ALSA 0.9.3a
+Date: Wed, 11 Jun 2003 14:58:54 +1000 (EST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.44.0306111446550.1142-100000@home.aussec.com>
-References: <E19PxGO-00026V-00@sc8-sf-list1.sourceforge.net>
+Message-ID: <Pine.LNX.4.44.0306111456080.1142-100000@home.aussec.com>
+References: <Pine.HPX.4.33n.0305190824550.1170-100000@studcom.urz.uni-halle.de>
 Mime-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <E19PxGO-00026V-00@sc8-sf-list1.sourceforge.net>
+In-Reply-To: <Pine.HPX.4.33n.0305190824550.1170-100000@studcom.urz.uni-halle.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,16 +16,15 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Today, Paul Davis wrote:
+On May 19, Clemens Ladisch wrote:
 
-> thomas' code contains the results of the communications i had with RME
-> about this. it was unclear if the conversions should go into the
-> driver or not.
-I had a similar issue with a driver that is about to be published and I
-decided that userspace can do that one...
+> > I upgraded to ALSA 0.9.3a from 0.9.2 and am getting a kernel oops upon
+> This is a bug in 0.9.3, it has been fixed on CVS.
+My Toshiba Tecra (uses YMF-744B) still does not work under 0.9.4(rel)
+whereas the ones for OSS in the 2.4.20 kernel do work (ymfpci).
 
 tom.
 
