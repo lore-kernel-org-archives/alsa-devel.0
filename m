@@ -1,15 +1,14 @@
-From: "Steven T. Swift" <steven.tswiftgu@ugn.cas.cz>
-Subject: Italian Crafted Rolex from $75 to $275 - Free Shipping
-Date: Tue, 23 Nov 2004 19:16:18 +0400
-Message-ID: <b36a01c4d16f$7398ce73$1af42357@ethicalproperty.co.uk>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000659]: configure: error: Unsupported soundcard cs4236
+Date: Tue, 23 Nov 2004 16:17:14 +0100
+Message-ID: <d051f8d86fe1d5a898c1b6bd9dadaed8@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from ethicalproperty.co.uk (modemcable048.191-37-24.mc.videotron.ca [24.37.191.48])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 28C332D4
-	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:15:07 +0100 (MET)
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E7CCE2D3
+	for <alsa-devel@alsa-project.org>; Tue, 23 Nov 2004 16:17:14 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,29 +21,488 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Heya,
 
-Do you want a rolex watch?
+The following issue has been RESOLVED.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=659> 
+======================================================================
+Reported By:                olivier55
+Assigned To:                perex
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   659
+Category:                   0_compilation problem_!!!
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     resolved
+Distribution:               mandrake 10.1
+Kernel Version:             2.6.8.1-10
+Resolution:                 not an issue
+Fixed in Version:           
+======================================================================
+Date Submitted:             11-20-2004 22:25 CET
+Last Modified:              11-23-2004 16:17 CET
+======================================================================
+Summary:                    configure: error: Unsupported soundcard cs4236
+Description: 
+when i do : 
+./configure --with-cards=cs4236 --with-sequencer=yes
 
-In our online store you can buy replicas of Rolex watches. They look
-and feel exactly like the real thing.
+i've this error : 
+configure: error: Unsupported soundcard cs4236
 
-- We have 20+ different brands in our selection
-- Free shipping if you order 5 or more
-- Save up to 40% compared to the cost of other replicas
-- Standard Features:
- - Screw-in crown
- - Unidirectional turning bezel where appropriate
- - All the appropriate rolex logos, on crown and dial
- - Heavy weight
+my soundcard is a Crystal Audio CS4237 (cirrus logic)
+i have a laptop dell inspiron 8200
+======================================================================
 
-Visit us: http://www.icors.com/rep/rolex/
-
-Best regards,
-Hilton Jones
+----------------------------------------------------------------------
+ olivier55 - 11-22-04 19:13 
+----------------------------------------------------------------------
+with the default install of mandrake 10.1, my sound card is detected. 
+if i start "alsamixer", i have this : 
 
 
-No thanks: http://www.icors.com/z.php
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org
+ /alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;[A
+ lsaMixer
+v1.0.6 (Press Escape to
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-p
+ roject.org/alsa-bug/view.php?id=9472;&https://bugtrack.alsa-project.org/alsa-bug/view.php?
+ id=9488;
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Card: Intel
+82801CA-ICH3                                          
+          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Chip: Cirrus Logic
+CS4205 rev 3                                   
+          &https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474;
+&https://bugtrack.alsa-project.org/alsa-bug/view.php?id=9474; Item: Master
+
+But the cd CS4205 is not the properly sound card. However, with this
+configuration, i've no midi device in Kmidi. My trouble is, how to do for
+having a midi device  ?
+
+----------------------------------------------------------------------
+ tiwai - 11-23-04 16:17 
+----------------------------------------------------------------------
+CS4205 is AC97 codec chip.  Your driver should be snd-intel8x0.
+
+Simply build all drivers without --with-cards option, and run alsaconf to
+detect/configure the card.
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+11-20-04 22:25 olivier55      New Issue                                    
+11-20-04 22:25 olivier55      Distribution              => mandrake 10.1   
+11-20-04 22:25 olivier55      Kernel Version            => 2.6.8.1-10      
+11-20-04 22:30 olivier55      Issue Monitored: olivier55                    
+11-20-04 22:30 olivier55      Issue End Monitor: olivier55                    
+11-22-04 14:42 tiwai          Note Added: 0002502                          
+11-22-04 19:13 olivier55      Note Added: 0002511                          
+11-23-04 16:17 tiwai          Status                   assigned => resolved
+11-23-04 16:17 tiwai          Resolution               open => not an issue
+11-23-04 16:17 tiwai          Note Added: 0002521                          
+======================================================================
+
 
 
 
