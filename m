@@ -1,16 +1,19 @@
-From: "Eleanor Lee" <e.leern@mofe.go.kr>
-Subject: You've been selected!
-Date: Wed, 27 Oct 2004 09:39:11 +0000
+From: Dan Hollis <goemon@anime.net>
+Subject: Re: You've been selected!
+Date: Wed, 27 Oct 2004 02:21:05 -0700 (PDT)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1d9201c4bc08$e1f3b72b$3df203b8@cibamberg.de>
+Message-ID: <Pine.LNX.4.44.0410270220320.345-100000@sasami.anime.net>
+References: <1d9201c4bc08$e1f3b72b$3df203b8@cibamberg.de>
 Mime-Version: 1.0
-Content-Type: text/html;
-	charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Received: from cibamberg.de (host81-138-242-57.in-addr.btopenworld.com [81.138.242.57])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with SMTP id 86B682A2
-	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 10:54:40 +0200 (MEST)
+Received: from sasami.anime.net (sasami.anime.net [207.109.251.120])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D8521310
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 11:21:07 +0200 (MEST)
+Received: from localhost (goemon@localhost)
+	by sasami.anime.net (8.11.6/8.11.6) with ESMTP id i9R9L5800405
+	for <alsa-devel@alsa-project.org>; Wed, 27 Oct 2004 02:21:05 -0700
+In-Reply-To: <1d9201c4bc08$e1f3b72b$3df203b8@cibamberg.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -22,14 +25,16 @@ List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-<html>
-<a href=3D"http://ipasltdkxvd.myusgc.com/?aid=3D17"><img src=3D"http://my=
-usvisa.org/i/a09fvjoqpvapktqct" border=3D"0"></a><br>
-Available to anyone currently living in the US as well as international a=
-pplicants<br>
-<a href=3D"http://lawdecdqqgum.myusgc.com/?aid=3D17">more info here...</a=
->
-</html>
+On Wed, 27 Oct 2004, Eleanor Lee wrote:
+> [a09fvjoqpvapktqct]
+> Available to anyone currently living in the US as well as international applicants
+
+time to allow only registered subscribers to post to the list, perhaps?
+
+alsa-devel is now 99% spam :-(
+
+-Dan
+
 
 
 -------------------------------------------------------
