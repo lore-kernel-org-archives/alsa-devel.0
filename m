@@ -1,13 +1,14 @@
-From: Raymond <rayau@netvigator.com>
-Subject: Re: au88x0_synth
-Date: Thu, 31 Mar 2005 17:23:08 +0800
-Message-ID: <424BC17C.6000700@netvigator.com>
-References: <423CCDAC.80401@netvigator.com> <1111674841.3353.11.camel@localhost>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0001023]: ens1371 pcm not work in 2.6.11 kernel
+Date: Thu, 31 Mar 2005 13:14:19 +0200
+Message-ID: <16c002342e3beaa24597744638550cb3@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1111674841.3353.11.camel@localhost>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0F5FB225
+	for <alsa-devel@alsa-project.org>; Thu, 31 Mar 2005 13:14:19 +0200 (MEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,103 +18,119 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Clemens Ladisch wrote:
-> Raymond wrote:
->
->>What will be needed for a proper "MIDI" wavetable implementation ?
->
->
-> Have a look at the OPL4 driver, it's the simplest wavetable driver.
-> However, it doesn't support downloading instruments.
->
->
 
-http://www.midi.org/about-midi/tutorial/tutor.shtml
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1023> 
+======================================================================
+Reported By:                yafrank
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   1023
+Category:                   CORE - pcm
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     new
+Distribution:               Fedora Core 3
+Kernel Version:             2.6.11-1.8_FC3
+======================================================================
+Date Submitted:             03-30-2005 14:25 CEST
+Last Modified:              03-31-2005 13:14 CEST
+======================================================================
+Summary:                    ens1371 pcm not work in 2.6.11 kernel
+Description: 
+I'm using FC3 and my Creative SB AudioPCI 64V sound card works fine in 
+2.6.10-1.770_FC3 kernel. After I replaced the kernel to 2.6.11 from
+kernel.org or 2.6.11-1.8_FC3 from redhat, there is no sound anymore. I
+noticed that the 2.6.11 kernel uses alsa 1.0.8 driver, yet userspace
+alsa-lib and utility in fc3 are 1.0.6. So I upgrade them to 1.0.8 too.
+Still, there is no sound and alsamixer doesn't show any pcm option.
+Fortunately, the 1.0.8 lib and utility backward compatible with 1.0.6
+driver in 2.6.10 kernel, so they were kept. The sound card uses ens1371
+kernel module. And my /etc/modprobe.conf is this:
 
-
-Do anyone know how to fix the error
-"*** No rule to make target `snd-au8830-synth.o', needed by `modules'.
-Stop." ?
-
-
-# ls /cvs/alsa-driver/pci/au88x0
-au8810.c  au8830.c  au8830_seq.c    CVS       Makefile  snd-au8830.o
-au8820.c  au8830.o  au8830_synth.c  Makefile  pci-ids.h  test
-
----------------------------------------------------------------------------
-
-# more /cvs/alsa-driver/pci/au88x0/Makefile
-ifndef SND_TOPDIR
-SND_TOPDIR=../..
-endif
-
-include $(SND_TOPDIR)/toplevel.config
-include $(SND_TOPDIR)/Makefile.conf
-
-include $(SND_TOPDIR)/alsa-kernel/pci/au88x0/Makefile
-
-
-snd-a8830-synth-objs := au8830_synth.o au8830_seq.o
-
-sequencer = $(if $(subst y,,$(CONFIG_SND_SEQUENCER)),$(if $(1),m),$(if
-$(CONFIG_SND_SEQUENCER),$(1)))
-
-obj-$(call sequencer,$(CONFIG_SND_AU8830)) += snd-au8830-synth.o
-
-
-include $(SND_TOPDIR)/Rules.make
-
---------------------------------------------------------------------------
-
-# cd /cvs/alsa-driver
-#./cvscompile --with-cards=au8830 --with-sequencer=yes
-
-...
-
-make  -C au88x0 fastdep
-make[2]: Entering directory `/cvs/alsa-driver/pci/au88x0'
-/cvs/alsa-driver/include/sndversions.h was not updated
-gcc32 -M -D__KERNEL__ -D__isapnp_now__ -DMODULE=1
--I/cvs/alsa-driver/include
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc
--iwithprefix include  au8830.c > .depend
-make[2]: Leaving directory `/cvs/alsa-driver/pci/au88x0'
+alias snd-card-0 snd-ens1371
+alias sound-slot-0 snd-ens1371
+install snd-ens1371 /sbin/modprobe --ignore-install snd-ens1371 &&
+/usr/sbin/alsactlrestore >/dev/null 2>&1 || :
+remove snd-ens1371 { /usr/sbin/alsactl store >/dev/null 2>&1 || : ; };
+/sbin/modprobe -r --ignore-remove snd-ens1371
+alias usb-controller uhci-hcd
+alias net-pf-10 off
+alias ipv6 off
+alias eth0 8139too
 
 
-...
+======================================================================
 
-make  -C au88x0 modules
-make[2]: Entering directory `/cvs/alsa-driver/pci/au88x0'
-gcc32 -D__KERNEL__ -DMODULE=1 -I/cvs/alsa-driver/include
--I/lib/modules/2.4.22-1.2199.nptl/build/include -O2
--mpreferred-stack-boundary=2 -march=i686 -DLINUX -Wall
--Wstrict-prototypes -fomit-frame-pointer -Wno-trigraphs -O2
--fno-strict-aliasing -fno-common -pipe -DALSA_BUILD -nostdinc
--iwithprefix include  -DKBUILD_BASENAME=au8830   -c -o au8830.o au8830.c
-ln -sf ../pci/au88x0/snd-au8830.o /cvs/alsa-driver/modules/snd-au8830.o
-rm -f snd-au8830.o
-ld  -r -o snd-au8830.o au8830.o
-make[2]: *** No rule to make target `snd-au8830-synth.o', needed by
-`modules'. Stop.
-make[2]: Leaving directory `/cvs/alsa-driver/pci/au88x0'
-make[1]: *** [_modsubdir_au88x0] Error 2
-make[1]: Leaving directory `/cvs/alsa-driver/pci'
-make: *** [compile] Error 1
+----------------------------------------------------------------------
+ yafrank - 03-31-05 10:49 
+----------------------------------------------------------------------
+The ens1371 kernel module is loaded in 2.6.11
+[frank@twinhead html]$ uname -a
+Linux twinhead.localdomain 2.6.11-prep
+https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1 Wed Mar 30 17:11:30 CST
+2005
+i686 i686 i386 GNU/Linux
+[frank@twinhead html]$ cat /proc/asound/cards0
+[AudioPCI       ]: ENS1371 - Ensoniq AudioPCI
+                   Ensoniq AudioPCI ENS1371 at 0xfcc0, irq 5
+[frank@twinhead html]$ /sbin/lsmod | grep snd
+snd_ens1371            28452  1
+snd_rawmidi            27808  1 snd_ens1371
+snd_seq_device          8972  1 snd_rawmidi
+snd_ac97_codec         67576  1 snd_ens1371
+snd_pcm_oss            49328  0
+snd_mixer_oss          18048  2 snd_pcm_oss
+snd_pcm                94472  3 snd_ens1371,snd_ac97_codec,snd_pcm_oss
+snd_timer              31492  1 snd_pcm
+snd                    55652  8
+snd_ens1371,snd_rawmidi,snd_seq_device,snd_ac97_codec,snd_pcm_oss,snd_mixer_oss,snd_pcm,snd_timer
+soundcore              11232  2 snd
+snd_page_alloc          9988  1 snd_pcm
 
+    As concern to "no sound", I've tested xmms playing mp3 file, mplayer
+with wma and aplay with wav file. Alsamixer can always be invoked, but PCM
+channel is missing if 2.6.11 kernel used. It seems that the former PCM
+volume setting is now occupied by "Center" channel. Enable every channel
+and miximum each volume setting in alsamixer doens't help either. 
+    Aplay can be started without any error and VU meter can be seen if -vv
+option applied.
 
+----------------------------------------------------------------------
+ yafrank - 03-31-05 13:14 
+----------------------------------------------------------------------
+More info of the sound card.
+[root@twinhead ~]# lspci -vvv | grep "audio" -A8
+00:06.0 Multimedia audio controller: Creative Labs Ectiva EV1938
+        Subsystem: TWINHEAD INTERNATIONAL Corp: Unknown device 0e70
+        Control: I/O+ Mem- BusMaster+ SpecCycle- MemWINV- VGASnoop-
+ParErr- Stepping- SERR- FastB2B-
+        Status: Cap+ 66Mhz- UDF- FastB2B- ParErr- DEVSEL=slow >TAbort-
+<TAbort+ <MAbort- >SERR- <PERR-
+        Latency: 96 (3000ns min, 32000ns max)
+        Interrupt: pin A routed to IRQ 5
+        Region 0: I/O ports at fcc0 [size=64]
+        Region 1: I/O ports at fc40 [size=32]
+        Capabilities: [dc] Power Management version 1
 
+    If other info is needed, just let me know.
 
-
-
-
-
-
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+03-30-05 14:25 yafrank        New Issue                                    
+03-30-05 14:25 yafrank        Distribution              => Fedora Core 3   
+03-30-05 14:25 yafrank        Kernel Version            => 2.6.11-1.8_FC3  
+03-30-05 18:08 tiwai          Note Added: 0004266                          
+03-31-05 10:49 yafrank        Note Added: 0004277                          
+03-31-05 13:14 yafrank        Note Added: 0004279                          
+======================================================================
 
 
 
