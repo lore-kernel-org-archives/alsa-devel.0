@@ -1,13 +1,13 @@
 From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: 2.5.5-pre1: Deadlocks and ALSA driver problems
-Date: Fri, 15 Feb 2002 13:12:55 +0100 (CET)
-Message-ID: <Pine.LNX.4.31.0202151311120.608-200000@pnote.perex-int.cz>
+Subject: Re: 2.5.5-pre1 kernel - compile as modules?
+Date: Fri, 15 Feb 2002 13:14:52 +0100 (CET)
+Message-ID: <Pine.LNX.4.31.0202151314050.608-200000@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-1329462030-1013775175=:608"
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323584-822478606-1013775292=:608"
 Received: from gate.perex.cz (root@gate.perex.cz [194.212.165.105])
-	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA27055
-	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 13:13:12 +0100
-In-Reply-To: <20020215110243.U68580-100000@toad.stack.nl>
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id NAA27119
+	for <alsa-devel@alsa-project.org>; Fri, 15 Feb 2002 13:15:10 +0100
+In-Reply-To: <E16bdgB-0001eP-00@baldrick>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,37 +16,24 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Jos Hulzink <josh@stack.nl>
-Cc: Linux Kernel Development <linux-kernel@vger.kernel.org>, ALSA development <alsa-devel@alsa-project.org>
+To: Duncan Sands <duncan.sands@math.u-psud.fr>
+Cc: "curtisv@lineo.com" <curtisv@lineo.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
   This message is in MIME format.  The first part should be readable text,
   while the remaining parts are likely unreadable without MIME-aware tools.
   Send mail to mime@docserver.cac.washington.edu for more info.
 
---8323584-1329462030-1013775175=:608
+--8323584-822478606-1013775292=:608
 Content-Type: TEXT/PLAIN; charset=US-ASCII
 
-On Fri, 15 Feb 2002, Jos Hulzink wrote:
+On Fri, 15 Feb 2002, Duncan Sands wrote:
 
-> Hi,
->
-> Still fighting with the debug tools (I'm new to kernel debugging), but
-> maybe this info is useful to others:
->
-> 2.5.5-pre1 deadlocked completely about 7 times in 40 minutes. The Magic
-> SysRq key didn't work anymore. Don't know if it is related, but after I
-> recompiled the ALSA driver as modules, the system was stable for about 4
-> hours. (With ALSA modules loaded, playing music, and I rebooted it myself
-> afterwards.)
->
-> Besides: the ALSA /proc interface is terribly broken, any cat
-> /proc/asound/... results in a no such device error. The ALSA /dev entries
-> return the same errors while opening them, but the OSS emulation layer
-> works fine.
+> Actually, the problem is deeper: even if I compile everything as
+> modules, I still get "no such device" when trying to read from
+> /proc/asound entries.  I will look into this further myself.
 
-Attached patch for linux/sound/core/info.c fixes the problem with /proc
-entries.
+It's problem with recent 2.5 kernel. Try the attached patch.
 
 						Jaroslav
 
@@ -56,10 +43,10 @@ Linux Kernel Sound Maintainer
 ALSA Project  http://www.alsa-project.org
 SuSE Linux    http://www.suse.com
 
---8323584-1329462030-1013775175=:608
+--8323584-822478606-1013775292=:608
 Content-Type: TEXT/plain; name="out.txt"
 Content-Transfer-Encoding: BASE64
-Content-ID: <Pine.LNX.4.31.0202151312550.608@pnote.perex-int.cz>
+Content-ID: <Pine.LNX.4.31.0202151314520.608@pnote.perex-int.cz>
 Content-Description: 
 Content-Disposition: attachment; filename="out.txt"
 
@@ -100,7 +87,7 @@ U0VfQ09VTlQ7DQotCWRlID0gKHN0cnVjdCBwcm9jX2Rpcl9lbnRyeSAqKSBp
 bm9kZS0+dS5nZW5lcmljX2lwOw0KKwlkZSA9IFBERShpbm9kZSk7DQogCWlm
 IChkZSA9PSBOVUxMKQ0KIAkJcmV0dXJuOw0KIAllbnRyeSA9IChzbmRfaW5m
 b19lbnRyeV90ICopIGRlLT5kYXRhOw0K
---8323584-1329462030-1013775175=:608--
+--8323584-822478606-1013775292=:608--
 
 _______________________________________________
 Alsa-devel mailing list
