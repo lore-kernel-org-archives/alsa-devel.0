@@ -1,13 +1,12 @@
-From: vollmer.philipp@t-online.de (Philipp Vollmer)
-Subject: DTMF recognition
-Date: Thu, 25 Jul 2002 14:12:59 +0200
+From: Paul Davis <pbd@op.net>
+Subject: Re: DTMF recognition
+Date: Thu, 25 Jul 2002 10:45:27 -0400
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200207251412.59730.do1ypv@linux>
-Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <E17Xjod-0005Qf-00@usw-sf-list1.sourceforge.net>
+References: <200207251412.59730.do1ypv@linux>
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: Your message of "Thu, 25 Jul 2002 14:12:59 +0200."
+             <200207251412.59730.do1ypv@linux>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,20 +15,27 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Philipp Vollmer <vollmer.philipp@t-online.de>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hello to all,
+>Hello to all,
+>
+>who has already done DTMF recognition with ALSA ( OSS )?
+>I searched for examples in google, but I have found that
+>only in TODO lists ;-(.
+>
+>Is this so difficult or why doesn't exist anything about that?
 
-who has already done DTMF recognition with ALSA ( OSS )?
-I searched for examples in google, but I have found that
-only in TODO lists ;-(.
+its a relatively trivial FFT problem. use FFTW to analyse the signal,
+then look for two predominant frequencies, and check their values
+against a table.
 
-Is this so difficult or why doesn't exist anything about that?
+believe it or not, there are many, many things that have never been
+written in the open source arena.
 
-regards
+--p
 
-Philipp Vollmer
 
 
 -------------------------------------------------------
