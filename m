@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000699]: [PATCH] Document --config option on alsaconf man page
-Date: Thu, 20 Jan 2005 19:06:50 +0100
-Message-ID: <2d73cc1d09d6d066b31aadf96ebcbb46@bugtrack.alsa-project.org>
+Subject: [ALSA - lib 0000838]: m68k: "simple.c:223: warning: `n' might be used uninitialized in this function"
+Date: Thu, 20 Jan 2005 19:09:48 +0100
+Message-ID: <5a8d1bd9e2ed675f7001631eacdfde03@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 3436D266
-	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:06:53 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id ABE6723D
+	for <alsa-devel@alsa-project.org>; Thu, 20 Jan 2005 19:09:48 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,62 +22,62 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=699> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=838> 
 ======================================================================
 Reported By:                jdthood
-Assigned To:                tiwai
+Assigned To:                
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   699
-Category:                   alsaconf
+Project:                    ALSA - lib
+Issue ID:                   838
+Category:                   mixer
 Reproducibility:            always
 Severity:                   minor
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     new
 ======================================================================
-Date Submitted:             12-02-2004 08:57 CET
-Last Modified:              01-20-2005 19:06 CET
+Date Submitted:             01-20-2005 12:39 CET
+Last Modified:              01-20-2005 19:09 CET
 ======================================================================
-Summary:                    [PATCH] Document --config option on alsaconf man
-page
+Summary:                    m68k: "simple.c:223: warning: `n' might be used
+uninitialized in this function"
 Description: 
-The alsaconf man page fails to mention alsaconf's --config option.  Here is
-a patch to fix this.
+Making all in mixer
+[...]
+if /bin/sh ../../libtool --mode=compile m68k-linux-gcc -DHAVE_CONFIG_H -I.
+-I. -I../../include -I../../include    -g -Wall -O2 -MT simple.lo -MD -MP
+-MF ".deps/simple.Tpo" \
+  -c -o simple.lo `test -f 'simple.c' || echo './'`simple.c; \
+then mv -f ".deps/simple.Tpo" ".deps/simple.Plo"; \
+else rm -f ".deps/simple.Tpo"; exit 1; \
+fi
+ m68k-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g
+-Wall -O2 -MT simple.lo -MD -MP -MF .deps/simple.Tpo -c simple.c  -fPIC
+-DPIC -o .libs/simple.o
+simple.c: In function `to_user':
+simple.c:223: warning: `n' might be used uninitialized in this function
+simple.c: In function `from_user':
+simple.c:232: warning: `n' might be used uninitialized in this function
+ m68k-linux-gcc -DHAVE_CONFIG_H -I. -I. -I../../include -I../../include -g
+-Wall -O2 -MT simple.lo -MD -MP -MF .deps/simple.Tpo -c simple.c -o
+simple.o >/dev/null 2>&1
 
-Signed-off-by: Thomas Hood <jdthood@yahoo.co.uk>
+See
+http://buildd.debian.org/fetch.php?&pkg=alsa-lib&ver=1.0.8-1&arch=m68k&stamp=1106208530&file=log&as=raw
+for the full m68k build log.
 ======================================================================
 
 ----------------------------------------------------------------------
- jdthood - 01-19-05 15:19 
+ tiwai - 01-20-05 19:09 
 ----------------------------------------------------------------------
->  A new patch? ;-)
-
-Putting the options in alphabetical order should be trivially easy
-for anyone who has learned the alphabet.  ;)
-
-----------------------------------------------------------------------
- tiwai - 01-20-05 19:06 
-----------------------------------------------------------------------
-OK, fixed on CVS.
+I believe these warnings are bogus.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-12-02-04 08:57 jdthood        New Issue                                    
-12-02-04 08:57 jdthood        File Added:
-alsaconf_doc_config_20041202jdth1.patch                    
-12-02-04 08:58 jdthood        Note Added: 0002675                          
-12-02-04 09:03 jdthood        Note Added: 0002676                          
-12-02-04 12:15 tiwai          Note Added: 0002677                          
-01-19-05 15:19 jdthood        Note Added: 0003284                          
-01-20-05 19:06 tiwai          Status                   new => resolved     
-01-20-05 19:06 tiwai          Resolution               open => fixed       
-01-20-05 19:06 tiwai          Assigned To               => tiwai           
-01-20-05 19:06 tiwai          Note Added: 0003329                          
+01-20-05 12:39 jdthood        New Issue                                    
+01-20-05 19:09 tiwai          Note Added: 0003330                          
 ======================================================================
 
 
