@@ -1,15 +1,16 @@
-From: Giuliano Pochini <pochini@shiny.it>
-Subject: Re: Virtual multi channel devices
-Date: Tue, 14 Sep 2004 19:53:57 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000500]: CS4236+ soundcard not found or device busy
+Date: Tue, 14 Sep 2004 22:28:13 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040914195357.698f1ebb.pochini@shiny.it>
-References: <XFMail.20040913094642.pochini@shiny.it>
-	<Pine.LNX.4.58.0409131332250.11209@linux.iitis.gliwice.pl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-ID: <20040914202813.D7A0D4904E@server.perex-int.cz>
+Content-Type: text/plain; charset=iso-8859-1
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0409131332250.11209@linux.iitis.gliwice.pl>
+Received: from mail.perex.cz (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 331022D5
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 22:28:14 +0200 (MEST)
+Received: from server.perex-int.cz (server.perex-int.cz [192.168.100.2])
+	by gate.perex-int.cz (Perex's E-mail Delivery System) with ESMTP id E68DE23CC1
+	for <alsa-devel@alsa-project.org>; Tue, 14 Sep 2004 22:28:13 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -18,31 +19,87 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Artur Rataj <arataj@iitis.gliwice.pl>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 13 Sep 2004 13:39:11 +0200 (CEST)
-Artur Rataj <arataj@iitis.gliwice.pl> wrote:
 
-> > In theory, yes it is. But the times between read/writing to the
-> > buffers are not accurate. IMO the times between interrupts are
-> > better, expecially if the two cards are using the same period
-> > size. Maybe ALSA-kernel already exports the required timestamps.
->
-> Is something like that planned in ALSA?
+A BUGNOTE has been added to this bug.
+======================================================================
+https://bugtrack.alsa-project.org/alsa-bug/bug_view_page.php?bug_id=0000500
+======================================================================
+Reported By:                nlmarco
+Assigned To:                
+======================================================================
+Project:                    ALSA - driver
+Bug ID:                     500
+Category:                   ISA - cs4236
+Reproducibility:            always
+Severity:                   major
+Priority:                   normal
+Status:                     new
+Distribution:               
+Kernel Version:             2.6.5-7.108
+======================================================================
+Date Submitted:             09-14-2004 02:18 CEST
+Last Modified:              09-14-2004 22:28 CEST
+======================================================================
+Summary:                    CS4236+ soundcard not found or device busy
+Description: 
+After the ALSA version 1.0.3, which is distributed with SuSE 9.1, didn't
+want to run at all and froze the system, I downloaded, compiled and
+installed the version 1.0.6a. This doesn't freeze anymore, but doesn't
+work either and produces strange log messages:
 
-I don't know.
+/var/log/messages:
+---
+Sep 14 02:06:14 sexbomb kernel: snd_page_alloc: unsupported module,
+tainting kernel.
+Sep 14 02:06:14 sexbomb kernel: snd: unsupported module, tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_timer: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_pcm: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_cs4231_lib: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_seq_device: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_rawmidi: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_mpu401_uart: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_cs4236_lib: unsupported module,
+tainting kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_hwdep: unsupported module, tainting
+kernel.
+Sep 14 02:06:15 sexbomb kernel: snd_opl3_lib: unsupported module, tainting
+kernel.
+Sep 14 02:06:16 sexbomb kernel: snd_cs4236: unsupported module, tainting
+kernel.
+Sep 14 02:06:16 sexbomb kernel: CS4236+ soundcard not found or device
+busy
+---
 
+Please HELP! I've already invested days into that and googling around, I
+saw that others have similar problems to get ALSA running on IBM ThinkPad
+600E.
 
-> Like dropping samples or adding interpolated samples to slow/fast cards?
+======================================================================
 
-This is required if the cards can't syncronize the sample clock and it makes
-the thing much more complex and inaccurate.
+----------------------------------------------------------------------
+ nlmarco - 09-14-2004 22:28 CEST 
+----------------------------------------------------------------------
+I just tried it again with 1.0.7rc1, but the problem remains the same. BTW:
+I tried legacy probe (all possible IRQ/DMA combinations for CS4236,
+CS4232, CS4231) with alsaconf, but it didn't find anything.
 
-
---
-Giuliano.
+Bug History
+Date Modified  Username       Field                    Change              
+======================================================================
+09-14-04 02:18 nlmarco        New Bug                                      
+09-14-04 02:18 nlmarco        Kernel Version            => 2.6.5-7.108     
+09-14-04 02:18 nlmarco        Bug Monitored: nlmarco                       
+09-14-04 22:28 nlmarco        Bugnote Added: 0001759                       
+======================================================================
 
 
 -------------------------------------------------------
