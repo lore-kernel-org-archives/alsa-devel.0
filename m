@@ -1,14 +1,14 @@
-From: "mahendra  sp" <mahendra_sp@rediffmail.com>
-Subject: problem in executing the application
-Date: 2 May 2003 03:19:30 -0000
+From: Ryan Pavlik <rpav@nwlink.com>
+Subject: Similar problems here...
+Date: Thu, 1 May 2003 22:14:04 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030502031930.25809.qmail@webmail17.rediffmail.com>
-Reply-To: "mahendra  sp" <mahendra_sp@rediffmail.com>
+Message-ID: <20030501221404.109b9f5d.rpav@nwlink.com>
+References: <20030501215702.27094.qmail@web40601.mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-	format=flowed
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
+In-Reply-To: <20030501215702.27094.qmail@web40601.mail.yahoo.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,26 +18,31 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: perex@perex.cz, pzad@pobox.sk, jhall@maoz.com
 List-Id: alsa-devel@alsa-project.org
 
-hi,
+On Thu, 1 May 2003 22:57:02 +0100 (BST)
+Chris Rankin <rankincj@yahoo.com> wrote:
 
-   when i am trying to execute the latency.c , after complilation 
-is over when i try to execute it,it says undefined reference to 
-variuos
-functions such as snd_pcm_hwparams_any,snd_pcm_hwparams_access   
-etc.
+<snip>
+> SNDRV_PCM_IOCTL_DROP failed: File descriptor in bad
+> state
+<snip>
 
-    is there any way to overcome it? i have installed ALSA 1938 
-0.9.1 version driver. If not, how to change the functions so as to 
-execute the program?
-thanks,
-regards
+I'm having a similar problem with CVS (from just now),
+with mp1e:
 
+mp1e:oss.c:81: Failed to read PCM data, 8192 bytes (77, File descriptor in bad state)
 
+> This is on a Linux 2.4.20-SMP machine; glibc-2.3.2.
 
+2.4.19-SMP here, ice1712, mtpav, and ymfpci drivers.  (ice1712 via
+OSS is what's recording in this case, but same deal from ymfpci.)
 
+-- 
+Ryan Pavlik <rpav@users.sf.net>
+
+"Green werewolves are a perfectly natural part of... uh
+ nature. As are ghosts." - 8BT
 
 
 -------------------------------------------------------
