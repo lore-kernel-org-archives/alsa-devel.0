@@ -1,18 +1,12 @@
-From: Lee Revell <rlrevell@joe-job.com>
-Subject: Re: hardware channel mixing
-Date: Sun, 05 Sep 2004 01:06:06 -0400
+From: Domen Puncer <domen@coderock.org>
+Subject: snd_mpu401_uart: hang when trying to play .mid
+Date: Sun, 5 Sep 2004 11:22:35 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1094360766.6575.636.camel@krustophenia.net>
-References: <Pine.HPX.4.33n.0409031451550.24397-100000@studcom.urz.uni-halle.de>
-	 <1094254221.6575.94.camel@krustophenia.net>
-	 <1094260793.3727.19.camel@localhost>
-	 <1094340528.6575.527.camel@krustophenia.net>
-	 <1094353379.2044.86.camel@localhost>
+Message-ID: <20040905092234.GA3605@masina.coderock.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1094353379.2044.86.camel@localhost>
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,85 +15,55 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: mjander@users.sourceforge.net
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2004-09-04 at 23:02, Manuel Jander wrote:
-> Hi Lee,
-> 
-> On Sat, 2004-09-04 at 19:28, Lee Revell wrote:
-> > On Fri, 2004-09-03 at 21:19, Manuel Jander wrote:
-> > > Hi,
-> > > 
-> > > [snip]
-> > > > There is currently no way to open an 8 or 16 channel playback
-> > > > substream.  There are the various plughw surround plugins, but these
-> > > > seem to work by allocating several mono/stereo streams.  This is
-> > > > certainly wasteful - 5.1 surround wastes 2 voices.
-> > > >  
-> > > > I have been planning to add another playback device to the emu10k1
-> > > > driver with one 16-63 channel substream, to correspond to the hw:0,2
-> > > > capture device which can record up to 64 channels.
-> > > 
-> > > There is one problem: If the DMA engine really can demultiplex that many
-> > > interleaved channels
-> > 
-> > It certainly can, works great for capture.  I can record 8 channels at
-> > 32 frames, it works perfectly.  I suspect I could record more but
-> > there's some kind of mixer settings bug.
-> 
-> Using one single DMA channel ?
-> 
+Hi.
 
-Yes.  Although, this is a unique feature of the FX8010 capture device. 
-For capture there is only a single DMA channel for the FX8010 and you
-set bits in a hardware register to select which of the the 64 FX8010
-outputs you want to record.  The hardware imposes some sanity, there is
-a fixed table of allowed buffer sizes, and the number of channels record
-must be a power of two.
+"hang" here means: not even alt+sysrq+p responds
 
-The playback hardware does not work this way.  You can only do one mono
-PCM stream per DMA channel.  My proposal would still use one DMA channel
-per mono PCM, but where the driver currently will only allocate voices
-one or two at a time (which is two or three with the extra voice), this
-would use 17 voices - 16 "data channels" and the "control channel" aka
-the extra voice.
+I tried to play some .mid files with kmid, I wouldn't be suprised if
+it didn't work, but it *hanged* the computer!
 
-> > > , the buffer/period *time* will be pretty low
-> > 
-> > Yes, this is called 'low latency', and people generally want it.
-> 
-> Yeah, but if you don't even have enough time to handle IRQs ? That
-> certainly leaves you very little CPU time for other tasks. Going into
-> the extreme doesn't work. There must be a minimum of latency.
-> 
+2 messages appeared on console (retyped):
+cmd: 0xff failed at 0x20 (status = 0x50, data = 0x0)
+cmd: 0x3f failed at 0x20 (status = 0x3f, data = 0x3)
 
-I agree, 32 frames is a bit extreme, this is what I use for stress
-testing.  I think 8 channels at 32 frames is exactly the limit of the
-hardware.  You actually can't record 4 channels at 32 frames, because
-that would require a smaller buffer than the hardware supports, so you
-have to record more channels to get lower latency.
+These messages come from mpu401_uart.c:snd_mpu401_uart_cmd
+It seems like commands MPU401_RESET and MPU401_ENTER_UART fail,
+but code continues, ignoring that.
 
-> > > . I
-> > > think more than 4 or 6 interleaved channels per DMA is not very sane.
-> > 
-> > Why?  It's more efficient than handling them in chunks of 4.  This would
-> > be intended for use by the sound server, in this case jackd; you would
-> > launch jackd with an 8 channel input and 8 channel output device,
-> > corresponding to the analog ins and outs on the hardware.  With 16 or 32
-> > channels the rest are just FX buses.  And this all lives in hardware.
-> 
-> No need to handle them in chunks of specifically 4. But using more than
-> one single DMA channel to relieve the CPU. If not, it would be better
-> using programmed I/O instead of DMA.
-> 
+At this point it might be clear to alsa developers why/when hang
+occours, if not I'll provide more data next weekend.
 
-I am not sure I understand.  How would it tax the CPU more heavily?  You
-end up doing more work at each interrupt, but you have fewer interrupts.
 
-Lee
 
+kernel: 2.6.9-rc1-bk7
+
+modules:
+snd_trident            42344  1 
+snd_util_mem            3904  1 snd_trident
+snd_mpu401_uart         7040  1 snd_trident
+snd_ens1371            22760  0 
+snd_rawmidi            22820  2 snd_mpu401_uart,snd_ens1371
+snd_ac97_codec         66064  2 snd_trident,snd_ens1371
+(don't have the ens1371 card inside, at the moment)
+
+domen@masina:~/kernel/a$ cat /proc/asound/cards 
+0 [SI7018         ]: SI7018 - SiS SI7018
+                     SiS SI7018 PCI Audio at 0xd800, irq 11
+domen@masina:~/kernel/a$ cat /proc/asound/devices 
+  1:       : sequencer
+  0: [0- 0]: ctl
+  8: [0- 0]: raw midi
+ 17: [0- 1]: digital audio playback
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+ 33:       : timer
+
+
+
+	Domen
 
 
 -------------------------------------------------------
