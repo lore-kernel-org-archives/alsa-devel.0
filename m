@@ -1,14 +1,16 @@
-From: =?iso-8859-1?q?karsten=20wiese?= <annabellesgarden@yahoo.de>
-Subject: Re: usb-midi rc3 patch request
-Date: Mon, 19 Aug 2002 20:17:00 +0200 (CEST)
+From: Tim Goetze <tim@quitte.de>
+Subject: Re: user mode sequencer timer?
+Date: Mon, 19 Aug 2002 20:40:34 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20020819181700.67854.qmail@web12206.mail.yahoo.com>
-References: <s5helcvt801.wl@alsa2.suse.de>
+Message-ID: <Pine.LNX.4.21.0208192009370.673-100000@summer.quitte>
+References: <s5hu1lqssuk.wl@alsa2.suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5helcvt801.wl@alsa2.suse.de>
+Received: from post.webmailer.de (natwar.webmailer.de [192.67.198.70])
+	by alsa.alsa-project.org (8.9.3/8.9.3/SuSE Linux 8.9.3-0.1) with ESMTP id UAA26268
+	for <alsa-devel@alsa-project.org>; Mon, 19 Aug 2002 20:54:00 +0200
+In-Reply-To: <s5hu1lqssuk.wl@alsa2.suse.de>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,120 +19,63 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: tiwai@suse.de
-Cc: alsa-devel@lists.sourceforge.net
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
- --- Takashi Iwai <tiwai@suse.de> wrote: > At Fri, 16
-Aug 2002 12:34:50 +0200 (CEST),
-> karsten wiese wrote:
-> > 
-> > hallo,
-> >
-> > the attached patch exports two functions of
-usb-midi,
-> > so other "device-owning" drivers can use
-usb-midi's
-> > capabilities.
-> > the patched usb-midi driver is used by the us428
-> > driver through those exported functions.
-> > we can avoid having different alsa-devices for the
-> > same physical device this way.
-> > plus usb-midi can be used for non standard
-devices,
-> > which need special initialisations through a
-special
-> > driver first.
-> > the patched usb-midi drivers should work in all
-other
-> > cases exactly as before.
+Takashi Iwai wrote:
+
+>At Mon, 19 Aug 2002 17:42:07 +0200 (CEST),
+>Tim Goetze wrote:
+>> 
+>> Takashi Iwai wrote:
+>> 
+>> >At Mon, 19 Aug 2002 09:22:10 +0200 (CEST),
+>> >Tim Goetze wrote:
+>> >> 
+>> >> Is it possible to register a sequencer client that acts as a timer
+>> >> (not only an event consumer/producer), and if so, how would one go 
+>> >> about implementing one?
+>> >
+>> >timer = event producer in a certain schedule, isn't it ??
+>> >it will deliver "tick" events in a programmed rythm.
+>> 
+>> You mean it is sufficient to emit SND_SEQ_EVENT_SETPOS_TICK or *_TIME 
+>> periodically, and transport control events accordingly? Are these 
+>> events then used by alsa-lib to update the queue timing information?
 >
-> sorry, your patch looks still a bit hacky, perhaps
-> because you wanted
-> to keep the usb-midi code as original as possible.
+>well, sorry, then i misunderstood your question.
 >
-> i think we need rather rewrite the top of usb device
-> management (on
-> alsa).  there is also another problem in this
-> regard, for example,
-> a device with both midi and audio is assigned to two
-> different cards,
-> since midi and audio handles it individually.
-
-the patch adresses just that. here the output of
-cat /proc/asound/devices
-  0: [0- 0]: ctl
-  8: [0- 0]: raw midi
- 16: [0- 0]: digital audio playback
- 24: [0- 0]: digital audio capture
-  1:       : sequencer
- 33:       : timer
- 32: [1- 0]: ctl
- 57: [1- 1]: digital audio capture
- 48: [1- 0]: digital audio playback
- 56: [1- 0]: digital audio capture
- 40: [1- 0]: raw midi
- 41: [1- 1]: raw midi
-
-cat /proc/asound/cards
-0 [card0          ]: ES1978 - ESS ES1978 (Maestro 2E)
-                     ESS ES1978 (Maestro 2E) at
-0x1400, irq 5
-1 [card1          ]: USB US-428 - TASCAM US-428
-                     TASCAM US-428 (1604:8001 if 0 at
-001/003)
-
-the us428 driver calls the snd-usb-midi like this:
-
- err = snd_usbmidi_card_create(  us428->dev,
-     &us428->usbmidi,
-        &us428->card,
-     &us428->usbmidi_devnum
-     );
-interesting here is that us428->card has already been
-initialized from the us428 driver before.
-the patched snd_usbmidi_card_create() creates thus
-er...  (hacky, cause the name doesnt fit anymore)
-NO card on its own but uses the supplied one.
-Would it be sufficient to add an extra function like
-snd_usbmidi_card_attach() instead of overloading
-snd_usbmidi_card_create()?
-
+>do you mean that a sequencer client as a timer source, or as a
+>controller of the queue?
 >
-> let's discuss about it at first.
+>the former is difficult, because the queue is driven by interrupts
+>from a timer source.  that is, a sequencer client must give signals at
+>the constant and fine period.  this is not a job what a user process
+>does.
 >
-> (BTW, could you check the legal condition of
-> firmware on tascam
->  device?  i'd like to put the stuffs but without
-> this permission it's
->  of course unacceptable...)
+>the latter, controlling a queue, would be feasible.
+>in this case, you can change the tempo or time skew dynamically by
+>sending events via system-timer port (0:0) to a specified queue.
+>but anyway, a queue must run individually from the client.
+>
+>maybe i can give more specific answer if i understand your question
+>more clearly...
 
-what exactly do you need? I once tried to get an
-answer from turtle beach,
-which did not happen...
-tascam will most likely not agree to release the
-firmware under GPL in any form nor object- nor
-source-code.
-is it sufficient, if tascam just allows ALSA to use &
-publish their firmware as it is now?
-now it consists of char arrays in C header files
-representing raw binary data sniffed from the win2k
-USB.
-tascam will likely want a comment in the header
-stating that it is forbidden to disassemble,
-that the code in that file is their property and may
-only be used to compile the code & nothing else.
-is there such a file header aside the GPL-world
-already to be used as temlate?
+OK, here goes. I have a core here that processes MIDI and PCM. There's
+a RTC thread that controls event timing, synced to the sample clock. 
+So, internally, the application has a precise idea of the current 
+tempo, tick, time and frame.
 
-AND does anybody know somebody @ TASCAM?
+Currently, events sent to ALSA sequencer ports are sent via
+snd_seq_event_output_direct(), with a 0 timestamp. 
 
-Karsten
+Now what I'm looking for is a way to export this timer functionality
+to the sequencer system, ie make it possible for other clients to
+sync to this clock.
 
-__________________________________________________________________
+tim
 
-Gesendet von Yahoo! Mail - http://mail.yahoo.de
-Möchten Sie mit einem Gruß antworten? http://grusskarten.yahoo.de
 
 
 -------------------------------------------------------
