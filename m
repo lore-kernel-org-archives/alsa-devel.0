@@ -1,13 +1,13 @@
-From: Jaroslav Kysela <perex@suse.cz>
-Subject: Re: Oops with ALSA CVS + kernel 2.6.9-rc3-mm3-VP-T3
-Date: Sat, 30 Oct 2004 09:45:23 +0200 (CEST)
+From: =?utf-8?q?Marcus Ohdaci?= <abodelkseeaw@hansenarchitects.com>
+Subject: =?utf-8?q?Daily News - Rolex w?=
+ =?utf-8?q?atches online?=
+Date: Sat, 30 Oct 2004 09:32:53 +0000
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <Pine.LNX.4.58.0410300945060.2210@pnote.perex-int.cz>
-References: <1099097590.1579.11.camel@krustophenia.net>
+Message-ID: <E1CNpUl-0004lv-Fh@externalmx-1.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: multipart/alternative;
+	 boundary="w7uQxnGLlVqWv"
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <1099097590.1579.11.camel@krustophenia.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,23 +16,52 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Lee Revell <rlrevell@joe-job.com>
-Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: =?utf-8?q?Amelia Clizry?= <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 29 Oct 2004, Lee Revell wrote:
+This is a multi-part message in MIME format.
 
-> I compiled and installed new ALSA modules and got this Oops when I did
-> 'modprobe snd-emu10k1':
+--w7uQxnGLlVqWv
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-It should be fixed now (sorry).
+Real Replicas Wrist-Watches
 
-						Jaroslav
+I offer this brands available as well:
 
------
-Jaroslav Kysela <perex@suse.cz>
-Linux Kernel Sound Maintainer
-ALSA Project, SUSE Labs
+Rolex
+Vacheron Constantin
+Glashute Original
+Zenith
+Sinn
+
+http://xhomll.ghoy.com/rep/vron/oinm.cfm
+--w7uQxnGLlVqWv
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD>
+<META http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8">
+<STYLE></STYLE>
+</HEAD>
+<HTML>
+<BODY>
+<A href=3D"http://temsealykax.evif.com/r/vron/oucdi.cfm">
+Actual Replicas Watches
+</A><BR>
+I offer next trade names available too:<BR>
+Frank Muller<BR>
+Chopard<BR>
+Roger Dubuis<BR>
+Alain Silberstein<BR>
+Omega<BR>
+</BODY>
+</HTML></HTML>
+--w7uQxnGLlVqWv--
+
 
 
 -------------------------------------------------------
