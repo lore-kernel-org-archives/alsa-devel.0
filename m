@@ -1,20 +1,68 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] deprecate (un)register_ioctl32_conversion
-Date: Wed, 5 Jan 2005 15:11:33 +0000
-Message-ID: <20050105151133.GA2021@infradead.org>
-References: <20041215065650.GM27225@wotan.suse.de> <20041217014345.GA11926@mellanox.co.il> <20050105144043.GB19434@mellanox.co.il> <20050105144603.GA1419@infradead.org> <20050105150310.GA19758@mellanox.co.il>
+From: "John W. Linville" <linville@tuxdriver.com>
+Subject: [patch] snd-intel8x0: ac97 quirk entries for HP xw6200 & xw8000
+Date: Wed, 5 Jan 2005 10:40:45 -0500
+Message-ID: <20050105154043.GB28626@tuxdriver.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner+glk-linux-kernel=40m.gmane.org-S262460AbVAEPNP@vger.kernel.org>
+Return-path: <alsa-devel-admin@lists.sourceforge.net>
+Received: from ra.tuxdriver.com (ra.tuxdriver.com [24.172.12.4])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B887320A
+	for <alsa-devel@alsa-project.org>; Wed,  5 Jan 2005 16:39:53 +0100 (MET)
 Content-Disposition: inline
-In-Reply-To: <20050105150310.GA19758@mellanox.co.il>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Michael S. Tsirkin" <mst@mellanox.co.il>
-Cc: Christoph Hellwig <hch@infradead.org>, Andrew Morton <akpm@osdl.org>, Andi Kleen <ak@suse.de>, mingo@elte.hu, rlrevell@joe-job.com, tiwai@suse.de, linux-kernel@vger.kernel.org, pavel@suse.cz, discuss@x86-64.org, gordon.jin@intel.com, alsa-devel@lists.sourceforge.net, greg@kroah.com
+Sender: alsa-devel-admin@lists.sourceforge.net
+Errors-To: alsa-devel-admin@lists.sourceforge.net
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Post: <mailto:alsa-devel@lists.sourceforge.net>
+List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
+	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
+To: perex@suse.cz
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jan 05, 2005 at 05:03:10PM +0200, Michael S. Tsirkin wrote:
-> I dont know. So how will people know they are supposed to convert then?
+Add AC97 quick list entries to snd-intel8x0 for HP xw6200 and xw8000.
 
-Tell the janitors about it - or do it yourself.  Except for taking care
-of the BKL going away it's a trivial conversion.
+Signed-off-by: John W. Linville <linville@tuxdriver.com>
+---
+
+ sound/pci/intel8x0.c |   14 +++++++++++++-
+ 1 files changed, 13 insertions(+), 1 deletion(-)
+
+--- ac97_quirk/sound/pci/intel8x0.c.orig	2005-01-04 16:42:48.978078335 -0500
++++ ac97_quirk/sound/pci/intel8x0.c	2005-01-04 16:46:40.698137218 -0500
+@@ -1756,7 +1756,13 @@
+ 	{	/* FIXME: which codec? */
+ 		.vendor = 0x103c,
+ 		.device = 0x00c3,
+-		.name = "Hewlett-Packard onboard",
++		.name = "HP xw6000",
++		.type = AC97_TUNE_HP_ONLY
++	},
++	{
++		.vendor = 0x103c,
++		.device = 0x129d,
++		.name = "HP xw8000",
+ 		.type = AC97_TUNE_HP_ONLY
+ 	},
+ 	{
+@@ -1767,6 +1773,12 @@
+ 	},
+ 	{
+ 		.vendor = 0x103c,
++		.device = 0x12f2,
++		.name = "HP xw6200",
++		.type = AC97_TUNE_HP_ONLY
++	},
++	{
++		.vendor = 0x103c,
+ 		.device = 0x3008,
+ 		.name = "HP xw4200",	/* AD1981B*/
+ 		.type = AC97_TUNE_HP_ONLY
+
+
+-------------------------------------------------------
+The SF.Net email is sponsored by: Beat the post-holiday blues
+Get a FREE limited edition SourceForge.net t-shirt from ThinkGeek.
+It's fun and FREE -- well, almost....http://www.thinkgeek.com/sfshirt
