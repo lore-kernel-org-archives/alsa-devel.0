@@ -1,15 +1,14 @@
-From: Thorsten Becker <thorsten.becker@cloupage.de>
-Subject: Re: Dell OEM Soundblaster Live 5.1 with different PCI ID
-Date: Sat, 21 Dec 2002 15:38:31 +0100
+From: drclaw@dogsolitude.org
+Subject: Re: How to play different audio data on the left and right channel at the same time?
+Date: Sat, 21 Dec 2002 13:42:03 -0500
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200212211538.31782.thorsten.becker@cloupage.de>
-References: <72DB76FA-13CC-11D7-9D7F-0050E4E6A73C@ics.uci.edu> <s5hbs3gvilq.wl@alsa2.suse.de>
+Message-ID: <20021221184203.GA25234@dogsolitude.org>
+References: <F17tIzmQVuRWCy7rjcx0000d3e2@hotmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5hbs3gvilq.wl@alsa2.suse.de>
+Content-Disposition: inline
+In-Reply-To: <F17tIzmQVuRWCy7rjcx0000d3e2@hotmail.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,30 +17,39 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>, Jeff Ridenour <jridenou@ics.uci.edu>
-Cc: alsa-devel@lists.sourceforge.net
+To: alsa-devel@lists.sourceforge.net
+Cc: flyingwalter@msn.com
 List-Id: alsa-devel@alsa-project.org
 
-Am Freitag, 20. Dezember 2002 16:02 schrieb Takashi Iwai:
-> this is likely an interrupt problem.
-> if you set "pnp os" to yes on the bios, try to set it to "no".
+On Sat, Dec 21, 2002 at 08:02:19PM +0800, ??? ??? wrote:
+> Hi,
+>  I want to play different wave file on two channel at the same time, that's 
+> one wave file for left channel, and the other for right channel, can I 
+> achieve this with the alsa lib on linux? Need I open the sound device twice?
+>  Thx!
+> 
 
-I tried various different bios-settings, none did help
+Well, there are 2 ways to do this:
 
-> but even without interrupts, you should be able to hear CDs.
-> this is a mixer mis-configuration in most cases.
-> you'll need to adjust the volume of "Line Playback" and unmute it.
-> in addition, the volume of "AC97 Playback" must be adjusted and
-> unmuted.
-> of course, "PCM" and "Master" must be adjusted and unmuted, too.
-> to hear WAV, "Wave" must be adjusted and unmuted, too.
+1. The Programming Way:  Just interleave the samples from each wav, in
+other words, lets call your 2 files left.wav and right.wav.  Feed your
+soundcard a stream of samples that go left.wav[sample0],
+right.wav[sample0], left.wav[sample1], right.wav[sample1], etc...  Just
+remember that it goes left, right, left, right, etc.  
 
-Everything unmuted and all sliders up - no sound (only the volume level o=
-f=20
-background noise going up and down when I move the sliders in the mixer).
-Do you have any other ideas what to try next?
+2. The Non-Programming Way:  Open up your favorite wav editor and assign
+one wav to the left channel and one wav to the right channel and save
+it.  This is the way you'd do it if you only had a few of these double
+wav's that you wouldn't have to change much.  If you have a lot of them
+and need to make fast decisions about what you're doing, you can use the
+command line program SoX to pan each in either direction and play them
+simultaneously.  I can't think of the specific options but you can find
+them in the SoX manpage, SoX seriously does *every* simple operation
+you'd want to perform on an audio file.  
 
-Thorsten
+I hope this helps,
+
+784 - Michael C. Piantedosi - drclaw@dogsolitude.org
 
 
 -------------------------------------------------------
