@@ -1,13 +1,13 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - WWW server 0000928]: Something missing in the Soundcard-Matrix?
-Date: Thu, 24 Feb 2005 20:48:42 +0100
-Message-ID: <920279ca76e391c81d7d6e5207e262e1@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000937]: No sound unless using OSS driver
+Date: Thu, 24 Feb 2005 22:00:30 +0100
+Message-ID: <0fc3d54c64c3d74d479453ae51b77a64@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 75806221
-	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 20:48:42 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 324FD1FC
+	for <alsa-devel@alsa-project.org>; Thu, 24 Feb 2005 22:00:30 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -23,48 +23,46 @@ List-Id: alsa-devel@alsa-project.org
 
 A NOTE has been added to this issue.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=928> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=937> 
 ======================================================================
-Reported By:                gflash
+Reported By:                ruffasdagut
 Assigned To:                
 ======================================================================
-Project:                    ALSA - WWW server
-Issue ID:                   928
-Category:                   PCI - emu10k1
+Project:                    ALSA - driver
+Issue ID:                   937
+Category:                   PCI - via82xx
 Reproducibility:            always
-Severity:                   text
+Severity:                   crash
 Priority:                   normal
 Status:                     new
+Distribution:               Fedora
+Kernel Version:             2.6
 ======================================================================
-Date Submitted:             02-21-2005 05:43 CET
-Last Modified:              02-24-2005 20:48 CET
+Date Submitted:             02-24-2005 01:14 CET
+Last Modified:              02-24-2005 22:00 CET
 ======================================================================
-Summary:                    Something missing in the Soundcard-Matrix?
+Summary:                    No sound unless using OSS driver
 Description: 
-In my old Box i had a Sounblaster Live, or a Soundblaster Live Value... I'm
-not sure because the card was called by the vendor "Soundblaster Live
-Player! 1024" but a card with this name doesn't seem to exist.
-It ran with the emu10k1 driver, and it had no problems playing sounds from
-many applications at the same time. I could use Teamspeak with games, and
-hear mp3s at the same time, and for my understanding this is
-hardwaremixing.
-In the Soundcard Matrix is said, that the Soubblaster Lives doesn't
-support hardwaremixing. Is this a mistake? Or have i misunderstood
-"hardwaremixing"?
+I have no sound from the system unless using the OSS option in gstreamer
+properties. If I do this I get sound but no control over the volume or
+mute. I dont really need all the digital parts, but just the Basic sound
+would be nice. I am going to include the ouput from the alsa debug program
+I found online. Thanks for looking into this issue.
 ======================================================================
 
 ----------------------------------------------------------------------
- gflash - 02-24-05 20:48 
+ tiwai - 02-24-05 22:00 
 ----------------------------------------------------------------------
-So what? This can't be so hard to answer!
+Try the CVS version.  The support of CM9761 was fixed very recently.
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-02-21-05 05:43 gflash         New Issue                                    
-02-22-05 09:52 perex          Project                  ALSA - driver => ALSA -
-WWW server
-02-24-05 20:48 gflash         Note Added: 0003723                          
+02-24-05 01:14 ruffasdagut    New Issue                                    
+02-24-05 01:14 ruffasdagut    File Added: debug.log                        
+02-24-05 01:14 ruffasdagut    Distribution              => Fedora          
+02-24-05 01:14 ruffasdagut    Kernel Version            => 2.6             
+02-24-05 22:00 tiwai          Note Added: 0003725                          
 ======================================================================
 
 
