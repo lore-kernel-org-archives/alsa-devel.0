@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000755]: get error when trying to build 1.0.5 drivers with kernel 2.6.10
-Date: Wed, 29 Dec 2004 00:50:02 +0100
-Message-ID: <45b7cf6d643739370b25d0ed690dde5d@bugtrack.alsa-project.org>
+Date: Wed, 29 Dec 2004 00:56:43 +0100
+Message-ID: <75f8d601e37e6decfbdb95164e592d01@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id E59192D1
-	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 00:50:02 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id D3D8A2D6
+	for <alsa-devel@alsa-project.org>; Wed, 29 Dec 2004 00:56:43 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been SUBMITTED.
+A NOTE has been added to this issue.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=755> 
 ======================================================================
@@ -40,7 +40,7 @@ Distribution:               knoppmyth r4v5
 Kernel Version:             2.6.10
 ======================================================================
 Date Submitted:             12-29-2004 00:50 CET
-Last Modified:              12-29-2004 00:50 CET
+Last Modified:              12-29-2004 00:56 CET
 ======================================================================
 Summary:                    get error when trying to build 1.0.5 drivers with
 kernel 2.6.10
@@ -73,12 +73,18 @@ PURPOSE.
 
 ======================================================================
 
+----------------------------------------------------------------------
+ rlrevell - 12-29-04 00:56 
+----------------------------------------------------------------------
+Please don't report bugs for old ALSA versions.  Try 1.0.8-rc1.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
 12-29-04 00:50 wschrep        New Issue                                    
 12-29-04 00:50 wschrep        Distribution              => knoppmyth r4v5  
 12-29-04 00:50 wschrep        Kernel Version            => 2.6.10          
+12-29-04 00:56 rlrevell       Note Added: 0002988                          
 ======================================================================
 
 
