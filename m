@@ -1,14 +1,14 @@
-From: James Courtier-Dutton <James@superbug.demon.co.uk>
-Subject: Re: au88x0 problems with kernel 2.6.0
-Date: Thu, 15 Jan 2004 23:38:40 +0000
+From: "freeman.liu" <freeman.liu@sun.com>
+Subject: A bug in intel8x0.c
+Date: Fri, 16 Jan 2004 11:31:46 +0800
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <40072480.8010702@superbug.demon.co.uk>
-References: <3FF77C6A.4050903@superbug.demon.co.uk> <Pine.LNX.4.58.0401040948130.1876@pnote.perex-int.cz>
+Message-ID: <40075B22.6060208@sun.com>
+References: <3FE07BE6.5010100@superbug.demon.co.uk> <Pine.LNX.4.58.0312171653350.8959@pnote.perex-int.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <Pine.LNX.4.58.0401040948130.1876@pnote.perex-int.cz>
+In-Reply-To: <Pine.LNX.4.58.0312171653350.8959@pnote.perex-int.cz>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,49 +17,31 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Jaroslav Kysela <perex@suse.cz>
-Cc: alsa-devel@lists.sourceforge.net
+To: Alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Jaroslav Kysela wrote:
-> On Sun, 4 Jan 2004, James Courtier-Dutton wrote:
-> 
-> 
->>Hi,
->>
->>The normal way I patch the 2.6.x kernel, is i download alsa-kernel from 
->>CVS. and then delete the ./alsa-kernel/oss dir, then just copy all the 
->>contents of alsa-kernel over the top of /usr/src/linux/sound
->>I then copy the include directory to /usr/src/linux/include/sound, and 
->>it all works.
->>
->>I have noticed that au88x0 driver only got into the alsa-driver tree.
->>
->>Should I be doing something different in order to get au88x0 drivers 
->>into my local kernel 2.6.x tree.
->>
->>As the au88x0 drivers are not in the alsa-kernel tree, the kernel 2.6.x 
->>Kconfig file does not have a au88x0 entry, so it can not easily be moved 
->>into kernel 2.6.x.
->>
->>Can someone please point me to the correct merge/patch method, or am I 
->>in fact highlighting a bug!
-> 
-> 
-> It's not a bug. All alpha/beta drivers are in the alsa-driver directory.  
-> This directory doesn't allow to be merged to 2.6 code in a simply way, but
-> you can compile these drivers as modules outside the kernel like for 2.4
-> (simply go to the alsa-driver directory and run cvscompile there).
-> 
-> 						Jaroslav
-> 
+Hi, guy,
+   
+    I'm sure I found a bug in intel8x0.c.
+   
+    At the end of the function snd_intel8x0_codec_semaphore. If we 
+couldn't get the semaphore in
+1 ms, we'll reset the register and return EBUSY. But to reset the 
+register, we should do a
+    iaputword ( chip, 0, 0 ), according to the datasheet, write any 
+value the this register will reset the
+register.
+    But in the code, what we did is iagetword ( chip, 0 ). This bug 
+hadn't be exclosed because this code
+path had never been reached, for the semaphore error often means a 
+hardware error, which is very
+rare.
+    So, is there anybody who can modify this ?
 
-cvscompile or alsa-driver did not work on the 2.6 kernel. The modules 
-did not load due to missing symbols, e.g. VMALLOC etc. and also a PDE 
-error during configure
 
-Cheers
-James
+    Freeman
+
+
 
 
 -------------------------------------------------------
