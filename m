@@ -1,14 +1,13 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH] miroSOUND PCM12 driver
-Date: Wed, 16 Mar 2005 11:51:46 +0100 (MET)
-Message-ID: <Pine.HPX.4.33n.0503161138550.28424-100000@studcom.urz.uni-halle.de>
-References: <20050313103317.GA2280@tuba>
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000875]: Can't get nm256 up & running
+Date: Wed, 16 Mar 2005 12:27:24 +0100
+Message-ID: <e09acadc8d9517353a11e776191245e4@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-Received: from mailgate.uni-halle.de (mailgate.urz.uni-halle.de [141.48.3.51])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0C21616F
-	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 11:52:12 +0100 (MET)
-In-Reply-To: <20050313103317.GA2280@tuba>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 7bit
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 8A89B18B
+	for <alsa-devel@alsa-project.org>; Wed, 16 Mar 2005 12:27:24 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -18,63 +17,137 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Martin Langer <martin-langer@gmx.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Martin Langer wrote:
-> The tenth birthday of this card is coming soon and now it's time to get
-> an ALSA driver for the miroSOUND PCM12 :)
->
-> Any comments?
 
-> +++ alsa-driver/isa/opti9xx/Makefile	Fri Mar 11 18:51:05 2005
-> +obj-$(CONFIG_SND_MIRO) += snd-miro.o snd-opti92x-cs4231.o
+A NOTE has been added to this issue.
+======================================================================
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=875> 
+======================================================================
+Reported By:                Jean-Louis Crouzet
+Assigned To:                tiwai
+======================================================================
+Project:                    ALSA - driver
+Issue ID:                   875
+Category:                   PCI - nm256
+Reproducibility:            always
+Severity:                   block
+Priority:                   normal
+Status:                     assigned
+Distribution:               
+Kernel Version:             # uname -a<br />
+Linux hp900 2.6.8jlcv34 view.php?id=1 Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+======================================================================
+Date Submitted:             02-01-2005 16:17 CET
+Last Modified:              03-16-2005 12:27 CET
+======================================================================
+Summary:                    Can't get nm256 up & running
+Description: 
+I trying since ages to get this nm256 up & running with ALSA, w/o any
+sucess.
 
-Is there any reason for the dependency on the snd-opti92x-cs4231
-driver?
+PC Omnibook 900 (not a 900B)
 
-> MODULE_SUPPORTED_DEVICE("{{miroSOUND,PCM1 pro}, "
-> 			"{miroSOUND,PCM12}, "
-> 			"{miroSOUND,PCM20 Radio}}");
-
-The first entry in each pair should be the vendor name.
-
-> static int wss;                                 /* unknown range */
-> static int ide;                                 /* unknown range */
-
-"unknown"? :-)
-
-> int snd_miro_mixer(miro_t * miro)
-> ...
-> 	switch (miro->hardware) {
->         case OPTi9XX_HW_82C924:
-> 		strcpy(card->mixername, "ACI & OPTi924");
->         case OPTi9XX_HW_82C929:
-> 		strcpy(card->mixername, "ACI & OPTi929");
-> 	default:
-> 		strcpy(card->mixername, "ACI & OPTi9xx");
-> 	}
-
-The default case cannot happen (bwahaha!), so it might make sense to
-put a snd_BUG() in there.
-
-> - OPL4 support is still missing, because I'm still waiting for response
-> of my broken OPL4 chip. :(
-
-Is it broken with the snd-opti92x-cs4231 driver, too?
-
-> - I never saw any docs about the cards. All knowledge is taken from ACI
-> driver (OSS) and OPTi9xx (ALSA) drivers.
-
-There are OPTi manuals on the ALSA FTP server.
+# uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
 
 
-Otherwise, it looks fine.
+#lspci  -tv
+-[00]-+-00.0  Intel Corp. 440BX/ZX/DX - 82443BX/ZX/DX Host bridge
+      +-01.0-[01]--+-00.0  Neomagic Corporation NM2200 [MagicGraph 256AV]
+      |            \-00.1  Neomagic Corporation NM2200 [MagicMedia 256AV
+Audio]
+      +-04.0  Texas Instruments PCI1225
+      +-04.1  Texas Instruments PCI1225
+      +-07.0  Intel Corp. 82371AB/EB/MB PIIX4 ISA
+      +-07.1  Intel Corp. 82371AB/EB/MB PIIX4 IDE
+      +-07.2  Intel Corp. 82371AB/EB/MB PIIX4 USB
+      \-07.3  Intel Corp. 82371AB/EB/MB PIIX4 A	
+	
+# modinfo snd_nm256
+filename:      
+/lib/modules/2.6.8jlcv32/kernel/sound/pci/nm256/snd-nm256.ko
+author:         Takashi Iwai <tiwai@suse.de>
+description:    NeoMagic NM256AV/ZX
+license:        GPL
+vermagic:       2.6.8jlcv32 PENTIUMII gcc-3.3
+depends:        snd-pcm,snd,snd-ac97-codec
+alias:          pci:v000010C8d00008005sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008006sv*sd*bc*sc*i*
+alias:          pci:v000010C8d00008016sv*sd*bc*sc*i*
+parm:           vaio_hack:Enable workaround for Sony VAIO notebooks.
+parm:           use_cache:Enable the cache for coefficient table access.
+parm:           buffer_top:Set the top address of audio buffer for
+NeoMagic 256AV/ZX soundcard.
+parm:           force_ac97:Force to use AC97 codec for NeoMagic 256AV/ZX
+soundcard.
+parm:           capture_bufsize:ADC frame size in kB for NeoMagic 256AV/ZX
+soundcard.
+parm:           playback_bufsize:DAC frame size in kB for NeoMagic
+256AV/ZX soundcard.
+parm:           enable:Enable this soundcard.
+parm:           id:ID string for NeoMagic 256AV/ZX soundcard.
+parm:           index:Index value for NeoMagic 256AV/ZX soundcard.
+
+# alsaconf
+Unloading sound driver modules...done.
+Building card database..
 
 
-Regards,
-Clemens
+Running update-modules...
+Loading driver...
+FATAL: Error running install command for snd_nm256
+Setting default volumes...
+Saving the mixer setup used for this in /var/lib/alsa/asound.state.
+/usr/sbin/alsactl: save_state:1061: No soundcards found...
+
+===============================================================================
+
+ Now ALSA is ready to use.
+ For adjustment of volumes, use your favorite mixer.
+
+ Have a lot of fun!
+
+
+???????????????????????????,,
+======================================================================
+
+----------------------------------------------------------------------
+ Jean-Louis Crouzet - 03-16-05 11:26 
+----------------------------------------------------------------------
+just fixed the nm256 lockup when force_ac97 was enabled. But still can't
+get anything working.
+
+----------------------------------------------------------------------
+ tiwai - 03-16-05 12:27 
+----------------------------------------------------------------------
+force_ac97 won't work anyway.
+
+Now you wrote it doesn't work -- you mean lock up?
+
+Issue History
+Date Modified  Username       Field                    Change              
+======================================================================
+02-01-05 16:17 Jean-Louis CrouzetNew Issue                                    
+02-01-05 16:17 Jean-Louis CrouzetKernel Version            => # uname -a
+Linux hp900 2.6.8jlcv34 https://bugtrack.alsa-project.org/alsa-bug/view.php?id=1
+Tue Feb 1 13:43:52 CET 2005 i686 GNU/Linux
+02-02-05 11:18 tiwai          Note Added: 0003483                          
+02-02-05 12:40 Jean-Louis CrouzetNote Added: 0003485                          
+02-02-05 12:46 tiwai          Note Added: 0003486                          
+02-02-05 13:05 Jean-Louis CrouzetNote Added: 0003487                          
+02-09-05 12:09 tiwai          Note Added: 0003547                          
+02-10-05 09:54 Jean-Louis CrouzetNote Added: 0003563                          
+02-14-05 19:46 tiwai          Note Added: 0003605                          
+02-15-05 10:08 Jean-Louis CrouzetNote Added: 0003617                          
+02-15-05 10:32 Jean-Louis CrouzetNote Added: 0003618                          
+03-16-05 08:50 Jean-Louis CrouzetNote Added: 0003934                          
+03-16-05 11:26 Jean-Louis CrouzetNote Added: 0003937                          
+03-16-05 12:27 tiwai          Note Added: 0003940                          
+======================================================================
+
 
 
 
