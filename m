@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - tools 0000681]: alsamixer, rmedigicontrol and rme96 kernel driver
-Date: Mon, 29 Nov 2004 16:01:29 +0100
-Message-ID: <be4531b4083bb125ba433cc81f11cbfc@bugtrack.alsa-project.org>
+Date: Mon, 29 Nov 2004 16:10:56 +0100
+Message-ID: <f8b95cbc61b3320a1d1e88859e82df4f@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id B89532CA
-	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:01:29 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 908812C8
+	for <alsa-devel@alsa-project.org>; Mon, 29 Nov 2004 16:10:56 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,7 +22,7 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-A new RELATIONSHIP has been added to the following issue.
+The following issue has been RESOLVED.
 ======================================================================
 <https://bugtrack.alsa-project.org/alsa-bug/view.php?id=681> 
 ======================================================================
@@ -35,10 +35,12 @@ Category:                   rmedigicontrol
 Reproducibility:            always
 Severity:                   trivial
 Priority:                   normal
-Status:                     assigned
+Status:                     resolved
+Resolution:                 fixed
+Fixed in Version:           
 ======================================================================
 Date Submitted:             11-27-2004 00:59 CET
-Last Modified:              11-28-2004 18:01 CET
+Last Modified:              11-29-2004 16:10 CET
 ======================================================================
 Summary:                    alsamixer, rmedigicontrol and rme96 kernel driver
 Description: 
@@ -77,6 +79,11 @@ SNDRV_CTL_ELEM_IFACE_MIXER for some mixer elements of rme32.
 
 Signed-off-by: Martin Langer <martin-langer@gmx.de>
 
+----------------------------------------------------------------------
+ tiwai - 11-29-04 16:10 
+----------------------------------------------------------------------
+OK, now changed as proposed on CVS.
+
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
@@ -87,6 +94,9 @@ Date Modified  Username       Field                    Change
 11-28-04 17:53 martin         File Added: rme32-iface.patch                    
 11-28-04 18:01 martin         Note Added: 0002625                          
 11-29-04 16:01 tiwai          Relationship added       related to 0000570  
+11-29-04 16:10 tiwai          Status                   assigned => resolved
+11-29-04 16:10 tiwai          Resolution               open => fixed       
+11-29-04 16:10 tiwai          Note Added: 0002647                          
 ======================================================================
 
 
