@@ -1,13 +1,14 @@
-From: p z oooo <pzad@pobox.sk>
-Subject: AC3 passthrough on Audigy
-Date: Tue, 26 Aug 2003 10:47:26 +0200
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Memory leaks in alsa-lib
+Date: Tue, 26 Aug 2003 14:33:44 +0200 (CEST)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200308260847.KAA24438@www3.pobox.sk>
-Reply-To: p z oooo <pzad@pobox.sk>
+Message-ID: <Pine.LNX.4.44.0308261432320.29234-100000@pnote.perex-int.cz>
+References: <yw1xptis1vp4.fsf@users.sourceforge.net>
 Mime-Version: 1.0
-Content-Type: MULTIPART/mixed; charset=iso-8859-2; BOUNDARY="97783256-1804289383-1061887646=:24436"
-Content-Transfer-Encoding: 8BIT
+Content-Type: TEXT/PLAIN; charset=iso8859-2
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <yw1xptis1vp4.fsf@users.sourceforge.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -16,205 +17,76 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: =?iso-8859-1?q?M=E5ns_Rullg=E5rd?= <mru@users.sourceforge.net>
+Cc: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
---97783256-1804289383-1061887646=:24436
-Content-Type: TEXT/plain; CHARSET=US-ASCII
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On Tue, 26 Aug 2003, [iso-8859-1] M=E5ns Rullg=E5rd wrote:
 
-Hi,
+> Jaroslav Kysela <perex@suse.cz> writes:
+>=20
+> >> Is there a memory leak in alsa-lib?  When playing music with a player
+> >> I'm writing (TCVP, http://tcvp.sf.net), the memory usage reported by
+> >> top grows for each file I play, but only if I use ALSA for sound
+> >> playback.  If I use OSS the memory usage varies around 1.5 MB, but if
+> >> I use ALSA, it starts at 1.9 MB (OK, libasound takes some space) and
+> >> grows by 30-40 kB for each played file.  Running the whole thing under
+> >> valgrind gives me this, which is all alsa-related.  When using OSS,
+> >> valgrind reports no leaks.
+> >
+> > I tested aplay with valgrind and I cannot find any leak (except a few=
+=20
+> > allocations probably from glibc). Note that you have to use=20
+> > snd_config_update_free_global() after end of the session to free
+>=20
+> OK, so what constitutes a session?  A snd_pcm_open/snd_pcm_close pair?
+> Won't snd_pcm_open reuse the data from a previous call?
+>=20
+> I added that call after my call to snd_pcm_open, and valgrind no
+> longer reports any leaks, except for a few kilobytes from a flex
+> scanner (not related to alsa).  Still, the memory used by the player
+> when running increases with each file.  The virtual size of the player
+> is rather constant at around 25 MB all the time, while the resident
+> size is slowly increasing, until it too reaches 25 MB.  Then the
+> impossible happens:
+>=20
+>   PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND     =
+     =20
+>  7148 mru       11   0 25160  27m 2740 S  0.0 12.4   0:00.08 tcvp        =
+     =20
+>=20
+> Now the man page for top tells me that "VIRT =3D SWAP + RES", so unless
+> a negative amount has been swapped (what would that mean?), something
+> strange is going on.  The odd thing is that this happens only when I
+> use the ALSA output module.  Could it be that alsa-lib triggers some
+> bug somewhere in top, or in the kernel?  This seems a little unlikely,
+> though.
 
-This is taken from oss driver. It is not tested (I don't own=20
-receiver). Can someone try it, maybe this works, I don't know.
+I will try to investigate this problem.
 
-Audigy.conf - copy this to /usr/share/alsa/cards/ and overwrite old=20
-one (make backup).
+> In case it matters, I use ALSA OSS emulation when testing OSS sound.
+>=20
+> > the configuration cache in alsa-lib. This is described in=20
+> > the alsa-lib/MEMORY-LEAK file.
+>=20
+> That file isn't present in the alsa-lib 0.9.6 tarball.  It should be
+> added the EXTRA_DIST list in Makefile.am.
 
-emu10k1.h.patch - patch for file alsa-driver/alsa-
-kernel/include/emu10k1.h
+Thanks for info. Fixed.
 
-emufx.c.patch - patch for file alsa-driver/alsa-
-kernel/pci/emu10k1/emufx.c
+> I ran valgrind on aplay, and it tells me more or less the same as for
+> my program.  Does aplay not call the above function?  Not that it
+> needs to, really.
 
-If this doesn't work try to comment out lines
-A_OP(icode, &ptr, iSKIP, A_GPR_COND, A_GPR_COND, A_GPR(gpr - 2),=20
-A_C_00000001);
-A_OP(icode, &ptr, iACC3, A_GPR(tmp + 2), A_C_00000000, A_C_00010000,=20
-A_GPR(tmp + 2));
+I've added the free function to aplay before tests, of course.
 
-And if this doesn't work too, then delete this mail.
+=09=09=09=09=09=09Jaroslav
 
-Peter Zubaj
-=0A=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D REKLA=
-MA =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=0AVyrazne zlavy pocitacov a prislusenstva=0ASun=
- Fire V210 server v cenach uz od 125.000,- Sk bez DPH=0ANavstivte nas na ad=
-rese http://www.somi.sk/sun/lowend_servery.php=0A=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=0A
---97783256-1804289383-1061887646=:24436
-Content-Type: APPLICATION/octet-stream; name="C:\\pt\\Audigy.conf"
-Content-Transfer-Encoding: BASE64
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SuSE Labs
 
-IwojIENvbmZpZ3VyYXRpb24gZm9yIHRoZSBBdWRpZ3kgY2hpcAojCgo8Y29u
-ZmRpcjpwY20vZnJvbnQuY29uZj4KCkF1ZGlneS5wY20uZnJvbnQuMCB7CglA
-YXJncyBbIENBUkQgIF0KCUBhcmdzLkNBUkQgewoJCXR5cGUgc3RyaW5nCgl9
-Cgl0eXBlIGh3CgljYXJkICRDQVJECglkZXZpY2UgMAp9CQoKPGNvbmZkaXI6
-cGNtL3JlYXIuY29uZj4KCkF1ZGlneS5wY20ucmVhci4wIHsKCUBhcmdzIFsg
-Q0FSRCBdCglAYXJncy5DQVJEIHsKCQl0eXBlIHN0cmluZwoJfQoJdHlwZSBo
-b29rcwoJc2xhdmUucGNtIHsKCQl0eXBlIGh3CgkJY2FyZCAkQ0FSRAoJCWRl
-dmljZSAwCgl9Cglob29rcy4wIHsKCQl0eXBlIGN0bF9lbGVtcwoJCWhvb2tf
-YXJncyBbCgkJCXsKCQkJCW5hbWUgIldhdmUgU3Vycm91bmQgUGxheWJhY2sg
-Vm9sdW1lIgoJCQkJcHJlc2VydmUgdHJ1ZQoJCQkJbG9jayB0cnVlCgkJCQl2
-YWx1ZSBbIDAgMCBdCgkJCX0KCQkJewoJCQkJbmFtZSAiRU1VMTBLMSBQQ00g
-U2VuZCBWb2x1bWUiCgkJCQlpbmRleCB7IEBmdW5jIHByaXZhdGVfcGNtX3N1
-YmRldmljZSB9CgkJCQlsb2NrIHRydWUKCQkJCXZhbHVlIFsgMCAwIDAgMCAw
-IDAgMCAwICAwIDAgMjU1IDAgMCAwIDAgMCAgMCAwIDAgMjU1IDAgMCAwIDAg
-XQoJCQl9CgkJXQoJfQp9CQoKPGNvbmZkaXI6cGNtL2NlbnRlcl9sZmUuY29u
-Zj4KCkF1ZGlneS5wY20uY2VudGVyX2xmZS4wIHsKCUBhcmdzIFsgQ0FSRCBd
-CglAYXJncy5DQVJEIHsKCQl0eXBlIHN0cmluZwoJfQoJdHlwZSBob29rcwoJ
-c2xhdmUucGNtIHsKCQl0eXBlIGh3CgkJY2FyZCAkQ0FSRAoJCWRldmljZSAw
-Cgl9Cglob29rcy4wIHsKCQl0eXBlIGN0bF9lbGVtcwoJCWhvb2tfYXJncyBb
-CgkJCXsKCQkJCW5hbWUgIldhdmUgQ2VudGVyIFBsYXliYWNrIFZvbHVtZSIK
-CQkJCXByZXNlcnZlIHRydWUKCQkJCWxvY2sgdHJ1ZQoJCQkJdmFsdWUgMAoJ
-CQl9CgkJCXsKCQkJCW5hbWUgIldhdmUgTEZFIFBsYXliYWNrIFZvbHVtZSIK
-CQkJCXByZXNlcnZlIHRydWUKCQkJCWxvY2sgdHJ1ZQoJCQkJdmFsdWUgMAoJ
-CQl9CgkJCXsKCQkJCW5hbWUgIkVNVTEwSzEgUENNIFNlbmQgVm9sdW1lIgoJ
-CQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQoJCQkJ
-bG9jayB0cnVlCgkJCQl2YWx1ZSBbIDAgMCAwIDAgMCAwIDAgMCAgMjU1IDAg
-MCAwIDAgMCAwIDAgIDAgMjU1IDAgMCAwIDAgMCAwIF0KCQkJfQoJCQl7CgkJ
-CQluYW1lICJFTVUxMEsxIFBDTSBTZW5kIFJvdXRpbmciCgkJCQlpbmRleCB7
-IEBmdW5jIHByaXZhdGVfcGNtX3N1YmRldmljZSB9CgkJCQlsb2NrIHRydWUK
-CQkJCXZhbHVlIFsgMCAxIDIgMyAwIDAgMCAwICA2IDcgMCAxIDAgMCAwIDAg
-IDYgNyAwIDEgMCAwIDAgMCBdCgkJCX0KCQldCgl9Cn0JCgo8Y29uZmRpcjpw
-Y20vc3Vycm91bmQ0MC5jb25mPgoKQXVkaWd5LnBjbS5zdXJyb3VuZDQwLjAg
-ewoJQGFyZ3MgWyBDQVJEIF0KCUBhcmdzLkNBUkQgewoJCXR5cGUgc3RyaW5n
-Cgl9Cgl0eXBlIG11bHRpCglzbGF2ZXMgWwoJCXsKCQkJcGNtIHsKCQkJCUBm
-dW5jIGNvbmNhdAoJCQkJc3RyaW5ncyBbCgkJCQkJImNhcmRzLkF1ZGlneS5w
-Y20uZnJvbnQuMDpDQVJEPSIgJENBUkQKCQkJCV0KCQkJfQoJCQljaGFubmVs
-cyAyCgkJfQoJCXsKCQkJcGNtIHsKCQkJCUBmdW5jIGNvbmNhdAoJCQkJc3Ry
-aW5ncyBbCgkJCQkJImNhcmRzLkF1ZGlneS5wY20ucmVhci4wOkNBUkQ9IiAk
-Q0FSRAoJCQkJXQoJCQl9CgkJCWNoYW5uZWxzIDIKCQl9CgldCgliaW5kaW5n
-cyBbCgkJeyBzbGF2ZSAwIGNoYW5uZWwgMCB9CgkJeyBzbGF2ZSAwIGNoYW5u
-ZWwgMSB9CgkJeyBzbGF2ZSAxIGNoYW5uZWwgMCB9CgkJeyBzbGF2ZSAxIGNo
-YW5uZWwgMSB9CgldCn0KCjxjb25mZGlyOnBjbS9zdXJyb3VuZDUxLmNvbmY+
-CgpBdWRpZ3kucGNtLnN1cnJvdW5kNTEuMCB7CglAYXJncyBbIENBUkQgXQoJ
-QGFyZ3MuQ0FSRCB7CgkJdHlwZSBzdHJpbmcKCX0KCXR5cGUgbXVsdGkKCXNs
-YXZlcyBbCgkJewoJCQlwY20gewoJCQkJQGZ1bmMgY29uY2F0CgkJCQlzdHJp
-bmdzIFsKCQkJCQkiY2FyZHMuQXVkaWd5LnBjbS5mcm9udC4wOkNBUkQ9IiAk
-Q0FSRAoJCQkJXQoJCQl9CgkJCWNoYW5uZWxzIDIKCQl9CgkJewoJCQlwY20g
-ewoJCQkJQGZ1bmMgY29uY2F0CgkJCQlzdHJpbmdzIFsKCQkJCQkiY2FyZHMu
-QXVkaWd5LnBjbS5yZWFyLjA6Q0FSRD0iICRDQVJECgkJCQldCgkJCX0KCQkJ
-Y2hhbm5lbHMgMgoJCX0KCQl7CgkJCXBjbSB7CgkJCQlAZnVuYyBjb25jYXQK
-CQkJCXN0cmluZ3MgWwoJCQkJCSJjYXJkcy5BdWRpZ3kucGNtLmNlbnRlcl9s
-ZmUuMDpDQVJEPSIgJENBUkQKCQkJCV0KCQkJfQoJCQljaGFubmVscyAyCgkJ
-fQoJXQoJYmluZGluZ3MgWwoJCXsgc2xhdmUgMCBjaGFubmVsIDAgfQoJCXsg
-c2xhdmUgMCBjaGFubmVsIDEgfQoJCXsgc2xhdmUgMSBjaGFubmVsIDAgfQoJ
-CXsgc2xhdmUgMSBjaGFubmVsIDEgfQoJCXsgc2xhdmUgMiBjaGFubmVsIDAg
-fQoJCXsgc2xhdmUgMiBjaGFubmVsIDEgfQoJXQp9Cgo8Y29uZmRpcjpwY20v
-aWVjOTU4LmNvbmY+CgpBdWRpZ3kucGNtLmllYzk1OC4wIHsKCUBhcmdzIFsg
-Q0FSRCBBRVMwIEFFUzEgQUVTMiBBRVMzIF0KCUBhcmdzLkNBUkQgewoJCXR5
-cGUgc3RyaW5nCgl9CglAYXJncy5BRVMwIHsKCQl0eXBlIGludGVnZXIKCX0K
-CUBhcmdzLkFFUzEgewoJCXR5cGUgaW50ZWdlcgoJfQoJQGFyZ3MuQUVTMiB7
-CgkJdHlwZSBpbnRlZ2VyCgl9CglAYXJncy5BRVMzIHsKCQl0eXBlIGludGVn
-ZXIKCX0KCXR5cGUgaG9va3MKCXNsYXZlLnBjbSB7CgkJdHlwZSBodwoJCWNh
-cmQgJENBUkQKCQlkZXZpY2UgMAoJfQoKCWhvb2tzLjAgewoJCXR5cGUgY3Rs
-X2VsZW1zCgkJaG9va19hcmdzIFsKCQkJewoJCQkJbmFtZSAiSUVDOTU4IFBs
-YXliYWNrIERlZmF1bHQiCgkJCQlsb2NrIHRydWUKCQkJCXByZXNlcnZlIHRy
-dWUKCQkJCXZhbHVlIFsgJEFFUzAgJEFFUzEgJEFFUzIgJEFFUzMgXQoJCQl9
-CgkJCXsKCQkJCW5hbWUgIklFQzk1OCBPcHRpY2FsIFJhdyBQbGF5YmFjayBT
-d2l0Y2giCgkJCQlsb2NrIHRydWUKCQkJCXByZXNlcnZlIHRydWUKCQkJCXZh
-bHVlIFsgMSAxIF0KCQkJfQoJCQl7CgkJCQluYW1lICJFTVUxMEsxIFBDTSBT
-ZW5kIFZvbHVtZSIKCQkJCWluZGV4IHsgQGZ1bmMgcHJpdmF0ZV9wY21fc3Vi
-ZGV2aWNlIH0KCQkJCWxvY2sgdHJ1ZQoJCQkJdmFsdWUgWyAwIDAgMCAwIDAg
-MCAwIDAgIDI1NSAwIDAgMCAwIDAgMCAwICAwIDI1NSAwIDAgMCAwIDAgMCBd
-CgkJCX0KCQkJewoJCQkJbmFtZSAiRU1VMTBLMSBQQ00gU2VuZCBSb3V0aW5n
-IgoJCQkJaW5kZXggeyBAZnVuYyBwcml2YXRlX3BjbV9zdWJkZXZpY2UgfQoJ
-CQkJbG9jayB0cnVlCgkJCQl2YWx1ZSBbIDAgMSAyIDMgMCAwIDAgMCAgMjAg
-MjEgMCAxIDAgMCAwIDAgICAyMCAyMSAwIDEgMCAwIDAgMCBdCgkJCX0KCQkJ
-ewoJCQkJbmFtZSAiQXVkaWd5IEFuYWxvZy9EaWdpdGFsIE91dHB1dCBKYWNr
-IgoJCQkJbG9jayB0cnVlCgkJCQlwcmVzZXJ2ZSB0cnVlCgkJCQl2YWx1ZSAx
-CgkJCX0KCQldCgl9Cn0K
-
---97783256-1804289383-1061887646=:24436
-Content-Type: APPLICATION/octet-stream; name="C:\\pt\\emu10k1.h.patch"
-Content-Transfer-Encoding: BASE64
-
-LS0tIGVtdTEwazEuaC5vbGQJMjAwMy0wNy0yNSAxMjozNzozOS4wMDAwMDAw
-MDAgKzAyMDAKKysrIGVtdTEwazEuaAkyMDAzLTA4LTI1IDIxOjE1OjQ2LjAw
-MDAwMDAwMCArMDIwMApAQCAtMTE1Miw2ICsxMTUyLDggQEAKICNkZWZpbmUg
-RlhCVVNfTUlESV9SSUdIVAkweDA1CiAjZGVmaW5lIEZYQlVTX1BDTV9DRU5U
-RVIJMHgwNgogI2RlZmluZSBGWEJVU19QQ01fTEZFCQkweDA3CisjZGVmaW5l
-IEZYQlVTX1BUX0xFRlQJCTIwCisjZGVmaW5lIEZYQlVTX1BUX1JJR0hUCQky
-MQogI2RlZmluZSBGWEJVU19NSURJX1JFVkVSQgkweDBjCiAjZGVmaW5lIEZY
-QlVTX01JRElfQ0hPUlVTCTB4MGQKIAo=
-
---97783256-1804289383-1061887646=:24436
-Content-Type: APPLICATION/octet-stream; name="C:\\pt\\emufx.c.patch"
-Content-Transfer-Encoding: BASE64
-
-LS0tIGVtdWZ4LmMub2xkCTIwMDMtMDctMjUgMTI6Mzk6MzguMDAwMDAwMDAw
-ICswMjAwCisrKyBlbXVmeC5jCTIwMDMtMDgtMjUgMjI6MTk6MDIuMDAwMDAw
-MDAwICswMjAwCkBAIC0xMjM1LDYgKzEyMzUsNyBAQAogICovCiAKICNkZWZp
-bmUgQV9HUFJfQUNDVSAweGQ2CisjZGVmaW5lIEFfR1BSX0NPTkQgMHhkNwog
-CiBzdGF0aWMgaW50IF9fZGV2aW5pdCBfc25kX2VtdTEwazFfYXVkaWd5X2lu
-aXRfZWZ4KGVtdTEwazFfdCAqZW11KQogewpAQCAtMTUwMiwxMyArMTUwMyw3
-IEBACiAJCUFfT1AoaWNvZGUsICZwdHIsIGlNQUMwLCBBX0dQUihwbGF5YmFj
-aysxK1NORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxTKSwgQV9DXzAwMDAw
-MDAwLCBBX0dQUihncHIrMSksIEFfR1BSKHBsYXliYWNrKzErU05EX0VNVTEw
-SzFfUExBWUJBQ0tfQ0hBTk5FTFMpKTsKIAkJc25kX2VtdTEwazFfaW5pdF9z
-dGVyZW9fY29udHJvbCgmY29udHJvbHNbbmN0bCsrXSwgIldhdmUgTWFzdGVy
-IFBsYXliYWNrIFZvbHVtZSIsIGdwciwgMCk7CiAJCWdwciArPSAyOwotCX0K
-LQotCS8qIGRpZ2l0YWwgb3V0cHV0cyAqLwotCUFfUFVUX1NURVJFT19PVVRQ
-VVQoQV9FWFRPVVRfRlJPTlRfTCwgQV9FWFRPVVRfRlJPTlRfUiwgcGxheWJh
-Y2sgKyBTTkRfRU1VMTBLMV9QTEFZQkFDS19DSEFOTkVMUyk7Ci0JQV9QVVRf
-U1RFUkVPX09VVFBVVChBX0VYVE9VVF9SRUFSX0wsIEFfRVhUT1VUX1JFQVJf
-UiwgcGxheWJhY2srMiArIFNORF9FTVUxMEsxX1BMQVlCQUNLX0NIQU5ORUxT
-KTsKLQlBX1BVVF9PVVRQVVQoQV9FWFRPVVRfQ0VOVEVSLCBwbGF5YmFjays0
-ICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMpOwotCUFfUFVUX09V
-VFBVVChBX0VYVE9VVF9MRkUsIHBsYXliYWNrKzUgKyBTTkRfRU1VMTBLMV9Q
-TEFZQkFDS19DSEFOTkVMUyk7CisJfQkKIAogCS8qIGFuYWxvZyBzcGVha2Vy
-cyAqLwogCWlmIChlbXUtPnJldmlzaW9uID09IDQpIHsgLyogYXVkaWd5MiAq
-LwpAQCAtMTUyMyw2ICsxNTE4LDI5IEBACiAJLyogaGVhZHBob25lICovCiAJ
-QV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9IRUFEUEhPTkVfTCwgQV9F
-WFRPVVRfSEVBRFBIT05FX1IsIHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExB
-WUJBQ0tfQ0hBTk5FTFMpOwogCisJLyogZGlnaXRhbCBvdXRwdXRzICovCisv
-LwlBX1BVVF9TVEVSRU9fT1VUUFVUKEFfRVhUT1VUX0ZST05UX0wsIEFfRVhU
-T1VUX0ZST05UX1IsIHBsYXliYWNrICsgU05EX0VNVTEwSzFfUExBWUJBQ0tf
-Q0hBTk5FTFMpOworCisJLyogSUVDOTU4IE9wdGljYWwgUmF3IFBsYXliYWNr
-IFN3aXRjaCAqLyAKKwlpY29kZS0+Z3ByX21hcFtncHIrK10gPSAweDEwMDg7
-CisJaWNvZGUtPmdwcl9tYXBbZ3ByKytdID0gMHhmZmZmMDAwMDsKKwlmb3Ig
-KHogPSAwOyB6IDwgMjsgeisrKSB7CisJCUFfT1AoaWNvZGUsICZwdHIsIGlN
-QUMwLCBBX0dQUih0bXAgKyAyKSwgQV9GWEJVUyhGWEJVU19QVF9MRUZUICsg
-eiksIEFfQ18wMDAwMDAwMCwgQV9DXzAwMDAwMDAwKTsKKwkJQV9PUChpY29k
-ZSwgJnB0ciwgaVNLSVAsIEFfR1BSX0NPTkQsIEFfR1BSX0NPTkQsIEFfR1BS
-KGdwciAtIDIpLCBBX0NfMDAwMDAwMDEpOworCQlBX09QKGljb2RlLCAmcHRy
-LCBpQUNDMywgQV9HUFIodG1wICsgMiksIEFfQ18wMDAwMDAwMCwgQV9DXzAw
-MDEwMDAwLCBBX0dQUih0bXAgKyAyKSk7CisJCUFfT1AoaWNvZGUsICZwdHIs
-IGlBTkRYT1IsIEFfR1BSKHRtcCArIDIpLCBBX0dQUih0bXAgKyAyKSwgQV9H
-UFIoZ3ByIC0gMSksIEFfQ18wMDAwMDAwMCk7CisJCUFfU1dJVENIKGljb2Rl
-LCAmcHRyLCB0bXAgKyAwLCB0bXAgKyAyLCBncHIgKyB6KTsKKwkJQV9TV0lU
-Q0hfTkVHKGljb2RlLCAmcHRyLCB0bXAgKyAxLCBncHIgKyB6KTsKKwkJQV9T
-V0lUQ0goaWNvZGUsICZwdHIsIHRtcCArIDEsIHBsYXliYWNrICsgU05EX0VN
-VTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMgKyB6LCB0bXAgKyAxKTsKKwkJQV9P
-UChpY29kZSwgJnB0ciwgaUFDQzMsIEFfRVhUT1VUKEFfRVhUT1VUX0ZST05U
-X0wgKyB6KSwgQV9HUFIodG1wICsgMCksIEFfR1BSKHRtcCArIDEpLCBBX0Nf
-MDAwMDAwMDApOworCX0KKwlzbmRfZW11MTBrMV9pbml0X3N0ZXJlb19vbm9m
-Zl9jb250cm9sKGNvbnRyb2xzICsgbmN0bCsrLCAiSUVDOTU4IE9wdGljYWwg
-UmF3IFBsYXliYWNrIFN3aXRjaCIsIGdwciwgMCk7CisJZ3ByICs9IDI7CisJ
-CisJQV9QVVRfU1RFUkVPX09VVFBVVChBX0VYVE9VVF9SRUFSX0wsIEFfRVhU
-T1VUX1JFQVJfUiwgcGxheWJhY2srMiArIFNORF9FTVUxMEsxX1BMQVlCQUNL
-X0NIQU5ORUxTKTsKKwlBX1BVVF9PVVRQVVQoQV9FWFRPVVRfQ0VOVEVSLCBw
-bGF5YmFjays0ICsgU05EX0VNVTEwSzFfUExBWUJBQ0tfQ0hBTk5FTFMpOwor
-CUFfUFVUX09VVFBVVChBX0VYVE9VVF9MRkUsIHBsYXliYWNrKzUgKyBTTkRf
-RU1VMTBLMV9QTEFZQkFDS19DSEFOTkVMUyk7CisKIAkvKiBBREMgYnVmZmVy
-ICovCiAJQV9QVVRfT1VUUFVUKEFfRVhUT1VUX0FEQ19DQVBfTCwgY2FwdHVy
-ZSk7CiAJQV9QVVRfT1VUUFVUKEFfRVhUT1VUX0FEQ19DQVBfUiwgY2FwdHVy
-ZSsxKTsK
-
---97783256-1804289383-1061887646=:24436--
 
 
 -------------------------------------------------------
