@@ -1,9 +1,8 @@
-From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: Re: Griffin iMic - Invalid synch in usbaudio.c
-Date: Wed, 07 May 2003 23:06:42 +0900
+From: Pieter Palmers <pieter.palmers@student.kuleuven.ac.be>
+Subject: ENS1373 and AC3/DTS SPDIF output
+Date: Wed, 07 May 2003 20:04:52 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3EB912F2.4040706@boosthardware.com>
-References: <1052302873.1599.140.camel@spud2> <s5hllxic0xt.wl@alsa2.suse.de>
+Message-ID: <3EB94AC4.90503@student.kuleuven.ac.be>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -16,32 +15,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@lists.sourceforge.net
+To: "alsa-devel@lists.sourceforge.net" <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Iwai wrote:
-> 
-> now i'm working on usb-audio driver, too, so i'll commit this change
-> later together with mine to cvs.
-> 
+Hi all,
 
-Have you had a chance to test if the input 3 and 4 are functioning for 
-you with the quattro?
+The one thing the current ENS1371 driver seems to be lacking is support 
+for AC3 passtrough SPDIF. At least, as far as I know. I never got it to 
+work.
+I currently use a "Soundblaster 4.1 digital" card based on an ENS1371 
+variant (i assume the ENS1373) that, according to creative's specs, 
+supports AC3 passtrough. But neither on windows (one seems to be needing 
+XP for that) nor on linux I could get it to work. Plain SPDIF works 
+fine, but raw-mode passtrough doesnt.
 
+Anybody on the list that succeeded in testing this?
 
--- 
-Patrick Shirkey - Boost Hardware Ltd.
-Http://www.boosthardware.com
-Http://www.djcj.org - The Linux Audio Users guide
-========================================
+Should the card not support raw mode, is it possible to 'encode' the AC3 
+stream in a digital 48kHz stereo stream? If I'm not mistaking, I've seen 
+some ALSA drivers doing something like this... how does it work?
 
-Being on stage with the band in front of crowds shouting, "Get off! No! 
-We want normal music!", I think that was more like acting than anything 
-I've ever done.
+Thanks,
 
-Goldie, 8 Nov, 2002
-The Scotsman
+Pieter
 
 
 
