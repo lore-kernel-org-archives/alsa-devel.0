@@ -1,12 +1,12 @@
-From: Martin Langer <martin-langer@gmx.de>
-Subject: usx2yloader: us224 fix
-Date: Sun, 1 Feb 2004 12:54:15 +0100
+From: Florian Schmidt <mista.tapas@gmx.net>
+Subject: dmix, dsnoop, asym weirdness [no errors, no sound either]
+Date: Sun, 1 Feb 2004 13:48:38 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20040201115415.GA1531@tuba.home>
+Message-ID: <20040201134838.5753abf3.mista.tapas@gmx.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="XsQoSWH+UP9D9v3l"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -16,80 +16,121 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
-Cc: Karsten Wiese <annabellesgarden@yahoo.de>, David <david@robot-droid.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---XsQoSWH+UP9D9v3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Ok, i have a hw mixing capable card, but i do have interest in getting
+the dmix/dsnoop/asym thing working. Well, i defined a "pasymed" device
+like this:
 
 
-Hi,
+------.asoundrc start
+#asym fun start here. we define one pcm device called "dmixed"
+pcm.dmixed {
+        ipc_key 1025
+        type dmix
+        slave.pcm "hw:0,0"
+}
 
-our assumption in the usx2yloader for an US-224 was wrong (the prepad
-size differs). I've attached a patch which fix this in alsa-firmware.
+#one called "dsnooped" for capturing 
+pcm.dsnooped {
+        ipc_key 1026
+        type dsnoop
+        slave.pcm "hw:0,0"
+}
 
-Instead of usx2y.prepad (which can be removed now) I've created two new
-prepad files for the usx2yloader: us122.prepad, us224.prepad. They should be
-copied to alsa-firmware/usx2yloader.
+#and this is the real magic
+pcm.asymed {
+        type asym
+        playback.pcm "dmixed"
+        capture.pcm "dsnooped"
+}
 
-Thanks to David Coulm for his help.
+#a quick plug plugin for above device to do the converting magic
+pcm.pasymed {
+        type plug
+        slave.pcm "asymed"
+}
+
+#a ctl device to keep xmms happy
+ctl.pasymed {
+        type hw
+        card 0
+}
+------.asoundrc end
+
+Now i should be able to test that device "pasymed" with the aplay
+command:
+
+aplay -D pasymed foo.wav
+
+This command does not give any error messages on my machine. It also
+does not produce any sound. The soundfile is rather short and aplay
+exits fine after the duration of the soundfile. So i figure it is played
+back correctly. The question is though: Where is it played to? I have
+three playback devices on my cs46xx soundcard:
+
+tapas@mango:~$ cat /proc/asound/devices 
+  1:       : sequencer
+  0: [0- 0]: ctl
+  8: [0- 0]: raw midi
+ 18: [0- 2]: digital audio playback
+ 17: [0- 1]: digital audio playback
+ 16: [0- 0]: digital audio playback
+ 24: [0- 0]: digital audio capture
+ 33:       : timer
+
+But i have only one speaker pair connected to the soundcard outs. I just
+tested the two analoge outs [don't have any digital equipment for
+digital out]. The pasymed signal doesn't come out anywhere.. I think
+it's a dmix issue, because
+
+aplay -D plug:dmix foo.wav
+
+shows the exact same behaviour [no errors, no sound, normal termination
+after duration of soundfile].. dsnoop is behaving weirdly, too. I just
+recorded with
+
+arecord -D pasymed -t wav -f cd foo.wav
+
+and it records just a little chunk of audio repeated over and over. It
+seems to be the first period that is in the buffer after opening the
+device [for i get a file filled with silence when i start recording at a
+silent point]. I put up the .wav at
+
+http://mistatapas.ath.cx:8888/foo.wav
+
+I get the exact same result with
+
+aplay -D plug:dsnooped -t wav -f cd foo.wav
 
 
-martin
 
---XsQoSWH+UP9D9v3l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="usx2yloader-us224.patch"
 
---- us122.conf.ORIGINAL	Sun Feb  1 12:18:26 2004
-+++ us122.conf	Sun Feb  1 12:19:02 2004
-@@ -1,5 +1,5 @@
- # boot firmwares for Tascam us122 deviceid 0x8007
- 
--dsp0	usx2y.prepad
-+dsp0	us122.prepad
- dsp1	us122.rbt
- 
---- us224.conf.ORIGINAL	Thu Jan 29 23:47:49 2004
-+++ us224.conf	Thu Jan 29 23:48:04 2004
-@@ -1,5 +1,5 @@
- # boot firmwares for Tascam us224 deviceid 0x8005
- 
--dsp0	usx2y.prepad
-+dsp0	us224.prepad
- dsp1	us224.rbt
- 
---- Makefile.am.ORIGINAL	Thu Jan 29 23:47:15 2004
-+++ Makefile.am	Sun Feb  1 12:21:39 2004
-@@ -1,7 +1,7 @@
- MYNAME = usx2yloader
- 
- cfg_files = 	us122.conf us224.conf us428.conf \
--		usx2y.prepad us428.prepad \
-+		us122.prepad us224.prepad us428.prepad \
- 		us122.rbt us224.rbt us428.rbt \
- 		tascam_loader.ihx \
- 		us122fw.ihx us224fw.ihx us428fw.ihx
 
---XsQoSWH+UP9D9v3l
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="us224.prepad"
-Content-Transfer-Encoding: base64
+Here's some more info about my setup:
 
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAA==
+tapas@mango:~$ uname -a
+Linux mango.fruits.de 2.4.22 #1 SMP Wed Nov 19 13:43:03 CET 2003 i686
+GNU/Linux
 
---XsQoSWH+UP9D9v3l
-Content-Type: application/octet-stream
-Content-Disposition: attachment; filename="us122.prepad"
-Content-Transfer-Encoding: base64
+tapas@mango:~$ cat /proc/asound/version 
+Advanced Linux Sound Architecture Driver Version 1.0.1.
+Compiled on Jan 22 2004 for kernel 2.4.22 (SMP) with versioned symbols.
 
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAA=
+tapas@mango:~$ cat /proc/asound/cards 
+0 [CS46xx         ]: CS46xx - Sound Fusion CS46xx
+                     Sound Fusion CS46xx at 0xcffef000/0xcfe00000, irq 5
 
---XsQoSWH+UP9D9v3l--
+
+
+
+Flo
+
+
+-- 
+signature :)
+
 
 
 -------------------------------------------------------
