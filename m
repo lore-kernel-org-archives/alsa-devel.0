@@ -1,12 +1,13 @@
-From: Paul Davis <pbd@op.net>
+From: Patrick Shirkey <pshirkey@boosthardware.com>
 Subject: Re: ALSA docs
-Date: Thu, 25 Jul 2002 12:32:12 -0400
+Date: Fri, 26 Jul 2002 02:03:57 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <E17XlTw-00041v-00@usw-sf-list1.sourceforge.net>
-References: <3D402544.5010008@boosthardware.com>
+Message-ID: <3D402F7D.3010405@boosthardware.com>
+References: <E17XlTw-00041v-00@usw-sf-list1.sourceforge.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: Your message of "Fri, 26 Jul 2002 01:20:20 +0900."
-             <3D402544.5010008@boosthardware.com>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +16,29 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://www.geocrawler.com/redir-sf.php3?list=alsa-devel>
-To: Patrick Shirkey <pshirkey@boosthardware.com>
-Cc: alsa-devel@lists.sourceforge.net, linux-audio-user@music.columbia.edu
+To: Paul Davis <pbd@op.net>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
->I have the working version of the template for the new improved docs.
->
->Can people who have a spare moment have a look through it for obvious 
->mistakes. Any additions to the text will also be appreciated.
->
->I've looked at it so many times now I need a fresh eye to spot my mistakes.
->
->http://www.alsa-project.org/alsa-doc/doc-php/cmipci.php3
+Paul Davis wrote:
 
-no mistakes, but i still think it very, very important that the link
-to the section on card-specific options be clear and distinct from
-everything else. 
+> there also needs to be a place for information about card-specific
+> control switches too.
+> 
 
-new users may want to see the rest, but in a relatively short time,
-most of the views of this page will be by people who are looking up
-specific information. there is a link to this already, but its not
-obvious enough for my taste.
+Are there many cards that have controls switches? If there are not then 
+I can see a reason to make that component optional to the template.
 
-put it as the first element in the "table of contents", and use a
-couple of <br> elements to make it stand apart from the rest.
+How should I describe them? I have never used a card that has them before.
 
-there also needs to be a place for information about card-specific
-control switches too.
 
---p
+-- 
+Patrick Shirkey - Boost Hardware Ltd.
+For the discerning hardware connoisseur
+Http://www.boosthardware.com
+Http://www.boosthardware.com/LAU/guide/
+========================================
+
 
 
 -------------------------------------------------------
