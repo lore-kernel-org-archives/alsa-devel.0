@@ -1,14 +1,18 @@
-From: Dominik 'Aeneas' Schnitzer <dominik@schnitzer.at>
-Subject: Re: [PATCH] EMU10K1.conf
-Date: Tue, 06 Jan 2004 12:23:35 +0100
+From: Eckhard Jokisch <e.jokisch@u-code.de>
+Subject: Re: sbLive! -Drive digital IOs exchanged?
+Date: Tue, 6 Jan 2004 12:22:56 +0100
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <1073388215.7832.32.camel@blackhole>
-References: <1072485112.2477.35.camel@blackhole> <s5h7k062vag.wl@alsa2.suse.de>
+Message-ID: <200401061222.56427.e.jokisch@u-code.de>
+References: <200312242220.57516.e.jokisch@u-code.de> <s5h65fq2v0v.wl@alsa2.suse.de>
+Reply-To: e.jokisch@u-code.de
 Mime-Version: 1.0
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-In-Reply-To: <s5h7k062vag.wl@alsa2.suse.de>
+In-Reply-To: <s5h65fq2v0v.wl@alsa2.suse.de>
+Content-Description: clearsigned data
+Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -21,80 +25,61 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2004-01-05 at 17:51, Takashi Iwai wrote:
-> "Wave XXX Volume" controls should be zero for multi-channel outputs
-> indeed, because these are volumes of signals duplicated from the front
-> channel to surround/center/lfe channels.
-> locking could be optional, though.
+=2D----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Hi!
+Takashi Iwai wrote:
+> At Wed, 24 Dec 2003 22:20:57 +0100,
+>
+> Eckhard Jokisch wrote:
+> > Hello guys,
+> > I just noticed that the controls ( or their names) of the digital inputs
+> > of Live!-drive are changed. If I want ot get sound out of the coaxial
+> > inputs I have to raise the optocal s "sliders" in alsamixer as well as =
+in
+> > alsermixergui.
+>
+> i don't see any changes of codes regarding this...
+Hrrgl ... I knew the word "changed" will cause problems ;-)=20
+I mean *swapped*.
+> is only the capture switch swapped?
+No - it's like that:
+I connct my TC-electronics"M5000" with acoaxial cable to the front panel's=
+=20
+"Digital In" (that's S/PDIF right?). To hear something I have to lift up th=
+e=20
+fader for "IEC958 Optical". I didn't try yet the capture. And I remeber tha=
+t=20
+I had to lift "IEC958 Coaxial" fader when I once was recording something vi=
+a=20
+optical interface. If I had to use "IEC958coaxial capture" I don't remeber.=
+=20
+But as things tend to be easy I think the capture faders are swapped as wel=
+l.
+Actually I will get back my equipment this afternoon so I can test this aga=
+in.=20
 
-For me "Wave XXX Volume" controls (using digital out) work like
-intended:
+As I tok a short look in the code there seems to be an enum responsible for=
+=20
+the ordering of the names. Surely I could repair this piece of code but wnt=
+ed=20
+to be sure that's not only me having this problem.
 
-Wave: Front Speakers Volume
-Wave Center: Center Speaker
-Wave LFE: LFE
-Wave Surround: Rear Speakers
+> (to be sure, do you mean "IEC958 Optical Capture" and "IEC958 Coax
+> Capture", right?)
+=46or completeness: No - not just the captures.
+>
+>
+> Takashi
+Eckhard
+=2D----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.2.3 (GNU/Linux)
 
-But setting "Wave Surround Playback Volume" to 0 in the
-EMU10K1.pcm.rear.0 section has the effect that no sound is coming out of
-the rear boxes.
+iD4DBQE/+pqQiF9FD4kCbGQRAtJSAJ9CWhzTHUGjNXq80m1OgRl3dxZ9pQCXezeZ
+/sJ+4PVd6t1o/scexAvJ7A=3D=3D
+=3DGLgP
+=2D----END PGP SIGNATURE-----
 
-And setting "Wave Center Playback Volume" and "Wave LFE Playback Volume"
-to 0 (in EMU10K1.pcm.center_lfe.0) has the effect that no sound is
-coming out of the center and LFE speakers.
-
-Generally this means that with the current alsa configuration only the 2
-front speakers have sound (when using the digital out jack).
-
-By removing the locks and 0-settings, its possible to control the other
-volumes too -> and thus unlocking the other speakers too. :)
-
-> >  - surround51 was statically bound to the non-digital output and locked
-> > (to the analogue output), so there was no way to get surround sound on
-> > my digital-out.
-> 
-> hmm, i'm not sure about this.  surround51 was designed for outputs
-> from three analog jacks.
-> 
-> what do you get from digital out with surround51?
-
-With the modified config-file and setting xine to use surround51 I get
-True surround 5.1 sound. I have a 5.1 test-audio file, which I used for
-testig - Its not just duplication of the front speakers signal.
-
-Using the unmodified config and setting xine to use surround51, the card
-switches to analogue out, the receiver blinks (no connection) and
-nothing happens. If I remove the analogue-out lock in the config, only
-the 2 front speakers work. Removing the 0 volume locks (and increasing
-volumes in the mixer) everything works.
-
-> does the card send non-encoded raw 6-channel PCM over spdif?
-
-No, digital out sends the data over this creative-coaxial cable. AFAI
-understand, spdif is only (?) used for sending raw Encoded AC3 data to a
-5.1 receiver in order to let the receiver decode it.
-
-> >  - other volume controls were locked too, I had a look at Audigy.conf
-> > and reduced the locked controls to the minimum required.
-> 
-> on Audigy, the signal routing and control elements are fairly
-> different from SB Live.  so, you cannot copy it simply...
-
-I didn't copy the routing part, I just inspired :-) myself in the
-Audigy.conf files. For the audigy digital-out and the other volumes
-weren't locked and set to 0; so I tried this out for the EMU10k1 too and
-it worked :D
-
-I hope this helps a bit!
-dominik.
--- 
-Dominik 'Aeneas' Schnitzer <dominik@schnitzer.at>
-http://www.schnitzer.at/dominik/ - Update 03/08/31: Birthday Party
-
-PGP Fingerprint: E839 B9EA F518 899D AA35  BB67 0DBF 7AB2 5FE6 525A
-PGP Public Key: http://www.schnitzer.at/dominik/public.key
 
 
 -------------------------------------------------------
