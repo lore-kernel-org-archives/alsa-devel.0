@@ -1,10 +1,9 @@
 From: Patrick Shirkey <pshirkey@boosthardware.com>
-Subject: Re: alsasound init script (Re: possible problems with
- rc6 aplay )
-Date: Tue, 24 Dec 2002 02:18:33 +0900
+Subject: Re: Converted "Writing an ALSA Driver" to DocBook.
+Date: Tue, 24 Dec 2002 03:56:27 +0900
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3E074569.4050101@boosthardware.com>
-References: <E18PTTN-0004YV-00@sc8-sf-list2.sourceforge.net>	<200212202353.13933.plcl@telefonica.net> <s5h3coovohq.wl@alsa2.suse.de>
+Message-ID: <3E075C5B.5080905@boosthardware.com>
+References: <20021223042450.59477.qmail@web21003.mail.yahoo.com>	<3E070D45.9040103@boosthardware.com> <s5hy96gu8wk.wl@alsa2.suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Transfer-Encoding: 7bit
@@ -18,28 +17,30 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Pedro Lopez-Cabanillas <plcl@telefonica.net>, alsa-devel@lists.sourceforge.net, Clemens Ladisch <clemens@ladisch.de>
+Cc: Kevin Conder <kwconder@yahoo.com>, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 Takashi Iwai wrote:
-> At Fri, 20 Dec 2002 23:53:13 +0100,
-> Pedro Lopez-Cabanillas wrote:
+
+>>
+>>>In case any one was curious, I converted Takashi's "Writing an ALSA
+>>>Driver" document to DocBook/SGML. It's available for download here:
+>>>
+>>>http://www.kevindumpscore.com/download/writing-an-alsa-driver.sgml
+>>>
+>>>
+>>
+>>I have downloaded it to add to the site. I will render it to html so we 
+>>can provide a nice way to browse it online.
 > 
->>Clemens, I remember that /proc/asound/cards returned this bus/device  
->>information for USB MIDI devices some time ago (rc3?), like it does for my SB 
->>128 PCI.
 > 
-> 
-> it would be nice to provide a new generic proc file which shows the
-> low-level hardware information as the card number, the module name and
-> the PCI/ISA-PnP/USB/PCMCIA IDs like:
-> 
-> 0 snd-ens1371 0x0123 0xABCD
-> 1 snd-usb-audio 0xXXXX 0xYYYY
+> nice.  if you finish the set up, please let me know the url.
+> i'll add it as the reference to the new version.
 > 
 
-Could you add to that the irq number?
-
+After playing around with the docbook install for a few hours it's 
+probably more appropriate if Kevin can put the html versions on line for 
+me to download. I will be here for a while doing this otherwise.
 
 
 -- 
