@@ -1,14 +1,15 @@
-From: Frank Barknecht <fbar@footils.org>
-Subject: Re: Is a complete Alsa restart possibly without rebooting?
-Date: Wed, 6 Aug 2003 18:30:09 +0200
+From: "Mark Knecht" <mknecht@controlnet.com>
+Subject: RE: Is a complete Alsa restart possibly without rebooting?
+Date: Wed, 6 Aug 2003 10:04:00 -0700
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20030806163009.GA5872@fliwatut.scifi>
-References: <NDBBLGIKBJENLAMOLFHGEEKGCOAB.mknecht@controlnet.com>
+Message-ID: <NDBBLGIKBJENLAMOLFHGIEKKCOAB.mknecht@controlnet.com>
+References: <20030806163009.GA5872@fliwatut.scifi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain;
+	charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <NDBBLGIKBJENLAMOLFHGEEKGCOAB.mknecht@controlnet.com>
+In-Reply-To: <20030806163009.GA5872@fliwatut.scifi>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -17,50 +18,58 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
+To: Frank Barknecht <fbar@footils.org>, Alsa-Devel <Alsa-Devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Hallo,
-Mark Knecht hat gesagt: // Mark Knecht wrote:
+> Debian has an init-script that accepts a "force-[stop|restart]"
+> option. What this does is: It first kills all programs that use ALSA
+> with:
+>
+> procs_using_sound="$(echo $({ find /dev -print0 | xargs -0 stat
+> -Lc '%t:%n' | grep -E '^(e|74):' \
+> | cut -d: -f2-; } | while read REPLY; do fuser "$REPLY" || true;
+> done | cut -f2- -d:))"
+> kill $procs_using_sound
+> sleep 2
+> kill -9 $procs_using_sound
+>
+> and then rmmods like this:
+>
+> rmmod -r $(lsmod | grep ^snd | awk '{print $1}')
+>
+> Hope that helps... I could send you the file (or you could get it from
+> debian.org), but basically that's it.
+>
+> ciao
+> --
+>  Frank Barknecht                               _ ______footils.org__
 
->    I am debugging a problem that seems to require me to reboot the machine
-> after it happens as Alsa cannot recover. I am wondering whether there is any
-> known way to script a complete Alsa restart, like I can do with networking
-> or other drivers, so that I wouldn't have to do this reboot?
-> 
->    I've tried /etc/init.d/alsasound stop and then start. This doesn't work.
-> I've tried the stop/start with an rmmod of everything I can see in lsmod,
-> but this doesn't work either.
-> 
->    I suspect that a big part of the problem is that the sound card itself is
-> getting into a state that the drivers and Alsa do not have the capabilities
-> to get it out of and possibly what's happening is the reboot fixes it via a
-> PCI reset operation.
-> 
->    Can anyone recommend a method that might actually work? This is a bit
-> painful because right now a simple adjustment even in alsamixer requires me
-> to reboot the machine.
+Frank,
+   I don't think you need to send the file. So far this is sort of what I'm
+doing by hand, but it isn't working. I can stop audio apps, then stop Alsa,
+remove everything from memory (I think), and then restart Alsa. Alsa starts
+up cleanly with no error messages, but sound does not return.
 
-Debian has an init-script that accepts a "force-[stop|restart]"
-option. What this does is: It first kills all programs that use ALSA
-with: 
+   As I said earlier, I think there *may* be two other things going on here:
 
-procs_using_sound="$(echo $({ find /dev -print0 | xargs -0 stat -Lc '%t:%n' | grep -E '^(e|74):' \
-| cut -d: -f2-; } | while read REPLY; do fuser "$REPLY" || true; done | cut -f2- -d:))"
-kill $procs_using_sound
-sleep 2
-kill -9 $procs_using_sound
+1) The sound card hardware is a strange state after the driver does bad
+things to it.
+2) alsasound start does not apparently reset the hardware completely.
 
-and then rmmods like this: 
+   I can understand #2 conceptually since the reboot sets up PCI addressing
+and does other things to the card. If the driver was to mangle the PCI
+address of the card (I'm not suggesting it does, but just for instance) then
+I suppose the driver could not and should not try to fix that. My problem
+right now is I cannot see what's getting messed up, so I do not know how to
+reset it.
 
-rmmod -r $(lsmod | grep ^snd | awk '{print $1}')
+   Luckily it's a pretty fast machine and a reboot is only about 45 seconds,
+but it's frustrating to have to shut down email and other things to do it.
 
-Hope that helps... I could send you the file (or you could get it from
-debian.org), but basically that's it.
+Thanks much,
+Mark
 
-ciao
--- 
- Frank Barknecht                               _ ______footils.org__
+
 
 
 -------------------------------------------------------
