@@ -1,13 +1,15 @@
-From: Shayne O'Connor <forums@machinehasnoagenda.com>
+From: Lee Revell <rlrevell@joe-job.com>
 Subject: Re: Oops with emu10k1 multichannel device - possible
- bug
-Date: Sun, 20 Feb 2005 08:51:30 +1100
-Message-ID: <4217B4E2.5080301@machinehasnoagenda.com>
-References: <1108764903.5278.3.camel@krustophenia.net> <1108841487.10705.12.camel@krustophenia.net>
+	bug
+Date: Sat, 19 Feb 2005 16:45:00 -0500
+Message-ID: <1108849501.10705.45.camel@krustophenia.net>
+References: <1108764903.5278.3.camel@krustophenia.net>
+	 <1108841487.10705.12.camel@krustophenia.net>
+	 <4217B4E2.5080301@machinehasnoagenda.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
-In-Reply-To: <1108841487.10705.12.camel@krustophenia.net>
+In-Reply-To: <4217B4E2.5080301@machinehasnoagenda.com>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -17,31 +19,21 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel <alsa-devel@lists.sourceforge.net>
+To: Shayne O'Connor <forums@machinehasnoagenda.com>
+Cc: alsa-devel <alsa-devel@lists.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Lee Revell wrote:
+On Sun, 2005-02-20 at 08:51 +1100, Shayne O'Connor wrote:
+> sorry - just noticed this ... i had the exact same problem when loading
+> the alsa modules - but it was only then, no problems since.
+> 
 
->On Fri, 2005-02-18 at 17:15 -0500, Lee Revell wrote:
->  
->
->>Testing ALSA CVS on a new machine using the emu10k1 multichannel device
->>produced this Oops.  I am investigating.  Although the multichannel
->>patch was very well tested, until further notice the device should be
->>considered buggy.
->>    
->>
->
->I don't think this is anything to worry about.  It only happened the
->first time I loaded the new ALSA modules, I think I had unloaded ALSA
->1.0.5 previously.  I have been unable to reproduce it despite running
->JACK at very low latencies and doing "dbench 64" for hours.
->  
->
-sorry - just noticed this ... i had the exact same problem when loading
-the alsa modules - but it was only then, no problems since.
+Damn.  It's probably related to loading old mixer settings.
+Unfortunately I didn't have the symbols anymore by the time I noticed it
+so I couldn't decode the Oops.
 
-shayne
+Lee
+
 
 
 -------------------------------------------------------
