@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
-Subject: [ALSA - utils 0000781]: make install fails with current alsa-utils cvs.
-Date: Mon, 3 Jan 2005 15:43:01 +0100
-Message-ID: <c019bc1fcb59bc6a684d03ca43f1496f@bugtrack.alsa-project.org>
+Subject: [ALSA - driver 0000782]: Poor digital aidio quality
+Date: Mon, 3 Jan 2005 16:20:00 +0100
+Message-ID: <842b82594ff1e25f40a18c4c6e1e6943@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id F41C42EE
-	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 15:43:01 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 2FF902A1
+	for <alsa-devel@alsa-project.org>; Mon,  3 Jan 2005 16:20:01 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -22,87 +22,50 @@ To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
-The following issue has been RESOLVED.
+The following issue has been SUBMITTED.
 ======================================================================
-<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=781> 
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=782> 
 ======================================================================
-Reported By:                jcdutton
-Assigned To:                tiwai
+Reported By:                ddemmer
+Assigned To:                fmoraes
 ======================================================================
-Project:                    ALSA - utils
-Issue ID:                   781
-Category:                   alsaconf
+Project:                    ALSA - driver
+Issue ID:                   782
+Category:                   PCI - emu10k1x
 Reproducibility:            always
-Severity:                   block
+Severity:                   major
 Priority:                   normal
-Status:                     resolved
-Resolution:                 fixed
-Fixed in Version:           
+Status:                     assigned
+Distribution:               Fedora Core
+Kernel Version:             2.6.9-1.681_FC3.i686
 ======================================================================
-Date Submitted:             01-03-2005 13:44 CET
-Last Modified:              01-03-2005 15:43 CET
+Date Submitted:             01-03-2005 16:20 CET
+Last Modified:              01-03-2005 16:20 CET
 ======================================================================
-Summary:                    make install fails with current alsa-utils cvs.
+Summary:                    Poor digital aidio quality
 Description: 
-alsa-utils # make install
-Making install in m4
-make[1]: Entering directory `/u/alsacvs/alsa-utils/m4'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/m4'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/m4'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/m4'
-Making install in include
-make[1]: Entering directory `/u/alsacvs/alsa-utils/include'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/include'
-make[2]: Nothing to be done for `install-exec-am'.
-make[2]: Nothing to be done for `install-data-am'.
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/include'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/include'
-Making install in alsactl
-make[1]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
-make[2]: Entering directory `/u/alsacvs/alsa-utils/alsactl'
-test -z "/usr/sbin" || mkdir -p -- "/usr/sbin"
-  /bin/install -c 'alsactl' '/usr/sbin/alsactl'
-test -z "/usr/man/man1" || mkdir -p -- "/usr/man/man1"
- /bin/install -c -m 644 './alsactl.1' '/usr/man/man1/alsactl.1'
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsactl'
-Making install in alsaconf
-make[1]: Entering directory `/u/alsacvs/alsa-utils/alsaconf'
-Making install in po
-make[2]: Entering directory `/u/alsacvs/alsa-utils/alsaconf/po'
-../.././mkinstalldirs /usr/share
-make[2]: ../.././mkinstalldirs: Command not found
-make[2]: *** [install-data-yes] Error 127
-make[2]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf/po'
-make[1]: *** [install-recursive] Error 1
-make[1]: Leaving directory `/u/alsacvs/alsa-utils/alsaconf'
-make: *** [install-recursive] Error 1
+Attempting to play MP3 files with RealPlay or xmms using ALSA output
+results in scratchy, erratic, slow (Realplay) or speeded up (xmms) sound.
+I can change the xmms configuration to use libOSS.so instead of libALSA
+which fixes the problem.
 
+The gnome "Detect Sound Card" utility works fine and plays it's sound
+fine.
+
+The gnome volume control does not affect the output level when using
+libOSS.
+
+I have by now muted everything in the alsamixer except the Master volume.
+
+Playing a CD works fine.
 ======================================================================
-
-----------------------------------------------------------------------
- jcdutton - 01-03-05 13:50 
-----------------------------------------------------------------------
-alsa-utils-fix.diff.txt  fixes the problem.
-
-----------------------------------------------------------------------
- tiwai - 01-03-05 15:43 
-----------------------------------------------------------------------
-Fixed differently in CVS, using $(mkdir_p) now...
 
 Issue History
 Date Modified  Username       Field                    Change              
 ======================================================================
-01-03-05 13:44 jcdutton       New Issue                                    
-01-03-05 13:50 jcdutton       File Added: alsa-utils-fix.diff.txt               
-    
-01-03-05 13:50 jcdutton       Note Added: 0003060                          
-01-03-05 15:43 tiwai          Status                   new => resolved     
-01-03-05 15:43 tiwai          Resolution               open => fixed       
-01-03-05 15:43 tiwai          Assigned To               => tiwai           
-01-03-05 15:43 tiwai          Note Added: 0003066                          
+01-03-05 16:20 ddemmer        New Issue                                    
+01-03-05 16:20 ddemmer        Distribution              => Fedora Core     
+01-03-05 16:20 ddemmer        Kernel Version            => 2.6.9-1.681_FC3.i686
 ======================================================================
 
 
