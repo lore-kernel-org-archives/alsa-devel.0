@@ -1,14 +1,15 @@
-From: Gerd Knorr <kraxel@suse.de>
-Subject: Re: Problem with Avermedia 771
-Date: Wed, 20 Oct 2004 17:27:56 +0200
+From: bugtrack@alsa-project.org
+Subject: [ALSA - driver 0000545]: midi note off ignored?! (i'm not sure that this is driver problem - correct me if wrong)
+Date: Wed, 20 Oct 2004 18:22:57 +0200
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <20041020152756.GA24478@bytesex>
-References: <416ED29A.7060200@qanu.de> <20041015101119.GH3866@bytesex> <Pine.LNX.4.58.0410151254140.20968@pnote.perex-int.cz> <20041018130114.GA5476@bytesex> <s5h3c0cjd24.wl@alsa2.suse.de> <20041019161340.GA12001@bytesex> <s5hzn2hh735.wl@alsa2.suse.de> <s5hy8i1h6k8.wl@alsa2.suse.de>
+Message-ID: <35115d55d4866cc06d93623311768201@bugtrack.alsa-project.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
-In-Reply-To: <s5hy8i1h6k8.wl@alsa2.suse.de>
+Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 0079B2AA
+	for <alsa-devel@alsa-project.org>; Wed, 20 Oct 2004 18:22:57 +0200 (MEST)
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
@@ -17,22 +18,34 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Gerd Knorr <kraxel@suse.de>, Jaroslav Kysela <perex@suse.cz>, Clemens Ladisch <clemens@ladisch.de>, Holger Waechtler <holger@qanu.de>, dvb list <linux-dvb@linuxtv.org>, alsa-devel@lists.sourceforge.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> +	if (pci_id->driver_data & DRIVER_DEFAULT_ENTRY) {
-> +		if (! load_all)
-> +			return -ENODEV;
-> +	}
 
-A (temporary) printk here would probably be useful so people with
-working but not-yet whitelisted cards know what is going on and can (a)
-report the IDs and (b) get the card going using the new insmod option.
+A NOTE has been added to this issue.
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+<https://bugtrack.alsa-project.org/alsa-bug/view.php?id=3D545>=20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Issue History
+Date Modified  Username       Field                    Change            =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+09-26-04 17:34 vlajsa         New Issue                                  =
+ =20
+09-26-04 17:34 vlajsa         Kernel Version            =3D> 2.6.9-rc2   =
+   =20
+10-20-04 18:22 vlajsa         Note Added: 0002217                        =
+ =20
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-Otherwise the patch looks fine to me.
-
-  Gerd
 
 
 
