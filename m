@@ -1,12 +1,14 @@
-From: Bruce Paterson <bruce@tele-ip.com>
-Subject: Unresolved references in cvs
-Date: Mon, 02 Dec 2002 13:23:02 +1100
+From: Clemens Ladisch <clemens@ladisch.de>
+Subject: Re: [Alsa-user] chipset CX5530
+Date: Mon, 02 Dec 2002 09:33:03 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <3DEAC406.5020209@tele-ip.com>
+Message-ID: <Pine.HPX.4.33n.0212020920100.7780-100000@studcom.urz.uni-halle.de>
+References: <20021201105428.2afa833d.jean-marc.harang@laposte.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Transfer-Encoding: 7BIT
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-reply-to: <20021201105428.2afa833d.jean-marc.harang@laposte.net>
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -15,35 +17,25 @@ List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa development <alsa-devel@lists.sourceforge.net>
+To: Jean-Marc Harang <jean-marc.harang@laposte.net>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+Jean-marc Harang wrote:
+> I search informations about this chipset (drivers, users feedback, etc...).
 
-I realise using the cvs tree is asking fot it, but rc6 is unusable for 
-ice1712 at present due to the 1/2 speed problem.
+http://groups.google.com/groups?threadm=veofj0z47t.fsf@inigo.sthlm.cendio.se
 
-It all make's fine, but when I attempt to install the snd.o module I get 
-unresolved references to devfs-get_handle and devfs_put that I didn't 
-get with the official releases. devfsd is running.
-Some step I've missed ?
--- 
-Thanks in advance,
-Bruce
--------------------------------------------------------------------
-This email and any files transmitted with it are confidential and
-intended solely for the use of the individual or entity to whom
-they are addressed. If you have received this email in error please
-notify the system manager.
+There is an ALSA package containing a Geode driver at
+<http://www.gctglobal.com/Download/alsa-geode.tar.gz>, but it's based on
+0.5.10b. However, there seems to be some documentation (in a Word file),
+so it should be possible to port it to 0.9.x.
 
-     /\\\/\\\/\\\    /   /      Bruce Paterson
-    /  \\\ \\\ \\\  /   /    Senior Design Engineer
-   /   /\\\/\\\/\\\/   /   87 Peters Ave, Mulgrave, Vic, 3170
-  /   /  \\\ \\\ \\\  /  PO Box 4112, Mulgrave, Vic, 3170, Australia
-/   /    \\\/\\\ \\\/   Ph: +61 3 8561 4232   Fax: +61 3 9560 9055
-       Tele-IP Ltd.      Email: bruce@tele-ip.com    Icq: #32015991
-                         WWW:   http://www.tele-ip.com       VK3TJN
--------------------------------------------------------------------
+Now you only need to find somebody to do the port. :-)
 
+
+HTH
+Clemens
 
 
 
