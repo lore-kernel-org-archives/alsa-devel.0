@@ -1,14 +1,14 @@
 From: bugtrack@alsa-project.org
 Subject: [ALSA - driver 0000822]: CMI9880 (IHDA) alsamixer no controll
-Date: Wed, 19 Jan 2005 14:59:49 +0100
-Message-ID: <8379118b648b5c0786ee014fde89287e@bugtrack.alsa-project.org>
+Date: Wed, 19 Jan 2005 14:25:54 +0100
+Message-ID: <e427b7ceed4a65af80412a259a49e96e@bugtrack.alsa-project.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
 Received: from bugtrack.alsa-project.org (gate.perex.cz [82.113.61.162])
-	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 49E5E26D
-	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:59:49 +0100 (MET)
+	by alsa.alsa-project.org (ALSA's E-mail Delivery System) with ESMTP id 13AB224F
+	for <alsa-devel@alsa-project.org>; Wed, 19 Jan 2005 14:25:54 +0100 (MET)
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -40,7 +40,7 @@ Distribution:               FC3
 Kernel Version:             2.6.10-ac8
 ======================================================================
 Date Submitted:             01-16-2005 19:06 CET
-Last Modified:              01-19-2005 14:59 CET
+Last Modified:              01-19-2005 14:25 CET
 ======================================================================
 Summary:                    CMI9880 (IHDA) alsamixer no controll
 Description: 
@@ -51,25 +51,23 @@ No SPDIF out.
 ======================================================================
 
 ----------------------------------------------------------------------
- tiwai - 01-19-05 14:40 
+ 1g0R - 01-19-05 13:33 
 ----------------------------------------------------------------------
-No screenshot but please attach /etc/asound.state after running "alsactl
-store" and the content of /proc/asound/card0/codec* files.
-
-Try aplay instead of xmms for testing.  Just run "aplay something.wav".
-
-Also, make sure that you connect to the correct jack.  Try both back
-line-out jack (green one) and the front headphone jack.
+Okay, here is:
+I make .asoundrc, and paste the code what you wrote.
+xmms start, and set Output to alsa.
+When i try to move the volume controll, nothing happen.The volume always
+the same level.on zero (trigger on the left) there is no sound.
+in alsamixer no change.All play level on zero, and no spdif out.
 
 ----------------------------------------------------------------------
- 1g0R - 01-19-05 14:59 
+ tiwai - 01-19-05 14:25 
 ----------------------------------------------------------------------
-Iam at work now, so i cant send you the config now.But after 6pm i will.
-Anyway i try alsaplayer and its worked for me perfectly.(alsamixer, xmms,
-mplayer not).
-My earphones is in the Green jack, and for spdif have a seperate (RCA)
-connector.Under windows is working that connection (but i dont want use
-windows)
+Did you unmute PCM?  Did you choose "default" for output PCM with xmms ALSA
+output plugin?  Too little information for debugging.
+
+The SPDIF is not supported as default.  You need to pass the proper model
+option.  For example, model=full_dig.
 
 Issue History
 Date Modified  Username       Field                    Change              
@@ -91,9 +89,6 @@ Date Modified  Username       Field                    Change
 01-18-05 17:57 tiwai          Note Added: 0003254                          
 01-19-05 13:33 1g0R           Note Added: 0003264                          
 01-19-05 14:25 tiwai          Note Added: 0003265                          
-01-19-05 14:36 1g0R           Note Added: 0003272                          
-01-19-05 14:40 tiwai          Note Added: 0003275                          
-01-19-05 14:59 1g0R           Note Added: 0003280                          
 ======================================================================
 
 
