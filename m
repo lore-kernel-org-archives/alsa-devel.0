@@ -1,12 +1,12 @@
-From: Vedran Rodic <vedran@vodatel.hr>
-Subject: Re: ALC655/658 patch breaks stereo output
-Date: Tue, 16 Nov 2004 12:58:30 +0100
-Message-ID: <pan.2004.11.16.11.58.29.875566@vodatel.hr>
-References: <20040115045038.GA10935@arecibo.tennica.net>
+From: Jaroslav Kysela <perex@suse.cz>
+Subject: Re: Conversion from S16 format to ALAW
+Date: Tue, 16 Nov 2004 09:28:21 +0100 (CET)
+Message-ID: <Pine.LNX.4.58.0411160926111.21901@pnote.perex-int.cz>
+References: <4199B349.4080404@ma.tech.ascom.ch>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 8bit
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
+In-Reply-To: <4199B349.4080404@ma.tech.ascom.ch>
 Sender: alsa-devel-admin@lists.sourceforge.net
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
@@ -16,32 +16,43 @@ List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=subscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
-To: alsa-devel@lists.sourceforge.net
+To: Manu Sharma <manu.sharma@ma.tech.ascom.ch>
+Cc: alsa-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 14 Jan 2004 21:50:38 -0700, David Van Duzer wrote:
+On Tue, 16 Nov 2004, Manu Sharma wrote:
 
-> Greetings -
+> Hi all,
 > 
-> I have an ABIT AN7 motherboard with an nForce2 audio controller.  The AC97
-> chip is an ALC658, and the patch from ac97_patch.c from 1.30 to 1.31 in
-> CVS seems to have broken standard stereo output.  I can get some sound
-> output from my speakers if I enable Line-In As Surround and Duplicate
-> Front, but it is very faint.  Without these features enabled, I don't get
-> any audio output from any of the analog output jacks.
+> I am trying to sample and play alaw streams on my iPAQ 5500. The HW 
+> driver registers support for S16_LE only. So, to achieve my purpose, I 
+> register a plugin like following in my alsa.conf file:
 > 
-> I've looked at the code, for patch_alc655() as compared to patch_alc650()
-> but I'm not proficient enough to figure out what to change to make it
-> work, so I've simply modified ac97_codec.c to use patch_alc650() for my
-> ALC658.  There seem to be other people on the alsa-users list with a
-> similar problem, and I'd be happy to help try and diagnose the problem
-> further, but I'm not sure what other information will be helpful.
+> pcm.alaw {
+> 	type alaw
+> 	slave {
+> 		pcm  "hw:0.0"
+> 		format S16_LE
+> 	}
+> }
 > 
+> With this, when I use arecord to capture sound, I get an error "arecord: 
+> set_params:832: Sample format not available".
 
-This is still not fixed?
+Could you specify the full command? It should be something like:
 
-Vedran
+arecord -D alaw -f A_LAW ...
 
+Anyway, the default device should do this job for you also:
+
+arecord -f A_LAW ...
+
+						Jaroslav
+
+-----
+Jaroslav Kysela <perex@suse.cz>
+Linux Kernel Sound Maintainer
+ALSA Project, SUSE Labs
 
 
 -------------------------------------------------------
