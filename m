@@ -1,14 +1,13 @@
-From: Christian Esken <c.esken@cityweb.de>
-Subject: Anonymous CVS broken?!?
-Date: Tue, 14 Jan 2003 22:58:44 +0100
+From: Anton Worshevsky <gbdj@linux.spb.org>
+Subject: Re: VIA8233/8235 testers wanted
+Date: Wed, 15 Jan 2003 00:48:46 +0300
 Sender: alsa-devel-admin@lists.sourceforge.net
-Message-ID: <200301142258.45879.c.esken@cityweb.de>
+Message-ID: <1333.030115@linux.spb.org>
+Reply-To: Anton Worshevsky <gbdj@linux.spb.org>
 Mime-Version: 1.0
-Content-Type: text/plain;
-  charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-admin@lists.sourceforge.net>
-Content-Disposition: inline
 Errors-To: alsa-devel-admin@lists.sourceforge.net
 List-Help: <mailto:alsa-devel-request@lists.sourceforge.net?subject=help>
 List-Post: <mailto:alsa-devel@lists.sourceforge.net>
@@ -18,23 +17,55 @@ List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/alsa-devel>,
 	<mailto:alsa-devel-request@lists.sourceforge.net?subject=unsubscribe>
 List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum=alsa-devel>
 To: alsa-devel@lists.sourceforge.net
+Cc: gbdj@mail.ru
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hello ,
 
-I treid to download latest CVS version, but failed logging in (using empty password as
-described on the web page). 
+>  if someone has VIA8233, VIA8233A, VIA8233C or VIA8235 chipset, could
+>  you help the testing of the new driver?
+>  the new driver code is found at
+>
+>         http://www.alsa-project.org/~iwai/via82xx.c
+
+i has VIA8235 and ALC650 codec. After installing new driver from cvs from
+20030113, there is following problem:
+
+In 5.1-channel dvd playback with xine using surround51 device,
+i has swapped Rear and Center/lfe channels.
+RL <-> Center, RR <-> LFE
+i fixed this with following patch for via82xx.c
+
+812,813c812,815
+<       case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
+<       case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
+---
+> //    case 5: slots = (1<<0) | (2<<4) | (5<<8) | (3<<12) | (4<<16); break;
+> //    case 6: slots = (1<<0) | (2<<4) | (5<<8) | (6<<12) | (3<<16) | (4<<20); break;
+>       case 5: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16); break;
+>       case 6: slots = (1<<0) | (2<<4) | (3<<8) | (4<<12) | (5<<16) | (6<<20); break;
+
+please note that 5ch mode is untested.
+I'm not sure that it is alsa problem, xine' may be.
+It will be nice to have a small prog for channel position testing in different
+playback modes, because now i know no 5.1ch source other then video player.
+In general multichannel playback has good quality now (with rc6 sound was
+cracking).
+
+>  the new driver can (hopefully) play multiple streams simultaneously on
+>  VIA8233, VIA8233C and VIA8235, but NOT on VIA8233A.
+
+It's worked, but second stream plays only left channel.
+
+Almost all OSS application such as games (UT, tux-racer and other) now producing
+cracking and skipping sound. Only XMMS OSS-plugin plays good. OSS-sound was good
+with rc6.
+
+Best regards,
+
+Anton Worshevsky
 
 
-chris@bjork:~/CVS/alsa> cvs -d ':pserver:anonymous@cvs.alsa-project.org:/cvsroot/alsa' login
-Logging in to :pserver:anonymous@cvs.alsa-project.org:2401/cvsroot/alsa
-CVS password:
-cvs [login aborted]: connect to cvs.alsa-project.org(66.35.250.207):2401 failed: Connection refused
-
-
-Am I doing sth. wrong here?!?
-
-   Chris
 
 
 -------------------------------------------------------
